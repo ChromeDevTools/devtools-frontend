@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} វិ"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools៖ កម្មវិធី​ញែកកម្រងព័ត៌មាន CPU កំពុងកែប្រែគំរូដែលបាត់ចំនួន {PH1}។"
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "កម្រងព័ត៌មាន {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "មិនអាច​ផ្ទុក​ខ្លឹមសារ​សម្រាប់ {PH1} បានទេ ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "ការរុករកទៅ {PH1} ត្រូវបានស្ដារពីឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង (សូមមើល https://web.dev/bfcache/)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "មិនអាច​រក្សាទុក​នៅក្នុង​អថេរ​បណ្ដោះអាសន្ន​បានទេ​។"
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "បានផ្អាក​នៅក្នុង​កម្មវិធី​ជួសជុល"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "ការផ្ទុក​ត្រូវបាន​បោះបង់ ដោយសារតែ​អស់ម៉ោងផ្ទុក"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "ការផ្ទុក​ត្រូវបាន​បោះបង់ ដោយសារមាន​ការផ្ទុកឡើងវិញ​នូវទំព័រ​ដែលត្រូវបាន​ត្រួតពិនិត្យ"
   },
@@ -618,7 +615,7 @@
     "message": "កំពុង​បញ្ឈប់"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "ការមើលឃើញ​តែពណ៌ស ខ្មៅ និងប្រផេះ"
+    "message": "ការមើលឃើញ​តែពណ៌ស ខ្មៅ និងប្រផេះ (គ្មានពណ៌)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "ការមើល​ឃើញព្រាល"
@@ -627,7 +624,7 @@
     "message": "ថត​ដានបង្គរ​អសមកាលកម្ម"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "ការមើលមិនឃើញ​ពណ៌បៃតង និង​ក្រហម"
+    "message": "ការមើលមិនឃើញពណ៌បៃតង (គ្មានពណ៌បៃតង)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "បិទ​ដានបង្គរ​អសមកាលកម្ម"
@@ -690,7 +687,7 @@
     "message": "ត្រាប់តាម​ទំព័រ​ដែលបានផ្ដោត"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "ត្រាប់តាម​ការមើលឃើញ​តែពណ៌ស ខ្មៅ និងប្រផេះ"
+    "message": "ត្រាប់តាម​ការមើលឃើញ​តែពណ៌ស ខ្មៅ និងប្រផេះ (គ្មានពណ៌)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "ត្រាប់តាមមុខងារ​ងងឹតដោយស្វ័យប្រវត្តិ"
@@ -714,13 +711,16 @@
     "message": "ត្រាប់តាម​ប្រភេទ​មេឌៀ​អេក្រង់ CSS"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "ត្រាប់តាម​ការមើលមិនឃើញ​ពណ៌បៃតង និង​ក្រហម"
+    "message": "ត្រាប់តាមការមើលមិនឃើញពណ៌បៃតង (គ្មានពណ៌បៃតង)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "ត្រាប់តាម​ការមើល​មិនឃើញ​ពណ៌ក្រហម"
+    "message": "ត្រាប់តាមការមើល​មិនឃើញ​ពណ៌ក្រហម (គ្មានពណ៌ក្រហម)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "ត្រាប់តាមកម្រិតរំលេចពណ៌ដែលបានបន្ថយ"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "ត្រាប់តាម​ការមើលមិនឃើញ​ពណ៌ខៀវ"
+    "message": "ត្រាប់តាមការមើលមិនឃើញ​ពណ៌ខៀវ (គ្មានពណ៌ខៀវ)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "ត្រាប់តាម​ការមើល​មិនច្បាស់"
@@ -789,10 +789,13 @@
     "message": "បោះពុម្ព"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "ការមើល​មិនឃើញ​ពណ៌ក្រហម"
+    "message": "ការមើល​មិនឃើញ​ពណ៌ក្រហម (គ្មានពណ៌ក្រហម)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "សំណួរ"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "កម្រិតរំលេចពណ៌ដែលបានបន្ថយ"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "អេក្រង់"
@@ -840,7 +843,7 @@
     "message": "បង្ហាញ​ទំហំ​ចន្លោះ​ក្រឡា"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "ការមើលមិនឃើញ​ពណ៌ខៀវ"
+    "message": "ការមើលមិនឃើញ​ពណ៌ខៀវ (គ្មានពណ៌ខៀវ)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript ត្រូវបាន​បិទ"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ផ្ដាច់​ទៅជា​វិនដូ​ដាច់ដោយឡែក"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "ទំព័រ៖ មិនបាន​ជ្រើសរើស"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "ទំព័រ៖ {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ដូចត្រូវបាន​សរសេរ​ដើមដំបូង"
   },
@@ -1062,7 +1071,7 @@
     "message": "ទម្រង់ពណ៌៖"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "ការកំណត់នេះត្រូវបានបញ្ឈប់ដោយសារតែវាមិនត្រូវគ្នាជាមួយលំហពណ៌ទំនើប។ ដើម្បីបើកការកំណត់នេះឡើងវិញ អ្នកអាចបិទការពិសោធដែលពាក់ព័ន្ធបាន។"
+    "message": "ការកំណត់នេះត្រូវបានបញ្ឈប់ដោយសារតែវាមិនត្រូវគ្នាជាមួយលំហពណ៌ទំនើប។ ដើម្បីបើកការកំណត់នេះឡើងវិញ សូមបិទការពិសោធដែលត្រូវគ្នា។"
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "ងងឹត"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "​ចម្បង"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "ការ​អនុញ្ញាតនឹងមិនត្រូវបានគ្របដណ្តប់ដោយនិមិត្តសញ្ញាជំនួស (*) នៅក្នុងការចាត់ចែង Access-Control-Allow-Headers CORS ឡើយ។"
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "លក្ខណៈ disableRemotePlayback គួរតែត្រូវបានប្រើ ដើម្បីបិទការរួមបញ្ចូល Cast តាមលំនាំដើមជំនួសឱ្យការប្រើផ្ទាំងជ្រើសរើស -internal-media-controls-overlay-cast-button។"
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "សំណើធនធានដែល URL របស់​ពួកវា​មាន​តួ​អក្សរ \\(n|r|t) ​ចន្លោះ​ទទេ​ដែល​បាន​ដក​ចេញ និងតួ​អក្សរ​តូចជាង (<) ត្រូវបានទប់ស្កាត់។ សូមដកជួរថ្មី​ចេញ និង​បំប្លែងកូដ​នៃ​តួ​អក្សរ​តូចជាង​ពីកន្លែងដូចជាតម្លៃលក្ខណៈធាតុ ដើម្បីផ្ទុកធនធានទាំងនេះ។"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() ត្រូវបានបញ្ឈប់ ហើយ​ប្រើ API ស្តង់ដារ​ជំនួស​វិញ៖ Navigation Timing 2។"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() ត្រូវបានបញ្ឈប់ ហើយ​ប្រើ API ស្តង់ដារ​ជំនួស​វិញ៖ Paint Timing។"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() ត្រូវបានបញ្ឈប់ ហើយ​ប្រើ API ស្តង់ដារ​ជំនួស​វិញ៖ nextHopProtocol នៅក្នុង Navigation Timing 2។"
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "ខូគីដែលមានតួអក្សរ \\(0|r|n) នឹងត្រូវបានបដិសេធជំនួសឱ្យការកាត់ដាច់។"
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "ការបន្ធូរបន្ថយគោលការណ៍ដែលមានប្រភពដើមតែមួយដោយការកំណត់ document.domain ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានបិទតាមលំនាំដើម។ សារ​ប្រុង​ប្រយ័ត្ន​អំពីការបញ្ឈប់នេះគឺសម្រាប់ការចូលប្រើប្រាស់ដែលមានប្រភពដើមផ្សេងដែលត្រូវបានបើកដោយការកំណត់ document.domain។"
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "ការបើកដំណើរការ window.alert ពី iframe ដែលមានប្រភពដើមផ្សេងត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញនាពេលអនាគត។"
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "ការបើកដំណើរការ window.confirm ពី iframe ដែលមានប្រភពដើមផ្សេងត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញនាពេលអនាគត។"
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "ការបន្ធូរបន្ថយគោលការណ៍ដែលមានប្រភពដើមតែមួយដោយការកំណត់ document.domain ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានបិទតាមលំនាំដើម។ ដើម្បីបន្តប្រើ​ប្រាស់​មុខងារនេះ សូមផ្តាច់​ចេញពី​បណ្ដុំភ្នាក់ងារដែលបានបញ្ចូលពីដើម ដោយបញ្ជូនផ្នែកក្បាល Origin-Agent-Cluster: ?0 រួមជាមួយការឆ្លើយតប HTTP សម្រាប់ឯកសារ និងស៊ុម។ សូមមើល https://developer.chrome.com/blog/immutable-document-domain/ ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។ សូមប្រើ Event.composedPath() ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "ផ្នែកក្បាល Expect-CT ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានលុបចេញ។ Chrome ត្រូវការតម្លាភាព​នៃវិញ្ញាបនបត្រ​សម្រាប់គ្រប់​វិញ្ញាបនបត្រដែលមាន​ការជឿទុកចិត្តជាសាធារណៈ ដែល​បាន​ចេញ​ផ្សាយក្រោយថ្ងៃ​ទី 30 ខែមេសា ឆ្នាំ 2018។"
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() និង watchPosition() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() និង watchPosition() ត្រូវបានបញ្ឈប់នៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាព។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ត្រូវបាន​បញ្ឈប់។ សូមប្រើ RTCPeerConnectionIceErrorEvent.address ឬ RTCPeerConnectionIceErrorEvent.port ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "ទិន្នន័យ​ប្រភពដើម និង​មិនច្បាស់លាស់​នៃឈ្មួញ​ពី​ព្រឹត្តិការណ៍​អ្នកធ្វើការ​បម្រើសេវា canmakepayment ត្រូវបាន​បញ្ឈប់ ហើយនឹង​ត្រូវបាន​លុបចេញ៖ topOrigin, paymentRequestOrigin, methodData, modifiers។"
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "គេហទំព័របានស្នើសុំធនធានរងពីបណ្ដាញដែលវាអាចចូលប្រើប្រាស់បានដោយសារតែទីតាំងបណ្តាញដែល​មាន​ឯកសិទ្ធិ​របស់អ្នកប្រើប្រាស់គេហទំព័រ​នេះ។ សំណើទាំងនេះបង្ហាញឧបករណ៍ និងម៉ាស៊ីនមេដែលមិនមាន​លក្ខណៈ​សាធារណៈទៅកាន់អ៊ីនធឺណិត ដែល​បង្កើន​ហានិភ័យនៃ​ការវាយប្រហារ​តាម​ការបន្លំសំណើ​ឆ្លង​គេហទំព័រ (CSRF) និង/ឬការលេចធ្លាយព័ត៌មាន។ ដើម្បីកាត់បន្ថយហានិភ័យទាំងនេះ Chrome បញ្ឈប់សំណើសុំធនធានរងដែល​មិន​មាន​លក្ខណៈ​សាធារណៈ នៅពេលចាប់ផ្តើមពីបរិបទដែលមិនមានសុវត្ថិភាព ហើយនឹងចាប់ផ្តើមទប់ស្កាត់​សំណើ​ទាំងនោះ។"
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "មិន​អាច​ផ្ទុក CSS ពី URL របស់ file:​ បាន​ទេ ប្រសិន​បើ​ពួកវាមិន​បញ្ចប់ដោយកន្ទុយ​ឯកសារ .css។"
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "ការប្រើប្រាស់ SourceBuffer.abort() ដើម្បី​បោះបង់​ការដក​ចន្លោះ​អសមកាល​ចេញ​របស់ remove() ត្រូវបាន​បញ្ឈប់ ដោយសារតែ​ការផ្លាស់ប្ដូរ​សេចក្ដី​លម្អិត។ ភាពអាច​ប្រើ​បាន​នឹងត្រូវបានដកចេញនៅពេលអនាគត។ អ្នក​គួរតែ​ស្ដាប់​ព្រឹត្តិការណ៍ updateend ជំនួសវិញ។ abort() គឺ​សម្រាប់​តែ​បោះបង់​ផ្នែកបន្ថែម​នៃមេឌៀ​អសមកាល ឬកំណត់ស្ថានភាព​កម្មវិធី​ញែក​ឡើងវិញ​ប៉ុណ្ណោះ។"
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "ការកំណត់ MediaSource.duration ក្រោមពេលវេលាបទ​បង្ហាញខ្ពស់បំផុតនៃស៊ុមទាំងឡាយ​ដែលបានសរសេរកូដផ្ទុកជាមុនត្រូវបានបញ្ឈប់ ដោយសារការផ្លាស់ប្ដូរសេចក្ដី​លម្អិត។ លទ្ធភាពដកចេញបានដោយប្រយោលនៃមេឌៀផ្ទុកជាមុនដែលបានកាត់ដាច់នឹងត្រូវបានដកចេញនៅពេលអនាគត។ អ្នកគួរតែអនុវត្ត remove(newDuration, oldDuration) ដែលច្បាស់លាស់នៅលើគ្រប់ sourceBuffers ដែល newDuration < oldDuration។"
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI នឹងស្នើសុំការអនុញ្ញាតក្នុងការប្រើប្រាស់ ទោះបីជា sysex មិនត្រូវបានបញ្ជាក់នៅក្នុង MIDIOptions ក៏ដោយ។"
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "លក្ខណៈ shadowroot ចាស់ដែលមិនមែនស្តង់ដារត្រូវបានបញ្ឈប់។ សូមប្រើលក្ខណៈ shadowrootmode ថ្មីដែលស្តង់ដារជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "Notification API អាចលែងត្រូវបានប្រើពីប្រភពដើមដែលមិនមាន​សុវត្ថិភាពទៀតហើយ។ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "ការអនុញ្ញាតសម្រាប់ Notification API ប្រហែលលែងត្រូវបានស្នើសុំពី iframe ដែលមានប្រភពដើមផ្សេងទៀតហើយ។ អ្នកគួរតែពិចារណាស្នើសុំការអនុញ្ញាតពីស៊ុមកម្រិតខ្ពស់ ឬបើកវិនដូថ្មីជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "ជម្រើស imageOrientation: 'none' នៅ​ក្នុង createImageBitmap ត្រូវ​បាន​បញ្ឈប់។ សូមប្រើ createImageBitmap ជាមួយជម្រើស {imageOrientation: 'from-image'} ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "ដៃគូរបស់អ្នកកំពុងចរចាលើកំណែ (D)TLS ដែលលែងប្រើ។ សូមផ្ទៀងផ្ទាត់ជាមួយដៃគូរបស់អ្នក ដើម្បីដោះស្រាយបញ្ហានេះ។"
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "ការ​បញ្ជាក់ overflow: visible នៅលើស្លាក img, video និង canvas អាច​ធ្វើ​ឱ្យ​ពួកវា​​បង្កើត​បាន​ខ្លឹមសារ​ដែលមើល​ឃើញ​នៅ​ខាងក្រៅ​ព្រំដែនធាតុ។ សូមមើល https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md។"
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments ត្រូវបានបញ្ឈប់។ សូម​ប្រើប្រាស់​ការ​ដំឡើង​ទាន់ពេលវេលា​​សម្រាប់​ឧបករណ៍ដោះស្រាយ​ការ​ទូទាត់​ជំនួស​វិញ។"
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "ការ​ហៅ​ PaymentRequest របស់​អ្នក​បានរំលង​កា​រណែនាំ​ស្ដីពី​គោលការណ៍​សុវត្ថិភាព​លើខ្លឹមសារ (CSP) connect-src។ ការ​រំលង​នេះ​ត្រូវ​បាន​បញ្ឈប់។ សូម​បញ្ចូល​លេខកូដសម្គាល់​វិធីបង់ប្រាក់​ពី API PaymentRequest (នៅ​ក្នុងកន្លែង​បញ្ចូល supportedMethods) ទៅក្នុង​ការ​ណែនាំ CSP connect-src របស់​អ្នក។"
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ navigator.storage ស្តង់ដារ​ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<source src> ដែលមានមេ <picture> គឺមិនត្រឹមត្រូវទេ ហើយដូច្នេះ មិនត្រូវបានអើពើទេ។ សូមប្រើប្រាស់ <source srcset> ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame មានភាពជាក់លាក់សម្រាប់អ្នកផ្គត់ផ្គង់។ សូមប្រើ cancelAnimationFrame ស្តង់ដារជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame មានភាពជាក់លាក់សម្រាប់អ្នកផ្គត់ផ្គង់។ សូមប្រើ requestAnimationFrame ស្តង់ដារជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen ត្រូវបានបញ្ឈប់។ សូមប្រើ Document.fullscreenElement ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() ត្រូវបានបញ្ឈប់។ សូមប្រើ Element.requestFullscreen() ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() ត្រូវបានបញ្ឈប់។ សូមប្រើ Element.requestFullscreen() ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() ត្រូវបានបញ្ឈប់។ សូមប្រើ Document.exitFullscreen() ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() ត្រូវបានបញ្ឈប់។ សូមប្រើ Document.exitFullscreen() ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen ត្រូវបានបញ្ឈប់។ សូមប្រើ Document.fullscreenEnabled ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "យើងកំពុង​បញ្ឈប់ API chrome.privacy.websites.privacySandboxEnabled ទោះបីជាវា​នឹងនៅតែ​ដំណើរការ​សម្រាប់​ភាពត្រូវគ្នា​ជាមួយកំណែចាស់ៗ​រហូត​ដល់​ការ​ចេញផ្សាយកំណែ M113 ក៏ដោយ។ សូម​ប្រើ chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled និង chrome.privacy.websites.adMeasurementEnabled ជំនួស​វិញ។ សូមមើល https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled។"
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "លក្ខខណ្ឌ​កំហិត DtlsSrtpKeyAgreement ត្រូវបានដកចេញ។ អ្នកបានបញ្ជាក់តម្លៃ false សម្រាប់លក្ខខណ្ឌ​កំហិត​នេះ ដែលត្រូវបានបកស្រាយថាជាការព្យាយាមប្រើវិធី SDES key negotiation ដែលបានដកចេញ។ មុខងារនេះត្រូវបានដកចេញហើយ។ សូមប្រើប្រាស់សេវាកម្មដែលអាចប្រើ DTLS key negotiation ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "លក្ខខណ្ឌ​កំហិត DtlsSrtpKeyAgreement ត្រូវបានដកចេញ។ អ្នកបានបញ្ជាក់តម្លៃ true សម្រាប់លក្ខខណ្ឌ​កំហិត​នេះ ដែលមិនមានឥទ្ធិពលទេ ប៉ុន្តែអ្នកអាចដកលក្ខខណ្ឌ​កំហិត​នេះចេញ​បាន ដើម្បីឱ្យមានភាពរៀបរយ។"
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "getStats() ដែលផ្អែកលើការហៅ​ត្រឡប់​វិញត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។ សូមប្រើ getStats() ដែលអនុលោមតាមស្ប៉ិចជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() ត្រូវបានបញ្ឈប់។ សូមប្រើ Selection.modify() ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "សំណើធនធានរងដែល URL របស់​ពួក​វា​មានព័ត៌មានផ្ទៀងផ្ទាត់បង្កប់ (ឧ. https://user:pass@host/) ត្រូវបានទប់ស្កាត់។"
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "ជម្រើស rtcpMuxPolicy ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។"
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer នឹងតម្រូវឱ្យមានការដាក់ប្រភពដើមផ្សេងឱ្យនៅដោយឡែក។ សូមមើល https://developer.chrome.com/blog/enabling-shared-array-buffer/ ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "speechSynthesis.speak() ដែលគ្មានការបើកដំណើរការដោយអ្នកប្រើប្រាស់ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។"
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "កម្មវិធីបន្ថែម​គួរតែភ្ជាប់ការដាក់ប្រភពដើមផ្សេងឱ្យនៅដោយឡែក ដើម្បីបន្តប្រើប្រាស់ SharedArrayBuffer។ សូមមើល https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/។"
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "UTF-16 មិន​អាច​ប្រើ​ដោយ json ឆ្លើយតបនៅក្នុង XMLHttpRequest បាន​ទេ"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "XMLHttpRequest ដែល​មានសមកាល​នៅលើ​កម្រងប្រតិបត្តិចម្បង​ត្រូវបានបញ្ឈប់ ដោយសារតែផល​ប៉ះពាល់​អវិជ្ជមាន​របស់វាចំពោះបទពិសោធន៍របស់អ្នកប្រើប្រាស់ចុងក្រោយ។ ដើម្បី​ទទួល​បាន​ជំនួយបន្ថែម សូមពិនិត្យមើល https://xhr.spec.whatwg.org/។"
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ isSessionSupported() និងពិនិត្យមើលតម្លៃប៊ូលីនដែលបានដោះស្រាយជំនួសវិញ។"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "មានបញ្ហា​មិនស្គាល់​ពេលកំពុងផ្ទុក​ឯកសារ"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "គេហទំព័រ​ដូចគ្នា និង​ប្រភពដើម​ដូចគ្នា"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "ការ​អនុញ្ញាតនឹងមិនត្រូវបានគ្របដណ្តប់ដោយនិមិត្តសញ្ញាជំនួស (*) នៅក្នុងការចាត់ចែង Access-Control-Allow-Headers CORS ឡើយ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "សំណើធនធានដែល URL របស់​ពួកវា​មាន​តួ​អក្សរ \\(n|r|t) ​ចន្លោះ​ទទេ​ដែល​បាន​ដក​ចេញ និងតួ​អក្សរ​តូចជាង (<) ត្រូវបានទប់ស្កាត់។ សូមដកជួរថ្មី​ចេញ និង​បំប្លែងកូដ​នៃ​តួ​អក្សរ​តូចជាង​ពីកន្លែងដូចជាតម្លៃលក្ខណៈធាតុ ដើម្បីផ្ទុកធនធានទាំងនេះ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() ត្រូវបានបញ្ឈប់ ហើយ​ប្រើ API ស្តង់ដារ​ជំនួស​វិញ៖ Navigation Timing 2។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() ត្រូវបានបញ្ឈប់ ហើយ​ប្រើ API ស្តង់ដារ​ជំនួស​វិញ៖ Paint Timing។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() ត្រូវបានបញ្ឈប់ ហើយ​ប្រើ API ស្តង់ដារ​ជំនួស​វិញ៖ nextHopProtocol នៅក្នុង Navigation Timing 2។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "ខូគីដែលមានតួអក្សរ \\(0|r|n) នឹងត្រូវបានបដិសេធជំនួសឱ្យការកាត់ដាច់។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "ការបន្ធូរបន្ថយគោលការណ៍ដែលមានប្រភពដើមតែមួយដោយការកំណត់ document.domain ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានបិទតាមលំនាំដើម។ សារ​ប្រុង​ប្រយ័ត្ន​អំពីការបញ្ឈប់នេះគឺសម្រាប់ការចូលប្រើប្រាស់ដែលមានប្រភពដើមផ្សេងដែលត្រូវបានបើកដោយការកំណត់ document.domain។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "ការជំរុញ​ឱ្យ {PH1} ដំណើរការ​ពី iframe ដែលមានប្រភពដើមផ្សេងត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញនៅពេលអនាគត។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "លក្ខណៈ disableRemotePlayback គួរតែត្រូវបានប្រើ ដើម្បីបិទការរួមបញ្ចូល Cast តាមលំនាំដើមជំនួសឱ្យការប្រើផ្ទាំងជ្រើសរើស -internal-media-controls-overlay-cast-button។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} ត្រូវបានបញ្ឈប់។ សូមប្រើ {PH2} ជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "នេះគឺជាឧទាហរណ៍នៃសារបញ្ហាអំពីការបញ្ឈប់ដែលបានបកប្រែ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "ការបន្ធូរបន្ថយគោលការណ៍ដែលមានប្រភពដើមតែមួយដោយការកំណត់ document.domain ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានបិទតាមលំនាំដើម។ ដើម្បីបន្តប្រើ​ប្រាស់​មុខងារនេះ សូមផ្តាច់​ចេញពី​បណ្ដុំភ្នាក់ងារដែលបានបញ្ចូលពីដើម ដោយបញ្ជូនផ្នែកក្បាល Origin-Agent-Cluster: ?0 រួមជាមួយការឆ្លើយតប HTTP សម្រាប់ឯកសារ និងស៊ុម។ សូមមើល https://developer.chrome.com/blog/immutable-document-domain/ ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។ សូមប្រើ Event.composedPath() ជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "ផ្នែកក្បាល Expect-CT ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានលុបចេញ។ Chrome ត្រូវការតម្លាភាព​នៃវិញ្ញាបនបត្រ​សម្រាប់គ្រប់​វិញ្ញាបនបត្រដែលមាន​ការជឿទុកចិត្តជាសាធារណៈ ដែល​បាន​ចេញ​ផ្សាយក្រោយថ្ងៃ​ទី 30 ខែមេសា ឆ្នាំ 2018។"
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "ពិនិត្យមើលទំព័រស្ថានភាពមុខងារ ដើម្បីទទួលបានព័ត៌មានលម្អិតបន្ថែម។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() និង watchPosition() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() និង watchPosition() ត្រូវបានបញ្ឈប់នៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាព។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ត្រូវបាន​បញ្ឈប់។ សូមប្រើ RTCPeerConnectionIceErrorEvent.address ឬ RTCPeerConnectionIceErrorEvent.port ជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "ទិន្នន័យ​ប្រភពដើម និង​មិនច្បាស់លាស់​នៃឈ្មួញ​ពី​ព្រឹត្តិការណ៍​អ្នកធ្វើការ​បម្រើសេវា canmakepayment ត្រូវបាន​បញ្ឈប់ ហើយនឹង​ត្រូវបាន​លុបចេញ៖ topOrigin, paymentRequestOrigin, methodData, modifiers។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "គេហទំព័របានស្នើសុំធនធានរងពីបណ្ដាញដែលវាអាចចូលប្រើប្រាស់បានដោយសារតែទីតាំងបណ្តាញដែល​មាន​ឯកសិទ្ធិ​របស់អ្នកប្រើប្រាស់គេហទំព័រ​នេះ។ សំណើទាំងនេះបង្ហាញឧបករណ៍ និងម៉ាស៊ីនមេដែលមិនមាន​លក្ខណៈ​សាធារណៈទៅកាន់អ៊ីនធឺណិត ដែល​បង្កើន​ហានិភ័យនៃ​ការវាយប្រហារ​តាម​ការបន្លំសំណើ​ឆ្លង​គេហទំព័រ (CSRF) និង/ឬការលេចធ្លាយព័ត៌មាន។ ដើម្បីកាត់បន្ថយហានិភ័យទាំងនេះ Chrome បញ្ឈប់សំណើសុំធនធានរងដែល​មិន​មាន​លក្ខណៈ​សាធារណៈ នៅពេលចាប់ផ្តើមពីបរិបទដែលមិនមានសុវត្ថិភាព ហើយនឹងចាប់ផ្តើមទប់ស្កាត់​សំណើ​ទាំងនោះ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "មិន​អាច​ផ្ទុក CSS ពី URL របស់ file:​ បាន​ទេ ប្រសិន​បើ​ពួកវាមិន​បញ្ចប់ដោយកន្ទុយ​ឯកសារ .css។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "ការប្រើប្រាស់ SourceBuffer.abort() ដើម្បី​បោះបង់​ការដក​ចន្លោះ​អសមកាល​ចេញ​របស់ remove() ត្រូវបាន​បញ្ឈប់ ដោយសារតែ​ការផ្លាស់ប្ដូរ​សេចក្ដី​លម្អិត។ ភាពអាច​ប្រើ​បាន​នឹងត្រូវបានដកចេញនៅពេលអនាគត។ អ្នក​គួរតែ​ស្ដាប់​ព្រឹត្តិការណ៍ updateend ជំនួសវិញ។ abort() គឺ​សម្រាប់​តែ​បោះបង់​ផ្នែកបន្ថែម​នៃមេឌៀ​អសមកាល ឬកំណត់ស្ថានភាព​កម្មវិធី​ញែក​ឡើងវិញ​ប៉ុណ្ណោះ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "ការកំណត់ MediaSource.duration ក្រោមពេលវេលាបទ​បង្ហាញខ្ពស់បំផុតនៃស៊ុមទាំងឡាយ​ដែលបានសរសេរកូដផ្ទុកជាមុនត្រូវបានបញ្ឈប់ ដោយសារការផ្លាស់ប្ដូរសេចក្ដី​លម្អិត។ លទ្ធភាពដកចេញបានដោយប្រយោលនៃមេឌៀផ្ទុកជាមុនដែលបានកាត់ដាច់នឹងត្រូវបានដកចេញនៅពេលអនាគត។ អ្នកគួរតែអនុវត្ត remove(newDuration, oldDuration) ដែលច្បាស់លាស់នៅលើគ្រប់ sourceBuffers ដែល newDuration < oldDuration។"
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "ការផ្លាស់ប្ដូរនេះនឹងមានប្រសិទ្ធភាពជាមួយលេខកំណែដែលមានក្បាល {milestone}។"
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI នឹងស្នើសុំការអនុញ្ញាតក្នុងការប្រើប្រាស់ ទោះបីជា sysex មិនត្រូវបានបញ្ជាក់នៅក្នុង MIDIOptions ក៏ដោយ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "Notification API អាចលែងត្រូវបានប្រើពីប្រភពដើមដែលមិនមាន​សុវត្ថិភាពទៀតហើយ។ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "ការអនុញ្ញាតសម្រាប់ Notification API ប្រហែលលែងត្រូវបានស្នើសុំពី iframe ដែលមានប្រភពដើមផ្សេងទៀតហើយ។ អ្នកគួរតែពិចារណាស្នើសុំការអនុញ្ញាតពីស៊ុមកម្រិតខ្ពស់ ឬបើកវិនដូថ្មីជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "ជម្រើស imageOrientation: \"none\" នៅ​ក្នុង createImageBitmap ត្រូវ​បាន​បញ្ឈប់។ សូម​ប្រើ​ createImageBitmap ជា​មួយ​ជម្រើស {imageOrientation: \"from-image\"} ជំនួស​វិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "ដៃគូរបស់អ្នកកំពុងចរចាលើកំណែ (D)TLS ដែលលែងប្រើ។ សូមផ្ទៀងផ្ទាត់ជាមួយដៃគូរបស់អ្នក ដើម្បីដោះស្រាយបញ្ហានេះ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL ក្នុង​បរិបទ​គ្មានសុវត្ថិភាព​ត្រូវបាន​បញ្ឈប់ ហើយ​នឹង​ត្រូវបាន​លុបចេញ​ឆាប់ៗនេះ។ សូមប្រើប្រាស់​ទំហំផ្ទុក​លើ​បណ្ដាញ ឬ​មូលដ្ឋានទិន្នន័យ​ដែល​បានធ្វើ​សន្ទស្សន៍។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "ការ​បញ្ជាក់ overflow: visible នៅលើស្លាក img, video និង canvas អាច​ធ្វើ​ឱ្យ​ពួកវា​​បង្កើត​បាន​ខ្លឹមសារ​ដែលមើល​ឃើញ​នៅ​ខាងក្រៅ​ព្រំដែនធាតុ។ សូមមើល https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments ត្រូវបានបញ្ឈប់។ សូម​ប្រើប្រាស់​ការ​ដំឡើង​ទាន់ពេលវេលា​​សម្រាប់​ឧបករណ៍ដោះស្រាយ​ការ​ទូទាត់​ជំនួស​វិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "ការ​ហៅ​ PaymentRequest របស់​អ្នក​បានរំលង​កា​រណែនាំ​ស្ដីពី​គោលការណ៍​សុវត្ថិភាព​លើខ្លឹមសារ (CSP) connect-src។ ការ​រំលង​នេះ​ត្រូវ​បាន​បញ្ឈប់។ សូម​បញ្ចូល​លេខកូដសម្គាល់​វិធីបង់ប្រាក់​ពី API PaymentRequest (នៅ​ក្នុងកន្លែង​បញ្ចូល supportedMethods) ទៅក្នុង​ការ​ណែនាំ CSP connect-src របស់​អ្នក។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ navigator.storage ស្តង់ដារ​ជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> ដែលមានមេ <picture> គឺមិនត្រឹមត្រូវទេ ហើយដូច្នេះ មិនត្រូវបានអើពើទេ។ សូមប្រើប្រាស់ <source srcset> ជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ navigator.storage ស្តង់ដារ​ជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "យើងកំពុង​បញ្ឈប់ API chrome.privacy.websites.privacySandboxEnabled ទោះបីជាវា​នឹងនៅតែ​ដំណើរការ​សម្រាប់​ភាពត្រូវគ្នា​ជាមួយកំណែចាស់ៗ​រហូត​ដល់​ការ​ចេញផ្សាយកំណែ M113 ក៏ដោយ។ សូម​ប្រើ chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled និង chrome.privacy.websites.adMeasurementEnabled ជំនួស​វិញ។ សូមមើល https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "សំណើធនធានរងដែល URL របស់​ពួក​វា​មានព័ត៌មានផ្ទៀងផ្ទាត់បង្កប់ (ឧ. https://user:pass@host/) ត្រូវបានទប់ស្កាត់។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "លក្ខខណ្ឌ​កំហិត DtlsSrtpKeyAgreement ត្រូវបានដកចេញ។ អ្នកបានបញ្ជាក់តម្លៃ false សម្រាប់លក្ខខណ្ឌ​កំហិត​នេះ ដែលត្រូវបានបកស្រាយថាជាការព្យាយាមប្រើវិធី SDES key negotiation ដែលបានដកចេញ។ មុខងារនេះត្រូវបានដកចេញហើយ។ សូមប្រើប្រាស់សេវាកម្មដែលអាចប្រើ DTLS key negotiation ជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "លក្ខខណ្ឌ​កំហិត DtlsSrtpKeyAgreement ត្រូវបានដកចេញ។ អ្នកបានបញ្ជាក់តម្លៃ true សម្រាប់លក្ខខណ្ឌ​កំហិត​នេះ ដែលមិនមានឥទ្ធិពលទេ ប៉ុន្តែអ្នកអាចដកលក្ខខណ្ឌ​កំហិត​នេះចេញ​បាន ដើម្បីឱ្យមានភាពរៀបរយ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "បានរក​ឃើញ Complex Plan B SDP។ ខ្សែ​ស្រឡាយ​នៃ Session Description Protocol នេះលែងអាចប្រើបានទៀតហើយ។ សូមប្រើប្រាស់ Unified Plan SDP ជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics ដែលត្រូវបានប្រើនៅពេលបង្កើត RTCPeerConnection ដោយមាន {sdpSemantics:'plan-b'} គឺជាកំណែចាស់​មិនស្តង់ដារមួយនៃ Session Description Protocol ដែលត្រូវបានលុបជាអចិន្ត្រៃយ៍ពី​ប្រព័ន្ធបណ្តាញ។ វានៅតែអាចប្រើប្រាស់​បាន នៅពេលបង្កើតដោយប្រើ IS_FUCHSIA ប៉ុន្តែយើងមានបំណងលុបវាឱ្យបានឆាប់តាមតែអាចធ្វើទៅបាន។ សូម​ឈប់អាស្រ័យលើវា។ សូមមើល https://crbug.com/1302249 ដើម្បីឃើញស្ថានភាព។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "ជម្រើស rtcpMuxPolicy ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer នឹងតម្រូវឱ្យមានការដាក់ប្រភពដើមផ្សេងឱ្យនៅដោយឡែក។ សូមមើល https://developer.chrome.com/blog/enabling-shared-array-buffer/ ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() ដែលគ្មានការបើកដំណើរការដោយអ្នកប្រើប្រាស់ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។"
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "បានប្រើ​មុខងារបញ្ឈប់"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "កម្មវិធីបន្ថែម​គួរតែភ្ជាប់ការដាក់ប្រភពដើមផ្សេងឱ្យនៅដោយឡែក ដើម្បីបន្តប្រើប្រាស់ SharedArrayBuffer។ សូមមើល https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} មានភាពជាក់លាក់សម្រាប់អ្នកលក់។ សូមប្រើប្រាស់ {PH2} ស្តង់ដារជំនួសវិញ។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 មិន​អាច​ប្រើ​ដោយ json ឆ្លើយតបនៅក្នុង XMLHttpRequest បាន​ទេ"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "XMLHttpRequest ដែល​មានសមកាល​នៅលើ​កម្រងសារចម្បង​ត្រូវបានបញ្ឈប់ ដោយសារតែផល​ប៉ះពាល់​អវិជ្ជមាន​របស់វាចំពោះបទពិសោធន៍របស់អ្នកប្រើប្រាស់ចុងក្រោយ។ ដើម្បី​ទទួល​បាន​ជំនួយបន្ថែម សូមពិនិត្យមើល https://xhr.spec.whatwg.org/។"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() ត្រូវបានបញ្ឈប់។ សូមប្រើប្រាស់ isSessionSupported() និងពិនិត្យមើលតម្លៃប៊ូលីនដែលបានដោះស្រាយជំនួសវិញ។"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "លក្ខណៈ HTML៖ បំពេញ​ស្វ័យ​ប្រវត្តិ"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "ច្រក - បណ្ដាញទំនាក់ទំនងដែលមានប្រភពដូចគ្នា"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "តើការបំពេញស្វ័យប្រវត្តិដំណើរការយ៉ាងដូចម្ដេច?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "ធាតុបញ្ចូលទម្រង់បែបបទ"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "ធាតុស្លាក"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ការចាត់ចែង​អន្តរាគមន៍​ការផ្សាយពាណិជ្ជកម្ម​ដែលចំណាយ​ពេលច្រើន"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "បទ​បង្ហាញ"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "រូបតំណាងចម្បងដូចដែលបានប្រើដោយ Chrome"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "រូប​មេនីហ្វេសថ៍​ចម្បងពី {PH1}"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "ឧបករណ៍​ដោះស្រាយ​ប្រូតូកូល"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "ពណ៌​រចនាប័ទ្ម"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "ការទាញយកជាមុន និង​ការបំប្លែង​ជា​មុន"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "មេនីហ្វេសថ៍​កម្មវិធី"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "បាទ/ចាស"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "ការទាញយកជាមុន និង​ការបំប្លែង​ជា​មុន"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "ចុចនៅលើ​របាយការណ៍ណាមួយ ដើម្បីបង្ហាញតួរបស់វា"
@@ -3333,10 +3363,10 @@
     "message": "API ដែលមិនមានសិទ្ធិត្រូវបានប្រើ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបញ្ចូល JavaScript ដោយកម្មវិធីបន្ថែម នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលកម្មវិធីបន្ថែមបញ្ចូល JavaScript នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបញ្ចូល StyleSheet ដោយកម្មវិធីបន្ថែម នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+    "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលកម្មវិធីបន្ថែមបញ្ចូល StyleSheet នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "បញ្ហាផ្នែកខាងក្នុង។"
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "បានរក្សាទុក​ចំនួន​ធាតុកូដ"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "ការ​សម្អាត​មិន​កំពុង​ដំណើរការទេ"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "បានបើក​ដំណើរការ"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "បាន​​លុបចោល"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "ការបំប្លែងជាមុន"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "មានសុពលភាព"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "ការផ្ទុកជាមុនត្រូវ​បានបើក​ដោយ​បង្ខំ ដោយសារឧបករណ៍អ្នកអភិវឌ្ឍន៍​បើក។ នៅ​ពេល​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ត្រូវ​បានបិទ ការបំប្លែង​ជា​មុន​នឹង​ត្រូវ​បានបិទ ដោយសារ​វគ្គកម្មវិធីរុករកតាមអ៊ីនធឺណិត​នេះ​គឺ​ជា​ផ្នែក​មួយរបស់​ក្រុម​ដែលស្ថិតក្រោមការដាក់កំហិត​ ដែលត្រូវ​បាន​ប្រើសម្រាប់​ការ​ប្រៀបធៀប​ប្រតិបត្តិការ។"
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ការបំប្លែង​ជា​មុន​ត្រូវ​បាន​បិទ ប៉ុន្តែ​ឥឡូវ​ត្រូ​វបានបើក​ដោយ​បង្ខំ"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "ព័ត៌មាន​មូលដ្ឋាន"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "បានចាប់ផ្ដើមនៅ"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ស្ថានភាព"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "ប្រភព"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ជ្រើសរើស​ធាតុ ដើម្បីទទួលបានព័ត៌មានលម្អិត​បន្ថែម"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "បានបើក​ដំណើរការ"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "បាន​​លុបចោល"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "ការបំប្លែងជាមុន"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "បានចាប់ផ្ដើមនៅ"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ស្ថានភាព"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "ព័ត៌មានលម្អិត"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "ប្រភព"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "ប្រភេទ"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "សុពលភាព"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "មានសុពលភាព"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "សុពលភាព"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ការឈានដល់ចំណុចឈប់ដំណើរការ"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "សម្អាតសារទាំងអស់ដោយប្រើ {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "ចំណុចផ្អាក​តាមស្ថានភាព"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "កុងសូល"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "ចំណុច​កំណត់ហេតុ"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{បានកើត​ឡើងវិញ # ដង}other{បានផ្ញើ​ឡើងវិញ # ដង}}"
@@ -4575,7 +4590,7 @@
     "message": "សម្អាត​ប្រវត្តិកុងសូល"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "បង្រួម​សារ console.trace() តាម​លំនាំដើម"
+    "message": "កុំពង្រីកសារ console.trace() ដោយស្វ័យប្រវត្តិ"
   },
   "panels/console/console-meta.ts | console": {
     "message": "កុងសូល"
@@ -4605,10 +4620,10 @@
     "message": "វាយតម្លៃ​អត្ថបទសារ​កុងសូល​យ៉ាងសកម្ម"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "វាយតម្លៃការជំរុញឱ្យមានការចាប់ផ្ដើមប្រើរបស់អ្នកប្រើប្រាស់"
+    "message": "ការវាយតម្លៃជំរុញដល់ការបើកដំណើរការអ្នកប្រើប្រាស់"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "ពង្រីកសារ console.trace() តាម​លំនាំដើម"
+    "message": "ពង្រីកសារ console.trace() ដោយស្វ័យប្រវត្តិ"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "ដាក់សារស្រដៀងគ្នាជាក្រុមនៅក្នុងកុងសូល"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "ស្វែងរក​តាម​ជួរអក្សរ ផ្ទាំងជ្រើសរើស ឬ XPath"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "ស៊ុម"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "លាក់​របារចំហៀង​នៃរចនាប័ទ្ម​ដែលបាន​គណនា"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "បិទ/បើក​លក្ខណសម្បត្តិ រួច​បន្ត​កែ"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "តម្លៃ​សម្រាប់​ការកំណត់ “{PH1}” {PH2} គឺនៅក្រៅ​ចន្លោះ​ដែលអាចប្រើ​បាន [{PH3}, {PH4}] សម្រាប់​អំបូរពុម្ពអក្សរ “{PH5}”។"
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "មើលតម្លៃដែលបានគណនា"
   },
@@ -5454,6 +5463,12 @@
     "message": "បង្ហាញគ្រឿងសម្គាល់"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "ស្វែងយល់បន្ថែម"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "កុំ​បង្ហាញ"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "ស្វែងយល់បន្ថែម"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "ជ្រើសរើស​ធាតុ​នៅក្នុង​ទំព័រ ដើម្បី​ត្រួតពិនិត្យ"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "បង្ហាញកំណត់​ពន្យល់ឯកសារ CSS"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "បង្ហាញរចនាប័ទ្មដែលបាន​គណនា"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "សម្អាតកម្រងព័ត៌មានទាំងអស់"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "ផ្ទាំងនេះនឹងត្រូវបានបញ្ឈប់នៅក្នុងកំណែនាពេលខាងមុខ។ សូមប្រើផ្ទាំងប្រតិបត្តិការ ដើម្បីថតកម្រងព័ត៌មាន JavaScript CPU។"
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "មតិកែលម្អ"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "ចូលទៅកាន់ផ្ទាំងប្រតិបត្តិការ"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "ស្វែងយល់បន្ថែម"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "ផ្ទុក…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ឯកសារ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "រយៈពេលរង់ចាំការឆ្លើយតប"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "តម្រង"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (ពីផែនទី​ប្រភព)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (មានក្នុងបញ្ជី​មិនអើពើ)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "ស្វែងរក​នៅក្នុង​ឯកសារ​ទាំងអស់"
   },
@@ -10403,11 +10439,11 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(បានផ្ដល់​តាមរយៈ​ព័ត៌មាន​អំពីការជួសជុល​ដោយ {PH1})"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "(ពី {PH1})"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(​ប្រភពដែល​បានពី {PH1})"
+    "message": "(ប្រភេពដែលបានពី {PH1})"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "ការបិទ"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "រយៈពេល​ទប់ស្កាត់​សរុប៖ {PH1}មិល្លីវិនាទី{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "សេចក្ដីរាយការណ៍"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Thread"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "Thread {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "រយៈពេល"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "អន្តរកម្ម"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "បិទ"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "សេចក្ដីរាយការណ៍"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU៖"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "បាន​ទទួល"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "ថត​សេចក្ដីរាយការណ៍​តាមរយៈ​ដាន​ប្រតិបត្តិការ"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "ការថត​មិនបាន​សម្រេចទេ"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "មុខងារចាប់ផ្ដើម"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "ការពន្យារ​ការបញ្ចូល"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ដំឡើង​កម្មវិធី​កំណត់ម៉ោង"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "ស៊ុម JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "ស៊ុមអសកម្ម JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "ឫសនៃ JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "ស៊ុមប្រព័ន្ធ JS"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "ការគូរ​ពោរពេញដោយ​ខ្លឹមសារ​ដ៏ធំបំផុត"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "ទំហំ​ឃ្លាំងបម្រុង​ដែលបានបង្កើត"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "ផ្នែកលើសក្នុងការពិនិត្យកម្រងព័ត៌មាន"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "ចន្លោះ"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "រយៈពេល​ដែលបានចំណាយ​លើការបំប្លែង"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "រយៈពេល​រង់ចាំ​ Thread ​ចម្បង"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "អស់ម៉ោង"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "ចុច enter ដើម្បី​ប្រើ​តម្រង​តម្រៀប"
+    "message": "ស្ថានភាពតម្រៀបជួរឈរ៖ {PH1}។ ចុច enter ដើម្បី​ប្រើ​តម្រង​តម្រៀប"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ជម្រើស​ផ្នែកក្បាល"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "កំណត់ជួរឈរឡើងវិញ"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "លំដាប់ឡើង"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "តម្រៀបតាម"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "លំដាប់ចុះ"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "គ្មាន"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} ត្រូវបាន​តម្រៀប​តាមលំដាប់ឡើង"

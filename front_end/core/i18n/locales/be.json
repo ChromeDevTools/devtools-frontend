@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} с"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: сінтаксічны аналізатар профілю CPU выправіў адсутныя ({PH1}) выбаркі."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Профіль {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Не ўдалося загрузіць змесціва для {PH1} ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "Старонка {PH1} была адноўлена з кэша пераходу назад і наперад (падрабязнасці: https://web.dev/bfcache/)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "Не ўдалося захаваць у часовую пераменную."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Прыпынена ў адладчыку"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "Загрузка скасавана з-за перавышэння часу чакання загрузкі"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Загрузка скасавана з-за перазагрузкі старонкі, якая правяраецца"
   },
@@ -618,7 +615,7 @@
     "message": "ідзе спыненне"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "Поўная колеравая слепата"
+    "message": "Ахраматапсія (без колеру)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Расфакусіраваны зрок"
@@ -627,7 +624,7 @@
     "message": "Захапіць асінхронныя трасіроўкі стэка"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "Дэйтэранапія"
+    "message": "Дэйтэранапія (без зялёнага колеру)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "Адключыць асінхронныя трасіроўкі стэка"
@@ -690,7 +687,7 @@
     "message": "Эмуляваць фокус на старонцы"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "Эмуляцыя поўнай колеравай слепаты"
+    "message": "Эмуляцыя ахраматапсіі (без колеру)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "Ажыццявіць эмуляцыю аўтаматычнага цёмнага рэжыму"
@@ -714,13 +711,16 @@
     "message": "Эмуляваць тып мультымедыя CSS screen"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "Эмуляваць дэйтэранапію"
+    "message": "Эмуляцыя дэйтэранапіі (без зялёнага колеру)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "Эмуляваць пратанапію"
+    "message": "Эмуляцыя пратанапіі (без чырвонага колеру)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "Эмуляцыя паніжанай кантраснасці"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "Эмуляваць трытанапію"
+    "message": "Эмуляцыя трытанапіі (без сіняга колеру)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "Эмуляваць парушэнні зроку"
@@ -789,10 +789,13 @@
     "message": "print"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "Пратанапія"
+    "message": "Пратанапія (без чырвонага колеру)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "запыт"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "Паніжаная кантраснасць"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "screen"
@@ -840,7 +843,7 @@
     "message": "Паказваць дыстанцыю паміж ячэйкамі сеткі"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "Трытанапія"
+    "message": "Трытанапія (без сіняга колеру)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript адключаны"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Адмацаваць у асобнае акно"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Старонка: не выбрана"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "Старонка: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Як створана"
   },
@@ -1062,7 +1071,7 @@
     "message": "Фармат колеру:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "Гэта налада больш не падтрымліваецца, бо яна несумяшчальная з сучаснымі колернымі прасторамі. Каб зноў уключыць яе, можна выключыць адпаведны эксперымент."
+    "message": "Гэта налада больш не падтрымліваецца, бо яна несумяшчальная з сучаснымі колернымі прасторамі. Каб зноў уключыць яе, адключыце адпаведны эксперымент."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Цёмная"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Галоўная"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "На аўтарызацыю пры апрацоўцы CORS Access-Control-Allow-Headers не будзе распаўсюджвацца дзеянне сімвала падстаноўкі (*)."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Каб адключыць стандартную інтэграцыю Cast, замест селектара -internal-media-controls-overlay-cast-button неабходна выкарыстоўваць атрыбут disableRemotePlayback."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "Запыты рэсурсаў, чые URL-адрасы змяшчаюць і выдаленыя прабельныя сімвалы (\\(n|r|t)), і сімвалы \"менш\" (<), блакіруюцца. Каб загружаць такія рэсурсы, вам трэба выдаліць сімвалы новага радка і выкарыстаць коды для сімвалаў \"менш\" у такіх месцах URL-адраса, дзе, напрыклад, указваюцца значэнні атрыбутаў элементаў."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "Метад chrome.loadTimes() не падтрымліваецца. Замест яго выкарыстоўвайце стандартызаваную версію API: Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "Інтэрфейс API chrome.loadTimes() не падтрымліваецца. Выкарыстоўвайце замест яго стандартызаваную версію API: Paint Timing."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "Метад chrome.loadTimes() не падтрымліваецца. Замест яго выкарыстоўвайце стандартызаваную версію API: nextHopProtocol у Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "Файлы cookie з сімвалам \\(0|r|n) будуць не абразацца, а адхіляцца."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Змяншаць патрабаванні палітыкі абмежавання крыніцы шляхам змянення document.domain не рэкамендуецца. Стандартна гэта магчымасць будзе адключана. Гэта папярэджанне аб спыненні падтрымкі датычыць доступу з іншай крыніцы, які быў уключаны з выкарыстаннем document.domain."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "Выклік функцыі window.alert з акон iframe у іншых крыніцах не падтрымліваецца. Гэта магчымасць пазней будзе выдалена."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "Выклік функцыі window.confirm з акон iframe у іншых крыніцах не падтрымліваецца. Гэта магчымасць пазней будзе выдалена."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Змяншаць патрабаванні палітыкі абмежавання крыніцы шляхам змянення document.domain не рэкамендуецца. Стандартна гэта магчымасць будзе адключана. Цяпер, каб выкарыстоўваць гэту функцыю, трэба адмовіцца ад прымянення кластараў агента з ключом крыніцы, адправіўшы загаловак Origin-Agent-Cluster: ?0 разам з адказам HTTP для дакумента і фрэймаў. Дадатковая інфармацыя – па спасылцы https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Інтэрфейс API Event.path не падтрымліваецца і будзе выдалены. Выкарыстоўвайце замест яго Event.composedPath()."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Загаловак \"Expect-CT\" не падтрымліваецца і будзе выдалены. У Chrome патрабуецца праверка ўсіх агульнадаступных давераных сертыфікатаў, выпушчаных пасля 30 красавіка 2018 г."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() і watchPosition() больш не працуюць з небяспечнымі крыніцамі. Каб выкарыстоўваць гэту функцыю, укажыце для праграмы бяспечную крыніцу (напрыклад, HTTPS). Дадатковая інфармацыя – па спасылцы https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() і watchPosition() у небяспечных крыніцах больш не падтрымліваюцца. Каб выкарыстоўваць гэту функцыю, укажыце для праграмы бяспечную крыніцу (напрыклад, HTTPS). Дадатковая інфармацыя – па спасылцы https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "Метад getUserMedia() больш не працуе з небяспечнымі крыніцамі. Каб выкарыстоўваць гэту функцыю, укажыце для праграмы бяспечную крыніцу (напрыклад, HTTPS). Дадатковая інфармацыя – па спасылцы https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate не падтрымліваецца. Выкарыстоўвайце RTCPeerConnectionIceErrorEvent.address або RTCPeerConnectionIceErrorEvent.port."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "Краіна прадаўца і адвольныя даныя з падзеі сцэнарыя canmakepayment Service Worker састарэлі і будуць выдалены: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Вэб-сайт запытаў субрэсурс з сеткі, да якой меў доступ толькі па прычыне дадатковых сеткавых дазволаў сваіх карыстальнікаў. Такія запыты робяць унутраныя прылады і серверы даступнымі праз інтэрнэт, што павялічвае рызыку атак праз фальсіфікацыю міжсайтавых запытаў (CSRF) і ўцечку інфармацыі. Каб знізіць такія рызыкі, Chrome спыняе падтрымку запытаў да ўнутраных субрэсурсаў, калі яны робяцца ў небяспечных кантэкстах, і будзе іх блакіраваць."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "CSS з URL-адрасоў фармату file: загружаць можна, толькі калі файлы маюць пашырэнне .css."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "Выкарыстоўваць SourceBuffer.abort() для перарывання асінхроннага выдалення дыяпазону ў remove() не рэкамендуецца з-за змяненняў у спецыфікацыях. У будучыні падтрымка гэтага метаду будзе спынена. Арыентуйцеся на падзею updateend. Метад abort() прызначаецца толькі для перарывання асінхроннага дадавання медыяданых або скіду стану аналізатара."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "Устанаўліваць для MediaSource.duration значэнне, меншае за максімальную метку часу ў прэзентаваных медыяданых для любых закадаваных фрэймаў у буферы не рэкамендуецца з-за змяненняў у спецыфікацыях. У будучыні падтрымка няяўнага выдалення абрэзаных медыяданых у буферы будзе спынена. Замест гэтага трэба будзе выконваць яўны метад remove(newDuration, oldDuration) для ўсіх аб'ектаў sourceBuffers, для якіх newDuration < oldDuration."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI будзе адпраўляць запыт на выкарыстанне, нават калі параметр sysex не ўказаны ў аб'екце MIDIOptions."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "Устарэлы нестандартны атрыбут shadowroot больш не падтрымліваецца. Выкарыстоўвайце замест яго новы стандартны атрыбут shadowrootmode."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "Выкарыстоўваць Notification API з небяспечных крыніц больш нельга. Укажыце для сваёй праграмы бяспечную крыніцу (напрыклад, HTTPS). Дадатковая інфармацыя – па спасылцы https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "З вокнаў iframe у іншых крыніцах больш нельга запытваць дазвол на выкарыстанне Notification API. Запытайце дазвол у фрэйма верхняга ўзроўню або адкрыйце новае акно."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Параметр imageOrientation: 'none' для createImageBitmap больш не падтрымліваецца. Замест яго выкарыстоўвайце createImageBitmap з параметрам {imageOrientation: 'from-image'}."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "Ваш партнёр абменьваецца данымі з выкарыстаннем устарэлай версіі пратакола (D)TLS. Укажыце партнёру на неабходнасць выправіць гэта."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "Калі ўказаць уласцівасць overflow: visible для элементаў img, video або canvas, візуальнае змесціва можа выйсці за межы гэтых элементаў. Азнаёмцеся з інфармацыяй на старонцы https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments не падтрымліваецца. Выкарыстоўвайце для апрацоўшчыкаў плацяжоў своечасовае ўсталяванне."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "Ваш выклік PaymentRequest абышоў дырэктыву Content-Security-Policy (CSP) connect-src. Гэты абход больш не падтрымліваецца. Дадайце ідэнтыфікатар спосабу аплаты з PaymentRequest API (у полі supportedMethods) у вашу дырэктыву CSP connect-src."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent больш не падтрымліваецца. Выкарыстоўвайце стандартную ўласцівасць navigator.storage."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "Элемент <source src> з бацькоўскім элементам <picture> з'яўляецца несапраўдным і таму ігнаруецца. Выкарыстоўвайце замест яго <source srcset>."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "Метад webkitCancelAnimationFrame звязаны з канкрэтным пастаўшчыком. Выкарыстоўвайце замест яго стандартны метад cancelAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "Метад webkitRequestAnimationFrame звязаны з канкрэтным пастаўшчыком. Выкарыстоўвайце замест яго стандартны метад requestAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "Метад HTMLVideoElement.webkitDisplayingFullscreen больш не падтрымліваецца. Выкарыстоўвайце замест яго метад Document.fullscreenElement."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "Метад HTMLVideoElement.webkitEnterFullScreen() больш не падтрымліваецца. Выкарыстоўвайце замест яго метад Element.requestFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "Метад HTMLVideoElement.webkitEnterFullscreen() больш не падтрымліваецца. Выкарыстоўвайце замест яго метад Element.requestFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "Метад HTMLVideoElement.webkitExitFullScreen() больш не падтрымліваецца. Выкарыстоўвайце замест яго метад Document.exitFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "Метад HTMLVideoElement.webkitExitFullscreen() больш не падтрымліваецца. Выкарыстоўвайце замест яго метад Document.exitFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "Метад HTMLVideoElement.webkitSupportsFullscreen больш не падтрымліваецца. Выкарыстоўвайце замест яго метад Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "Мы спыняем падтрымку API chrome.privacy.websites.privacySandboxEnabled, хоць гэты інтэрфейс праграмавання будзе прымяняцца, каб забяспечыць адваротную сумяшчальнасць, да выпуску M113. Замест яго выкарыстоўвайце chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled і chrome.privacy.websites.adMeasurementEnabled. Даведайцеся больш тут: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Абмежаванне DtlsSrtpKeyAgreement выдалена. Вы ўказалі false значэнне для гэтага абмежавання, што было інтэрпрэтавана як спроба выкарыстання выдаленага метаду (SDES key negotiation). Гэта магчымасць выдалена. Замест яе выкарыстоўвайце сэрвіс, які падтрымлівае гэты метад (DTLS key negotiation)."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Абмежаванне DtlsSrtpKeyAgreement выдалена. Вы ўказалі для яго значэнне true, якое ні на што не ўплывала, таму яго можна выдаліць для аблягчэння кода."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Метад getStats(), які асноўваецца на функцыі зваротнага выкліку, больш не падтрымліваецца і будзе выдалены. Выкарыстоўвайце замест яго метад getStats(), які адпавядае спецыфікацыі."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Метад Range.expand() больш не падтрымліваецца. Выкарыстоўвайце замест яго метад Selection.modify()."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Запыты субрэсурсаў, чые URL-адрасы змяшчаюць убудаваныя ўліковыя даныя (напрыклад, https://user:pass@host/), блакіруюцца."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "Параметр rtcpMuxPolicy не падтрымліваецца і будзе выдалены."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "Для SharedArrayBuffer патрабуецца ізаляцыя ад міждаменных крыніц. Дадатковая інфармацыя – па спасылцы https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "speechSynthesis.speak() без актывацыі карыстальнікам не падтрымліваецца. Гэта магчымасць пазней будзе выдалена."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Цяпер, каб выкарыстоўваць аб'ект SharedArrayBuffer, у пашырэннях неабходна ўключыць ізаляцыю ад міждаменных крыніц. Дадатковая інфармацыя – па спасылцы https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "UTF-16 не падтрымліваецца адказам JSON у XMLHttpRequest"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Сінхронны выклік XMLHttpRequest у асноўным патоку не падтрымліваецца, паколькі негатыўна ўплывае на ўзаемадзеянне з канцавым карыстальнікам. Дадатковую інфармацыю шукайце на сайце https://xhr.spec.whatwg.org/."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "Метад supportsSession() не падтрымліваецца. Замест яго выкарыстоўвайце метад isSessionSupported() і атрымлівайце вынік у выглядзе лагічнага значэння."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Невядомая памылка загрузкі файла"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site і Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "На аўтарызацыю пры апрацоўцы CORS Access-Control-Allow-Headers не будзе распаўсюджвацца дзеянне сімвала падстаноўкі (*)."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Запыты рэсурсаў, чые URL-адрасы змяшчаюць і выдаленыя прабельныя сімвалы (\\(n|r|t)), і сімвалы \"менш\" (<), блакіруюцца. Каб загружаць такія рэсурсы, вам трэба выдаліць сімвалы новага радка і выкарыстаць коды для сімвалаў \"менш\" у такіх месцах URL-адраса, дзе, напрыклад, указваюцца значэнні атрыбутаў элементаў."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "Метад chrome.loadTimes() не падтрымліваецца. Замест яго выкарыстоўвайце стандартызаваную версію API: Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "Інтэрфейс API chrome.loadTimes() не падтрымліваецца. Выкарыстоўвайце замест яго стандартызаваную версію API: Paint Timing."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "Метад chrome.loadTimes() не падтрымліваецца. Замест яго выкарыстоўвайце стандартызаваную версію API: nextHopProtocol у Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Файлы cookie з сімвалам \\(0|r|n) будуць не абразацца, а адхіляцца."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Змяншаць патрабаванні палітыкі абмежавання крыніцы шляхам змянення document.domain не рэкамендуецца. Стандартна гэта магчымасць будзе адключана. Гэта папярэджанне аб спыненні падтрымкі датычыць доступу з іншай крыніцы, які быў уключаны з выкарыстаннем document.domain."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Выклік функцыі {PH1} з акон iframe у іншых крыніцах не падтрымліваецца. Гэта магчымасць пазней будзе выдалена."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Каб адключыць стандартную інтэграцыю Cast, замест селектара -internal-media-controls-overlay-cast-button неабходна выкарыстоўваць атрыбут disableRemotePlayback."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "Функцыя {PH1} не падтрымліваецца. Замест яе выкарыстоўвайце функцыю {PH2}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "Гэта прыклад перакладзенага паведамлення аб праблеме, звязанай са спыненнем падтрымкі."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Змяншаць патрабаванні палітыкі абмежавання крыніцы шляхам змянення document.domain не рэкамендуецца. Стандартна гэта магчымасць будзе адключана. Цяпер, каб выкарыстоўваць гэту функцыю, трэба адмовіцца ад прымянення кластараў агента з ключом крыніцы, адправіўшы загаловак Origin-Agent-Cluster: ?0 разам з адказам HTTP для дакумента і фрэймаў. Дадатковая інфармацыя – па спасылцы https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Інтэрфейс API Event.path не падтрымліваецца і будзе выдалены. Выкарыстоўвайце замест яго Event.composedPath()."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Загаловак \"Expect-CT\" не падтрымліваецца і будзе выдалены. У Chrome патрабуецца праверка ўсіх агульнадаступных давераных сертыфікатаў, выпушчаных пасля 30 красавіка 2018 г."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Падрабязныя звесткі можна знайсці на старонцы стану функцыі."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() і watchPosition() больш не працуюць з небяспечнымі крыніцамі. Каб выкарыстоўваць гэту функцыю, укажыце для праграмы бяспечную крыніцу (напрыклад, HTTPS). Дадатковая інфармацыя – па спасылцы https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() і watchPosition() у небяспечных крыніцах больш не падтрымліваюцца. Каб выкарыстоўваць гэту функцыю, укажыце для праграмы бяспечную крыніцу (напрыклад, HTTPS). Дадатковая інфармацыя – па спасылцы https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "Метад getUserMedia() больш не працуе з небяспечнымі крыніцамі. Каб выкарыстоўваць гэту функцыю, укажыце для праграмы бяспечную крыніцу (напрыклад, HTTPS). Дадатковая інфармацыя – па спасылцы https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate не падтрымліваецца. Выкарыстоўвайце RTCPeerConnectionIceErrorEvent.address або RTCPeerConnectionIceErrorEvent.port."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "Краіна прадаўца і адвольныя даныя з падзеі сцэнарыя canmakepayment Service Worker састарэлі і будуць выдалены: topOrigin, paymentRequestOrigin, methodData, modifiers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Вэб-сайт запытаў субрэсурс з сеткі, да якой меў доступ толькі па прычыне дадатковых сеткавых дазволаў сваіх карыстальнікаў. Такія запыты робяць унутраныя прылады і серверы даступнымі праз інтэрнэт, што павялічвае рызыку атак праз фальсіфікацыю міжсайтавых запытаў (CSRF) і ўцечку інфармацыі. Каб знізіць такія рызыкі, Chrome спыняе падтрымку запытаў да ўнутраных субрэсурсаў, калі яны робяцца ў небяспечных кантэкстах, і будзе іх блакіраваць."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS з URL-адрасоў фармату file: загружаць можна, толькі калі файлы маюць пашырэнне .css."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Выкарыстоўваць SourceBuffer.abort() для перарывання асінхроннага выдалення дыяпазону ў remove() не рэкамендуецца з-за змяненняў у спецыфікацыях. У будучыні падтрымка гэтага метаду будзе спынена. Арыентуйцеся на падзею updateend. Метад abort() прызначаецца толькі для перарывання асінхроннага дадавання медыяданых або скіду стану аналізатара."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Устанаўліваць для MediaSource.duration значэнне, меншае за максімальную метку часу ў прэзентаваных медыяданых для любых закадаваных фрэймаў у буферы не рэкамендуецца з-за змяненняў у спецыфікацыях. У будучыні падтрымка няяўнага выдалення абрэзаных медыяданых у буферы будзе спынена. Замест гэтага трэба будзе выконваць яўны метад remove(newDuration, oldDuration) для ўсіх аб'ектаў sourceBuffers, для якіх newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Гэта змяненне ўступіць у сілу ў версіі {milestone}."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI будзе адпраўляць запыт на выкарыстанне, нават калі параметр sysex не ўказаны ў аб'екце MIDIOptions."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "Выкарыстоўваць Notification API з небяспечных крыніц больш нельга. Укажыце для сваёй праграмы бяспечную крыніцу (напрыклад, HTTPS). Дадатковая інфармацыя – па спасылцы https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "З вокнаў iframe у іншых крыніцах больш нельга запытваць дазвол на выкарыстанне Notification API. Запытайце дазвол у фрэйма верхняга ўзроўню або адкрыйце новае акно."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "Параметр imageOrientation: \"none\" для createImageBitmap больш не падтрымліваецца. Замест яго выкарыстоўвайце createImageBitmap з параметрам {imageOrientation: \"from-image\"}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Ваш партнёр абменьваецца данымі з выкарыстаннем устарэлай версіі пратакола (D)TLS. Укажыце партнёру на неабходнасць выправіць гэта."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "База даных WebSQL больш не падтрымліваецца ў небяспечных кантэкстах і неўзабаве будзе выдалена. Выкарыстоўвайце вэб-сховішча або індэксаваную базу даных."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "Калі ўказаць уласцівасць overflow: visible для элементаў img, video або canvas, візуальнае змесціва можа выйсці за межы гэтых элементаў. Азнаёмцеся з інфармацыяй на старонцы https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments не падтрымліваецца. Выкарыстоўвайце для апрацоўшчыкаў плацяжоў своечасовае ўсталяванне."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "Ваш выклік PaymentRequest абышоў дырэктыву Content-Security-Policy (CSP) connect-src. Гэты абход больш не падтрымліваецца. Дадайце ідэнтыфікатар спосабу аплаты з PaymentRequest API (у полі supportedMethods) у вашу дырэктыву CSP connect-src."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent больш не падтрымліваецца. Выкарыстоўвайце стандартную ўласцівасць navigator.storage."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "Элемент <source src> з бацькоўскім элементам <picture> з'яўляецца несапраўдным і таму ігнаруецца. Выкарыстоўвайце замест яго <source srcset>."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo больш не падтрымліваецца. Выкарыстоўвайце стандартную ўласцівасць navigator.storage."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "Мы спыняем падтрымку API chrome.privacy.websites.privacySandboxEnabled, хоць гэты інтэрфейс праграмавання будзе прымяняцца, каб забяспечыць зваротную сумяшчальнасць, да выпуску M113. Замест яго выкарыстоўвайце chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled і chrome.privacy.websites.adMeasurementEnabled. Даведацца больш: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Запыты субрэсурсаў, чые URL-адрасы змяшчаюць убудаваныя ўліковыя даныя (напрыклад, https://user:pass@host/), блакіруюцца."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Абмежаванне DtlsSrtpKeyAgreement выдалена. Вы ўказалі false значэнне для гэтага абмежавання, што было інтэрпрэтавана як спроба выкарыстання выдаленага метаду (SDES key negotiation). Гэта магчымасць выдалена. Замест яе выкарыстоўвайце сэрвіс, які падтрымлівае гэты метад (DTLS key negotiation)."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Абмежаванне DtlsSrtpKeyAgreement выдалена. Вы ўказалі для яго значэнне true, якое ні на што не ўплывала, таму яго можна выдаліць для аблягчэння кода."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Выяўлена версія Complex Plan B SDP пратакола Session Description Protocol, якая не падтрымліваецца. Выкарыстоўвайце замест яе Unified Plan SDP."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Версія Plan B SDP semantics, якая выкарыстоўваецца пры стварэнні падключэння RTCPeerConnection з параметрам {sdpSemantics:'plan-b'}, з'яўляецца ўстарэлай версіяй пратакола Session Description Protocol, якая не адпавядае стандарту і была назаўсёды выдалена з вэб-платформы. Яна па-ранейшаму даступная ў IS_FUCHSIA, але хутка будзе выдалена. Вам трэба перастаць яе выкарыстоўваць. Дадатковая інфармацыя – па спасылцы https://crbug.com/1302249."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "Параметр rtcpMuxPolicy не падтрымліваецца і будзе выдалены."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "Для SharedArrayBuffer патрабуецца ізаляцыя ад міждаменных крыніц. Дадатковая інфармацыя – па спасылцы https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() без актывацыі карыстальнікам не падтрымліваецца. Гэта магчымасць пазней будзе выдалена."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Выкарыстоўваецца састарэлая функцыя"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Цяпер, каб выкарыстоўваць аб'ект SharedArrayBuffer, у пашырэннях неабходна ўключыць ізаляцыю ад міждаменных крыніц. Дадатковая інфармацыя – па спасылцы https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "Метад {PH1} звязаны з канкрэтным пастаўшчыком. Выкарыстоўвайце стандартны метад {PH2}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 не падтрымліваецца адказам JSON у XMLHttpRequest"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Сінхронны выклік XMLHttpRequest у асноўным патоку не падтрымліваецца, паколькі негатыўна ўплывае на ўзаемадзеянне з канцавым карыстальнікам. Дадатковую інфармацыю шукайце на сайце https://xhr.spec.whatwg.org/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "Метад supportsSession() не падтрымліваецца. Замест яго выкарыстоўвайце метад isSessionSupported() і атрымлівайце вынік у выглядзе лагічнага значэння."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "Атрыбут HTML: autocomplete"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Парталы – каналы сувязі, якія маюць адно і тое ж паходжанне"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "Як працуе аўтазапаўненне?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "Элемент input формы"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "Элементы label"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Пра апрацоўку цяжкай рэкламы"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Прэзентацыя"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Першасны значок, які выкарыстоўваецца маніфестам Chrome"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "Крыніца асноўнага значка маніфеста: {PH1}"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "Апрацоўшчыкі пратаколаў"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Колер тэмы"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "Папярэдняя загрузка і папярэдняя візуалізацыя"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Маніфест праграмы"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Так"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "Папярэдняя загрузка і папярэдняя візуалізацыя"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Каб паглядзець змесціва любой справаздачы, націсніце на яе"
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Колькасць захаваных токенаў"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "Ачыстка не пачалася"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "Актывавана"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "Адхілена"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "Папярэдняя візуалізацыя"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "Сапраўдны"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Перадзагрузка прымусова ўключана, бо адкрыты інструменты распрацоўшчыка. Пры закрыцці інструментаў распрацоўшчыка папярэдняя візуалізацыя будзе адключана, бо гэты сеанс браўзера адносіцца да абмежаванай групы, якая выкарыстоўваецца для параўнання прадукцыйнасці."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Папярэдняя візуалізацыя была адключана, але цяпер прымусова ўключана"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "Асноўная інфармацыя"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "Час пачатку:"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Стан"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "Уключальнік"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Каб атрымаць дадатковую інфармацыю, выберыце элемент"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "Актывавана"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "Адхілена"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "Папярэдняя візуалізацыя"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "Час пачатку:"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Стан"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "Уключальнік"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "Падрабязная інфармацыя"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "Тып"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "Крыніца"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "Сапраўднасць"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "Сапраўдны"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "Сапраўднасць"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "дасягнуты пункт прыпынення"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "Вы можаце выдаліць усе паведамленні, націснуўшы {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "Умоўны пункт прыпынення"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "Кансоль"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "Пункт журналіравання"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{Паўтарылася # раз}one{Паўтарылася # раз}few{Паўтарылася # разы}many{Паўтарылася # разоў}other{Паўтарылася # разу}}"
@@ -4575,7 +4590,7 @@
     "message": "Ачысціць гісторыю кансолі"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "Стандартна згортваць паведамленні (console.trace())"
+    "message": "Не разгортваць паведамленні console.trace() аўтаматычна"
   },
   "panels/console/console-meta.ts | console": {
     "message": "Кансоль"
@@ -4605,10 +4620,10 @@
     "message": "Папераджальна выконваць тэкст у падказцы кансолі"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "Выкананне запускае карыстальніцкую актывацыю"
+    "message": "Разглядаць вылічаны код як код, запушчаны дзеяннем карыстальніка"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "Стандартна разгортваць паведамленні (console.trace())"
+    "message": "Разгортваць паведамленні console.trace() аўтаматычна"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Групаваць падобныя паведамленні ў кансолі"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "Знайсці па радку, селектары або XPath"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "Фрэйм"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "Не паказваць панэль вылічаных стыляў"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "Пераключыць уласцівасць і працягнуць рэдагаванне"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "Значэнне для налады \"{PH1}\" {PH2} выходзіць за межы дыяпазону [{PH3}, {PH4}] для сямейства шрыфтоў {PH5}."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Праглядзець вылічанае значэнне"
   },
@@ -5454,6 +5463,12 @@
     "message": "Паказ значкоў"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Даведацца больш"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "Не паказваць"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "Даведацца больш"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Выберыце на старонцы элемент для яго праверкі"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "Паказваць падказкі з дакументацыі CSS"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Паказаць інструмент \"Вылічаныя стылі\""
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "Ачысціць усе профілі"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "У наступнай версіі падтрымка гэтай панэлі будзе спынена. Каб запісваць профілі ЦП JavaScript, выкарыстоўвайце панэль \"Прадукцыйнасць\"."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "Водгук"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "Перайсці на панэль \"Прадукцыйнасць\""
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "Даведацца больш"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "Загрузіць…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Дакументацыя"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "Пройдзены час"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Фільтр"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (з карты крыніц)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (у спісе ігнаравання)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Шукаць ва ўсіх файлах"
   },
@@ -10403,11 +10439,11 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "мс"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(забяспечваецца праз адладачную інфармацыю файлам {PH1})"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "(З {PH1})"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(крыніца супастаўлена з {PH1})"
+    "message": "(Зыходны код супастаўлены з {PH1})"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Замыканне"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "Агульны час блакіроўкі: {PH1} мс {PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "ПАКРЫЦЦЁ"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "ЦП"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Паток"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "Паток {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "Разлік часу"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "Узаемадзеянні"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Закрыць"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "Пакрыццё"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "ЦП:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "Атрымана"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "Запісваць пакрыццё праз трасіроўку прадукцыйнасці"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "Збой запісу"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Ініцыятар"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "Затрымка ўводу"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Усталяваць таймер"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "Фрэйм JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "Бяздзейны фрэйм JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "Крыніца JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "Сістэмны фрэйм JS"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Найбольшае маляванне са змесцівам"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Створаны памер кэша"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "Часавыя затраты прафіліравання"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Дыяпазон"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Час, затрачаны на візуалізацыю"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "Час чакання для галоўнага патоку"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Час чакання"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "Націсніце Увод, каб прымяніць фільтр сартавання"
+    "message": "Сартаванне слупка: {PH1}. Каб прымяніць фільтр сартавання, націсніце Увод."
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Параметры загалоўка"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "Скінуць слупкі"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "па ўзрастанні"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Парадак сартавання"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "па ўбыванні"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "няма"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1}: адсартавана па ўзрастанні"

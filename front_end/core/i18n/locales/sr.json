@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} сек"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: рашчлањивач профила за CPU поправља узорке који недостају ({PH1})."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Профил {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Није успело учитавање садржаја за {PH1} ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "Навигација до {PH1} је враћена из кеша целе странице (погледајте https://web.dev/bfcache/)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "Чување привремене променљиве није успело."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Паузирано у програму за отклањање грешака"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "Учитавање је отказано јер је истекло време учитавања"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Учитавање је отказано због поновног учитавања проверене странице"
   },
@@ -618,7 +615,7 @@
     "message": "зауставља се"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "Ахроматопсија"
+    "message": "Ахроматопсија (нема боја)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Замућен вид"
@@ -627,7 +624,7 @@
     "message": "Сними асинхрона стања стека"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "Деутеранопија"
+    "message": "Деутеранопија (нема зелене боје)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "Онемогући асинхрона стања стека"
@@ -690,7 +687,7 @@
     "message": "Емулирај фокусирану страницу"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "Емулирај ахроматопсију"
+    "message": "Емулирај ахроматопсију (нема боје)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "Опонашај аутоматски тамни режим"
@@ -714,13 +711,16 @@
     "message": "Емулирај тип CSS медија на екрану"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "Емулирај деутеранопију"
+    "message": "Емулирај деутеранопију (нема зелене боје)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "Емулирај протанопију"
+    "message": "Емулирај протанопију (нема црвене боје)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "Емулирај смањени контраст"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "Емулирај тританопију"
+    "message": "Емулирај тританопију (нема плаве боје)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "Емулирај поремећаје вида"
@@ -789,10 +789,13 @@
     "message": "штампај"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "Протанопија"
+    "message": "Протанопија (нема црвене боје)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "упит"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "Смањени контраст"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "екран"
@@ -840,7 +843,7 @@
     "message": "Прикажи величине размака"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "Тританопија"
+    "message": "Тританопија (нема плаве боје)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript је онемогућен"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Одвоји у посебном прозору"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Страница: није изабрана"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "Страница: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Као ауторски"
   },
@@ -1062,7 +1071,7 @@
     "message": "Формат боје:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "Ово подешавање је застарело јер није компатибилно са просторима са модерним бојама. Да бисте га поново омогућили, можете да онемогућите одговарајући експеримент."
+    "message": "Ово подешавање је застарело јер није компатибилно са просторима са модерним бојама. Да бисте га поново омогућили, онемогућите одговарајући експеримент."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Тамна"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Главни"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "Овлашћење неће бити покривено симболом џокерског знака (*) у оквиру CORS управљања атрибутом Access-Control-Allow-Headers."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Атрибут disableRemotePlayback треба да се користи да би се онемогућила подразумевана интеграција за пребацивање уместо коришћења бирача -internal-media-controls-overlay-cast-button."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "Захтеви за ресурсе чији URL-ови су садржали уклоњене знакове за размак (\\(n|r|t)) и знакове „мање-од“ (<) су блокирани. Уклоните нове редове и кодирајте знакове „мање-од“ из извора као што су вредности атрибута елемената да би се учитали ти ресурси."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "Атрибут chrome.loadTimes() је застарео, па користите стандардизовани API: Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "Атрибут chrome.loadTimes() је застарео, па користите стандардизовани API: Paint Timing."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "Атрибут chrome.loadTimes() је застарео, па користите стандардизовани API: nextHopProtocol за Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "Колачићи који садрже \\(0|r|n) знак ће бити одбијени, а не скраћени."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Попуштање смерница за исто порекло подешавањем атрибута document.domain је застарело и биће подразумевано онемогућено. Ово упозорење о застаревању је за приступ различитог порекла који је омогућен подешавањем document.domain."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "Покретање window.alert из iframe-ова различитог порекла је застарело и уклониће се у будућности."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "Покретање window.confirm из iframe-ова различитог порекла је застарело и уклониће се у будућности."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Попуштање смерница за исто порекло подешавањем атрибута document.domain је застарело и биће подразумевано онемогућено. Да бисте наставили да користите ову функцију онемогућите групе агената са кључевима према пореклу тако што ћете послати заглавље атрибута Origin-Agent-Cluster: ?0 заједно са HTTP одговором за документ и оквире. Погледајте https://developer.chrome.com/blog/immutable-document-domain/ за више детаља."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Атрибут Event.path је застарео и уклониће се. Уместо њега користите Event.composedPath()."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Заглавље Expect-CT је застарело и биће уклоњено. Chrome захтева транспарентност сертификата за све јавно поуздане сертификате издате после 30. априла 2018."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() иwatchPosition() више не раде са небезбедним пореклом. Да бисте користили ову функцију, размислите о пребацивању апликације на безбедно порекло као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() иwatchPosition() су застарели или небезбедни извори. Да бисте користили ову функцију, размислите о пребацивању апликације на безбедно порекло као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia() више не ради са небезбедним пореклом. Да бисте користили ову функцију, размислите о пребацивању апликације на безбедно порекло као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "API RTCPeerConnectionIceErrorEvent.hostCandidate је застарео. Уместо њега користите RTCPeerConnectionIceErrorEvent.address или RTCPeerConnectionIceErrorEvent.port."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "Порекло продавца и произвољни подаци из догађаја сервисeра canmakepayment су застарели и биће уклоњени: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Веб-сајт је затражио подизвор са мреже којој је могао да приступи само због привилеговане мрежне позиције својих корисника. Ови захтеви излажу уређаје и сервере који нису јавни интернету, чиме се повећава ризик од напада фалсификовањем захтева са других сајтова (CSRF) и/или цурења информација. Да би ублажио ове ризике, Chrome застарева захтеве ка подизворима који нису јавни када се покрену из небезбедног контекста и почеће да их блокира."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "CSS не може да се учита са file: URL-ова ако се не завршавају екстензијом фајла .css."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "Коришћење атрибута SourceBuffer.abort() да би се отказало уклањање асинхроног опсега за remove() је застарело због промене спецификације. Подршка ће се уклонити у будућности. Уместо њега треба да слушате догађај updateend. abort() има за циљ само да откаже додавање асинхроних медија или да ресетује стање рашчлањивача."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "Подешавање атрибута MediaSource.duration испод највише временске ознаке презентације било којих баферованих кодираних оквира је застарело због промене спецификације. Подршка за имплицитно уклањање скраћеног баферованог медијског садржаја ће се уклонити у будућности. Уместо тога треба да извршите експлицитни remove(newDuration, oldDuration) на све sourceBuffers, где је newDuration < oldDuration."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI ће затражити дозволу за коришћење чак и ако SysEx није наведен у атрибуту MIDIOptions."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "Старији, нестандардизовани атрибут shadowroot је застарео. Уместо њега користите нови, стандардизовани атрибут shadowrootmode."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "API за обавештења више не сме да се користи из незбезбедног порекла. Размислите о пребацивању апликације на безбедно порекло, као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "Дозвола за API за обавештења више не може да се тражи од iframe-а различитог порекла. Размислите о томе да затражите дозволу од оквира највишег нивоа или да отворите нови прозор."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Опција imageOrientation: 'none' у ставци createImageBitmap је застарела. Користите createImageBitmap са опцијом {imageOrientation: 'from-image'}."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "Ваш партнер користи застарелу (D)TLS верзију. Проверите са партнером да бисте исправили ово."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "Ако наведете overflow: visible на ознакама img, video и canvas, оне могу да доведу до прављења визуелног садржаја ван граница елемента. Погледајте https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments је застарели API. Боље да користите једнократно инсталирање за обрађиваче плаћања."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "PaymentRequest позив је заобишао директиву connect-src за смернице за безбедност садржаја (CSP). Ово заобилажење је застарело. Додајте идентификатор начина плаћања из API-ја PaymentRequest (у пољу supportedMethods) у директиву connect-src за CSP."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent је застарели тип. Користите стандардизовани navigator.storage."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "Атрибут <source src> са надређеним елементом <picture> је неважећи, па се игнорише. Уместо њега користите <source srcset>."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame зависи од продавца. Уместо њега користите стандардни cancelAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame зависи од продавца. Уместо њега користите стандардни requestAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen је застарео. Уместо тога користите Document.fullscreenElement."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() је застарео. Уместо тога користите Element.requestFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() је застарео. Уместо тога користите Element.requestFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() је застарео. Уместо тога користите Document.exitFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() је застарео. Уместо тога користите Document.exitFullscreen()."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen је застарео. Уместо тога користите Document.fullscreenEnabled."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "Обустављамо API chrome.privacy.websites.privacySandboxEnabled, али ће остати активан за компатибилност уназад до издања M113. Уместо тога, користите chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled и chrome.privacy.websites.adMeasurementEnabled. Погледајте https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Ограничење DtlsSrtpKeyAgreement је уклоњено. Навели сте вредност false за ово ограничење, што се тумачи као покушај коришћења уклоњеног метода SDES key negotiation. Ова функција је уклоњена, па користите услугу која подржава DTLS key negotiation."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Ограничење DtlsSrtpKeyAgreement је уклоњено. Навели сте вредност true за ово ограничење, што није имало ефекта, али можете да уклоните ово ограничење ради прегледности."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "getStats() заснован на повратном позиву је застарео и биће уклоњен. Уместо тога користите getStats() који је у складу са спецификацијама."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() је застарео. Уместо њега користите Select.modify()."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Захтеви за подресурсе чији URL-ови садрже уграђене акредитиве (нпр. https://user:pass@host/) су блокирани."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "Опција rtcpMuxPolicy је застарела и биће уклоњена."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer ће захтевати изолацију од приступа из других извора. Погледајте https://developer.chrome.com/blog/enabling-shared-array-buffer/ за више детаља."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Атрибут speechSynthesis.speak() без активације корисника је застарео и уклониће се."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Додаци треба да омогуће изолацију од приступа из других извора да бисте и даље користили SharedArrayBuffer. Погледајте https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "JSON за одговор не подржава UTF-16 у атрибуту XMLHttpRequest"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Синхрони XMLHttpRequest у главној нити је застарео због негативног утицаја на доживљај крајњег корисника. Додатну помоћ потражите на https://xhr.spec.whatwg.org/."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "Атрибут supportsSession() је застарео. Користите isSessionSupported() и проверите решену логичку вредности."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Дошло је до непознате грешке при учитавању фајла"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site и Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Овлашћење неће бити покривено симболом џокерског знака (*) у оквиру CORS управљања атрибутом Access-Control-Allow-Headers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Захтеви за ресурсе чији URL-ови су садржали уклоњене знакове за размак (\\(n|r|t)) и знакове „мање-од“ (<) су блокирани. Уклоните нове редове и кодирајте знакове „мање-од“ из извора као што су вредности атрибута елемената да би се учитали ти ресурси."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "Атрибут chrome.loadTimes() је застарео, па користите стандардизовани API: Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "Атрибут chrome.loadTimes() је застарео, па користите стандардизовани API: Paint Timing."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "Атрибут chrome.loadTimes() је застарео, па користите стандардизовани API: nextHopProtocol за Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Колачићи који садрже \\(0|r|n) знак ће бити одбијени, а не скраћени."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Попуштање смерница за исто порекло подешавањем атрибута document.domain је застарело и биће подразумевано онемогућено. Ово упозорење о застаревању је за приступ различитог порекла који је омогућен подешавањем document.domain."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Покретање {PH1} из iframe-ова различитог порекла је застарело и уклониће се у будућности."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Атрибут disableRemotePlayback треба да се користи да би се онемогућила подразумевана интеграција за пребацивање уместо коришћења бирача -internal-media-controls-overlay-cast-button."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "API {PH1} је застарео. Уместо њега користите {PH2}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "Ово је пример преведене поруке о проблему са застаривањем."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Попуштање смерница за исто порекло подешавањем атрибута document.domain је застарело и биће подразумевано онемогућено. Да бисте наставили да користите ову функцију онемогућите групе агената са кључевима према пореклу тако што ћете послати заглавље атрибута Origin-Agent-Cluster: ?0 заједно са HTTP одговором за документ и оквире. Погледајте https://developer.chrome.com/blog/immutable-document-domain/ за више детаља."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Атрибут Event.path је застарео и уклониће се. Уместо њега користите Event.composedPath()."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Заглавље Expect-CT је застарело и биће уклоњено. Chrome захтева транспарентност сертификата за све јавно поуздане сертификате издате после 30. априла 2018."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Више детаља потражите на страници за статус функције."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() иwatchPosition() више не раде са небезбедним пореклом. Да бисте користили ову функцију, размислите о пребацивању апликације на безбедно порекло као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() иwatchPosition() су застарели или небезбедни извори. Да бисте користили ову функцију, размислите о пребацивању апликације на безбедно порекло као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() више не ради са небезбедним пореклом. Да бисте користили ову функцију, размислите о пребацивању апликације на безбедно порекло као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "API RTCPeerConnectionIceErrorEvent.hostCandidate је застарео. Уместо њега користите RTCPeerConnectionIceErrorEvent.address или RTCPeerConnectionIceErrorEvent.port."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "Порекло продавца и произвољни подаци из догађаја сервисeра canmakepayment су застарели и биће уклоњени: topOrigin, paymentRequestOrigin, methodData, modifiers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Веб-сајт је затражио подизвор са мреже којој је могао да приступи само због привилеговане мрежне позиције својих корисника. Ови захтеви излажу уређаје и сервере који нису јавни интернету, чиме се повећава ризик од напада фалсификовањем захтева са других сајтова (CSRF) и/или цурења информација. Да би ублажио ове ризике, Chrome застарева захтеве ка подизворима који нису јавни када се покрену из небезбедног контекста и почеће да их блокира."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS не може да се учита са file: URL-ова ако се не завршавају екстензијом фајла .css."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Коришћење атрибута SourceBuffer.abort() да би се отказало уклањање асинхроног опсега за remove() је застарело због промене спецификације. Подршка ће се уклонити у будућности. Уместо њега треба да слушате догађај updateend. abort() има за циљ само да откаже додавање асинхроних медија или да ресетује стање рашчлањивача."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Подешавање атрибута MediaSource.duration испод највише временске ознаке презентације било којих баферованих кодираних оквира је застарело због промене спецификације. Подршка за имплицитно уклањање скраћеног баферованог медијског садржаја ће се уклонити у будућности. Уместо тога треба да извршите експлицитни remove(newDuration, oldDuration) на све sourceBuffers, где је newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Ова измена ће ступити на снагу са циљем {milestone}."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI ће затражити дозволу за коришћење чак и ако SysEx није наведен у атрибуту MIDIOptions."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "API за обавештења више не сме да се користи из незбезбедног порекла. Размислите о пребацивању апликације на безбедно порекло, као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Дозвола за API за обавештења више не може да се тражи од iframe-а различитог порекла. Размислите о томе да затражите дозволу од оквира највишег нивоа или да отворите нови прозор."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "Опција imageOrientation: \"none\" у ставци createImageBitmap је застарела. Користите createImageBitmap са опцијом {imageOrientation: \"from-image\"}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Ваш партнер користи застарелу (D)TLS верзију. Проверите са партнером да бисте исправили ово."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL у небезбедним контекстима је застарео и ускоро ће бити уклоњен. Користите меморијски простор на вебу или индексирану базу података."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "Ако наведете overflow: visible на ознакама img, video и canvas, оне могу да доведу до прављења визуелног садржаја ван граница елемента. Погледајте https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments је застарели API. Боље да користите једнократно инсталирање за обрађиваче плаћања."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "PaymentRequest позив је заобишао директиву connect-src за смернице за безбедност садржаја (CSP). Ово заобилажење је застарело. Додајте идентификатор начина плаћања из API-ја PaymentRequest (у пољу supportedMethods) у директиву connect-src за CSP."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent је застарели тип. Користите стандардизовани navigator.storage."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "Атрибут <source src> са надређеним елементом <picture> је неважећи, па се игнорише. Уместо њега користите <source srcset>."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "API window.webkitStorageInfo је застарео. Користите стандардизовани navigator.storage."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "Обустављамо API chrome.privacy.websites.privacySandboxEnabled, али ће остати активан за компатибилност уназад до издања M113. Уместо тога, користите chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled и chrome.privacy.websites.adMeasurementEnabled. Погледајте https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Захтеви за подресурсе чији URL-ови садрже уграђене акредитиве (нпр. https://user:pass@host/) су блокирани."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Ограничење DtlsSrtpKeyAgreement је уклоњено. Навели сте вредност false за ово ограничење, што се тумачи као покушај коришћења уклоњеног метода SDES key negotiation. Ова функција је уклоњена, па користите услугу која подржава DTLS key negotiation."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Ограничење DtlsSrtpKeyAgreement је уклоњено. Навели сте вредност true за ово ограничење, што није имало ефекта, али можете да уклоните ово ограничење ради прегледности."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Откривен је атрибут Complex Plan B SDP. Дијалект за Session Description Protocol више није подржан. Уместо њега користите Unified Plan SDP."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, који се користи при изради атрибута RTCPeerConnection уз {sdpSemantics:'plan-b'} је застарела нестандардна верзија атрибута Session Description Protocol који је трајно избрисан са веб-платформе. И даље је доступан при изради уз IS_FUCHSIA, али намеравамо да га избришемо чим то буде могуће. Обуставите зависност од њега. Погледајте https://crbug.com/1302249 за статус."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "Опција rtcpMuxPolicy је застарела и биће уклоњена."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer ће захтевати изолацију од приступа из других извора. Погледајте https://developer.chrome.com/blog/enabling-shared-array-buffer/ за више детаља."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "Атрибут speechSynthesis.speak() без активације корисника је застарео и уклониће се."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Користи се застарела функција"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Додаци треба да омогуће изолацију од приступа из других извора да бисте и даље користили SharedArrayBuffer. Погледајте https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} зависи од продавца. Користите стандардни {PH2}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "JSON за одговор не подржава UTF-16 у атрибуту XMLHttpRequest"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Синхрони XMLHttpRequest у главној нити је застарео због негативног утицаја на доживљај крајњег корисника. Додатну помоћ потражите на https://xhr.spec.whatwg.org/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "Атрибут supportsSession() је застарео. Користите isSessionSupported() и проверите решену логичку вредности."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API за управљање груписаним акредитивима"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "HTML атрибут: аутоматско довршавање"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Портали – Канали за комуникацију истог порекла"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "Како функционише аутоматско попуњавање?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "Елемент за унос у образац"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "Елементи ознаке"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Управљање интервенцијама у вези са великим огласима"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Презентација"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Примарна икона коју користи Chrome"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "Примарна икона манифеста са {PH1}"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "Обрађивачи протокола"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Боја теме"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "Предучитавање и приказивање унапред"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Манифест апликације"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Да"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "Предучитавање и приказивање унапред"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Кликните на било који извештај да бисте приказали његово тело"
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Број сачуваних токена"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "Обриши неактивни садржај"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "Активирано"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "Одбачено"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "Приказивање унапред"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "Важеће"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Предучитавање је принудно омогућено зато што су Алатке за програмере отворене. Када се Алатке за програмере затворе, приказивање унапред ће бити онемогућено јер је ова сесија прегледача део групе за задржавање која се користи за поређење учинка."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Приказивање унапред је било онемогућено, али је сада принудно омогућено"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "Основни подаци"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "Почело је у"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Статус"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "Покретач"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Изаберите елемент за више детаља"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "Активирано"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "Одбачено"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "Приказивање унапред"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "Почело је у"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Статус"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "Покретач"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "Детаљне информације"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "Тип"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "Извор"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "Важење"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "Важеће"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "Важење"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "погодак преломне тачке"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "Обриши све поруке са: {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "Условна преломна тачка"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "Конзола"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "Тачка за евидентирање"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{Поновљено је # пут}one{Поновљено је # пут}few{Поновљено је # пута}other{Поновљено је # пута}}"
@@ -4575,7 +4590,7 @@
     "message": "Обриши историју конзоле"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "Подразумевано скупљај поруке console.trace()"
+    "message": "Не шири console.trace() поруке аутоматски"
   },
   "panels/console/console-meta.ts | console": {
     "message": "Конзола"
@@ -4608,7 +4623,7 @@
     "message": "Процена покреће активацију корисника"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "Подразумевано прошируј поруке console.trace()"
+    "message": "Аутоматски прошируј console.trace() поруке"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Групиши сличне поруке у конзоли"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "Пронађите према стрингу, бирачу или XPath"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "Оквир"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "Сакриј бочну траку израчунатих стилова"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "Укључи/искључи својство и настави са изменом"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "Вредност за подешавања {PH1} {PH2} је изван подржаног опсега [{PH3}, {PH4}] за породицу фонтова {PH5}."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Прикажи израчунату вредност"
   },
@@ -5454,6 +5463,12 @@
     "message": "Прикажи значке"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Сазнајте више"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "Не приказуј"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "Сазнајте више"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Изаберите елемент на страници да бисте га проверили"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "Прикажи објашњење CSS документације"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Прикажи израчунате стилове"
@@ -7158,7 +7176,7 @@
     "message": "(није успело)"
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
-    "message": "Завршено"
+    "message": "Готово"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "1. ниво"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "Обришите све профиле"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "Ово окно ће застарети у предстојећој верзији. Користите окно Учинак да бисте снимали профиле процесора за JavaScript."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "Повратне информације"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "Иди на окно Учинак"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "Сазнајте више"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "Учитај…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Документација"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "Протекло време"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Филтер"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (са мапе извора)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (наведено је игнорисање)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Претражи у свим фајловима"
   },
@@ -10403,8 +10439,8 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(пружа {PH1} помоћу информација о отклањању грешака)"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "(из {PH1})"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
     "message": "(извор је мапиран из {PH1})"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "Укупно време блокирања: {PH1} ms {PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "ПОКРИВЕНОСТ"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "Процесор"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Нит"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "{PH1}. нит"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "Времена"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "Интеракције"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Затвори"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "Покривеност"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "Процесор:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "Примљено"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "Снимај покривеност помоћу праћења учинка"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "Снимање није успело"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Иницијатор"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "Кашњење уноса"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Тајмер инсталирања"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS оквир"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "Неактиван JS оквир"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "JS основни ниво"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "JS оквир система"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Највеће приказивање садржаја"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Величина добијеног кеша"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "Модел профилисања одозго надоле"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Опсег"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Време проведено у рендеровању"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "Време чекања главне нити"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Временско ограничење"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "Притисните Enter да бисте применили филтер за сортирање"
+    "message": "Стање сортирања колоне: {PH1}. Притисните Enter да бисте применили филтер за сортирање"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Опције заглавља"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "Ресетуј колоне"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "растуће"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Сортирај према"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "опадајуће"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "ништа"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} – сортирано је растућим редоследом"

@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} วินาที"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: โปรแกรมแยกวิเคราะห์โปรไฟล์ CPU กำลังแก้ไขตัวอย่างที่หายไป {PH1} รายการ"
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "โปรไฟล์ {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "โหลดเนื้อหาสำหรับ {PH1} ไม่ได้ ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "กู้คืนการไปยังส่วนต่างๆ ของ {PH1} จากฟีเจอร์ Back-Forward Cache (ดู https://web.dev/bfcache/)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "บันทึกไปยังตัวแปรชั่วคราวไม่สำเร็จ"
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "หยุดชั่วคราวในโปรแกรมแก้ไขข้อบกพร่อง"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "ยกเลิกการโหลดแล้วเพราะหมดเวลาในการโหลด"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "ยกเลิกการโหลดแล้วเพราะโหลดซ้ำหน้าที่ตรวจสอบ"
   },
@@ -618,7 +615,7 @@
     "message": "กำลังหยุด"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "ภาวะตาบอดสีทุกสี"
+    "message": "ตาบอดสี (มองไม่เห็นสี)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "ภาวะมองเห็นภาพไม่ชัดเจน"
@@ -627,7 +624,7 @@
     "message": "จับภาพสแต็กเทรซที่ไม่พร้อมกัน"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "ภาวะตาบอดสีเขียว"
+    "message": "ตาบอดสีเขียว (มองไม่เห็นสีเขียว)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "ปิดใช้สแต็กเทรซที่ไม่พร้อมกัน"
@@ -690,7 +687,7 @@
     "message": "จำลองหน้าที่โฟกัส"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "จำลองภาวะตาบอดสีทุกสี"
+    "message": "จำลองภาวะตาบอดสี (มองไม่เห็นสี)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "จำลองโหมดมืดโดยอัตโนมัติ"
@@ -714,13 +711,16 @@
     "message": "จำลองประเภทสื่อของหน้าจอ CSS"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "จำลองภาวะตาบอดสีเขียว"
+    "message": "จำลองภาวะตาบอดสีเขียว (มองไม่เห็นสีเขียว)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "จำลองภาวะตาบอดสีแดง"
+    "message": "จำลองภาวะตาบอดสีแดง (มองไม่เห็นสีแดง)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "จำลองการลดคอนทราสต์"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "จำลองภาวะตาบอดสีน้ำเงิน"
+    "message": "จำลองภาวะตาบอดสีน้ำเงิน (มองไม่เห็นสีน้ำเงิน)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "จำลองภาวะบกพร่องทางการมองเห็น"
@@ -789,10 +789,13 @@
     "message": "พิมพ์"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "ภาวะตาบอดสีแดง"
+    "message": "ตาบอดสีแดง (มองไม่เห็นสีแดง)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "การค้นหา"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "ลดคอนทราสต์"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "หน้าจอ"
@@ -840,7 +843,7 @@
     "message": "แสดงขนาดแทร็ก"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "ภาวะตาบอดสีน้ำเงิน"
+    "message": "ตาบอดสีน้ำเงิน (มองไม่เห็นสีน้ำเงิน)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript ถูกปิดใช้งาน"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "เลิกตรึงเป็นหน้าต่างแยก"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "หน้า: ไม่ได้เลือก"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "หน้า: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ตามค่าเดิมของผู้เขียน"
   },
@@ -1062,7 +1071,7 @@
     "message": "รูปแบบสี:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "เลิกใช้งานการตั้งค่านี้แล้วเนื่องจากใช้งานร่วมกันไม่ได้กับพื้นที่สีสมัยใหม่ หากต้องการเปิดใช้การตั้งค่านี้อีกครั้ง คุณสามารถปิดใช้การทดสอบที่เกี่ยวข้อง"
+    "message": "เลิกใช้งานการตั้งค่านี้แล้วเนื่องจากใช้งานร่วมกันไม่ได้กับพื้นที่สีสมัยใหม่ หากต้องการเปิดใช้อีกครั้ง ให้ปิดใช้การทดสอบที่เกี่ยวข้อง"
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "มืด"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "หลัก"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "สัญลักษณ์ไวลด์การ์ด (*) จะไม่ครอบคลุมการให้สิทธิ์ในการใช้งาน Access-Control-Allow-Headers สำหรับ CORS"
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "ควรใช้แอตทริบิวต์ disableRemotePlayback เพื่อปิดใช้การผสานรวมการแคสต์เริ่มต้นแทนการใช้ตัวเลือก -internal-media-controls-overlay-cast-button"
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "คำขอทรัพยากรที่ URL มีทั้งอักขระ \\(n|r|t) แบบช่องว่างซึ่งนำออกไปแล้วและมีอักขระน้อยกว่า (<) ถูกบล็อก โปรดนำบรรทัดใหม่ออกและเข้ารหัสอักขระที่น้อยกว่าจากที่ต่างๆ อย่างเช่นค่าแอตทริบิวต์ขององค์ประกอบเพื่อโหลดทรัพยากรเหล่านี้"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() เลิกใช้งานแล้ว โปรดใช้ Navigation Timing 2 ซึ่งเป็น API แบบมาตรฐานแทน"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() เลิกใช้งานแล้ว โปรดใช้ Paint Timing ซึ่งเป็น API แบบมาตรฐานแทน"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() เลิกใช้งานแล้ว โปรดใช้ nextHopProtocol ใน Navigation Timing 2 ซึ่งเป็น API แบบมาตรฐานแทน"
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "คุกกี้ที่มีอักขระ \\(0|r|n) จะถูกปฏิเสธแทนการตัดให้สั้นลง"
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า document.domain เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น คำเตือนการเลิกใช้งานนี้มีไว้สำหรับการเข้าถึงแบบข้ามต้นทางที่เปิดใช้โดยการตั้งค่า document.domain"
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "การเรียกใช้ window.alert จาก iframe แบบข้ามต้นทางเลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "การเรียกใช้ window.confirm จาก iframe แบบข้ามต้นทางเลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า document.domain เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น หากต้องการใช้ฟีเจอร์นี้ต่อ โปรดเลือกไม่ใช้คลัสเตอร์ Agent ที่ผูกกับต้นทางโดยการส่งส่วนหัว Origin-Agent-Cluster: ?0 พร้อมด้วยการตอบสนองของ HTTP สำหรับเอกสารและเฟรม ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/immutable-document-domain/"
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path เลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ Event.composedPath() แทน"
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "ส่วนหัว Expect-CT เลิกใช้งานแล้วและจะถูกนำออก Chrome ต้องการ \"ความโปร่งใสของใบรับรอง\" สำหรับใบรับรองทั้งหมดที่ได้รับความเชื่อถือจากสาธารณะซึ่งออกหลังจากวันที่ 30 เมษายน 2018"
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() และ watchPosition() ไม่ทำงานในต้นทางที่ไม่ปลอดภัยอีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() และ watchPosition() เลิกใช้งานแล้วในต้นทางที่ไม่ปลอดภัย คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia() ทำงานในต้นทางที่ไม่ปลอดภัยไม่ได้อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate เลิกใช้งานแล้ว โปรดใช้ RTCPeerConnectionIceErrorEvent.address หรือ RTCPeerConnectionIceErrorEvent.port แทน"
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "ต้นทางของผู้ขายและข้อมูลที่กําหนดเองจากเหตุการณ์ Service Worker canmakepayment ซึ่งได้แก่ topOrigin, paymentRequestOrigin, methodData, modifiers เลิกใช้งานแล้วและจะถูกนําออก"
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "เว็บไซต์ขอทรัพยากรย่อยจากเครือข่ายที่เข้าถึงได้เท่านั้นเนื่องจากมีตำแหน่งเครือข่ายที่เป็นสิทธิ์เฉพาะของผู้ใช้ คำขอเหล่านี้จะเปิดเผยอุปกรณ์และเซิร์ฟเวอร์ที่ไม่เผยแพร่ต่อสาธารณะไปยังอินเทอร์เน็ต ซึ่งเพิ่มความเสี่ยงในการโจมตีโดยการปลอมแปลงคำขอแบบข้ามเว็บไซต์ (CSRF) และ/หรือข้อมูลรั่วไหล Chrome จะเลิกใช้งานคำขอไปยังทรัพยากรย่อยที่ไม่เผยแพร่ต่อสาธารณะเมื่อเริ่มต้นมาจากบริบทที่ไม่ปลอดภัยและจะเริ่มบล็อกคำขอดังกล่าวเพื่อลดความเสี่ยงเหล่านี้"
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "โหลด CSS จาก URL file: ไม่ได้ เว้นแต่จะลงท้ายด้วยนามสกุลไฟล์ .css"
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "การใช้ SourceBuffer.abort() เพื่อล้มเลิกการนำช่วงที่ไม่พร้อมกันออกของ remove() เลิกใช้งานไปแล้ว เนื่องจากมีการเปลี่ยนแปลงข้อกำหนด ระบบจะนำการรองรับออกในอนาคต คุณควรให้ความสำคัญกับเหตุการณ์ updateend แทน abort() มีไว้เพื่อล้มเลิกการเพิ่มสื่อที่ไม่พร้อมกันหรือรีเซ็ตสถานะโปรแกรมแยกวิเคราะห์เท่านั้น"
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "การตั้งค่า MediaSource.duration ต่ำกว่าการประทับเวลาการนำเสนอสูงสุดของเฟรมที่ใส่โค้ดที่บัฟเฟอร์เลิกใช้งานแล้วเนื่องจากการเปลี่ยนแปลงข้อกำหนด การรองรับการนำสื่อที่บัฟเฟอร์ที่มีการตัดให้สั้นลงออกแบบไม่เจาะจงจะถูกนำออกในอนาคต คุณควรดำเนินการ remove(newDuration, oldDuration) แบบเจาะจงแทนใน sourceBuffers ทั้งหมดที่ newDuration < oldDuration"
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI จะขอสิทธิ์ในการใช้แม้ว่าจะไม่ได้ระบุ SysEx ใน MIDIOptions ก็ตาม"
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "แอตทริบิวต์ shadowroot เวอร์ชันเก่าที่ไม่เป็นไปตามมาตรฐานเลิกใช้งานไปแล้ว โปรดใช้แอตทริบิวต์ shadowrootmode เวอร์ชันใหม่ที่เป็นมาตรฐานแทน"
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "ต้นทางที่ไม่ปลอดภัยอาจไม่ใช้ Notification API อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "iframe แบบข้ามต้นทางอาจไม่ขอสิทธิ์สำหรับ Notification API อีกต่อไป คุณควรพิจารณาขอสิทธิ์จากเฟรมระดับบนสุดหรือเปิดหน้าต่างใหม่แทน"
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "ตัวเลือก imageOrientation: 'none' ใน createImageBitmap เลิกใช้งานแล้ว โปรดใช้ createImageBitmap กับตัวเลือก {imageOrientation: 'from-image'} แทน"
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "พาร์ทเนอร์ของคุณต่อรอง (D)TLS เวอร์ชันที่ล้าสมัย โปรดตรวจสอบกับพาร์ทเนอร์เพื่อดำเนินการแก้ไข"
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "การระบุ overflow: visible ในแท็ก img, video และ canvas อาจทำให้แท็กเหล่านี้สร้างเนื้อหาภาพนอกขอบเขตขององค์ประกอบ โปรดดู https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments เลิกใช้งานแล้ว โปรดใช้การติดตั้งแบบทันท่วงทีแทนสำหรับตัวแฮนเดิลการชำระเงิน"
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "การเรียกใช้ PaymentRequest ได้ข้ามคำสั่งของนโยบายรักษาความปลอดภัยเนื้อหา (CSP) connect-src การข้ามนี้เลิกใช้งานแล้ว โปรดเพิ่มตัวระบุวิธีการชำระเงินจาก PaymentRequest API (ในช่อง supportedMethods) ลงในคำสั่งของ CSP connect-src"
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent เลิกใช้งานแล้ว โปรดใช้ navigator.storage มาตรฐานแทน"
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<source src> ที่มีองค์ประกอบหลัก <picture> ไม่ถูกต้องและด้วยเหตุนี้ระบบจึงจะไม่สนใจ โปรดใช้ <source srcset> แทน"
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame เจาะจงผู้ให้บริการ โปรดใช้ cancelAnimationFrame แบบมาตรฐานแทน"
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame เจาะจงผู้ให้บริการ โปรดใช้ requestAnimationFrame แบบมาตรฐานแทน"
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen เลิกใช้งานแล้ว โปรดใช้ Document.fullscreenElement แทน"
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() เลิกใช้งานแล้ว โปรดใช้ Element.requestFullscreen() แทน"
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() เลิกใช้งานแล้ว โปรดใช้ Element.requestFullscreen() แทน"
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() เลิกใช้งานแล้ว โปรดใช้ Document.exitFullscreen() แทน"
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() เลิกใช้งานแล้ว โปรดใช้ Document.exitFullscreen() แทน"
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen เลิกใช้งานแล้ว โปรดใช้ Document.fullscreenEnabled แทน"
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "เรากำลังจะเลิกใช้งาน API chrome.privacy.websites.privacySandboxEnabled แม้ว่า API นี้จะยังคงมีการใช้งานต่อไปเพื่อความเข้ากันได้แบบย้อนหลังจนกว่าจะเปิดตัวเวอร์ชัน M113 โปรดใช้ chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled และ chrome.privacy.websites.adMeasurementEnabled แทน ดู https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "ข้อจำกัด DtlsSrtpKeyAgreement ถูกนำออกแล้ว คุณได้ระบุค่า false สำหรับข้อจำกัดนี้ ซึ่งระบบตีความว่าเป็นการพยายามใช้เมธอด SDES key negotiation ที่นำออกไปแล้ว ฟังก์ชันการทำงานนี้ถูกนำออกแล้ว โปรดใช้บริการที่รองรับ DTLS key negotiation แทน"
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "ข้อจำกัด DtlsSrtpKeyAgreement ถูกนำออกแล้ว คุณได้ระบุค่า true สำหรับข้อจำกัดนี้ซึ่งไม่มีผลกระทบ แต่สามารถนำข้อจำกัดนี้ออกได้เพื่อความเรียบร้อย"
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "getStats() ที่อิงตามโค้ดเรียกกลับเลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ getStats() ที่สอดคล้องกับข้อกำหนดแทน"
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() เลิกใช้งานแล้ว โปรดใช้ Selection.modify() แทน"
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "คำขอทรัพยากรย่อยที่ URL มีข้อมูลเข้าสู่ระบบที่ฝังไว้ (เช่น https://user:pass@host/) ถูกบล็อก"
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "ตัวเลือก rtcpMuxPolicy เลิกใช้งานแล้วและจะถูกนำออก"
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer จะต้องใช้การแยกแบบข้ามต้นทาง ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/enabling-shared-array-buffer/"
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "speechSynthesis.speak() แบบไม่ต้องมีการเปิดใช้งานของผู้ใช้เลิกใช้งานแล้วและจะถูกนำออก"
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "ส่วนขยายควรเลือกใช้การแยกแบบข้ามต้นทางเพื่อใช้ SharedArrayBuffer ต่อ ดู https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "JSON ของการตอบกลับไม่รองรับ UTF-16 ใน XMLHttpRequest"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "XMLHttpRequest แบบพร้อมกันในชุดข้อความหลักเลิกใช้งานแล้วเนื่องจากมีผลกระทบที่เป็นอันตรายต่อประสบการณ์ของผู้ใช้ปลายทาง ดูความช่วยเหลือเพิ่มเติมได้ที่ https://xhr.spec.whatwg.org/"
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() เลิกใช้งานแล้ว โปรดใช้ isSessionSupported() และตรวจสอบค่าบูลีนที่แก้ไขแล้วแทน"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "เกิดข้อผิดพลาดที่ไม่รู้จักขณะโหลดไฟล์"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "มาจากเว็บไซต์และต้นทางเดียวกัน"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "สัญลักษณ์ไวลด์การ์ด (*) จะไม่ครอบคลุมการให้สิทธิ์ในการใช้งาน Access-Control-Allow-Headers สำหรับ CORS"
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "คำขอทรัพยากรที่ URL มีทั้งอักขระ \\(n|r|t) แบบช่องว่างซึ่งนำออกไปแล้วและมีอักขระน้อยกว่า (<) ถูกบล็อก โปรดนำบรรทัดใหม่ออกและเข้ารหัสอักขระที่น้อยกว่าจากที่ต่างๆ อย่างเช่นค่าแอตทริบิวต์ขององค์ประกอบเพื่อโหลดทรัพยากรเหล่านี้"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() เลิกใช้งานแล้ว โปรดใช้ Navigation Timing 2 ซึ่งเป็น API แบบมาตรฐานแทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() เลิกใช้งานแล้ว โปรดใช้ Paint Timing ซึ่งเป็น API แบบมาตรฐานแทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() เลิกใช้งานแล้ว โปรดใช้ nextHopProtocol ใน Navigation Timing 2 ซึ่งเป็น API แบบมาตรฐานแทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "คุกกี้ที่มีอักขระ \\(0|r|n) จะถูกปฏิเสธแทนการตัดให้สั้นลง"
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า document.domain เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น คำเตือนการเลิกใช้งานนี้มีไว้สำหรับการเข้าถึงแบบข้ามต้นทางที่เปิดใช้โดยการตั้งค่า document.domain"
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "การเรียกใช้ {PH1} จาก iframe แบบข้ามต้นทางเลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "ควรใช้แอตทริบิวต์ disableRemotePlayback เพื่อปิดใช้การผสานรวมการแคสต์เริ่มต้นแทนการใช้ตัวเลือก -internal-media-controls-overlay-cast-button"
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} เลิกใช้งานแล้ว โปรดใช้ {PH2} แทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "นี่คือตัวอย่างข้อความแจ้งปัญหาการเลิกใช้งานที่แปลแล้ว"
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า document.domain เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น หากต้องการใช้ฟีเจอร์นี้ต่อ โปรดเลือกไม่ใช้คลัสเตอร์ Agent ที่ผูกกับต้นทางโดยการส่งส่วนหัว Origin-Agent-Cluster: ?0 พร้อมด้วยการตอบสนองของ HTTP สำหรับเอกสารและเฟรม ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/immutable-document-domain/"
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path เลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ Event.composedPath() แทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "ส่วนหัว Expect-CT เลิกใช้งานแล้วและจะถูกนำออก Chrome ต้องการ \"ความโปร่งใสของใบรับรอง\" สำหรับใบรับรองทั้งหมดที่ได้รับความเชื่อถือจากสาธารณะซึ่งออกหลังจากวันที่ 30 เมษายน 2018"
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "ดูรายละเอียดเพิ่มเติมที่หน้าสถานะฟีเจอร์"
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() และ watchPosition() ไม่ทำงานในต้นทางที่ไม่ปลอดภัยอีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() และ watchPosition() เลิกใช้งานแล้วในต้นทางที่ไม่ปลอดภัย คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() ทำงานในต้นทางที่ไม่ปลอดภัยไม่ได้อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate เลิกใช้งานแล้ว โปรดใช้ RTCPeerConnectionIceErrorEvent.address หรือ RTCPeerConnectionIceErrorEvent.port แทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "ต้นทางของผู้ขายและข้อมูลที่กําหนดเองจากเหตุการณ์ Service Worker canmakepayment ซึ่งได้แก่ topOrigin, paymentRequestOrigin, methodData, modifiers เลิกใช้งานแล้วและจะถูกนําออก"
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "เว็บไซต์ขอทรัพยากรย่อยจากเครือข่ายที่เข้าถึงได้เท่านั้นเนื่องจากมีตำแหน่งเครือข่ายที่เป็นสิทธิ์เฉพาะของผู้ใช้ คำขอเหล่านี้จะเปิดเผยอุปกรณ์และเซิร์ฟเวอร์ที่ไม่เผยแพร่ต่อสาธารณะไปยังอินเทอร์เน็ต ซึ่งเพิ่มความเสี่ยงในการโจมตีโดยการปลอมแปลงคำขอแบบข้ามเว็บไซต์ (CSRF) และ/หรือข้อมูลรั่วไหล Chrome จะเลิกใช้งานคำขอไปยังทรัพยากรย่อยที่ไม่เผยแพร่ต่อสาธารณะเมื่อเริ่มต้นมาจากบริบทที่ไม่ปลอดภัยและจะเริ่มบล็อกคำขอดังกล่าวเพื่อลดความเสี่ยงเหล่านี้"
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "โหลด CSS จาก URL file: ไม่ได้ เว้นแต่จะลงท้ายด้วยนามสกุลไฟล์ .css"
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "การใช้ SourceBuffer.abort() เพื่อล้มเลิกการนำช่วงที่ไม่พร้อมกันออกของ remove() เลิกใช้งานไปแล้ว เนื่องจากมีการเปลี่ยนแปลงข้อกำหนด ระบบจะนำการรองรับออกในอนาคต คุณควรให้ความสำคัญกับเหตุการณ์ updateend แทน abort() มีไว้เพื่อล้มเลิกการเพิ่มสื่อที่ไม่พร้อมกันหรือรีเซ็ตสถานะโปรแกรมแยกวิเคราะห์เท่านั้น"
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "การตั้งค่า MediaSource.duration ต่ำกว่าการประทับเวลาการนำเสนอสูงสุดของเฟรมที่ใส่โค้ดที่บัฟเฟอร์เลิกใช้งานแล้วเนื่องจากการเปลี่ยนแปลงข้อกำหนด การรองรับการนำสื่อที่บัฟเฟอร์ที่มีการตัดให้สั้นลงออกแบบไม่เจาะจงจะถูกนำออกในอนาคต คุณควรดำเนินการ remove(newDuration, oldDuration) แบบเจาะจงแทนใน sourceBuffers ทั้งหมดที่ newDuration < oldDuration"
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "การเปลี่ยนแปลงนี้จะมีผลกับเป้าหมาย {milestone}"
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI จะขอสิทธิ์ในการใช้แม้ว่าจะไม่ได้ระบุ SysEx ใน MIDIOptions ก็ตาม"
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "ต้นทางที่ไม่ปลอดภัยอาจไม่ใช้ Notification API อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "iframe แบบข้ามต้นทางอาจไม่ขอสิทธิ์สำหรับ Notification API อีกต่อไป คุณควรพิจารณาขอสิทธิ์จากเฟรมระดับบนสุดหรือเปิดหน้าต่างใหม่แทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "ตัวเลือก imageOrientation: \"none\" ใน createImageBitmap เลิกใช้งานแล้ว โปรดใช้ createImageBitmap กับตัวเลือก {imageOrientation: \"from-image\"} แทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "พาร์ทเนอร์ของคุณต่อรอง (D)TLS เวอร์ชันที่ล้าสมัย โปรดตรวจสอบกับพาร์ทเนอร์เพื่อดำเนินการแก้ไข"
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "เราเลิกใช้งาน WebSQL ในบริบทที่ไม่ปลอดภัยแล้วและจะนําออกเร็วๆ นี้ โปรดใช้พื้นที่เก็บข้อมูลเว็บหรือฐานข้อมูลที่จัดทำดัชนีแล้ว"
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "การระบุ overflow: visible ในแท็ก img, video และ canvas อาจทำให้แท็กเหล่านี้สร้างเนื้อหาภาพนอกขอบเขตขององค์ประกอบ โปรดดู https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments เลิกใช้งานแล้ว โปรดใช้การติดตั้งแบบทันท่วงทีแทนสำหรับตัวแฮนเดิลการชำระเงิน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "การเรียกใช้ PaymentRequest ได้ข้ามคำสั่งของนโยบายรักษาความปลอดภัยเนื้อหา (CSP) connect-src การข้ามนี้เลิกใช้งานแล้ว โปรดเพิ่มตัวระบุวิธีการชำระเงินจาก PaymentRequest API (ในช่อง supportedMethods) ลงในคำสั่งของ CSP connect-src"
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent เลิกใช้งานแล้ว โปรดใช้ navigator.storage มาตรฐานแทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> ที่มีองค์ประกอบหลัก <picture> ไม่ถูกต้องและด้วยเหตุนี้ระบบจึงจะไม่สนใจ โปรดใช้ <source srcset> แทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo เลิกใช้งานแล้ว โปรดใช้ navigator.storage มาตรฐานแทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "เรากำลังจะเลิกใช้งาน API chrome.privacy.websites.privacySandboxEnabled แม้ว่า API นี้จะยังคงมีการใช้งานต่อไปเพื่อความเข้ากันได้แบบย้อนหลังจนกว่าจะเปิดตัวรุ่น M113 โปรดใช้ chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled และ chrome.privacy.websites.adMeasurementEnabled แทน ดู https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "คำขอทรัพยากรย่อยที่ URL มีข้อมูลเข้าสู่ระบบที่ฝังไว้ (เช่น https://user:pass@host/) ถูกบล็อก"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "ข้อจำกัด DtlsSrtpKeyAgreement ถูกนำออกแล้ว คุณได้ระบุค่า false สำหรับข้อจำกัดนี้ ซึ่งระบบตีความว่าเป็นการพยายามใช้เมธอด SDES key negotiation ที่นำออกไปแล้ว ฟังก์ชันการทำงานนี้ถูกนำออกแล้ว โปรดใช้บริการที่รองรับ DTLS key negotiation แทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "ข้อจำกัด DtlsSrtpKeyAgreement ถูกนำออกแล้ว คุณได้ระบุค่า true สำหรับข้อจำกัดนี้ซึ่งไม่มีผลกระทบ แต่สามารถนำข้อจำกัดนี้ออกได้เพื่อความเรียบร้อย"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "ตรวจพบ Complex Plan B SDP ไม่รองรับภาษาย่อยของ Session Description Protocol นี้อีกต่อไป โปรดใช้ Unified Plan SDP แทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics ที่ใช้เมื่อสร้าง RTCPeerConnection ด้วย {sdpSemantics:'plan-b'} เป็น Session Description Protocol เวอร์ชันเดิมที่ไม่ได้มาตรฐานซึ่งลบออกจากแพลตฟอร์มเว็บอย่างถาวรแล้ว โดยจะยังคงใช้ได้เมื่อสร้างด้วย IS_FUCHSIA แต่เราตั้งใจจะลบออกโดยเร็วที่สุด โปรดหยุดใช้โปรโตคอลดังกล่าว ดูสถานะได้ที่ https://crbug.com/1302249"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "ตัวเลือก rtcpMuxPolicy เลิกใช้งานแล้วและจะถูกนำออก"
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer จะต้องใช้การแยกแบบข้ามต้นทาง ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/enabling-shared-array-buffer/"
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() แบบไม่ต้องมีการเปิดใช้งานของผู้ใช้เลิกใช้งานแล้วและจะถูกนำออก"
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ใช้ฟีเจอร์ที่เลิกใช้งานแล้ว"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "ส่วนขยายควรเลือกใช้การแยกแบบข้ามต้นทางเพื่อใช้ SharedArrayBuffer ต่อ ดู https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} เจาะจงผู้ให้บริการ โปรดใช้ {PH2} มาตรฐานแทน"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "JSON ของการตอบกลับไม่รองรับ UTF-16 ใน XMLHttpRequest"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "XMLHttpRequest แบบพร้อมกันในชุดข้อความหลักเลิกใช้งานแล้วเนื่องจากมีผลกระทบที่เป็นอันตรายต่อประสบการณ์ของผู้ใช้ปลายทาง ดูความช่วยเหลือเพิ่มเติมได้ที่ https://xhr.spec.whatwg.org/"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() เลิกใช้งานแล้ว โปรดใช้ isSessionSupported() และตรวจสอบค่าบูลีนที่แก้ไขแล้วแทน"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "แอตทริบิวต์ HTML: เติมข้อความอัตโนมัติ"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "พอร์ทัล - ช่องทางการสื่อสารต้นทางเดียวกัน"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "การป้อนข้อความอัตโนมัติทำงานอย่างไร"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "องค์ประกอบการป้อนข้อมูลในแบบฟอร์ม"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "องค์ประกอบป้ายกำกับ"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "การจัดการการแทรกแซงโฆษณาที่ใช้ทรัพยากรมาก"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "งานนำเสนอ"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "ไอคอนหลักตามที่ Chrome ใช้"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "ไอคอนไฟล์ Manifest หลักจาก {PH1}"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "ตัวแฮนเดิลโปรโตคอล"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "สีของธีม"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "การดึงข้อมูลล่วงหน้าและการแสดงผลล่วงหน้า"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "ไฟล์ Manifest ของแอป"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ใช่"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "การดึงข้อมูลล่วงหน้าและการแสดงผลล่วงหน้า"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "คลิกที่รายงานเพื่อแสดงเนื้อหา"
@@ -3333,10 +3363,10 @@
     "message": "มีการใช้ API ที่ไม่มีสิทธิ์"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "หน้าที่มีการแทรก JavaScript ลงในส่วนขยายยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+    "message": "หน้าที่มีการแทรก JavaScript ลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "หน้าที่มีการแทรกสไตล์ชีตลงในส่วนขยายยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+    "message": "หน้าที่มีการแทรกStyleSheetลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "ข้อผิดพลาดภายใน"
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "จำนวนโทเค็นที่จัดเก็บไว้"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "การล้างสถานะไม่ดำเนินการต่อเนื่อง"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "เปิดใช้งานอยู่"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "ทิ้งแล้ว"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "การแสดงผลล่วงหน้า"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "ใช้งานได้"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "ระบบบังคับเปิดการโหลดล่วงหน้าเนื่องจากมีการเปิดเครื่องมือสำหรับนักพัฒนาเว็บ เมื่อปิดเครื่องมือสำหรับนักพัฒนาเว็บไป ระบบจะปิดใช้การแสดงผลล่วงหน้าเนื่องจากเซสชันเบราว์เซอร์นี้อยู่ในกลุ่มยกเว้นซึ่งใช้สำหรับการเปรียบเทียบประสิทธิภาพ"
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "การแสดงผลล่วงหน้าเคยถูกปิดไป แต่ระบบบังคับเปิดแล้วตอนนี้"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "ข้อมูลพื้นฐาน"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "เริ่มเมื่อ"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "สถานะ"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "ทริกเกอร์"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "เลือกองค์ประกอบเพื่อดูรายละเอียดเพิ่มเติม"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "เปิดใช้งานอยู่"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "ทิ้งแล้ว"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "การแสดงผลล่วงหน้า"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "เริ่มเมื่อ"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "สถานะ"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "ทริกเกอร์"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "ข้อมูลโดยละเอียด"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "ประเภท"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "แหล่งที่มา"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "ระยะเวลาที่ใช้ได้"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "ใช้งานได้"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "ระยะเวลาที่ใช้ได้"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "พบเบรกพอยท์"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "ล้างข้อความทั้งหมดโดยใช้ {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "เบรกพอยท์แบบมีเงื่อนไข"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "คอนโซล"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "จุดตรวจสอบ"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{ซ้ำ # ครั้ง}other{ซ้ำ # ครั้ง}}"
@@ -4575,7 +4590,7 @@
     "message": "ล้างประวัติการใช้คอนโซล"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "ยุบข้อความ console.trace() โดยค่าเริ่มต้น"
+    "message": "ไม่ต้องขยายข้อความ console.trace() โดยอัตโนมัติ"
   },
   "panels/console/console-meta.ts | console": {
     "message": "คอนโซล"
@@ -4605,10 +4620,10 @@
     "message": "ประเมินข้อความในข้อความแจ้งของคอนโซลอย่างตั้งใจ"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "ประเมินสิ่งที่ทำให้เกิดการเปิดใช้งานผู้ใช้"
+    "message": "การประเมินที่ทำให้เกิดการเปิดใช้งานผู้ใช้"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "ขยายข้อความ console.trace() โดยค่าเริ่มต้น"
+    "message": "ขยายข้อความ console.trace() โดยอัตโนมัติ"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "จัดกลุ่มข้อความที่คล้ายกันในคอนโซล"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "ค้นหาตามสตริง ตัวเลือก หรือ XPath"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "เฟรม"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "ซ่อนแถบด้านข้างของรูปแบบที่คำนวณแล้ว"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "เปิด/ปิดพร็อพเพอร์ตี้และแก้ไขต่อ"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "ค่าสำหรับการตั้งค่า \"{PH1}\" {PH2} อยู่นอกช่วงที่รองรับ [{PH3}, {PH4}] สำหรับชุดแบบอักษร \"{PH5}\""
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ดูค่าที่คำนวณแล้ว"
   },
@@ -5454,6 +5463,12 @@
     "message": "แสดงป้าย"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "ไม่แสดง"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "เลือกองค์ประกอบในหน้าเพื่อตรวจสอบ"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "แสดงเคล็ดลับเครื่องมือของเอกสารประกอบ CSS"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "แสดงสไตล์ที่คำนวณแล้ว"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "ล้างโปรไฟล์ทั้งหมด"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "เราจะเลิกใช้งานแผงนี้ในเวอร์ชันที่กำลังจะเปิดตัว โปรดใช้แผงประสิทธิภาพเพื่อบันทึกโปรไฟล์ CPU ของ JavaScript"
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "ความคิดเห็น"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "ไปที่แผงประสิทธิภาพ"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "โหลด…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "เอกสารประกอบ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "เวลาที่ผ่านไป"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "กรอง"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (จากการแมปแหล่งที่มา)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (อยู่ในรายการละเว้น)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "ค้นหาในไฟล์ทั้งหมด"
   },
@@ -10403,8 +10439,8 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "มิลลิวินาที"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(ให้บริการผ่านข้อมูลการแก้ไขข้อบกพร่องโดย {PH1})"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "(จาก {PH1})"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
     "message": "(แหล่งที่มาที่แมปจาก {PH1})"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "เวลาในการบล็อกทั้งหมด: {PH1} มิลลิวินาที{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "การครอบคลุม"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "ชุดข้อความ"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "ชุดข้อความ {PH1} รายการ"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "ระยะเวลา"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "การโต้ตอบ"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "ปิด"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "การครอบคลุม"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "ได้รับ"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "บันทึกการครอบคลุมพร้อมด้วยการติดตามประสิทธิภาพ"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "การบันทึกล้มเหลว"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "ผู้เริ่ม"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "เวลาในการตอบสนองต่ออินพุต"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ติดตั้งตัวจับเวลา"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "เฟรมของ JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "เฟรมที่ไม่มีการใช้งานของ JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "รูท JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "เฟรมระบบ JS"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Largest Contentful Paint"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "ขนาดแคชที่สร้าง"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "ค่าใช้จ่ายในการทำโปรไฟล์"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "ช่วง"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "เวลาที่ใช้ในการแสดงภาพ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "เวลาที่รอชุดข้อความหลัก"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "หมดเวลา"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "กด Enter เพื่อใช้ตัวกรองการจัดเรียง"
+    "message": "สถานะการจัดเรียงคอลัมน์: {PH1} กด Enter เพื่อใช้ตัวกรองการจัดเรียง"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ตัวเลือกส่วนหัว"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "รีเซ็ตคอลัมน์"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "น้อยไปมาก"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "จัดเรียงตาม"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "มากไปน้อย"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "ไม่มี"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} เรียงลำดับจากน้อยไปหามาก"

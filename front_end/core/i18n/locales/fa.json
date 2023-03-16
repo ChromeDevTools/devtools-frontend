@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} ثانیه"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: تجزیه‌کننده نمایه CPU درحال رفع کردن مشکل {PH1} نمونه ناموجود است."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "نمایه {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "محتوا برای {PH1} بار نشد ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "پیمایش به {PH1} از حافظه نهان بهینه‌شده بازیابی شد (به https://web.dev/bfcache/ بروید)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "در متغیر موقتی ذخیره نشد."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "در اشکال‌زدا موقتاً متوقف شد"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "بارگیری به‌دلیل روی دادن درنگ در بارگیری لغو شد"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "به‌دلیل بار کردن مجدد صفحه بررسی‌شده، بارگیری لغو شد"
   },
@@ -618,7 +615,7 @@
     "message": "توقف"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "رنگ‌کوری کامل"
+    "message": "نادیدرنگی (بدون رنگ)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "تاری دید"
@@ -627,7 +624,7 @@
     "message": "ضبط ردیابی پشته‌ای غیرهمگام"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "سبزکوری"
+    "message": "سبزکوری (بدون سبز)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "غیرفعال کردن ردیابی‌های پشته‌ای غیرهمگام"
@@ -690,7 +687,7 @@
     "message": "شبیه‌سازی صفحه متمرکز"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "شبیه‌سازی رنگ‌کوری کامل"
+    "message": "شبیه‌سازی نادیدرنگی (بدون رنگ)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "شبیه‌سازی در حالت تاریک خودکار"
@@ -714,13 +711,16 @@
     "message": "شبیه‌سازی نوع رسانه صفحه‌نمایش CSS"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "شبیه‌سازی سبزکوری"
+    "message": "شبیه‌سازی سبزکوری (بدون سبز)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "شبیه‌سازی قرمزکوری"
+    "message": "شبیه‌سازی سرخ‌کوری (بدون قرمز)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "شبیه‌سازی کنتراست کاهش‌یافته"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "شبیه‌سازی آبی‌کوری"
+    "message": "شبیه‌سازی آبی‌کوری (بدون آبی)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "شبیه‌سازی نقص‌های بینایی"
@@ -789,10 +789,13 @@
     "message": "چاپ"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "قرمزکوری"
+    "message": "سرخ‌کوری (بدون قرمز)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "پُرسمان"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "کنتراست کاهش‌یافته"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "صفحه‌نمایش"
@@ -840,7 +843,7 @@
     "message": "نمایش اندازه خطوط"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "آبی‌کوری"
+    "message": "آبی‌کوری (بدون آبی)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "جاوااسکریپت غیرفعال است"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "جدا کردن به‌صورت پنجره مجزا"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "صفحه: انتخاب نشده است"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "صفحه: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "به‌صورت نوشته‌شده"
   },
@@ -1062,7 +1071,7 @@
     "message": "قالب رنگ:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "این تنظیم منسوخ شده است زیرا با فضاهای رنگی مدرن سازگار نیست. برای فعال کردن مجدد آن، می‌توانید آزمایش مربوطه را غیرفعال کنید."
+    "message": "این تنظیم منسوخ شده است زیرا با فضاهای رنگی مدرن سازگار نیست. برای فعال کردن مجدد آن، آزمایش مربوطه را غیرفعال کنید."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "تیره"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "اصلی"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "صدور مجوز ازطریق نماد نویسه عام (*) در مدیریت Access-Control-Allow-Headers CORS تحت‌پوشش قرار نخواهد گرفت."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "برای غیرفعال کردن «یکپارچه‌سازی تبدیل» پیش‌فرض، به‌جای انتخاب‌گر -internal-media-controls-overlay-cast-button باید از مشخصه disableRemotePlayback استفاده شود."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "درخواست‌های منبعی که نشانی‌های وب آن‌ها هم حاوی نویسه‌های \\(n|r|t) فاصله سفید حذف‌شده و هم حاوی نویسه‌های کمتر از (<) باشد مسدود می‌شود. لطفاً خطوط جدید را حذف کنید و نویسه‌های کمتر از مربوط به مکان‌هایی مثل مقادیر مشخصه عنصر را کدبندی کنید تا این منابع بار شود."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() منسوخ شده است، درعوض از میانای برنامه‌سازی کاربردی استانداردشده Navigation Timing 2 استفاده کنید."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() منسوخ شده است، درعوض از میانای برنامه‌سازی کاربردی استانداردشده Paint Timing استفاده کنید."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() منسوخ شده است، درعوض از میانای برنامه‌سازی کاربردی استانداردشده nextHopProtocol در Navigation Timing 2 استفاده کنید."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "کوکی‌های حاوی نویسه \\(0|r|n) به‌جای کوتاه شدن رد خواهد شد."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "کاهش محدودیت‌های خط‌مشی same-origin ازطریق تنظیم document.domain منسوخ شده است و به‌طور پیش‌فرض غیرفعال خواهد شد. این هشدار منسوخ شدن برای دسترسی بین‌مبدائی است که ازطریق تنظیم document.domain فعال شده است."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "راه‌اندازی window.alert از iframe بین‌مبدائی منسوخ شده است و در آینده برداشته خواهد شد."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "راه‌اندازی window.confirm از iframe بین‌مبدائی منسوخ شده است و در آینده برداشته خواهد شد."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "کاهش محدودیت‌های خط‌مشی same-origin ازطریق تنظیم document.domain منسوخ شده است و به‌طور پیش‌فرض غیرفعال خواهد شد. برای ادامه استفاده از این ویژگی، لطفاً ازطریق ارسال سرصفحه Origin-Agent-Cluster: ?0 به‌همراه پاسخ HTTP برای سند و قاب‌ها، از خوشه‌های نماینده origin-keyed انصراف دهید. برای جزئیات بیشتر، به https://developer.chrome.com/blog/immutable-document-domain/‎ مراجعه کنید."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path منسوخ شده است و برداشته خواهد شد. لطفاً درعوض از Event.composedPath() استفاده کنید."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "سرتیتر Expect-CT منسوخ شده است و حذف خواهد شد. Chrome برای همه گواهی‌های مورداعتماد عمومی که بعد‌از ۳۰ آوریل ۲۰۱۸ صادر شده‌اند به «شفافیت گواهینامه» نیاز دارد."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() و watchPosition() دیگر در مبدأهای ناامن کار نمی‌کنند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() و watchPosition() در مبدأهای ناامن منسوخ شده‌اند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia() دیگر در مبدأهای ناامن کار نمی‌کند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate منسوخ شده است. لطفاً درعوض از RTCPeerConnectionIceErrorEvent.address یا RTCPeerConnectionIceErrorEvent.port استفاده کنید."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "داده‌های اختیاری و مبدأ فروشنده از رویداد عامل خدماتی canmakepayment منسوخ شده‌اند و برداشته خواهند شد: topOrigin، paymentRequestOrigin، methodData، modifiers."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "این وب‌سایت به‌دلیل جایگاه شبکه امتیازدار کاربرانش، منبعی فرعی را از شبکه‌ای درخواست کرده است که فقط می‌تواند به آن دسترسی داشته باشد. این درخواست‌ها دستگاه‌ها و سرورهای غیرعمومی را درمعرض اینترنت قرار می‌دهد. این امر موجب افزایش خطر نشت اطلاعات و/یا حمله جعل درخواست بین‌سایتی (CSRF) می‌شود. برای کاهش این خطرها، وقتی درخواست‌های ارسالی به منابع فرعی غیرعمومی از بسترهای ناامن ارائه می‌شود، Chrome این درخواست‌ها را منسوخ می‌کند و مسدود خواهد کرد."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "تنها درصورتی می‌توان CSS را از نشانی‌های وب file: بار کرد که نشانی‌ها به پسوند فایل .css ختم شده باشند."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "استفاده از SourceBuffer.abort() برای لغو کردن حذف گستره غیرهم‌زمان remove()، به‌دلیل تغییر مشخصه منسوخ شده است. پشتیبانی در آینده برداشته خواهد شد. باید درعوض به رویداد updateend گوش کنید. هدف abort() آن است که فقط پیوست رسانه‌ای غیرهم‌زمان را لغو کند یا وضعیت تجزیه‌کننده را بازنشانی کند."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "به‌دلیل تغییر مشخصه، تنظیم MediaSource.duration روی میزان کمتر از بالاترین مُهر زمان ارائه برای قاب‌های کدبندی‌شده میان‌گیری‌شده منسوخ شده است. پشتیبانی از برداشتن ضمنی رسانه‌های میان‌گیری‌شده کوتاه‌شده در آینده حذف خواهد شد. درعوض باید remove(newDuration, oldDuration) صریح را در همه sourceBuffers که در آن newDuration < oldDuration اجرا کنید."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "حتی اگر sysex در MIDIOptions مشخص نشده باشد، Web MIDI برای استفاده اجازه خواهد خواست."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "مشخصه قدیمی و غیراستاندارد shadowroot منسوخ شده است لطفاً درعوض از مشخصه جدید و استانداردشده shadowrootmode استفاده کنید."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "ممکن است دیگر از میانای برنامه‌سازی کاربردی «اعلان» برگرفته از مبدأهای ناامن استفاده نشود. توصیه می‌کنیم برنامه‌تان را به منبعی امن، مثل HTTPS، منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "اجازه برای میانای برنامه‌سازی کاربردی «اعلان» ممکن است دیگر از iframe بین‌مبدائی درخواست نشود. توصیه می‌کنیم اجازه را درعوض از قاب سطح بالا درخواست کنید یا پنجره جدیدی باز کنید."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "گزینه imageOrientation: 'none' در createImageBitmap منسوخ شده است. لطفاً درعوض از createImageBitmap به‌همراه گزینه ‎{imageOrientation: 'from-image'}‎ استفاده کنید."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "شریک شما درحال مذاکره با نسخه منسوخی از ‎(D)TLS است. لطفاً برای برطرف کردن این مشکل با شریکتان تماس بگیرید."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "مشخص کردن overflow: visible در برچسب‌های بوم نقاشی، ویدیو، و تصویر ممکن است باعث شود محتوای بصری خارج از محدوده‌های عنصر تولید کند. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md را ببینید."
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments منسوخ شده است. لطفاً به‌جای آن از نصب به‌موقع برای کنترل‌کننده‌های پرداخت استفاده کنید."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "فراخوان PaymentRequest شما دستور connect-src «خط‌مشی امنیتی محتوا» (CSP) را دور زد. این دور زدن منسوخ شده است. لطفاً شناسه روش پرداخت را از میانای برنامه‌سازی کاربردی PaymentRequest (در فیلد supportedMethods) به دستور connect-src «خط‌مشی امنیتی محتوا» اضافه کنید."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent منسوخ شده است. لطفاً درعوض از navigator.storage استانداردشده استفاده کنید."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<source src> با مادر <picture> نامعتبر است و درنتیجه نادیده گرفته می‌شود. لطفاً درعوض از <source srcset> استفاده کنید."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame مختص ارائه‌دهنده است. لطفاً درعوض از روش استاندارد cancelAnimationFrame استفاده کنید."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame مختص ارائه‌دهنده است. لطفاً درعوض از روش استاندارد requestAnimationFrame استفاده کنید."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen منسوخ شده است. لطفاً درعوض از Document.fullscreenElement استفاده کنید."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen()‎ منسوخ شده است. لطفاً درعوض از Element.requestFullscreen()‎ استفاده کنید."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen()‎ منسوخ شده است. لطفاً درعوض از Element.requestFullscreen()‎ استفاده کنید."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen()‎ منسوخ شده است. لطفاً درعوض از Document.exitFullscreen()‎ استفاده کنید."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen()‎ منسوخ شده است. لطفاً درعوض از Document.exitFullscreen()‎ استفاده کنید."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen منسوخ شده است. لطفاً درعوض از Document.fullscreenEnabled استفاده کنید."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "قصد داریم میانای برنامه‌سازی کاربردی chrome.privacy.websites.privacySandboxEnabled را منسوخ کنیم، اما به‌دلیل سازگاری با نسخه قدیمی، این میانا تا انتشار نسخه M113 فعال خواهد ماند. درعوض، لطفاً از chrome.privacy.websites.topicsEnabled، chrome.privacy.websites.fledgeEnabled، و chrome.privacy.websites.adMeasurementEnabled استفاده کنید. به این نشانی مراجعه کنید: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "محدودیت DtlsSrtpKeyAgreement برداشته شد. مقدار false را برای این محدودیت مشخص کرده‌اید. این اقدام به‌عنوان تلاشی برای استفاده از روش برداشته‌شده SDES key negotiation تفسیر می‌شود. این عملکرد برداشته شده است؛ درعوض از سرویسی استفاده کنید که از DTLS key negotiation پشتیبانی کند."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "محدودیت DtlsSrtpKeyAgreement برداشته شد. مقدار true را برای این محدودیت مشخص کرده‌اید. این اقدام اثری ندارد، اما می‌توانید این محدودیت را برای حفظ نظم بردارید."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "روش مبتنی بر فراخوانی getStats()‎ منسوخ شده است و برداشته خواهد شد. درعوض از روش سازگار با مشخصات getStats()‎ استفاده کنید."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand()‎ منسوخ شده است. لطفاً درعوض از Selection.modify()‎ استفاده کنید."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "درخواست‌های منبع فرعی‌ای که نشانی‌های وب آن‌ها حاوی اطلاعات کاربری جاسازی‌شده (مثل https://user:pass@host/) است مسدود می‌شود."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "گزینه rtcpMuxPolicy منسوخ شده است و برداشته خواهد شد."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer به جداسازی بین‌مبدائی نیاز خواهد داشت. برای جزئیات بیشتر، به https://developer.chrome.com/blog/enabling-shared-array-buffer/‎ مراجعه کنید."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "speechSynthesis.speak() بدون فعال‌سازی کاربر منسوخ شده است و برداشته خواهد شد."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "برای ادامه استفاده از SharedArrayBuffer، افزونه‌ها باید در جداسازی بین‌مبدائی فعال شوند. به https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎ مراجعه کنید."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "پاسخ json در XMLHttpRequest از UTF-16 پشتیبانی نمی‌کند."
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "XMLHttpRequest هم‌زمان در رشته اصلی به‌دلیل آثار مخربش برای تجربه کاربر نهایی منسوخ شده است. برای راهنمایی بیشتر، https://xhr.spec.whatwg.org/ را بررسی کنید."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() منسوخ شده است. لطفاً درعوض از isSessionSupported() استفاده کنید و مقدار منطقی حل‌شده را بررسی کنید."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "خطای ناشناخته هنگام بار کردن فایل"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site و Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "صدور مجوز ازطریق نماد نویسه عام (*) در مدیریت Access-Control-Allow-Headers CORS تحت‌پوشش قرار نخواهد گرفت."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "درخواست‌های منبعی که نشانی‌های وب آن‌ها هم حاوی نویسه‌های \\(n|r|t) فاصله سفید حذف‌شده و هم حاوی نویسه‌های کمتر از (<) باشد مسدود می‌شود. لطفاً خطوط جدید را حذف کنید و نویسه‌های کمتر از مربوط به مکان‌هایی مثل مقادیر مشخصه عنصر را کدبندی کنید تا این منابع بار شود."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() منسوخ شده است، درعوض از میانای برنامه‌سازی کاربردی استانداردشده Navigation Timing 2 استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() منسوخ شده است، درعوض از میانای برنامه‌سازی کاربردی استانداردشده Paint Timing استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() منسوخ شده است، درعوض از میانای برنامه‌سازی کاربردی استانداردشده nextHopProtocol در Navigation Timing 2 استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "کوکی‌های حاوی نویسه \\(0|r|n) به‌جای کوتاه شدن رد خواهد شد."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "کاهش محدودیت‌های خط‌مشی same-origin ازطریق تنظیم document.domain منسوخ شده است و به‌طور پیش‌فرض غیرفعال خواهد شد. این هشدار منسوخ شدن برای دسترسی بین‌مبدائی است که ازطریق تنظیم document.domain فعال شده است."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "راه‌اندازی {PH1} از iframe بین‌مبدائی منسوخ شده است و در آینده برداشته خواهد شد."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "برای غیرفعال کردن «یکپارچه‌سازی تبدیل» پیش‌فرض، به‌جای انتخاب‌گر -internal-media-controls-overlay-cast-button باید از مشخصه disableRemotePlayback استفاده شود."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} منسوخ شده است. لطفاً درعوض از {PH2} استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "این نمونه‌ای از ترجمه پیام مشکل منسوخ شدن است."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "کاهش محدودیت‌های خط‌مشی same-origin ازطریق تنظیم document.domain منسوخ شده است و به‌طور پیش‌فرض غیرفعال خواهد شد. برای ادامه استفاده از این ویژگی، لطفاً ازطریق ارسال سرصفحه Origin-Agent-Cluster: ?0 به‌همراه پاسخ HTTP برای سند و قاب‌ها، از خوشه‌های نماینده origin-keyed انصراف دهید. برای جزئیات بیشتر، به https://developer.chrome.com/blog/immutable-document-domain/‎ مراجعه کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path منسوخ شده است و برداشته خواهد شد. لطفاً درعوض از Event.composedPath() استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "سرتیتر Expect-CT منسوخ شده است و حذف خواهد شد. Chrome برای همه گواهی‌های مورداعتماد عمومی که بعد‌از ۳۰ آوریل ۲۰۱۸ صادر شده‌اند به «شفافیت گواهینامه» نیاز دارد."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "برای جزئیات بیشتر، صفحه وضعیت ویژگی را بررسی کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() و watchPosition() دیگر در مبدأهای ناامن کار نمی‌کنند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() و watchPosition() در مبدأهای ناامن منسوخ شده‌اند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() دیگر در مبدأهای ناامن کار نمی‌کند. برای استفاده از این ویژگی، توصیه می‌کنیم برنامه‌تان را به مبدائی امن مثل HTTPS منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate منسوخ شده است. لطفاً درعوض از RTCPeerConnectionIceErrorEvent.address یا RTCPeerConnectionIceErrorEvent.port استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "داده‌های اختیاری و مبدأ فروشنده از رویداد عامل خدماتی canmakepayment منسوخ شده‌اند و برداشته خواهند شد: topOrigin، paymentRequestOrigin، methodData، modifiers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "این وب‌سایت به‌دلیل جایگاه شبکه امتیازدار کاربرانش، منبعی فرعی را از شبکه‌ای درخواست کرده است که فقط می‌تواند به آن دسترسی داشته باشد. این درخواست‌ها دستگاه‌ها و سرورهای غیرعمومی را درمعرض اینترنت قرار می‌دهد. این امر موجب افزایش خطر نشت اطلاعات و/یا حمله جعل درخواست بین‌سایتی (CSRF) می‌شود. برای کاهش این خطرها، وقتی درخواست‌های ارسالی به منابع فرعی غیرعمومی از بسترهای ناامن ارائه می‌شود، Chrome این درخواست‌ها را منسوخ می‌کند و مسدود خواهد کرد."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "تنها درصورتی می‌توان CSS را از نشانی‌های وب file: بار کرد که نشانی‌ها به پسوند فایل .css ختم شده باشند."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "استفاده از SourceBuffer.abort() برای لغو کردن حذف گستره غیرهم‌زمان remove()، به‌دلیل تغییر مشخصه منسوخ شده است. پشتیبانی در آینده برداشته خواهد شد. باید درعوض به رویداد updateend گوش کنید. هدف abort() آن است که فقط پیوست رسانه‌ای غیرهم‌زمان را لغو کند یا وضعیت تجزیه‌کننده را بازنشانی کند."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "به‌دلیل تغییر مشخصه، تنظیم MediaSource.duration روی میزان کمتر از بالاترین مُهر زمان ارائه برای قاب‌های کدبندی‌شده میان‌گیری‌شده منسوخ شده است. پشتیبانی از برداشتن ضمنی رسانه‌های میان‌گیری‌شده کوتاه‌شده در آینده حذف خواهد شد. درعوض باید remove(newDuration, oldDuration) صریح را در همه sourceBuffers که در آن newDuration < oldDuration اجرا کنید."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "این تغییر با نقطه عطف {milestone} اعمال خواهد شد."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "حتی اگر sysex در MIDIOptions مشخص نشده باشد، Web MIDI برای استفاده اجازه خواهد خواست."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "ممکن است دیگر از میانای برنامه‌سازی کاربردی «اعلان» برگرفته از مبدأهای ناامن استفاده نشود. توصیه می‌کنیم برنامه‌تان را به منبعی امن، مثل HTTPS، منتقل کنید. برای جزئیات بیشتر، به https://goo.gle/chrome-insecure-origins مراجعه کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "اجازه برای میانای برنامه‌سازی کاربردی «اعلان» ممکن است دیگر از iframe بین‌مبدائی درخواست نشود. توصیه می‌کنیم اجازه را درعوض از قاب سطح بالا درخواست کنید یا پنجره جدیدی باز کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "گزینه imageOrientation: \"none\" در createImageBitmap منسوخ شده است. لطفاً درعوض از createImageBitmap به‌همراه گزینه {imageOrientation: \"from-image\"‎} استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "شریک شما درحال مذاکره با نسخه منسوخی از ‎(D)TLS است. لطفاً برای برطرف کردن این مشکل با شریکتان تماس بگیرید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL در بافتارهای ناامن منسوخ شده است و به‌زودی برداشته خواهد شد. لطفاً از «فضای ذخیره‌سازی وب» یا «پایگاه داده نمایه‌شده» استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "مشخص کردن overflow: visible در برچسب‌های بوم نقاشی، ویدیو، و تصویر ممکن است باعث شود محتوای بصری خارج از محدوده‌های عنصر تولید کند. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md را ببینید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments منسوخ شده است. لطفاً به‌جای آن از نصب به‌موقع برای کنترل‌کننده‌های پرداخت استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "فراخوان PaymentRequest شما دستور connect-src «خط‌مشی امنیتی محتوا» (CSP) را دور زد. این دور زدن منسوخ شده است. لطفاً شناسه روش پرداخت را از میانای برنامه‌سازی کاربردی PaymentRequest (در فیلد supportedMethods) به دستور connect-src «خط‌مشی امنیتی محتوا» اضافه کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent منسوخ شده است. لطفاً درعوض از navigator.storage استانداردشده استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> با مادر <picture> نامعتبر است و درنتیجه نادیده گرفته می‌شود. لطفاً درعوض از <source srcset> استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo منسوخ شده است. لطفاً درعوض از navigator.storage استانداردشده استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "قصد داریم میانای برنامه‌سازی کاربردی chrome.privacy.websites.privacySandboxEnabled را منسوخ کنیم، اما به‌دلیل سازگاری با نسخه قدیمی، این میانا تا انتشار نسخه M113 فعال خواد ماند. درعوض، لطفاً از chrome.privacy.websites.topicsEnabled، chrome.privacy.websites.fledgeEnabled، و chrome.privacy.websites.adMeasurementEnabled استفاده کنید. به این نشانی مراجعه کنید: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "درخواست‌های منبع فرعی‌ای که نشانی‌های وب آن‌ها حاوی اطلاعات کاربری جاسازی‌شده (مثل https://user:pass@host/) است مسدود می‌شود."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "محدودیت DtlsSrtpKeyAgreement برداشته شد. مقدار false را برای این محدودیت مشخص کرده‌اید. این اقدام به‌عنوان تلاشی برای استفاده از روش برداشته‌شده SDES key negotiation تفسیر می‌شود. این عملکرد برداشته شده است؛ درعوض از سرویسی استفاده کنید که از DTLS key negotiation پشتیبانی کند."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "محدودیت DtlsSrtpKeyAgreement برداشته شد. مقدار true را برای این محدودیت مشخص کرده‌اید. این اقدام اثری ندارد، اما می‌توانید این محدودیت را برای حفظ نظم بردارید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP شناسایی شد. از این گویش Session Description Protocol دیگر پشتیبانی نمی‌شود. لطفاً درعوض از Unified Plan SDP استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics که هنگام ساختن RTCPeerConnection با {sdpSemantics:'plan-b'} از آن استفاده می‌شود، نسخه غیراستاندارد قدیمی Session Description Protocol است که برای همیشه از «پلاتفرم وب» حذف شده است. این مورد هنگام ساختن با IS_FUCHSIA همچنان دردسترس است، اما قصد داریم آن را در اسرع وقت حذف کنیم. استفاده از این وابستگی را متوقف کنید. برای اطلاع یافتن از وضعیت، به https://crbug.com/1302249 مراجعه کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "گزینه rtcpMuxPolicy منسوخ شده است و برداشته خواهد شد."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer به جداسازی بین‌مبدائی نیاز خواهد داشت. برای جزئیات بیشتر، به https://developer.chrome.com/blog/enabling-shared-array-buffer/‎ مراجعه کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() بدون فعال‌سازی کاربر منسوخ شده است و برداشته خواهد شد."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "از ویژگی منسوخ‌شده استفاده شده است"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "برای ادامه استفاده از SharedArrayBuffer، افزونه‌ها باید در جداسازی بین‌مبدائی فعال شوند. به https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎ مراجعه کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} مختص ارائه‌دهنده است. لطفاً درعوض از {PH2} استاندارد استفاده کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "پاسخ json در XMLHttpRequest از UTF-16 پشتیبانی نمی‌کند."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "XMLHttpRequest هم‌زمان در رشته اصلی به‌دلیل آثار مخربش برای تجربه کاربر نهایی منسوخ شده است. برای راهنمایی بیشتر، https://xhr.spec.whatwg.org/‎ را بررسی کنید."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() منسوخ شده است. لطفاً درعوض از isSessionSupported() استفاده کنید و مقدار منطقی حل‌شده را بررسی کنید."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "مشخصه HTML: تکمیل خودکار"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "پورتال‌ها - کانال‌های ارتباطی با مبدأ یکسان"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "تکمیل خودکار چگونه کار می‌کند؟"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "عنصر ورودی فرم"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "عناصر برچسب"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "مدیریت مداخله آگهی‌های سنگین"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "ارائه"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "نماد اصلی که Chrome از آن استفاده کرده است"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "نماد مانیفست اصلی از {PH1}"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "کنترل‌کننده‌های پروتکل"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "رنگ زمینه"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "واکشی اولیه و پیش‌پرداززنی"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "مانیفست برنامه"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "بله"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "واکشی اولیه و پیش‌پرداززنی"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "برای مشاهده محتوای هر گزارش روی آن کلیک کنید"
@@ -3333,10 +3363,10 @@
     "message": "میاناهای برنامه‌سازی کاربردی استفاده‌شده واجدشرایط نبودند."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "درحال‌حاضر، IPages که جاوا اسکریپت ازطریق افزونه در آن‌ها تزریق می‌شود واجدشرایط حافظه پنهان عقب-جلو نیستند"
+    "message": "درحال‌حاضر، صفحه‌هایی که JavaScript ازطریق افزونه در آن‌ها تزریق می‌شود واجدشرایط حافظه نهان بهینه‌شده نیستند."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
-    "message": "درحال‌حاضر، صفحه‌هایی که «برگه سبک نگارش» ازطریق افزونه در آن‌ها تزریق می‌شود واجدشرایط حافظه پنهان عقب-جلو نیستند."
+    "message": "درحال‌حاضر، صفحه‌هایی که StyleSheet ازطریق افزونه در آن‌ها تزریق می‌شود واجدشرایط حافظه نهان بهینه‌شده نیستند."
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "خطای داخلی."
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "تعداد کدهای ذخیره‌شده"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "پاک کردن محتوای غیرمداوم"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "فعال"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "نادیده گرفته شد"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "پیش‌پرداززنی"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "معتبر"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "پیش‌بارگذاری به‌اجبار فعال شد چون DevTools باز است. وقتی DevTools بسته شود، پیش‌پرداززنی غیرفعال خواهد شد چون این جلسه مرورگر بخشی از گروه بازدارنده مورداستفاده برای مقایسه عملکرد است."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "پیش‌پرداززنی غیرفعال بود، اما اکنون به‌اجبار فعال شد"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "اطلاعات اصلی"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "ساعت شروع:"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "وضعیت"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "راه‌انداز"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "برای جزئیات بیشتر، عنصری انتخاب کنید"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "فعال"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "نادیده گرفته شد"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "پیش‌پرداززنی"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "ساعت شروع:"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "وضعیت"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "راه‌انداز"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "اطلاعات دقیق"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "نوع"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "منبع"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "اعتبار"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "معتبر"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "اعتبار"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "رسیدن به نقطه توقف"
@@ -4479,7 +4488,7 @@
     "message": "درنظر گرفتن ارزیابی به‌عنوان فعال‌سازی کاربر"
   },
   "panels/console/ConsoleView.ts | verbose": {
-    "message": "سطح جزئیات"
+    "message": "پیام طولانی"
   },
   "panels/console/ConsoleView.ts | warnings": {
     "message": "اخطارها"
@@ -4498,6 +4507,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "همه پیام‌های حاوی {PH1} را پاک کنید"
+  },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "نقطه توقف شرطی"
   },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "کنسول"
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "نقطه گزارش"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{# بار تکرار شده است}one{# بار تکرار شده است}other{# بار تکرار شده است}}"
@@ -4575,7 +4590,7 @@
     "message": "پاک کردن سابقه کنسول"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "جمع کردن پیام‌های console.trace() به‌طور پیش‌فرش"
+    "message": "پیام‌های console.trace() به‌طور خودکار باز نشود"
   },
   "panels/console/console-meta.ts | console": {
     "message": "کنسول"
@@ -4605,10 +4620,10 @@
     "message": "ارزیابی مشتاقانه نوشتار درخواست کنسول"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "ارزیابی کردنْ فعال‌سازی کاربر را راه‌اندازی می‌کند"
+    "message": "ارزیابی منجر به فعال‌سازی کاربر می‌شود"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "ازهم بازکردن پیام‌های console.trace() به‌طور پیش‌فرض"
+    "message": "باز کردن خودکار پیام‌های console.trace()"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "گروه‌بندی پیام‌های مشابه در کنسول"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "جستجو براساس رشته، انتخاب‌گر، یا XPath"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "قاب"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "پنهان کردن نوار کناری سبک‌های محاسبه‌شده"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "روشن/ خاموش کردن دارایی و ادامه ویرایش"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "مقدار تنظیم «{PH1}» {PH2} خارج از محدوده پشتیبانی‌شده [{PH3}، {PH4}] برای خانواده قلم «{PH5}» است."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "مشاهده مقدار محاسبه‌شده"
   },
@@ -5454,6 +5463,12 @@
     "message": "نمایش نشان‌ها"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "نشان داده نشود"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "بیشتر بدانید"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "عنصری را در صفحه برای بازرسی کردن انتخاب کنید"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "نمایش نکته‌ابزار اسناد CSS"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "نمایش سبک‌های محاسبه‌شده"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "پاک کردن همه نمایه‌ها"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "این پانل در نسخه بعدی منسوخ خواهد شد. برای ضبط نمایه‌های CPU برای JavaScript، از پانل «عملکرد» استفاده کنید."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "بازخورد"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "رفتن به «پانل عملکرد»"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "بیشتر بدانید"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "بارگیری…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "اسناد"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "زمان سپری‌شده"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "فیلتر"
@@ -9999,7 +10032,7 @@
     "message": "آزمایش‌ها"
   },
   "panels/settings/settings-meta.ts | ignoreList": {
-    "message": "فهرست نادیده گرفتن"
+    "message": "فهرست استثناها"
   },
   "panels/settings/settings-meta.ts | preferences": {
     "message": "اولویت‌ها"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (از نقشه منبع)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (در فهرست استثناها)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "جستجو در همه فایل‌ها"
   },
@@ -10403,8 +10439,8 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "میلی‌ثانیه"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(ازطریق اطلاعات اشکال‌زدایی توسط {PH1} ارائه شده است)"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "(از {PH1})"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
     "message": "(منبع از {PH1} نگاشت شده است)"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "مجموع زمان مسدودسازی: {PH1}میلی‌ثانیه{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "پوشش"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "رشته"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "رشته {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "زمان‌بندی‌ها"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "تعاملات"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "بستن"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "پوشش"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "دریافت شد"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "ضبط پوشش با ردیابی عملکرد"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "ضبط ناموفق بود"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "آغازگر"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "تأخیر ورودی"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "زمان‌سنج نصب"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "قاب جاوا اسکریپت"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "قاب آزاد JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "ریشه JS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "قاب سیستم JS"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "بزرگ‌ترین نقاشی دارای محتوا"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "اندازه حافظه پنهان تولیدشده"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "نمایه‌سازی سربار"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "محدوده"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "زمان صرف‌شده برای پرداز زدن"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "زمان انتظار رشته اصلی"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "درنگ"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "برای اعمال فیلتر مرتب‌سازی، کلید Enter را فشار دهید"
+    "message": "وضعیت مرتب‌سازی ستون: {PH1}. برای اعمال فیلتر مرتب‌سازی، کلید Enter را فشار دهید"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "گزینه‌های سرصفحه"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "بازنشانی ستون‌ها"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "صعودی"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "ترتیب براساس"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "نزولی"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "هیچ‌کدام"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} به‌ترتیب صعودی مرتب شد"

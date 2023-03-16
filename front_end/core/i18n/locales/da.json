@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} sek."
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: Profileringsværktøjsparseren til CPU udbedrer {PH1} manglende eksempler."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Profil {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Indholdet kunne ikke indlæses for {PH1} ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "Navigation til {PH1} blev gendannet fra back/forward-cachen (se https://web.dev/bfcache/)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "Den midlertidige variabel kunne ikke gemmes."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "Sat på pause i debugger"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "Indlæsning er annulleret på grund af timeout ved indlæsning"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Indlæsningen er annulleret på grund af genindlæsning af inspiceret side"
   },
@@ -618,7 +615,7 @@
     "message": "standser"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "Farveblindhed"
+    "message": "Akromatopsi (ingen farve)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "Sløret visning"
@@ -627,7 +624,7 @@
     "message": "Optag asynkrone staksporinger"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "Grønblindhed"
+    "message": "Deuteranopi (ingen grøn)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "Deaktiver asynkrone staksporinger"
@@ -690,7 +687,7 @@
     "message": "Emuler en fokuseret side"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "Emuler farveblindhed"
+    "message": "Emuler akromatopsi (ingen farve)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "Emuler automatisk mørk tilstand"
@@ -714,13 +711,16 @@
     "message": "Emuler CSS-skærmmedietype"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "Emuler grønblindhed"
+    "message": "Emuler deuteranopi (ingen grøn)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "Emuler rødblindhed"
+    "message": "Emuler protanopi (ingen rød)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "Emuler reduceret kontrast"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "Emuler violetblindhed"
+    "message": "Emuler tritanopi (ingen blå)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "Emuler visningsmangler"
@@ -789,10 +789,13 @@
     "message": "udskriv"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "Rødblindhed"
+    "message": "Protanopi (ingen rød)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "forespørgsel"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "Reduceret kontrast"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "skærm"
@@ -840,7 +843,7 @@
     "message": "Vis sporingsstørrelser"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "Violetblindhed"
+    "message": "Tritanopi (ingen blå)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript er deaktiveret"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Frigør til et separat vindue"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Side: Ikke valgt"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "Side: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Som oprettet"
   },
@@ -1062,7 +1071,7 @@
     "message": "Farveformat:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "Denne indstilling er udfaset, fordi den ikke er kompatibel med moderne farverum. Hvis du vil genaktivere den, kan du deaktivere det pågældende eksperiment."
+    "message": "Denne indstilling er udfaset, fordi den ikke er kompatibel med moderne farverum. Du kan genaktivere den ved at deaktivere det tilsvarende eksperiment."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Mørkt"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "Primært"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "Godkendelse dækkes ikke af jokertegnet (*) ved behandling af CORS Access-Control-Allow-Headers."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Attributten disableRemotePlayback skal bruges i stedet for selektoren -internal-media-controls-overlay-cast-button for at deaktivere standardintegrationen af Cast."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "Anmodninger om ressourcer, hvis webadresser både indeholder tegnene \\(n|r|t) uden blanktegn og mindre end-tegn (<), blokeres. Hvis du vil indlæse disse ressourcer, skal du fjerne linjeskift og indkode mindre end-tegn fra f.eks. attributværdier for elementer."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() er udfaset. Brug i stedet den standardiserede API: Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() er udfaset. Brug i stedet den standardiserede API: Paint Timing."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() er udfaset. Brug i stedet den standardiserede API: nextHopProtocol i Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "Cookies, der indeholder et \\(0|r|n)-tegn, afvises i stedet for at blive forkortet."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Slækkelse af politikken for samme oprindelse ved at konfigurere document.domain er udfaset og deaktiveres som standard. Denne advarsel om udfasning gælder en adgang med krydsoprindelse, som blev aktiveret ved at konfigurere document.domain."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "Aktivering af window.alert fra iframes med krydsoprindelse er udfaset og fjernes senere."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "Aktivering af window.confirm fra iframes med krydsoprindelse er udfaset og fjernes senere."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Slækkelse af politikken for samme oprindelse ved at konfigurere document.domain er udfaset og deaktiveres som standard. Hvis du vil fortsætte med at bruge denne funktion, skal du fravælge agentklynger med indtastede oprindelser ved at sende en Origin-Agent-Cluster: ?0-header sammen med HTTP-svaret for dokumentet og rammerne. Få flere oplysninger på https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path er udfaset og vil blive fjernet. Brug i stedet Event.composedPath()."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Headeren Expect-CT er udfaset og bliver fjernet. Chrome kræver Certifikatgennemsigtighed for alle offentligt godkendte certifikater, der er udstedt efter den 30. april 2018."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() og watchPosition() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() og watchPosition() er udfasede på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate er udfaset. Brug i stedet RTCPeerConnectionIceErrorEvent.address eller RTCPeerConnectionIceErrorEvent.port."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "Sælgerens oprindelse og de vilkårlige data fra canmakepayment-hændelsens scripttjeneste er udfaset og fjernes: topOrigin, paymentRequestOrigin, methodData og modifiers."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Websitet har anmodet om en underressource fra et netværk, som websitet kun havde adgang til på grund af dets brugeres privilegerede netværksposition. Disse anmodninger eksponerer ikke-offentlige enheder og servere på internettet, hvilket øger risikoen for et angreb med en forfalsket anmodning fra et andet website og/eller læk af oplysninger. For at minimere disse risici udfaser Chrome anmodninger til ikke-offentlige underressourcer, når de stammer fra usikre kontekster, og begynder at blokere dem."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": "CSS kan ikke indlæses fra webadresser med file:, medmindre de slutter med filtypen .css."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "Brug af SourceBuffer.abort() til at annullere fjernelse af det asynkrone område for remove() er udfaset på grund af ændringer i specifikationerne. Understøttelsen fjernes senere hen. Du bør lytte til updateend-hændelsen i stedet. abort() er kun beregnet til at annullere en tilføjelse af asynkrone medier eller nulstille parsertilstanden."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "Konfiguration af MediaSource.duration under det højeste tidsstempel for præsentation af kodede rammer, der er gemt i bufferen, er udfaset på grund af ændringer i specifikationerne. Understøttelse af implicit fjernelse af forkortede medier, der er gemt i bufferen, fjernes senere hen. Du bør i stedet udføre eksplicit remove(newDuration, oldDuration) på alle sourceBuffers, hvor newDuration < oldDuration."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI anmoder om tilladelse til brug, selvom sysex ikke er angivet i MIDIOptions."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "Den ældre, ikke-standardiserede shadowroot-attribut er udfaset. Brug den nye standardiserede shadowrootmode-attribut i stedet."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "Notification API kan ikke længere bruges fra usikre oprindelser. Overvej at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "Det er ikke længere muligt at anmode om tilladelse til Notification API fra en iframe med krydsoprindelse. Du bør i stedet overveje at anmode om tilladelse fra en ramme på øverste niveau eller åbne et nyt vindue."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Valgmuligheden imageOrientation: 'none' i createImageBitmap er udfaset. Brug createImageBitmap med valgmuligheden {imageOrientation: 'from-image'} i stedet."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "Din partner forhandler om en forældet version af (D)TLS. Kontakt din partner for at løse dette problem."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "Angivelse af overflow: visible i img-, video- og canvas-tags kan medføre, at de producerer visuelt indhold uden for elementgrænserne. Se https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments er udfaset. Brug just-in-time-installation for betalingshandlere i stedet."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "Dit PaymentRequest-opkald omgik Content Security Policy-direktivet connect-src (CSP). Denne omgåelse er udfaset. Føj betalingsmetodens id fra PaymentRequest API (i feltet supportedMethods) til CSP-direktivet connect-src."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent er udfaset. Brug i stedet standardiseret navigator.storage."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<source src> med en overordnet <picture> er ugyldig og ignoreres. Brug i stedet <source srcset>."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame er leverandørspecifik. Brug i stedet standard-cancelAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame er leverandørspecifik. Brug i stedet standard-requestAnimationFrame."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen er udfaset. Brug Document.fullscreenElement i stedet."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() er udfaset. Brug Element.requestFullscreen() i stedet."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() er udfaset. Brug Element.requestFullscreen() i stedet."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() er udfaset. Brug Document.exitFullscreen() i stedet."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() er udfaset. Brug Document.exitFullscreen() i stedet."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen er udfaset. Brug Document.fullscreenEnabled i stedet."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "Vi udfaser API'en chrome.privacy.websites.privacySandboxEnabled, men den forbliver aktiv med henblik på bagudkompatibilitet, indtil M113 udgives. Brug i stedet chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled og chrome.privacy.websites.adMeasurementEnabled. Se https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Begrænsningen DtlsSrtpKeyAgreement er fjernet. Du har angivet værdien false for denne begrænsning, hvilket tolkes som et forsøg på at bruge den fjernede metode SDES key negotiation. Denne funktion er fjernet. Brug i stedet en tjeneste, der understøtter DTLS key negotiation."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Begrænsningen DtlsSrtpKeyAgreement er fjernet. Du har angivet værdien true for denne begrænsning, hvilket ikke har nogen effekt, men du kan fjerne denne begrænsning af hensyn til ryddeligheden."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Den tilbagekaldsbaserede getStats() er udfaset og fjernes. Brug de specifikationskompatible getStats() i stedet."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() er udfaset. Brug Selection.modify() i stedet."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Anmodninger om underressourcer, hvis webadresser indeholder indlejrede loginoplysninger (f.eks. https://user:pass@host/), blokeres."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "Valgmuligheden rtcpMuxPolicy er udfaset og vil blive fjernet."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer kræver domæneisolering. Få flere oplysninger på https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "speechSynthesis.speak() uden brugeraktivering er udfaset og vil blive fjernet."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Udvidelser skal tilvælge domæneisolering for fortsat at kunne bruge SharedArrayBuffer. Se https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "UTF-16 understøttes ikke af svar-json i XMLHttpRequest"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synkront XMLHttpRequest i den primære tråd er udfaset, fordi det påvirkede slutbrugerens oplevelse negativt. Tjek https://xhr.spec.whatwg.org/ for at få mere hjælp."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() er udfaset. Brug i stedet isSessionSupported(), og tjek den matchede booleske værdi."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Ukendt fejl under indlæsning af fil"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site og Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "Godkendelse dækkes ikke af jokertegnet (*) ved behandling af CORS Access-Control-Allow-Headers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "Anmodninger om ressourcer, hvis webadresser både indeholder tegnene \\(n|r|t) uden blanktegn og mindre end-tegn (<), blokeres. Hvis du vil indlæse disse ressourcer, skal du fjerne linjeskift og indkode mindre end-tegn fra f.eks. attributværdier for elementer."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() er udfaset. Brug i stedet den standardiserede API: Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() er udfaset. Brug i stedet den standardiserede API: Paint Timing."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() er udfaset. Brug i stedet den standardiserede API: nextHopProtocol i Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "Cookies, der indeholder et \\(0|r|n)-tegn, afvises i stedet for at blive forkortet."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Slækkelse af politikken for samme oprindelse ved at konfigurere document.domain er udfaset og deaktiveres som standard. Denne advarsel om udfasning gælder en adgang med krydsoprindelse, som blev aktiveret ved at konfigurere document.domain."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "Aktivering af {PH1} fra iframes med krydsoprindelse er udfaset og fjernes senere hen."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Attributten disableRemotePlayback skal bruges i stedet for selektoren -internal-media-controls-overlay-cast-button for at deaktivere standardintegrationen af Cast."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} er udfaset. Brug i stedet {PH2}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "Dette er et eksempel på en oversat meddelelse vedrørende et udfasningsproblem."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Slækkelse af politikken for samme oprindelse ved at konfigurere document.domain er udfaset og deaktiveres som standard. Hvis du vil fortsætte med at bruge denne funktion, skal du fravælge agentklynger med indtastede oprindelser ved at sende en Origin-Agent-Cluster: ?0-header sammen med HTTP-svaret for dokumentet og rammerne. Få flere oplysninger på https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path er udfaset og vil blive fjernet. Brug i stedet Event.composedPath()."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Headeren Expect-CT er udfaset og bliver fjernet. Chrome kræver Certifikatgennemsigtighed for alle offentligt godkendte certifikater, der er udstedt efter den 30. april 2018."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "Du kan få flere oplysninger på siden for funktionsstatus."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() og watchPosition() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() og watchPosition() er udfasede på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate er udfaset. Brug i stedet RTCPeerConnectionIceErrorEvent.address eller RTCPeerConnectionIceErrorEvent.port."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "Sælgerens oprindelse og de vilkårlige data fra canmakepayment-hændelsens scripttjeneste er udfaset og fjernes: topOrigin, paymentRequestOrigin, methodData og modifiers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Websitet har anmodet om en underressource fra et netværk, som websitet kun havde adgang til på grund af dets brugeres privilegerede netværksposition. Disse anmodninger eksponerer ikke-offentlige enheder og servere på internettet, hvilket øger risikoen for et angreb med en forfalsket anmodning fra et andet website og/eller læk af oplysninger. For at minimere disse risici udfaser Chrome anmodninger til ikke-offentlige underressourcer, når de stammer fra usikre kontekster, og begynder at blokere dem."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": "CSS kan ikke indlæses fra webadresser med file:, medmindre de slutter med filtypen .css."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "Brug af SourceBuffer.abort() til at annullere fjernelse af det asynkrone område for remove() er udfaset på grund af ændringer i specifikationerne. Understøttelsen fjernes senere hen. Du bør lytte til updateend-hændelsen i stedet. abort() er kun beregnet til at annullere en tilføjelse af asynkrone medier eller nulstille parsertilstanden."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "Konfiguration af MediaSource.duration under det højeste tidsstempel for præsentation af kodede rammer, der er gemt i bufferen, er udfaset på grund af ændringer i specifikationerne. Understøttelse af implicit fjernelse af forkortede medier, der er gemt i bufferen, fjernes senere hen. Du bør i stedet udføre eksplicit remove(newDuration, oldDuration) på alle sourceBuffers, hvor newDuration < oldDuration."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "Denne ændring træder i kraft i det overordnede versionsnummer {milestone}."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI anmoder om tilladelse til brug, selvom sysex ikke er angivet i MIDIOptions."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "Notification API kan ikke længere bruges fra usikre oprindelser. Overvej at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Det er ikke længere muligt at anmode om tilladelse til Notification API fra en iframe med krydsoprindelse. Du bør i stedet overveje at anmode om tilladelse fra en ramme på øverste niveau eller åbne et nyt vindue."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "Valgmuligheden imageOrientation: \"none\" i createImageBitmap er udfaset. Brug createImageBitmap med valgmuligheden {imageOrientation: \"from-image\"} i stedet."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "Din partner forhandler om en forældet version af (D)TLS. Kontakt din partner for at løse dette problem."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "WebSQL i usikre kontekster er udfaset og fjernes snart. Du skal bruge Web Storage eller Indexed Database."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "Angivelse af overflow: visible i img-, video- og canvas-tags kan medføre, at de producerer visuelt indhold uden for elementgrænserne. Se https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments er udfaset. Brug just-in-time-installation for betalingshandlere i stedet."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "Dit PaymentRequest-opkald omgik Content Security Policy-direktivet connect-src (CSP). Denne omgåelse er udfaset. Føj betalingsmetodens id fra PaymentRequest API (i feltet supportedMethods) til CSP-direktivet connect-src."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent er udfaset. Brug i stedet standardiseret navigator.storage."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<source src> med en overordnet <picture> er ugyldig og ignoreres. Brug i stedet <source srcset>."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo er udfaset. Brug i stedet standardiseret navigator.storage."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "Vi udfaser API'en chrome.privacy.websites.privacySandboxEnabled, men den forbliver aktiv med henblik på bagudkompatibilitet, indtil M113 udgives. Brug i stedet chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled og chrome.privacy.websites.adMeasurementEnabled. Se https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Anmodninger om underressourcer, hvis webadresser indeholder indlejrede loginoplysninger (f.eks. https://user:pass@host/), blokeres."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Begrænsningen DtlsSrtpKeyAgreement er fjernet. Du har angivet værdien false for denne begrænsning, hvilket tolkes som et forsøg på at bruge den fjernede metode SDES key negotiation. Denne funktion er fjernet. Brug i stedet en tjeneste, der understøtter DTLS key negotiation."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Begrænsningen DtlsSrtpKeyAgreement er fjernet. Du har angivet værdien true for denne begrænsning, hvilket ikke har nogen effekt, men du kan fjerne denne begrænsning af hensyn til ryddeligheden."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP er registreret. Denne dialekt af Session Description Protocol understøttes ikke længere. Brug i stedet Unified Plan SDP."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, som bruges ved konstruktion af en RTCPeerConnection med {sdpSemantics:'plan-b'}, er en forældet version, der ikke er standard, af Session Description Protocol, som er slettet permanent fra Web Platform. Den er stadig tilgængelig for udvikling med IS_FUCHSIA, men vi har til hensigt at slette den snarest muligt. Undlad at bruge den. Se status på https://crbug.com/1302249."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "Valgmuligheden rtcpMuxPolicy er udfaset og vil blive fjernet."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer kræver domæneisolering. Få flere oplysninger på https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "speechSynthesis.speak() uden brugeraktivering er udfaset og vil blive fjernet."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Brug af en udfaset funktion"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Udvidelser skal tilvælge domæneisolering for fortsat at kunne bruge SharedArrayBuffer. Se https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} er leverandørspecifik. Brug i stedet standarden {PH2}."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "UTF-16 understøttes ikke af svar-json i XMLHttpRequest"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synkront XMLHttpRequest i den primære tråd er udfaset, fordi det negativt påvirkede slutbrugerens oplevelse. Tjek https://xhr.spec.whatwg.org/ for at få mere hjælp."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() er udfaset. Brug i stedet isSessionSupported(), og tjek den matchede booleske værdi."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "HTML-attribut: Autofuldførelse"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portaler – kommunikationskanaler fra samme oprindelse"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "Hvordan fungerer Autofyld?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "Formularens indtastningselement"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "Etiketelementerne"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "Håndtering af indgriben ved tung annonce"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "Præsentation"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Primært ikon, som bruges af Chrome"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "Ikon for primært manifest fra {PH1}"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "Protokolhandlere"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Temafarve"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "Hentning på forhånd og forhåndsgengivelse"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Appmanifest"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ja"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "Hentning på forhånd og forhåndsgengivelse"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Klik på en rapport for at se indholdet"
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Antal lagrede tokens"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "Ryd ikke-igangværende"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "Aktiveret"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "Kasseret"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "Forhåndsgengivelse"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "Gyldig"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Forudindlæsning er aktiveret ved tvang, fordi Udviklerværktøjer er åben. Når Udviklerværktøjer er lukket, deaktiveres forhåndsgengivelse, da denne browsersession er en del af en tilbageholdelsesgruppe, som bruges til at sammenligne effektivitet."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Forhåndsgengivelse blev deaktiveret, men er nu aktiveret ved tvang"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "Grundlæggende oplysninger"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "Startet"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "Trigger"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Vælg et element for at få flere oplysninger"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "Aktiveret"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "Kasseret"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "Forhåndsgengivelse"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "Startet"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "Trigger"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "Detaljerede oplysninger"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "Type"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "Kilde"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "Gyldighed"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "Gyldig"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "Gyldighed"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ramt skillepunkt"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "Ryd alle meddelelser med {PH1}"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "Betinget stoppunkt"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "Konsol"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "Logpoint"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{Gentaget # gang}one{Gentaget # gang}other{Gentaget # gange}}"
@@ -4575,7 +4590,7 @@
     "message": "Ryd konsolhistorik"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "Skjul console.trace()-meddelelser som standard"
+    "message": "Udvid ikke console.trace()-meddelelser automatisk"
   },
   "panels/console/console-meta.ts | console": {
     "message": "Konsol"
@@ -4605,10 +4620,10 @@
     "message": "Evaluer ivrigt konsollens meddelelsestekst"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "Evaluering starter brugeraktivering"
+    "message": "Evaluering forårsager brugeraktivering"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "Udvid console.trace()-meddelelser som standard"
+    "message": "Udvid automatisk console.trace()-meddelelser"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "Gruppér lignende beskeder i konsollen"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "Find ud fra streng, selektor eller XPath"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "Ramme"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "Skjul sidebjælken for behandlede typografier"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "Slå egenskab til/fra, og fortsæt med at redigere"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "Værdien for indstillingen \"{PH1}\" {PH2} er uden for det understøttede område [{PH3}, {PH4}] til skrifttypefamilien \"{PH5}\"."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Se beregnede værdier"
   },
@@ -5454,6 +5463,12 @@
     "message": "Vis badges"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "Få flere oplysninger"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "Vis ikke"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "Få flere oplysninger"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "Vælg et element på siden for at undersøge det"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "Vis værktøjstip til CSS-dokumentation"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Vis behandlede typografier"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "Ryd alle profiler"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "Dette panel udfases i den kommende version. Brug Ydeevnepanel til at registrere JavaScript-profileringsværktøjer til CPU."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "Feedback"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "Gå til Ydeevnepanel"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "Få flere oplysninger"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "Indlæs…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentation"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "Forløbet tid"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtrér"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (fra kildekort)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (på liste over ignorerede)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "Søg i alle filer"
   },
@@ -10403,11 +10439,11 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "(leveret via fejlretningsoplysninger fra {PH1})"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "(Fra {PH1})"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
-    "message": "(kilden er tilknyttet fra {PH1})"
+    "message": "(Kilden er tilknyttet fra {PH1})"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "Lukning"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "Samlet blokeringstid: {PH1} ms{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "DÆKNING"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Tråd"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "Tråden {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "Tider"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "Interaktioner"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "Luk"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "Dækning"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "Modtaget"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "Registrer dækning med sporing af effektivitet"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "Optagelsen mislykkedes"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Iværksætter"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "Forsinkelse på input"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installer timer"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS-ramme"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "Ramme for JS-inaktivitet"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "JS-rod"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "Ramme for JS-system"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "Største udfyldning af indhold"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Produceret cachestørrelse"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "Tid i profileringsværktøj"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "Interval"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Tid brugt på gengivelse"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "Tid, hvor der blev ventet på hovedtråden"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "Timeout"
@@ -12327,7 +12354,7 @@
     "message": "Understøtter permanente nøgler"
   },
   "panels/webauthn/WebauthnPane.ts | supportsUserVerification": {
-    "message": "Understøtter brugerbekræftelse"
+    "message": "Understøtter brugerverificering"
   },
   "panels/webauthn/WebauthnPane.ts | transport": {
     "message": "Transport"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "Tryk på Enter for at anvende sorteringsfilteret"
+    "message": "Status for kolonnesortering: {PH1}. Tryk på Enter for at anvende sorteringsfilteret"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Indstillinger for header"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "Nulstil kolonner"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "stigende"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "Sortér efter"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "faldende"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "ingen"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} er sorteret i stigende rækkefølge"

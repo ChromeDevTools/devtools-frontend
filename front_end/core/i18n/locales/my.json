@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} s"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools- CPU ပရိုဖိုင် ပါဆာသည် လွတ်သွားသောနမူနာ {PH1} ခုကို ပြင်ဆင်နေသည်။"
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "ပရိုဖိုင် {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} ({PH2}) အတွက် အကြောင်းအရာကို ဖွင့်၍မရပါ"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "ရှေ့-နောက် ကက်ရှ်မှ {PH1} သို့ သွားရောက်မှုကို ပြန်ပြောင်းထားသည် (https://web.dev/bfcache/ ကို ကြည့်ရန်)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "ယာယီကိန်းရှင်သို့ သိမ်း၍မရပါ။"
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "အမှားရှာပြင်ကိရိယာတွင် ခဏရပ်ထားသည်"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "တင်ပို့မှု အချိန်ကုန်သွားသဖြင့် တင်ပို့ခြင်းကို ပယ်ဖျက်လိုက်သည်"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "စစ်ဆေးထားသောစာမျက်နှာကို ပြန်လည်စတင်သဖြင့် တင်ပို့ခြင်းကို ပယ်ဖျက်လိုက်သည်"
   },
@@ -618,7 +615,7 @@
     "message": "ရပ်နေသည်"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "အရောင်မခွဲခြားနိုင်ခြင်း"
+    "message": "Achromatopsia (အရောင်မမြင်ရ)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "အမြင်အာရုံ မှုန်ဝါးခြင်း"
@@ -627,7 +624,7 @@
     "message": "ထပ်တူမညီသော ဖြစ်စဉ်မှတ်တမ်းများ ရိုက်ကူးမည်"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "အနီနှင့် အစိမ်း မခွဲခြားနိုင်ခြင်း"
+    "message": "Deuteranopia (အစိမ်းမမြင်ရ)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "ထပ်တူမညီသော ဖြစ်စဉ်မှတ်တမ်းများ ပိတ်မည်"
@@ -690,7 +687,7 @@
     "message": "အထူးပြသထားသော စာမျက်နှာကို ပုံတူထုတ်လုပ်ရန်"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "အရောင်မခွဲခြားနိုင်ခြင်းကို ပုံတူထုတ်လုပ်မည်"
+    "message": "achromatopsia (အရောင်မမြင်ရ) ကို ပုံတူထုတ်ရန်"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "အလိုအလျောက်လုပ်သော အမှောင်မုဒ်ကို ပုံတူထုတ်လုပ်ရန်"
@@ -714,13 +711,16 @@
     "message": "CSS ဖန်သားပြင် မီဒီယာအမျိုးအစားကို ပုံတူထုတ်လုပ်မည်"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "အနီနှင့် အစိမ်း မခွဲခြားနိုင်ခြင်းကို ပုံတူထုတ်လုပ်မည်"
+    "message": "deuteranopia (အစိမ်းမမြင်ရ) ပုံတူထုတ်ရန်"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "အနီအနုအရင့် မခွဲခြားနိုင်ခြင်းကို ပုံတူထုတ်လုပ်မည်"
+    "message": "protanopia (အနီမမြင်ရ) ကို ပုံတူထုတ်ရန်"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "လျှော့ထားသော အလင်းအမှောင်ခြားနားချက်ကို ပုံတူထုတ်ရန်"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "အပြာနှင့် အဝါမခွဲခြားနိုင်ခြင်းကို ပုံတူထုတ်လုပ်မည်"
+    "message": "tritanopia (အပြာမမြင်ရ) ကို ပုံတူထုတ်ရန်"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "အမြင်အာရုံ ချွတ်ယွင်းချက်ကို ပုံတူထုတ်လုပ်မည်"
@@ -789,10 +789,13 @@
     "message": "ပုံနှိပ်ထုတ်ရန်"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "အနီအနုအရင့် မခွဲခြားနိုင်ခြင်း"
+    "message": "Protanopia (အနီမမြင်ရ)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "မေးမြန်းချက်"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "အလင်းအမှောင်ခြားနားချက် လျှော့ထားသည်"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "ဖန်သားပြင်"
@@ -840,7 +843,7 @@
     "message": "လမ်းကြောင်းအရွယ်အစားများ ပြခြင်း"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "အပြာနှင့် အဝါမခွဲခြားနိုင်ခြင်း"
+    "message": "Tritanopia (အပြာမမြင်ရ)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript ကို ပိတ်ထားသည်"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "သီးခြားဝင်းဒိုးထဲသို့ ဖြုတ်ရန်"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "စာမျက်နှာ- ရွေးမထားပါ"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "စာမျက်နှာ- {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "အသုံးပြုသူပေးထားသည့်အတိုင်း"
   },
@@ -1062,7 +1071,7 @@
     "message": "အရောင်ဖော်မက်-"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "ခေတ်ပေါ်အရောင်တွဲများနှင့် တွဲဖက်မသုံးနိုင်သောကြောင့် ဤဆက်တင်ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအားပြန်ဖွင့်ရန် သက်ဆိုင်ရာစမ်းသပ်မှုကို ပိတ်နိုင်သည်။"
+    "message": "ခေတ်ပေါ်အရောင်တွဲများနှင့် တွဲဖက်မသုံးနိုင်သောကြောင့် ဤဆက်တင်ကို ရပ်ဆိုင်းထားသည်။ ၎င်းကိုပြန်ဖွင့်ရန် သက်ဆိုင်ရာ စမ်းသပ်မှုကို ပိတ်ပါ။"
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "အမှောင်"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "ပင်မ"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "CORS Access-Control-Allow-Headers ဆောင်ရွက်ရာတွင် ခွင့်ပြုချက်ကို အစားထိုး အထူးအက္ခရာ (*) ဖြင့် ပြသမည်မဟုတ်ပါ။"
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "မူရင်း ‘ကာစ်’ ပေါင်းစည်းမှုကို ပိတ်ရန်အတွက် -internal-media-controls-overlay-cast-button ရွေးချယ်စနစ်ကို အသုံးပြုမည့်အစား disableRemotePlayback ရည်ညွှန်းချက်ကို အသုံးပြုသင့်သည်။"
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "ရင်းမြစ်တောင်းဆိုမှုများ၏ URL များတွင် ပါဝင်သော ဖယ်ရှားထားသည့် နေရာလွတ် \\(n|r|t) အက္ခရာများနှင့် ‘ပိုနည်းသော အက္ခရာ’ (<) များကို ပိတ်ထားသည်။ ဤရင်းမြစ်များဖွင့်ရန်အတွက် လိုင်းအသစ်များ ဖယ်ရှားပြီး အစိတ်အပိုင်း ရည်ညွှန်းချက်တန်ဖိုးများကဲ့သို့ နေရာများမှ ‘ပိုနည်းသော အက္ခရာ’ များကို ဒေတာ အသွင်ပြောင်းပါ။"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() ကို ရပ်ဆိုင်းထားပြီး ၎င်းအစား စံသတ်မှတ်ထားသည့် ဤ API ကို အသုံးပါ- Navigation Timing 2။"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() ကို ရပ်ဆိုင်းထားပြီး ၎င်းအစား စံသတ်မှတ်ထားသည့် ဤ API ကို အသုံးပြုပါ- Paint Timing။"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() ကို ရပ်ဆိုင်းထားပြီး ၎င်းအစား စံသတ်မှတ်ထားသည့် ဤ API ကို အသုံးပြုပါ- Navigation Timing 2 ရှိ nextHopProtocol။"
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "\\(0|r|n) အက္ခရာပါဝင်သော ကွတ်ကီးများကို ဖြတ်တောက်မည့်အစား ငြင်းပယ်ပါမည်။"
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "document.domain သတ်မှတ်ခြင်းဖြင့် မူရင်းတူညီသည့် မူဝါဒ ဖယ်ရှားခြင်းကို ရပ်ဆိုင်းထားပြီး မူရင်းသတ်မှတ်ချက်အနေဖြင့် ပိတ်ပါမည်။ ဤရပ်ဆိုင်းမှု သတိပေးချက်သည် ဇာစ်မြစ်များကြား အသုံးပြုခွင့်အတွက်ဖြစ်ပြီး ၎င်းကို document.domain သတ်မှတ်ခြင်းဖြင့် ဖွင့်ထားသည်။"
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "iframe ဇာစ်မြစ်အမျိုးမျိုးမှ window.alert စတင်ခြင်းကို ရပ်ဆိုင်းထားပြီး နောက်ပိုင်းတွင်ဖယ်ရှားပါမည်။"
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "iframe ဇာစ်မြစ်အမျိုးမျိုးမှ window.confirm စတင်ခြင်းကို ရပ်ဆိုင်းထားပြီး နောက်ပိုင်းတွင်ဖယ်ရှားပါမည်။"
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "document.domain သတ်မှတ်ခြင်းဖြင့် မူရင်းတူညီသည့် မူဝါဒ ဖယ်ရှားခြင်းကို ရပ်ဆိုင်းထားပြီး မူရင်းသတ်မှတ်ချက်အနေဖြင့် ပိတ်ပါမည်။ ဤဝန်ဆောင်မှု ဆက်လက်သုံးရန် မှတ်တမ်းနှင့် ဖရိမ်များအတွက် တုံ့ပြန်သည့် HTTP နှင့်အတူ Origin-Agent-Cluster: ?0 ခေါင်းစီး ပို့ပေးခြင်းဖြင့် ဇာစ်မြစ်အခြေခံထားသည့် ကိုယ်စားလှယ် အစုအဖွဲ့များမှ ထွက်ပါ။ နောက်ထပ်အသေးစိတ်အတွက် https://developer.chrome.com/blog/immutable-document-domain/ တွင် ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path ကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။ ၎င်းအစား Event.composedPath() ကို အသုံးပြုပါ။"
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Expect-CT ခေါင်းစီးကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။ ၂၀၁၈ ခုနှစ်၊ ဧပြီလ ၃၀ ရက် နောက်ပိုင်းတွင်ထုတ်ပြီး အများလက်ခံထားသည့် အသိအမှတ်ပြုလက်မှတ်အားလုံးအတွက် ‘အသိအမှတ်ပြုလက်မှတ် ပွင့်လင်းမြင်သာမှု’ ရှိရန် Chrome က သတ်မှတ်ထားသည်။"
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "getCurrentPosition() နှင့် watchPosition() သည် လုံခြုံမှုမရှိသော ဇာစ်မြစ်များတွင် ဆက်လက်မလုပ်ဆောင်တော့ပါ။ ဤဝန်ဆောင်မှုကို အသုံးပြုရန် သင့်အပလီကေးရှင်းကို HTTPS ကဲ့သို့ လုံခြုံသည့်ဇာစ်မြစ်သို့ ပြောင်းရန် စဉ်းစားသင့်သည်။ နောက်ထပ်အသေးစိတ်အတွက် https://goo.gle/chrome-insecure-origins တွင် ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "getCurrentPosition() နှင့် watchPosition() တို့ကို လုံခြုံမှုမရှိသော ဇာစ်မြစ်များတွင် ရပ်ဆိုင်းထားသည်။ ဤဝန်ဆောင်မှုကို အသုံးပြုရန် သင့်အပလီကေးရှင်းကို HTTPS ကဲ့သို့ လုံခြုံသည့်ဇာစ်မြစ်သို့ ပြောင်းရန် စဉ်းစားသင့်သည်။ နောက်ထပ်အသေးစိတ်အတွက် https://goo.gle/chrome-insecure-origins တွင် ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "getUserMedia() သည် လုံခြုံမှုမရှိသော ဇာစ်မြစ်များတွင် ဆက်လက်မလုပ်ဆောင်တော့ပါ။ ဤဝန်ဆောင်မှုကို အသုံးပြုရန် သင့်အပလီကေးရှင်းကို HTTPS ကဲ့သို့ လုံခြုံသည့်ဇာစ်မြစ်သို့ ပြောင်းရန် စဉ်းစားသင့်သည်။ နောက်ထပ်အသေးစိတ်အတွက် https://goo.gle/chrome-insecure-origins တွင် ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား RTCPeerConnectionIceErrorEvent.address (သို့) RTCPeerConnectionIceErrorEvent.port ကို အသုံးပြုနိုင်သည်။"
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "canmakepayment ဝန်ဆောင်မှုဆောင်ရွက်စနစ် အစီအစဉ်မှ ရောင်းသူဇာစ်မြစ်နှင့် မည်သည့်ဒေတာကိုမဆို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်- topOrigin၊ paymentRequestOrigin၊ methodData၊ modifiers။"
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "အသုံးပြုသူများ၏ အထူးအခွင့်အရေးရှိသည့် ကွန်ရက်အနေအထားဖြစ်သောကြောင့် ၎င်းကိုသုံးခွင့်ရှိသည့် ကွန်ရက်တစ်ခုမှ ရင်းမြစ်ခွဲတစ်ခုကို ဝဘ်ဆိုက်က တောင်းဆိုထားသည်။ ဤတောင်းဆိုမှုများက အများသုံးမဟုတ်သည့် စက်ပစ္စည်းနှင့် ဆာဗာများကို အင်တာနက်တွင် ဖော်ထုတ်သဖြင့် အခြားဝဘ်ဆိုက်မှ တောင်းဆိုကာ လိမ်လည်သော (CSRF) တိုက်ခိုက်မှု နှင့်/သို့မဟုတ် အချက်အလက် ပေါက်ကြားခြင်း အန္တရာယ်များကို ပိုတိုးစေသည်။ ထိုအန္တရာယ်များကို လျော့ပါးစေရန် အများသုံးမဟုတ်သည့် ရင်းမြစ်ခွဲများကို မလုံခြုံသော အခြေအနေများမှ တောင်းဆိုသောအခါ Chrome က ရပ်ဆိုင်းပြီး ၎င်းတို့ကို စတင်ပိတ်ပင်ပါမည်။"
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": ".css ဖိုင်နောက်ဆက်တွဲဖြင့် အဆုံးမသတ်ပါက CSS ကို file: URL များမှ ဖွင့်၍မရပါ။"
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "remove() ၏ ပြတ်တောင်းသည့် အပိုင်းအခြား ဖယ်ရှားခြင်းကို ဖျက်သိမ်းရန် SourceBuffer.abort() အသုံးပြုခြင်းအား သတ်မှတ်ချက် ပြောင်းလဲမှုကြောင့် ရပ်ဆိုင်းထားသည်။ ပံ့ပိုးမှုကို နောက်ပိုင်းတွင် ဖယ်ရှားပါမည်။ ၎င်းအစား updateend အစီအစဉ်ကို နားထောင်သင့်သည်။ abort() ကို ပြတ်တောင်းသည့် မီဒီယာ ပူးတွဲမှု (သို့) ပါဆာ အခြေအနေ ပြင်ဆင်သတ်မှတ်မှုကို ဖျက်သိမ်းရန်သာ ရည်ရွယ်သည်။"
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "ယာယီကြားခံထားသည့် ကုဒ်ထည့်သွင်းထားသော ဖရိမ်တိုင်း၏ MediaSource.duration အောက် အမြင့်ဆုံးတင်ပြမှု အချိန်ဖော်ပြချက်ကို သတ်မှတ်ချက် ပြောင်းလဲမှုကြောင့် ရပ်ဆိုင်းထားသည်။ ဖြတ်တောက်ထားသည့် မီဒီယာ၏ သွယ်ဝိုက်ဖယ်ရှားမှုအတွက် ပံ့ပိုးမှုကို အနာဂတ်တွင် ဖယ်ရှားပါမည်။ ၎င်းအစား newDuration < oldDuration ရှိ sourceBuffers အားလုံးတွင် ရှင်းလင်းသည့်remove(newDuration, oldDuration) ကို လုပ်ဆောင်သင့်သည်။"
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "Sysex ကို MIDIOptions တွင် သတ်မှတ်မထားလျှင်ပင် ဝဘ် MIDI သည် အသုံးပြုရန် ခွင့်ပြုချက်ကို တောင်းဆိုပါမည်။"
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "စံသတ်မှတ်မထားသော shadowroot ရည်ညွှန်းချက်အဟောင်းကို ရပ်ဆိုင်းလိုက်သည်။ ၎င်းအစား စံသတ်မှတ်ထားသော shadowrootmode ရည်မှန်းချက်အသစ်ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "‘အကြောင်းကြားချက် API’ ကို လုံခြုံမှုမရှိသည့် ဇာစ်မြစ်များမှ အသုံးပြုနိုင်တော့မည် မဟုတ်ပါ။ သင့်အပလီကေးရှင်းကို HTTPS ကဲ့သို့ လုံခြုံသည့်ဇာစ်မြစ်သို့ ပြောင်းရန် စဉ်းစားသင့်သည်။ နောက်ထပ်အသေးစိတ်အတွက် https://goo.gle/chrome-insecure-origins တွင် ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "‘အကြောင်းကြားချက် API’ အတွက် ခွင့်ပြုချက်ကို iframe ဇာစ်မြစ်များကြားတွင် တောင်းဆိုမည် မဟုတ်တော့ပါ။ ထိပ်ဆုံးအဆင့် ဖရိမ်တစ်ခုမှ ခွင့်ပြုချက်တောင်းရန် (သို့) ဝင်းဒိုးသစ်တစ်ခုဖွင့်ရန် စဉ်းစားသင့်သည်။"
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap ရှိ imageOrientation: 'none' ရွေးချယ်စရာကို ဆက်မသုံးတော့ပါ။ ၎င်းအစား {imageOrientation: ‘from-image’} ရွေးချယ်စရာ ပါဝင်သည့် createImageBitmap ကိုသုံးပါ။"
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "သင့်ပါတနာသည် (D)TLS ဗားရှင်းအဟောင်းကို ဆက်သုံးနေသည်။ ၎င်းကိုဖြေရှင်းရန် သင့်ပါတနာနှင့် ဆက်သွယ်ပါ။"
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "ပုံ၊ ဗီဒီယိုနှင့် ကင်းဗတ်စ်တဂ်များတွင် overflow: visible သတ်မှတ်ခြင်းကြောင့် အစိတ်အပိုင်းနယ်သတ်များ ပြင်ပတွင် အမြင်ပိုင်းအချက်အလက်များ ပေါ်ပေါက်နိုင်သည်။ https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md တွင် ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား ပေးချေမှုစီမံသူအတွက် အချိန်မီထည့်သွင်းမှုကို သုံးပေးပါ။"
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "သင့် PaymentRequest ခေါ်ဆိုမှုသည် အချက်အလက်-လုံခြုံမှု-မူဝါဒ (CSP) ဆိုင်ရာ connect-src လမ်းညွှန်ချက်ကို ရှောင်ကွင်းသွားသည်။ ဤရှောင်ကွင်းမှုကို ရပ်ဆိုင်းထားသည်။ PaymentRequest API (supportedMethods အကွက်ရှိ) မှ ငွေပေးချေနည်းလမ်း သတ်မှတ်မှုစနစ်ကို သင့် CSP connect-src လမ်းညွှန်ချက်တွင် ထည့်ပါ။"
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား စံသတ်မှတ်ထားသည့် navigator.storage ကို အသုံးပြုပါ။"
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<picture> ပင်မ ရှိသည့် <source src> သည် မမှန်ကန်သဖြင့် လစ်လျူရှုလိုက်သည်။ ၎င်းအစား <source srcset> ကို အသုံးပြုပါ။"
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame သည် ရောင်းချသူ သတ်မှတ်ချက်ဖြစ်သည်။ ၎င်းအစား စံသတ်မှတ်ထားသော cancelAnimationFrame ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame သည် ရောင်းချသူ သတ်မှတ်ချက်ဖြစ်သည်။ ၎င်းအစား စံသတ်မှတ်ထားသော requestAnimationFrame ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen ကို ဆက်မသုံးတော့ပါ။ ၎င်းအစား Document.fullscreenElement သုံးပါ။"
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() ကို ရပ်ဆိုင်းလိုက်သည်။ ၎င်းအစား Element.requestFullscreen() ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() ကို ရပ်ဆိုင်းလိုက်သည်။ ၎င်းအစား Element.requestFullscreen() ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() ကို ရပ်ဆိုင်းလိုက်သည်။ ၎င်းအစား Document.exitFullscreen() ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() ကို ရပ်ဆိုင်းလိုက်သည်။ ၎င်းအစား Document.exitFullscreen() ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen ကို ရပ်ဆိုင်းလိုက်သည်။ ၎င်းအစား Document.fullscreenEnabled ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "API chrome.privacy.websites.privacySandboxEnabled ကို ရပ်ဆိုင်းတော့မည် ဖြစ်သော်လည်း M113 ဖြန့်ချိမှု မတိုင်မီအထိ ယခင်စနစ်နှင့် တွဲဖက်သုံးနိုင်ရန်အတွက် ဆက်လက်ထားရှိပါမည်။ ၎င်းအစား chrome.privacy.websites.topicsEnabled၊ chrome.privacy.websites.fledgeEnabled နှင့် chrome.privacy.websites.adMeasurementEnabled တို့ကို အသုံးပြုပါ။ https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled တွင်ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "DtlsSrtpKeyAgreement ကန့်သတ်ချက်ကို ဖယ်ရှားထားသည်။ ဖယ်ရှားထားသည့် SDES key negotiation နည်းလမ်း အသုံးပြုရန် ကြိုးပမ်းမှုတစ်ခုအနေဖြင့် နားလည်နိုင်သော ဤကန့်သတ်ချက်အတွက် false တန်ဖိုးကို သင် သတ်မှတ်ထားသည်။ ဤလုပ်ဆောင်ချက်ကို ဖယ်ရှားထားသည်။ ၎င်းအစား DTLS key negotiation ပံ့ပိုးသည့် ဝန်ဆောင်မှုတစ်ခု အသုံးပြုပါ။"
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "DtlsSrtpKeyAgreement ကန့်သတ်ချက်ကို ဖယ်ရှားထားသည်။ ဤကန့်သတ်ချက်အတွက် true တန်ဖိုးကို သင် သတ်မှတ်ထားပြီး ၎င်းသည်သက်ရောက်မှုမရှိသော်လည်း ရှင်းလင်းမှုအတွက် ဤကန့်သတ်ချက်ကို ဖယ်ရှားနိုင်သည်။"
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "ပြန်ခေါ်ခြင်းအခြေခံ getStats() ကို ရပ်ဆိုင်းပြီး ဖယ်ရှားလိုက်ပါမည်။ ၎င်းအစား သတ်မှတ်ချက်လိုက်နာသော getStats() ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() ကို ရပ်ဆိုင်းလိုက်သည်။ ၎င်းအစား Selection.modify() ကို သုံးပါ။"
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "ရင်းမြစ်ခွဲ တောင်းဆိုမှုများ၏ URL များတွင် ပါဝင်သော မြှုပ်သွင်းထားသည့် အထောက်အထားများ (ဥပမာ- https://user:pass@host/) ကို ပိတ်ထားသည်။"
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "rtcpMuxPolicy ရွေးချယ်မှုကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။"
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer က ဇာတ်မြစ်များကြားမှ ခွဲခြားမှုကို လိုအပ်ပါမည်။ နောက်ထပ်အသေးစိတ်အတွက် https://developer.chrome.com/blog/enabling-shared-array-buffer/ တွင် ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "အသုံးပြုသူက စတင်မှုမရှိသော speechSynthesis.speak() ကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။"
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "SharedArrayBuffer ကို ဆက်လက်အသုံးပြုရန် နောက်ဆက်တွဲများသည် ဇာစ်မြစ်များကြားမှ ခွဲခြားမှုတွင် အပါအဝင် ဖြစ်သင့်သည်။ https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ ကို ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "XMLHttpRequest တွင် json အလိုက်သင့်တုံ့ပြန်မှုက UTF-16 ကို ပံ့ပိုးမထားပါ"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "အဓိက Thread ရှိ စင့်ခ်လုပ်ထားသော XMLHttpRequest သည် အသုံးပြုသူ၏ အတွေ့အကြုံအပေါ် ထိခိုက်စေနိုင်သည့်အတွက် ရပ်ဆိုင်းထားသည်။ နောက်ထပ်အကူအညီအတွက် https://xhr.spec.whatwg.org/ တွင် ကြည့်ပါ။"
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား isSessionSupported() အသုံးပြုပြီး ဖြေရှင်းထားသည့် ဘူလီယန် တန်ဖိုးကို ကြည့်ပါ။"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ဖိုင်ဖွင့်ရာတွင် အမျိုးအမည်မသိ အမှားဖြစ်သွားသည်"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ဝဘ်ဆိုက်တစ်ခုတည်းနှင့် ဇာစ်မြစ်တစ်ခုတည်း"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "CORS Access-Control-Allow-Headers ဆောင်ရွက်ရာတွင် ခွင့်ပြုချက်ကို အစားထိုး အထူးအက္ခရာ (*) ဖြင့် ပြသမည်မဟုတ်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "ရင်းမြစ်တောင်းဆိုမှုများ၏ URL များတွင် ပါဝင်သော ဖယ်ရှားထားသည့် နေရာလွတ် \\(n|r|t) အက္ခရာများနှင့် ‘ပိုနည်းသော အက္ခရာ’ (<) များကို ပိတ်ထားသည်။ ဤရင်းမြစ်များဖွင့်ရန်အတွက် လိုင်းအသစ်များ ဖယ်ရှားပြီး အစိတ်အပိုင်း ရည်ညွှန်းချက်တန်ဖိုးများကဲ့သို့ နေရာများမှ ‘ပိုနည်းသော အက္ခရာ’ များကို ဒေတာ အသွင်ပြောင်းပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() ကို ရပ်ဆိုင်းထားပြီး ၎င်းအစား စံသတ်မှတ်ထားသည့် ဤ API ကို အသုံးပါ- Navigation Timing 2။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() ကို ရပ်ဆိုင်းထားပြီး ၎င်းအစား စံသတ်မှတ်ထားသည့် ဤ API ကို အသုံးပြုပါ- Paint Timing။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() ကို ရပ်ဆိုင်းထားပြီး ၎င်းအစား စံသတ်မှတ်ထားသည့် ဤ API ကို အသုံးပြုပါ- Navigation Timing 2 ရှိ nextHopProtocol။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "\\(0|r|n) အက္ခရာပါဝင်သော ကွတ်ကီးများကို ဖြတ်တောက်မည့်အစား ငြင်းပယ်ပါမည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "document.domain သတ်မှတ်ခြင်းဖြင့် မူရင်းတူညီသည့် မူဝါဒ ဖယ်ရှားခြင်းကို ရပ်ဆိုင်းထားပြီး မူရင်းသတ်မှတ်ချက်အနေဖြင့် ပိတ်ပါမည်။ ဤရပ်ဆိုင်းမှု သတိပေးချက်သည် ဇာစ်မြစ်များကြား အသုံးပြုခွင့်အတွက်ဖြစ်ပြီး ၎င်းကို document.domain သတ်မှတ်ခြင်းဖြင့် ဖွင့်ထားသည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "iframe ဇာစ်မြစ်အမျိုးမျိုးမှ {PH1} စတင်ခြင်းကို ရပ်ဆိုင်းထားပြီး နောက်ပိုင်းတွင်ဖယ်ရှားပါမည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "မူရင်း ‘ကာစ်’ ပေါင်းစည်းမှုကို ပိတ်ရန်အတွက် -internal-media-controls-overlay-cast-button ရွေးချယ်စနစ်ကို အသုံးပြုမည့်အစား disableRemotePlayback ရည်ညွှန်းချက်ကို အသုံးပြုသင့်သည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား {PH2} ကို အသုံးပြုပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "ဤအရာသည် ဘာသာပြန်ထားသော ရပ်ဆိုင်းထားသည့် ပြဿနာမက်ဆေ့ဂျ် နမူနာဖြစ်သည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "document.domain သတ်မှတ်ခြင်းဖြင့် မူရင်းတူညီသည့် မူဝါဒ ဖယ်ရှားခြင်းကို ရပ်ဆိုင်းထားပြီး မူရင်းသတ်မှတ်ချက်အနေဖြင့် ပိတ်ပါမည်။ ဤဝန်ဆောင်မှု ဆက်လက်သုံးရန် မှတ်တမ်းနှင့် ဖရိမ်များအတွက် တုံ့ပြန်သည့် HTTP နှင့်အတူ Origin-Agent-Cluster: ?0 ခေါင်းစီး ပို့ပေးခြင်းဖြင့် ဇာစ်မြစ်အခြေခံထားသည့် ကိုယ်စားလှယ် အစုအဖွဲ့များမှ ထွက်ပါ။ နောက်ထပ်အသေးစိတ်အတွက် https://developer.chrome.com/blog/immutable-document-domain/ တွင် ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path ကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။ ၎င်းအစား Event.composedPath() ကို အသုံးပြုပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Expect-CT ခေါင်းစီးကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။ ၂၀၁၈ ခုနှစ်၊ ဧပြီလ ၃၀ ရက် နောက်ပိုင်းတွင်ထုတ်ပြီး အများလက်ခံထားသည့် အသိအမှတ်ပြုလက်မှတ်အားလုံးအတွက် ‘အသိအမှတ်ပြုလက်မှတ် ပွင့်လင်းမြင်သာမှု’ ရှိရန် Chrome က သတ်မှတ်ထားသည်။"
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "နောက်ထပ်အသးစိတ်အတွက် ဝန်ဆောင်မှုအခြေအနေ စာမျက်နှာကို ကြည့်နိုင်သည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "getCurrentPosition() နှင့် watchPosition() သည် လုံခြုံမှုမရှိသော ဇာစ်မြစ်များတွင် ဆက်လက်မလုပ်ဆောင်တော့ပါ။ ဤဝန်ဆောင်မှုကို အသုံးပြုရန် သင့်အပလီကေးရှင်းကို HTTPS ကဲ့သို့ လုံခြုံသည့်ဇာစ်မြစ်သို့ ပြောင်းရန် စဉ်းစားသင့်သည်။ နောက်ထပ်အသေးစိတ်အတွက် https://goo.gle/chrome-insecure-origins တွင် ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "getCurrentPosition() နှင့် watchPosition() တို့ကို လုံခြုံမှုမရှိသော ဇာစ်မြစ်များတွင် ရပ်ဆိုင်းထားသည်။ ဤဝန်ဆောင်မှုကို အသုံးပြုရန် သင့်အပလီကေးရှင်းကို HTTPS ကဲ့သို့ လုံခြုံသည့်ဇာစ်မြစ်သို့ ပြောင်းရန် စဉ်းစားသင့်သည်။ နောက်ထပ်အသေးစိတ်အတွက် https://goo.gle/chrome-insecure-origins တွင် ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "getUserMedia() သည် လုံခြုံမှုမရှိသော ဇာစ်မြစ်များတွင် ဆက်လက်မလုပ်ဆောင်တော့ပါ။ ဤဝန်ဆောင်မှုကို အသုံးပြုရန် သင့်အပလီကေးရှင်းကို HTTPS ကဲ့သို့ လုံခြုံသည့်ဇာစ်မြစ်သို့ ပြောင်းရန် စဉ်းစားသင့်သည်။ နောက်ထပ်အသေးစိတ်အတွက် https://goo.gle/chrome-insecure-origins တွင် ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား RTCPeerConnectionIceErrorEvent.address (သို့) RTCPeerConnectionIceErrorEvent.port ကို အသုံးပြုနိုင်သည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "canmakepayment ဝန်ဆောင်မှုဆောင်ရွက်စနစ် အစီအစဉ်မှ ရောင်းသူဇာစ်မြစ်နှင့် မည်သည့်ဒေတာကိုမဆို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်- topOrigin၊ paymentRequestOrigin၊ methodData၊ modifiers။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "အသုံးပြုသူများ၏ အထူးအခွင့်အရေးရှိသည့် ကွန်ရက်အနေအထားဖြစ်သောကြောင့် ၎င်းကိုသုံးခွင့်ရှိသည့် ကွန်ရက်တစ်ခုမှ ရင်းမြစ်ခွဲတစ်ခုကို ဝဘ်ဆိုက်က တောင်းဆိုထားသည်။ ဤတောင်းဆိုမှုများက အများသုံးမဟုတ်သည့် စက်ပစ္စည်းနှင့် ဆာဗာများကို အင်တာနက်တွင် ဖော်ထုတ်သဖြင့် အခြားဝဘ်ဆိုက်မှ တောင်းဆိုကာ လိမ်လည်သော (CSRF) တိုက်ခိုက်မှု နှင့်/သို့မဟုတ် အချက်အလက် ပေါက်ကြားခြင်း အန္တရာယ်များကို ပိုတိုးစေသည်။ ထိုအန္တရာယ်များကို လျော့ပါးစေရန် အများသုံးမဟုတ်သည့် ရင်းမြစ်ခွဲများကို မလုံခြုံသော အခြေအနေများမှ တောင်းဆိုသောအခါ Chrome က ရပ်ဆိုင်းပြီး ၎င်းတို့ကို စတင်ပိတ်ပင်ပါမည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": ".css ဖိုင်နောက်ဆက်တွဲဖြင့် အဆုံးမသတ်ပါက CSS ကို file: URL များမှ ဖွင့်၍မရပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "remove() ၏ ပြတ်တောင်းသည့် အပိုင်းအခြား ဖယ်ရှားခြင်းကို ဖျက်သိမ်းရန် SourceBuffer.abort() အသုံးပြုခြင်းအား သတ်မှတ်ချက် ပြောင်းလဲမှုကြောင့် ရပ်ဆိုင်းထားသည်။ ပံ့ပိုးမှုကို နောက်ပိုင်းတွင် ဖယ်ရှားပါမည်။ ၎င်းအစား updateend အစီအစဉ်ကို နားထောင်သင့်သည်။ abort() ကို ပြတ်တောင်းသည့် မီဒီယာ ပူးတွဲမှု (သို့) ပါဆာ အခြေအနေ ပြင်ဆင်သတ်မှတ်မှုကို ဖျက်သိမ်းရန်သာ ရည်ရွယ်သည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "ယာယီကြားခံထားသည့် ကုဒ်ထည့်သွင်းထားသော ဖရိမ်တိုင်း၏ MediaSource.duration အောက် အမြင့်ဆုံးတင်ပြမှု အချိန်ဖော်ပြချက်ကို သတ်မှတ်ချက် ပြောင်းလဲမှုကြောင့် ရပ်ဆိုင်းထားသည်။ ဖြတ်တောက်ထားသည့် မီဒီယာ၏ သွယ်ဝိုက်ဖယ်ရှားမှုအတွက် ပံ့ပိုးမှုကို အနာဂတ်တွင် ဖယ်ရှားပါမည်။ ၎င်းအစား newDuration < oldDuration ရှိ sourceBuffers အားလုံးတွင် ရှင်းလင်းသည့်remove(newDuration, oldDuration) ကို လုပ်ဆောင်သင့်သည်။"
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "ဤအပြောင်းအလဲသည် မှတ်တိုင် {milestone} နှင့်အတူ သက်ရောက်မှုရှိမည်။"
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "Sysex ကို MIDIOptions တွင် သတ်မှတ်မထားလျှင်ပင် ဝဘ် MIDI သည် အသုံးပြုရန် ခွင့်ပြုချက်ကို တောင်းဆိုပါမည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "‘အကြောင်းကြားချက် API’ ကို လုံခြုံမှုမရှိသည့် ဇာစ်မြစ်များမှ အသုံးပြုနိုင်တော့မည် မဟုတ်ပါ။ သင့်အပလီကေးရှင်းကို HTTPS ကဲ့သို့ လုံခြုံသည့်ဇာစ်မြစ်သို့ ပြောင်းရန် စဉ်းစားသင့်သည်။ နောက်ထပ်အသေးစိတ်အတွက် https://goo.gle/chrome-insecure-origins တွင် ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "‘အကြောင်းကြားချက် API’ အတွက် ခွင့်ပြုချက်ကို iframe ဇာစ်မြစ်များကြားတွင် တောင်းဆိုမည် မဟုတ်တော့ပါ။ ထိပ်ဆုံးအဆင့် ဖရိမ်တစ်ခုမှ ခွင့်ပြုချက်တောင်းရန် (သို့) ဝင်းဒိုးသစ်တစ်ခုဖွင့်ရန် စဉ်းစားသင့်သည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "createImageBitmap ရှိ imageOrientation: \"none\" ရွေးချယ်စရာကို ဆက်မသုံးတော့ပါ။ ၎င်းအစား {imageOrientation: \"from-image\"} ရွေးချယ်စရာ ပါဝင်သည့် createImageBitmap ကိုသုံးပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "သင့်ပါတနာသည် (D)TLS ဗားရှင်းအဟောင်းကို ဆက်သုံးနေသည်။ ၎င်းကိုဖြေရှင်းရန် သင့်ပါတနာနှင့် ဆက်သွယ်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "မလုံခြုံသော အခြေအနေများရှိ WebSQL ကို ရပ်ဆိုင်းထားပြီး မကြာမီ ဖယ်ရှားသွားပါမည်။ ‘ဝဘ်သိုလှောင်ခန်း’ (သို့) ‘အညွှန်းပါသည့် ဒေတာဘေ့စ်’ ကို အသုံးပြုပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "ပုံ၊ ဗီဒီယိုနှင့် ကင်းဗတ်စ်တဂ်များတွင် overflow: visible သတ်မှတ်ခြင်းကြောင့် အစိတ်အပိုင်းနယ်သတ်များ ပြင်ပတွင် အမြင်ပိုင်းအချက်အလက်များ ပေါ်ပေါက်နိုင်သည်။ https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md တွင် ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား ပေးချေမှုစီမံသူအတွက် အချိန်မီထည့်သွင်းမှုကို သုံးပေးပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "သင့် PaymentRequest ခေါ်ဆိုမှုသည် အချက်အလက်-လုံခြုံမှု-မူဝါဒ (CSP) ဆိုင်ရာ connect-src လမ်းညွှန်ချက်ကို ရှောင်ကွင်းသွားသည်။ ဤရှောင်ကွင်းမှုကို ရပ်ဆိုင်းထားသည်။ PaymentRequest API (supportedMethods အကွက်ရှိ) မှ ငွေပေးချေနည်းလမ်း သတ်မှတ်မှုစနစ်ကို သင့် CSP connect-src လမ်းညွှန်ချက်တွင် ထည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား စံသတ်မှတ်ထားသည့် navigator.storage ကို အသုံးပြုပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<picture> ပင်မ ရှိသည့် <source src> သည် မမှန်ကန်သဖြင့် လစ်လျူရှုလိုက်သည်။ ၎င်းအစား <source srcset> ကို အသုံးပြုပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား စံသတ်မှတ်ထားသည့် navigator.storage ကို အသုံးပြုပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "API chrome.privacy.websites.privacySandboxEnabled ကို ရပ်ဆိုင်းတော့မည် ဖြစ်သော်လည်း M113 ဖြန့်ချိမှု မတိုင်မီအထိ ယခင်စနစ်နှင့် တွဲဖက်သုံးနိုင်ရန်အတွက် ဆက်လက်ထားရှိပါမည်။ ၎င်းအစား chrome.privacy.websites.topicsEnabled၊ chrome.privacy.websites.fledgeEnabled နှင့် chrome.privacy.websites.adMeasurementEnabled တို့ကို အသုံးပြုပါ။ https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled တွင်ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "ရင်းမြစ်ခွဲ တောင်းဆိုမှုများ၏ URL များတွင် ပါဝင်သော မြှုပ်သွင်းထားသည့် အထောက်အထားများ (ဥပမာ- https://user:pass@host/) ကို ပိတ်ထားသည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "DtlsSrtpKeyAgreement ကန့်သတ်ချက်ကို ဖယ်ရှားထားသည်။ ဖယ်ရှားထားသည့် SDES key negotiation နည်းလမ်း အသုံးပြုရန် ကြိုးပမ်းမှုတစ်ခုအနေဖြင့် နားလည်နိုင်သော ဤကန့်သတ်ချက်အတွက် false တန်ဖိုးကို သင် သတ်မှတ်ထားသည်။ ဤလုပ်ဆောင်ချက်ကို ဖယ်ရှားထားသည်။ ၎င်းအစား DTLS key negotiation ပံ့ပိုးသည့် ဝန်ဆောင်မှုတစ်ခု အသုံးပြုပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "DtlsSrtpKeyAgreement ကန့်သတ်ချက်ကို ဖယ်ရှားထားသည်။ ဤကန့်သတ်ချက်အတွက် true တန်ဖိုးကို သင် သတ်မှတ်ထားပြီး ၎င်းသည်သက်ရောက်မှုမရှိသော်လည်း ရှင်းလင်းမှုအတွက် ဤကန့်သတ်ချက်ကို ဖယ်ရှားနိုင်သည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP ကို တွေ့ရှိသည်။ Session Description Protocol ၏ ဤပရိုဂရမ်ဘာသာစကားကို မပံ့ပိုးတော့ပါ။ ၎င်းအစား Unified Plan SDP ကို အသုံးပြုပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "{sdpSemantics:'plan-b'} ဖြင့် RTCPeerConnection တည်ဆောက်သောအခါ ကို အသုံးပြုသည့် Plan B SDP semantics သည် Web Platform မှ အပြီးဖျက်ထားသည့် Session Description Protocol ၏ ပုံမှန်မဟုတ်သော ဗားရှင်းဟောင်းဖြစ်သည်။ IS_FUCHSIA ဖြင့် တည်ဆောက်သောအခါ ၎င်းကို ရရှိနိုင်ဆဲ ဖြစ်သော်လည်း ဖြစ်နိုင်ပါက ၎င်းကို အမြန်ဆုံး ကျွန်ုပ်တို့ ဖျက်လိုပါသည်။ ၎င်းကို အားမထားပါနှင့်။ https://crbug.com/1302249 တွင် အခြေအနေ ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "rtcpMuxPolicy ရွေးချယ်မှုကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer က ဇာတ်မြစ်များကြားမှ ခွဲခြားမှုကို လိုအပ်ပါမည်။ နောက်ထပ်အသေးစိတ်အတွက် https://developer.chrome.com/blog/enabling-shared-array-buffer/ တွင် ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "အသုံးပြုသူက စတင်မှုမရှိသော speechSynthesis.speak() ကို ရပ်ဆိုင်းထားပြီး ဖယ်ရှားပါမည်။"
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ရပ်ဆိုင်းထားသည့် ဝန်ဆောင်မှုကို သုံးထားသည်"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "SharedArrayBuffer ကို ဆက်လက်အသုံးပြုရန် နောက်ဆက်တွဲများသည် ဇာစ်မြစ်များကြားမှ ခွဲခြားမှုတွင် အပါအဝင် ဖြစ်သင့်သည်။ https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ ကို ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} သည် ရောင်းချသူ သတ်မှတ်ချက်ဖြစ်သည်။ ၎င်းအစား ပုံမှန် {PH2} ကို အသုံးပြုပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "XMLHttpRequest တွင် json အလိုက်သင့်တုံ့ပြန်မှုက UTF-16 ကို ပံ့ပိုးမထားပါ"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "အဓိက Thread ရှိ စင့်ခ်လုပ်ထားသော XMLHttpRequest သည် အသုံးပြုသူ၏ အတွေ့အကြုံအပေါ် ထိခိုက်စေနိုင်သည့်အတွက် ရပ်ဆိုင်းထားသည်။ နောက်ထပ်အကူအညီအတွက် https://xhr.spec.whatwg.org/ တွင် ကြည့်ပါ။"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() ကို ရပ်ဆိုင်းထားသည်။ ၎င်းအစား isSessionSupported() အသုံးပြုပြီး ဖြေရှင်းထားသည့် ဘူလီယန် တန်ဖိုးကို ကြည့်ပါ။"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "HTML ရည်ညွှန်းချက်- အလိုအလျောက်ဖြည့်ခြင်း"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "ပေါ်တယ်များ - ဇစ်မြစ်တစ်ခုထဲဖြစ်သော ဆက်သွယ်ရေး ချန်နယ်များ"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "အော်တိုဖြည့် မည်သို့ အလုပ်လုပ်ပါသလဲ။"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "ဖောင်ထည့်သွင်းမှု အစိတ်အပိုင်း"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "အညွှန်း အစိတ်အပိုင်းများ"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ကြီးမားသော ကြော်ငြာကြားဝင်မှုများ စီမံခြင်း"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "တင်ပြမှု"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Chrome အသုံးပြုသော အဓိကသင်္ကေတ"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "{PH1} မှ ပင်မမန်နီးဖက်စ် သင်္ကေတ"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "ပရိုတိုကော စီမံသူများ"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "အပြင်အဆင် အရောင်"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "ကြိုတင်ရယူခြင်းနှင့် ကြိုတင်ပုံဖော်ခြင်း"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "အက်ပ်မန်နီးဖက်စ်"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Yes"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "ကြိုတင်ရယူခြင်းနှင့် ကြိုတင်ပုံဖော်ခြင်း"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "အစီရင်ခံစာ စာကိုယ်ကို ပြသရန် ၎င်းကို နှိပ်ပါ"
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "သိမ်းထားသော တိုကင်အရေအတွက်"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "ဆောင်ရွက်မှုမရှိသည်များကို ရှင်းလင်းရန်"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "စတင်ထားသည်"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "ဖယ်ပစ်ထားသည်"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "ကြိုတင်ပုံဖော်ခြင်း"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "အကျုံးဝင်သည်"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "‘ဆောဖ့်ဝဲတူးလ်များ’ ဖွင့်ထားသဖြင့် ကြိုဖွင့်ခြင်းကို အတင်းအကျပ် ဖွင့်ထားသည်။ ဤဘရောင်ဇာစက်ရှင်သည် စွမ်းဆောင်ရည်နှိုင်းယှဉ်ခြင်းများအတွက် အသုံးပြုထားသည့် ထိန်းချုပ်အုပ်စု၏ တစ်စိတ်တစ်ပိုင်းဖြစ်သောကြောင့် ‘ဆောဖ့်ဝဲတူးလ်များ’ ပိတ်ထားသောအခါ ကြိုတင်ပုံဖော်ခြင်းကို ပိတ်ပါမည်။"
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ကြိုတင်ပုံဖော်ခြင်းကို ပိတ်ထားသော်လည်း ယခုအတင်းအကျပ် ဖွင့်လိုက်သည်"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "အခြေခံ အချက်အလက်များ"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "စတင်ချိန်"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "အခြေအနေ"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "စတင်မှု"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "နောက်ထပ်အသေးစိတ်အတွက် အစိတ်အပိုင်းတစ်ခုရွေးရန်"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "စတင်ထားသည်"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "ဖယ်ပစ်ထားသည်"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "ကြိုတင်ပုံဖော်ခြင်း"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "စတင်ချိန်"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "အခြေအနေ"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "စတင်မှု"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "အသေးစိတ် အချက်အလက်"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "အမျိုးအစား"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "ရင်းမြစ်"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "အကျုံးဝင်မှု"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "အကျုံးဝင်သည်"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "အကျုံးဝင်မှု"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ဖြတ်တောက်မှတ် ထိသည်"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "မက်ဆေ့ဂျ်အားလုံးကို {PH1} ဖြင့် ရှင်းထုတ်ပါ"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "အခြေအနေအလိုက် ဖြတ်တောက်မှတ်"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "ကွန်ဆိုးလ်"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "မှတ်တမ်းအမှတ်"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{# ကြိမ် ပြန်ကျော့သည်}other{# ကြိမ် ပြန်ကျော့သည်}}"
@@ -4575,7 +4590,7 @@
     "message": "ကွန်ဆိုးလ်မှတ်တမ်း ရှင်းထုတ်ပါ"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "မူရင်းသတ်မှတ်ချက်အရ console.trace() မက်ဆေ့ဂျ်များကို လျှော့ပြပါ"
+    "message": "console.trace() မက်ဆေ့ဂျ်များကို အလိုအလျောက် မဖြန့်ပါနှင့်"
   },
   "panels/console/console-meta.ts | console": {
     "message": "ကွန်ဆိုးလ်"
@@ -4605,10 +4620,10 @@
     "message": "ကွန်ဆိုးလ်အတည်ပြုစနစ်ပါ စာသားကို စိတ်အားထက်သန်စွာ အကဲဖြတ်ပါ"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "အသုံးပြုသူ စဖွင့်ခြင်းကို စတင်စေသည့်အရာများအား အကဲဖြတ်ပါ"
+    "message": "အကဲဖြတ်ချက်က အသုံးပြုသူ စတင်မှုကို ဖွင့်လိုက်သည်"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "မူရင်းသတ်မှတ်ချက်အရ console.trace() မက်ဆေ့ဂျ်များကို ပိုပြပါ"
+    "message": "console.trace() မက်ဆေ့ဂျ်များ အလိုအလျောက် ဖြန့်ပါ"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "ကွန်ဆိုးလ်တွင် အလားတူမက်ဆေ့ဂျ်များကို အုပ်စုဖွဲ့ပါ"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "လိုင်း၊ ရွေးချယ်စနစ် (သို့) XPath ဖြင့် ရှာရန်"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "ဖရိမ်"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "‘တွက်ချက်ထားသော ပုံစံများ’ ဆိုက်ဘားကို ဖျောက်ထားရန်"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "သတ်မှတ်ချက်ကို ပြောင်းပြီး ဆက်လက်တည်းဖြတ်ရန်"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "“{PH1}” {PH2} ဆက်တင်အတွက် တန်ဖိုးသည် “{PH5}” ဖောင့် မိသားစုအတွက် ပံ့ပိုးထားသောအပိုင်းအခြား [{PH3}၊ {PH4}] ပြင်ပတွင် ရှိသည်။"
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "တွက်ချက်ထားသော တန်ဖိုး ကြည့်ရန်"
   },
@@ -5454,6 +5463,12 @@
     "message": "အမှတ်အသားများ ပြရန်"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "ပိုမိုလေ့လာရန်"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "မပြပါနှင့်"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "ပုံကို စစ်ဆေးရန်အတွက် စာမျက်နှာတွင် ရွေးရန်"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "CSS မှတ်တမ်းပြုလုပ်ခြင်း အကြံပြုချက်ပြ ပေါ့အပ်ဝင်းဒိုးကို ပြပါ"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "ကွန်ပျူတာထုတ် ပုံစံများပြပါ"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "ပရိုဖိုင်အားလုံး ရှင်းထုတ်ရန်"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "လာမည့်ဗားရှင်းတွင် ဤအကန့်ကို ရပ်ဆိုင်းလိုက်မည်။ JavaScript CPU ပရိုဖိုင်များ မှတ်တမ်းတင်ရန် ‘စွမ်းဆောင်ရည်’ အကန့် သုံးနိုင်သည်။"
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "အကြံပြုချက်"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "စွမ်းဆောင်ရည်အကန့်သို့ သွားရန်"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "ပိုမိုလေ့လာရန်"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "ဖွင့်ရန်…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "မှတ်တမ်းတင်ခြင်း"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "ကုန်လွန်သွားချိန်"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "စစ်ထုတ်ရန်"
@@ -9981,7 +10014,7 @@
     "message": "အပ်ဒိတ်လုပ်ရန်"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ် ကလိုင်းယင့် အရိပ်အမြွက်များသည် ပိုကောင်းမွန်သော ပုဂ္ဂိုလ်ရေးလုံခြုံမှုတာဝန်ခံယူချက် ပါဝင်သည့် ပုံစံတကျနည်းလမ်းဖြင့် ဘရောင်ဇာနှင့် စက်ကို စိစစ်သတ်မှတ်ပေးသော ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ်ဆိုင်ရာ လိုင်းအတွက် အစားထိုးနည်းလမ်းတစ်ခု ဖြစ်သည်။ ပိုမိုလေ့လာရန် ခလုတ်ကို နှိပ်ပါ။"
+    "message": "ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ် ကလိုင်းယင့် အရိပ်အမြွက်များသည် ပိုကောင်းမွန်သော ကိုယ်ရေးအချက်အလက်လုံခြုံမှု တာဝန်ခံယူချက် ပါဝင်သည့် ပုံစံတကျနည်းလမ်းဖြင့် ဘရောင်ဇာနှင့် စက်ကို စိစစ်သတ်မှတ်ပေးသော ဝဘ်ဆိုက်ကိုချိတ်ဆက်ပေးသည့် ပရိုဂရမ်ဆိုင်ရာ လိုင်းအတွက် အစားထိုးနည်းလမ်းတစ်ခု ဖြစ်သည်။ ပိုမိုလေ့လာရန် ခလုတ်ကို နှိပ်ပါ။"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "အသုံးပြုသူ အေးဂျင့် (Sec-CH-UA)"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (ရင်းမြစ်မြေပုံမှ)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (လျစ်လျူရှုရန်စာရင်း)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "ဖိုင်အားလုံးတွင် ရှာရန်"
   },
@@ -10403,8 +10439,8 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "ms"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} ဖြင့် အမှားရှာပြင် အချက်အလက်မှတစ်ဆင့် ပေးထားသည်)"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "({PH1} မှ)"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
     "message": "({PH1} မှ အကြမ်းဖော်ပြထားသော ရင်းမြစ်)"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "ပိတ်ထားချိန် စုစုပေါင်း- {PH1}ms{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "ပါဝင်မှု"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Thread"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "စာတွဲ {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "တုံ့ပြန်ချိန်များ"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "ပြန်လှန်တုံ့ပြန်မှုများ"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "ပိတ်ရန်"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "ပါဝင်မှု"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU-"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "လက်ခံရရှိသည်"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "စွမ်းဆောင်ရည်မှတ်တမ်းဖြင့် လိုင်းဆွဲအားကို မှတ်တမ်းတင်ရန်"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "ရိုက်ကူး၍ မရပါ"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "စတင်သူ"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "ထည့်သွင်းမှု တုံ့ပြန်ချိန်"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "အချိန်တိုင်းစက် ထည့်သွင်းရန်"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS ဖရိမ်"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "JS အငြိမ်ဖရိမ်"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "JS ရင်းမြစ်"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "JS စနစ်ဖရိမ်"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "အကြီးဆုံး အကြောင်းအရာအပြည့်အစုံ ဆေးခြယ်ခြင်း"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "ထုတ်လုပ်ထားသော ကက်ရှ်အရွယ်အစား"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "အထွေထွေအသုံးစရိတ် ပရိုဖိုင်ပြုလုပ်ခြင်း"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "အပိုင်းအခြား"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "ပုံဖော်ခြင်းအတွက် ကြာချိန်"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "‘ပင်မ thread’ အတွက် စောင့်စားချိန်"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "အချိန်ကုန်သွားခြင်း"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "အစီအစဉ်တကျစီသည့် စစ်ထုတ်မှုသုံးရန် Enter ခလုတ် နှိပ်ပါ"
+    "message": "ကော်လံစီစဉ်မှု အခြေအနေ- {PH1}။ အစီအစဉ်တကျစီသည့် စစ်ထုတ်မှုသုံးရန် Enter ခလုတ် နှိပ်ပါ"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ခေါင်းစီး ရွေးစရာများ"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "ကော်လံများ ပြင်ဆင်သတ်မှတ်ရန်"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "ငယ်စဉ်ကြီးလိုက်"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "စီရန်"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "ကြီးစဉ်ငယ်လိုက်"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "မရှိ"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} ငယ်စဉ်ကြီးလိုက် စီထားသည်"

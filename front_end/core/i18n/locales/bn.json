@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} সেকেন্ড"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: CPU প্রোফাইল পার্সার {PH1}-এর হারিয়ে যাওয়া স্যাম্পেল সংক্রান্ত সমস্যার সমাধান করছে।"
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "{PH1} প্রোফাইল"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1}-এর জন্য কন্টেন্ট লোড করা যায়নি ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "{PH1} লিঙ্কে নেভিগেট করা হয়েছে যা ব্যাক-ফরোয়ার্ড ক্যাশে থেকে রিস্টোর করা হয়েছে (https://web.dev/bfcache/ দেখুন)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "টেম্প ভেরিয়েবল সেভ করা যায়নি।"
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "ডিবাগারে পজ করা আছে"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "লোড টাইম আউটের কারণে লোড প্রক্রিয়া বাতিল করা হয়েছে"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "পরীক্ষা করা পৃষ্ঠা রিলোড করার কারণে লোড করার প্রক্রিয়া বাতিল করা হয়েছে"
   },
@@ -618,7 +615,7 @@
     "message": "থামানো হচ্ছে"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "অ্যাক্রম্যাটপসিয়া"
+    "message": "অ্যাক্রোমাটোপসিয়া (রঙ বোঝা যায় না)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "ঝাপসা দৃষ্টিশক্তি"
@@ -627,7 +624,7 @@
     "message": "এসিঙ্ক স্ট্যাক ট্রেস ক্যাপচার করুন"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "ডিউটেরানোপিয়া"
+    "message": "ডিউটেরানোপিয়া (সবুজ রঙ বোঝা যায় না)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "এসিঙ্ক স্ট্যাক ট্রেস বন্ধ করুন"
@@ -690,7 +687,7 @@
     "message": "একটি ফোকাস পৃষ্ঠা ইমুলেট করুন"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "অ্যাক্রম্যাটপসিয়া ইমুলেট করুন"
+    "message": "ইমুলেট অ্যাক্রোমাটোপসিয়া (কোনও রঙ বোঝা যায় না)"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "অটো ডার্ক মোড ইমুলেট করুন"
@@ -714,13 +711,16 @@
     "message": "CSS স্ক্রিন মিডিয়া ধরন ইমুলেট করুন"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "ডিউটেরানোপিয়া ইমুলেট করুন"
+    "message": "ইমুলেট ডুটেরানোপিয়া (সবুজ রঙ বোঝা যায় না)"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "প্রোটানোপিয়া ইমুলেট করুন"
+    "message": "ইমুলেট প্রোটানোপিয়া (লাল রঙ বোঝা যায় না)"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "কমানো কনট্রাস্ট ইমুলেট করুন"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "ট্রাইটানোপিয়া ইমুলেট করুন"
+    "message": "ইমুলেট ট্রিটানোপিয়া (নীল রঙ বোঝা যায় না)"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "দৃষ্টিশক্তির ঘাটতি ইমুলেট করুন"
@@ -789,10 +789,13 @@
     "message": "প্রিন্ট"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "প্রোটানোপিয়া"
+    "message": "প্রোটানোপিয়া (লাল রঙ বোঝা যায় না)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "কোয়েরি"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "কমানো কনট্রাস্ট"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "স্ক্রিন"
@@ -840,7 +843,7 @@
     "message": "ট্র্যাক সাইজ দেখান"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "ট্রাইটানোপিয়া"
+    "message": "ট্রিটানোপিয়া (নীল রঙ বোঝা যায় না)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "জাভাস্ক্রিপ্ট বন্ধ আছে"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "আলাদা উইন্ডোতে আনডক করুন"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "পৃষ্ঠা: বেছে নেওয়া হয়নি"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "পৃষ্ঠা: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "যেভাবে তৈরি করা"
   },
@@ -1062,7 +1071,7 @@
     "message": "রঙের ফর্ম্যাট:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "এই সেটিংটি শীঘ্রই বন্ধ করা হয়েছে, কারণ এটি আধুনিক রঙের স্পেসের সাথে সামঞ্জস্যপূর্ণ নয়। এটি আবার চালু করার জন্য, আপনি সংশ্লিষ্ট পরীক্ষা বন্ধ করতে পারেন।"
+    "message": "এই সেটিং বন্ধ করা হয়েছে কারণ এটি আধুনিক কালার স্পেসের সাথে মানানসই নয়। এটি আবার চালু করতে, সংশ্লিষ্ট পরীক্ষাগুলি বন্ধ করুন।"
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "ডার্ক"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "প্রধান"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "CORS Access-Control-Allow-Headers ম্যানেজ করার ক্ষেত্রে অনুমোদন ওয়াইল্ডকার্ড চিহ্নের (*) মাধ্যমে কভার করা হবে না।"
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "-internal-media-controls-overlay-cast-button বাছাইকারী ব্যবহার করার পরিবর্তে ডিফল্ট 'কাস্ট' ইন্টিগ্রেশন বন্ধ করতে disableRemotePlayback অ্যাট্রিবিউট ব্যবহার করা উচিত।"
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "সেইসব রিসোর্স সম্পর্কিত অনুরোধ যার URL-এ সরিয়ে দেওয়া 'হোয়াইটস্পেস' \\(n|r|t) অক্ষরগুলি এবং (<)-এর কম অক্ষর রয়েছে, সেই দুটিই ব্লক করা হয়েছে। এইসব রিসোর্স লোড করতে এলিমেন্ট অ্যাট্রিবিউটের মতো জায়গা থেকে নতুন লাইন সরিয়ে দিন এবং এর চেয়ে কম অক্ষর এনকোড করুন।"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes()-এর ব্যবহার বন্ধ করা হয়েছে, এর পরিবর্তে সাধারণ API: নেভিগেশন টাইমিং ২ ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes()-এর ব্যবহার বন্ধ করা হয়েছে, এর পরিবর্তে সাধারণ API: পেইন্ট টাইমিং ২ ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() এর ব্যবহার বন্ধ করা হয়েছে, এর পরিবর্তে নেভিগেশন টাইমিং ২-এ API: nextHopProtocol ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "সেইসব কুকি যার মধ্যে \\(0|r|n) অক্ষর রয়েছে তা সংক্ষিপ্ত করার পরিবর্তে সরিয়ে দেওয়া হবে।"
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "document.domain সেট করার মাধ্যমে একই উৎস সম্পর্কিত নীতি শিথিল করার বিষয়টি বন্ধ করা হয়েছে এবং ডিফল্ট হিসেবে এটি সরিয়ে দেওয়া হবে। এই বন্ধ করা সম্পর্কিত সতর্কতা হল ক্রস-অরিজিনের অ্যাক্সেসের জন্য যেটিdocument.domain সেট করার মাধ্যমে চালু করা হয়েছিল।"
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "ক্রস অরিজিন iframe থেকে window.alert ট্রিগারিং বন্ধ করা হয়েছে এবং ভবিষ্যতে এটি সরিয়ে দেওয়া হবে।"
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "ক্রস অরিজিন iframe থেকে window.confirm ট্রিগার করা বন্ধ করা হয়েছে এবং ভবিষ্যতে এটি সরিয়ে দেওয়া হবে।"
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "document.domain সেট করার মাধ্যমে একই উৎস সম্পর্কিত নীতি শিথিল করার বিষয়টি বন্ধ করা হয়েছে এবং ডিফল্ট হিসেবে এটি সরিয়ে দেওয়া হবে। এই ফিচার ব্যবহার করা চালিয়ে যেতে, ডকুমেন্ট ও ফ্রেমের জন্য HTTP প্রতিক্রিয়ার সাথে Origin-Agent-Cluster: ?0 হেডার পাঠানোর মাধ্যমে অরিজিন-কী এজেন্ট ক্লাস্টার থেকে বেরিয়ে আসুন। আরও বিবরণের জন্য https://developer.chrome.com/blog/immutable-document-domain/ দেখুন।"
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে। এর পরিবর্তে Event.composedPath() ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Expect-CT হেডার বন্ধ করে দেওয়া হয়েছে এবং তা সরিয়ে দেওয়া হবে। ৩০ এপ্রিল, ২০১৮-এর পরে ইস্যু করা সব সর্বজনীন বিশ্বস্ত শংসাপত্রের জন্য Chrome-এর, সার্টিফিকেট ট্রান্সপারেন্সি প্রয়োজন হয়।"
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "অসুরক্ষিত উৎসে getCurrentPosition() ও watchPosition() আর কাজ করে না। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "অসুরক্ষিত উৎসে getCurrentPosition() এবং watchPosition() বন্ধ করা হয়েছে। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "অসুরক্ষিত উৎসে getUserMedia() আর কাজ করে না। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate বন্ধ করা হয়েছে। এর পরিবর্তে RTCPeerConnectionIceErrorEvent.address বা RTCPeerConnectionIceErrorEvent.port ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "সার্ভিস ওয়ার্কার ইভেন্ট canmakepayment থেকে মার্চেন্টের সোর্স এবং আরবিট্রারি ডেটা বাতিল করা এবং সরানো হয়েছে: topOrigin, paymentRequestOrigin, methodData, modifiers।"
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "সাবরিসোর্স নেটওয়ার্ক থেকে ওয়েবসাইটের মাধ্যমে অনুরোধ করা হয় যাতে এটি শুধুমাত্র ব্যবহারকারীর জন্য নির্দিষ্ট করা নেটওয়ার্কের অবস্থানের কারণে অ্যাক্সেস করা যায়। এইসব অনুরোধ ইন্টারনেটে সর্বজনীন নয় এমন ডিভাইস ও সার্ভার সম্পর্কে তথ্য সর্বজনীনভাবে প্রকাশ করে, এর ফলে ক্রস-সাইট অনুরোধ সম্পর্কিত জালিয়াতি (CSRF) মূলক আক্রমণ এবং/বা তথ্য প্রকাশিত হওয়ার ঝুঁকি বেড়ে যায়। এইসব ধরনের ঝুঁকি কমাতে, Chrome সর্বজনীন নয় এমন সাবরিসোর্সের অনুরোধ বন্ধ করে যা অসুরক্ষিত কনটেক্সট সম্পর্কে চালু করা হয়েছে, এবং এগুলি ব্লক করা চালু করবে।"
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": ".css ফাইল এক্সটেনশনে শেষ না হওয়া পর্যন্ত CSS file:-এর URL থেকে লোড করা যাবে না।"
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "স্পেসিফিকেশন সম্পর্কিত পরিবর্তনের কারণে remove()-এর অ্যাসিঙ্ক্রোনাস রেঞ্জ সরিয়ে দেওয়ার বিষয়টি বাতিল করতে SourceBuffer.abort() ব্যবহার করা বন্ধ করা হয়েছে। ভবিষ্যতে সহায়তা সরিয়ে দেওয়া হবে। পরিবর্তে আপনার updateend ইভেন্ট শোনা উচিত। abort()-এর উদ্দেশ্য হল শুধুমাত্র অ্যাসিঙ্ক্রোনাস মিডিয়া অ্যাপেন্ড বাতিল করা বা পার্সার স্ট্যাটাস রিসেট করা।"
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "স্পেসিফিকেশন পরিবর্তনের জন্য যেকোনও  বাফার করা কোডেড ফ্রেমের সবচেয়ে উপরের প্রেজেন্টেশন টাইমস্ট্যাম্প নিচে MediaSource.duration সেট করা বন্ধ করা আছে। ভবিষ্যতে সংক্ষিপ্ত বাফার করা মিডিয়া বিজ্ঞপ্তি ছাড়াই সরিয়ে দেওয়ার সুবিধা ভবিষ্যতে সরিয়ে দেওয়া হবে। এর পরিবর্তে আপনি যেখানে newDuration < oldDuration আছে সেখানে সব sourceBuffers-এর ক্ষেত্রে স্পষ্টভাবে remove(newDuration, oldDuration) প্রয়োগ করতে পারেন।"
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "এমনকি MIDIOptions-এ সিসেক্সের (Sysex) উল্লেখ না থাকলেও ওয়েব MIDI ব্যবহার করা অনুমতি চাইবে।"
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "পুরনো, নন-স্ট্যান্ডার্ড shadowroot অ্যাট্রিবিউট বন্ধ করে দেওয়া হয়েছে। পরিবর্তে নতুন, স্ট্যান্ডার্ড shadowrootmode অ্যাট্রিবিউট ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "অসুরক্ষিত উৎস থেকে নোটিফিকেশন এপিআই (Notification API) আর হয়ত ব্যবহার করা যাবে না। আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "নোটিফিকেশন এপিআই (Notification API)-এর জন্য অনুরোধ আর হয়ত ক্রস-অরিজিন iframe থেকে করা যাবে না। এর পরিবর্তে সেরা লেভেলের ফ্রেম থেকে অনুরোধের জন্য অনুরোধ করা বা নতুন উইন্ডো খোলার কথা আপনাকে বিবেচনা করতে হবে।"
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap-এ বিকল্প imageOrientation: 'none' বন্ধ করে দেওয়া হয়েছে। পরিবর্তে {imageOrientation: 'from-image'} বিকল্পের সাথে createImageBitmap ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "আপনার পার্টনার পুরনো (D)TLS ভার্সন ব্যবহার করছেন। আপনার পার্টনার এটি সমাধান করেছেন কিনা তা চেক করে দেখে নিন।"
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "img, video ও canvas ট্যাগের মধ্যে overflow: visible-এর তথ্য প্রদান করার মাধ্যমে, এলিমেন্টের সীমার বাইরে ট্যাগ ভিজ্যুয়াল কন্টেন্ট তৈরি করতে পারে। https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md দেখুন।"
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments বন্ধ করে দেওয়া হয়েছে। এর পরিবর্তে পেমেন্ট হ্যান্ডলারের জন্য জাস্ট-ইন-টাইম ইনস্টল ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "আপনার PaymentRequest কল কনটেন্ট-সিকিউরিটি-পলিসি (CSP) connect-src ডাইরেক্টিভে বাইপাস করা হয়েছে। এই বাইপাস বন্ধ করে দেওয়া হয়েছে। আপনার CSP connect-src ডাইরেক্টিভে PaymentRequest API (supportedMethods-এর জায়গায়) থেকে পেমেন্ট পদ্ধতি শনাক্তকারী যোগ করুন।"
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent বন্ধ করে দেওয়া হয়েছে। পরিবর্তে স্ট্যান্ডার্ড navigator.storage ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "<picture> অভিভাবক সহ <source src> ভুল তাই এর ব্যবহার বন্ধ করা হয়েছে। এর পরিবর্তে <source srcset> ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame হল ভেন্ডর নির্দিষ্ট পদ্ধতি। পরিবর্তে স্ট্যান্ডার্ড cancelAnimationFrame ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame হল ভেন্ডর নির্দিষ্ট পদ্ধতি। পরিবর্তে স্ট্যান্ডার্ড requestAnimationFrame ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen বন্ধ করা হয়েছে। পরিবর্তে Document.fullscreenElement ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() বন্ধ করা হয়েছে। পরিবর্তে Element.requestFullscreen() ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() বন্ধ করা হয়েছে। পরিবর্তে Element.requestFullscreen() ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() বন্ধ করা হয়েছে। পরিবর্তে Document.exitFullscreen() ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() বন্ধ করা হয়েছে। পরিবর্তে Document.exitFullscreen() ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen বন্ধ করে দেওয়া হয়েছে। পরিবর্তে Document.fullscreenEnabled ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "আমরা API chrome.privacy.websites.privacySandboxEnabled শীঘ্রই বন্ধ করছি, তবে M113 রিলিজ না হওয়া পর্যন্ত, এটি পুরনো ভার্সনের ইন্টারফেস ব্যবহার করে যেতে পারবে। পরিবর্তে, chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled এবং chrome.privacy.websites.adMeasurementEnabled ব্যবহার করুন। https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled দেখুন।"
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "DtlsSrtpKeyAgreement সীমাবদ্ধতা সরানো হয়েছে। আপনি এই সীমাবদ্ধতার জন্য false মানের উল্লেখ করেছেন, যা সরিয়ে দেওয়া SDES key negotiation পদ্ধতি ব্যবহার করার চেষ্টা হিসেবে ব্যাখ্যা করা হয়েছে। এই কার্যকারিতা সরিয়ে দেওয়া হয়েছে; এর পরিবর্তে এমন পরিষেবা ব্যবহার করুন যেখানে DTLS key negotiation কাজ করে।"
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "DtlsSrtpKeyAgreement সীমাবদ্ধতা সরানো হয়েছে। আপনি এই সীমাবদ্ধতার জন্য true মানের উল্লেখ করেছেন, যার কোনও প্রভাব নেই তবে আপনি এই এই সীমাবদ্ধতা স্বচ্ছতার জন্য সরিয়ে দিতে পারবেন।"
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "কলব্যাক-নির্ভর getStats() বন্ধ করে দেওয়া হয়েছে এবং তা সরিয়ে দেওয়া হবে। পরিবর্তে spec-compliant getStats() ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() বন্ধ করা হয়েছে। পরিবর্তে Selection.modify() ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "সেইসব রিসোর্স সম্পর্কিত অনুরোধ যার URL-এ এম্বেড করা ক্রেডেনশিয়াল (যেমন https://user:pass@host/) রয়েছে, তা ব্লক করা হয়েছে।"
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "rtcpMuxPolicy বিকল্পটি বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে।"
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBuffer-এর ক্রস-অরিজিন আইসোলেশন প্রয়োজন হবে। আরও বিবরণের জন্য https://developer.chrome.com/blog/enabling-shared-array-buffer/ দেখুন।"
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "ইউজার অ্যাক্টিভেশন ছাড়াspeechSynthesis.speak() সুবিধা বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে।"
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "SharedArrayBuffer ব্যবহার করা চালিয়ে যেতে ক্রস-অরিজিন আইসোলেশ থেকে এক্সটেনশন বেছে নিতে হবে। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ দেখুন।"
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "XMLHttpRequest-এ প্রতিক্রিয়া json-মাধ্যমে UTF-16 কাজ করে না"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "ব্যবহারকারীর অভিজ্ঞতার উপর ক্ষতিকর প্রভাবের জন্য প্রধান থ্রেডে সিঙ্ক্রোনাস XMLHttpRequest-এর ব্যবহার বন্ধ করা হয়েছে। আরও সাহায্যের জন্য, https://xhr.spec.whatwg.org/ লিঙ্কে যান।"
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() বন্ধ করা হয়েছে। isSessionSupported() ব্যবহার করুন এবং এর পরিবর্তে সমাধান করা বুলিয়ান মান চেক করুন।"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ফাইল লোড করার সময় অজানা সমস্যা হয়েছে"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "Same-Site এবং Same-Origin"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "CORS Access-Control-Allow-Headers ম্যানেজ করার ক্ষেত্রে অনুমোদন ওয়াইল্ডকার্ড চিহ্নের (*) মাধ্যমে কভার করা হবে না।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "সেইসব রিসোর্স সম্পর্কিত অনুরোধ যার URL-এ সরিয়ে দেওয়া 'হোয়াইটস্পেস' \\(n|r|t) অক্ষরগুলি এবং (<)-এর কম অক্ষর রয়েছে, সেই দুটিই ব্লক করা হয়েছে। এইসব রিসোর্স লোড করতে এলিমেন্ট অ্যাট্রিবিউটের মতো জায়গা থেকে নতুন লাইন সরিয়ে দিন এবং এর চেয়ে কম অক্ষর এনকোড করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes()-এর ব্যবহার বন্ধ করা হয়েছে, এর পরিবর্তে সাধারণ API: নেভিগেশন টাইমিং ২ ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes()-এর ব্যবহার বন্ধ করা হয়েছে, এর পরিবর্তে সাধারণ API: পেইন্ট টাইমিং ২ ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() এর ব্যবহার বন্ধ করা হয়েছে, এর পরিবর্তে নেভিগেশন টাইমিং ২-এ API: nextHopProtocol ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "সেইসব কুকি যার মধ্যে \\(0|r|n) অক্ষর রয়েছে তা সংক্ষিপ্ত করার পরিবর্তে সরিয়ে দেওয়া হবে।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "document.domain সেট করার মাধ্যমে একই উৎস সম্পর্কিত নীতি শিথিল করার বিষয়টি বন্ধ করা হয়েছে এবং ডিফল্ট হিসেবে এটি সরিয়ে দেওয়া হবে। এই বন্ধ করা সম্পর্কিত সতর্কতা হল ক্রস-অরিজিনের অ্যাক্সেসের জন্য যেটিdocument.domain সেট করার মাধ্যমে চালু করা হয়েছিল।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "ক্রস অরিজিন iframe থেকে {PH1} ট্রিগার করা বন্ধ করা হয়েছে এবং ভবিষ্যতে এটি সরিয়ে দেওয়া হবে।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "-internal-media-controls-overlay-cast-button বাছাইকারী ব্যবহার করার পরিবর্তে ডিফল্ট 'কাস্ট' ইন্টিগ্রেশন বন্ধ করতে disableRemotePlayback অ্যাট্রিবিউট ব্যবহার করা উচিত।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} বন্ধ করা হয়েছে। এর পরিবর্তে {PH2} ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "এটি একটি অনুবাদ শীঘ্রই বন্ধ করার সমস্যা সংক্রান্ত মেসেজের উদাহরণ।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "document.domain সেট করার মাধ্যমে একই উৎস সম্পর্কিত নীতি শিথিল করার বিষয়টি বন্ধ করা হয়েছে এবং ডিফল্ট হিসেবে এটি সরিয়ে দেওয়া হবে। এই ফিচার ব্যবহার করা চালিয়ে যেতে, ডকুমেন্ট ও ফ্রেমের জন্য HTTP প্রতিক্রিয়ার সাথে Origin-Agent-Cluster: ?0 হেডার পাঠানোর মাধ্যমে অরিজিন-কী এজেন্ট ক্লাস্টার থেকে বেরিয়ে আসুন। আরও বিবরণের জন্য https://developer.chrome.com/blog/immutable-document-domain/ দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে। এর পরিবর্তে Event.composedPath() ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Expect-CT হেডার বন্ধ করে দেওয়া হয়েছে এবং তা সরিয়ে দেওয়া হবে। ৩০ এপ্রিল, ২০১৮-এর পরে ইস্যু করা সব সর্বজনীন বিশ্বস্ত শংসাপত্রের জন্য Chrome-এর, সার্টিফিকেট ট্রান্সপারেন্সি প্রয়োজন হয়।"
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "আরও বিস্তারিত জানার জন্য ফিচার স্ট্যাটাস পৃষ্ঠা চেক করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "অসুরক্ষিত উৎসে getCurrentPosition() ও watchPosition() আর কাজ করে না। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "অসুরক্ষিত উৎসে getCurrentPosition() এবং watchPosition() বন্ধ করা হয়েছে। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "অসুরক্ষিত উৎসে getUserMedia() আর কাজ করে না। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate বন্ধ করা হয়েছে। এর পরিবর্তে RTCPeerConnectionIceErrorEvent.address বা RTCPeerConnectionIceErrorEvent.port ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "সার্ভিস ওয়ার্কার ইভেন্ট canmakepayment থেকে মার্চেন্টের সোর্স এবং আরবিট্রারি ডেটা বাতিল করা এবং সরানো হয়েছে: topOrigin, paymentRequestOrigin, methodData, modifiers।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "সাবরিসোর্স নেটওয়ার্ক থেকে ওয়েবসাইটের মাধ্যমে অনুরোধ করা হয় যাতে এটি শুধুমাত্র ব্যবহারকারীর জন্য নির্দিষ্ট করা নেটওয়ার্কের অবস্থানের কারণে অ্যাক্সেস করা যায়। এইসব অনুরোধ ইন্টারনেটে সর্বজনীন নয় এমন ডিভাইস ও সার্ভার সম্পর্কে তথ্য সর্বজনীনভাবে প্রকাশ করে, এর ফলে ক্রস-সাইট অনুরোধ সম্পর্কিত জালিয়াতি (CSRF) মূলক আক্রমণ এবং/বা তথ্য প্রকাশিত হওয়ার ঝুঁকি বেড়ে যায়। এইসব ধরনের ঝুঁকি কমাতে, Chrome সর্বজনীন নয় এমন সাবরিসোর্সের অনুরোধ বন্ধ করে যা অসুরক্ষিত কনটেক্সট সম্পর্কে চালু করা হয়েছে, এবং এগুলি ব্লক করা চালু করবে।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": ".css ফাইল এক্সটেনশনে শেষ না হওয়া পর্যন্ত CSS file:-এর URL থেকে লোড করা যাবে না।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "স্পেসিফিকেশন সম্পর্কিত পরিবর্তনের কারণে remove()-এর অ্যাসিঙ্ক্রোনাস রেঞ্জ সরিয়ে দেওয়ার বিষয়টি বাতিল করতে SourceBuffer.abort() ব্যবহার করা বন্ধ করা হয়েছে। ভবিষ্যতে সহায়তা সরিয়ে দেওয়া হবে। পরিবর্তে আপনার updateend ইভেন্ট শোনা উচিত। abort()-এর উদ্দেশ্য হল শুধুমাত্র অ্যাসিঙ্ক্রোনাস মিডিয়া অ্যাপেন্ড বাতিল করা বা পার্সার স্ট্যাটাস রিসেট করা।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "স্পেসিফিকেশন পরিবর্তনের জন্য যেকোনও  বাফার করা কোডেড ফ্রেমের সবচেয়ে উপরের প্রেজেন্টেশন টাইমস্ট্যাম্প নিচে MediaSource.duration সেট করা বন্ধ করা আছে। ভবিষ্যতে সংক্ষিপ্ত বাফার করা মিডিয়া বিজ্ঞপ্তি ছাড়াই সরিয়ে দেওয়ার সুবিধা ভবিষ্যতে সরিয়ে দেওয়া হবে। এর পরিবর্তে আপনি যেখানে newDuration < oldDuration আছে সেখানে সব sourceBuffers-এর ক্ষেত্রে স্পষ্টভাবে remove(newDuration, oldDuration) প্রয়োগ করতে পারেন।"
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "এই পরিবর্তন মাইলস্টোন {milestone}-এ কার্যকর হবে।"
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "এমনকি MIDIOptions-এ সিসেক্সের (Sysex) উল্লেখ না থাকলেও ওয়েব MIDI ব্যবহার করা অনুমতি চাইবে।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "অসুরক্ষিত উৎস থেকে নোটিফিকেশন এপিআই (Notification API) আর হয়ত ব্যবহার করা যাবে না। আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "নোটিফিকেশন এপিআই (Notification API)-এর জন্য অনুরোধ আর হয়ত ক্রস-অরিজিন iframe থেকে করা যাবে না। এর পরিবর্তে সেরা লেভেলের ফ্রেম থেকে অনুরোধের জন্য অনুরোধ করা বা নতুন উইন্ডো খোলার কথা আপনাকে বিবেচনা করতে হবে।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "createImageBitmap-এ বিকল্প imageOrientation: \"none\" বন্ধ করে দেওয়া হয়েছে। পরিবর্তে {imageOrientation: \"from-image\"} বিকল্প সহ createImageBitmap ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "আপনার পার্টনার পুরনো (D)TLS ভার্সন ব্যবহার করছেন। আপনার পার্টনার এটি সমাধান করেছেন কিনা তা চেক করে দেখে নিন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "অ-সুরক্ষিত কন্টেক্সটে WebSQL বাতিল করা হয়েছে এবং শীঘ্রই সরানো হবে। ওয়েব স্টোরেজ বা ইন্ডেক্স করা ডেটাবেস ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "img, video ও canvas ট্যাগের মধ্যে overflow: visible-এর তথ্য প্রদান করার মাধ্যমে, এলিমেন্টের সীমার বাইরে ট্যাগ ভিজ্যুয়াল কন্টেন্ট তৈরি করতে পারে। https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments বন্ধ করে দেওয়া হয়েছে। এর পরিবর্তে পেমেন্ট হ্যান্ডলারের জন্য জাস্ট-ইন-টাইম ইনস্টল ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "আপনার PaymentRequest কল কনটেন্ট-সিকিউরিটি-পলিসি (CSP) connect-src ডাইরেক্টিভে বাইপাস করা হয়েছে। এই বাইপাস বন্ধ করে দেওয়া হয়েছে। আপনার CSP connect-src ডাইরেক্টিভে PaymentRequest API (supportedMethods-এর জায়গায়) থেকে পেমেন্ট পদ্ধতি শনাক্তকারী যোগ করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent বন্ধ করে দেওয়া হয়েছে। পরিবর্তে স্ট্যান্ডার্ড navigator.storage ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "<picture> অভিভাবক সহ <source src> ভুল তাই এর ব্যবহার বন্ধ করা হয়েছে। এর পরিবর্তে <source srcset> ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo বন্ধ করে দেওয়া হয়েছে। পরিবর্তে স্ট্যান্ডার্ড navigator.storage ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "আমরা API chrome.privacy.websites.privacySandboxEnabled শীঘ্রই বন্ধ করছি, তবে M113 রিলিজ না হওয়া পর্যন্ত, এটি পুরনো ভার্সনের ইন্টারফেস ব্যবহার করে যেতে পারবে। পরিবর্তে, chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled এবং chrome.privacy.websites.adMeasurementEnabled ব্যবহার করুন। https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "সেইসব রিসোর্স সম্পর্কিত অনুরোধ যার URL-এ এম্বেড করা ক্রেডেনশিয়াল (যেমন https://user:pass@host/) রয়েছে, তা ব্লক করা হয়েছে।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "DtlsSrtpKeyAgreement সীমাবদ্ধতা সরানো হয়েছে। আপনি এই সীমাবদ্ধতার জন্য false মানের উল্লেখ করেছেন, যা সরিয়ে দেওয়া SDES key negotiation পদ্ধতি ব্যবহার করার চেষ্টা হিসেবে ব্যাখ্যা করা হয়েছে। এই কার্যকারিতা সরিয়ে দেওয়া হয়েছে; এর পরিবর্তে এমন পরিষেবা ব্যবহার করুন যেখানে DTLS key negotiation কাজ করে।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "DtlsSrtpKeyAgreement সীমাবদ্ধতা সরানো হয়েছে। আপনি এই সীমাবদ্ধতার জন্য true মানের উল্লেখ করেছেন, যার কোনও প্রভাব নেই তবে আপনি এই এই সীমাবদ্ধতা স্বচ্ছতার জন্য সরিয়ে দিতে পারবেন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP শনাক্ত করা হয়েছে। Session Description Protocol-এর এই উপভাষা আর কাজ করে না। এর পরিবর্তে Unified Plan SDP ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Plan B SDP semantics, {sdpSemantics:'plan-b'}-এর মাধ্যমে RTCPeerConnection তৈরি হওয়ার সময় ব্যবহার করা হয়, যা 'ওয়েব প্ল্যাটফর্ম' থেকে স্থায়ীভাবে মুছে ফেলা Session Description Protocol-এর পুরনো ভার্সন নয়। এটি IS_FUCHSIA সহ তৈরি হওয়ার সময়েও উপলভ্য আছে, তবে আমাদের উদ্দেশ্য এটি যত শীঘ্র সম্ভব মুছে দেওয়া। এর উপরে নির্ভর করা বন্ধ করুন। স্ট্যাটাসের জন্য https://crbug.com/1302249 দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "rtcpMuxPolicy বিকল্পটি বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBuffer-এর ক্রস-অরিজিন আইসোলেশন প্রয়োজন হবে। আরও বিবরণের জন্য https://developer.chrome.com/blog/enabling-shared-array-buffer/ দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "ইউজার অ্যাক্টিভেশন ছাড়াspeechSynthesis.speak() সুবিধা বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে।"
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "শীঘ্রই বন্ধ করা হয়েছে এমন ফিচার ব্যবহার করা হয়েছে"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "SharedArrayBuffer ব্যবহার করা চালিয়ে যেতে ক্রস-অরিজিন আইসোলেশ থেকে এক্সটেনশন বেছে নিতে হবে। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} হল ভেন্ডরের মাধ্যমে নির্দিষ্ট করা। এর পরিবর্তে {PH2} ব্যবহার করুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "XMLHttpRequest-এ প্রতিক্রিয়া json-মাধ্যমে UTF-16 কাজ করে না"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "ব্যবহারকারীর অভিজ্ঞতার উপর ক্ষতিকর প্রভাবের জন্য প্রধান থ্রেডে সিঙ্ক্রোনাস XMLHttpRequest-এর ব্যবহার বন্ধ করা হয়েছে। আরও সহায়তার জন্য, https://xhr.spec.whatwg.org/ দেখুন।"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() বন্ধ করা হয়েছে। isSessionSupported() ব্যবহার করুন এবং এর পরিবর্তে সমাধান করা বুলিয়ান মান চেক করুন।"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "HTML অ্যাট্রিবিউট: অটোকমপ্লিট"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "পোর্টাল - একই উৎস থেকে উৎপন্ন কমিউনিকেশন চ্যানেল"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "'অটোফিল' কীভাবে কাজ করে?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "ফর্ম ইনপুট এলিমেন্ট"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "লেবেল এলিমেন্ট"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "ভারি বিজ্ঞাপনে হস্তক্ষেপ সামলানো"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "প্রেজেন্টেশন"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "প্রাথমিক আইকন, যেমন Chrome-এ ব্যবহার করা হয়েছে"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "{PH1} থেকে নেওয়া প্রাথমিক ম্যানিফেস্ট আইকন"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "প্রোটোকল নিয়ন্ত্রণকারী"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "থিমের রঙ"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "প্রিফেচিং ও প্রিরেন্ডারিং"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "অ্যাপ ম্যানিফেস্ট"
@@ -2836,6 +2863,9 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "হ্যাঁ"
+  },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "প্রিফেচিং ও প্রিরেন্ডারিং"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "কোনও রিপোর্টে ক্লিক করে সেটির বডি দেখুন"
@@ -3333,7 +3363,7 @@
     "message": "অনুপযুক্ত API ব্যবহার করা হয়েছে।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "এক্সটেনশনের ইঞ্জেক্ট করা জাভাস্ক্রিপ্ট সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+    "message": "এক্সটেনশনের ইঞ্জেক্ট করা JavaScript সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
     "message": "এক্সটেনশনের ইঞ্জেক্ট করা StyleSheet সহ পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "স্টোর করা টোকেনের সংখ্যা"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "অ্যাক্টিভ না থাকা আইটেম মুছুন"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "চালু আছে"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "বাতিল করা হয়েছে"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "প্রি-রেন্ডারিং"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "সঠিক"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "DevTools খোলা থাকার কারণে প্রিলোড করার ফিচার জোর করে চালু করা হয়েছে। যখন DevTools বন্ধ থাকে, তখন প্রি-রেন্ডারিং বন্ধ করা হয় কারণ এই ব্রাউজার সেশনটি হল কর্মক্ষমতা তুলনা করতে ব্যবহৃত হোল্ডব্যাক গ্রুপের অংশ।"
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "প্রিরেন্ডারিং বন্ধ ছিল, কিন্তু এখন জোর করে চালু করা হয়েছে"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "সাধারণ তথ্য"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "এতে শুরু হয়েছে"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "স্ট্যাটাস"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "ট্রিগার"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "আরও বিবরণের জন্য এলিমেন্ট বেছে নিন"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "চালু আছে"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "বাতিল করা হয়েছে"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "প্রি-রেন্ডারিং"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "এতে শুরু হয়েছে"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "স্ট্যাটাস"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "ট্রিগার"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "বিস্তারিত তথ্য"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "ধরন"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "সোর্স"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "বৈধতা"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "সঠিক"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "বৈধতা"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ব্রেকপয়েন্ট হিট"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "{PH1}-এর সাথে থাকা সব মেসেজ মুছে দিন"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "কন্ডিশনাল ব্রেকপয়েন্ট"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "কনসোল"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "লগপয়েন্ট"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{একই মেসেজ # বার দেখানো হয়েছে}one{একই মেসেজ # বার দেখানো হয়েছে}other{একই মেসেজ # বার দেখানো হয়েছে}}"
@@ -4575,7 +4590,7 @@
     "message": "কনসোল ইতিহাস মুছে ফেলুন"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "সাধারণত console.trace() মেসেজ আড়াল করুন"
+    "message": "console.trace() মেসেজ অটোমেটিক বড় করবেন না"
   },
   "panels/console/console-meta.ts | console": {
     "message": "কনসোল"
@@ -4605,10 +4620,10 @@
     "message": "তাড়াহুড়ো করে কনসোল প্রম্পট টেক্সট চেক করে দেখা"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "ইভ্যালুয়েট ইউজার অ্যাক্টিভেশন ট্রিগার করে"
+    "message": "ইভ্যালুয়েশন ট্রিগার ব্যবহারকারী সংক্রান্ত অ্যাক্টিভেশন"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "সাধারণত console.trace() মেসেজ বড় করুন"
+    "message": "console.trace() মেসেজ অটোমেটিক বড় করুন"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "কনসোলে একই ধরনের মেসেজ গ্রুপ করুন"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "স্ট্রিং, বাছাইকারী বা XPath অনুযায়ী খুঁজুন"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "ফ্রেম"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "কম্পিউটেড স্টাইল সাইডবার লুকান"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "প্রপার্টি টগল করে এডিট করা চালিয়ে যান"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "ফন্ট-ফ্যামিলি “{PH5}”-এর জন্য সেটিংয়ের মান “{PH1}” {PH2} সাপোর্ট করা রেঞ্জ [{PH3}, {PH4}] ছাড়িয়ে গেছে।"
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "গণনা করা মান দেখুন"
   },
@@ -5454,6 +5463,12 @@
     "message": "ব্যাজ দেখুন"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "আরও জানুন"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "দেখতে চাই না"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "আরও জানুন"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "পরীক্ষা করার জন্য পৃষ্ঠার কোনও এলিমেন্ট বেছে নিন"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "CSS ডকুমেন্টেশন টুলটিপ দেখুন"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "কম্পিউটেড স্টাইল দেখান"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "সব প্রোফাইল মুছে ফেলুন"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "আসন্ন ভার্সনে এই প্যানেল বন্ধ করে দেওয়া হবে। জাভাস্ক্রিপ্ট সিপিইউ প্রোফাইল রেকর্ড করতে, পারফর্ম্যান্স প্যানেল ব্যবহার করুন।"
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "মতামত"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "পারফর্ম্যান্স প্যানেলে যান"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "আরও জানুন"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "লোড করুন…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ডকুমেন্টেশন"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "পেরিয়ে যাওয়া সময়"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "ফিল্টার করুন"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (সোর্স ম্যাপ থেকে)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (ইগনোর লিস্ট)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "সব ফাইলের মধ্যে সার্চ করুন"
   },
@@ -10403,8 +10439,8 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "মিলিসেঃ"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} থেকে প্রাপ্ত ডিবাগ তথ্যের মাধ্যমে প্রদান করা)"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "({PH1} থেকে)"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
     "message": "({PH1} থেকে সোর্স ম্যাপ করা হয়েছে)"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "মোট ব্লকিং সময়: {PH1}মিনিট{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "কভারেজ"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "সিপিইউ"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "থ্রেড"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "থ্রেড {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "সময়"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "ইন্টারঅ্যাকশন"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "বন্ধ করুন"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "কভারেজ"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "সিপিইউ:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "রিসিভ করা হয়েছে"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "পারফর্ম্যান্স ট্রেস সহ কভারেজ রেকর্ড করুন"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "রেকর্ডিং করা যায়নি"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "ইনিশিয়েটর"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "ইনপুট লেটেন্সি"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "টাইমার ইনস্টল করুন"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS ফ্রেম"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "JS নিষ্ক্রিয় ফ্রেম"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "JS রুট"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "JS সিস্টেম ফ্রেম"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "লার্জেস্ট কন্টেন্টফুল পেন্ট"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "তৈরি হওয়া ক্যাশের সাইজ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "প্রোফাইলিং ওভারহেড"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "রেঞ্জ"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "রেন্ডার করতে যে সময় লেগেছে"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "প্রধান থ্রেডে অপেক্ষার সময়"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "সময় সমাপ্ত"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "সাজানো বিকল্পের ফিল্টার প্রয়োগ করার জন্য Enter প্রেস করুন"
+    "message": "কলাম সাজানোর স্টেট: {PH1}। সাজানোর ফিল্টার প্রয়োগ করতে Enter প্রেস করুন"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "হেডার সংক্রান্ত বিকল্প"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "কলাম রিসেট করুন"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "ছোট থেকে বড়"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "এটি অনুযায়ী সাজান"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "বড় থেকে ছোট"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "কিছুই নেই"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} ছোট থেকে বড় ক্রম অনুসারে সাজানো হয়েছে"

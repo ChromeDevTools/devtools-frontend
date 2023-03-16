@@ -224,9 +224,6 @@
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} வி"
   },
-  "core/sdk/CPUProfileDataModel.ts | devtoolsCpuProfileParserIsFixing": {
-    "message": "DevTools: CPU சுயவிவரப் பாகுபடுத்தி விடுபட்டுள்ள {PH1} சாம்பிள்களைச் சரிசெய்கிறது."
-  },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "சுயவிவரம் {PH1}"
   },
@@ -238,6 +235,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} தளத்திலுள்ள உள்ளடக்கத்தை ஏற்ற முடியவில்லை ({PH2})"
+  },
+  "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
+    "message": "‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தின் மூலம் {PH1} தளத்திற்குச் செல்லுதல் மீட்டெடுக்கப்பட்டது (https://web.dev/bfcache/ என்ற தளத்தைப் பார்க்கவும்)"
   },
   "core/sdk/ConsoleModel.ts | failedToSaveToTempVariable": {
     "message": "தற்காலிக மாறியைச் சேமிக்க முடியவில்லை."
@@ -551,9 +551,6 @@
   "core/sdk/OverlayModel.ts | pausedInDebugger": {
     "message": "பிழைதிருத்தியில் இடைநிறுத்தப்பட்டது"
   },
-  "core/sdk/PageResourceLoader.ts | loadCanceledDueToLoadTimeout": {
-    "message": "ஏற்றுவதற்கான நேரம் முடிந்ததால் ஏற்றுதல் ரத்துசெய்யப்பட்டது"
-  },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "கண்காணிக்கப்பட்ட பக்கம் ரெஃப்ரெஷ் செய்யப்பட்டதால் ஏற்றுதல் ரத்துசெய்யப்பட்டது"
   },
@@ -618,7 +615,7 @@
     "message": "நிறுத்துகிறது"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
-    "message": "அக்ரமடோப்ஸியா"
+    "message": "அக்ரமடோப்ஸியா (நிறமில்லாதது)"
   },
   "core/sdk/sdk-meta.ts | blurredVision": {
     "message": "மங்கலான பார்வைக் குறைபாடு"
@@ -627,7 +624,7 @@
     "message": "ஒத்திசையாத ஸ்டாக் டிரேஸ்களைப் காட்டு"
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
-    "message": "டியூடெரோனோபியா"
+    "message": "டியூடெரோனோபியா (பச்சை இல்லாதது)"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "ஒத்திசையாத ஸ்டாக் டிரேஸ்களை முடக்கு"
@@ -690,7 +687,7 @@
     "message": "மையப்படுத்தப்பட்ட பக்கத்தைச் செயல்படுத்து"
   },
   "core/sdk/sdk-meta.ts | emulateAchromatopsia": {
-    "message": "அக்ரமடோப்சியாவிற்கான அமைப்பை இயக்கு"
+    "message": "அக்ரமடோப்ஸியாவை (நிறமில்லாதது) செயல்படுத்து"
   },
   "core/sdk/sdk-meta.ts | emulateAutoDarkMode": {
     "message": "தானியங்கு டார்க் பயன்முறையின் மாதிரி இயக்கம்"
@@ -714,13 +711,16 @@
     "message": "CSS ஸ்கிரீன் மீடியா வகையைச் செயல்படுத்து"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
-    "message": "டியூடெரோனோபியாவிற்கான அமைப்பைச் செயல்படுத்து"
+    "message": "டியூடெரோனோபியாவை (பச்சை இல்லாதது) செயல்படுத்துதல்"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
-    "message": "ப்ரோடனோபியாவிற்கான அமைப்பை இயக்கு"
+    "message": "ப்ரோடனோபியாவை (சிவப்பு இல்லாதது) செயல்படுத்து"
+  },
+  "core/sdk/sdk-meta.ts | emulateReducedContrast": {
+    "message": "குறைவான ஒளி மாறுபாட்டைச் செயல்படுத்து"
   },
   "core/sdk/sdk-meta.ts | emulateTritanopia": {
-    "message": "டிரிட்டனோப்பியாவிற்கான அமைப்பைச் செயல்படுத்து"
+    "message": "டிரிட்டனோப்பியாவை (நீலம் இல்லாதது) செயல்படுத்து"
   },
   "core/sdk/sdk-meta.ts | emulateVisionDeficiencies": {
     "message": "பார்வைக் குறைபாடுகளுக்கான அமைப்பை இயக்கு"
@@ -789,10 +789,13 @@
     "message": "பிரிண்ட் செய்"
   },
   "core/sdk/sdk-meta.ts | protanopia": {
-    "message": "ப்ரோடனோபியா"
+    "message": "ப்ரோடனோபியா (சிவப்பு இல்லாதது)"
   },
   "core/sdk/sdk-meta.ts | query": {
     "message": "வினவல்"
+  },
+  "core/sdk/sdk-meta.ts | reducedContrast": {
+    "message": "குறைவான ஒளி மாறுபாடு"
   },
   "core/sdk/sdk-meta.ts | screen": {
     "message": "திரை"
@@ -840,7 +843,7 @@
     "message": "டிராக்கின் அளவைக் காட்டு"
   },
   "core/sdk/sdk-meta.ts | tritanopia": {
-    "message": "டிரிட்டனோப்பியா"
+    "message": "டிரிட்டனோப்பியா (நீலம் இல்லாதது)"
   },
   "entrypoints/inspector_main/InspectorMain.ts | javascriptIsDisabled": {
     "message": "JavaScript முடக்கப்பட்டுள்ளது"
@@ -1043,6 +1046,12 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "தனி சாளரத்தில் காட்டு"
   },
+  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "பக்கம்: தேர்ந்தெடுக்கப்படவில்லை"
+  },
+  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
+    "message": "பக்கம்: {PH1}"
+  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "அசல் வடிவமாக அமை"
   },
@@ -1062,7 +1071,7 @@
     "message": "வண்ண வடிவமைப்பு:"
   },
   "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "நவீன வண்ணப் பகுதிகளுடன் இணங்காததால் இந்த அமைப்பு நிறுத்தப்பட்டது. தொடர்புடைய பரிசோதனையை முடக்குவது மூலம் இதை மீண்டும் இயக்கலாம்."
+    "message": "நவீன வண்ணப் பகுதிகளுடன் இணங்காததால் இந்த அமைப்பு நிறுத்தப்பட்டது. அதை மீண்டும் இயக்க தொடர்புடைய பரிசோதனையை முடக்கவும்."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "டார்க்"
@@ -1241,6 +1250,168 @@
   "entrypoints/worker_app/WorkerMain.ts | main": {
     "message": "முதன்மை"
   },
+  "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
+    "message": "CORS Access-Control-Allow-Headersஸைக் கையாளும்போது வைல்டுகார்டு குறியீட்டில் (*) அங்கீகரிப்பு சேர்க்கப்படாது."
+  },
+  "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "இயல்பு அலைபரப்பு ஒருங்கிணைப்பை முடக்க -internal-media-controls-overlay-cast-button தேர்விக்குப் பதிலாக disableRemotePlayback பண்புக்கூறைப் பயன்படுத்த வேண்டும்."
+  },
+  "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
+    "message": "அகற்றப்பட்ட இடைவெளி \\(n|r|t) எழுத்துகள், ‘குறைவைக்’ குறிக்கும் எழுத்துகள் (<) ஆகிய இரண்டும் இருக்கும் URLகளின் ஆதாரக் கோரிக்கைகள் தடுக்கப்பட்டுள்ளன. இந்த ஆதாரங்களை ஏற்ற, நியூலைன்களை அகற்றி ‘குறைவைக்’ குறிக்கும் எழுத்துகளை எலிமெண்ட் ஆட்ரிபியூட் மதிப்புகள் போன்ற இடங்களில் இருந்து என்கோடிங் செய்யவும்."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
+    "message": "chrome.loadTimes() செயல்பாடு நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Navigation Timing 2."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "chrome.loadTimes() நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Paint Timing."
+  },
+  "generated/Deprecation.ts | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "chrome.loadTimes() நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Navigation Timing 2ல் nextHopProtocol."
+  },
+  "generated/Deprecation.ts | CookieWithTruncatingChar": {
+    "message": "\\(0|r|n) எழுத்து இருக்கும் குக்கீகள் துண்டிக்கப்படுவதற்குப் பதிலாக நிராகரிக்கப்படும்."
+  },
+  "generated/Deprecation.ts | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "document.domain ஐ அமைத்து அதே ஆரிஜின் கொள்கையைத் தளர்த்துவது நிறுத்தப்பட்டது. இயல்பாகவே இது முடக்கப்படும். இந்த நிறுத்த எச்சரிக்கை கிராஸ் ஆரிஜின் அணுகலுக்கானது. இது document.domain அமைப்பின் மூலம் இயக்கப்பட்டது."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowAlert": {
+    "message": "கிராஸ் ஆரிஜின் iframesஸில் இருந்து window.alertடை டிரிகர் செய்வது நிறுத்தப்பட்டது, எதிர்காலத்தில் அது அகற்றப்படும்."
+  },
+  "generated/Deprecation.ts | CrossOriginWindowConfirm": {
+    "message": "கிராஸ் ஆரிஜின் iframesஸில் இருந்து window.confirmமை டிரிகர் செய்வது நிறுத்தப்பட்டது, எதிர்காலத்தில் அது அகற்றப்படும்."
+  },
+  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "document.domain ஐ அமைத்து அதே ஆரிஜின் கொள்கையைத் தளர்த்துவது நிறுத்தப்பட்டது. இயல்பாகவே இது முடக்கப்படும். இந்த அம்சத்தைத் தொடர்ந்து பயன்படுத்த ஆவணம் மற்றும் ஃபிரேம்களுக்கான HTTP பதிலுடன் Origin-Agent-Cluster: ?0 தலைப்பை அனுப்பி ஆரிஜின்-கீய்டு ஏஜெண்ட் கிளஸ்டர்களின் ஒப்புதலை நீக்கவும். கூடுதல் தகவல்களுக்கு https://developer.chrome.com/blog/immutable-document-domain/ தளத்திற்குச் செல்லவும்."
+  },
+  "generated/Deprecation.ts | EventPath": {
+    "message": "Event.path நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். இதற்குப் பதிலாக Event.composedPath() ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | ExpectCTHeader": {
+    "message": "Expect-CT தலைப்பு நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். ஏப்ரல் 30, 2018க்குப் பிறகு வெளியிடப்பட்ட பொதுவில் நம்பப்படும் சான்றிதழ்கள் அனைத்திற்கும் சான்றிதழ் வெளிப்படைத்தன்மை Chromeமிற்குத் தேவை."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOrigin": {
+    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் getCurrentPosition() மற்றும் watchPosition() இனி செயல்படாது. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
+  },
+  "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் getCurrentPosition(), watchPosition() ஆகியவை நிறுத்தப்பட்டன. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
+  },
+  "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
+    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் getUserMedia() இனி செயல்படாது. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
+  },
+  "generated/Deprecation.ts | HostCandidateAttributeGetter": {
+    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate நிறுத்தப்பட்டது. இதற்குப் பதிலாக RTCPeerConnectionIceErrorEvent.address அல்லது RTCPeerConnectionIceErrorEvent.port ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
+    "message": "canmakepayment service worker நிகழ்வில் இருந்து பெறப்பட்ட வணிகரின் ஆரிஜின் மற்றும் தன்னிச்சையான தரவு நிறுத்தப்பட்டு அகற்றப்படும்: topOrigin, paymentRequestOrigin, methodData, modifiers."
+  },
+  "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "பயனர்களின் சிறப்பு நெட்வொர்க் நிலை காரணமாக மட்டுமே இந்த இணையதளம் அணுகக்கூடிய நெட்வொர்க்கில் இருந்து துணை ஆதாரத்தைக் கோருகிறது. இந்தக் கோரிக்கைகள் பொதுவில் இல்லாத சாதனங்களையும் சேவையகங்களையும் இணையத்தில் வெளிப்படுத்தும். இதன் மூலம் வேற்று தளக் கோரிக்கை மோசடி (CSRF) தாக்குதல் மற்றும்/அல்லது தகவல் கசிவு போன்ற அபாயத்தை அதிகரிக்கும். இதுபோன்ற அபாயங்களைக் குறைக்க பொதுவில் இல்லாத துணை ஆதாரங்களுக்குப் பாதுகாப்பற்ற சூழல்களில் இருந்து வரக்கூடிய கோரிக்கைகளை Chrome நிறுத்துவதோடு அவற்றைத் தடுக்கவும் செய்கிறது."
+  },
+  "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
+    "message": ".css ஃபைல் நீட்டிப்பில் முடிவடைந்தால் மட்டுமே file: URLகளில் இருந்து CSSஸை ஏற்ற முடியும்."
+  },
+  "generated/Deprecation.ts | MediaSourceAbortRemove": {
+    "message": "remove() இன் ஒத்திசையாத வரம்பு அகற்றுதலை ரத்துசெய்ய SourceBuffer.abort() ஐப் பயன்படுத்துவது, விவரக்குறிப்பு மாற்றம் காரணமாக நிறுத்தப்பட்டது. இதற்கான ஆதரவும் எதிர்காலத்தில் அகற்றப்படும். அதற்குப் பதிலாக updateend நிகழ்வைக் கவனிக்க வேண்டும். ஒத்திசையாத மீடியா இணைப்பை ரத்துசெய்ய அல்லது பாகுபடுத்தும் நிலையை மீட்டமைக்க மட்டும் abort() பயன்படுத்தப்படும்."
+  },
+  "generated/Deprecation.ts | MediaSourceDurationTruncatingBuffered": {
+    "message": "இடையகக் குறியீடு ஃபிரேம்களின் அதிகபட்சக் காட்சி நேரமுத்திரைக்குக் குறைவாக MediaSource.duration ஐ அமைப்பது விவரக்குறிப்பு மாற்றம் காரணமாக நிறுத்தப்பட்டது. துண்டிக்கப்பட்ட இடையக மீடியாவை மறைமுகமாக அகற்றுவதற்கான ஆதரவு எதிர்காலத்தில் அகற்றப்படும். newDuration < oldDuration எனும் நிலை உள்ள எல்லா இடங்களிலும் sourceBuffers அனைத்திலும் வெளிப்படையான remove(newDuration, oldDuration) ஐ மேற்கொள்ள வேண்டும்."
+  },
+  "generated/Deprecation.ts | NoSysexWebMIDIWithoutPermission": {
+    "message": "MIDIOptions இல் sysex குறிப்பிடப்படாமல் இருந்தாலும் பயன்படுத்துவதற்கான அனுமதியை இணைய MIDI கோரும்."
+  },
+  "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
+    "message": "பழைய நிலையற்ற shadowroot பண்புக்கூறு நிறுத்தப்பட்டது. இதற்குப் பதிலாக புதிய நிலையான shadowrootmode பண்புக்கூறைப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | NotificationInsecureOrigin": {
+    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் இருந்து Notification APIயை இனி பயன்படுத்த முடியாது. பாதுகாப்பான ஆரிஜினுக்கு (எ.கா. HTTPS) உங்கள் ஆப்ஸை மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
+  },
+  "generated/Deprecation.ts | NotificationPermissionRequestedIframe": {
+    "message": "Notification APIக்கான அனுமதியை கிராஸ் ஆரிஜின் iframeமில் இருந்து இனி கோர முடியாது. உயர்நிலை ஃபிரேமிடம் அனுமதி கோரவும் அல்லது புதிய சாளரத்தைத் திறக்கவும்."
+  },
+  "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmapபில் imageOrientation: 'none' விருப்பம் நிறுத்தப்பட்டது. அதற்குப் பதிலாக {imageOrientation: ‘from-image’} விருப்பத்துடன் createImageBitmapபைப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
+    "message": "காலாவதியான (D)TLS பதிப்பை உங்கள் கூட்டாளர் பரிமாற்றம் செய்கிறார். இதைச் சரிசெய்ய உங்கள் கூட்டாளரைத் தொடர்புகொள்ளவும்."
+  },
+  "generated/Deprecation.ts | OverflowVisibleOnReplacedElement": {
+    "message": "படம், வீடியோ மற்றும் கேன்வாஸ் குறிச்சொற்களில் overflow: visible ஐக் குறிப்பிடுவது, உறுப்பு வரம்புகளைத் தாண்டிய காட்சி உள்ளடக்கத்திற்கு வழிவகுக்கலாம். https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md என்ற இணைப்பைப் பார்க்கவும்."
+  },
+  "generated/Deprecation.ts | PaymentInstruments": {
+    "message": "paymentManager.instruments நிறுத்தப்பட்டது. அதற்குப் பதிலாகப் பேமெண்ட் ஹேண்ட்லர்களுக்கான just-in-time நிறுவலைப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PaymentRequestCSPViolation": {
+    "message": "உங்கள் PaymentRequest அழைப்பு உள்ளடக்கப் பாதுகாப்புக் கொள்கை (CSP) connect-src டைரெக்ட்டிவைப் புறக்கணித்துவிட்டது. இந்தப் புறக்கணிப்பு நிறுத்தப்பட்டது. PaymentRequest APIயில் (supportedMethods புலத்தில்) உள்ள பேமெண்ட் முறை அடையாளங்காட்டியை உங்கள் CSP connect-src டைரெக்டிவில் சேர்க்கவும்."
+  },
+  "generated/Deprecation.ts | PersistentQuotaType": {
+    "message": "StorageType.persistent நிறுத்தப்பட்டது. இதற்குப் பதிலாக நிலையான navigator.storage ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PictureSourceSrc": {
+    "message": "முதல்நிலை <picture> உடன் கூடிய <source src> தவறானது, எனவே தவிர்க்கப்பட்டது. இதற்குப் பதிலாக <source srcset> ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame என்பது வெண்டாருக்கு மட்டுமானது. இதற்குப் பதிலாக நிலையான cancelAnimationFrameமைப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame என்பது வெண்டாருக்கு மட்டுமானது. இதற்குப் பதிலாக நிலையான requestAnimationFrameமைப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen நிறுத்தப்பட்டது. இதற்குப் பதிலாக Document.fullscreenElementடைப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() நிறுத்தப்பட்டது. இதற்குப் பதிலாக Element.requestFullscreen() ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() நிறுத்தப்பட்டது. இதற்குப் பதிலாக Element.requestFullscreen() ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() நிறுத்தப்பட்டது. இதற்குப் பதிலாக Document.exitFullscreen() ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() நிறுத்தப்பட்டது. இதற்குப் பதிலாக Document.exitFullscreen() ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen நிறுத்தப்பட்டது. இதற்குப் பதிலாக Document.fullscreenEnabled ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | PrivacySandboxExtensionsAPI": {
+    "message": "நாங்கள் chrome.privacy.websites.privacySandboxEnabled APIயை நிறுத்துகிறோம், இருப்பினும் M113 வெளியீட்டின் வரை பின்தங்கிய இணக்கத்தன்மையின் பொருட்டு தொடர்ந்து இயக்கத்தில் இருக்கும். அதற்குப் பதிலாக chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled, chrome.privacy.websites.adMeasurementEnabled ஆகிய APIகளைப் பயன்படுத்தவும். https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled என்ற தளத்தைப் பார்க்கவும்."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "DtlsSrtpKeyAgreement கட்டுப்பாடு அகற்றப்பட்டது. இந்தக் கட்டுப்பாட்டுக்கு false மதிப்பைக் குறிப்பிட்டுள்ளீர்கள். இதன் மூலம் அகற்றப்பட்ட SDES key negotiation முறையைப் பயன்படுத்த முயற்சித்ததாகப் புரிந்துகொள்ளப்படுகிறது. இந்தச் செயல்பாடு அகற்றப்பட்டது, இதற்கு பதிலாக DTLS key negotiation ஐ ஆதரிக்கும் சேவையைப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "DtlsSrtpKeyAgreement கட்டுப்பாடு அகற்றப்பட்டது. இந்தக் கட்டுப்பாட்டுக்கு true மதிப்பைக் குறிப்பிட்டுள்ளீர்கள். இது விளைவுகள் எதையும் ஏற்படுத்தாது, ஆனால் தோற்றத்தின் காரணமாக இந்தக் கட்டுப்பாட்டை நீங்கள் அகற்றலாம்."
+  },
+  "generated/Deprecation.ts | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "கால்பேக் அடிப்படையிலான getStats() நிறுத்தப்பட்டது, அகற்றவும்படும். இதற்குப் பதிலாக விவரக்குறிப்புக்கு இணக்கமான getStats() ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | RangeExpand": {
+    "message": "Range.expand() நிறுத்தப்பட்டது. இதற்குப் பதிலாக Selection.modify() ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "உட்பொதிந்த அனுமதிச் சான்றுகள் இருக்கும் URLகளின் துணை ஆதாரக் கோரிக்கைகள் (எ.கா. https://user:pass@host/) தடுக்கப்பட்டன."
+  },
+  "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
+    "message": "rtcpMuxPolicy விருப்பம் நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும்."
+  },
+  "generated/Deprecation.ts | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "SharedArrayBufferக்குக் கிராஸ் ஆரிஜின் ஐசொலேஷன் தேவை. கூடுதல் தகவல்களுக்கு https://developer.chrome.com/blog/enabling-shared-array-buffer/ தளத்திற்குச் செல்லவும்."
+  },
+  "generated/Deprecation.ts | TextToSpeech_DisallowedByAutoplay": {
+    "message": "பயனரைச் செயல்படுத்தாமல் speechSynthesis.speak() செயல்பாட்டை அழைக்கும் வசதி நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும்."
+  },
+  "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "SharedArrayBuffer ஐத் தொடர்ந்து பயன்படுத்த நீட்டிப்புகள் கிராஸ் ஆரிஜின் ஐசொலேஷனைப் பயன்படுத்த வேண்டும். https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ தளத்தைப் பார்வையிடவும்."
+  },
+  "generated/Deprecation.ts | XHRJSONEncodingDetection": {
+    "message": "XMLHttpRequest இல் உள்ள json பதிலில் UTF-16 ஆதரிக்கப்படுவதில்லை"
+  },
+  "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "இறுதிப் பயனர் அனுபவத்தில் பாதிப்பை ஏற்படுத்தும் என்பதால் முதன்மைத் தொடரிழையில் ஒத்திசையும் XMLHttpRequest நிறுத்தப்பட்டது. கூடுதல் உதவிக்கு https://xhr.spec.whatwg.org/ தளத்தைப் பார்க்கவும்."
+  },
+  "generated/Deprecation.ts | XRSupportsSession": {
+    "message": "supportsSession() நிறுத்தப்பட்டது. இதற்குப் பதிலாக isSessionSupported() ஐப் பயன்படுத்தி தீர்க்கப்பட்ட பூலியன் மதிப்பைப் பார்க்கவும்."
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ஃபைலை ஏற்றும்போது அறியப்படாத பிழை ஏற்பட்டது"
   },
@@ -1376,167 +1547,32 @@
   "models/issues_manager/CrossOriginEmbedderPolicyIssue.ts | samesiteAndSameorigin": {
     "message": "ஒரே தளம் & ஒரே ஆரிஜின்"
   },
-  "models/issues_manager/DeprecationIssue.ts | authorizationCoveredByWildcard": {
-    "message": "CORS Access-Control-Allow-Headersஸைக் கையாளும்போது வைல்டுகார்டு குறியீட்டில் (*) அங்கீகரிப்பு சேர்க்கப்படாது."
-  },
-  "models/issues_manager/DeprecationIssue.ts | canRequestURLHTTPContainingNewline": {
-    "message": "அகற்றப்பட்ட இடைவெளி \\(n|r|t) எழுத்துகள், ‘குறைவைக்’ குறிக்கும் எழுத்துகள் (<) ஆகிய இரண்டும் இருக்கும் URLகளின் ஆதாரக் கோரிக்கைகள் தடுக்கப்பட்டுள்ளன. இந்த ஆதாரங்களை ஏற்ற, நியூலைன்களை அகற்றி ‘குறைவைக்’ குறிக்கும் எழுத்துகளை எலிமெண்ட் ஆட்ரிபியூட் மதிப்புகள் போன்ற இடங்களில் இருந்து என்கோடிங் செய்யவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesConnectionInfo": {
-    "message": "chrome.loadTimes() செயல்பாடு நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Navigation Timing 2."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "chrome.loadTimes() நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Paint Timing."
-  },
-  "models/issues_manager/DeprecationIssue.ts | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "chrome.loadTimes() நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Navigation Timing 2ல் nextHopProtocol."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cookieWithTruncatingChar": {
-    "message": "\\(0|r|n) எழுத்து இருக்கும் குக்கீகள் துண்டிக்கப்படுவதற்குப் பதிலாக நிராகரிக்கப்படும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "document.domain ஐ அமைத்து அதே ஆரிஜின் கொள்கையைத் தளர்த்துவது நிறுத்தப்பட்டது. இயல்பாகவே இது முடக்கப்படும். இந்த நிறுத்த எச்சரிக்கை கிராஸ் ஆரிஜின் அணுகலுக்கானது. இது document.domain அமைப்பின் மூலம் இயக்கப்பட்டது."
-  },
-  "models/issues_manager/DeprecationIssue.ts | crossOriginWindowApi": {
-    "message": "கிராஸ் ஆரிஜின் iframesஸில் இருந்து {PH1} ஐ டிரிகர் செய்வது நிறுத்தப்பட்டது, எதிர்காலத்தில் அது அகற்றப்படும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "இயல்பு அலைபரப்பு ஒருங்கிணைப்பை முடக்க -internal-media-controls-overlay-cast-button தேர்விக்குப் பதிலாக disableRemotePlayback பண்புக்கூறைப் பயன்படுத்த வேண்டும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecatedWithReplacement": {
-    "message": "{PH1} நிறுத்தப்பட்டது. இதற்குப் பதிலாக {PH2} ஐப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | deprecationExample": {
-    "message": "மொழிபெயர்க்கப்பட்ட நிறுத்தச் சிக்கல் மெசேஜிற்கான எடுத்துக்காட்டாகும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "document.domain ஐ அமைத்து அதே ஆரிஜின் கொள்கையைத் தளர்த்துவது நிறுத்தப்பட்டது. இயல்பாகவே இது முடக்கப்படும். இந்த அம்சத்தைத் தொடர்ந்து பயன்படுத்த ஆவணம் மற்றும் ஃபிரேம்களுக்கான HTTP பதிலுடன் Origin-Agent-Cluster: ?0 தலைப்பை அனுப்பி ஆரிஜின்-கீய்டு ஏஜெண்ட் கிளஸ்டர்களின் ஒப்புதலை நீக்கவும். கூடுதல் தகவல்களுக்கு https://developer.chrome.com/blog/immutable-document-domain/ தளத்திற்குச் செல்லவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | eventPath": {
-    "message": "Event.path நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். இதற்குப் பதிலாக Event.composedPath() ஐப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | expectCTHeader": {
-    "message": "Expect-CT தலைப்பு நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். ஏப்ரல் 30, 2018க்குப் பிறகு வெளியிடப்பட்ட பொதுவில் நம்பப்படும் சான்றிதழ்கள் அனைத்திற்கும் சான்றிதழ் வெளிப்படைத்தன்மை Chromeமிற்குத் தேவை."
-  },
   "models/issues_manager/DeprecationIssue.ts | feature": {
     "message": "மேலும் விவரங்களுக்கு அம்சத்தின் நிலைப் பக்கத்தைப் பாருங்கள்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOrigin": {
-    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் getCurrentPosition() மற்றும் watchPosition() இனி செயல்படாது. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் getCurrentPosition(), watchPosition() ஆகியவை நிறுத்தப்பட்டன. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | getUserMediaInsecureOrigin": {
-    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் getUserMedia() இனி செயல்படாது. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | hostCandidateAttributeGetter": {
-    "message": "RTCPeerConnectionIceErrorEvent.hostCandidate நிறுத்தப்பட்டது. இதற்குப் பதிலாக RTCPeerConnectionIceErrorEvent.address அல்லது RTCPeerConnectionIceErrorEvent.port ஐப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | identityInCanMakePaymentEvent": {
-    "message": "canmakepayment service worker நிகழ்வில் இருந்து பெறப்பட்ட வணிகரின் ஆரிஜின் மற்றும் தன்னிச்சையான தரவு நிறுத்தப்பட்டு அகற்றப்படும்: topOrigin, paymentRequestOrigin, methodData, modifiers."
-  },
-  "models/issues_manager/DeprecationIssue.ts | insecurePrivateNetworkSubresourceRequest": {
-    "message": "பயனர்களின் சிறப்பு நெட்வொர்க் நிலை காரணமாக மட்டுமே இந்த இணையதளம் அணுகக்கூடிய நெட்வொர்க்கில் இருந்து துணை ஆதாரத்தைக் கோருகிறது. இந்தக் கோரிக்கைகள் பொதுவில் இல்லாத சாதனங்களையும் சேவையகங்களையும் இணையத்தில் வெளிப்படுத்தும். இதன் மூலம் வேற்று தளக் கோரிக்கை மோசடி (CSRF) தாக்குதல் மற்றும்/அல்லது தகவல் கசிவு போன்ற அபாயத்தை அதிகரிக்கும். இதுபோன்ற அபாயங்களைக் குறைக்க பொதுவில் இல்லாத துணை ஆதாரங்களுக்குப் பாதுகாப்பற்ற சூழல்களில் இருந்து வரக்கூடிய கோரிக்கைகளை Chrome நிறுத்துவதோடு அவற்றைத் தடுக்கவும் செய்கிறது."
-  },
-  "models/issues_manager/DeprecationIssue.ts | localCSSFileExtensionRejected": {
-    "message": ".css ஃபைல் நீட்டிப்பில் முடிவடைந்தால் மட்டுமே file: URLகளில் இருந்து CSSஸை ஏற்ற முடியும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceAbortRemove": {
-    "message": "remove() இன் ஒத்திசையாத வரம்பு அகற்றுதலை ரத்துசெய்ய SourceBuffer.abort() ஐப் பயன்படுத்துவது, விவரக்குறிப்பு மாற்றம் காரணமாக நிறுத்தப்பட்டது. இதற்கான ஆதரவும் எதிர்காலத்தில் அகற்றப்படும். அதற்குப் பதிலாக updateend நிகழ்வைக் கவனிக்க வேண்டும். ஒத்திசையாத மீடியா இணைப்பை ரத்துசெய்ய அல்லது பாகுபடுத்தும் நிலையை மீட்டமைக்க மட்டும் abort() பயன்படுத்தப்படும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | mediaSourceDurationTruncatingBuffered": {
-    "message": "இடையகக் குறியீடு ஃபிரேம்களின் அதிகபட்சக் காட்சி நேரமுத்திரைக்குக் குறைவாக MediaSource.duration ஐ அமைப்பது விவரக்குறிப்பு மாற்றம் காரணமாக நிறுத்தப்பட்டது. துண்டிக்கப்பட்ட இடையக மீடியாவை மறைமுகமாக அகற்றுவதற்கான ஆதரவு எதிர்காலத்தில் அகற்றப்படும். newDuration < oldDuration எனும் நிலை உள்ள எல்லா இடங்களிலும் sourceBuffers அனைத்திலும் வெளிப்படையான remove(newDuration, oldDuration) ஐ மேற்கொள்ள வேண்டும்."
   },
   "models/issues_manager/DeprecationIssue.ts | milestone": {
     "message": "{milestone}வது பதிப்பில் இந்த மாற்றம் நடைமுறைக்கு வரும்."
   },
-  "models/issues_manager/DeprecationIssue.ts | noSysexWebMIDIWithoutPermission": {
-    "message": "MIDIOptions இல் sysex குறிப்பிடப்படாமல் இருந்தாலும் பயன்படுத்துவதற்கான அனுமதியை இணைய MIDI கோரும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationInsecureOrigin": {
-    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் இருந்து Notification APIயை இனி பயன்படுத்த முடியாது. பாதுகாப்பான ஆரிஜினுக்கு (எ.கா. HTTPS) உங்கள் ஆப்ஸை மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | notificationPermissionRequestedIframe": {
-    "message": "Notification APIக்கான அனுமதியை கிராஸ் ஆரிஜின் iframeமில் இருந்து இனி கோர முடியாது. உயர்நிலை ஃபிரேமிடம் அனுமதி கோரவும் அல்லது புதிய சாளரத்தைத் திறக்கவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteCreateImageBitmAPImageOrientationNone": {
-    "message": "createImageBitmapபில் imageOrientation: \"none\" விருப்பம் நிறுத்தப்பட்டது. அதற்குப் பதிலாக {imageOrientation: \"from-image\"} விருப்பத்துடன் createImageBitmapபைப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | obsoleteWebRtcCipherSuite": {
-    "message": "காலாவதியான (D)TLS பதிப்பை உங்கள் கூட்டாளர் பரிமாற்றம் செய்கிறார். இதைச் சரிசெய்ய உங்கள் கூட்டாளரைத் தொடர்புகொள்ளவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | openWebDatabaseInsecureContext": {
-    "message": "பாதுகாப்பற்ற சூழல்களில் உள்ள WebSQL நிறுத்தப்படும், அத்துடன் அது விரைவில் அகற்றப்படும். இணையச் சேமிப்பகம் அல்லது இண்டெக்ஸ் செய்யப்பட்ட தரவுத்தளத்தைப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | overflowVisibleOnReplacedElement": {
-    "message": "படம், வீடியோ மற்றும் கேன்வாஸ் குறிச்சொற்களில் overflow: visible ஐக் குறிப்பிடுவது, உறுப்பு வரம்புகளைத் தாண்டிய காட்சி உள்ளடக்கத்திற்கு வழிவகுக்கலாம். https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md என்ற இணைப்பைப் பார்க்கவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentInstruments": {
-    "message": "paymentManager.instruments நிறுத்தப்பட்டது. அதற்குப் பதிலாகப் பேமெண்ட் ஹேண்ட்லர்களுக்கான just-in-time நிறுவலைப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | paymentRequestCSPViolation": {
-    "message": "உங்கள் PaymentRequest அழைப்பு உள்ளடக்கப் பாதுகாப்புக் கொள்கை (CSP) connect-src டைரெக்ட்டிவைப் புறக்கணித்துவிட்டது. இந்தப் புறக்கணிப்பு நிறுத்தப்பட்டது. PaymentRequest APIயில் (supportedMethods புலத்தில்) உள்ள பேமெண்ட் முறை அடையாளங்காட்டியை உங்கள் CSP connect-src டைரெக்டிவில் சேர்க்கவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | persistentQuotaType": {
-    "message": "StorageType.persistent நிறுத்தப்பட்டது. இதற்குப் பதிலாக நிலையான navigator.storage ஐப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | pictureSourceSrc": {
-    "message": "முதல்நிலை <picture> உடன் கூடிய <source src> தவறானது, எனவே தவிர்க்கப்பட்டது. இதற்குப் பதிலாக <source srcset> ஐப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | prefixedStorageInfo": {
-    "message": "window.webkitStorageInfo நிறுத்தப்பட்டது. இதற்குப் பதிலாக நிலையான navigator.storage ஐப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | privacySandboxExtensionsAPI": {
-    "message": "நாங்கள் chrome.privacy.websites.privacySandboxEnabled APIயை நிறுத்துகிறோம், இருப்பினும் இது M113 வெளியீட்டின் வரை பின்தங்கிய இணக்கத்தன்மையில் தொடர்ந்து இயக்கத்தில் இருக்கும். அதற்குப் பதிலாக, chrome.privacy.websites.topicsEnabled, chrome.privacy.websites.fledgeEnabled மற்றும் chrome.privacy.websites.adMeasurementEnabled ஐப் பயன்படுத்தவும். https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled தளத்தைப் பார்வையிடவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "உட்பொதிந்த அனுமதிச் சான்றுகள் இருக்கும் URLகளின் துணை ஆதாரக் கோரிக்கைகள் (எ.கா. https://user:pass@host/) தடுக்கப்பட்டன."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "DtlsSrtpKeyAgreement கட்டுப்பாடு அகற்றப்பட்டது. இந்தக் கட்டுப்பாட்டுக்கு false மதிப்பைக் குறிப்பிட்டுள்ளீர்கள். இதன் மூலம் அகற்றப்பட்ட SDES key negotiation முறையைப் பயன்படுத்த முயற்சித்ததாகப் புரிந்துகொள்ளப்படுகிறது. இந்தச் செயல்பாடு அகற்றப்பட்டது, இதற்கு பதிலாக DTLS key negotiation ஐ ஆதரிக்கும் சேவையைப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "DtlsSrtpKeyAgreement கட்டுப்பாடு அகற்றப்பட்டது. இந்தக் கட்டுப்பாட்டுக்கு true மதிப்பைக் குறிப்பிட்டுள்ளீர்கள். இது விளைவுகள் எதையும் ஏற்படுத்தாது, ஆனால் தோற்றத்தின் காரணமாக இந்தக் கட்டுப்பாட்டை நீங்கள் அகற்றலாம்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Complex Plan B SDP கண்டறியப்பட்டது. Session Description Protocol இன் இந்தக் குறிப்பிட்ட பதிப்பு இனி ஆதரிக்கப்படாது. இதற்குப் பதிலாக Unified Plan SDP ஐப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "{sdpSemantics:'plan-b'} உடன் RTCPeerConnection ஐ உருவாக்கும்போது Plan B SDP semantics பயன்படுத்தப்படும். இது இணைய பிளாட்ஃபார்மில் இருந்து நிரந்தரமாக நீக்கப்பட்ட Session Description Protocol இன் நிலையற்ற லெகஸி பதிப்பு. IS_FUCHSIA மூலம் உருவாக்கும்போது இதைத் தொடர்ந்து பயன்படுத்தலாம். ஆனால் கூடிய விரைவில் இதை நீக்கிவிடுவோம். இதைச் சார்ந்திருப்பதைத் தவிர்க்க வேண்டும். நிலையை அறிய https://crbug.com/1302249 தளத்தைப் பார்க்கவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | rtcpMuxPolicyNegotiate": {
-    "message": "rtcpMuxPolicy விருப்பம் நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "SharedArrayBufferக்குக் கிராஸ் ஆரிஜின் ஐசொலேஷன் தேவை. கூடுதல் தகவல்களுக்கு https://developer.chrome.com/blog/enabling-shared-array-buffer/ தளத்திற்குச் செல்லவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | textToSpeech_DisallowedByAutoplay": {
-    "message": "பயனரைச் செயல்படுத்தாமல் speechSynthesis.speak() செயல்பாட்டை அழைக்கும் வசதி நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும்."
-  },
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "நிறுத்தப்பட்ட அம்சம் பயன்படுத்தப்பட்டது"
-  },
-  "models/issues_manager/DeprecationIssue.ts | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "SharedArrayBuffer ஐத் தொடர்ந்து பயன்படுத்த நீட்டிப்புகள் கிராஸ் ஆரிஜின் ஐசொலேஷனைப் பயன்படுத்த வேண்டும். https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ தளத்தைப் பார்வையிடவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | vendorSpecificApi": {
-    "message": "{PH1} விற்பனையாளர் சார்ந்தது. இதற்குப் பதிலாக நிலையான {PH2} ஐப் பயன்படுத்தவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xhrJSONEncodingDetection": {
-    "message": "XMLHttpRequest இல் உள்ள json பதிலில் UTF-16 ஆதரிக்கப்படுவதில்லை"
-  },
-  "models/issues_manager/DeprecationIssue.ts | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "இறுதிப் பயனர் அனுபவத்தில் பாதிப்பை ஏற்படுத்தும் என்பதால் முதன்மைத் தொடரிழையில் ஒத்திசையும் XMLHttpRequest நிறுத்தப்பட்டது. கூடுதல் உதவிக்கு https://xhr.spec.whatwg.org/ தளத்தைப் பார்க்கவும்."
-  },
-  "models/issues_manager/DeprecationIssue.ts | xrSupportsSession": {
-    "message": "supportsSession() நிறுத்தப்பட்டது. இதற்குப் பதிலாக isSessionSupported() ஐப் பயன்படுத்தி தீர்க்கப்பட்ட பூலியன் மதிப்பைப் பார்க்கவும்."
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
+    "message": "HTML பண்புக்கூறு: தானே நிரப்புதல்"
+  },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "போர்டல்கள் - ஒரே ஆரிஜினுக்கான தகவல்தொடர்புச் சேனல்கள்"
+  },
+  "models/issues_manager/GenericIssue.ts | howDoesAutofillWorkPageTitle": {
+    "message": "தானாக நிரப்புதல் அம்சம் எப்படிச் செயல்படுகிறது?"
+  },
+  "models/issues_manager/GenericIssue.ts | inputFormElementPageTitle": {
+    "message": "படிவ உள்ளீட்டு உறுப்பு"
+  },
+  "models/issues_manager/GenericIssue.ts | labelFormlementsPageTitle": {
+    "message": "லேபிள் உறுப்புகள்"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
     "message": "அதிக விளம்பரத் தலையீடுகளைக் கையாளுதல்"
@@ -2375,12 +2411,6 @@
   "panels/application/AppManifestView.ts | presentation": {
     "message": "விளக்கக்காட்சி"
   },
-  "panels/application/AppManifestView.ts | primaryIconasUsedByChrome": {
-    "message": "Chrome பயன்படுத்தும் முதன்மை ஐகான்"
-  },
-  "panels/application/AppManifestView.ts | primaryManifestIconFromS": {
-    "message": "{PH1} தளத்தில் இருந்து பெறப்பட்ட முதன்மை மெனிஃபெஸ்ட் ஐகான்"
-  },
   "panels/application/AppManifestView.ts | protocolHandlers": {
     "message": "நெறிமுறை ஹேண்ட்லர்கள்"
   },
@@ -2449,9 +2479,6 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "தீமின் வண்ணம்"
-  },
-  "panels/application/ApplicationPanelPreloadingSection.ts | prefetchingAndPrerendering": {
-    "message": "ப்ரீஃபெட்ச்சிங் மற்றும் ப்ரீரெண்டரிங்"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "ஆப்ஸ் மெனிஃபெஸ்ட்"
@@ -2837,6 +2864,9 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ஆம்"
   },
+  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
+    "message": "ப்ரீஃபெட்ச்சிங் மற்றும் ப்ரீரெண்டரிங்"
+  },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "அறிக்கையின் உள்ளடக்கத்தைப் பார்க்க, ஏதேனும் ஒன்றின் மீது கிளிக் செய்யவும்"
   },
@@ -3186,7 +3216,7 @@
     "message": "கீப்-அலைவ் கோரிக்கையின் காரணமாக ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் முடக்கப்பட்டுள்ளது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
-    "message": "‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் flags பக்கத்தில் முடக்கப்பட்டுள்ளது. சாதனத்தில் இதை இயக்க, chrome://flags/#back-forward-cache என்ற பக்கத்திற்குச் செல்லவும்."
+    "message": "‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் கொடிகள் மூலம் முடக்கப்பட்டுள்ளது. சாதனத்தில் இதை இயக்க, chrome://flags/#back-forward-cache என்ற பக்கத்திற்குச் செல்லவும்."
   },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabledByCommandLine": {
     "message": "கட்டளை மூலம் ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் முடக்கப்பட்டுள்ளது."
@@ -3333,7 +3363,7 @@
     "message": "பொருத்தமற்ற APIகள் பயன்படுத்தப்பட்டுள்ளன."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedJavascript": {
-    "message": "நீட்டிப்புகள் மூலம் JavaScript உள்ளிடப்பட்ட IPageகளை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் தற்போது சேமிக்க முடியாது."
+    "message": "நீட்டிப்புகள் மூலம் JavaScript உள்ளிடப்பட்ட பக்கங்களை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் தற்போது சேமிக்க முடியாது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | injectedStyleSheet": {
     "message": "நீட்டிப்புகள் மூலம் StyleSheet உள்ளிடப்பட்ட பக்கங்களை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் தற்போது சேமிக்க முடியாது."
@@ -4067,17 +4097,8 @@
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "சேமிக்கப்பட்ட டோக்கன்களின் எண்ணிக்கை"
   },
-  "panels/application/preloading/PreloadingView.ts | clearNotOngoing": {
-    "message": "உள்ளடக்கத்தை அழிக்கும் செயல்முறை நடைபெறவில்லை"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusActivated": {
-    "message": "இயக்கப்பட்டது"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusDiscarded": {
-    "message": "நிராகரிக்கப்பட்டது"
-  },
-  "panels/application/preloading/PreloadingView.ts | statusPrerendering": {
-    "message": "ப்ரீரெண்டரிங்"
+  "panels/application/preloading/PreloadingView.ts | validityValid": {
+    "message": "செல்லுபடியாகும்"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "டெவெலப்பர் கருவிகள் திறந்திருப்பதால் 'முன்கூட்டியே ஏற்றுதல்' கட்டாயமாக இயக்கப்பட்டுள்ளது. செயல்திறன் ஒப்பீடுகளுக்காகப் பயன்படுத்தப்படும் ஹோல்டுபேக் குழுவின் பகுதியாக இந்த உலாவி அமர்வு இருப்பதால் டெவெலப்பர் கருவிகள் மூடப்பட்டிருக்கும்போது ப்ரீரெண்டரிங் முடக்கப்பட்டிருக்கும்."
@@ -4091,41 +4112,29 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ப்ரீரெண்டரிங் முடக்கப்பட்டிருந்தது. ஆனால் தற்போது கட்டாயமாக இயக்கப்பட்டுள்ளது"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsBasicInformation": {
-    "message": "அடிப்படைத் தகவல்கள்"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStartedAt": {
-    "message": "தொடங்கிய நேரம்:"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "நிலை"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTrigger": {
-    "message": "டிரிகர்"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "கூடுதல் விவரங்களுக்கு உறுப்பைத் தேர்ந்தெடுக்கவும்"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusActivated": {
-    "message": "இயக்கப்பட்டது"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusDiscarded": {
-    "message": "நிராகரிக்கப்பட்டது"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | statusPrerendering": {
-    "message": "ப்ரீரெண்டரிங்"
-  },
-  "panels/application/preloading/components/PreloadingGrid.ts | startedAt": {
-    "message": "தொடங்கிய நேரம்:"
-  },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "நிலை"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | trigger": {
-    "message": "டிரிகர்"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "விரிவான தகவல்கள்"
   },
-  "panels/application/preloading/components/PreloadingGrid.ts | type": {
-    "message": "வகை"
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
+    "message": "ஆதாரம்"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
+    "message": "செல்லுபடி நிலை"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
+    "message": "செல்லுபடியாகும்"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
+    "message": "செல்லுபடி நிலை"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "பிரேக்பாயிண்ட் ஹிட்"
@@ -4499,6 +4508,9 @@
   "panels/console/ConsoleViewMessage.ts | clearAllMessagesWithS": {
     "message": "{PH1} விசைகள் மூலம் மெசேஜ்கள் அனைத்தையும் அழித்தல்"
   },
+  "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
+    "message": "நிபந்தனைக்குட்பட்ட பிரேக்பாயிண்ட்"
+  },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "கன்சோல்"
   },
@@ -4528,6 +4540,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | interventionS": {
     "message": "[Intervention] {PH1}"
+  },
+  "panels/console/ConsoleViewMessage.ts | logpoint": {
+    "message": "லாக் பாயிண்ட்"
   },
   "panels/console/ConsoleViewMessage.ts | repeatS": {
     "message": "{n,plural, =1{# முறை}other{# முறை}}"
@@ -4575,7 +4590,7 @@
     "message": "இதுவரையான கன்சோல் தகவலை அழி"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "இயல்பாகவே console.trace() மெசேஜ்களைச் சுருக்குதல்"
+    "message": "console.trace() மெசேஜ்களைத் தானாக விரிவுபடுத்தாதே"
   },
   "panels/console/console-meta.ts | console": {
     "message": "கன்சோல்"
@@ -4605,10 +4620,10 @@
     "message": "கன்சோல் அறிவிப்பு உரையை ‘ஈகர் எவால்யூவேஷன்’ முறையில் மதிப்பிடு"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "பயனர் செயல்படுத்தல் டிரிகர்களை மதிப்பிடு"
+    "message": "மதிப்பிடுதல் பயனர் இயக்கத்தை டிரிகர் செய்தல்"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
-    "message": "இயல்பாகவே console.trace() மெசேஜ்களை விரிவாக்குதல்"
+    "message": "console.trace() மெசேஜ்களைத் தானாக விரிவுபடுத்து"
   },
   "panels/console/console-meta.ts | groupSimilarMessagesInConsole": {
     "message": "கன்சோலில் ஒரே மாதிரியான மெசேஜ்களைக் குழுவாக்குதல்"
@@ -5069,9 +5084,6 @@
   "panels/elements/ElementsPanel.ts | findByStringSelectorOrXpath": {
     "message": "வார்த்தை, தேர்வி, XPath போன்றவற்றின் மூலம் கண்டறிக"
   },
-  "panels/elements/ElementsPanel.ts | frame": {
-    "message": "ஃபிரேம்"
-  },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
     "message": "கணக்கிடப்பட்ட ஸ்டைல்கள் பக்கப்பட்டியை மறைக்கும்"
   },
@@ -5372,9 +5384,6 @@
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "பண்பினை மாற்றி திருத்தத்தைத் தொடர்க"
   },
-  "panels/elements/StylePropertyTreeElement.ts | valueForSettingSSIsOutsideThe": {
-    "message": "“{PH5}” எழுத்து வடிவக் குடும்பத்திற்கான அனுமதிக்கப்படும் வரம்பை [{PH3}, {PH4}] விட “{PH1}” {PH2} அமைப்பிற்கான மதிப்பு அதிகமாக உள்ளது."
-  },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "கணக்கிடப்பட்ட மதிப்பைக் காட்டு"
   },
@@ -5454,6 +5463,12 @@
     "message": "பேட்ஜ்களைக் காட்டு"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
+    "message": "மேலும் அறிக"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | dontShow": {
+    "message": "காட்டாதே"
+  },
+  "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "மேலும் அறிக"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
@@ -5548,6 +5563,9 @@
   },
   "panels/elements/elements-meta.ts | selectAnElementInThePageTo": {
     "message": "ஆய்வுசெய்ய, பக்கத்தில் ஓர் உறுப்பைத் தேர்ந்தெடுங்கள்"
+  },
+  "panels/elements/elements-meta.ts | showCSSDocumentationTooltip": {
+    "message": "CSS ஆவண உதவிக்குறிப்பைக் காட்டு"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
     "message": "Computed Stylesஸைக் காட்டு"
@@ -9002,6 +9020,18 @@
   "panels/profiler/ProfilesPanel.ts | clearAllProfiles": {
     "message": "அனைத்து சுயவிவரங்களையும் அழிக்கும்"
   },
+  "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
+    "message": "அடுத்துவரும் பதிப்பில் இந்தப் பேனல் நிறுத்தப்படும். JavaScript CPU ப்ரொஃபைல்களை ரெக்கார்டு செய்ய செயல்திறன் பேனலைப் பயன்படுத்தவும்."
+  },
+  "panels/profiler/ProfilesPanel.ts | feedback": {
+    "message": "கருத்து"
+  },
+  "panels/profiler/ProfilesPanel.ts | goToPerformancePanel": {
+    "message": "செயல்திறன் பேனலுக்குச் செல்"
+  },
+  "panels/profiler/ProfilesPanel.ts | learnMore": {
+    "message": "மேலும் அறிக"
+  },
   "panels/profiler/ProfilesPanel.ts | load": {
     "message": "ஏற்று…"
   },
@@ -9046,6 +9076,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "ஆவணமாக்கல்"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
+    "message": "முடிந்துள்ள நேரம்"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "வடிகட்டு"
@@ -10379,6 +10412,9 @@
   "panels/sources/NavigatorView.ts | sFromSourceMap": {
     "message": "{PH1} (சோர்ஸ் மேப்பில் இருந்து)"
   },
+  "panels/sources/NavigatorView.ts | sIgnoreListed": {
+    "message": "{PH1} (தவிர்க்க வேண்டியவற்றின் பட்டியலில் உள்ளது)"
+  },
   "panels/sources/NavigatorView.ts | searchInAllFiles": {
     "message": "அனைத்துக் கோப்புகளிலும் தேடு"
   },
@@ -10403,11 +10439,11 @@
   "panels/sources/ProfilePlugin.ts | ms": {
     "message": "மிவி"
   },
-  "panels/sources/ResourceOriginPlugin.ts | providedViaDebugInfoByS": {
-    "message": "({PH1} தளத்தினால் பிழைதிருத்தத் தகவல் மூலம் வழங்கப்பட்டது)"
+  "panels/sources/ResourceOriginPlugin.ts | fromS": {
+    "message": "({PH1} ஸ்கிரிப்ட்டில் இருந்து)"
   },
   "panels/sources/ResourceOriginPlugin.ts | sourceMappedFromS": {
-    "message": "({PH1} தளத்தில் இருந்து சோர்ஸ் மேப் செய்யப்பட்டது)"
+    "message": "({PH1} ஸ்கிரிப்ட்டில் இருந்து ஆதாரம் மேப் செய்யப்பட்டது)"
   },
   "panels/sources/ScopeChainSidebarPane.ts | closure": {
     "message": "உள்ளடங்கிய செயல்பாடு"
@@ -11027,9 +11063,6 @@
   "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
     "message": "பணிகள் தடுக்கப்படும் மொத்த நேரம்: {PH1}மிவி{PH2}"
   },
-  "panels/timeline/TimelineEventOverview.ts | coverage": {
-    "message": "கவரேஜ்"
-  },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
   },
@@ -11101,12 +11134,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "தொடரிழை"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | threadS": {
-    "message": "தொடரிழை {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | timings": {
-    "message": "நேரங்கள்"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
     "message": "செயல்பாடுகள்"
@@ -11198,9 +11225,6 @@
   "panels/timeline/TimelinePanel.ts | close": {
     "message": "மூடுக"
   },
-  "panels/timeline/TimelinePanel.ts | coverage": {
-    "message": "கவரேஜ்"
-  },
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
@@ -11251,9 +11275,6 @@
   },
   "panels/timeline/TimelinePanel.ts | received": {
     "message": "பெறப்பட்டது"
-  },
-  "panels/timeline/TimelinePanel.ts | recordCoverageWithPerformance": {
-    "message": "செயல்திறன் தடங்களுடன் கவரேஜை ரெக்கார்டு செய்"
   },
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "ரெக்கார்டு செய்ய முடியவில்லை"
@@ -11672,9 +11693,6 @@
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "இனிஷியேட்டர்"
   },
-  "panels/timeline/TimelineUIUtils.ts | inputLatency": {
-    "message": "உள்ளீட்டுத் தாமதம்"
-  },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "டைமரை நிறுவு"
   },
@@ -11695,6 +11713,15 @@
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS ஃபிரேம்"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsIdleFrame": {
+    "message": "JS செயல்படாத ஃபிரேம்"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsRoot": {
+    "message": "JS ரூட்"
+  },
+  "panels/timeline/TimelineUIUtils.ts | jsSystemFrame": {
+    "message": "JS சிஸ்டம் ஃபிரேம்"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
     "message": "பெரிய பகுதியைக் காண்பிக்கும் நேரம்"
@@ -11839,6 +11866,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "உருவாக்கப்பட்ட தற்காலிகச் சேமிப்பின் அளவு"
+  },
+  "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
+    "message": "ப்ரொஃபைலிங் சுமை"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "வரம்பு"
@@ -12037,9 +12067,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "ரெண்டரிங்கில் செலவிட்ட நேரம்"
-  },
-  "panels/timeline/TimelineUIUtils.ts | timeWaitingForMainThread": {
-    "message": "முக்கியமான தொடரிழைக்கான காத்திருப்பு நேரம்"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
     "message": "நேர முடிவு"
@@ -12351,7 +12378,7 @@
     "message": "WebAuthn"
   },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "வரிசைப்படுத்துதல் வடிப்பானைப் பயன்படுத்த Enter பட்டனை அழுத்தவும்"
+    "message": "நெடுவரிசை வரிசைப்படுத்தப்பட்டுள்ள நிலை: {PH1}. வரிசைப்படுத்துதல் வடிப்பானைப் பயன்படுத்த Enter பட்டனை அழுத்தவும்"
   },
   "ui/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "தலைப்பிற்கான விருப்பங்கள்"
@@ -12359,8 +12386,17 @@
   "ui/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "நெடுவரிசைகளை மீட்டமை"
   },
+  "ui/components/data_grid/DataGrid.ts | sortAsc": {
+    "message": "ஏறுவரிசை"
+  },
   "ui/components/data_grid/DataGrid.ts | sortBy": {
     "message": "இதன்படி வரிசைப்படுத்து"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortDesc": {
+    "message": "இறங்குவரிசை"
+  },
+  "ui/components/data_grid/DataGrid.ts | sortNone": {
+    "message": "எதுவுமில்லை"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} ஏறுவரிசையில் வரிசைப்படுத்தப்பட்டது"

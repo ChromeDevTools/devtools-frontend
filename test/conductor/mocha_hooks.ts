@@ -103,6 +103,7 @@ export const mochaHooks = {
     });
     reports.create('html').execute(context);
     reports.create('json').execute(context);
+    reports.create('text', {file: 'coverage.txt'}).execute(context);
     reports.create('json-summary').execute(context);
   },
   // In both modes, run before each test.

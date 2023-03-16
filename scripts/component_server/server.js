@@ -14,6 +14,8 @@ const defaultIstanbulSchema = require('@istanbuljs/schema');
 
 const {getTestRunnerConfigSetting} = require('../test/test_config_helpers.js');
 
+const match = require('minimatch');
+
 const serverPort = parseInt(process.env.PORT, 10) || 8090;
 const target = argv.target || process.env.TARGET || 'Default';
 
@@ -200,6 +202,8 @@ async function checkFileExists(filePath) {
 
 const EXCLUDED_COVERAGE_FOLDERS = new Set(['third_party', 'ui/components/docs', 'Images']);
 
+const USER_DEFINED_COVERAGE_FOLDERS = process.env['COVERAGE_FOLDERS'];
+
 /**
  * @param {string} filePath
  * @returns {boolean}
@@ -209,6 +213,10 @@ function isIncludedForCoverageComputation(filePath) {
     if (filePath.startsWith(`/front_end/${excludedFolder}/`)) {
       return false;
     }
+  }
+  if (USER_DEFINED_COVERAGE_FOLDERS) {
+    const matchPattern = `/${USER_DEFINED_COVERAGE_FOLDERS}/**/*.{js,mjs}`;
+    return match(filePath, matchPattern);
   }
 
   return true;

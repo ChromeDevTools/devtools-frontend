@@ -17,3 +17,4 @@ const context = report.createContext({
   defaultSummarizer: 'nested',
 });
 reports.create('json-summary').execute(context);
+reports.create('text', {file: 'coverage.txt'}).execute(context);

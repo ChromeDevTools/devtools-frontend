@@ -4,14 +4,19 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, getResourcesPath, goToResource, timeout, waitFor} from '../../shared/helper.js';
+import {
+  getBrowserAndPages,
+  getResourcesPath,
+  goToResource,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getCurrentUrl} from '../helpers/layers-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('The Layers Panel', async () => {
-  // See crbug.com/1261763 for details.
-  it.skip('[crbug.com/1261763] should keep the currently inspected url as an attribute', async () => {
+  it('should keep the currently inspected url as an attribute', async () => {
     const targetUrl = 'layers/default.html';
     await goToResource(targetUrl);
 
@@ -19,11 +24,9 @@ describe('The Layers Panel', async () => {
 
     await waitFor('[aria-label="layers"]:not([test-current-url=""])');
 
-    // FIXME(crbug/1112692): Refactor test to remove the timeout.
-    await timeout(50);
-
-    const url = await getCurrentUrl();
-    assert.strictEqual(url, `${getResourcesPath()}/${targetUrl}`);
+    await waitForFunction(async () => {
+      return await getCurrentUrl() === `${getResourcesPath()}/${targetUrl}`;
+    });
   });
 
   // Disabled due to flakiness, original regression: crbug.com/1053901

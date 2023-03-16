@@ -19,7 +19,7 @@ def node_path(options):
     try:
         old_sys_path = sys.path[:]
         sys.path.append(
-            os.path.join(options.devtools_dir, 'third_party', 'node'))
+            os.path.join(options.chromium_dir, 'third_party', 'node'))
         import node
     finally:
         sys.path = old_sys_path

@@ -105,12 +105,24 @@ const UIStrings = {
 
   // COHERENT_BEGIN
 
+  /**
+  *@description Title of a setting under the Cohtml category. The setting enables flashing of repainted elements.
+  */
   showRedrawFlashingRectangles: 'Show elements redraw flashing rectangles',
 
+  /**
+  *@description Title of a setting under the Cohtml category. The setting enables flashing of repainted elements.
+  */
   hideRedrawFlashingRectangles: 'Hide elements redraw flashing rectangles',
 
+  /**
+  *@description Title of a setting under the Cohtml category. The setting enalbes redrawing of the whole view every frame.
+  */
   enableContinuousRepaint: 'Enable redrawing of the view each frame',
 
+  /**
+  *@description Title of a setting under the Cohtml category. The setting enalbes redrawing of the whole view every frame.
+  */
   disableContinuousRepaint: 'Disable redrawing of the view each frame',
 
   // COHERENT_END
@@ -573,8 +585,6 @@ Common.Settings.registerSettingExtension({
   defaultValue: false,
 });
 
-// COHERENT_END
-
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,
   settingName: 'drawMetaData',
@@ -592,6 +602,8 @@ Common.Settings.registerSettingExtension({
   ],
   defaultValue: false,
 });
+
+// COHERENT_END
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

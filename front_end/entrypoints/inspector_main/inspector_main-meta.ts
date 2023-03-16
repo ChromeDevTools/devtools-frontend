@@ -16,14 +16,21 @@ const UIStrings = {
   */
   rendering: 'Rendering',
 
-  // COHERENT_BEGIN
-  cohtml: 'Cohtml',
-
   /**
   * @description Command for showing the 'Rendering' tool
   */
   showRendering: 'Show Rendering',
 
+  // COHERENT_BEGIN
+  /**
+  * @description Title of the Cohtml panel in the Command Menu. The Cohtml panel gives control over
+  * some Cohtml specific actions and settings.
+  */
+  cohtml: 'Cohtml',
+
+  /**
+  * @description Command prompt for the Cohtml panel in the Command menu.
+  */
   showCohtml: 'Show Cohtml View',
   // COHERENT_END
 

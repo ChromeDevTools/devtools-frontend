@@ -14,8 +14,15 @@ import {Capability} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {TargetManager} from './TargetManager.js';
 
-export class CohtmlDebugModel extends SDKModel<void> implements ProtocolProxyApi.CohtmlDebugDispatcher {
+interface IRawParams {
+    [key: string]: any
+}
+
+export class CohtmlDebugModel extends SDKModel<void> implements ProtocolProxyApi.CohtmlDebugDispatcher, IRawParams {
+  [k: string]: any;
+
   cohtmlDebugAgent: ProtocolProxyApi.CohtmlDebugApi;
+
   private registeredListeners: Common.EventTarget.EventDescriptor[];
 
   private continuousRepaintSetting: Common.Settings.Setting<any>;

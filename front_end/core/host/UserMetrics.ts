@@ -414,7 +414,8 @@ export enum Action {
   CaptureTestProtocolClicked = 57,
   BreakpointRemovedFromRemoveButton = 58,
   BreakpointGroupExpandedStateChanged = 59,
-  MaxValue = 60,
+  HeaderOverrideFileCreated = 60,
+  MaxValue = 61,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

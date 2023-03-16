@@ -293,6 +293,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       const encodedFilePath = this.encodedPathFromUrl(url, /* ignoreNoActive */ true);
       const encodedPath = Common.ParsedURL.ParsedURL.substring(encodedFilePath, 0, encodedFilePath.lastIndexOf('/'));
       uiSourceCode = await this.projectInternal.createFile(encodedPath, HEADERS_FILENAME, '');
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideFileCreated);
     }
     return uiSourceCode;
   }

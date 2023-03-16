@@ -49,6 +49,7 @@ export async function createWorkspaceProject(
       type: () => 'filesystem',
     },
     fileSystemBaseURL: baseUrl + '/',
+    createFile: () => {},
   } as unknown as Workspace.Workspace.Project;
   await networkPersistenceManager.setProject(mockProject);
 

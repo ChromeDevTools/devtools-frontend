@@ -585,6 +585,9 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     }];
     assert.strictEqual(spy.callCount, 1);
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+    assert.isTrue(recordedMetricsContain(
+        Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
+        Host.UserMetrics.Action.HeaderOverrideHeaderRemoved));
 
     rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     assert.strictEqual(rows.length, 3);
@@ -642,6 +645,9 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     const expected: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
     assert.strictEqual(spy.callCount, 1);
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+    assert.isTrue(recordedMetricsContain(
+        Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
+        Host.UserMetrics.Action.HeaderOverrideHeaderRemoved));
   });
 
   it('can handle non-breaking spaces when removing header overrides', async () => {

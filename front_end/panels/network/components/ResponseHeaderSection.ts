@@ -370,6 +370,7 @@ export class ResponseHeaderSection extends HTMLElement {
     this.#commitOverrides();
     this.#headerEditors[index].isDeleted = true;
     this.#render();
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideHeaderRemoved);
   }
 
   #updateOverrides(headerName: Platform.StringUtilities.LowerCaseString, headerValue: string, index: number): void {

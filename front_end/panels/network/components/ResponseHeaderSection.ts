@@ -507,6 +507,7 @@ export class ResponseHeaderSection extends HTMLElement {
     if (!this.#request) {
       return;
     }
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideEnableEditingClicked);
     const requestUrl = this.#request.url();
     const networkPersistanceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     if (networkPersistanceManager.project()) {

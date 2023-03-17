@@ -11,3 +11,7 @@ export function recordedMetricsContain(actionName: string, actionCode: number): 
   return Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedEnumeratedHistograms.some(
       event => event.actionName === actionName && event.actionCode === actionCode);
 }
+
+export function resetRecordedMetrics(): void {
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedEnumeratedHistograms = [];
+}

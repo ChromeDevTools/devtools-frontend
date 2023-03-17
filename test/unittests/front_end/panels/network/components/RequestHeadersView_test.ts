@@ -27,7 +27,7 @@ import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import {createFileSystemUISourceCode} from '../../../helpers/UISourceCodeHelpers.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../../helpers/OverridesHelpers.js';
-import {recordedMetricsContain} from '../../../helpers/UserMetricsHelpers.js';
+import {recordedMetricsContain, resetRecordedMetrics} from '../../../helpers/UserMetricsHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -110,6 +110,7 @@ describeWithMockConnection('RequestHeadersView', () => {
   beforeEach(() => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
     setUpEnvironment();
+    resetRecordedMetrics();
   });
 
   afterEach(async () => {
@@ -433,6 +434,9 @@ describeWithMockConnection('RequestHeadersView', () => {
     await coordinator.done();
 
     checkRow(headerRow.shadowRoot, 'foo:', 'bar', true);
+    assert.isTrue(recordedMetricsContain(
+        Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
+        Host.UserMetrics.Action.HeaderOverrideEnableEditingClicked));
   });
 
   it('records metrics when a new \'.headers\' file is created', async () => {

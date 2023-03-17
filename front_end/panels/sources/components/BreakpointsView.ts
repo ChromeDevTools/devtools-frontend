@@ -6,6 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -119,7 +120,7 @@ export interface BreakpointItem {
   codeSnippet: string;
   isHit: boolean;
   status: BreakpointStatus;
-  type: BreakpointType;
+  type: SDK.DebuggerModel.BreakpointType;
   hoverText?: string;
 }
 
@@ -127,12 +128,6 @@ export const enum BreakpointStatus {
   ENABLED = 'ENABLED',
   DISABLED = 'DISABLED',
   INDETERMINATE = 'INDETERMINATE',
-}
-
-export const enum BreakpointType {
-  LOGPOINT = 'LOGPOINT',
-  CONDITIONAL_BREAKPOINT = 'CONDITIONAL_BREAKPOINT',
-  REGULAR_BREAKPOINT = 'REGULAR_BREAKPOINT',
 }
 
 export class CheckboxToggledEvent extends Event {
@@ -387,8 +382,9 @@ export class BreakpointsView extends HTMLElement {
       this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
       event.consume();
     };
-    const title = breakpointItem.type === BreakpointType.LOGPOINT ? i18nString(UIStrings.editLogpoint) :
-                                                                    i18nString(UIStrings.editCondition);
+    const title = breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT ?
+        i18nString(UIStrings.editLogpoint) :
+        i18nString(UIStrings.editCondition);
     // clang-format off
     return LitHtml.html`
     <button data-edit-breakpoint @click=${clickHandler} title=${title}>
@@ -541,8 +537,9 @@ export class BreakpointsView extends HTMLElement {
 
   #onBreakpointEntryContextMenu(event: Event, breakpointItem: BreakpointItem, editable: boolean): void {
     const menu = new UI.ContextMenu.ContextMenu(event);
-    const editBreakpointText = breakpointItem.type === BreakpointType.LOGPOINT ? i18nString(UIStrings.editLogpoint) :
-                                                                                 i18nString(UIStrings.editCondition);
+    const editBreakpointText = breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT ?
+        i18nString(UIStrings.editLogpoint) :
+        i18nString(UIStrings.editCondition);
 
     menu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
       this.dispatchEvent(new BreakpointsRemovedEvent([breakpointItem]));
@@ -588,8 +585,8 @@ export class BreakpointsView extends HTMLElement {
     const classMap = {
       'breakpoint-item': true,
       'hit': breakpointItem.isHit,
-      'conditional-breakpoint': breakpointItem.type === BreakpointType.CONDITIONAL_BREAKPOINT,
-      'logpoint': breakpointItem.type === BreakpointType.LOGPOINT,
+      'conditional-breakpoint': breakpointItem.type === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT,
+      'logpoint': breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT,
     };
     const breakpointItemDescription = this.#getBreakpointItemDescription(breakpointItem);
     const codeSnippet = Platform.StringUtilities.trimEndWithMaxLength(breakpointItem.codeSnippet, MAX_SNIPPET_LENGTH);
@@ -627,14 +624,14 @@ export class BreakpointsView extends HTMLElement {
     // clang-format on
   }
 
-  #getCodeSnippetTooltip(type: BreakpointType, hoverText?: string): string|undefined {
+  #getCodeSnippetTooltip(type: SDK.DebuggerModel.BreakpointType, hoverText?: string): string|undefined {
     switch (type) {
-      case BreakpointType.REGULAR_BREAKPOINT:
+      case SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT:
         return undefined;
-      case BreakpointType.CONDITIONAL_BREAKPOINT:
+      case SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT:
         assertNotNullOrUndefined(hoverText);
         return i18nString(UIStrings.conditionCode, {PH1: hoverText});
-      case BreakpointType.LOGPOINT:
+      case SDK.DebuggerModel.BreakpointType.LOGPOINT:
         assertNotNullOrUndefined(hoverText);
         return i18nString(UIStrings.logpointCode, {PH1: hoverText});
     }

@@ -5,6 +5,7 @@
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -104,10 +105,12 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
     this.typeSelector =
         new UI.Toolbar.ToolbarComboBox(this.onTypeChanged.bind(this), i18nString(UIStrings.breakpointType));
-    this.typeSelector.createOption(i18nString(UIStrings.breakpoint), BreakpointType.Breakpoint);
-    const conditionalOption =
-        this.typeSelector.createOption(i18nString(UIStrings.conditionalBreakpoint), BreakpointType.Conditional);
-    const logpointOption = this.typeSelector.createOption(i18nString(UIStrings.logpoint), BreakpointType.Logpoint);
+    this.typeSelector.createOption(
+        i18nString(UIStrings.breakpoint), SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT);
+    const conditionalOption = this.typeSelector.createOption(
+        i18nString(UIStrings.conditionalBreakpoint), SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT);
+    const logpointOption =
+        this.typeSelector.createOption(i18nString(UIStrings.logpoint), SDK.DebuggerModel.BreakpointType.LOGPOINT);
     this.typeSelector.select(isLogpoint ? logpointOption : conditionalOption);
     toolbar.appendToolbarItem(this.typeSelector);
 
@@ -192,7 +195,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   }
 
   private onTypeChanged(): void {
-    if (this.breakpointType === BreakpointType.Breakpoint) {
+    if (this.breakpointType === SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT) {
       this.finishEditing(true, '');
       return;
     }
@@ -207,10 +210,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
   private getPlaceholder(): CodeMirror.Extension {
     const type = this.breakpointType;
-    if (type === BreakpointType.Conditional) {
+    if (type === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT) {
       return CodeMirror.placeholder(i18nString(UIStrings.expressionToCheckBeforePausingEg));
     }
-    if (type === BreakpointType.Logpoint) {
+    if (type === SDK.DebuggerModel.BreakpointType.LOGPOINT) {
       return CodeMirror.placeholder(i18nString(UIStrings.logMessageEgXIsX));
     }
     return [];
@@ -218,9 +221,9 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
 
   private updateTooltip(): void {
     const type = this.breakpointType;
-    if (type === BreakpointType.Conditional) {
+    if (type === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT) {
       UI.Tooltip.Tooltip.install((this.typeSelector.element), i18nString(UIStrings.pauseOnlyWhenTheConditionIsTrue));
-    } else if (type === BreakpointType.Logpoint) {
+    } else if (type === SDK.DebuggerModel.BreakpointType.LOGPOINT) {
       UI.Tooltip.Tooltip.install((this.typeSelector.element), i18nString(UIStrings.logAMessageToConsoleDoNotBreak));
     }
   }
@@ -232,7 +235,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.finished = true;
     this.editor.remove();
     this.#history.pushHistoryItem(condition);
-    const isLogpoint = this.breakpointType === BreakpointType.Logpoint;
+    const isLogpoint = this.breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT;
     this.onFinish({committed, condition: condition as Bindings.BreakpointManager.UserCondition, isLogpoint});
   }
 
@@ -245,9 +248,3 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     return this.editor;
   }
 }
-
-export const BreakpointType = {
-  Breakpoint: 'Breakpoint',
-  Conditional: 'Conditional',
-  Logpoint: 'Logpoint',
-};

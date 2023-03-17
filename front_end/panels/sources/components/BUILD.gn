@@ -23,6 +23,7 @@ devtools_module("components") {
 
   deps = [
     "../../../core/i18n:bundle",
+    "../../../core/sdk:bundle",
     "../../../models/persistence:bundle",
     "../../../models/workspace:bundle",
     "../../../ui/components/buttons:bundle",

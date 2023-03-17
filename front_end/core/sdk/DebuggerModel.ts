@@ -1516,6 +1516,12 @@ interface PausedOnInstrumentationData {
   scriptId: Protocol.Runtime.ScriptId;
 }
 
+export const enum BreakpointType {
+  LOGPOINT = 'LOGPOINT',
+  CONDITIONAL_BREAKPOINT = 'CONDITIONAL_BREAKPOINT',
+  REGULAR_BREAKPOINT = 'REGULAR_BREAKPOINT',
+}
+
 /**
  * A breakpoint condition as sent to V8. This helps distinguish
  * the breakpoint condition as it is entered by the user.

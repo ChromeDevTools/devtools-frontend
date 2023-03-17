@@ -40,7 +40,7 @@ export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js
 
 import {CPUProfilerModel, Events as CPUProfilerModelEvents, type EventData} from './CPUProfilerModel.js';
 
-import {Events as DebuggerModelEvents, type Location} from './DebuggerModel.js';
+import {Events as DebuggerModelEvents, type Location, BreakpointType} from './DebuggerModel.js';
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {
@@ -792,7 +792,7 @@ export class ConsoleMessage {
 
   /** @returns true, iff this was a console.* call in a conditional breakpoint */
   get originatesFromConditionalBreakpoint(): boolean {
-    return this.#originatingBreakpointType === BreakpointType.CND_BREAKPOINT;
+    return this.#originatingBreakpointType === BreakpointType.CONDITIONAL_BREAKPOINT;
   }
 
   static #stackFrameWithBreakpoint({callFrames}: Protocol.Runtime.StackTrace):
@@ -813,18 +813,14 @@ export class ConsoleMessage {
       return {callFrame: null, type: null};
     }
 
-    const type = callFrames[lastBreakpointFrameIndex].url === LOGPOINT_SOURCE_URL ? BreakpointType.LOGPOINT :
-                                                                                    BreakpointType.CND_BREAKPOINT;
+    const type = callFrames[lastBreakpointFrameIndex].url === LOGPOINT_SOURCE_URL ?
+        BreakpointType.LOGPOINT :
+        BreakpointType.CONDITIONAL_BREAKPOINT;
     return {callFrame: callFrames[lastBreakpointFrameIndex + 1], type};
   }
 }
 
 SDKModel.register(ConsoleModel, {capabilities: Capability.JS, autostart: true});
-
-const enum BreakpointType {
-  LOGPOINT = 'LOGPOINT',
-  CND_BREAKPOINT = 'CND_BREAKPOINT',
-}
 
 export type MessageSource = Protocol.Log.LogEntrySource|FrontendMessageSource;
 export type MessageLevel = Protocol.Log.LogEntryLevel;

@@ -215,13 +215,13 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       const createExpectedBreakpointGroups = (testData: LocationTestData) => {
         const status = testData.enabled ? SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED :
                                           SourcesComponents.BreakpointsView.BreakpointStatus.DISABLED;
-        let type = SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT;
+        let type = SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT;
 
         if (testData.condition) {
           if (testData.isLogpoint) {
-            type = SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT;
+            type = SDK.DebuggerModel.BreakpointType.LOGPOINT;
           } else {
-            type = SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT;
+            type = SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
           }
         }
 
@@ -442,7 +442,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       assert.lengthOf(actualViewData.groups, 1);
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
       const breakpointItem = actualViewData.groups[0].breakpointItems[0];
-      assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT);
+      assert.strictEqual(breakpointItem.type, SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT);
       assert.strictEqual(breakpointItem.hoverText, condition);
     });
 
@@ -460,7 +460,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       assert.lengthOf(actualViewData.groups, 1);
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
       const breakpointItem = actualViewData.groups[0].breakpointItems[0];
-      assert.strictEqual(breakpointItem.type, SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT);
+      assert.strictEqual(breakpointItem.type, SDK.DebuggerModel.BreakpointType.LOGPOINT);
       assert.strictEqual(breakpointItem.hoverText, logExpression);
     });
 

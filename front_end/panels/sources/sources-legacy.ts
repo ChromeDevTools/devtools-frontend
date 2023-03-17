@@ -16,7 +16,6 @@ Sources.AddSourceMapURLDialog = SourcesModule.AddSourceMapURLDialog.AddSourceMap
 
 /** @constructor */
 Sources.BreakpointEditDialog = SourcesModule.BreakpointEditDialog.BreakpointEditDialog;
-Sources.BreakpointEditDialog.BreakpointType = SourcesModule.BreakpointEditDialog.BreakpointType;
 
 /** @constructor */
 Sources.CallStackSidebarPane = SourcesModule.CallStackSidebarPane.CallStackSidebarPane;

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as SourcesComponents from '../../../../../../front_end/panels/sources/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
@@ -56,14 +57,13 @@ async function renderNoBreakpoints(
 }
 
 async function renderSingleBreakpoint(
-    type: SourcesComponents.BreakpointsView.BreakpointType =
-        SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+    type: SDK.DebuggerModel.BreakpointType = SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
     hoverText?: string): Promise<{
   component: SourcesComponents.BreakpointsView.BreakpointsView,
   data: SourcesComponents.BreakpointsView.BreakpointsViewData,
 }> {
   // Only provide a hover text if it's not a regular breakpoint.
-  assert.isTrue(!hoverText || type !== SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT);
+  assert.isTrue(!hoverText || type !== SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT);
   const component = new SourcesComponents.BreakpointsView.BreakpointsView();
   renderElementIntoDOM(component);
 
@@ -119,7 +119,7 @@ async function renderMultipleBreakpoints(): Promise<{
         breakpointItems: [
           {
             id: '1',
-            type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+            type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
             location: '234',
             codeSnippet: 'const a = x;',
             isHit: false,
@@ -127,7 +127,7 @@ async function renderMultipleBreakpoints(): Promise<{
           },
           {
             id: '2',
-            type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+            type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
             location: '3:3',
             codeSnippet: 'if (x > a) {',
             isHit: true,
@@ -143,7 +143,7 @@ async function renderMultipleBreakpoints(): Promise<{
         breakpointItems: [
           {
             id: '3',
-            type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+            type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
             location: '11',
             codeSnippet: 'const y;',
             isHit: false,
@@ -159,7 +159,7 @@ async function renderMultipleBreakpoints(): Promise<{
         breakpointItems: [
           {
             id: '4',
-            type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+            type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
             location: '3',
             codeSnippet: 'if (a == 0) {',
             isHit: false,
@@ -308,7 +308,7 @@ describeWithEnvironment('BreakpointsView', () => {
       breakpointItems: [
         {
           id: '1',
-          type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+          type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
           location: '234',
           codeSnippet: 'const a = x;',
           isHit: false,
@@ -481,8 +481,7 @@ describeWithEnvironment('BreakpointsView', () => {
   });
 
   it('shows a tooltip with edit condition on regular breakpoints', async () => {
-    const {component} =
-        await renderSingleBreakpoint(SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT);
+    const {component} = await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT);
     assertShadowRoot(component.shadowRoot);
 
     await hover(component, BREAKPOINT_ITEM_SELECTOR);
@@ -631,7 +630,7 @@ describeWithEnvironment('BreakpointsView', () => {
               codeSnippet: 'const a = 0;',
               isHit: true,
               status: SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED,
-              type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+              type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
             },
           ],
         },
@@ -652,8 +651,8 @@ describeWithEnvironment('BreakpointsView', () => {
     const breakpointDetails = 'x < a';
 
     it('are rendered', async () => {
-      const {component} = await renderSingleBreakpoint(
-          SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
+      const {component} =
+          await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
       const breakpointItem = component.shadowRoot?.querySelector(BREAKPOINT_ITEM_SELECTOR);
       assertNotNullOrUndefined(breakpointItem);
       assertElement(breakpointItem, HTMLDivElement);
@@ -661,8 +660,8 @@ describeWithEnvironment('BreakpointsView', () => {
     });
 
     it('show a tooltip', async () => {
-      const {component} = await renderSingleBreakpoint(
-          SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
+      const {component} =
+          await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
       const codeSnippet = component.shadowRoot?.querySelector(CODE_SNIPPET_SELECTOR);
       assertNotNullOrUndefined(codeSnippet);
       assertElement(codeSnippet, HTMLSpanElement);
@@ -670,8 +669,8 @@ describeWithEnvironment('BreakpointsView', () => {
     });
 
     it('show a tooltip on editing the condition', async () => {
-      const {component} = await renderSingleBreakpoint(
-          SourcesComponents.BreakpointsView.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
+      const {component} =
+          await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT, breakpointDetails);
       assertShadowRoot(component.shadowRoot);
 
       await hover(component, BREAKPOINT_ITEM_SELECTOR);
@@ -687,8 +686,7 @@ describeWithEnvironment('BreakpointsView', () => {
     const breakpointDetails = 'x, a';
 
     it('are rendered', async () => {
-      const {component} =
-          await renderSingleBreakpoint(SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT, breakpointDetails);
+      const {component} = await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.LOGPOINT, breakpointDetails);
       const breakpointItem = component.shadowRoot?.querySelector(BREAKPOINT_ITEM_SELECTOR);
       assertNotNullOrUndefined(breakpointItem);
       assertElement(breakpointItem, HTMLDivElement);
@@ -696,8 +694,7 @@ describeWithEnvironment('BreakpointsView', () => {
     });
 
     it('show a tooltip', async () => {
-      const {component} =
-          await renderSingleBreakpoint(SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT, breakpointDetails);
+      const {component} = await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.LOGPOINT, breakpointDetails);
       const codeSnippet = component.shadowRoot?.querySelector(CODE_SNIPPET_SELECTOR);
       assertNotNullOrUndefined(codeSnippet);
       assertElement(codeSnippet, HTMLSpanElement);
@@ -705,8 +702,7 @@ describeWithEnvironment('BreakpointsView', () => {
     });
 
     it('show a tooltip on editing the logpoint', async () => {
-      const {component} =
-          await renderSingleBreakpoint(SourcesComponents.BreakpointsView.BreakpointType.LOGPOINT, breakpointDetails);
+      const {component} = await renderSingleBreakpoint(SDK.DebuggerModel.BreakpointType.LOGPOINT, breakpointDetails);
       assertShadowRoot(component.shadowRoot);
 
       await hover(component, BREAKPOINT_ITEM_SELECTOR);
@@ -945,7 +941,7 @@ describeWithEnvironment('BreakpointsView', () => {
             breakpointItems: [
               {
                 id: '1',
-                type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+                type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
                 location: '234',
                 codeSnippet: 'const a = x;',
                 isHit: false,
@@ -953,7 +949,7 @@ describeWithEnvironment('BreakpointsView', () => {
               },
               {
                 id: '2',
-                type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+                type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
                 location: '3:3',
                 codeSnippet: 'if (x > a) {',
                 isHit: true,
@@ -969,7 +965,7 @@ describeWithEnvironment('BreakpointsView', () => {
             breakpointItems: [
               {
                 id: '3',
-                type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+                type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
                 location: '11',
                 codeSnippet: 'const y;',
                 isHit: false,
@@ -977,7 +973,7 @@ describeWithEnvironment('BreakpointsView', () => {
               },
               {
                 id: '4',
-                type: SourcesComponents.BreakpointsView.BreakpointType.REGULAR_BREAKPOINT,
+                type: SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT,
                 location: '12',
                 codeSnippet: 'const y;',
                 isHit: false,

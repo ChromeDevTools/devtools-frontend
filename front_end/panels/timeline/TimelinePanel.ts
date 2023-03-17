@@ -42,6 +42,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
@@ -1141,6 +1142,21 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     centered.createChild('p').appendChild(i18n.i18n.getFormatLocalizedString(
         str_, UIStrings.afterRecordingSelectAnAreaOf, {PH1: navigateNode, PH2: learnMoreNode}));
+
+    if (isNode) {
+      const previewSection = new PanelFeedback.PanelFeedback.PanelFeedback();
+      previewSection.data = {
+        feedbackUrl: 'https://bugs.chromium.org/p/chromium/issues/detail?id=1354548' as Platform.DevToolsPath.UrlString,
+        quickStartUrl: 'https://developer.chrome.com/blog/js-profiler-deprecation/' as Platform.DevToolsPath.UrlString,
+        quickStartLinkText: i18nString(UIStrings.learnmore),
+      };
+      centered.appendChild(previewSection);
+      const feedbackButton = new PanelFeedback.FeedbackButton.FeedbackButton();
+      feedbackButton.data = {
+        feedbackUrl: 'https://bugs.chromium.org/p/chromium/issues/detail?id=1354548' as Platform.DevToolsPath.UrlString,
+      };
+      centered.appendChild(feedbackButton);
+    }
 
     this.landingPage.show(this.statusPaneContainer);
   }

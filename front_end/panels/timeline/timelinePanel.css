@@ -627,3 +627,7 @@
 .timeline-concurrency-hidden {
   visibility: hidden;
 }
+
+devtools-feedback-button {
+  float: right;
+}

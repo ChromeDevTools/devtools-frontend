@@ -273,9 +273,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#updateVisibility(false);
   }
 
-  static instance(opts = {forceNew: false}): WebauthnPaneImpl {
-    const {forceNew} = opts;
-    if (!webauthnPaneImplInstance || forceNew) {
+  static instance(opts?: {forceNew: boolean}): WebauthnPaneImpl {
+    if (!webauthnPaneImplInstance || opts?.forceNew) {
       webauthnPaneImplInstance = new WebauthnPaneImpl();
     }
 

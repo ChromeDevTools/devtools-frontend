@@ -403,8 +403,9 @@ export class GenericSettingsTab extends SettingsTab {
 let experimentsSettingsTabInstance: ExperimentsSettingsTab;
 
 export class ExperimentsSettingsTab extends SettingsTab {
-  private experimentsSection: HTMLElement|undefined;
-  private unstableExperimentsSection: HTMLElement|undefined;
+  #experimentsSection: HTMLElement|undefined;
+  #unstableExperimentsSection: HTMLElement|undefined;
+  #inputElement: HTMLInputElement;
   private readonly experimentToControl = new Map<Root.Runtime.Experiment, HTMLElement>();
 
   constructor() {
@@ -414,44 +415,45 @@ export class ExperimentsSettingsTab extends SettingsTab {
 
     const labelElement = filterSection.createChild('label');
     labelElement.textContent = i18nString(UIStrings.filterExperimentsLabel);
-    const inputElement = UI.UIUtils.createInput('', 'text');
-    UI.ARIAUtils.bindLabelToControl(labelElement, inputElement);
-    filterSection.appendChild(inputElement);
-    inputElement.addEventListener('input', () => this.renderExperiments(inputElement.value.toLowerCase()), false);
+    this.#inputElement = UI.UIUtils.createInput('', 'text');
+    UI.ARIAUtils.bindLabelToControl(labelElement, this.#inputElement);
+    filterSection.appendChild(this.#inputElement);
+    this.#inputElement.addEventListener(
+        'input', () => this.renderExperiments(this.#inputElement.value.toLowerCase()), false);
 
-    this.renderExperiments('');
+    this.setFilter('');
   }
 
   private renderExperiments(filterText: string): void {
     this.experimentToControl.clear();
-    if (this.experimentsSection) {
-      this.experimentsSection.remove();
+    if (this.#experimentsSection) {
+      this.#experimentsSection.remove();
     }
-    if (this.unstableExperimentsSection) {
-      this.unstableExperimentsSection.remove();
+    if (this.#unstableExperimentsSection) {
+      this.#unstableExperimentsSection.remove();
     }
     const experiments = Root.Runtime.experiments.allConfigurableExperiments().sort();
     const unstableExperiments = experiments.filter(e => e.unstable && e.title.toLowerCase().includes(filterText));
     const stableExperiments = experiments.filter(e => !e.unstable && e.title.toLowerCase().includes(filterText));
     if (stableExperiments.length) {
-      this.experimentsSection = this.appendSection();
+      this.#experimentsSection = this.appendSection();
       const warningMessage = i18nString(UIStrings.theseExperimentsCouldBeUnstable);
-      this.experimentsSection.appendChild(this.createExperimentsWarningSubsection(warningMessage));
+      this.#experimentsSection.appendChild(this.createExperimentsWarningSubsection(warningMessage));
       for (const experiment of stableExperiments) {
-        this.experimentsSection.appendChild(this.createExperimentCheckbox(experiment));
+        this.#experimentsSection.appendChild(this.createExperimentCheckbox(experiment));
       }
     }
     if (unstableExperiments.length) {
-      this.unstableExperimentsSection = this.appendSection();
+      this.#unstableExperimentsSection = this.appendSection();
       const warningMessage = i18nString(UIStrings.theseExperimentsAreParticularly);
-      this.unstableExperimentsSection.appendChild(this.createExperimentsWarningSubsection(warningMessage));
+      this.#unstableExperimentsSection.appendChild(this.createExperimentsWarningSubsection(warningMessage));
       for (const experiment of unstableExperiments) {
-        this.unstableExperimentsSection.appendChild(this.createExperimentCheckbox(experiment));
+        this.#unstableExperimentsSection.appendChild(this.createExperimentCheckbox(experiment));
       }
     }
     if (!stableExperiments.length && !unstableExperiments.length) {
-      this.experimentsSection = this.appendSection();
-      const warning = this.experimentsSection.createChild('span');
+      this.#experimentsSection = this.appendSection();
+      const warning = this.#experimentsSection.createChild('span');
       warning.textContent = i18nString(UIStrings.noResults);
     }
   }
@@ -526,6 +528,11 @@ export class ExperimentsSettingsTab extends SettingsTab {
         highlightElement(element);
       }
     }
+  }
+
+  setFilter(filterText: string): void {
+    this.#inputElement.value = filterText;
+    this.#inputElement.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
   }
 }
 

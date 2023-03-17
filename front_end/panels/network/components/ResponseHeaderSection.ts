@@ -472,6 +472,7 @@ export class ResponseHeaderSection extends HTMLElement {
     const rows = this.#shadow.querySelectorAll<HeaderSectionRow>('devtools-header-section-row');
     const [lastRow] = Array.from(rows).slice(-1);
     lastRow?.focus();
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideHeaderAdded);
   }
 
   #render(): void {

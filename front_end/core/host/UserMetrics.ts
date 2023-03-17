@@ -416,7 +416,8 @@ export enum Action {
   BreakpointGroupExpandedStateChanged = 59,
   HeaderOverrideFileCreated = 60,
   HeaderOverrideEnableEditingClicked = 61,
-  MaxValue = 62,
+  HeaderOverrideHeaderAdded = 62,
+  MaxValue = 63,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

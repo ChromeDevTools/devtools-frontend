@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../../../../front_end/core/host/host.js';
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as NetworkComponents from '../../../../../../front_end/panels/network/components/components.js';
@@ -14,6 +15,7 @@ import {
 } from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {setUpEnvironment} from '../../../helpers/OverridesHelpers.js';
+
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import {createWorkspaceProject} from '../../../helpers/OverridesHelpers.js';
 import * as Workspace from '../../../../../../front_end/models/workspace/workspace.js';
@@ -21,6 +23,7 @@ import type * as Persistence from '../../../../../../front_end/models/persistenc
 import * as Root from '../../../../../../front_end/core/root/root.js';
 import * as Common from '../../../../../../front_end/core/common/common.js';
 import * as NetworkForward from '../../../../../../front_end/panels/network/forward/forward.js';
+import {recordedMetricsContain} from '../../../helpers/UserMetricsHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -733,6 +736,10 @@ describeWithEnvironment('ResponseHeaderSection', () => {
       ],
     }];
     assert.isTrue(spy.getCall(-1).calledWith(JSON.stringify(expected, null, 2)));
+
+    assert.isTrue(recordedMetricsContain(
+        Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
+        Host.UserMetrics.Action.HeaderOverrideHeaderAdded));
 
     editHeaderRow(component, 1, HeaderAttribute.HeaderName, 'foo');
     expected = [{

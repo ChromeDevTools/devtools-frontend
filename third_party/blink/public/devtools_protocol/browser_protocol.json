@@ -2895,6 +2895,16 @@
                             "$ref": "SelectorList"
                         },
                         {
+                            "name": "nestingSelectors",
+                            "description": "Array of selectors from ancestor style rules, sorted by distance from the current rule.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
                             "name": "origin",
                             "description": "Parent stylesheet's origin.",
                             "$ref": "StyleSheetOrigin"

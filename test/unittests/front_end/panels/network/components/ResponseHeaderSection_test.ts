@@ -23,7 +23,7 @@ import type * as Persistence from '../../../../../../front_end/models/persistenc
 import * as Root from '../../../../../../front_end/core/root/root.js';
 import * as Common from '../../../../../../front_end/core/common/common.js';
 import * as NetworkForward from '../../../../../../front_end/panels/network/forward/forward.js';
-import {recordedMetricsContain} from '../../../helpers/UserMetricsHelpers.js';
+import {recordedMetricsContain, resetRecordedMetrics} from '../../../helpers/UserMetricsHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -177,6 +177,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
 
   beforeEach(async () => {
     await setUpEnvironment();
+    resetRecordedMetrics();
   });
 
   it('renders detailed reason for blocked requests', async () => {
@@ -462,6 +463,9 @@ describeWithEnvironment('ResponseHeaderSection', () => {
       ],
     }];
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+    assert.isTrue(recordedMetricsContain(
+        Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
+        Host.UserMetrics.Action.HeaderOverrideHeaderEdited));
   });
 
   it('can handle tab-character in header value', async () => {
@@ -520,6 +524,9 @@ describeWithEnvironment('ResponseHeaderSection', () => {
       ],
     }];
     assert.isTrue(spy.calledOnceWith(JSON.stringify(expected, null, 2)));
+    assert.isTrue(recordedMetricsContain(
+        Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
+        Host.UserMetrics.Action.HeaderOverrideHeaderEdited));
   });
 
   it('can remove header overrides', async () => {

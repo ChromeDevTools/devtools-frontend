@@ -417,7 +417,8 @@ export enum Action {
   HeaderOverrideFileCreated = 60,
   HeaderOverrideEnableEditingClicked = 61,
   HeaderOverrideHeaderAdded = 62,
-  MaxValue = 63,
+  HeaderOverrideHeaderEdited = 63,
+  MaxValue = 64,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

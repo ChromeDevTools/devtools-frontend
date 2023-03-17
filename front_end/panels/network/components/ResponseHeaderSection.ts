@@ -323,6 +323,7 @@ export class ResponseHeaderSection extends HTMLElement {
     }
     const index = Number(target.dataset.index);
     this.#updateOverrides(event.headerName, event.headerValue, index);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideHeaderEdited);
   }
 
   #fileNameFromUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.RawPathString {

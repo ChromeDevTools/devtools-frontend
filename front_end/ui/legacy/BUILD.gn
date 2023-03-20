@@ -16,6 +16,7 @@ generate_css("css_files") {
 
 generate_css("legacy_css_files") {
   sources = [
+    "applicationColorTokens.css",
     "checkboxTextLabel.css",
     "closeButton.css",
     "confirmDialog.css",

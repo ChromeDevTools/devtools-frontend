@@ -193,6 +193,24 @@
   --color-evaluated-expression-border: rgb(163 41 34);
   --color-variable-values: #ffe3c7;
   --color-non-breakable-line: rgb(128 128 128 / 40%);
+
+  /* Color tokens for icons */
+  --color-on-surface: rgb(31 31 31);
+  --color-on-surface-variant: rgb(68 71 70);
+  --color-primary: rgb(11 87 208);
+  --color-primary-bright: rgb(27 110 243);
+  --color-orange: rgb(169 91 18);
+  --color-orange-bright: rgb(199 122 26);
+  --color-tertiary: rgb(20 108 46);
+  --color-tertiary-bright: rgb(25 134 57);
+  --color-error: rgb(179 38 30);
+  --color-error-bright: rgb(220 54 46);
+  --color-purple: rgb(140 30 211);
+  --color-purple-bright: rgb(167 67 238);
+  --color-turqoise: rgb(0 103 127);
+  --color-turqoise-bright: rgb(0 152 196);
+  --color-yellow: rgb(121 89 0);
+  --color-yellow-bright: rgb(186 130 14);
 }
 
 .-theme-with-dark-background {
@@ -341,4 +359,22 @@
   --color-evaluated-expression-border: rgb(221 99 92);
   --color-variable-values: rgb(56 28 0);
   --color-non-breakable-line: rgb(127 127 127 / 40%);
+
+  /* Color tokens for icons */
+  --color-on-surface: rgb(227 227 227);
+  --color-on-surface-variant: rgb(196 199 197);
+  --color-primary: rgb(168 199 250);
+  --color-primary-bright: rgb(124 172 248);
+  --color-orange: rgb(255 184 113);
+  --color-orange-bright: rgb(238 152 54);
+  --color-tertiary: rgb(109 213 140);
+  --color-tertiary-bright: rgb(55 190 95);
+  --color-error: rgb(242 184 181);
+  --color-error-bright: rgb(228 105 98);
+  --color-purple: rgb(226 182 255);
+  --color-purple-bright: rgb(209 144 255);
+  --color-turqoise: rgb(92 213 251);
+  --color-turqoise-bright: rgb(56 185 222);
+  --color-yellow: rgb(251 188 5);
+  --color-yellow-bright: rgb(217 162 0);
 }

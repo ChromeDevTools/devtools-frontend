@@ -19,7 +19,6 @@ import {
 import {
   $,
   assertNotNullOrUndefined,
-  enableExperiment,
   waitForFunction,
   waitFor,
   activeElementTextContent,
@@ -40,10 +39,6 @@ async function extractTextContentIfConnected(element: puppeteer.ElementHandle): 
 }
 
 describe('The Breakpoints Sidebar', () => {
-  beforeEach(async () => {
-    await enableExperiment('breakpointView');
-  });
-
   describe('for source mapped files', () => {
     it('correctly shows the breakpoint location on reload', async () => {
       const testBreakpointContent = async (expectedFileName: string, expectedLineNumber: number) => {

@@ -69,13 +69,6 @@ Sources.GoToLineQuickOpen = SourcesModule.GoToLineQuickOpen.GoToLineQuickOpen;
 Sources.InplaceFormatterEditorAction = SourcesModule.InplaceFormatterEditorAction.InplaceFormatterEditorAction;
 
 /** @constructor */
-Sources.JavaScriptBreakpointsSidebarPane =
-    SourcesModule.JavaScriptBreakpointsSidebarPane.JavaScriptBreakpointsSidebarPane;
-
-Sources.JavaScriptBreakpointsSidebarPane.retrieveLocationForElement =
-    SourcesModule.JavaScriptBreakpointsSidebarPane.retrieveLocationForElement;
-
-/** @constructor */
 Sources.NavigatorView = SourcesModule.NavigatorView.NavigatorView;
 
 Sources.NavigatorView.Types = SourcesModule.NavigatorView.Types;

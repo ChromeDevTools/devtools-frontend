@@ -116,14 +116,6 @@ const UIStrings = {
    */
   hideIgnoreListed: 'Hide ignore-listed sources',
   /**
-   *@description Text for pausing the debugger on exceptions
-   */
-  pauseOnExceptions: 'Pause on exceptions',
-  /**
-   *@description Text in Sources Panel of the Sources panel
-   */
-  dontPauseOnExceptions: 'Don\'t pause on exceptions',
-  /**
    *@description Tooltip text that appears when hovering over the largeicon play button in the Sources Panel of the Sources panel
    */
   resumeWithAllPausesBlockedForMs: 'Resume with all pauses blocked for 500 ms',
@@ -301,10 +293,6 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.updateSidebarPosition();
 
     void this.updateDebuggerButtonsAndStatus();
-    this.pauseOnExceptionEnabledChanged();
-    Common.Settings.Settings.instance()
-        .moduleSetting('pauseOnExceptionEnabled')
-        .addChangeListener(this.pauseOnExceptionEnabledChanged, this);
 
     this.liveLocationPool = new Bindings.LiveLocation.LiveLocationPool();
 
@@ -650,16 +638,6 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
             callFrame.location(), this.executionLineChanged.bind(this), this.liveLocationPool);
   }
 
-  private pauseOnExceptionEnabledChanged(): void {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.BREAKPOINT_VIEW)) {
-      const enabled = Common.Settings.Settings.instance().moduleSetting('pauseOnExceptionEnabled').get();
-      const button = (this.pauseOnExceptionButton as UI.Toolbar.ToolbarToggle);
-      button.setToggled(enabled);
-      button.setTitle(enabled ? i18nString(UIStrings.dontPauseOnExceptions) : i18nString(UIStrings.pauseOnExceptions));
-      this.debugToolbarDrawer.classList.toggle('expanded', enabled);
-    }
-  }
-
   private async updateDebuggerButtonsAndStatus(): Promise<void> {
     const currentTarget = UI.Context.Context.instance().flavor(SDK.Target.Target);
     const currentDebuggerModel = currentTarget ? currentTarget.model(SDK.DebuggerModel.DebuggerModel) : null;
@@ -719,14 +697,6 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
         break;
       }
     }
-  }
-
-  private togglePauseOnExceptions(): void {
-    Common.Settings.Settings.instance()
-        .moduleSetting('pauseOnExceptionEnabled')
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // @ts-expect-error
-        .set(!(this.pauseOnExceptionButton).toggled());
   }
 
   runSnippet(): void {
@@ -872,13 +842,6 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     debugToolbar.appendSeparator();
     debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleBreakpointsActiveAction));
-
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.BREAKPOINT_VIEW)) {
-      this.pauseOnExceptionButton = new UI.Toolbar.ToolbarToggle('', 'largeicon-pause-on-exceptions');
-      this.pauseOnExceptionButton.addEventListener(
-          UI.Toolbar.ToolbarButton.Events.Click, this.togglePauseOnExceptions, this);
-      debugToolbar.appendToolbarItem(this.pauseOnExceptionButton);
-    }
 
     return debugToolbar;
   }

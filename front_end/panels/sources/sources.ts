@@ -15,7 +15,6 @@ import * as FilePathScoreFunction from './FilePathScoreFunction.js';
 import * as FilteredUISourceCodeListProvider from './FilteredUISourceCodeListProvider.js';
 import * as GoToLineQuickOpen from './GoToLineQuickOpen.js';
 import * as InplaceFormatterEditorAction from './InplaceFormatterEditorAction.js';
-import * as JavaScriptBreakpointsSidebarPane from './JavaScriptBreakpointsSidebarPane.js';
 import * as NavigatorView from './NavigatorView.js';
 import * as OpenFileQuickOpen from './OpenFileQuickOpen.js';
 import * as OutlineQuickOpen from './OutlineQuickOpen.js';
@@ -48,7 +47,6 @@ export {
   FilteredUISourceCodeListProvider,
   GoToLineQuickOpen,
   InplaceFormatterEditorAction,
-  JavaScriptBreakpointsSidebarPane,
   NavigatorView,
   OpenFileQuickOpen,
   OutlineQuickOpen,

@@ -490,48 +490,6 @@ SourcesTestRunner.toggleBreakpoint = async function(sourceFrame, lineNumber, dis
   }
 };
 
-SourcesTestRunner.waitBreakpointSidebarPane = function(waitUntilResolved) {
-  if (Root.Runtime.experiments.isEnabled('breakpointView')) {
-    throw new Error('The breakpoint sidebar pane content is only available for the old breakpoint sidebar.');
-  }
-  return new Promise(
-             resolve =>
-                 TestRunner.addSniffer(Sources.JavaScriptBreakpointsSidebarPane.prototype, 'didUpdateForTest', resolve))
-      .then(checkIfReady);
-
-  function checkIfReady() {
-    if (!waitUntilResolved) {
-      return;
-    }
-
-    for (const {breakpoint} of self.Bindings.breakpointManager.allBreakpointLocations()) {
-      if (!breakpoint.bound() && breakpoint.enabled()) {
-        return SourcesTestRunner.waitBreakpointSidebarPane();
-      }
-    }
-  }
-};
-
-SourcesTestRunner.breakpointsSidebarPaneContent = function() {
-  if (Root.Runtime.experiments.isEnabled('breakpointView')) {
-    throw new Error('The breakpoint sidebar pane content is only available for the old breakpoint sidebar.');
-  }
-  const pane = Sources.JavaScriptBreakpointsSidebarPane.instance();
-  const empty = pane.emptyElement;
-
-  if (!empty.classList.contains('hidden')) {
-    return TestRunner.textContentWithLineBreaks(empty);
-  }
-
-  const entries = Array.from(pane.contentElement.querySelectorAll('.breakpoint-entry'));
-  return entries.map(TestRunner.textContentWithLineBreaks).join('\n');
-};
-
-SourcesTestRunner.dumpBreakpointSidebarPane = function(title) {
-  TestRunner.addResult('Breakpoint sidebar pane ' + (title || ''));
-  TestRunner.addResult(SourcesTestRunner.breakpointsSidebarPaneContent());
-};
-
 SourcesTestRunner.dumpScopeVariablesSidebarPane = function() {
   TestRunner.addResult('Scope variables sidebar pane:');
   const sections = SourcesTestRunner.scopeChainSections();

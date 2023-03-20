@@ -6,6 +6,7 @@ import * as CLSLinkifier from './CLSLinkifier.js';
 import * as CompatibilityTracksAppender from './CompatibilityTracksAppender.js';
 import * as CountersGraph from './CountersGraph.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
+import * as InteractionsTrackAppender from './InteractionsTrackAppender.js';
 import * as PerformanceModel from './PerformanceModel.js';
 import * as TimelineController from './TimelineController.js';
 import * as TimelineDetailsView from './TimelineDetailsView.js';
@@ -30,6 +31,7 @@ export {
   CompatibilityTracksAppender,
   CountersGraph,
   EventsTimelineTreeView,
+  InteractionsTrackAppender,
   PerformanceModel,
   TimelineController,
   TimelineDetailsView,

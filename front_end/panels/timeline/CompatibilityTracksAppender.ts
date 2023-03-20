@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import {type TimelineFlameChartEntry, type EntryType} from './TimelineFlameChartDataProvider.js';
 import {TimingsTrackAppender} from './TimingsTrackAppender.js';
+import {InteractionsTrackAppender} from './InteractionsTrackAppender.js';
 
 export type HighlightedEntryInfo = {
   title: string,
@@ -65,7 +66,7 @@ export interface TrackAppender {
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo;
 }
 
-export const TrackNames = ['Timings'] as const;
+export const TrackNames = ['Timings', 'Interactions'] as const;
 export type TrackAppenderName = typeof TrackNames[number];
 
 export class CompatibilityTracksAppender {
@@ -84,6 +85,7 @@ export class CompatibilityTracksAppender {
   #legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   #legacyEntryTypeByLevel: EntryType[];
   #timingsTrackAppender: TimingsTrackAppender;
+  #interactionsTrackAppender: InteractionsTrackAppender;
 
   /**
    * @param flameChartData the data used by the flame chart renderer on
@@ -113,6 +115,12 @@ export class CompatibilityTracksAppender {
     this.#timingsTrackAppender = new TimingsTrackAppender(
         this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel, timings);
     this.#allTrackAppenders.push(this.#timingsTrackAppender);
+
+    const interactions = this.#legacyTimelineModel.tracks().find(
+        track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
+    this.#interactionsTrackAppender = new InteractionsTrackAppender(
+        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel, interactions);
+    this.#allTrackAppenders.push(this.#interactionsTrackAppender);
   }
 
   /**
@@ -130,6 +138,9 @@ export class CompatibilityTracksAppender {
 
   timingsTrackAppender(): TimingsTrackAppender {
     return this.#timingsTrackAppender;
+  }
+  interactionsTrackAppender(): InteractionsTrackAppender {
+    return this.#interactionsTrackAppender;
   }
 
   /**

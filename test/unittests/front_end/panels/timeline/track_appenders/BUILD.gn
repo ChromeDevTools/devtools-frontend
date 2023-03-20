@@ -6,7 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("track_appenders") {
   testonly = true
-  sources = [ "TimingsTrackAppender_test.ts" ]
+  sources = [
+    "InteractionsTrackAppender_test.ts",
+    "TimingsTrackAppender_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/core/sdk:bundle",

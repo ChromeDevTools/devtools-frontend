@@ -13,6 +13,9 @@ await ComponentSetup.ComponentServerSetup.setup();
 const params = new URLSearchParams(window.location.search);
 const track = params.get('track');
 const fileName = params.get('fileName');
+
+const customStartWindowTime = params.get('windowStart');
+const customEndWindowTime = params.get('windowEnd');
 const p = document.createElement('p');
 await renderContent();
 
@@ -54,6 +57,9 @@ async function renderContent() {
     const {flameChart, dataProvider} = flameChartData;
     const timingsTrackOffset = flameChart.levelToOffset(dataProvider.maxStackDepth());
     container.style.height = `${timingsTrackOffset}px`;
+    if (customStartWindowTime && customEndWindowTime) {
+      flameChart.setWindowTimes(Number(customStartWindowTime), Number(customEndWindowTime), false);
+    }
     flameChart.show(container);
   } catch (error) {
     p.classList.remove('loading');

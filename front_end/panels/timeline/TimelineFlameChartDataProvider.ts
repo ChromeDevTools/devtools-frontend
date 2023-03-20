@@ -61,10 +61,6 @@ const UIStrings = {
    */
   animation: 'Animation',
   /**
-   *@description Text that refers to the interactions on the page shown in the timeline
-   */
-  userInteractions: 'Interactions',
-  /**
    *@description Title of the Console tool
    */
   console: 'Console',
@@ -189,7 +185,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private readonly timingsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly screenshotsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly animationsHeader: PerfUI.FlameChart.GroupStyle;
-  private readonly userInteractionsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly experienceHeader: PerfUI.FlameChart.GroupStyle;
   private readonly flowEventIndexById: Map<string, number>;
   private entryData!: TimelineFlameChartEntry[];
@@ -237,8 +232,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.screenshotsHeader =
         this.buildGroupStyle({useFirstLineForOverview: true, nestingLevel: 1, collapsible: false, itemsHeight: 150});
     this.animationsHeader = this.buildGroupStyle({useFirstLineForOverview: false});
-    this.userInteractionsHeader =
-        this.buildGroupStyle({shareHeaderLine: false, useFirstLineForOverview: true, collapsible: false});
     this.experienceHeader = this.buildGroupStyle({collapsible: false});
 
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
@@ -251,7 +244,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.timingsHeader,
         this.screenshotsHeader,
         this.animationsHeader,
-        this.userInteractionsHeader,
         this.experienceHeader,
       ];
       for (const header of headers) {
@@ -489,6 +481,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         switch (track.appenderName) {
           case 'Timings':
             return 1;
+          case 'Interactions':
+            return 2;
           default:
             return -1;
         }
@@ -497,8 +491,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       switch (track.type) {
         case TimelineModel.TimelineModel.TrackType.Animation:
           return 0;
-        case TimelineModel.TimelineModel.TrackType.UserInteractions:
-          return 2;
         case TimelineModel.TimelineModel.TrackType.Console:
           return 3;
         case TimelineModel.TimelineModel.TrackType.Experience:
@@ -553,12 +545,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.#instantiateTimelineData();
     const eventEntryType = EntryType.Event;
     switch (track.type) {
-      case TimelineModel.TimelineModel.TrackType.UserInteractions: {
-        this.appendAsyncEventsGroup(
-            track, i18nString(UIStrings.userInteractions), track.asyncEvents, this.userInteractionsHeader,
-            eventEntryType, false /* selectable */, expanded);
-        break;
-      }
       case TimelineModel.TimelineModel.TrackType.Animation: {
         this.appendAsyncEventsGroup(
             track, i18nString(UIStrings.animation), track.asyncEvents, this.animationsHeader, eventEntryType,
@@ -1017,9 +1003,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
       if (!TraceEngine.Types.TraceEvents.isAsyncPhase(event.phase) && this.colorForEvent) {
         return this.colorForEvent(event);
-      }
-      if (this.legacyTimelineModel.isEventTimingInteractionEvent(event)) {
-        return this.consoleColorGenerator.colorForID(event.args.data.type + ':' + event.args.data.interactionId);
       }
       if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
         return this.consoleColorGenerator.colorForID(event.name);

@@ -25,6 +25,7 @@ export interface ParseConfig {
 export const ENABLED_TRACE_HANDLERS = {
   UserTimings: Handlers.ModelHandlers.UserTimings,
   PageLoadMetrics: Handlers.ModelHandlers.PageLoadMetrics,
+  UserInteractions: Handlers.ModelHandlers.UserInteractions,
 };
 export type PartialTraceParseDataDuringMigration =
     Readonly<Handlers.Types.EnabledHandlerDataWithMeta<typeof ENABLED_TRACE_HANDLERS>>;
@@ -59,6 +60,8 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     UserTimings: typeof Handlers.ModelHandlers.UserTimings,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     PageLoadMetrics: typeof Handlers.ModelHandlers.PageLoadMetrics,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    UserInteractions: typeof Handlers.ModelHandlers.UserInteractions,
   }> {
     return new Model(ENABLED_TRACE_HANDLERS);
   }

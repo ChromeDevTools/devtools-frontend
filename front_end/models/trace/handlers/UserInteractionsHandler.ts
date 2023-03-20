@@ -26,6 +26,10 @@ export interface InteractionEvent extends Types.TraceEvents.TraceEventEventTimin
   interactionId: number;
 }
 
+export function eventIsInteractionEvent(event: Types.TraceEvents.TraceEventData): event is InteractionEvent {
+  return Types.TraceEvents.isTraceEventEventTiming(event) && 'interactionId' in event;
+}
+
 const interactionEvents: InteractionEvent[] = [];
 
 let handlerState = HandlerState.UNINITIALIZED;

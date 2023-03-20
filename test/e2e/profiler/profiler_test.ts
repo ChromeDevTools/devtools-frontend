@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {waitFor} from '../../shared/helper.js';
+import {enableExperiment, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   createAProfile,
@@ -13,6 +13,10 @@ import {
 } from '../helpers/profiler-helpers.js';
 
 describe('The JavaScript Profiler Panel', async () => {
+  beforeEach(async () => {
+    await enableExperiment('jsProfilerTemporarilyEnable');
+  });
+
   it('Loads content', async () => {
     await navigateToProfilerTab();
   });

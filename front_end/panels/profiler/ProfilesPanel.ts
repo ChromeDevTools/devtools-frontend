@@ -31,6 +31,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
@@ -49,6 +50,7 @@ import {
 import {Events as ProfileLauncherEvents, ProfileLauncherView} from './ProfileLauncherView.js';
 import {ProfileSidebarTreeElement, setSharedFileSelectorElement} from './ProfileSidebarTreeElement.js';
 import {instance} from './ProfileTypeRegistry.js';
+import {type ExperimentsSettingsTab} from '../settings/SettingsScreen.js';
 
 const UIStrings = {
   /**
@@ -99,6 +101,10 @@ const UIStrings = {
    *@description Text of a button in the JS Profiler panel to let user go to Performance panel.
    */
   goToPerformancePanel: 'Go to Performance Panel',
+  /**
+   *@description Text of a button in the JS Profiler panel to let user go to enable the experiment flag to use this panel temporarily.
+   */
+  enableThisPanelTemporarily: 'Enable this panel temporarily',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfilesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -698,7 +704,11 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
     const registry = instance;
     super('js_profiler', [registry.cpuProfileType], 'profiler.js-toggle-recording');
     this.splitWidget().mainWidget()?.setMinimumSize(350, 0);
-    this.#showDeprecationInfobar();
+    if (Root.Runtime.experiments.isEnabled('jsProfilerTemporarilyEnable')) {
+      this.#showDeprecationInfobar();
+    } else {
+      this.#showDeprecationWarningAndNoPanel();
+    }
   }
 
   static instance(opts: {
@@ -746,6 +756,52 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
         /* disableSetting? */ undefined);
     infobar.setParentView(this);
     this.splitWidget().mainWidget()?.element.prepend(infobar.element);
+  }
+
+  #showDeprecationWarningAndNoPanel(): void {
+    const mainWidget = this.splitWidget().mainWidget();
+    mainWidget?.detachChildWidgets();
+    if (mainWidget) {
+      const emptyPage = new UI.Widget.VBox();
+      emptyPage.contentElement.classList.add('empty-landing-page', 'fill');
+
+      const centered = emptyPage.contentElement.createChild('div');
+
+      centered.createChild('p').textContent =
+          'This panel is deprecated and will be removed in the next version. Use the Performance panel to record JavaScript CPU profiles.';
+      centered.createChild('p').textContent =
+          'You can enable this panel temporarily via Settings > Experiments > Enable JavaScript Profiler temporarily.';
+
+      centered.appendChild(UI.UIUtils.createTextButton(
+          i18nString(UIStrings.goToPerformancePanel), openPerformancePanel, 'infobar-button primary-button'));
+      centered.appendChild(UI.UIUtils.createTextButton(i18nString(UIStrings.learnMore), openBlogpost));
+      centered.appendChild(UI.UIUtils.createTextButton(i18nString(UIStrings.feedback), openFeedbackLink));
+      centered.appendChild(
+          UI.UIUtils.createTextButton(i18nString(UIStrings.enableThisPanelTemporarily), openExperimentsSettings));
+
+      emptyPage.show(mainWidget.element);
+    }
+
+    async function openPerformancePanel(): Promise<void> {
+      await UI.InspectorView.InspectorView.instance().showPanel('timeline');
+    }
+
+    function openBlogpost(): void {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+          'https://developer.chrome.com/blog/js-profiler-deprecation/' as Platform.DevToolsPath.UrlString);
+    }
+
+    function openFeedbackLink(): void {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+          'https://bugs.chromium.org/p/chromium/issues/detail?id=1354548' as Platform.DevToolsPath.UrlString);
+    }
+
+    async function openExperimentsSettings(): Promise<void> {
+      await UI.ViewManager.ViewManager.instance().showView('experiments');
+
+      const tab = await UI.ViewManager.ViewManager.instance().view('experiments').widget();
+      (tab as ExperimentsSettingsTab).setFilter('Enable JavaScript Profiler temporarily');
+    }
   }
 
   wasShown(): void {

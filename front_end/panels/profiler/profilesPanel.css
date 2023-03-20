@@ -140,6 +140,21 @@
   cursor: text;
 }
 
+.empty-landing-page {
+  position: absolute;
+  background-color: var(--color-background);
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  padding: 50px;
+}
+
+button {
+  cursor: pointer;
+}
+
 @media (forced-colors: active) {
   .profile-view .data-grid tr:hover td:not(.bottom-filler-td) {
     background: Highlight;

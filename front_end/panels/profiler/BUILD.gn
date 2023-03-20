@@ -52,6 +52,7 @@ devtools_module("profiler") {
     "../../models/bindings:bundle",
     "../../models/heap_snapshot_model:bundle",
     "../../models/workspace:bundle",
+    "../../panels/settings:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/object_ui:bundle",

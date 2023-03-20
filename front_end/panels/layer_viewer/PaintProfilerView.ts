@@ -525,14 +525,15 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
     let str = '';
     let keyCount = 0;
     for (const key in param) {
-      if (++keyCount > 4 || typeof param[key] === 'object' ||
-          (typeof param[key] === 'string' && param[key].length > 100)) {
+      const paramKey = param[key];
+      if (++keyCount > 4 || paramKey === 'object' ||
+          (paramKey=== 'string' && paramKey.length > 100)) {
         return name;
       }
       if (str) {
         str += ', ';
       }
-      str += param[key];
+      str += paramKey;
     }
     return str;
   }

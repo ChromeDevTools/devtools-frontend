@@ -804,8 +804,6 @@ export class ConsoleMessage {
     // We search FROM THE TOP for the last marked stack frame and
     // return it's parent (successor).
     const markerSourceUrls = [COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL];
-    // TODO(crbug.com/1412307): Remove with TypeScript 5.0
-    // @ts-expect-error
     const lastBreakpointFrameIndex = callFrames.findLastIndex(({url}) => markerSourceUrls.includes(url));
     if (lastBreakpointFrameIndex === -1 || lastBreakpointFrameIndex === callFrames.length - 1) {
       // We either didn't find any breakpoint or we didn't capture enough stack

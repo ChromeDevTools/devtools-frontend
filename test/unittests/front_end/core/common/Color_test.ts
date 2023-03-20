@@ -726,6 +726,8 @@ describe('Color', () => {
     function stub<Fn extends keyof typeof Common.ColorConverter.ColorConverter>(
         fn: Fn, input: Code, output: Code): void {
       const result = sinon.stub(Common.ColorConverter.ColorConverter, fn);
+      // TODO(crbug.com/1412307): Figure out why tsc 5.0 stopped infering the function signature correctly.
+      // @ts-expect-error
       result.callsFake((a: number, b: number, c: number): [number, number, number] => {
         assert.deepEqual([a, b, c], [input, 0, 0], `Conversion function ${fn} called with the wrong arguments`);
         return [output, 0, 0];

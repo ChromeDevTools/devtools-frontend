@@ -108,15 +108,9 @@ export class RemoteObject {
     if (type === 'number') {
       const description = String(object);
       if (object === 0 && 1 / object < 0) {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // @ts-expect-error
         return UnserializableNumber.Negative0;
       }
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // @ts-expect-error
       if (description === UnserializableNumber.NaN || description === UnserializableNumber.Infinity ||
-          // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-          // @ts-expect-error
           description === UnserializableNumber.NegativeInfinity) {
         return description;
       }
@@ -360,17 +354,9 @@ export class RemoteObjectImpl extends RemoteObject {
       this.hasChildrenInternal = false;
       if (typeof unserializableValue === 'string') {
         this.#unserializableValueInternal = unserializableValue;
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // @ts-expect-error
         if (unserializableValue === UnserializableNumber.Infinity ||
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // @ts-expect-error
             unserializableValue === UnserializableNumber.NegativeInfinity ||
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // @ts-expect-error
             unserializableValue === UnserializableNumber.Negative0 ||
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // @ts-expect-error
             unserializableValue === UnserializableNumber.NaN) {
           this.#valueInternal = Number(unserializableValue);
         } else if (type === 'bigint' && unserializableValue.endsWith('n')) {

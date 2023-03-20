@@ -101,8 +101,54 @@ interface FeatureFlags {
   prerender2Holdback: boolean|null;
 }
 
+// Holds PreloadingModel of current context
+//
+// There can be multiple Targets and PreloadingModels and they switch as
+// time goes. For example:
+//
+// - Prerendering started and a user switched context with
+//   ExecutionContextSelector. This switching is bidirectional.
+// - Prerendered page is activated. This switching is unidirectional.
+//
+// Context switching is managed by scoped target. This class handles
+// switching events and holds PreloadingModel of current context.
+//
+// Note that switching at the timing of activation implies that view is
+// almost cleared automatically. This behavior is aligned to one of
+// PreloadingModel.onPrimaryPageChanged.
+//
+// TODO(https://crbug.com/1410709): Consider to add handing over logic
+// to support non volatile history.
+class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.PreloadingModel.PreloadingModel> {
+  private readonly view: PreloadingView;
+  model: SDK.PreloadingModel.PreloadingModel;
+
+  constructor(view: PreloadingView, model: SDK.PreloadingModel.PreloadingModel) {
+    this.view = view;
+
+    this.model = model;
+    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.onModelUpdated, this.view);
+  }
+
+  initialize(): void {
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.PreloadingModel.PreloadingModel, this, {scoped: true});
+  }
+
+  modelAdded(model: SDK.PreloadingModel.PreloadingModel): void {
+    this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.onModelUpdated, this.view);
+    this.model = model;
+    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.onModelUpdated, this.view);
+
+    this.view.onModelUpdated();
+  }
+
+  modelRemoved(_model: SDK.PreloadingModel.PreloadingModel): void {
+    this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.onModelUpdated, this.view);
+  }
+}
+
 export class PreloadingView extends UI.Widget.VBox {
-  private readonly model: SDK.PreloadingModel.PreloadingModel;
+  private readonly modelProxy: PreloadingModelProxy;
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
   private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
 
@@ -119,8 +165,7 @@ export class PreloadingView extends UI.Widget.VBox {
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
 
-    this.model = model;
-    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.onModelUpdated, this);
+    this.modelProxy = new PreloadingModelProxy(this, model);
 
     // this (VBox)
     //   +- infobarContainer
@@ -196,7 +241,16 @@ export class PreloadingView extends UI.Widget.VBox {
 
     this.hsplit.show(this.contentElement);
 
-    this.onModelUpdated();
+    // Lazily initialize PreloadingModelProxy because this triggers a chain
+    //
+    //    PreloadingModelProxy.initialize()
+    // -> TargetManager.observeModels()
+    // -> PreloadingModelProxy.modelAdded()
+    // -> PreloadingView.onModelUpdated()
+    //
+    // , and PreloadingView.onModelAdded() requires all members are
+    // initialized. So, here is the best timing.
+    this.modelProxy.initialize();
   }
 
   // `cellfocused` events only emitted focus modified. So, we can't
@@ -211,7 +265,7 @@ export class PreloadingView extends UI.Widget.VBox {
   // TODO(https://crbug.com/1384419): Consider to add `cellclicked` event.
   private updateRuleSetDetails(): void {
     const id = this.focusedRuleSetId;
-    const ruleSet = id === null ? null : this.model.getRuleSetById(id);
+    const ruleSet = id === null ? null : this.modelProxy.model.getRuleSetById(id);
     this.ruleSetDetails.data = ruleSet;
 
     if (ruleSet === null) {
@@ -223,29 +277,30 @@ export class PreloadingView extends UI.Widget.VBox {
 
   private updatePreloadingDetails(): void {
     const id = this.focusedPreloadingAttemptId;
-    this.preloadingDetails.data = id === null ? null : this.model.getPreloadingAttemptById(id);
+    this.preloadingDetails.data = id === null ? null : this.modelProxy.model.getPreloadingAttemptById(id);
   }
 
-  private onModelUpdated(): void {
+  onModelUpdated(): void {
     // Update rule sets grid
     //
     // Currently, all rule sets that appear in DevTools are valid.
     // TODO(https://crbug.com/1384419): Add property `validity` to the CDP.
-    const ruleSetRows = this.model.getAllRuleSets().map(({id}) => ({
-                                                          id,
-                                                          validity: i18nString(UIStrings.validityValid),
-                                                        }));
+    const ruleSetRows = this.modelProxy.model.getAllRuleSets().map(({id}) => ({
+                                                                     id,
+                                                                     validity: i18nString(UIStrings.validityValid),
+                                                                   }));
     this.ruleSetGrid.update(ruleSetRows);
 
     this.updateRuleSetDetails();
 
     // Update preloaidng grid
-    const preloadingAttemptRows = this.model.getAllPreloadingAttempts().map(({id, value}) => ({
-                                                                              id,
-                                                                              action: PreloadingUIUtils.action(value),
-                                                                              url: value.key.url,
-                                                                              status: PreloadingUIUtils.status(value),
-                                                                            }));
+    const preloadingAttemptRows =
+        this.modelProxy.model.getAllPreloadingAttempts().map(({id, value}) => ({
+                                                               id,
+                                                               action: PreloadingUIUtils.action(value),
+                                                               url: value.key.url,
+                                                               status: PreloadingUIUtils.status(value),
+                                                             }));
     this.preloadingGrid.update(preloadingAttemptRows);
 
     this.updatePreloadingDetails();
@@ -271,10 +326,10 @@ export class PreloadingView extends UI.Widget.VBox {
   }
 
   async getFeatureFlags(): Promise<FeatureFlags> {
-    const preloadingHoldbackPromise = this.model.target().systemInfo().invoke_getFeatureState({
+    const preloadingHoldbackPromise = this.modelProxy.model.target().systemInfo().invoke_getFeatureState({
       featureState: 'PreloadingHoldback',
     });
-    const prerender2HoldbackPromise = this.model.target().systemInfo().invoke_getFeatureState({
+    const prerender2HoldbackPromise = this.modelProxy.model.target().systemInfo().invoke_getFeatureState({
       featureState: 'PrerenderHoldback',
     });
     return {

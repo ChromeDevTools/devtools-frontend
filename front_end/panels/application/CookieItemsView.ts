@@ -43,9 +43,9 @@ import {StorageItemsView} from './StorageItemsView.js';
 
 const UIStrings = {
   /**
-   *@description Label for checkbox to show url decoded cookie values
+   *@description Label for checkbox to show URL-decoded cookie values
    */
-  showUrlDecoded: 'Show URL decoded',
+  showUrlDecoded: 'Show URL-decoded',
   /**
    *@description Text for web cookies
    */
@@ -61,7 +61,7 @@ const UIStrings = {
   /**
    *@description Title for filter in the Cookies View of the Application panel
    */
-  onlyShowCookiesWhichHaveAn: 'Only show cookies which have an associated issue',
+  onlyShowCookiesWhichHaveAn: 'Only show cookies that have an associated issue',
   /**
    *@description Label to only delete the cookies that are visible after filtering
    */

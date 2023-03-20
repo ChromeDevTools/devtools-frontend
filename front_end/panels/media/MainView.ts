@@ -64,7 +64,7 @@ class PlayerDataCollection implements TriggerHandler {
   }
 }
 
-class PlayerDataDownloadManager implements TriggerDispatcher {
+export class PlayerDataDownloadManager implements TriggerDispatcher {
   private readonly playerDataCollection: Map<string, PlayerDataCollection>;
   constructor() {
     this.playerDataCollection = new Map();
@@ -136,24 +136,23 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
   private readonly downloadStore: PlayerDataDownloadManager;
   private readonly sidebar: PlayerListView;
 
-  constructor() {
+  constructor(downloadStore: PlayerDataDownloadManager) {
     super('Media');
     this.detailPanels = new Map();
 
     this.deletedPlayers = new Set();
 
-    this.downloadStore = new PlayerDataDownloadManager();
+    this.downloadStore = downloadStore;
 
     this.sidebar = new PlayerListView(this);
     this.sidebar.show(this.panelSidebarElement());
 
-    SDK.TargetManager.TargetManager.instance().observeModels(MediaModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(MediaModel, this, {scoped: true});
   }
 
-  static instance(opts = {forceNew: null}): MainView {
-    const {forceNew} = opts;
-    if (!mainViewInstance || forceNew) {
-      mainViewInstance = new MainView();
+  static instance(opts?: {forceNew: boolean, downloadStore?: PlayerDataDownloadManager}): MainView {
+    if (!mainViewInstance || opts?.forceNew) {
+      mainViewInstance = new MainView(opts?.downloadStore || new PlayerDataDownloadManager());
     }
 
     return mainViewInstance;
@@ -172,13 +171,13 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
 
   wasShown(): void {
     super.wasShown();
-    for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel)) {
+    for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel, {scoped: true})) {
       this.addEventListeners(model);
     }
   }
 
   willHide(): void {
-    for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel)) {
+    for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel, {scoped: true})) {
       this.removeEventListeners(model);
     }
   }

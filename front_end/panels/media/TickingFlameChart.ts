@@ -16,7 +16,7 @@ function getGroupDefaultTextColor(): string {
   return ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
 }
 
-const DefaultStyle = {
+const DefaultStyle: () => PerfUI.FlameChart.GroupStyle = () => ({
   height: 20,
   padding: 2,
   collapsible: false,
@@ -28,7 +28,7 @@ const DefaultStyle = {
   shareHeaderLine: false,
   useFirstLineForOverview: false,
   useDecoratorsForOverview: false,
-};
+});
 
 export const HotColorScheme = ['#ffba08', '#faa307', '#f48c06', '#e85d04', '#dc2f02', '#d00000', '#9d0208'];
 export const ColdColorScheme = ['#7400b8', '#6930c3', '#5e60ce', '#5390d9', '#4ea8de', '#48bfe3', '#56cfe1', '#64dfdf'];
@@ -397,7 +397,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
         startLevel: this.maxLevel,
         expanded: true,
         selectable: false,
-        style: DefaultStyle,
+        style: DefaultStyle(),
         track: null,
       };
       this.timelineDataInternal.groups.push(newGroup);

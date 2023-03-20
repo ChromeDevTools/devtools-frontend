@@ -5,10 +5,13 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Coordinator from '../../../components/render_coordinator/render_coordinator.js';
 import * as UI from '../../legacy.js';
 
 import chartViewPortStyles from './chartViewport.css.legacy.js';
 import {MinimalTimeWindowMs} from './FlameChart.js';
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface ChartViewportDelegate {
   windowChanged(startTime: number, endTime: number, animate: boolean): void;
@@ -47,7 +50,6 @@ export class ChartViewport extends UI.Widget.VBox {
   private lastMouseOffsetX!: number;
   private minimumBoundary!: number;
   private totalTime!: number;
-  private updateTimerId?: number;
   private cancelWindowTimesAnimation?: (() => void)|null;
 
   constructor(delegate: ChartViewportDelegate) {
@@ -412,13 +414,10 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   scheduleUpdate(): void {
-    if (this.updateTimerId || this.cancelWindowTimesAnimation) {
+    if (this.cancelWindowTimesAnimation) {
       return;
     }
-    this.updateTimerId = this.element.window().requestAnimationFrame(() => {
-      this.updateTimerId = 0;
-      this.update();
-    });
+    void coordinator.write(() => this.update());
   }
 
   private update(): void {

@@ -83,11 +83,14 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const argumentHints = TextEditor.JavaScript.argumentHints();
     this.#argumentHintsState = argumentHints[0];
 
+    const autocompleteOnEnter = TextEditor.Config.DynamicSetting.bool(
+        'consoleAutocompleteOnEnter', [], TextEditor.Config.conservativeCompletion);
+
     const extensions = [
       CodeMirror.keymap.of(this.editorKeymap()),
       CodeMirror.EditorView.updateListener.of(update => this.editorUpdate(update)),
       argumentHints,
-      TextEditor.Config.conservativeCompletion,
+      autocompleteOnEnter.instance(),
       TextEditor.Config.showCompletionHint,
       CodeMirror.javascript.javascript(),
       TextEditor.Config.baseConfiguration(this.initialText),

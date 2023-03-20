@@ -70,6 +70,14 @@ const UIStrings = {
    */
   doNotAutocompleteFromHistory: 'Do not autocomplete from history',
   /**
+   * @description Title of a setting under the Console category that controls whether to accept autocompletion with Enter.
+   */
+  autocompleteOnEnter: 'Accept autocomplete suggestion on Enter',
+  /**
+   * @description Title of a setting under the Console category that controls whether to accept autocompletion with Enter.
+   */
+  doNotAutocompleteOnEnter: 'Do not accept autocomplete suggestion on Enter',
+  /**
    *@description Title of a setting under the Console category that can be invoked through the Command Menu
    */
   groupSimilarMessagesInConsole: 'Group similar messages in console',
@@ -304,6 +312,25 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.doNotAutocompleteFromHistory),
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.CONSOLE,
+  storageType: Common.Settings.SettingStorageType.Synced,
+  title: i18nLazyString(UIStrings.autocompleteOnEnter),
+  settingName: 'consoleAutocompleteOnEnter',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.autocompleteOnEnter),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotAutocompleteOnEnter),
     },
   ],
 });

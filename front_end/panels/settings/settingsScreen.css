@@ -200,7 +200,7 @@ label {
 }
 
 .settings-experiment .feedback-link {
-  color: var(--color-primary);
+  color: var(--color-primary-old);
   text-decoration-line: underline;
   margin-left: 4px;
 }

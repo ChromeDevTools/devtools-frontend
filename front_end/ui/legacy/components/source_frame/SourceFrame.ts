@@ -1174,6 +1174,6 @@ const sourceFrameTheme = CodeMirror.EditorView.theme({
     },
   },
   ':host-context(.pretty-printed) & .cm-lineNumbers .cm-gutterElement': {
-    color: 'var(--color-primary)',
+    color: 'var(--color-primary-old)',
   },
 });

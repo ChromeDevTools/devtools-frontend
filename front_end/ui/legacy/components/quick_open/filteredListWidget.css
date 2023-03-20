@@ -80,7 +80,7 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item-wrapper.selected {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
 }
 
 .filtered-list-widget-item {
@@ -97,7 +97,7 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item.two-rows span.highlight {
-  color: var(--color-primary);
+  color: var(--color-primary-old);
 }
 
 .filtered-list-widget-item.one-row span.highlight {

@@ -126,10 +126,10 @@ describe('use_theme_colors', () => {
   it('does not autofix valid variable color usage', async () => {
     const {output} = await stylelint.lint({
       fix: true,
-      code: 'p { color: var(--color-primary); }',
+      code: 'p { color: var(--color-primary-old); }',
       config,
     });
-    assert.strictEqual(output, 'p { color: var(--color-primary); }');
+    assert.strictEqual(output, 'p { color: var(--color-primary-old); }');
   });
 
   it('errors when a variable is used that is not defined in themeColors', async () => {
@@ -149,7 +149,7 @@ describe('use_theme_colors', () => {
   });
 
   it('allows locally declared variables to be used', async () => {
-    const warnings = await lint('p { color: var(--color-primary); }');
+    const warnings = await lint('p { color: var(--color-primary-old); }');
     assert.lengthOf(warnings, 0);
   });
 

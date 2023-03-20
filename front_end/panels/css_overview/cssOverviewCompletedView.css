@@ -216,7 +216,7 @@
   min-width: 100px;
   text-align: right;
   margin-right: 8px;
-  color: var(--color-primary);
+  color: var(--color-primary-old);
   pointer-events: none;
 }
 
@@ -231,7 +231,7 @@
 .overview-completed-view .media-queries button .bar,
 .overview-completed-view .unused-declarations button .bar {
   height: 8px;
-  background: var(--color-primary);
+  background: var(--color-primary-old);
   border-radius: 2px;
   min-width: 2px;
 }
@@ -361,7 +361,7 @@
 
 .show-element:focus,
 .show-element:hover {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
 }
 
 .nodeId-column:focus-within .show-element,

@@ -421,8 +421,8 @@ text.animation-timeline-grid-label {
 
 .animation-playback-rate-button.selected {
   color: var(--color-button-primary-text);
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
+  background-color: var(--color-primary-old);
+  border-color: var(--color-primary-old);
   z-index: 1;
 }
 

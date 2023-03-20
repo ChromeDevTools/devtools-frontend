@@ -18,7 +18,7 @@ appendComponent({
 appendComponent({
   clickHandler: (): void => {},
   groups: [
-    {iconName: 'survey_feedback_icon', iconColor: 'var(--color-primary)', text: 'Test'},
+    {iconName: 'survey_feedback_icon', iconColor: 'var(--color-primary-old', text: 'Test'},
     {iconName: 'warning_icon', iconColor: '', text: '1'},
   ],
 });

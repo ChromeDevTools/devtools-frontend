@@ -91,7 +91,7 @@
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
   color: var(--color-background);
 }
 

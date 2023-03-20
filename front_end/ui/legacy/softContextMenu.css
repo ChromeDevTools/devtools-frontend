@@ -72,7 +72,7 @@
 }
 
 .soft-context-menu-item-mouse-over {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
   color: var(--override-context-menu-hover-text-color);
 }
 

@@ -8,7 +8,7 @@ import * as ComponentHelpers from '../../helpers/helpers.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 
 const THEME_VARIABLES_NAMES = new Set([
-  '--color-primary',
+  '--color-primary-old',
   '--color-primary-variant',
   '--color-background',
   '--color-background-inverted',

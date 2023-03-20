@@ -29,7 +29,7 @@
 }
 
 .overview-sidebar-panel-item.selected {
-  background: var(--color-primary);
+  background: var(--color-primary-old);
   color: var(--color-background);
 }
 

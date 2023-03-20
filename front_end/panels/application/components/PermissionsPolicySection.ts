@@ -76,7 +76,7 @@ export function renderIconLink(
     <button class="link" role="link" tabindex=0 @click=${clickHandler} title=${title}>
       <${IconButton.Icon.Icon.litTagName} .data=${{
         iconName: iconName,
-        color: 'var(--color-primary)',
+        color: 'var(--color-primary-old)',
         width: '16px',
         height: '16px',
       } as IconButton.Icon.IconData}>

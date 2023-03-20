@@ -98,7 +98,7 @@
 }
 
 .highlight-chip.focused {
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-old);
   background-color: var(--color-button-secondary-background-hovering);
 }
 

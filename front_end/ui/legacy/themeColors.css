@@ -11,7 +11,7 @@
  * for details.
 */
 :root {
-  --color-primary: rgb(26 115 232);
+  --color-primary-old: rgb(26 115 232);
   --color-primary-variant: rgb(66 133 244);
   --color-background: rgb(255 255 255);
   --color-background-inverted: rgb(0 0 0);
@@ -59,7 +59,7 @@
   --color-accent-green: rgb(24 128 56);
   --color-accent-green-background: rgb(24 128 56 / 10%);
   --color-green: rgb(99 172 190);
-  --color-link: var(--color-primary);
+  --color-link: var(--color-primary-old);
   --color-syntax-1: rgb(200 0 0);
   --color-syntax-2: rgb(136 18 128);
   --color-syntax-3: rgb(26 26 166);
@@ -109,7 +109,7 @@
   --color-error-text: #f00;
   --color-error-border: hsl(0deg 100% 92%);
   --color-error-background: hsl(0deg 100% 97%);
-  --color-checkbox-accent-color: var(--color-primary);
+  --color-checkbox-accent-color: var(--color-primary-old);
   --color-image-preview-background: rgb(255 255 255);
 
   /* Colors for styling inputs */
@@ -196,7 +196,7 @@
 }
 
 .-theme-with-dark-background {
-  --color-primary: rgb(138 180 248);
+  --color-primary-old: rgb(138 180 248);
   --color-primary-variant: rgb(102 157 246);
   --color-background: rgb(32 33 36);
   --color-background-inverted: rgb(255 255 255);
@@ -225,7 +225,7 @@
   --color-red: rgb(237 78 76);
   --color-accent-green: rgb(129 201 149);
   --color-accent-green-background: rgb(129 201 149 / 20%);
-  --color-link: var(--color-primary);
+  --color-link: var(--color-primary-old);
   --color-syntax-1: rgb(53 212 199);
   --color-syntax-2: rgb(93 176 215);
   --color-syntax-2-rgb: 93 176 215;

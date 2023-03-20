@@ -77,5 +77,5 @@
 }
 
 .button.selected devtools-icon {
-  --icon-color: var(--color-primary);
+  --icon-color: var(--color-primary-old);
 }

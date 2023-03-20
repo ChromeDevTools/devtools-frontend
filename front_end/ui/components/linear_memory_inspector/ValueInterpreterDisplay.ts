@@ -149,7 +149,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     const address = getPointerAddress(type, this.#buffer, this.#endianness);
     const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.#memoryLength);
     const buttonTitle = jumpDisabled ? i18nString(UIStrings.addressOutOfRange) : i18nString(UIStrings.jumpToPointer);
-    const iconColor = jumpDisabled ? 'var(--color-text-secondary)' : 'var(--color-primary)';
+    const iconColor = jumpDisabled ? 'var(--color-text-secondary)' : 'var(--color-primary-old)';
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`

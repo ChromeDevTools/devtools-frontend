@@ -95,7 +95,7 @@
 
 .info-icon {
   -webkit-mask-image: var(--image-file-ic_info_black_18dp);
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
 }
 
 .warning-icon {
@@ -117,7 +117,7 @@
 
 .issue-icon {
   -webkit-mask-image: var(--image-file-issue-text-icon);
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
 }
 
 .icon {

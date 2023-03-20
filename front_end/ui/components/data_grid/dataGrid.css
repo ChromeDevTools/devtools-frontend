@@ -73,7 +73,7 @@ th {
 
 td:focus,
 th:focus {
-  outline: var(--color-primary) auto 1px;
+  outline: var(--color-primary-old) auto 1px;
 }
 
 th:hover.sortable {

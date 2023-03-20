@@ -501,7 +501,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     const sdkTarget = target as SDK.Target.Target | null;
     const requestResponseIcon = new IconButton.Icon.Icon();
     requestResponseIcon
-        .data = {iconName: 'ic_request_response', color: 'var(--color-primary)', width: '16px', height: '16px'};
+        .data = {iconName: 'ic_request_response', color: 'var(--color-primary-old)', width: '16px', height: '16px'};
     const newRow: DataGrid.DataGridUtils.Row = {
       styles: {
         '--override-data-grid-row-background-color': 'var(--override-data-grid-sent-message-row-background-color)',

@@ -34,7 +34,7 @@ abstract class WebVitalsLane {
       good: styles.getPropertyValue('--lighthouse-green'),
       medium: styles.getPropertyValue('--lighthouse-orange'),
       bad: styles.getPropertyValue('--lighthouse-red'),
-      frame: styles.getPropertyValue('--color-primary'),
+      frame: styles.getPropertyValue('--color-primary-old'),
       textPrimary: styles.getPropertyValue('--color-text-primary'),
       textSecondary: styles.getPropertyValue('--color-text-secondary'),
       background: styles.getPropertyValue('--color-background'),

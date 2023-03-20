@@ -545,7 +545,7 @@ export class FrameDetailsReportView extends HTMLElement {
             >
               <${IconButton.Icon.Icon.litTagName} class="button-icon-with-text" .data=${{
                 iconName: 'elements_panel_icon',
-                color: 'var(--color-primary)',
+                color: 'var(--color-primary-old)',
                 width: '16px',
                 height: '16px',
               } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>

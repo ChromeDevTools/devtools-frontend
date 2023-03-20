@@ -40,7 +40,7 @@ h1 {
   box-sizing: border-box;
   background: var(--override-color-counter-background);
   border-radius: 50%;
-  color: var(--color-primary);
+  color: var(--color-primary-old);
   content: counter(custom-counter);
   font-size: 12px;
   height: 18px;

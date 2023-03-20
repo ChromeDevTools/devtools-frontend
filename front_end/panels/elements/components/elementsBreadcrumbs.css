@@ -67,7 +67,7 @@
 }
 
 .overflow:focus {
-  outline-color: var(--color-primary);
+  outline-color: var(--color-primary-old);
 }
 
 .overflow:not(:disabled):hover {
@@ -89,5 +89,5 @@
 }
 
 .crumb:focus {
-  outline: var(--color-primary) auto 1px;
+  outline: var(--color-primary-old) auto 1px;
 }

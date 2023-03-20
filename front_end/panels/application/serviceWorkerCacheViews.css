@@ -29,7 +29,7 @@
 }
 
 .service-worker-cache-data-view .data-grid:focus .data-container tr.selected {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
   color: var(--color-background);
 }
 

@@ -16,7 +16,7 @@ input {
 
 .prefix {
   flex: none;
-  color: var(--color-primary);
+  color: var(--color-primary-old);
 }
 
 .text-prompt-input {

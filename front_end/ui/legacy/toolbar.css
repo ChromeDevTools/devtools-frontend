@@ -207,11 +207,11 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-glyph {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
 }
 
 .toolbar-button.toolbar-state-on .toolbar-icon {
-  --icon-color: var(--color-primary);
+  --icon-color: var(--color-primary-old);
 }
 
 .toolbar-state-on.toolbar-toggle-with-dot .toolbar-icon::after,
@@ -219,7 +219,7 @@ it. */
   content: "";
   position: absolute;
   bottom: 2px;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
   width: 4.5px;
   height: 4.5px;
   border: 2px solid var(--override-toolbar-background-color, --color-background);
@@ -247,11 +247,11 @@ it. */
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover:not(:active) {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:active:hover {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
 }
 
 .toolbar-toggled-gray:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu):hover {
@@ -263,7 +263,7 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-text {
-  color: var(--color-primary);
+  color: var(--color-primary-old);
 }
 
 :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {
@@ -291,11 +291,11 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-icon {
-  --icon-color: var(--color-primary);
+  --icon-color: var(--color-primary-old);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text {
@@ -462,7 +462,7 @@ input[is="history-input"]:not(:placeholder-shown) {
   right: 2px;
   bottom: 2px;
   border-radius: 2px;
-  background: var(--color-primary);
+  background: var(--color-primary-old);
   z-index: -1;
 }
 

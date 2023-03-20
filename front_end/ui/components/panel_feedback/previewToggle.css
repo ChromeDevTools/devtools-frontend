@@ -32,7 +32,7 @@
 }
 
 .x-link {
-  color: var(--color-primary);
+  color: var(--color-primary-old);
   text-decoration-line: underline;
   margin: 0 4px;
 }

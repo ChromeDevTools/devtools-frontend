@@ -84,7 +84,7 @@
 .shadow-editor-button-right.enabled {
   --override-button-text-color: #fff;
 
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
   color: var(--override-button-text-color);
 }
 

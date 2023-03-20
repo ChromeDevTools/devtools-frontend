@@ -24,7 +24,7 @@
   height: 12px;
   margin-top: -5px;
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-old);
 }
 
 .dt-range-input::-webkit-slider-runnable-track {

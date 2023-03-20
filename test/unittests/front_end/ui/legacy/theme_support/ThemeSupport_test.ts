@@ -16,7 +16,7 @@ class StyledComponent extends HTMLElement {
 
     this.#shadow.innerHTML = `<style>
       :host {
-        --color-primary: red;
+        --color-primary-old: red;
       }
       </style>`;
   }
@@ -35,29 +35,29 @@ describe('Theme Support', () => {
     });
 
     it('obtains computed values correctly (document)', () => {
-      assert.isNotEmpty(themeSupport.getComputedValue('--color-primary'));
+      assert.isNotEmpty(themeSupport.getComputedValue('--color-primary-old'));
     });
 
     it('obtains computed values correctly (element)', () => {
       const element = new StyledComponent();
       document.body.appendChild(element);
 
-      const documentValue = themeSupport.getComputedValue('--color-primary');
-      const elementValue = themeSupport.getComputedValue('--color-primary', element);
+      const documentValue = themeSupport.getComputedValue('--color-primary-old');
+      const elementValue = themeSupport.getComputedValue('--color-primary-old', element);
       assert.isNotEmpty(elementValue);
       assert.notStrictEqual(documentValue, elementValue);
     });
 
     it('caches computed values (document)', () => {
-      const documentValue = themeSupport.getComputedValue('--color-primary');
+      const documentValue = themeSupport.getComputedValue('--color-primary-old');
 
       // Update the styles by adding a new style tag, and confirm that the old
       // value is still returned.
       const newStyle = document.createElement('style');
-      newStyle.textContent = ':root { --color-primary: green; }';
+      newStyle.textContent = ':root { --color-primary-old: green; }';
       document.head.appendChild(newStyle);
 
-      const updatedDocumentValue = themeSupport.getComputedValue('--color-primary');
+      const updatedDocumentValue = themeSupport.getComputedValue('--color-primary-old');
       newStyle.remove();
 
       assert.strictEqual(documentValue, updatedDocumentValue);
@@ -67,17 +67,17 @@ describe('Theme Support', () => {
       const element = new StyledComponent();
       document.body.appendChild(element);
 
-      const elementValue = themeSupport.getComputedValue('--color-primary', element);
+      const elementValue = themeSupport.getComputedValue('--color-primary-old', element);
       assert.isNotEmpty(elementValue);
 
       // Update the styles by adding a new style tag, and confirm that the old
       // value is still returned.
       const newStyle = document.createElement('style');
-      newStyle.textContent = ':root { --color-primary: green; }';
+      newStyle.textContent = ':root { --color-primary-old: green; }';
       assertShadowRoot(element.shadowRoot);
 
       element.shadowRoot.appendChild(newStyle);
-      const updatedElementValue = themeSupport.getComputedValue('--color-primary', element);
+      const updatedElementValue = themeSupport.getComputedValue('--color-primary-old', element);
 
       assert.strictEqual(elementValue, updatedElementValue);
     });

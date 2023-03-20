@@ -6,6 +6,8 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Elements from '../../../../../front_end/panels/elements/elements.js';
 import * as ObjectUI from '../../../../../front_end/ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import type * as Common from '../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
@@ -31,8 +33,8 @@ describeWithMockConnection('PropertiesWidget', () => {
     view.detach();
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updatesUiOnEvent = (event: any, inScope: boolean) => async () => {
+  const updatesUiOnEvent = <T extends keyof SDK.DOMModel.EventTypes>(
+      event: Platform.TypeScriptUtilities.NoUnion<T>, inScope: boolean) => async () => {
     if (inScope) {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     }
@@ -53,7 +55,8 @@ describeWithMockConnection('PropertiesWidget', () => {
 
     const populateWithProperties =
         sinon.spy(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement, 'populateWithProperties');
-    model.dispatchEventToListeners(event, node);
+    model.dispatchEventToListeners(
+        event, ...[node] as unknown as Common.EventTarget.EventPayloadToRestParameters<SDK.DOMModel.EventTypes, T>);
     await new Promise<void>(resolve => setTimeout(resolve, 0));
     assert.strictEqual(populateWithProperties.called, inScope);
   };

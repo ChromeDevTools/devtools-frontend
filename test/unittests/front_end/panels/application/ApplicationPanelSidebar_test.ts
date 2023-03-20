@@ -196,9 +196,8 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     }
 
     const testUiUpdate = <Events, T extends keyof Events>(
-        event: Platform.TypeScriptUtilities.NoUnion<T>,
-        modelClass: new (arg1: SDK.Target.Target) => SDK.SDKModel.SDKModel<Events>, expectedCallString: string,
-        inScope: boolean) => async () => {
+        event: T, modelClass: new (arg1: SDK.Target.Target) => SDK.SDKModel.SDKModel<Events>,
+        expectedCallString: string, inScope: boolean) => async () => {
       setMockConnectionResponseHandler('Storage.getSharedStorageEntries', () => ({}));
       setMockConnectionResponseHandler('Storage.setSharedStorageTracking', () => ({}));
       if (inScope) {
@@ -209,8 +208,8 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       const expectedCall = parseExpectedCall(expectedCallString, sidebar);
       const model = target.model(modelClass);
       assertNotNullOrUndefined(model);
-      // @ts-ignore
-      model.dispatchEventToListeners(event, {addEventListener: () => {}});
+      const data = [{addEventListener: () => {}}] as Common.EventTarget.EventPayloadToRestParameters<Events, T>;
+      model.dispatchEventToListeners(event as Platform.TypeScriptUtilities.NoUnion<T>, ...data);
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(expectedCall.called, inScope);
     };

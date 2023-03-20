@@ -5,6 +5,8 @@
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as ElementsComponents from '../../../../../front_end/panels/elements/components/components.js';
 import * as Elements from '../../../../../front_end/panels/elements/elements.js';
+import type * as Common from '../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
@@ -32,8 +34,8 @@ describeWithMockConnection('LayoutSidebarPane', () => {
     view.detach();
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const updatesUiOnEvent = (event: any, inScope: boolean) => async () => {
+  const updatesUiOnEvent = <T extends keyof SDK.OverlayModel.EventTypes>(
+      event: Platform.TypeScriptUtilities.NoUnion<T>, inScope: boolean) => async () => {
     if (inScope) {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     }
@@ -45,7 +47,10 @@ describeWithMockConnection('LayoutSidebarPane', () => {
     const model = target.model(SDK.OverlayModel.OverlayModel);
     assertNotNullOrUndefined(model);
     const componentDataSet = sinon.spy(layoutPaneComponent, 'data', ['set']);
-    model.dispatchEventToListeners(event, {nodeId: 42, enabled: true});
+    model.dispatchEventToListeners(
+        event,
+        ...[{nodeId: 42, enabled: true}] as unknown as
+            Common.EventTarget.EventPayloadToRestParameters<SDK.OverlayModel.EventTypes, T>);
     await new Promise<void>(resolve => setTimeout(resolve, 0));
     assert.strictEqual(componentDataSet.set.called, inScope);
   };

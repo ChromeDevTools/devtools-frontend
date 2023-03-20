@@ -4,6 +4,8 @@
 
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import type * as Common from '../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Media from '../../../../../front_end/panels/media/media.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
@@ -19,31 +21,31 @@ describeWithMockConnection('MediaMainView', () => {
 
   beforeEach(() => {
     target = createTarget();
-    // window.onerror = msg => console.error('onerror: ' + msg + (new Error()).stack);
   });
 
-  const testUiUpdate =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (event: any, expectedMethod: keyof Media.MainView.PlayerDataDownloadManager, inScope: boolean) => async () => {
-        if (inScope) {
-          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-        }
-        const downloadStore = new Media.MainView.PlayerDataDownloadManager();
-        const expectedCall = sinon.stub(downloadStore, expectedMethod).returns();
-        const mainView = Media.MainView.MainView.instance({forceNew: true, downloadStore});
-        mainView.markAsRoot();
-        mainView.show(document.body);
-        const model = target.model(Media.MediaModel.MediaModel);
-        assertNotNullOrUndefined(model);
-        model.dispatchEventToListeners(Media.MediaModel.Events.PlayersCreated, [PLAYER_ID]);
-        const field = [{name: 'kResolution', value: '{}', data: {}, stack: [], cause: []}];
-        const data = {playerId: PLAYER_ID, properties: field, events: field, messages: field, errors: field};
-        model.dispatchEventToListeners(event, data);
-        await new Promise(resolve => setTimeout(resolve, 0));
-        assert.strictEqual(expectedCall.called, inScope);
-        await Coordinator.RenderCoordinator.RenderCoordinator.instance().done();
-        mainView.detach();
-      };
+  const testUiUpdate = <T extends keyof Media.MediaModel.EventTypes>(
+      event: Platform.TypeScriptUtilities.NoUnion<T>, expectedMethod: keyof Media.MainView.PlayerDataDownloadManager,
+      inScope: boolean) => async () => {
+    if (inScope) {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    }
+    const downloadStore = new Media.MainView.PlayerDataDownloadManager();
+    const expectedCall = sinon.stub(downloadStore, expectedMethod).returns();
+    const mainView = Media.MainView.MainView.instance({forceNew: true, downloadStore});
+    mainView.markAsRoot();
+    mainView.show(document.body);
+    const model = target.model(Media.MediaModel.MediaModel);
+    assertNotNullOrUndefined(model);
+    model.dispatchEventToListeners(Media.MediaModel.Events.PlayersCreated, [PLAYER_ID]);
+    const field = [{name: 'kResolution', value: '{}', data: {}, stack: [], cause: []}];
+    const data = {playerId: PLAYER_ID, properties: field, events: field, messages: field, errors: field};
+    model.dispatchEventToListeners(
+        event, ...[data] as unknown as Common.EventTarget.EventPayloadToRestParameters<Media.MediaModel.EventTypes, T>);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.strictEqual(expectedCall.called, inScope);
+    await Coordinator.RenderCoordinator.RenderCoordinator.instance().done();
+    mainView.detach();
+  };
 
   it('reacts to properties on in scope event',
      testUiUpdate(Media.MediaModel.Events.PlayerPropertiesChanged, 'onProperty', true));

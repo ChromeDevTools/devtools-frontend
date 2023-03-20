@@ -13,6 +13,7 @@ export class FormattedContentBuilder {
   #softSpace = false;
   #hardSpaces = 0;
   #cachedIndents = new Map<number, string>();
+  #canBeIdentifierOrNumber = /[$\u200C\u200D\p{ID_Continue}]/u;
 
   mapping = {original: [0], formatted: [0]};
 
@@ -26,8 +27,9 @@ export class FormattedContentBuilder {
   }
 
   addToken(token: string, offset: number): void {
-    const last = this.#formattedContent[this.#formattedContent.length - 1];
-    if (this.#enforceSpaceBetweenWords && last && /\w/.test(last[last.length - 1]) && /\w/.test(token)) {
+    const lastCharOfLastToken = this.#formattedContent.at(-1)?.at(-1) ?? '';
+    if (this.#enforceSpaceBetweenWords && this.#canBeIdentifierOrNumber.test(lastCharOfLastToken) &&
+        this.#canBeIdentifierOrNumber.test(token)) {
       this.addSoftSpace();
     }
 

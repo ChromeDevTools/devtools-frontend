@@ -81,7 +81,8 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<EventTypes>
 SDK.SDKModel.SDKModel.register(
     InterestGroupStorageModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
 
-export const enum Events {
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   InterestGroupAccess = 'InterestGroupAccess',
 }
 

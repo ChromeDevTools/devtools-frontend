@@ -412,34 +412,42 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.sidebarTree.contentElement.addEventListener('mousemove', this.onmousemove.bind(this), false);
     this.sidebarTree.contentElement.addEventListener('mouseleave', this.onmouseleave.bind(this), false);
 
-    SDK.TargetManager.TargetManager.instance().observeTargets(this);
+    SDK.TargetManager.TargetManager.instance().observeTargets(this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.frameNavigated,
-        this);
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.frameNavigated, this,
+        {scoped: true});
 
     const selection = this.panel.lastSelectedItemPath();
     if (!selection.length) {
       manifestTreeElement.select();
     }
 
-    SDK.TargetManager.TargetManager.instance().observeModels(DOMStorageModel, {
-      modelAdded: (model: DOMStorageModel): void => this.domStorageModelAdded(model),
-      modelRemoved: (model: DOMStorageModel): void => this.domStorageModelRemoved(model),
-    });
-    SDK.TargetManager.TargetManager.instance().observeModels(IndexedDBModel, {
-      modelAdded: (model: IndexedDBModel): void => model.enable(),
-      modelRemoved: (model: IndexedDBModel): void => this.indexedDBListTreeElement.removeIndexedDBForModel(model),
-    });
-    SDK.TargetManager.TargetManager.instance().observeModels(InterestGroupStorageModel, {
-      modelAdded: (model: InterestGroupStorageModel): void => this.interestGroupModelAdded(model),
-      modelRemoved: (model: InterestGroupStorageModel): void => this.interestGroupModelRemoved(model),
-    });
-    SDK.TargetManager.TargetManager.instance().observeModels(SharedStorageModel, {
-      modelAdded: (model: SharedStorageModel): Promise<void> => this.sharedStorageModelAdded(model).catch(err => {
-        console.error(err);
-      }),
-      modelRemoved: (model: SharedStorageModel): void => this.sharedStorageModelRemoved(model),
-    });
+    SDK.TargetManager.TargetManager.instance().observeModels(
+        DOMStorageModel, {
+          modelAdded: (model: DOMStorageModel): void => this.domStorageModelAdded(model),
+          modelRemoved: (model: DOMStorageModel): void => this.domStorageModelRemoved(model),
+        },
+        {scoped: true});
+    SDK.TargetManager.TargetManager.instance().observeModels(
+        IndexedDBModel, {
+          modelAdded: (model: IndexedDBModel): void => model.enable(),
+          modelRemoved: (model: IndexedDBModel): void => this.indexedDBListTreeElement.removeIndexedDBForModel(model),
+        },
+        {scoped: true});
+    SDK.TargetManager.TargetManager.instance().observeModels(
+        InterestGroupStorageModel, {
+          modelAdded: (model: InterestGroupStorageModel): void => this.interestGroupModelAdded(model),
+          modelRemoved: (model: InterestGroupStorageModel): void => this.interestGroupModelRemoved(model),
+        },
+        {scoped: true});
+    SDK.TargetManager.TargetManager.instance().observeModels(
+        SharedStorageModel, {
+          modelAdded: (model: SharedStorageModel): Promise<void> => this.sharedStorageModelAdded(model).catch(err => {
+            console.error(err);
+          }),
+          modelRemoved: (model: SharedStorageModel): void => this.sharedStorageModelRemoved(model),
+        },
+        {scoped: true});
 
     this.sharedStorageTreeElementDispatcher =
         new Common.ObjectWrapper.ObjectWrapper<SharedStorageTreeElementDispatcher.EventTypes>();
@@ -461,7 +469,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (target !== target.outermostTarget()) {
       return;
     }
 
@@ -1202,18 +1210,19 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
 
   private initialize(): void {
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        IndexedDBModel, IndexedDBModelEvents.DatabaseAdded, this.indexedDBAdded, this);
+        IndexedDBModel, IndexedDBModelEvents.DatabaseAdded, this.indexedDBAdded, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        IndexedDBModel, IndexedDBModelEvents.DatabaseRemoved, this.indexedDBRemoved, this);
+        IndexedDBModel, IndexedDBModelEvents.DatabaseRemoved, this.indexedDBRemoved, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        IndexedDBModel, IndexedDBModelEvents.DatabaseLoaded, this.indexedDBLoaded, this);
+        IndexedDBModel, IndexedDBModelEvents.DatabaseLoaded, this.indexedDBLoaded, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        IndexedDBModel, IndexedDBModelEvents.IndexedDBContentUpdated, this.indexedDBContentUpdated, this);
+        IndexedDBModel, IndexedDBModelEvents.IndexedDBContentUpdated, this.indexedDBContentUpdated, this,
+        {scoped: true});
     // TODO(szuend): Replace with a Set once two web tests no longer directly access this private
     //               variable (indexeddb/live-update-indexeddb-content.js, indexeddb/delete-entry.js).
     this.idbDatabaseTreeElements = [];
 
-    for (const indexedDBModel of SDK.TargetManager.TargetManager.instance().models(IndexedDBModel)) {
+    for (const indexedDBModel of SDK.TargetManager.TargetManager.instance().models(IndexedDBModel, {scoped: true})) {
       const databases = indexedDBModel.databases();
       for (let j = 0; j < databases.length; ++j) {
         this.addIndexedDB(indexedDBModel, databases[j]);
@@ -1240,7 +1249,7 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
   }
 
   refreshIndexedDB(): void {
-    for (const indexedDBModel of SDK.TargetManager.TargetManager.instance().models(IndexedDBModel)) {
+    for (const indexedDBModel of SDK.TargetManager.TargetManager.instance().models(IndexedDBModel, {scoped: true})) {
       void indexedDBModel.refreshDatabaseNames();
     }
   }
@@ -1762,17 +1771,20 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
         SDK.FrameManager.Events.ResourceAdded, event => this.resourceAdded(event.data.resource), this);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetCreated, this.windowOpened,
-        this);
+        SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetCreated, this.windowOpened, this,
+        {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetInfoChanged, this.windowChanged,
-        this);
+        this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetDestroyed, this.windowDestroyed,
-        this);
+        this, {scoped: true});
 
-    SDK.TargetManager.TargetManager.instance().observeTargets(this);
+    SDK.TargetManager.TargetManager.instance().observeTargets(this, {scoped: true});
+  }
 
+  private initialize(): void {
+    const frameManager = SDK.FrameManager.FrameManager.instance();
     for (const frame of frameManager.getAllFrames()) {
       if (!this.treeElementForFrameId.get(frame.id)) {
         this.addFrameAndParents(frame);
@@ -1789,6 +1801,11 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
   targetAdded(target: SDK.Target.Target): void {
     if (target.type() === SDK.Target.Type.Worker || target.type() === SDK.Target.Type.ServiceWorker) {
       void this.workerAdded(target);
+    }
+    if (target.type() === SDK.Target.Type.Frame && target === target.outermostTarget()) {
+      // Process existing frames, e.g. after prerendering activation or
+      // switching between outermost targets.
+      this.initialize();
     }
   }
 
@@ -1851,6 +1868,9 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
   }
 
   private frameAdded(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
+    if (!SDK.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
+      return;
+    }
     const parentFrame = frame.parentFrame();
     const parentTreeElement = parentFrame ? this.treeElementForFrameId.get(parentFrame.id) : this.treeElement;
     if (!parentTreeElement) {
@@ -1891,6 +1911,9 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
   }
 
   private frameNavigated(frame: SDK.ResourceTreeModel.ResourceTreeFrame): void {
+    if (!SDK.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
+      return;
+    }
     const frameTreeElement = this.treeElementForFrameId.get(frame.id);
     if (frameTreeElement) {
       void frameTreeElement.frameNavigated(frame);
@@ -1898,10 +1921,14 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
   }
 
   private resourceAdded(resource: SDK.Resource.Resource): void {
-    if (!resource.frameId) {
+    const frame = resource.frame();
+    if (!frame) {
       return;
     }
-    const frameTreeElement = this.treeElementForFrameId.get(resource.frameId);
+    if (!SDK.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
+      return;
+    }
+    const frameTreeElement = this.treeElementForFrameId.get(frame.id);
     if (!frameTreeElement) {
       // This is a frame's main resource, it will be retained
       // and re-added by the resource manager;
@@ -2016,7 +2043,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     if (frame.isOutermostFrame()) {
       const targets = SDK.TargetManager.TargetManager.instance().targets();
       for (const target of targets) {
-        if (target.type() === SDK.Target.Type.ServiceWorker) {
+        if (target.type() === SDK.Target.Type.ServiceWorker &&
+            SDK.TargetManager.TargetManager.instance().isInScope(target)) {
           const targetId = target.id();
           assertNotMainTarget(targetId);
           const agent = frame.resourceTreeModel().target().targetAgent();

@@ -227,7 +227,8 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
 
 SDK.SDKModel.SDKModel.register(SharedStorageModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});
 
-export const enum Events {
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
   SharedStorageAccess = 'SharedStorageAccess',
   SharedStorageAdded = 'SharedStorageAdded',
   SharedStorageRemoved = 'SharedStorageRemoved',

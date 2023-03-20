@@ -57,12 +57,15 @@ describeWithMockConnection('WebAuthn pane', () => {
     assert.isFalse(largeBlob.checked);
   });
 
-  const tests = (targetFactory: () => SDK.Target.Target) => {
+  const tests = (targetFactory: () => SDK.Target.Target, inScope: boolean) => {
     let target: SDK.Target.Target;
     let model: SDK.WebAuthnModel.WebAuthnModel;
     let panel: WebauthnModule.WebauthnPane.WebauthnPaneImpl;
     beforeEach(() => {
       target = targetFactory();
+      if (inScope) {
+        SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      }
       model = target.model(SDK.WebAuthnModel.WebAuthnModel) as SDK.WebAuthnModel.WebAuthnModel;
       assertNotNullOrUndefined(model);
       panel = Webauthn.WebauthnPane.WebauthnPaneImpl.instance({forceNew: true});
@@ -82,10 +85,12 @@ describeWithMockConnection('WebAuthn pane', () => {
       const addAuthenticator = sinon.stub(model, 'addAuthenticator');
       panel.addAuthenticatorButton?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
-      assert.isTrue(addAuthenticator.called);
-      const options = addAuthenticator.firstCall.firstArg;
-      assert.isTrue(options.hasLargeBlob);
-      assert.isTrue(options.hasResidentKey);
+      assert.strictEqual(addAuthenticator.called, inScope);
+      if (inScope) {
+        const options = addAuthenticator.firstCall.firstArg;
+        assert.isTrue(options.hasLargeBlob);
+        assert.isTrue(options.hasResidentKey);
+      }
     });
 
     it('adds an authenticator without the large blob option', async () => {
@@ -102,10 +107,12 @@ describeWithMockConnection('WebAuthn pane', () => {
       const addAuthenticator = sinon.stub(model, 'addAuthenticator');
       panel.addAuthenticatorButton?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
-      assert.isTrue(addAuthenticator.called);
-      const options = addAuthenticator.firstCall.firstArg;
-      assert.isFalse(options.hasLargeBlob);
-      assert.isTrue(options.hasResidentKey);
+      assert.strictEqual(addAuthenticator.called, inScope);
+      if (inScope) {
+        const options = addAuthenticator.firstCall.firstArg;
+        assert.isFalse(options.hasLargeBlob);
+        assert.isTrue(options.hasResidentKey);
+      }
     });
 
     it('lists and removes credentials', async () => {
@@ -115,7 +122,10 @@ describeWithMockConnection('WebAuthn pane', () => {
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
       panel.addAuthenticatorButton?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
-      assert.isTrue(addAuthenticator.called);
+      assert.strictEqual(addAuthenticator.called, inScope);
+      if (!inScope) {
+        return;
+      }
 
       // Verify a data grid appeared with a single row to show there is no data.
       const dataGrid = panel.dataGrids.get(authenticatorId);
@@ -168,7 +178,10 @@ describeWithMockConnection('WebAuthn pane', () => {
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
       panel.addAuthenticatorButton?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
-      assert.isTrue(addAuthenticator.called);
+      assert.strictEqual(addAuthenticator.called, inScope);
+      if (!inScope) {
+        return;
+      }
 
       // Add a credential.
       const credential = {
@@ -230,10 +243,16 @@ describeWithMockConnection('WebAuthn pane', () => {
     });
   };
 
-  describe('without tab target', () => tests(() => createTarget()));
-  describe('with tab target', () => tests(() => {
-                                const tabTarget = createTarget({type: SDK.Target.Type.Tab});
-                                createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-                                return createTarget({parentTarget: tabTarget});
-                              }));
+  describe('without tab target in scope', () => tests(() => createTarget(), true));
+  describe('without tab target out of scope', () => tests(() => createTarget(), false));
+  describe('with tab target in scope', () => tests(() => {
+                                         const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+                                         createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+                                         return createTarget({parentTarget: tabTarget});
+                                       }, true));
+  describe('with tab target out of scope', () => tests(() => {
+                                             const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+                                             createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+                                             return createTarget({parentTarget: tabTarget});
+                                           }, false));
 });

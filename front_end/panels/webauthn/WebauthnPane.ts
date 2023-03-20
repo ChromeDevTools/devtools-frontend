@@ -259,7 +259,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.WebAuthnModel.WebAuthnModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.WebAuthnModel.WebAuthnModel, this, {scoped: true});
 
     this.contentElement.classList.add('webauthn-pane');
 
@@ -282,13 +282,13 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   }
 
   modelAdded(model: SDK.WebAuthnModel.WebAuthnModel): void {
-    if (model.target() === SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (model.target() === model.target().outermostTarget()) {
       this.#model = model;
     }
   }
 
   modelRemoved(model: SDK.WebAuthnModel.WebAuthnModel): void {
-    if (model.target() === SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (model.target() === model.target().outermostTarget()) {
       this.#model = undefined;
     }
   }

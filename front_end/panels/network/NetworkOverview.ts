@@ -6,15 +6,17 @@ import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkTimeBoundary} from './NetworkTimeCalculator.js';
 import {RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
 
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+
 export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
   private selectedFilmStripTime: number;
   private numBands: number;
-  private updateScheduled: boolean;
   private highlightedRequest: SDK.NetworkRequest.NetworkRequest|null;
   private loadEvents!: number[];
   private domContentLoadedEvents!: number[];
@@ -32,14 +34,14 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     this.element.classList.add('network-overview');
 
     this.numBands = 1;
-    this.updateScheduled = false;
     this.highlightedRequest = null;
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this,
+        {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.DOMContentLoaded,
-        this.domContentLoadedEventFired, this);
+        this.domContentLoadedEventFired, this, {scoped: true});
 
     this.reset();
   }
@@ -137,16 +139,13 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   }
 
   scheduleUpdate(): void {
-    if (this.updateScheduled || !this.isShowing()) {
+    if (!this.isShowing()) {
       return;
     }
-    this.updateScheduled = true;
-    this.element.window().requestAnimationFrame(this.update.bind(this));
+    void coordinator.write(this.update.bind(this));
   }
 
   update(): void {
-    this.updateScheduled = false;
-
     const calculator = this.calculator();
 
     const newBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());

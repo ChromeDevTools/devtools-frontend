@@ -10,6 +10,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import * as Host from '../../../core/host/host.js';
 
 import HeadersViewStyles from './HeadersView.css.js';
 
@@ -292,6 +293,7 @@ export class HeadersViewComponent extends HTMLElement {
 
   #onHeadersChanged(): void {
     this.#uiSourceCode?.setWorkingCopy(JSON.stringify(this.#headerOverrides, null, 2));
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideHeadersFileEdited);
   }
 
   #onPaste(event: Event): void {

@@ -108,7 +108,7 @@ const UIStrings = {
   /**
    *@description Allows code that is executed in the console to do things that usually are only allowed if triggered by a user action
    */
-  evaluateTriggersUserActivation: 'Treat evaluated code as triggered by a user action',
+  evaluateTriggersUserActivation: 'Treat code evaluation as user action',
   /**
    *@description Title of a setting under the Console category that can be invoked through the Command Menu
    */

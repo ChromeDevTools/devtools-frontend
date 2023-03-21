@@ -98,12 +98,17 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 function SizeString(sizeinBytes : number) : string
 {
+  if (isNaN(sizeinBytes))
+  {
+    return "";
+  }
+
   if (sizeinBytes < 1024) {
-    return sizeinBytes + 'Bytes';
+    return sizeinBytes + ' Bytes';
   } else if (sizeinBytes < 1024*1024) {
-    return (sizeinBytes/1024).toFixed(2) + 'KBs';
+    return (sizeinBytes/1024).toFixed(2) + ' KBs';
   } else {
-    return (sizeinBytes/(1024*1024)).toFixed(2) + 'MBs';
+    return (sizeinBytes/(1024*1024)).toFixed(2) + ' MBs';
   }
 }
 

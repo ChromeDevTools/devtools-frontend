@@ -89,10 +89,6 @@ export class HeadersView extends UI.View.SimpleView {
     };
   }
 
-  commitEditing(): void {
-    this.#uiSourceCode.commitWorkingCopy();
-  }
-
   #onWorkingCopyChanged(): void {
     this.#setComponentData(this.#uiSourceCode.workingCopy());
   }
@@ -218,6 +214,8 @@ export class HeadersViewComponent extends HTMLElement {
     // clear selection
     const selection = window.getSelection();
     selection?.removeAllRanges();
+
+    this.#uiSourceCode?.commitWorkingCopy();
   }
 
   #onContextMenu(event: Event): void {

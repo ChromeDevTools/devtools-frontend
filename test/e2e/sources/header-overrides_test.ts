@@ -51,7 +51,7 @@ async function createHeaderOverride() {
   const title = await waitFor(FILE_TREE_HEADERS_FILE_SELECTOR);
   let labelText = await title?.evaluate(el => el.textContent);
   assert.strictEqual(labelText, '*.headers');
-  await pressKey('s', {control: true});
+  await pressKey('Tab');
   await waitForFunction(async () => {
     labelText = await title?.evaluate(el => el.textContent);
     return labelText === '.headers';
@@ -104,7 +104,11 @@ describe('The Overrides Panel', async function() {
     await openSourcesPanel();
     await enableLocalOverrides();
     await createHeaderOverride();
-    await navigateToNetworkTab('hello.html');
+
+    await click('#tab-network');
+    await waitFor('.network-log-grid');
+    await goToResource('network/hello.html');
+
     await waitForSomeRequestsToAppear(1);
     await selectRequestByName('hello.html');
     await openHeadersTab();

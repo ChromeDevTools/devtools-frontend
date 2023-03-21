@@ -622,18 +622,20 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   save(): void {
-    this.saveSourceView(this.visibleView());
+    this.saveSourceFrame(this.currentSourceFrame());
   }
 
   saveAll(): void {
     const sourceFrames = this.editorContainer.fileViews();
-    sourceFrames.forEach(this.saveSourceView.bind(this));
+    sourceFrames.forEach(this.saveSourceFrame.bind(this));
   }
 
-  private saveSourceView(sourceView: UI.Widget.Widget|null): void {
-    if (sourceView instanceof UISourceCodeFrame || sourceView instanceof Components.HeadersView.HeadersView) {
-      sourceView.commitEditing();
+  private saveSourceFrame(sourceFrame: UI.Widget.Widget|null): void {
+    if (!(sourceFrame instanceof UISourceCodeFrame)) {
+      return;
     }
+    const uiSourceCodeFrame = (sourceFrame as UISourceCodeFrame);
+    uiSourceCodeFrame.commitEditing();
   }
 
   toggleBreakpointsActiveState(active: boolean): void {

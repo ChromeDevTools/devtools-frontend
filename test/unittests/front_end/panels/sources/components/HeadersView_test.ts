@@ -24,11 +24,18 @@ const {assert} = chai;
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describe('HeadersView', async () => {
+  const commitWorkingCopySpy = sinon.spy();
+
   before(async () => {
     await initializeGlobalVars();
   });
+
   after(async () => {
     await deinitializeGlobalVars();
+  });
+
+  beforeEach(() => {
+    commitWorkingCopySpy.resetHistory();
   });
 
   async function renderEditor(): Promise<SourcesComponents.HeadersView.HeadersViewComponent> {
@@ -62,6 +69,7 @@ describe('HeadersView', async () => {
       uiSourceCode: {
         name: () => '.headers',
         setWorkingCopy: () => {},
+        commitWorkingCopy: commitWorkingCopySpy,
       } as unknown as Workspace.UISourceCode.UISourceCode,
     };
     renderElementIntoDOM(editor);
@@ -99,6 +107,7 @@ describe('HeadersView', async () => {
       mimeType: 'text/html',
       content: headers,
     });
+    uiSourceCode.commitWorkingCopy = commitWorkingCopySpy;
     project.canSetFileContent = () => true;
 
     const editorWrapper = new SourcesComponents.HeadersView.HeadersView(uiSourceCode);
@@ -118,6 +127,7 @@ describe('HeadersView', async () => {
     dispatchKeyDownEvent(editable, {
       key: 'Enter',
     });
+    editable.blur();
     await coordinator.done();
   }
 
@@ -206,6 +216,7 @@ describe('HeadersView', async () => {
       'Apply to:*.jpg',
       'jpg-header:is image',
     ]);
+    assert.strictEqual(commitWorkingCopySpy.callCount, 4);
   });
 
   it('resets edited value to previous state on Escape key', async () => {
@@ -310,6 +321,7 @@ describe('HeadersView', async () => {
 
     dispatchFocusOutEvent(applyTo, {bubbles: true});
     assert.strictEqual(applyTo.innerHTML, '*');
+    assert.strictEqual(commitWorkingCopySpy.callCount, 1);
   });
 
   it('removes the entire header when the header name is deleted', async () => {
@@ -344,6 +356,7 @@ describe('HeadersView', async () => {
       'Apply to:*.jpg',
       'jpg-header:only for jpg files',
     ]);
+    assert.strictEqual(commitWorkingCopySpy.callCount, 1);
   });
 
   it('allows adding headers', async () => {

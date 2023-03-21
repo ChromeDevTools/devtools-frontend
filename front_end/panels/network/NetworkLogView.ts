@@ -553,7 +553,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         .moduleSetting('networkColorCodeResourceTypes')
         .addChangeListener(this.invalidateAllItems.bind(this, false), this);
 
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this, {scoped: true});
     Logs.NetworkLog.NetworkLog.instance().addEventListener(
         Logs.NetworkLog.Events.RequestAdded, this.onRequestUpdated, this);
     Logs.NetworkLog.NetworkLog.instance().addEventListener(
@@ -1694,7 +1694,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   async exportAll(): Promise<void> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
     if (!mainTarget) {
       return;
     }

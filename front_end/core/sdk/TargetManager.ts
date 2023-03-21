@@ -382,6 +382,10 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       }
     }
   }
+
+  scopeTarget(): Target|null {
+    return this.#scopeTarget;
+  }
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

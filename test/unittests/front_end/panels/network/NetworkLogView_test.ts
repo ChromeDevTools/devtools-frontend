@@ -68,45 +68,65 @@ describeWithMockConnection('NetworkLogView', () => {
           Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false));
     }
 
-    it('adds dividers on main frame load events', async () => {
-      const addEventDividers = sinon.spy(networkLogView.columns(), 'addEventDividers');
+    const tests = (inScope: boolean) => () => {
+      it('adds dividers on main frame load events', async () => {
+        if (inScope) {
+          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+        }
+        const addEventDividers = sinon.spy(networkLogView.columns(), 'addEventDividers');
 
-      networkLogView.setRecording(true);
+        networkLogView.setRecording(true);
 
-      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      assertNotNullOrUndefined(resourceTreeModel);
-      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 5});
-      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 6);
-      assert.isTrue(addEventDividers.calledTwice);
-      assert.isTrue(addEventDividers.getCall(0).calledWith([5], 'network-load-divider'));
-      assert.isTrue(addEventDividers.getCall(1).calledWith([6], 'network-dcl-divider'));
-    });
+        const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+        assertNotNullOrUndefined(resourceTreeModel);
+        resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 5});
+        resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 6);
+        if (inScope) {
+          assert.isTrue(addEventDividers.calledTwice);
+          assert.isTrue(addEventDividers.getCall(0).calledWith([5], 'network-load-divider'));
+          assert.isTrue(addEventDividers.getCall(1).calledWith([6], 'network-dcl-divider'));
+        } else {
+          assert.isFalse(addEventDividers.called);
+        }
+      });
 
-    it('can export all as HAR', async () => {
-      const harWriterWrite = sinon.stub(HAR.Writer.Writer, 'write').resolves();
-      const URL_HOST = 'example.com';
-      target.setInspectedURL(`http://${URL_HOST}/foo` as Platform.DevToolsPath.UrlString);
-      const FILENAME = `${URL_HOST}.har` as Platform.DevToolsPath.RawPathString;
-      const fileManager = Workspace.FileManager.FileManager.instance();
-      const fileManagerSave =
-          sinon.stub(fileManager, 'save').withArgs(FILENAME, '', true).resolves({fileSystemPath: FILENAME});
-      const fileManagerClose = sinon.stub(fileManager, 'close');
+      it('can export all as HAR', async () => {
+        if (inScope) {
+          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+        }
+        const harWriterWrite = sinon.stub(HAR.Writer.Writer, 'write').resolves();
+        const URL_HOST = 'example.com';
+        target.setInspectedURL(`http://${URL_HOST}/foo` as Platform.DevToolsPath.UrlString);
+        const FILENAME = `${URL_HOST}.har` as Platform.DevToolsPath.RawPathString;
+        const fileManager = Workspace.FileManager.FileManager.instance();
+        const fileManagerSave =
+            sinon.stub(fileManager, 'save').withArgs(FILENAME, '', true).resolves({fileSystemPath: FILENAME});
+        const fileManagerClose = sinon.stub(fileManager, 'close');
 
-      const FINISHED_REQUEST_1 = createNetworkRequest('http://example.com/', {finished: true});
-      const FINISHED_REQUEST_2 = createNetworkRequest('http://example.com/favicon.ico', {finished: true});
-      const UNFINISHED_REQUEST = createNetworkRequest('http://example.com/background.bmp', {finished: false});
-      sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requests').returns([
-        FINISHED_REQUEST_1,
-        FINISHED_REQUEST_2,
-        UNFINISHED_REQUEST,
-      ]);
-      await networkLogView.exportAll();
+        const FINISHED_REQUEST_1 = createNetworkRequest('http://example.com/', {finished: true});
+        const FINISHED_REQUEST_2 = createNetworkRequest('http://example.com/favicon.ico', {finished: true});
+        const UNFINISHED_REQUEST = createNetworkRequest('http://example.com/background.bmp', {finished: false});
+        sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requests').returns([
+          FINISHED_REQUEST_1,
+          FINISHED_REQUEST_2,
+          UNFINISHED_REQUEST,
+        ]);
+        await networkLogView.exportAll();
 
-      assert.isTrue(
-          harWriterWrite.calledOnceWith(sinon.match.any, [FINISHED_REQUEST_1, FINISHED_REQUEST_2], sinon.match.any));
-      assert.isTrue(fileManagerSave.calledOnce);
-      assert.isTrue(fileManagerClose.calledOnce);
-    });
+        if (inScope) {
+          assert.isTrue(harWriterWrite.calledOnceWith(
+              sinon.match.any, [FINISHED_REQUEST_1, FINISHED_REQUEST_2], sinon.match.any));
+          assert.isTrue(fileManagerSave.calledOnce);
+          assert.isTrue(fileManagerClose.calledOnce);
+        } else {
+          assert.isFalse(harWriterWrite.called);
+          assert.isFalse(fileManagerSave.called);
+          assert.isFalse(fileManagerClose.called);
+        }
+      });
+    };
+    describe('in scope', tests(true));
+    describe('out of scope', tests(false));
   };
 
   describe('without tab target', () => tests(createTarget));

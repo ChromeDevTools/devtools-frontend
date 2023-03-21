@@ -125,6 +125,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     }
     this.enabled = this.enabledSetting.get();
     if (this.enabled) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PersistenceNetworkOverridesEnabled);
       this.eventDescriptors = [
         Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
             Workspace.Workspace.Events.UISourceCodeRenamed,
@@ -147,6 +148,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       ];
       await this.updateActiveProject();
     } else {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PersistenceNetworkOverridesDisabled);
       Common.EventTarget.removeEventListeners(this.eventDescriptors);
       await this.updateActiveProject();
     }

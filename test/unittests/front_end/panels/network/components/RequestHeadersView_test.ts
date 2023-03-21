@@ -437,6 +437,9 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.isTrue(recordedMetricsContain(
         Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
         Host.UserMetrics.Action.HeaderOverrideEnableEditingClicked));
+    assert.isTrue(recordedMetricsContain(
+        Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
+        Host.UserMetrics.Action.PersistenceNetworkOverridesEnabled));
   });
 
   it('records metrics when a new \'.headers\' file is created', async () => {

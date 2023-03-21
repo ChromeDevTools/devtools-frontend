@@ -178,7 +178,8 @@ class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDelegate {
  * @returns a flame chart element and its corresponding data provider.
  */
 export async function getMainFlameChartWithTracks(
-    traceFileName: string, trackAppenderNames: Set<Timeline.CompatibilityTracksAppender.TrackAppenderName>): Promise<{
+    traceFileName: string, trackAppenderNames: Set<Timeline.CompatibilityTracksAppender.TrackAppenderName>,
+    expanded: boolean): Promise<{
   flameChart: PerfUI.FlameChart.FlameChart,
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
 }> {
@@ -192,7 +193,7 @@ export async function getMainFlameChartWithTracks(
   dataProvider.setModel(performanceModel, traceParsedData);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
-  dataProvider.buildFromTrackAppenders(trackAppenderNames);
+  dataProvider.buildFromTrackAppenders(/* expandedTracks?= */ expanded ? trackAppenderNames : undefined);
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   const minTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
@@ -214,7 +215,7 @@ export async function getMainFlameChartWithTracks(
  * @returns a flame chart element and its corresponding data provider.
  */
 export async function getMainFlameChartWithLegacyTrack(
-    traceFileName: string, trackType: TimelineModel.TimelineModel.TrackType): Promise<{
+    traceFileName: string, trackType: TimelineModel.TimelineModel.TrackType, expanded: boolean): Promise<{
   flameChart: PerfUI.FlameChart.FlameChart,
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
 }> {
@@ -230,7 +231,7 @@ export async function getMainFlameChartWithLegacyTrack(
   if (!track) {
     throw new Error(`Legacy track with of type ${trackType} not found in timeline model.`);
   }
-  dataProvider.appendLegacyTrackData(track, /* expanded */ true);
+  dataProvider.appendLegacyTrackData(track, expanded);
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   const minTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);

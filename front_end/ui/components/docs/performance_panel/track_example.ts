@@ -13,17 +13,19 @@ await ComponentSetup.ComponentServerSetup.setup();
 const params = new URLSearchParams(window.location.search);
 const track = params.get('track');
 const fileName = params.get('fileName');
+const expanded = params.get('expanded');
 
 const customStartWindowTime = params.get('windowStart');
 const customEndWindowTime = params.get('windowEnd');
 const p = document.createElement('p');
-await renderContent();
+// Expand the track by default for test.
+await renderContent(expanded === 'false' ? false : true);
 
 type FlameChartData = {
   flameChart: PerfUI.FlameChart.FlameChart,
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
 };
-async function renderContent() {
+async function renderContent(expanded: boolean) {
   const container = document.getElementById('container');
   if (!container) {
     throw new Error('could not find container');
@@ -44,10 +46,10 @@ async function renderContent() {
     // @ts-expect-error: allow to check if a const string array contains a string.
     if (Timeline.CompatibilityTracksAppender.TrackNames.includes(track)) {
       const trackAppenderName = track as Timeline.CompatibilityTracksAppender.TrackAppenderName;
-      flameChartData = await FrontendHelpers.getMainFlameChartWithTracks(file, new Set([trackAppenderName]));
+      flameChartData = await FrontendHelpers.getMainFlameChartWithTracks(file, new Set([trackAppenderName]), expanded);
     } else if (track in TimelineModel.TimelineModel.TrackType) {
-      flameChartData =
-          await FrontendHelpers.getMainFlameChartWithLegacyTrack(file, track as TimelineModel.TimelineModel.TrackType);
+      flameChartData = await FrontendHelpers.getMainFlameChartWithLegacyTrack(
+          file, track as TimelineModel.TimelineModel.TrackType, expanded);
     } else {
       p.classList.remove('loading');
       p.innerText = `Invalid track name: ${track}`;

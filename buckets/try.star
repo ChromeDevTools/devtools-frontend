@@ -111,11 +111,20 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["linux", "mac"],
+    covered_oss = ["linux"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
+)
+
+builder_coverage(
+    covered_oss = ["mac"],
+    builder_factory = try_builder,
+    builder_name_pattern = "devtools_frontend_%s_rel",
+    recipe_name = "devtools/devtools-frontend",
+    execution_timeout = default_timeout,
+    properties = {"clobber": True},
 )
 
 builder_coverage(
@@ -201,6 +210,7 @@ cq_main = struct(
     experiment_builders = [
         # Quarantine a builder here
         # This will make them experiment 100%
+        "devtools_frontend_mac_rel",
         "devtools_frontend_parallel_linux_rel",
         "devtools_frontend_parallel_mac_rel",
         "devtools_frontend_parallel_win64_rel",

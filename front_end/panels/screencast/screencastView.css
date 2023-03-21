@@ -47,7 +47,7 @@
   border-radius: 2px;
   background-color: transparent;
   background-image:
-    -webkit-image-set(
+    image-set(
       var(--image-file-navigationControls) 1x,
       var(--image-file-navigationControls_2x) 2x
     );
@@ -123,7 +123,7 @@
   display: flex;
   border: 1px solid var(--color-details-hairline);
   position: relative;
-  cursor: -webkit-image-set(var(--image-file-touchCursor) 1x, var(--image-file-touchCursor_2x) 2x), default;
+  cursor: image-set(var(--image-file-touchCursor) 1x, var(--image-file-touchCursor_2x) 2x), default;
 }
 
 .screencast canvas {

@@ -51,6 +51,10 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
     this.dispatchEventToListeners(Events.HardwareConcurrencyChanged, this.#hardwareConcurrencyInternal);
   }
 
+  hasPrimaryPageTargetSet(): boolean {
+    return TargetManager.instance().primaryPageTarget() !== null;
+  }
+
   async getHardwareConcurrency(): Promise<number> {
     const target = TargetManager.instance().primaryPageTarget();
     const existingCallback = this.#pendingMainTargetPromise;

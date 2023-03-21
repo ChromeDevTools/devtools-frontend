@@ -264,6 +264,7 @@ export interface TraceFileMetaData {
   source?: 'DevTools';
   networkThrottling?: string;
   cpuThrottling?: number;
+  hardwareConcurrency?: number;
 }
 
 export type TraceFileContents = TraceFile|Types.TraceEvents.TraceEventData[];

@@ -7,6 +7,8 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {DOMModel, type DOMNode} from './DOMModel.js';
 import {TargetManager} from './TargetManager.js';
+import {CPUThrottlingManager} from './CPUThrottlingManager.js';
+import {MultitargetNetworkManager} from './NetworkManager.js';
 
 const domLookUpSingleNodeCache =
     new Map<TraceEngine.Handlers.Types.TraceParseData, Map<Protocol.DOM.BackendNodeId, DOMNode|null>>();
@@ -189,4 +191,30 @@ export async function normalizedImpactedNodesForLayoutShift(
   normalizedLayoutShiftNodesCache.set(modelData, cacheForModel);
 
   return normalizedNodes;
+}
+
+export async function getMetadataForRecording(): Promise<TraceEngine.TraceModel.TraceFileMetaData> {
+  const cpuThrottlingManager = CPUThrottlingManager.instance();
+
+  // If the CPU Throttling manager has yet to have its primary page target
+  // set, it will block on the call to get the current hardware concurrency
+  // until it does. At this point where the user has recorded a trace, that
+  // target should have been set. So if it doesn't have it set, we instead
+  // just bail and don't store the hardware concurrency (this is only
+  // metadata, not mission critical information).
+  const hardwareConcurrency = cpuThrottlingManager.hasPrimaryPageTargetSet() ?
+      await CPUThrottlingManager.instance().getHardwareConcurrency() :
+      undefined;
+
+  const cpuThrottling = CPUThrottlingManager.instance().cpuThrottlingRate();
+  const networkConditions = MultitargetNetworkManager.instance().networkConditions();
+  const networkTitle =
+      typeof networkConditions.title === 'function' ? networkConditions.title() : networkConditions.title;
+
+  return {
+    source: 'DevTools',
+    cpuThrottling,
+    networkThrottling: networkTitle,
+    hardwareConcurrency,
+  };
 }

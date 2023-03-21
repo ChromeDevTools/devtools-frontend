@@ -1267,17 +1267,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * impact the main thread, as we `void` it to ensure we don't want for the
    * parsing to complete.
    **/
-  #executeNewTraceEngine(tracingModel: SDK.TracingModel.TracingModel, isFreshRecording: boolean): Promise<void> {
+  async #executeNewTraceEngine(tracingModel: SDK.TracingModel.TracingModel, isFreshRecording: boolean): Promise<void> {
+    const metadata = await SDK.TraceSDKServices.getMetadataForRecording();
     return this.#traceEngineModel.parse(
         // OPP's data layer uses `EventPayload` as the type to represent raw JSON from the trace.
         // When we pass this into the new data engine, we need to tell TS to use the new TraceEventData type.
         tracingModel.allRawEvents() as unknown as TraceEngine.Types.TraceEvents.TraceEventData[],
         {
-          // TODO(crbug.com/1406847): This object represents metadata, which can be stored by the
-          // Performance Panel in a trace file. If the user imports a file that has
-          // it, we can pass it in here. If we don't have it, we should fetch &
-          // store it.
-          metadata: {},
+          metadata,
           isFreshRecording,
         },
     );

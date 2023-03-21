@@ -35,6 +35,7 @@ Bindings.IgnoreListManager.IgnoreListManager.instance({
   forceNew: true,
   debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
 });
+SDK.CPUThrottlingManager.CPUThrottlingManager.instance().setHardwareConcurrency(128);
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.record-reload',

@@ -68,7 +68,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   private blockedCountForUrl: Map<string, number>;
   private readonly updateThrottler: Common.Throttler.Throttler;
 
-  constructor() {
+  constructor(updateThrottler: Common.Throttler.Throttler) {
     super(true);
 
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
@@ -98,19 +98,20 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
     this.blockedCountForUrl = new Map();
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.onRequestFinished, this);
+        SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.onRequestFinished, this,
+        {scoped: true});
 
-    this.updateThrottler = new Common.Throttler.Throttler(200);
+    this.updateThrottler = updateThrottler;
 
     void this.update();
   }
 
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): BlockedURLsPane {
-    const {forceNew} = opts;
-    if (!blockedURLsPaneInstance || forceNew) {
-      blockedURLsPaneInstance = new BlockedURLsPane();
+  static instance(opts?: {
+    forceNew: boolean,
+    updateThrottler: Common.Throttler.Throttler,
+  }): BlockedURLsPane {
+    if (!blockedURLsPaneInstance || opts?.forceNew) {
+      blockedURLsPaneInstance = new BlockedURLsPane(opts?.updateThrottler || new Common.Throttler.Throttler(200));
     }
     return blockedURLsPaneInstance;
   }

@@ -301,7 +301,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   modelEvents(): SDK.TracingModel.Event[] {
-    return this.track ? this.track.syncEvents() : [];
+    return this.track ? this.track.syncLikeEvents() : [];
   }
 
   onHover(_node: TimelineModel.TimelineProfileTree.Node|null): void {

@@ -549,6 +549,166 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isFalse(timelineModel.isMarkerEvent(animationEvent));
     });
   });
+  describe('Track.syncLikeEvents', () => {
+    let nestableAsyncEvents: SDK.TracingModel.AsyncEvent[];
+    let nonNestableAsyncEvents: SDK.TracingModel.AsyncEvent[];
+    let syncEvents: SDK.TracingModel.PayloadEvent[];
+    const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+    const process = new SDK.TracingModel.Process(tracingModel, 1);
+    const thread = new SDK.TracingModel.Thread(process, 1);
+    const nestableAsyncEventPayloads = [
+      {
+        'cat': 'blink.console',
+        'id': '0x10bd3fa3',
+        'name': 'first console time',
+        'ph': 'b',
+        'ts': 59624383131,
+      },
+      {
+        'cat': 'blink.console',
+        'id': '0xf9950a85',
+        'name': 'second console time',
+        'ph': 'b',
+        'ts': 59624483145,
+      },
+      {
+        'cat': 'blink.console',
+        'id': '0xf9950a85',
+        'name': 'second console time',
+        'ph': 'e',
+        'ts': 59624983227,
+      },
+      {
+        'cat': 'blink.console',
+        'id': '0x10bd3fa3',
+        'name': 'first console time',
+        'ph': 'e',
+        'ts': 59625983390,
+      },
+      {
+        'cat': 'blink.console',
+        'id': '0xfbe4a4a7',
+        'name': 'third console time',
+        'ph': 'b',
+        'ts': 59625983458,
+      },
+      {
+        'cat': 'blink.console',
+        'id': '0xfbe4a4a7',
+        'name': 'third console time',
+        'ph': 'e',
+        'ts': 59626783430,
+      },
+    ] as unknown as SDK.TracingManager.EventPayload[];
+
+    const nonNestableAsyncEventPayloads = [
+      {
+        'cat': 'blink.user_timing',
+        'id': '0x10bd3fa3',
+        'name': 'MyMark',
+        'ph': 'b',
+        'ts': 62263114030,
+      },
+      {
+        'cat': 'blink.user_timing',
+        'id': '0xf9950a85',
+        'name': 'MyOtherMark',
+        'ph': 'b',
+        'ts': 62263414138,
+      },
+      {
+        'cat': 'blink.user_timing',
+        'id': '0x10bd3fa3',
+        'name': 'MyMark',
+        'ph': 'e',
+        'ts': 62263614198,
+      },
+      {
+        'cat': 'blink.user_timing',
+        'id': '0xfbe4a4a7',
+        'name': 'Zuck',
+        'ph': 'b',
+        'ts': 62263714283,
+      },
+      {
+        'cat': 'blink.user_timing',
+        'id': '0xfbe4a4a7',
+        'name': 'Zuck',
+        'ph': 'e',
+        'ts': 62264214398,
+      },
+      {
+        'cat': 'blink.user_timing',
+        'id': '0xf9950a85',
+        'name': 'MyOtherMark',
+        'ph': 'e',
+        'ts': 62264414198,
+      },
+    ] as unknown as SDK.TracingManager.EventPayload[];
+
+    const syncEventPayloads = [
+      {
+        'cat': 'blink.user_timing',
+        'name': 'myMark',
+        'ph': 'R',
+        'ts': 62263114056,
+      },
+      {
+        'cat': 'blink.user_timing',
+        'name': 'myOtherMark',
+        'ph': 'R',
+        'ts': 62263414150,
+      },
+      {
+        'cat': 'blink.user_timing',
+        'name': 'zuck',
+        'ph': 'R',
+        'ts': 62263714292,
+      },
+    ] as unknown as SDK.TracingManager.EventPayload[];
+
+    function buildAsyncEvents(asyncPayloads: SDK.TracingManager.EventPayload[]): SDK.TracingModel.AsyncEvent[] {
+      const builtEvents = new Map<string, SDK.TracingModel.AsyncEvent>();
+      for (const payload of asyncPayloads) {
+        let beginEvent = builtEvents.get(payload.id);
+        const event = new SDK.TracingModel.AsyncEvent(SDK.TracingModel.PayloadEvent.fromPayload(payload, thread));
+        if (!beginEvent) {
+          beginEvent = new SDK.TracingModel.AsyncEvent(event);
+          builtEvents.set(payload.id, beginEvent);
+        } else {
+          beginEvent.addStep(event);
+        }
+      }
+      return [...builtEvents.values()];
+    }
+    beforeEach(() => {
+      nestableAsyncEvents = buildAsyncEvents(nestableAsyncEventPayloads);
+      nonNestableAsyncEvents = buildAsyncEvents(nonNestableAsyncEventPayloads);
+      syncEvents = syncEventPayloads.map(payload => SDK.TracingModel.PayloadEvent.fromPayload(payload, thread));
+    });
+    it('returns sync and async events if async events can be organized in a tree structure', () => {
+      const track = new TimelineModel.TimelineModel.Track();
+      track.asyncEvents = nestableAsyncEvents;
+      track.events = syncEvents;
+      const syncLikeEvents = track.syncLikeEvents();
+      assert.strictEqual(syncLikeEvents.length, nestableAsyncEvents.length + syncEvents.length);
+      const syncLikeEventIds = syncLikeEvents.map(e => e.id);
+      for (const event of [...nestableAsyncEvents, ...syncEvents]) {
+        assert.isTrue(syncLikeEventIds.includes(event.id));
+      }
+    });
+    it('returns sync events only if the async event cannot be organized in a tree structure', () => {
+      const track = new TimelineModel.TimelineModel.Track();
+      track.asyncEvents = nonNestableAsyncEvents;
+      track.events = syncEvents;
+      const syncLikeEvents = track.syncLikeEvents();
+      assert.strictEqual(syncLikeEvents.length, syncEvents.length);
+      const syncLikeEventIds = syncLikeEvents.map(e => e.id);
+      for (const event of [...syncEvents]) {
+        assert.isTrue(syncLikeEventIds.includes(event.id));
+      }
+    });
+  });
 
   it('creates tracks for auction worklets', () => {
     const {timelineModel} = traceWithEvents([
@@ -1308,8 +1468,10 @@ describeWithEnvironment('TimelineModel', () => {
         if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
           continue;
         }
-        for (const event of track.syncEvents()) {
-          assert.strictEqual(event.phase, TraceEngine.Types.TraceEvents.Phase.MARK);
+        for (const event of track.syncLikeEvents()) {
+          if (event.phase !== TraceEngine.Types.TraceEvents.Phase.MARK) {
+            continue;
+          }
           userTimingPerformanceMarkNames.push(event.name);
         }
       }

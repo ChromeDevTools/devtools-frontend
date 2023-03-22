@@ -1950,7 +1950,7 @@ export class Track {
   events: SDK.TracingModel.Event[];
   asyncEvents: SDK.TracingModel.AsyncEvent[];
   tasks: SDK.TracingModel.Event[];
-  private syncEventsInternal: SDK.TracingModel.Event[]|null;
+  private syncLikeEventsInternal: SDK.TracingModel.Event[]|null;
   thread: SDK.TracingModel.Thread|null;
   constructor() {
     this.name = '';
@@ -1962,17 +1962,25 @@ export class Track {
     this.events = [];
     this.asyncEvents = [];
     this.tasks = [];
-    this.syncEventsInternal = null;
+    this.syncLikeEventsInternal = null;
     this.thread = null;
   }
 
-  syncEvents(): SDK.TracingModel.Event[] {
-    if (this.events.length) {
-      return this.events;
-    }
-
-    if (this.syncEventsInternal) {
-      return this.syncEventsInternal;
+  /**
+   * Gets the sync events in a track and async events if they can be
+   * organized in a tree structure. This latter condition is met if
+   * there is *not* a pair of async events e1 and e2 where:
+   *
+   * e1.startTime <= e2.startTime && e1.endTime > e2.startTime && e1.endTime > e2.endTime.
+   * or, graphically:
+   * |------- e1 ------|
+   *   |------- e2 --------|
+   *
+   * If the condition isn't met only sync events are returned.
+   */
+  syncLikeEvents(): SDK.TracingModel.Event[] {
+    if (this.syncLikeEventsInternal) {
+      return this.syncLikeEventsInternal;
     }
 
     const stack: SDK.TracingModel.Event[] = [];
@@ -1988,28 +1996,36 @@ export class Track {
       throw new Error('End time does not exist on event.');
     }
 
-    this.syncEventsInternal = [];
+    this.syncLikeEventsInternal = [...this.events];
+    // Attempt to build a tree from async events, as if they where
+    // sync.
     for (const event of this.asyncEvents) {
       const startTime = event.startTime;
       let endTime: number|(number | undefined) = event.endTime;
       if (endTime === undefined) {
         endTime = startTime;
       }
+      // Look for a potential parent for this event:
+      // one whose end time is after this event start time.
       while (stack.length && startTime >= peekLastEndTime()) {
         stack.pop();
       }
       if (stack.length && endTime > peekLastEndTime()) {
-        this.syncEventsInternal = [];
+        // If such an event exists but its end time is before this
+        // event's end time (they cannot be nested), then a tree cannot
+        // be made from this track's async events. Return the sync
+        // events.
+        this.syncLikeEventsInternal = [...this.events];
         break;
       }
       const syncEvent = new SDK.TracingModel.ConstructedEvent(
           event.categoriesString, event.name, TraceEngine.Types.TraceEvents.Phase.COMPLETE, startTime, event.thread);
       syncEvent.setEndTime(endTime);
       syncEvent.addArgs(event.args);
-      this.syncEventsInternal.push(syncEvent);
+      this.syncLikeEventsInternal.push(syncEvent);
       stack.push(syncEvent);
     }
-    return this.syncEventsInternal;
+    return this.syncLikeEventsInternal;
   }
 }
 

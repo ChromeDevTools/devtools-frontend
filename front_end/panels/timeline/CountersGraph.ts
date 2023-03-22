@@ -157,7 +157,7 @@ export class CountersGraph extends UI.Widget.VBox {
     if (!track) {
       return;
     }
-    const events = track.syncEvents();
+    const events = track.syncLikeEvents();
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
       if (event.name !== TimelineModel.TimelineModel.RecordType.UpdateCounters) {

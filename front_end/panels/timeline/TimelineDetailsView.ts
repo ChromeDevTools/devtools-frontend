@@ -310,7 +310,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     if (!this.model || !this.track) {
       return;
     }
-    const aggregatedStats = TimelineUIUtils.statsForTimeRange(this.track.syncEvents(), startTime, endTime);
+    const aggregatedStats = TimelineUIUtils.statsForTimeRange(this.track.syncLikeEvents(), startTime, endTime);
     const startOffset = startTime - this.model.timelineModel().minimumRecordTime();
     const endOffset = endTime - this.model.timelineModel().minimumRecordTime();
 

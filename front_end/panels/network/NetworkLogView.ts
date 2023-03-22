@@ -831,25 +831,35 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {
     // TODO(allada) Remove dependency on networkManager and instead use NetworkLog and PageLoad for needed data.
-    if (networkManager.target().parentTarget()?.type() === SDK.Target.Type.Frame) {
+    const target = networkManager.target();
+    if (target.outermostTarget() !== target) {
       return;
     }
-    const resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (resourceTreeModel) {
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
     }
+    for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
+      this.refreshRequest(request);
+    }
   }
 
   modelRemoved(networkManager: SDK.NetworkManager.NetworkManager): void {
-    if (networkManager.target().parentTarget()?.type() !== SDK.Target.Type.Frame) {
-      const resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
-      if (resourceTreeModel) {
-        resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
-        resourceTreeModel.removeEventListener(
-            SDK.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
-      }
+    const target = networkManager.target();
+    if (target.outermostTarget() !== target) {
+      return;
+    }
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (resourceTreeModel) {
+      resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
+      resourceTreeModel.removeEventListener(
+          SDK.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
+    }
+    const preserveLog = Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').get();
+    if (!preserveLog) {
+      this.reset();
     }
   }
 

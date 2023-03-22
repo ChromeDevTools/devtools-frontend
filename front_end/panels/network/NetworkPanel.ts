@@ -194,10 +194,12 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   private preserveLogSetting: Common.Settings.Setting<boolean>;
   recordLogSetting: Common.Settings.Setting<boolean>;
   private readonly throttlingSelect: UI.Toolbar.ToolbarComboBox;
+  private readonly displayScreenshotDelay: number;
 
-  constructor() {
+  constructor(displayScreenshotDelay: number) {
     super('network');
 
+    this.displayScreenshotDelay = displayScreenshotDelay;
     this.networkLogShowOverviewSetting =
         Common.Settings.Settings.instance().createSetting('networkLogShowOverview', true);
     this.networkLogLargeRowsSetting = Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false);
@@ -317,10 +319,10 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.updateUI();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this.willReloadPage,
-        this);
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this.willReloadPage, this,
+        {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.load, this);
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.load, this, {scoped: true});
     this.networkLogView.addEventListener(Events.RequestSelected, this.onRequestSelected, this);
     this.networkLogView.addEventListener(Events.RequestActivated, this.onRequestActivated, this);
     Logs.NetworkLog.NetworkLog.instance().addEventListener(
@@ -330,12 +332,12 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this.onNetworkLogReset, this);
   }
 
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): NetworkPanel {
-    const {forceNew} = opts;
-    if (!networkPanelInstance || forceNew) {
-      networkPanelInstance = new NetworkPanel();
+  static instance(opts?: {
+    forceNew: boolean,
+    displayScreenshotDelay?: number,
+  }): NetworkPanel {
+    if (!networkPanelInstance || opts?.forceNew) {
+      networkPanelInstance = new NetworkPanel(opts?.displayScreenshotDelay ?? 1000);
     }
 
     return networkPanelInstance;
@@ -535,7 +537,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   private load(): void {
     if (this.filmStripRecorder && this.filmStripRecorder.isRecording()) {
-      this.pendingStopTimer = window.setTimeout(this.stopFilmStripRecording.bind(this), displayScreenshotDelay);
+      this.pendingStopTimer = window.setTimeout(this.stopFilmStripRecording.bind(this), this.displayScreenshotDelay);
     }
   }
 
@@ -792,8 +794,6 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 }
 
-export const displayScreenshotDelay = 1000;
-
 let contextMenuProviderInstance: ContextMenuProvider;
 
 export class ContextMenuProvider implements UI.ContextMenu.Provider {
@@ -927,15 +927,13 @@ export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClien
   startRecording(): void {
     this.filmStripView.reset();
     this.filmStripView.setStatusText(i18nString(UIStrings.recordingFrames));
-    const tracingManagers = SDK.TargetManager.TargetManager.instance().models(SDK.TracingManager.TracingManager);
-    if (this.tracingManager || !tracingManagers.length) {
+    const tracingManager =
+        SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.TracingManager.TracingManager);
+    if (this.tracingManager || !tracingManager) {
       return;
     }
 
-    this.tracingManager = tracingManagers[0];
-    if (!this.tracingManager) {
-      return;
-    }
+    this.tracingManager = tracingManager;
     this.resourceTreeModel = this.tracingManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
     if (this.tracingModel) {
       this.tracingModel.dispose();

@@ -168,7 +168,7 @@ describeWithEnvironment('TimingTrackAppender', () => {
       const performanceMeasures = traceParsedData.UserTimings.performanceMeasures;
       const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(performanceMeasures[0]);
       // The i18n encondes spaces using the u00A0 unicode character.
-      assert.strictEqual(highlightedEntryInfo.formattedTime, ('500.00\u00A0ms'));
+      assert.strictEqual(highlightedEntryInfo.formattedTime, ('500.07\u00A0ms'));
     });
   });
 });

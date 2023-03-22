@@ -130,4 +130,22 @@ describe('TraceModel helpers', function() {
       assert.strictEqual(navigationForFirstRequest?.args.data?.navigationId, firstNavigationId);
     });
   });
+
+  describe('extractId', () => {
+    it('returns the correct id for an event', async () => {
+      const fakeEventWithId = {id: 'id'} as unknown as TraceModel.Types.TraceEvents.TraceEventNestableAsync;
+      const id = TraceModel.Helpers.Trace.extractId(fakeEventWithId);
+      assert.strictEqual(id, fakeEventWithId.id);
+
+      const fakeEventWithGlobalId2 = {id2: {global: 'globalId2'}} as unknown as
+          TraceModel.Types.TraceEvents.TraceEventNestableAsync;
+      const globalId2 = TraceModel.Helpers.Trace.extractId(fakeEventWithGlobalId2);
+      assert.strictEqual(globalId2, fakeEventWithGlobalId2.id2?.global);
+
+      const fakeEventWithLocalId2 = {id2: {local: 'localId2'}} as unknown as
+          TraceModel.Types.TraceEvents.TraceEventNestableAsync;
+      const localId2 = TraceModel.Helpers.Trace.extractId(fakeEventWithLocalId2);
+      assert.strictEqual(localId2, fakeEventWithLocalId2.id2?.local);
+    });
+  });
 });

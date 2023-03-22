@@ -90,3 +90,7 @@ export function getNavigationForTraceEvent(
   }
   return navigations[eventNavigationIndex];
 }
+
+export function extractId(event: Types.TraceEvents.TraceEventNestableAsync): string|undefined {
+  return event.id || event.id2?.global || event.id2?.local;
+}

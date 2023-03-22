@@ -642,36 +642,100 @@ export interface TraceEventPrePaint extends TraceEventComplete {
   name: 'PrePaint';
 }
 
-export type TraceEventAsyncUserTiming = TraceEventUserTimingBegin|TraceEventUserTimingEnd;
-
-export interface TraceEventUserTimingBegin extends TraceEventData {
-  cat: 'blink.user_timing';
+export type TraceEventNestableAsync = TraceEventNestableAsyncBegin|TraceEventNestableAsyncEnd;
+export interface TraceEventNestableAsyncBegin extends TraceEventData {
   ph: Phase.ASYNC_NESTABLE_START;
-  id: string;
+  // The id2 field gives flexibility to explicitly specify if an event
+  // id is global among processes or process local. However not all
+  // events use it, so both kind of ids need to be marked as optional.
+  id2?: {local?: string, global?: string};
+  id?: string;
 }
 
-export interface TraceEventUserTimingEnd extends TraceEventData {
-  cat: 'blink.user_timing';
+export interface TraceEventNestableAsyncEnd extends TraceEventData {
   ph: Phase.ASYNC_NESTABLE_END;
+  id2?: {local?: string, global?: string};
+  id?: string;
+}
+
+export type TraceEventAsyncPerformanceMeasure = TraceEventPerformanceMeasureBegin|TraceEventPerformanceMeasureEnd;
+
+export interface TraceEventPerformanceMeasureBegin extends TraceEventNestableAsyncBegin {
+  cat: 'blink.user_timing';
   id: string;
 }
 
-export interface TraceEventUserTimingMark extends TraceEventData {
+export interface TraceEventPerformanceMeasureEnd extends TraceEventNestableAsyncEnd {
+  cat: 'blink.user_timing';
+  id: string;
+}
+
+export interface TraceEventConsoleTimeBegin extends TraceEventNestableAsyncBegin {
+  cat: 'blink.console';
+  id2: {
+    local: string,
+  };
+}
+
+export interface TraceEventConsoleTimeEnd extends TraceEventNestableAsyncEnd {
+  cat: 'blink.console';
+  id2: {
+    local: string,
+  };
+}
+
+export interface TraceEventTimeStamp extends TraceEventData {
+  cat: 'devtools.timeline';
+  name: 'TimeStamp';
+  ph: Phase.INSTANT;
+  id: string;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      frame: string,
+      message: string,
+    },
+  };
+}
+
+export interface TraceEventPerformanceMark extends TraceEventData {
   cat: 'blink.user_timing';
   ph: Phase.MARK;
   id: string;
 }
 
-// A UserTiming block is made up of two distinct events: the begin, and the
-// end. We need both of them to be able to display the right information, so
-// the UserTimingHandler creates these synthetic events.
-export interface TraceEventSyntheticUserTiming extends TraceEventData {
+// Nestable async events with a duration are made up of two distinct
+// events: the begin, and the end. We need both of them to be able to
+// display the right information, so we create these synthetic events.
+export interface TraceEventSyntheticNestableAsyncEvent extends TraceEventData {
+  id?: string;
+  id2?: {local?: string, global?: string};
+  dur: MicroSeconds;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      beginEvent: TraceEventNestableAsyncBegin,
+      endEvent: TraceEventNestableAsyncEnd,
+    },
+  };
+}
+
+export interface TraceEventSyntheticUserTiming extends TraceEventSyntheticNestableAsyncEvent {
   id: string;
   dur: MicroSeconds;
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
-      beginEvent: TraceEventUserTimingBegin,
-      endEvent: TraceEventUserTimingEnd,
+      beginEvent: TraceEventPerformanceMeasureBegin,
+      endEvent: TraceEventPerformanceMeasureEnd,
+    },
+  };
+}
+
+export interface TraceEventSyntheticConsoleTiming extends TraceEventSyntheticNestableAsyncEvent {
+  id2: {local: string};
+  dur: MicroSeconds;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      beginEvent: TraceEventConsoleTimeBegin,
+      endEvent: TraceEventConsoleTimeEnd,
     },
   };
 }
@@ -903,14 +967,35 @@ export function isSyntheticUserTimingTraceEvent(traceEventData: TraceEventData):
   return 'beginEvent' in data && 'endEvent' in data;
 }
 
+export function isSyntheticConsoleTimingTraceEvent(traceEventData: TraceEventData):
+    traceEventData is TraceEventSyntheticConsoleTiming {
+  if (traceEventData.cat !== 'blink.console') {
+    return false;
+  }
+  const data = traceEventData.args?.data;
+  if (!data) {
+    return false;
+  }
+  return 'beginEvent' in data && 'endEvent' in data;
+}
+
 export function isTraceEventPerformanceMeasure(traceEventData: TraceEventData):
-    traceEventData is TraceEventUserTimingBegin|TraceEventUserTimingEnd {
+    traceEventData is TraceEventPerformanceMeasureBegin|TraceEventPerformanceMeasureEnd {
   return isTraceEventAsyncPhase(traceEventData) && traceEventData.cat === 'blink.user_timing';
 }
 
 export function isTraceEventPerformanceMark(traceEventData: TraceEventData):
-    traceEventData is TraceEventUserTimingMark {
+    traceEventData is TraceEventPerformanceMark {
   return traceEventData.ph === Phase.MARK && traceEventData.cat === 'blink.user_timing';
+}
+
+export function isTraceEventConsoleTime(traceEventData: TraceEventData): traceEventData is TraceEventConsoleTimeBegin|
+    TraceEventConsoleTimeEnd {
+  return isTraceEventAsyncPhase(traceEventData) && traceEventData.cat === 'blink.console';
+}
+
+export function isTraceEventTimeStamp(traceEventData: TraceEventData): traceEventData is TraceEventTimeStamp {
+  return traceEventData.ph === Phase.INSTANT && traceEventData.name === 'TimeStamp';
 }
 
 export interface TraceEventAsync extends TraceEventData {

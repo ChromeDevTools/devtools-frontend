@@ -28,7 +28,6 @@ copy_to_gen("performance_panel") {
   testonly = true
   sources = [
     "basic.html",
-    "liviu.html",
     "track_example.html",
   ]
 

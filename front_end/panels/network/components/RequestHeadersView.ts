@@ -293,11 +293,23 @@ export class RequestHeadersComponent extends HTMLElement {
       }
     };
 
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
     return html`
+      <x-link href="https://goo.gle/devtools-override" class="link devtools-link">
+        <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+            iconName: 'help_outline',
+            color: 'var(--color-primary-old)',
+            width: '16px',
+            height: '16px',
+          } as IconButton.Icon.IconData}>
+        </${IconButton.Icon.Icon.litTagName}
+      ></x-link>
       <x-link @click=${revealHeadersFile} class="link devtools-link" title=${UIStrings.revealHeaderOverrides}>
         ${fileIcon}${i18nString(UIStrings.headerOverrides)}
       </x-link>
     `;
+    // clang-format on
   }
 
   #getHeaderOverridesFileUrl(): Platform.DevToolsPath.UrlString {

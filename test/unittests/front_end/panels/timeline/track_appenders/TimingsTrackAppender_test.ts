@@ -45,9 +45,14 @@ describeWithEnvironment('TimingTrackAppender', () => {
 
   describe('appendTrackAtLevel', () => {
     it('marks all levels used by the track with the `TrackAppender` type', () => {
-      // Five levels should be taken: 1 for page load marks, 1 added for spacing
-      // between page load marks and user timings and 3 used by user timings.
-      const levelCount = 5;
+      // 8 levels should be taken:
+      //   * 1 for page load marks.
+      //   * 1 added for spacing between page load marks and user timings.
+      //   * 1 performance.marks.
+      //   * 3 used by performance.measures.
+      //   * 1 used by console timestamps.
+      //   * 1 used by console.time calls.
+      const levelCount = 8;
       assert.strictEqual(entryTypeByLevel.length, levelCount);
       const allEntriesAreTrackAppender =
           entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender);
@@ -79,7 +84,11 @@ describeWithEnvironment('TimingTrackAppender', () => {
       const traceMarkers = traceParsedData.PageLoadMetrics.allMarkerEvents;
       const performanceMarks = traceParsedData.UserTimings.performanceMarks;
       const performanceMeasures = traceParsedData.UserTimings.performanceMeasures;
-      for (const event of [...traceMarkers, ...performanceMarks, ...performanceMeasures]) {
+      const consoleTimings = traceParsedData.UserTimings.consoleTimings;
+      const consoleTimestamps = traceParsedData.UserTimings.timestampEvents;
+      for (const event
+               of [...traceMarkers, ...performanceMarks, ...performanceMeasures, ...consoleTimings,
+                   ...consoleTimestamps]) {
         const markerIndex = entryData.indexOf(event);
         assert.isDefined(markerIndex);
         assert.strictEqual(
@@ -91,7 +100,11 @@ describeWithEnvironment('TimingTrackAppender', () => {
       const traceMarkers = traceParsedData.PageLoadMetrics.allMarkerEvents;
       const performanceMarks = traceParsedData.UserTimings.performanceMarks;
       const performanceMeasures = traceParsedData.UserTimings.performanceMeasures;
-      for (const event of [...traceMarkers, ...performanceMarks, ...performanceMeasures]) {
+      const consoleTimings = traceParsedData.UserTimings.consoleTimings;
+      const consoleTimestamps = traceParsedData.UserTimings.timestampEvents;
+      for (const event
+               of [...traceMarkers, ...performanceMarks, ...performanceMeasures, ...consoleTimings,
+                   ...consoleTimestamps]) {
         const markerIndex = entryData.indexOf(event);
         assert.isDefined(markerIndex);
         if (TraceModel.Handlers.ModelHandlers.PageLoadMetrics.isTraceEventMarkerEvent(event)) {
@@ -146,9 +159,23 @@ describeWithEnvironment('TimingTrackAppender', () => {
     });
 
     it('returns the correct title for user timings', () => {
-      const traceMarkers = traceParsedData.UserTimings.performanceMarks;
+      const performanceMarks = traceParsedData.UserTimings.performanceMarks;
+      const performanceMeasures = traceParsedData.UserTimings.performanceMeasures;
+      for (const mark of [...performanceMarks, ...performanceMeasures]) {
+        assert.strictEqual(timingsTrackAppender.titleForEvent(mark), mark.name);
+      }
+    });
+
+    it('returns the correct title for console timings', () => {
+      const traceMarkers = traceParsedData.UserTimings.consoleTimings;
       for (const mark of traceMarkers) {
         assert.strictEqual(timingsTrackAppender.titleForEvent(mark), mark.name);
+      }
+    });
+    it('returns the correct title for console timestamps', () => {
+      const traceMarkers = traceParsedData.UserTimings.timestampEvents;
+      for (const mark of traceMarkers) {
+        assert.strictEqual(timingsTrackAppender.titleForEvent(mark), `TimeStamp: ${mark.args.data.message}`);
       }
     });
   });
@@ -156,7 +183,8 @@ describeWithEnvironment('TimingTrackAppender', () => {
     it('returns the info for a entries with no duration correctly', () => {
       const traceMarkers = traceParsedData.PageLoadMetrics.allMarkerEvents;
       const performanceMarks = traceParsedData.UserTimings.performanceMarks;
-      const allTrackEvents = [...traceMarkers, ...performanceMarks];
+      const consoleTimestamps = traceParsedData.UserTimings.timestampEvents;
+      const allTrackEvents = [...traceMarkers, ...performanceMarks, ...consoleTimestamps];
       for (const event of allTrackEvents) {
         const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(event);
         if (TraceModel.Handlers.ModelHandlers.PageLoadMetrics.isTraceEventMarkerEvent(event)) {
@@ -169,6 +197,12 @@ describeWithEnvironment('TimingTrackAppender', () => {
       const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(performanceMeasures[0]);
       // The i18n encondes spaces using the u00A0 unicode character.
       assert.strictEqual(highlightedEntryInfo.formattedTime, ('500.07\u00A0ms'));
+    });
+    it('returns the info for a console.time calls correctly', () => {
+      const consoleTimings = traceParsedData.UserTimings.consoleTimings;
+      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(consoleTimings[0]);
+      // The i18n encondes spaces using the u00A0 unicode character.
+      assert.strictEqual(highlightedEntryInfo.formattedTime, ('1.60\u00A0s'));
     });
   });
 });

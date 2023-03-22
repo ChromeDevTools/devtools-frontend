@@ -261,6 +261,10 @@ export class TimelineModelImpl {
     return event.categoriesString === TimelineModelImpl.Category.UserTiming;
   }
 
+  isConsoleTimestampEvent(event: SDK.TracingModel.Event): boolean {
+    return event.name === RecordType.TimeStamp;
+  }
+
   isEventTimingInteractionEvent(event: SDK.TracingModel.Event): boolean {
     if (event.name !== RecordType.EventTiming) {
       return false;
@@ -417,8 +421,8 @@ export class TimelineModelImpl {
   }
 
   /**
-   * This function pushes a copy of each performance.mark() event from the Main track
-   * into Timings so they can be appended to the performance UI.
+   * This function pushes a copy of each performance.mark() and console.timeStamp() event from the
+   * Main track into Timings so they can be appended to the performance UI.
    * Performance.mark() are a part of the "blink.user_timing" category alongside
    * Navigation and Resource Timing events, so we must filter them out before pushing.
    *
@@ -474,14 +478,16 @@ export class TimelineModelImpl {
     for (const track of this.tracks()) {
       if (track.type === TrackType.MainThread) {
         for (const event of track.events) {
-          if (this.isUserTimingEvent(event)) {
+          if (this.isUserTimingEvent(event) || this.isConsoleTimestampEvent(event)) {
             if (IgnoreNames.includes(event.name)) {
               continue;
             }
             if (TraceEngine.Types.TraceEvents.isAsyncPhase(event.phase)) {
               continue;
             }
-            event.setEndTime(event.startTime);
+            if (event.endTime === undefined) {
+              event.setEndTime(event.startTime);
+            }
             timingsTrack.events.push(event);
           }
         }
@@ -1093,7 +1099,7 @@ export class TimelineModelImpl {
       const asyncEvent = asyncEvents[i];
 
       if (asyncEvent.hasCategory(TimelineModelImpl.Category.Console)) {
-        group(TrackType.Console).push(asyncEvent);
+        group(TrackType.Timings).push(asyncEvent);
         continue;
       }
 

@@ -87,10 +87,11 @@ export class TimingsTrackAppender implements TrackAppender {
    */
   appendTrackAtLevel(currentLevel: number, expanded?: boolean): number {
     this.#appendTrackHeaderAtLevel(currentLevel, expanded);
-    const newLevel = this.#appendMarkersAtLevel(currentLevel);
+    let newLevel = this.#appendMarkersAtLevel(currentLevel);
     // Add some vertical space between page load markers and user
     // timings by appending timings 2 levels after the markers' level.
-    return this.#appendUserTimingsAtLevel(newLevel + 1);
+    newLevel = this.#appendUserTimingsAtLevel(newLevel + 1);
+    return this.#appendConsoleTimings(newLevel);
   }
 
   /**
@@ -162,23 +163,48 @@ export class TimingsTrackAppender implements TrackAppender {
     for (const userMark of this.#traceParsedData.UserTimings.performanceMarks) {
       this.#appendEventAtLevel(userMark, newLevel);
     }
-    newLevel++;
-    newLevel = this.#appendTimingsAtLevel(newLevel);
-    return newLevel;
+    if (this.#traceParsedData.UserTimings.performanceMarks.length !== 0) {
+      // Add performance.measure events on the next level, but only if the
+      // current level was used by performance.marks events.
+      newLevel++;
+    }
+    return this.#appendTimingsAtLevel(newLevel, this.#traceParsedData.UserTimings.performanceMeasures);
   }
 
   /**
-   * Adds into the flame chart data the trace events dispatched by the
-   * performace.measure API. These events are taken from the UserTimings
-   * handler.
+   * Adds into the flame chart data the trace events corresponding to
+   * console timings (console.time and console.timeEnd/timeLog). These are
+   * taken straight from the UserTimings handler.
+   * @param currentLevel the flame chart level from which user timings will
+   * be appended.
+   * @returns the next level after the last occupied by the appended
+   * timings (the first available level to append more data).
+   */
+  #appendConsoleTimings(currentLevel: number): number {
+    let newLevel = currentLevel;
+    for (const timestamp of this.#traceParsedData.UserTimings.timestampEvents) {
+      this.#appendEventAtLevel(timestamp, newLevel);
+    }
+    if (this.#traceParsedData.UserTimings.timestampEvents.length !== 0) {
+      // Add console.time events on the next level, but only if the
+      // current level was used by timestamp events.
+      newLevel++;
+    }
+    return this.#appendTimingsAtLevel(newLevel, this.#traceParsedData.UserTimings.consoleTimings);
+  }
+  /**
+   * Adds into the flame chart data the syntetic nestable async events
+   * These events are taken from the UserTimings handler from console
+   * and performance timings.
    * @param currentLevel the flame chart level from which timings will
    * be appended.
    * @returns the next level after the last occupied by the appended
    * timings (the first available level to append more data).
    */
 
-  #appendTimingsAtLevel(currentLevel: number): number {
-    const timings = this.#traceParsedData.UserTimings.performanceMeasures;
+  #appendTimingsAtLevel(
+      currentLevel: number,
+      timings: readonly TraceEngine.Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[]): number {
     const lastUsedTimeByLevel: number[] = [];
     for (let i = 0; i < timings.length; ++i) {
       const event = timings[i];
@@ -277,7 +303,7 @@ export class TimingsTrackAppender implements TrackAppender {
     if (TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.eventIsPageLoadEvent(event)) {
       return this.markerStyleForEvent(event).color;
     }
-    // User timings.
+    // Performance and console timings.
     return this.#colorGenerator.colorForID(event.name);
   }
 
@@ -301,6 +327,9 @@ export class TimingsTrackAppender implements TrackAppender {
         default:
           return event.name;
       }
+    }
+    if (TraceEngine.Types.TraceEvents.isTraceEventTimeStamp(event)) {
+      return `${event.name}: ${event.args.data.message}`;
     }
     return event.name;
   }

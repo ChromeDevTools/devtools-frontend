@@ -589,10 +589,9 @@ export class VersionController {
   }
 
   updateVersion(): void {
-    const localStorageVersion = window.localStorage ? window.localStorage[VersionController.currentVersionName] : 0;
     const versionSetting = Settings.instance().createSetting(VersionController.currentVersionName, 0);
     const currentVersion = VersionController.currentVersion;
-    const oldVersion = versionSetting.get() || parseInt(localStorageVersion || '0', 10);
+    const oldVersion = versionSetting.get();
     if (oldVersion === 0) {
       // First run, no need to do anything.
       versionSetting.set(currentVersion);

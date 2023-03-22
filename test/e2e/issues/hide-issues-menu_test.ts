@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import {
   $$,
   assertNotNullOrUndefined,
-  enableExperiment,
   getBrowserAndPages,
   goToResource,
   waitFor,
@@ -191,10 +190,6 @@ describe('Hide issues menu', async () => {
 });
 
 describe('After enabling grouping by IssueKind, Hide issues menu', async () => {
-  beforeEach(async () => {
-    await enableExperiment('groupAndHideIssuesByKind');
-  });
-
   it('should be appended to the issue kinds group header', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();

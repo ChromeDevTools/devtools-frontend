@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {assertNotNullOrUndefined, enableExperiment, goToResource, waitFor} from '../../shared/helper.js';
+import {assertNotNullOrUndefined, goToResource, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   expandKind,
@@ -16,7 +16,6 @@ import {
 
 describe('The Issues tab group by kind checkbox', async () => {
   it('should group issues by associated kinds when checked', async () => {
-    await enableExperiment('groupAndHideIssuesByKind');
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();
 
@@ -32,7 +31,6 @@ describe('The Issues tab group by kind checkbox', async () => {
   });
 
   it('should display issues in the issueTree when not checked', async () => {
-    await enableExperiment('groupAndHideIssuesByKind');
     await goToResource('elements/element-reveal-inline-issue.html');
     await navigateToIssuesTab();
 

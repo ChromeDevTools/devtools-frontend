@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -259,7 +258,7 @@ export class IssuesPane extends UI.Widget.VBox {
     groupByKindSetting.addChangeListener(() => {
       this.#fullUpdate(true);
     });
-    groupByKindSettingCheckbox.setVisible(Root.Runtime.experiments.isEnabled('groupAndHideIssuesByKind'));
+    groupByKindSettingCheckbox.setVisible(true);
 
     const thirdPartySetting = IssuesManager.Issue.getShowThirdPartyIssuesSetting();
     this.#showThirdPartyCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
@@ -339,11 +338,10 @@ export class IssuesPane extends UI.Widget.VBox {
   }
 
   #getIssueViewParent(issue: AggregatedIssue): UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement {
-    const groupByKind = Root.Runtime.experiments.isEnabled('groupAndHideIssuesByKind');
     if (issue.isHidden()) {
       return this.#hiddenIssuesRow;
     }
-    if (groupByKind && getGroupIssuesByKindSetting().get()) {
+    if (getGroupIssuesByKindSetting().get()) {
       const kind = issue.getKind();
       const view = this.#kindViews.get(kind);
       if (view) {
@@ -414,10 +412,9 @@ export class IssuesPane extends UI.Widget.VBox {
   }
 
   #updateCounts(): void {
-    const groupByKind = Root.Runtime.experiments.isEnabled('groupAndHideIssuesByKind');
     this.#showIssuesTreeOrNoIssuesDetectedMessage(
         this.#issuesManager.numberOfIssues(), this.#issuesManager.numberOfHiddenIssues());
-    if (groupByKind && getGroupIssuesByKindSetting().get()) {
+    if (getGroupIssuesByKindSetting().get()) {
       this.#updateIssueKindViewsCount();
     }
   }
@@ -451,13 +448,12 @@ export class IssuesPane extends UI.Widget.VBox {
     await this.#issueViewUpdatePromise;
     const key = this.#aggregator.keyForIssue(issue);
     const issueView = this.#issueViews.get(key);
-    const groupByKind = Root.Runtime.experiments.isEnabled('groupAndHideIssuesByKind');
     if (issueView) {
       if (issueView.isForHiddenIssue()) {
         this.#hiddenIssuesRow.expand();
         this.#hiddenIssuesRow.reveal();
       }
-      if (groupByKind && getGroupIssuesByKindSetting().get() && !issueView.isForHiddenIssue()) {
+      if (getGroupIssuesByKindSetting().get() && !issueView.isForHiddenIssue()) {
         const kindView = this.#kindViews.get(issueView.getIssueKind());
         kindView?.expand();
         kindView?.reveal();

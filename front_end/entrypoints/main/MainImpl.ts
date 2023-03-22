@@ -355,9 +355,6 @@ export class MainImpl {
     // New cookie features.
     Root.Runtime.experiments.register('experimentalCookieFeatures', 'Enable experimental cookie features');
 
-    // Hide Issues Feature.
-    Root.Runtime.experiments.register('groupAndHideIssuesByKind', 'Allow grouping and hiding of issues by IssueKind');
-
     // CSS <length> authoring tool.
     Root.Runtime.experiments.register(
         'cssTypeComponentLength', 'Enable CSS <length> authoring tool in the Styles pane', undefined,
@@ -417,7 +414,6 @@ export class MainImpl {
       Root.Runtime.ExperimentName.PRECISE_CHANGES,
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
       'keyboardShortcutEditor',
-      'groupAndHideIssuesByKind',
       Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS,
       'sourcesPrettyPrint',
       Root.Runtime.ExperimentName.DISABLE_COLOR_FORMAT_SETTING,

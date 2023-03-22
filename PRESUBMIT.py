@@ -562,8 +562,6 @@ def _CheckObsoleteScreenshotGoldens(input_api, output_api):
         script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                              'scripts', 'test',
                                              'check_obsolete_goldens.js')
-        eslint_rules_dir_path = input_api.os_path.join(
-            input_api.PresubmitLocalPath(), 'scripts', 'eslint_rules')
 
         script_args = ["--interaction-test-root", interaction_test_root_path]
         errors_from_script = _checkWithNodeScript(input_api, output_api,

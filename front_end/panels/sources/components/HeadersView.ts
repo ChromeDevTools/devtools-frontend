@@ -42,6 +42,10 @@ const UIStrings = {
    *@description Button text for a button which adds an additional header override rule.
    */
   addOverrideRule: 'Add override rule',
+  /**
+   *@description Text which is a hyperlink to more documentation
+   */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -355,6 +359,9 @@ export class HeadersViewComponent extends HTMLElement {
       <${Buttons.Button.Button.litTagName} .variant=${Buttons.Button.Variant.SECONDARY} class="add-block">
         ${i18nString(UIStrings.addOverrideRule)}
       </${Buttons.Button.Button.litTagName}>
+      <div class="learn-more-row">
+        <x-link href="https://goo.gle/devtools-override" class="link">${i18nString(UIStrings.learnMore)}</x-link>
+      </div>
     `, this.#shadow, {host: this});
     // clang-format on
 

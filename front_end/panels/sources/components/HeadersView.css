@@ -103,3 +103,15 @@
 .header-value {
   min-width: min-content;
 }
+
+.link {
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+  outline-offset: 2px;
+  padding: 0;
+}
+
+.learn-more-row {
+  line-height: 24px;
+}

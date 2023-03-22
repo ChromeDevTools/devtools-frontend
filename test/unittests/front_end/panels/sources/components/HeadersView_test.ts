@@ -207,6 +207,14 @@ describe('HeadersView', async () => {
       'jpg-header:only for jpg files',
     ]);
 
+    const addRuleButton = editor.shadowRoot.querySelector('.add-block');
+    assertElement(addRuleButton, HTMLElement);
+    assert.strictEqual(addRuleButton.textContent?.trim(), 'Add override rule');
+
+    const learnMoreLink = editor.shadowRoot.querySelector('.learn-more-row x-link');
+    assertElement(learnMoreLink, HTMLElement);
+    assert.strictEqual(learnMoreLink.title, 'https://goo.gle/devtools-override');
+
     const editables = editor.shadowRoot.querySelectorAll('.editable');
     await changeEditable(editables[0] as HTMLElement, 'index.html');
     await changeEditable(editables[1] as HTMLElement, 'content-type');

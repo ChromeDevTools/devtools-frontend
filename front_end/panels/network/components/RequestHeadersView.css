@@ -149,6 +149,7 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
 
 .purple-dot {
   filter: hue-rotate(160deg);
+  padding-top: 2px;
 }
 
 .-theme-with-dark-background .purple-dot,

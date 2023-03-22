@@ -358,9 +358,14 @@ describeWithMockConnection('RequestHeadersView', () => {
     assertElement(responseHeadersCategory, HTMLElement);
     assertShadowRoot(responseHeadersCategory.shadowRoot);
 
-    const linkElement = responseHeadersCategory.shadowRoot.querySelector('x-link');
-    assertElement(linkElement, HTMLElement);
-    assert.strictEqual(linkElement.textContent?.trim(), 'Header overrides');
+    const linkElements = responseHeadersCategory.shadowRoot.querySelectorAll('x-link');
+    assert.strictEqual(linkElements.length, 2);
+
+    assertElement(linkElements[0], HTMLElement);
+    assert.strictEqual(linkElements[0].title, 'https://goo.gle/devtools-override');
+
+    assertElement(linkElements[1], HTMLElement);
+    assert.strictEqual(linkElements[1].textContent?.trim(), 'Header overrides');
   });
 
   it('does not render a link to \'.headers\' if a matching \'.headers\' does not exist', async () => {

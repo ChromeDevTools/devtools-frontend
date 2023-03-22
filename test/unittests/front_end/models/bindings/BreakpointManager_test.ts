@@ -93,6 +93,7 @@ describeWithMockConnection('BreakpointManager', () => {
     Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
     backend = new MockProtocolBackend();
     target = createTarget();
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
     // Wait for the resource tree model to load; otherwise, our uiSourceCodes could be asynchronously
     // invalidated during the test.
@@ -531,6 +532,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
     // Create a new target.
     target = createTarget();
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
     const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assertNotNullOrUndefined(reloadedDebuggerModel);
@@ -686,6 +688,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Create a new target.
       target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assertNotNullOrUndefined(reloadedDebuggerModel);
@@ -775,6 +778,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Create a new target.
       target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assertNotNullOrUndefined(reloadedDebuggerModel);
@@ -883,6 +887,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Create a new target.
       target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assertNotNullOrUndefined(reloadedDebuggerModel);
@@ -978,6 +983,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Create a new target.
       target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assertNotNullOrUndefined(reloadedDebuggerModel);
@@ -1123,6 +1129,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Create a new target.
       target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assertNotNullOrUndefined(reloadedDebuggerModel);
@@ -1320,7 +1327,7 @@ describeWithMockConnection('BreakpointManager', () => {
       setupPageResourceLoaderForSourceMap(sourceMapContent);
 
       // Create a worker target.
-      const workerTarget = createTarget({name: 'worker'});
+      const workerTarget = createTarget({name: 'worker', parentTarget: target});
 
       // Add script with source map.
       const scriptInfo = {url: URL, content: COMPILED_SCRIPT_SOURCES_CONTENT};

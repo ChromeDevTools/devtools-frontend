@@ -60,6 +60,7 @@ SDKTestRunner.PageMock = class {
     ProtocolClient.Connection.setFactory(oldFactory);
 
     this.target = target;
+    self.SDK.targetManager.setScopeTarget(target);
     return target;
   }
 

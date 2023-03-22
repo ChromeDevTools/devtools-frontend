@@ -451,39 +451,22 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private async ensureContentLoaded(): Promise<void> {
     if (!this.contentRequested) {
       this.contentRequested = true;
+      await this.setDeferredContent(this.lazyContent());
 
-      const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
-      progressIndicator.setTitle(i18nString(UIStrings.loading));
-      progressIndicator.setTotalWork(100);
-      this.progressToolbarItem.element.appendChild(progressIndicator.element);
-
-      progressIndicator.setWorked(1);
-
-      const {content, error} = await this.setDeferredContent(await this.lazyContent(), progressIndicator);
-      progressIndicator.setWorked(100);
-      progressIndicator.done();
-
-      this.formattedMap = null;
-      this.prettyToggle.setEnabled(true);
-
-      if (error) {
-        this.loadError = true;
-        this.textEditor.state = this.placeholderEditorState(error);
-        this.prettyToggle.setEnabled(false);
-      } else {
-        if (this.shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(content || '')) {
-          await this.setPretty(true);
-        } else {
-          await this.setContent(this.rawContent || '');
-        }
-      }
       this.contentSet = true;
     }
   }
 
-  protected async setDeferredContent(
-      deferredContent: TextUtils.ContentProvider.DeferredContent,
-      progressIndicator?: UI.ProgressIndicator.ProgressIndicator): Promise<{content?: string, error?: string}> {
+  protected async setDeferredContent(deferredContentPromise: Promise<TextUtils.ContentProvider.DeferredContent>):
+      Promise<void> {
+    const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
+    progressIndicator.setTitle(i18nString(UIStrings.loading));
+    progressIndicator.setTotalWork(100);
+    this.progressToolbarItem.element.appendChild(progressIndicator.element);
+
+    progressIndicator.setWorked(1);
+    const deferredContent = await deferredContentPromise;
+
     let error, content;
     if (deferredContent.content === null) {
       error = deferredContent.error;
@@ -552,7 +535,23 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       }
     }
 
-    return {content, error};
+    progressIndicator.setWorked(100);
+    progressIndicator.done();
+
+    this.formattedMap = null;
+    this.prettyToggle.setEnabled(true);
+
+    if (error) {
+      this.loadError = true;
+      this.textEditor.state = this.placeholderEditorState(error);
+      this.prettyToggle.setEnabled(false);
+    } else {
+      if (this.shouldAutoPrettyPrint && TextUtils.TextUtils.isMinified(content || '')) {
+        await this.setPretty(true);
+      } else {
+        await this.setContent(this.rawContent || '');
+      }
+    }
   }
 
   revealPosition(position: {lineNumber: number, columnNumber?: number}|number, shouldHighlight?: boolean): void {

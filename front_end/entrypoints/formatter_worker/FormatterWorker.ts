@@ -76,7 +76,6 @@ export function createTokenizer(mimeType: string): (
           callback: (arg0: string, arg1: string|null, arg2: number, arg3: number) => void|Object|undefined): void => {
     const stream = new CodeMirror.StringStream(line);
     while (!stream.eol()) {
-      // @ts-expect-error TypeScript can't determine that `mode.token` is defined based on lines above
       const style = mode.token(stream, state);
       const value = stream.current();
       if (callback(value, style, stream.start, stream.start + value.length) === AbortTokenization) {

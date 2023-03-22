@@ -43,7 +43,7 @@ DEPS = {
     "@istanbuljs/schema": "0.1.3",
     "@puppeteer/replay": "2.9.0",
     "@types/chai": "4.3.0",
-    "@types/codemirror": "0.0.108",
+    "@types/codemirror": "5.60.7",
     "@types/estree": "0.0.50",
     "@types/filesystem": "0.0.32",
     "@types/istanbul-lib-coverage": "2.0.4",

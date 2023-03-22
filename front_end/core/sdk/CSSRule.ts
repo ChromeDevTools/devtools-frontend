@@ -101,6 +101,7 @@ class CSSValue {
 
 export class CSSStyleRule extends CSSRule {
   selectors!: CSSValue[];
+  nestingSelectors?: string[];
   media: CSSMedia[];
   containerQueries: CSSContainerQuery[];
   supports: CSSSupports[];
@@ -111,6 +112,7 @@ export class CSSStyleRule extends CSSRule {
     // TODO(crbug.com/1011811): Replace with spread operator or better types once Closure is gone.
     super(cssModel, {origin: payload.origin, style: payload.style, styleSheetId: payload.styleSheetId});
     this.reinitializeSelectors(payload.selectorList);
+    this.nestingSelectors = payload.nestingSelectors;
     this.media = payload.media ? CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
     this.containerQueries = payload.containerQueries ?
         CSSContainerQuery.parseContainerQueriesPayload(cssModel, payload.containerQueries) :

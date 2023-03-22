@@ -26,6 +26,7 @@ export class GlassPane {
   private anchorBehavior: AnchorBehavior;
   private sizeBehavior: SizeBehavior;
   private marginBehavior: MarginBehavior;
+  #ignoreLeftMargin: boolean = false;
 
   constructor() {
     this.widgetInternal = new Widget(true);
@@ -110,6 +111,10 @@ export class GlassPane {
   setMarginBehavior(behavior: MarginBehavior): void {
     this.marginBehavior = behavior;
     this.arrowElement.classList.toggle('hidden', behavior !== MarginBehavior.Arrow);
+  }
+
+  setIgnoreLeftMargin(ignore: boolean): void {
+    this.#ignoreLeftMargin = ignore;
   }
 
   show(document: Document): void {
@@ -236,7 +241,12 @@ export class GlassPane {
           arrowY = anchorBox.y + anchorBox.height + gutterSize;
         }
 
-        positionX = Math.max(gutterSize, Math.min(anchorBox.x, containerWidth - width - gutterSize));
+        const naturalPositionX = Math.min(anchorBox.x, containerWidth - width - gutterSize);
+        positionX = Math.max(gutterSize, naturalPositionX);
+        if (this.#ignoreLeftMargin && gutterSize > naturalPositionX) {
+          positionX = 0;
+        }
+
         if (!enoughHeight) {
           positionX = Math.min(positionX + arrowSize, containerWidth - width - gutterSize);
         } else if (showArrow && positionX - arrowSize >= gutterSize) {

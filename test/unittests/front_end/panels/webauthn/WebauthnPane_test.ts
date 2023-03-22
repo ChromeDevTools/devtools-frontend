@@ -63,9 +63,7 @@ describeWithMockConnection('WebAuthn pane', () => {
     let panel: WebauthnModule.WebauthnPane.WebauthnPaneImpl;
     beforeEach(() => {
       target = targetFactory();
-      if (inScope) {
-        SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-      }
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       model = target.model(SDK.WebAuthnModel.WebAuthnModel) as SDK.WebAuthnModel.WebAuthnModel;
       assertNotNullOrUndefined(model);
       panel = Webauthn.WebauthnPane.WebauthnPaneImpl.instance({forceNew: true});

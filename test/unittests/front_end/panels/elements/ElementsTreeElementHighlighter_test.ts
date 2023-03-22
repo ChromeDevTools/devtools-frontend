@@ -28,9 +28,7 @@ describeWithMockConnection('ElementsTreeElementHighlighter', () => {
   });
 
   const highlightsNodeOnRequestEvent = (inScope: boolean) => () => {
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     new Elements.ElementsTreeElementHighlighter.ElementsTreeElementHighlighter(treeOutline, throttler);
 
     const model = target.model(SDK.OverlayModel.OverlayModel);

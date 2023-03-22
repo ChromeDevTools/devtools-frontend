@@ -27,9 +27,7 @@ describeWithMockConnection('ClassesPaneWidget', () => {
   });
 
   const updatesUiOnEvent = (inScope: boolean) => async () => {
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     view = new Elements.ClassesPaneWidget.ClassesPaneWidget();
     view.markAsRoot();
     view.show(document.body);

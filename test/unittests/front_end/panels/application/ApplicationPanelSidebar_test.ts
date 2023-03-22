@@ -111,7 +111,6 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     });
 
     it('shows cookies for all frames', async () => {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
       const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -142,7 +141,6 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     });
 
     it('shows shared storages and events for origins using shared storage', async () => {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
       assertNotNullOrUndefined(securityOriginManager);
       sinon.stub(securityOriginManager, 'securityOrigins').returns([
@@ -200,9 +198,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
         expectedCallString: string, inScope: boolean) => async () => {
       setMockConnectionResponseHandler('Storage.getSharedStorageEntries', () => ({}));
       setMockConnectionResponseHandler('Storage.setSharedStorageTracking', () => ({}));
-      if (inScope) {
-        SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-      }
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
       const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
       const expectedCall = parseExpectedCall(expectedCallString, sidebar);
@@ -268,9 +264,7 @@ describeWithMockConnection('IndexedDBTreeElement', () => {
     const target = createTarget();
     const model = target.model(Application.IndexedDBModel.IndexedDBModel);
     assertNotNullOrUndefined(model);
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     const treeElement = new Application.ApplicationPanelSidebar.IndexedDBTreeElement(panel);
 
@@ -297,9 +291,7 @@ describeWithMockConnection('ResourcesSection', () => {
     const FRAME_ID = 'frame-id' as Protocol.Page.FrameId;
 
     it('adds tree elements for a frame and resource', () => {
-      if (inScope) {
-        SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-      }
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
       const treeElement = new UI.TreeOutline.TreeElement();
       new Application.ApplicationPanelSidebar.ResourcesSection(panel, treeElement);
@@ -323,6 +315,7 @@ describeWithMockConnection('ResourcesSection', () => {
     });
 
     it('picks up existing frames and resource', () => {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
       const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
       const treeElement = new UI.TreeOutline.TreeElement();
       new Application.ApplicationPanelSidebar.ResourcesSection(panel, treeElement);
@@ -342,9 +335,7 @@ describeWithMockConnection('ResourcesSection', () => {
       frame.addResource(resource);
 
       assert.strictEqual(treeElement.childCount(), 0);
-      if (inScope) {
-        SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-      }
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       assert.strictEqual(treeElement.childCount(), inScope ? 1 : 0);
       assert.strictEqual(treeElement.firstChild()?.childCount() ?? 0, inScope ? 1 : 0);
     });

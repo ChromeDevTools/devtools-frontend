@@ -26,9 +26,7 @@ describeWithMockConnection('MediaMainView', () => {
   const testUiUpdate = <T extends keyof Media.MediaModel.EventTypes>(
       event: Platform.TypeScriptUtilities.NoUnion<T>, expectedMethod: keyof Media.MainView.PlayerDataDownloadManager,
       inScope: boolean) => async () => {
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const downloadStore = new Media.MainView.PlayerDataDownloadManager();
     const expectedCall = sinon.stub(downloadStore, expectedMethod).returns();
     const mainView = Media.MainView.MainView.instance({forceNew: true, downloadStore});

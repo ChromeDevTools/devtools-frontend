@@ -35,9 +35,7 @@ describeWithMockConnection('PropertiesWidget', () => {
 
   const updatesUiOnEvent = <T extends keyof SDK.DOMModel.EventTypes>(
       event: Platform.TypeScriptUtilities.NoUnion<T>, inScope: boolean) => async () => {
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const model = target.model(SDK.DOMModel.DOMModel);
     assertNotNullOrUndefined(model);
 

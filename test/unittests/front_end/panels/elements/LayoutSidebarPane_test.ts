@@ -36,9 +36,7 @@ describeWithMockConnection('LayoutSidebarPane', () => {
 
   const updatesUiOnEvent = <T extends keyof SDK.OverlayModel.EventTypes>(
       event: Platform.TypeScriptUtilities.NoUnion<T>, inScope: boolean) => async () => {
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     view = Elements.LayoutSidebarPane.LayoutSidebarPane.instance(
         {forceNew: true, layoutPaneComponent, throttleTimeout: 0});
     view.markAsRoot();

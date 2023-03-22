@@ -29,9 +29,7 @@ describeWithMockConnection('AccessibilityTreeView', () => {
   });
 
   const updatesUiOnEvent = (inScope: boolean) => async () => {
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     new Elements.AccessibilityTreeView.AccessibilityTreeView(toggleButoon, treeComponent);
 
     const model = target.model(SDK.AccessibilityModel.AccessibilityModel);

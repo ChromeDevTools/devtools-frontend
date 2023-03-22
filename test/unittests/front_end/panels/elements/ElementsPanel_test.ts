@@ -79,9 +79,7 @@ describeWithMockConnection('ElementsPanel', () => {
   });
 
   const createsTreeOutlines = (inScope: boolean) => () => {
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
     const model = target.model(SDK.DOMModel.DOMModel);
     assertNotNullOrUndefined(model);
@@ -100,6 +98,7 @@ describeWithMockConnection('ElementsPanel', () => {
   it('does not create tree outlines for out of scope models', createsTreeOutlines(false));
 
   it('expands the tree even when target added later', async () => {
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
     const model = target.model(SDK.DOMModel.DOMModel);
     assertNotNullOrUndefined(model);
     await model.requestDocument();

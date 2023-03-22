@@ -34,9 +34,7 @@ describeWithMockConnection('AccessibilitySidebarView', () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updatesUiOnEvent = (event: any, inScope: boolean) => async () => {
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assertNotNullOrUndefined(domModel);
     const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel);

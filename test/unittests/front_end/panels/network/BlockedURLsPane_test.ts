@@ -21,9 +21,7 @@ describeWithMockConnection('BlockedURLsPane', () => {
     const updateThrottler = {schedule: sinon.stub()};
     Network.BlockedURLsPane.BlockedURLsPane.instance(
         {forceNew: true, updateThrottler: updateThrottler as unknown as Common.Throttler.Throttler});
-    if (inScope) {
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-    }
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assertNotNullOrUndefined(networkManager);
     assert.isFalse(updateThrottler.schedule.called);

@@ -32,6 +32,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #isSuspended: boolean;
   #browserTargetInternal: Target|null;
   #scopeTarget: Target|null;
+  #defaultScopeSet: boolean;
 
   private constructor() {
     super();
@@ -43,6 +44,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#browserTargetInternal = null;
     this.#scopeTarget = null;
     this.#scopedObservers = new WeakSet();
+    this.#defaultScopeSet = false;
   }
 
   static instance({forceNew}: {
@@ -228,6 +230,11 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
           model.addEventListener(key, info.wrappedListener);
         }
       }
+    }
+
+    if (target === this.primaryPageTarget() && !this.#defaultScopeSet) {
+      this.#defaultScopeSet = true;
+      this.setScopeTarget(target);
     }
 
     return target;

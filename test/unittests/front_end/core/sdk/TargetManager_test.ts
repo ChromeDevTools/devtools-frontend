@@ -155,10 +155,6 @@ describeWithMockConnection('TargetManager', () => {
     targetManager.observeTargets(targetObserver, {scoped: true});
     targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, modelObserver, {scoped: true});
 
-    assert.isFalse(targetObserver.targetAdded.called);
-    assert.isFalse(modelObserver.modelAdded.called);
-
-    targetManager.setScopeTarget(target1);
     assert.isTrue(targetObserver.targetAdded.calledOnceWith(target1));
     assert.isTrue(modelObserver.modelAdded.calledOnce);
     assert.isFalse(targetObserver.targetRemoved.called);
@@ -185,6 +181,19 @@ describeWithMockConnection('TargetManager', () => {
     assert.isFalse(modelObserver.modelAdded.calledOnce);
     assert.isTrue(targetObserver.targetRemoved.calledOnceWith(target1));
     assert.isTrue(modelObserver.modelRemoved.called);
+
+    targetObserver.targetAdded.resetHistory();
+    targetObserver.targetRemoved.resetHistory();
+    modelObserver.modelAdded.resetHistory();
+    modelObserver.modelRemoved.resetHistory();
+
+    const target3 = createTarget();
+    assert.isFalse(targetObserver.targetAdded.called);
+    assert.isFalse(modelObserver.modelAdded.called);
+
+    targetManager.setScopeTarget(target3);
+    assert.isTrue(targetObserver.targetAdded.called);
+    assert.isTrue(modelObserver.modelAdded.called);
   });
 
   it('short-cicuits setting the same scope target', () => {

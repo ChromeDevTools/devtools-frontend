@@ -70,9 +70,7 @@ describeWithMockConnection('NetworkLogView', () => {
 
     const tests = (inScope: boolean) => () => {
       it('adds dividers on main frame load events', async () => {
-        if (inScope) {
-          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-        }
+        SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
         const addEventDividers = sinon.spy(networkLogView.columns(), 'addEventDividers');
 
         networkLogView.setRecording(true);
@@ -91,9 +89,7 @@ describeWithMockConnection('NetworkLogView', () => {
       });
 
       it('can export all as HAR', async () => {
-        if (inScope) {
-          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
-        }
+        SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
         const harWriterWrite = sinon.stub(HAR.Writer.Writer, 'write').resolves();
         const URL_HOST = 'example.com';
         target.setInspectedURL(`http://${URL_HOST}/foo` as Platform.DevToolsPath.UrlString);

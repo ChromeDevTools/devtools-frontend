@@ -182,9 +182,9 @@ export class Settings {
 
   clearAll(): void {
     this.globalStorage.removeAll();
+    this.syncedStorage.removeAll();
     this.localStorage.removeAll();
-    const versionSetting = Settings.instance().createSetting(VersionController.currentVersionName, 0);
-    versionSetting.set(VersionController.currentVersion);
+    new VersionController().resetToCurrent();
   }
 
   private storageFromType(storageType?: SettingStorageType): SettingsStorage {
@@ -580,29 +580,35 @@ export class RegExpSetting extends Setting<any> {
 }
 
 export class VersionController {
-  static get currentVersionName(): string {
-    return 'inspectorVersion';
+  static readonly GLOBAL_VERSION_SETTING_NAME = 'inspectorVersion';
+
+  static readonly CURRENT_VERSION = 35;
+
+  readonly #globalVersionSetting: Setting<number>;
+
+  constructor() {
+    // If no version setting is found, we initialize with the current version and don't do anything.
+    this.#globalVersionSetting = Settings.instance().createSetting(
+        VersionController.GLOBAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.Global);
   }
 
-  static get currentVersion(): number {
-    return 35;
+  /**
+   * Force re-sets the version number setting to the current version without
+   * running any migrations.
+   */
+  resetToCurrent(): void {
+    this.#globalVersionSetting.set(VersionController.CURRENT_VERSION);
   }
 
   updateVersion(): void {
-    const versionSetting = Settings.instance().createSetting(VersionController.currentVersionName, 0);
-    const currentVersion = VersionController.currentVersion;
-    const oldVersion = versionSetting.get();
-    if (oldVersion === 0) {
-      // First run, no need to do anything.
-      versionSetting.set(currentVersion);
-      return;
-    }
+    const currentVersion = VersionController.CURRENT_VERSION;
+    const oldVersion = this.#globalVersionSetting.get();
     const methodsToRun = this.methodsToRunToUpdateVersion(oldVersion, currentVersion);
     for (const method of methodsToRun) {
       // @ts-ignore Special version method matching
       this[method].call(this);
     }
-    versionSetting.set(currentVersion);
+    this.resetToCurrent();
   }
 
   private methodsToRunToUpdateVersion(oldVersion: number, currentVersion: number): string[] {

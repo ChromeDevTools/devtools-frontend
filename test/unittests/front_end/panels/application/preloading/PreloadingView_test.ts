@@ -51,11 +51,45 @@ class NavigationEmulator {
 
   constructor() {
     this.tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    this.primaryTarget = createTarget({
-      parentTarget: this.tabTarget,
-      type: SDK.Target.Type.Frame,
-      url: 'https://example.com/',
+    // Fill fake ones here and fill real ones in async part.
+    this.primaryTarget = createTarget();
+    this.frameId = 'fakeFrameId' as Protocol.Page.FrameId;
+    this.loaderId = 'fakeLoaderId' as Protocol.Network.LoaderId;
+  }
+
+  private async createTarget(targetInfo: Protocol.Target.TargetInfo, sessionId: Protocol.Target.SessionID):
+      Promise<SDK.Target.Target> {
+    const childTargetManager = this.tabTarget.model(SDK.ChildTargetManager.ChildTargetManager);
+    assertNotNullOrUndefined(childTargetManager);
+
+    dispatchEvent(this.tabTarget, 'Target.targetCreated', {targetInfo});
+
+    await childTargetManager.attachedToTarget({
+      sessionId,
+      targetInfo,
+      waitingForDebugger: false,
     });
+
+    const target = SDK.TargetManager.TargetManager.instance().targetById(targetInfo.targetId);
+    assertNotNullOrUndefined(target);
+
+    return target;
+  }
+
+  async openDevTools(): Promise<void> {
+    const url = 'https://example.com/';
+
+    const targetId = `targetId:${this.seq}` as Protocol.Target.TargetID;
+    const sessionId = `sessionId:${this.seq}` as Protocol.Target.SessionID;
+    const targetInfo = {
+      targetId,
+      type: 'page',
+      title: 'title',
+      url,
+      attached: true,
+      canAccessOpener: false,
+    };
+    this.primaryTarget = await this.createTarget(targetInfo, sessionId);
     this.frameId = 'frameId' as Protocol.Page.FrameId;
     this.loaderId = 'loaderId' as Protocol.Network.LoaderId;
     SDK.TargetManager.TargetManager.instance().setScopeTarget(this.primaryTarget);
@@ -183,12 +217,17 @@ class NavigationEmulator {
     };
     dispatchEvent(this.primaryTarget, 'Preload.prerenderStatusUpdated', this.prerenderStatusUpdatedEvent);
 
-    this.prerenderTarget = createTarget({
-      parentTarget: this.tabTarget,
-      type: SDK.Target.Type.Frame,
+    const sessionId = `sessionId:prerender:${this.seq}` as Protocol.Target.SessionID;
+    const targetInfo = {
+      targetId: `targetId:prerender:${this.seq}` as Protocol.Target.TargetID,
+      type: 'page',
       subtype: 'prerender',
       url: prerenderUrl,
-    });
+      title: '',
+      attached: true,
+      canAccessOpener: true,
+    };
+    this.prerenderTarget = await this.createTarget(targetInfo, sessionId);
 
     // Note that Page.frameNavigated is emitted here.
     // See also https://crbug.com/1317959 and ResourceTreeModel.Events.PrimaryPageChanged.
@@ -226,6 +265,7 @@ describeWithMockConnection('PreloadingView', async () => {
     sinon.stub(Date, 'now').returns(TIMESTAMP);
 
     const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
     const view = createView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
@@ -279,6 +319,7 @@ describeWithMockConnection('PreloadingView', async () => {
   // prefetch/prerenderAttemptUpdated.
   it('clears SpeculationRules for previous pages', async () => {
     const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
     const view = createView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
@@ -308,6 +349,7 @@ describeWithMockConnection('PreloadingView', async () => {
 
   it('clears SpeculationRules for previous pages when prerendered page activated', async () => {
     const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
     const view = createView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
@@ -337,6 +379,7 @@ describeWithMockConnection('PreloadingView', async () => {
 
   it('filters preloading attempts by selected rule set', async () => {
     const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
     const view = createView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');

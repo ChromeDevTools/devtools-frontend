@@ -422,6 +422,7 @@ export class MainImpl {
       'sourcesPrettyPrint',
       Root.Runtime.ExperimentName.DISABLE_COLOR_FORMAT_SETTING,
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
+      Root.Runtime.ExperimentName.HEADER_OVERRIDES,
     ]);
 
     Root.Runtime.experiments.setNonConfigurableExperiments([

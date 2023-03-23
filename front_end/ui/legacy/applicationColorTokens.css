@@ -25,6 +25,7 @@
   --icon-info: var(--color-primary-bright);
   --icon-info-small: var(--color-primary);
   --icon-link: var(--color-primary);
+  --icon-force-white: var(--color-on-primary);
   --icon-record: var(--color-error-bright);
   --icon-request-response: var(--color-primary);
   --icon-security-lock: var(--color-tertriary);

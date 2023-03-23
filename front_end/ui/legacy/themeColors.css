@@ -199,6 +199,7 @@
   --color-on-surface-variant: rgb(68 71 70);
   --color-primary: rgb(11 87 208);
   --color-primary-bright: rgb(27 110 243);
+  --color-on-primary: rgb(255 255 255);
   --color-orange: rgb(169 91 18);
   --color-orange-bright: rgb(199 122 26);
   --color-tertiary: rgb(20 108 46);
@@ -365,6 +366,7 @@
   --color-on-surface-variant: rgb(196 199 197);
   --color-primary: rgb(168 199 250);
   --color-primary-bright: rgb(124 172 248);
+  --color-on-primary: rgb(255 255 255);
   --color-orange: rgb(255 184 113);
   --color-orange-bright: rgb(238 152 54);
   --color-tertiary: rgb(109 213 140);

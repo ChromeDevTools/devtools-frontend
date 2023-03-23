@@ -11,10 +11,11 @@ import {Capability, type Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 import {
   Events as ResourceTreeModelEvents,
+  PrimaryPageChangeType,
   ResourceTreeModel,
   type ResourceTreeFrame,
-  type PrimaryPageChangeType,
 } from './ResourceTreeModel.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 export interface WithId<I, V> {
   id: I;
@@ -26,21 +27,13 @@ export interface WithId<I, V> {
 // - SpeculationRule rule sets
 // - Preloading attempts
 // - Relationship between rule sets and preloading attempts
-//
-// Current implementation holds data for only current page.
-//
-// TODO(https://crbug.com/1410709): Consider to enhance it to hold history for bounded numbers of
-// pages.
 export class PreloadingModel extends SDKModel<EventTypes> {
   private agent: ProtocolProxyApi.PreloadApi;
-  private loaderId: Protocol.Network.LoaderId|null = null;
+  private loaderIds: Protocol.Network.LoaderId[] = [];
+  private targetJustAttached: boolean = true;
+  private lastPrimaryPageModel: PreloadingModel|null = null;
   private documents: Map<Protocol.Network.LoaderId, DocumentPreloadingData> =
       new Map<Protocol.Network.LoaderId, DocumentPreloadingData>();
-  // It is more natual that DocumentPreloadingData has SourceRegistry.
-  //
-  // TODO(https://crbug.com/1410709): Consider to add loadingId to
-  // Preload.preloadingAttemptSourcesUpdated.
-  private sources: SourceRegistry = new SourceRegistry();
 
   constructor(target: Target) {
     super(target);
@@ -49,6 +42,11 @@ export class PreloadingModel extends SDKModel<EventTypes> {
 
     this.agent = target.preloadAgent();
     void this.agent.invoke_enable();
+
+    const targetInfo = target.targetInfo();
+    if (targetInfo !== undefined && targetInfo.subtype === 'prerender') {
+      this.lastPrimaryPageModel = TargetManager.instance().primaryPageTarget()?.model(PreloadingModel) || null;
+    }
 
     TargetManager.instance().addModelListener(
         ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
@@ -69,65 +67,119 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     }
   }
 
-  private currentDocument(): DocumentPreloadingData|null {
-    // DevTools is opened at this page.
-    if (this.loaderId === null) {
-      // At almost all timing, we have at most one DocumentPreloadingData. We may have two ones
-      // iff all of the following conditions are satisfied.
-      //
-      // - A timing around page navigation.
-      // - Some CDP Preload.* for the old page is received.
-      // - Some CDP Preload.* for the new page is received.
-      // - Page.frameNavigated for the new page is not received yet.
-      //
-      // We don't expect this occurs. If occurred, the following Page.frameNavigated triggers
-      // re-renderering of PreloadingView. So, we return arbitrary one for that case.
-      const [document] = this.documents.values();
-      return document || null;
+  private currentLoaderId(): Protocol.Network.LoaderId|null {
+    // Target is just attached and didn't received CDP events that we can infer loaderId.
+    if (this.targetJustAttached) {
+      return null;
     }
 
-    return this.documents.get(this.loaderId) || null;
+    if (this.loaderIds.length === 0) {
+      throw new Error('unreachable');
+    }
+
+    return this.loaderIds[this.loaderIds.length - 1];
   }
 
+  private currentDocument(): DocumentPreloadingData|null {
+    const loaderId = this.currentLoaderId();
+    return loaderId === null ? null : this.documents.get(loaderId) || null;
+  }
+
+  // Returns a rule set of the current page.
+  //
   // Returns reference. Don't save returned values.
   // Returned value may or may not be updated as the time grows.
   getRuleSetById(id: Protocol.Preload.RuleSetId): Protocol.Preload.RuleSet|null {
     return this.currentDocument()?.ruleSets.getById(id) || null;
   }
 
+  // Returns rule sets of the current page.
+  //
   // Returns array of pairs of id and reference. Don't save returned references.
   // Returned values may or may not be updated as the time grows.
   getAllRuleSets(): WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>[] {
     return this.currentDocument()?.ruleSets.getAll() || [];
   }
 
+  // Returns a preloading attempt of the current page.
+  //
   // Returns reference. Don't save returned values.
   // Returned value may or may not be updated as the time grows.
   getPreloadingAttemptById(id: PreloadingAttemptId): PreloadingAttempt|null {
-    return this.currentDocument()?.preloadingAttempts.getById(id, this.sources) || null;
+    const document = this.currentDocument();
+    if (document === null) {
+      return null;
+    }
+
+    return document.preloadingAttempts.getById(id, document.sources) || null;
   }
 
-  // Returs preloading attempts that triggered by the rule set with `ruleSetId`.
+  // Returs preloading attempts of the current page that triggered by the rule set with `ruleSetId`.
   // `ruleSetId === null` means "do not filter".
   //
   // Returns array of pairs of id and reference. Don't save returned references.
   // Returned values may or may not be updated as the time grows.
   getPreloadingAttempts(ruleSetId: Protocol.Preload.RuleSetId|null): WithId<PreloadingAttemptId, PreloadingAttempt>[] {
-    return this.currentDocument()?.preloadingAttempts.getAll(ruleSetId, this.sources) || [];
+    const document = this.currentDocument();
+    if (document === null) {
+      return [];
+    }
+
+    return document.preloadingAttempts.getAll(ruleSetId, document.sources);
+  }
+
+  // Returs preloading attempts of the previousPgae.
+  //
+  // Returns array of pairs of id and reference. Don't save returned references.
+  // Returned values may or may not be updated as the time grows.
+  getPreloadingAttemptsOfPreviousPage(): WithId<PreloadingAttemptId, PreloadingAttempt>[] {
+    if (this.loaderIds.length <= 1) {
+      return [];
+    }
+
+    const document = this.documents.get(this.loaderIds[this.loaderIds.length - 2]);
+    if (document === undefined) {
+      return [];
+    }
+
+    return document.preloadingAttempts.getAll(null, document.sources);
   }
 
   private onPrimaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
-    const {frame} = event.data;
+    const {frame, type} = event.data;
+
+    // Model of prerendered page's target will hands over. Do nothing for the initiator page.
+    if (this.lastPrimaryPageModel === null && type === PrimaryPageChangeType.Activation) {
+      return;
+    }
+
+    if (this.lastPrimaryPageModel !== null && type !== PrimaryPageChangeType.Activation) {
+      return;
+    }
+
+    if (this.lastPrimaryPageModel !== null && type === PrimaryPageChangeType.Activation) {
+      // Hand over from the model of the last primary page.
+      this.loaderIds = this.lastPrimaryPageModel.loaderIds;
+      for (const [loaderId, prev] of this.lastPrimaryPageModel.documents.entries()) {
+        this.ensureDocumentPreloadingData(loaderId);
+        this.documents.get(loaderId)?.mergePrevious(prev);
+      }
+    }
+
+    this.lastPrimaryPageModel = null;
 
     // Note that at this timing ResourceTreeFrame.loaderId is ensured to
     // be non empty and Protocol.Network.LoaderId because it is filled
     // by ResourceTreeFrame.navigate.
-    this.loaderId = frame.loaderId as Protocol.Network.LoaderId;
+    const currentLoaderId = frame.loaderId as Protocol.Network.LoaderId;
 
-    this.ensureDocumentPreloadingData(this.loaderId);
+    // Holds histories for two pages at most.
+    this.loaderIds.push(currentLoaderId);
+    this.loaderIds = this.loaderIds.slice(-2);
+    this.ensureDocumentPreloadingData(currentLoaderId);
     for (const loaderId of this.documents.keys()) {
-      if (loaderId !== this.loaderId) {
+      if (!this.loaderIds.includes(loaderId)) {
         this.documents.delete(loaderId);
       }
     }
@@ -139,6 +191,13 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     const ruleSet = event.ruleSet;
 
     const loaderId = ruleSet.loaderId;
+
+    // Infer current loaderId if DevTools is opned at the current page.
+    if (this.currentLoaderId() === null) {
+      this.loaderIds = [loaderId];
+      this.targetJustAttached = false;
+    }
+
     this.ensureDocumentPreloadingData(loaderId);
     this.documents.get(loaderId)?.ruleSets.upsert(ruleSet);
     this.dispatchEventToListeners(Events.ModelUpdated);
@@ -154,7 +213,13 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   }
 
   onPreloadingAttemptSourcesUpdated(event: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void {
-    this.sources.update(event.preloadingAttemptSources);
+    // We expect that Preload.ruleSetUpdated is followed by Preload.preloadingAttemptSourcesUpdated.
+    assertNotNullOrUndefined(this.currentDocument());
+    // It is more robust if Preload.preloadingAttemptSourcesUpdated has loadingId.
+    //
+    // TODO(https://crbug.com/1410709): Consider to add loadingId to
+    // Preload.preloadingAttemptSourcesUpdated.
+    this.currentDocument()?.sources.update(event.preloadingAttemptSources);
   }
 
   onPrefetchStatusUpdated(event: Protocol.Preload.PrefetchStatusUpdatedEvent): void {
@@ -218,11 +283,31 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
 class DocumentPreloadingData {
   ruleSets: RuleSetRegistry = new RuleSetRegistry();
   preloadingAttempts: PreloadingAttemptRegistry = new PreloadingAttemptRegistry();
+  sources: SourceRegistry = new SourceRegistry();
+
+  mergePrevious(prev: DocumentPreloadingData): void {
+    // Note that CDP events Preload.ruleSetUpdated/Deleted and
+    // Preload.preloadingAttemptSourcesUpdated with a loaderId are emitted to target that bounded to
+    // a document with the loaderId. On the other hand, prerendering activation changes targets
+    // of Preload.prefetch/prerenderStatusUpdated, i.e. activated page receives those events for
+    // triggering outcome "Success".
+    if (!this.ruleSets.isEmpty() || !this.sources.isEmpty()) {
+      throw new Error('unreachable');
+    }
+
+    this.ruleSets = prev.ruleSets;
+    this.preloadingAttempts.mergePrevious(prev.preloadingAttempts);
+    this.sources = prev.sources;
+  }
 }
 
 class RuleSetRegistry {
   private map: Map<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet> =
       new Map<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>();
+
+  isEmpty(): boolean {
+    return this.map.size === 0;
+  }
 
   // Returns reference. Don't save returned values.
   // Returned values may or may not be updated as the time grows.
@@ -334,11 +419,24 @@ class PreloadingAttemptRegistry {
 
     this.map.set(id, attempt);
   }
+
+  mergePrevious(prev: PreloadingAttemptRegistry): void {
+    for (const [id, attempt] of this.map.entries()) {
+      prev.map.set(id, attempt);
+    }
+
+    this.map = prev.map;
+  }
 }
 
 class SourceRegistry {
   private map: Map<PreloadingAttemptId, Protocol.Preload.PreloadingAttemptSource> =
       new Map<PreloadingAttemptId, Protocol.Preload.PreloadingAttemptSource>();
+
+  isEmpty(): boolean {
+    return this.map.size === 0;
+  }
+
   getById(id: PreloadingAttemptId): Protocol.Preload.PreloadingAttemptSource|null {
     return this.map.get(id) || null;
   }

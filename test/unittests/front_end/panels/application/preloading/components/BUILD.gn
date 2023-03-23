@@ -11,6 +11,7 @@ ts_library("components") {
     "PreloadingGrid_test.ts",
     "RuleSetDetailsReportView_test.ts",
     "RuleSetGrid_test.ts",
+    "UsedPreloadingView_test.ts",
   ]
 
   deps = [

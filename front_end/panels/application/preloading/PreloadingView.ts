@@ -154,6 +154,7 @@ export class PreloadingView extends UI.Widget.VBox {
   private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
 
   private readonly infobarContainer: HTMLDivElement;
+  private readonly hsplitUsedPreloading: UI.SplitWidget.SplitWidget;
   private readonly hsplit: UI.SplitWidget.SplitWidget;
   private readonly vsplitRuleSets: UI.SplitWidget.SplitWidget;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
@@ -161,6 +162,7 @@ export class PreloadingView extends UI.Widget.VBox {
   private readonly preloadingGrid = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
   private readonly preloadingDetails =
       new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
+  private readonly usedPreloading = new PreloadingComponents.UsedPreloadingView.UsedPreloadingView();
   private readonly featureFlagWarningsPromise: Promise<void>;
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
@@ -170,17 +172,20 @@ export class PreloadingView extends UI.Widget.VBox {
 
     // this (VBox)
     //   +- infobarContainer
-    //   +- hsplit
-    //        +- vsplitRuleSets
-    //             +- topContainer
-    //                  +- RuleSetGrid
-    //             +- bottomContainer
-    //                  +- RuleSetDetailsReportView
-    //        +- vsplitPreloadingAttempts
-    //             +- topContainer
-    //                  +- PreloadingGrid
-    //             +- bottomContainer
-    //                  +- PreloadingDetailsReportView
+    //   +- hsplitUsedPreloading
+    //        +- hsplit
+    //             +- vsplitRuleSets
+    //                  +- leftContainer
+    //                       +- RuleSetGrid
+    //                  +- rightContainer
+    //                       +- RuleSetDetailsReportView
+    //             +- vsplitPreloadingAttempts
+    //                  +- leftContainer
+    //                       +- PreloadingGrid
+    //                  +- rightContainer
+    //                       +- PreloadingDetailsReportView
+    //        +- VBox
+    //             + UsedPreloadingReportView
     //
     // - If an row of RuleSetGrid selected, RuleSetDetailsReportView shows details of it.
     // - If not, RuleSetDetailsReportView hides.
@@ -208,6 +213,19 @@ export class PreloadingView extends UI.Widget.VBox {
     );
     this.hsplit.setSidebarWidget(this.vsplitRuleSets);
     this.hsplit.setMainWidget(vsplitPreloadingAttempts);
+
+    const usedPreloadingContainer = new UI.Widget.VBox();
+    usedPreloadingContainer.contentElement.appendChild(this.usedPreloading);
+    this.hsplitUsedPreloading = new UI.SplitWidget.SplitWidget(
+        /* isVertical */ false,
+        /* secondIsSidebar */ true,
+        /* settingName */ undefined,
+        /* defaultSidebarWidth */ undefined,
+        /* defaultSidebarHeight */ 50,
+        /* constraintsInDip */ undefined,
+    );
+    this.hsplitUsedPreloading.setMainWidget(this.hsplit);
+    this.hsplitUsedPreloading.setSidebarWidget(usedPreloadingContainer);
 
     this.featureFlagWarningsPromise = this.getFeatureFlags().then(x => this.onGetFeatureFlags(x));
   }
@@ -240,7 +258,7 @@ export class PreloadingView extends UI.Widget.VBox {
 
     this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
 
-    this.hsplit.show(this.contentElement);
+    this.hsplitUsedPreloading.show(this.contentElement);
 
     // Lazily initialize PreloadingModelProxy because this triggers a chain
     //
@@ -316,6 +334,8 @@ export class PreloadingView extends UI.Widget.VBox {
     this.preloadingGrid.update(preloadingAttemptRows);
 
     this.updatePreloadingDetails();
+
+    this.usedPreloading.data = this.modelProxy.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value);
   }
 
   private onRuleSetsGridCellFocused(event: Event): void {
@@ -387,6 +407,10 @@ export class PreloadingView extends UI.Widget.VBox {
 
   getPreloadingDetailsForTest(): PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView {
     return this.preloadingDetails;
+  }
+
+  getUsedPreloadingForTest(): PreloadingComponents.UsedPreloadingView.UsedPreloadingView {
+    return this.usedPreloading;
   }
 
   getFeatureFlagWarningsPromiseForTest(): Promise<void> {

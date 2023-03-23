@@ -952,6 +952,7 @@ grd_files_debug_sources = [
   "front_end/panels/application/preloading/components/PreloadingGrid.js",
   "front_end/panels/application/preloading/components/RuleSetDetailsReportView.js",
   "front_end/panels/application/preloading/components/RuleSetGrid.js",
+  "front_end/panels/application/preloading/components/UsedPreloadingView.js",
   "front_end/panels/application/preloading/components/preloadingDetailsReportView.css.js",
   "front_end/panels/application/preloading/components/preloadingGrid.css.js",
   "front_end/panels/application/preloading/components/ruleSetGrid.css.js",

@@ -369,12 +369,16 @@ describeWithMockConnection('PreloadingView', async () => {
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
     assertShadowRoot(ruleSetGridComponent.shadowRoot);
+    const usedPreloadingComponent = view.getUsedPreloadingForTest();
+    assertShadowRoot(usedPreloadingComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
         ['Validity'],
         [],
     );
+
+    assert.include(usedPreloadingComponent.shadowRoot.textContent, 'This page was prerendered');
   });
 
   it('filters preloading attempts by selected rule set', async () => {

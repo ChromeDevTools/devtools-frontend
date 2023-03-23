@@ -21,6 +21,7 @@ devtools_module("components") {
     "PreloadingGrid.ts",
     "RuleSetDetailsReportView.ts",
     "RuleSetGrid.ts",
+    "UsedPreloadingView.ts",
   ]
 
   deps = [

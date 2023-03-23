@@ -14,6 +14,7 @@ default_components_visibility = [
   "../*",
   "../../../../test/unittests/front_end/ui/components/*",
   "../../../../test/unittests/front_end/panels/*",
+  "../../../../front_end/entrypoints/*",
 ]
 
 default_components_visibility += devtools_components_visibility

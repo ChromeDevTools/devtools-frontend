@@ -14142,6 +14142,17 @@
                     ]
                 },
                 {
+                    "name": "setShowRedrawRects",
+                    "description": "COHERENT_BEGIN\nRequests that backend shows redraw rectangles for elements being redrawn",
+                    "parameters": [
+                        {
+                            "name": "result",
+                            "description": "True for showing redraw rectangles",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "setShowLayoutShiftRegions",
                     "description": "Requests that backend shows layout shift regions",
                     "parameters": [
@@ -20739,6 +20750,121 @@
                 {
                     "name": "disable",
                     "description": "Disables the Media domain."
+                }
+            ]
+        },
+        {
+            "domain": "CohtmlDebug",
+            "description": "COHERENT_BEGIN\nThis domain exposes some Cohtml deubg functionality",
+            "dependencies": [
+                "Runtime"
+            ],
+            "types": [
+                {
+                    "id": "ImageData",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "sizeBytes",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "id": "SystemCacheStats",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "aliveImagesCount",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "aliveTotalBytesUsed",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "aliveImages",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ImageData"
+                            }
+                        },
+                        {
+                            "name": "orphanedImagesCount",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "orphanedBytesUsed",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "orphanedImages",
+                            "type": "array",
+                            "items": {
+                                "$ref": "ImageData"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "setDrawMetaDataEmit",
+                    "parameters": [
+                        {
+                            "name": "result",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "setContinuousRepaint",
+                    "parameters": [
+                        {
+                            "name": "result",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "dumpDOM"
+                },
+                {
+                    "name": "dumpStackingContext"
+                },
+                {
+                    "name": "dumpUsedImages"
+                },
+                {
+                    "name": "captureBackendBuffers"
+                },
+                {
+                    "name": "captureRendFile"
+                },
+                {
+                    "name": "captureFullPage"
+                },
+                {
+                    "name": "enable"
+                },
+                {
+                    "name": "disable"
+                },
+                {
+                    "name": "clearCachedUnusedImages"
+                },
+                {
+                    "name": "getSystemCacheStats",
+                    "returns": [
+                        {
+                            "name": "stats",
+                            "$ref": "SystemCacheStats"
+                        }
+                    ]
                 }
             ]
         },

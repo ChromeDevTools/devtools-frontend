@@ -102,6 +102,31 @@ const UIStrings = {
   *@description Title of a setting under the Rendering category that can be invoked through the Command Menu
   */
   hidePaintFlashingRectangles: 'Hide paint flashing rectangles',
+
+  // COHERENT_BEGIN
+
+  /**
+  *@description Title of a setting under the Cohtml category. The setting enables flashing of repainted elements.
+  */
+  showRedrawFlashingRectangles: 'Show elements redraw flashing rectangles',
+
+  /**
+  *@description Title of a setting under the Cohtml category. The setting enables flashing of repainted elements.
+  */
+  hideRedrawFlashingRectangles: 'Hide elements redraw flashing rectangles',
+
+  /**
+  *@description Title of a setting under the Cohtml category. The setting enalbes redrawing of the whole view every frame.
+  */
+  enableContinuousRepaint: 'Enable redrawing of the view each frame',
+
+  /**
+  *@description Title of a setting under the Cohtml category. The setting enalbes redrawing of the whole view every frame.
+  */
+  disableContinuousRepaint: 'Disable redrawing of the view each frame',
+
+  // COHERENT_END
+
   /**
   *@description Title of a setting under the Rendering category that can be invoked through the Command Menu
   */
@@ -521,6 +546,64 @@ Common.Settings.registerSettingExtension({
   ],
   defaultValue: false,
 });
+
+// COHERENT_BEGIN
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'showRedrawRects',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.Session,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showRedrawFlashingRectangles),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.hideRedrawFlashingRectangles),
+    },
+  ],
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'continuousRepaint',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.Session,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.enableContinuousRepaint),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.disableContinuousRepaint),
+    },
+  ],
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.RENDERING,
+  settingName: 'drawMetaData',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.Session,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.showRedrawFlashingRectangles),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.hideRedrawFlashingRectangles),
+    },
+  ],
+  defaultValue: false,
+});
+
+// COHERENT_END
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.RENDERING,

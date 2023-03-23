@@ -62,6 +62,8 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private showPaintRectsSetting: Common.Settings.Setting<any>;
+
+  private showRedrawRectsSetting: Common.Settings.Setting<any>;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private showLayoutShiftRegionsSetting: Common.Settings.Setting<any>;
@@ -116,6 +118,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.highlighter = this.defaultHighlighter;
 
     this.showPaintRectsSetting = Common.Settings.Settings.instance().moduleSetting('showPaintRects');
+    this.showRedrawRectsSetting = Common.Settings.Settings.instance().moduleSetting('showRedrawRects');
     this.showLayoutShiftRegionsSetting = Common.Settings.Settings.instance().moduleSetting('showLayoutShiftRegions');
     this.showAdHighlightsSetting = Common.Settings.Settings.instance().moduleSetting('showAdHighlights');
     this.showDebugBordersSetting = Common.Settings.Settings.instance().moduleSetting('showDebugBorders');
@@ -200,6 +203,8 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.registeredListeners = [
       this.showPaintRectsSetting.addChangeListener(
           () => this.overlayAgent.invoke_setShowPaintRects({result: this.showPaintRectsSetting.get()})),
+      this.showRedrawRectsSetting.addChangeListener(
+        () => this.overlayAgent.invoke_setShowRedrawRects({result: this.showRedrawRectsSetting.get()})),
       this.showLayoutShiftRegionsSetting.addChangeListener(
           () => this.overlayAgent.invoke_setShowLayoutShiftRegions({result: this.showLayoutShiftRegionsSetting.get()})),
       this.showAdHighlightsSetting.addChangeListener(
@@ -220,6 +225,10 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     if (this.showPaintRectsSetting.get()) {
       this.overlayAgent.invoke_setShowPaintRects({result: true});
     }
+    if (this.showRedrawRectsSetting.get()) {
+      this.overlayAgent.invoke_setShowRedrawRects({result: true});
+    }
+
     if (this.showLayoutShiftRegionsSetting.get()) {
       this.overlayAgent.invoke_setShowLayoutShiftRegions({result: true});
     }

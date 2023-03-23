@@ -6504,6 +6504,14 @@ experimental domain Overlay
       # True for showing paint rectangles
       boolean result
 
+  # COHERENT_BEGIN
+  # Requests that backend shows redraw rectangles for elements being redrawn
+  command setShowRedrawRects
+    parameters
+      # True for showing redraw rectangles
+      boolean result
+  # COHERENT_END
+
   # Requests that backend shows layout shift regions
   command setShowLayoutShiftRegions
     parameters
@@ -9682,3 +9690,55 @@ experimental domain Media
 
   # Disables the Media domain.
   command disable
+
+# COHERENT_BEGIN
+# This domain exposes some Cohtml deubg functionality
+domain CohtmlDebug
+  depends on Runtime
+
+  type ImageData extends object
+    properties
+      string name
+      integer sizeBytes
+
+  type SystemCacheStats extends object
+    properties
+      integer aliveImagesCount
+      integer aliveTotalBytesUsed
+      array of ImageData aliveImages
+
+      integer orphanedImagesCount
+      integer orphanedBytesUsed
+      array of ImageData orphanedImages
+
+  command setDrawMetaDataEmit
+    parameters
+      boolean result
+
+  command setContinuousRepaint
+    parameters
+      boolean result
+
+  command dumpDOM
+
+  command dumpStackingContext
+
+  command dumpUsedImages
+
+  command captureBackendBuffers
+
+  command captureRendFile
+
+  command captureFullPage
+
+  command enable
+
+  command disable
+
+  command clearCachedUnusedImages
+
+  command getSystemCacheStats
+    returns
+      SystemCacheStats stats
+
+# COHERENT_END

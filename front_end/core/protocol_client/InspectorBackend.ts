@@ -692,6 +692,12 @@ export class TargetBase {
     return this.getAgent('Overlay');
   }
 
+  // COHERENT_BEGIN
+  cohtmlDebugAgent(): ProtocolProxyApi.CohtmlDebugApi {
+    return this.getAgent('CohtmlDebug');
+  }
+  // COHERENT_END
+
   pageAgent(): ProtocolProxyApi.PageApi {
     return this.getAgent('Page');
   }
@@ -831,6 +837,12 @@ export class TargetBase {
   registerOverlayDispatcher(dispatcher: ProtocolProxyApi.OverlayDispatcher): void {
     this.registerDispatcher('Overlay', dispatcher);
   }
+
+  // COHERENT_BEGIN
+  registerCohtmlDebugDispatcher(dispatcher: ProtocolProxyApi.CohtmlDebugDispatcher): void {
+    this.registerDispatcher('CohtmlDebug', dispatcher);
+  }
+  // COHERENT_END
 
   registerPageDispatcher(dispatcher: ProtocolProxyApi.PageDispatcher): void {
     this.registerDispatcher('Page', dispatcher);

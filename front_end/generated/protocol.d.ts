@@ -8,6 +8,7 @@
  */
 
 declare namespace Protocol {
+
   export type integer = number;
   export type binary = string;
   export type EnumerableEnum<T> = {[K in keyof T]: T[K]};
@@ -9594,6 +9595,13 @@ declare namespace Protocol {
       result: boolean;
     }
 
+    export interface SetShowRedrawRectsRequest {
+      /**
+       * True for showing redraw rectangles
+       */
+      result: boolean;
+    }
+
     export interface SetShowLayoutShiftRegionsRequest {
       /**
        * True for showing layout shift regions
@@ -13938,6 +13946,39 @@ declare namespace Protocol {
      */
     export interface PlayersCreatedEvent {
       players: PlayerId[];
+    }
+  }
+
+  /**
+   * COHERENT_BEGIN
+   * This domain exposes some Cohtml deubg functionality
+   */
+  export namespace CohtmlDebug {
+
+    export interface ImageData {
+      name: string;
+      sizeBytes: integer;
+    }
+
+    export interface SystemCacheStats {
+      aliveImagesCount: integer;
+      aliveTotalBytesUsed: integer;
+      aliveImages: ImageData[];
+      orphanedImagesCount: integer;
+      orphanedBytesUsed: integer;
+      orphanedImages: ImageData[];
+    }
+
+    export interface SetDrawMetaDataEmitRequest {
+      result: boolean;
+    }
+
+    export interface SetContinuousRepaintRequest {
+      result: boolean;
+    }
+
+    export interface GetSystemCacheStatsResponse extends ProtocolResponseWithError {
+      stats: SystemCacheStats;
     }
   }
 

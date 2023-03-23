@@ -48,6 +48,7 @@ devtools_module("sdk") {
     "NetworkRequest.ts",
     "OverlayColorGenerator.ts",
     "OverlayModel.ts",
+    "CohtmlDebugModel.ts",
     "OverlayPersistentHighlighter.ts",
     "PageLoad.ts",
     "PageResourceLoader.ts",

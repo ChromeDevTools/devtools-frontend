@@ -43,6 +43,7 @@ const UIStrings = {
   */
   highlightsAreasOfThePageGreen:
       'Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.',
+
   /**
   * @description The name of a checkbox setting in the Rendering tool. This setting highlights areas
   * (regions) of the page that were shifted (where a 'layout shift' occurred). A layout shift is

@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {type ElementHandle} from 'puppeteer';
 import {expectError} from '../../conductor/events.js';
 import {
   $,
@@ -251,21 +250,19 @@ describe('The Network Request view', async () => {
     assert.deepEqual(messages, ['ping', 'ping']);
   });
 
-  async function assertOutlineMatches(expectedPatterns: string[], outline: ElementHandle<Element>[]) {
+  function assertOutlineMatches(expectedPatterns: string[], outline: string[]) {
     const regexpSpecialChars = /[-\/\\^$*+?.()|[\]{}]/g;
     for (const item of outline) {
-      const actualText = await item.evaluate(el => el.textContent || '');
       const expectedPattern = expectedPatterns.shift();
       if (expectedPattern) {
-        assert.match(actualText, new RegExp(expectedPattern.replace(regexpSpecialChars, '\\$&').replace(/%/g, '.*')));
+        assert.match(item, new RegExp(expectedPattern.replace(regexpSpecialChars, '\\$&').replace(/%/g, '.*')));
       } else {
-        assert.fail('Unexpected text: ' + actualText);
+        assert.fail('Unexpected text: ' + item);
       }
     }
   }
 
-  // Temporarily skip to allow enabling header override experiment by default.
-  it.skip('[crbug.com/1288023] shows request headers and payload', async () => {
+  it('shows request headers and payload', async () => {
     await navigateToNetworkTab('headers-and-payload.html');
 
     await waitForSomeRequestsToAppear(2);
@@ -277,49 +274,86 @@ describe('The Network Request view', async () => {
       root: networkView,
     });
     await waitFor('[aria-label=Headers][role=tab][aria-selected=true]', networkView);
-    const headersView = await waitFor('.request-headers-view');
-    const headersOutline = await $$('[role=treeitem]:not(.hidden)', headersView);
     const expectedHeadersContent = [
-      'General',
-      [
-        'Request URL: https://localhost:%/test/e2e/resources/network/image.svg?id=42&param=a%20b',
-        'Request Method: POST',
-        'Status Code: 200 OK',
-        'Remote Address: [::1]:%',
-        'Referrer Policy: strict-origin-when-cross-origin',
-      ],
-      'Response Headers (7)View source',
-      [
-        'Cache-Control: max-age=%',
-        'Connection: keep-alive',
-        'Content-Type: image/svg+xml; charset=utf-8',
-        'Date: %',
-        'Keep-Alive: timeout=5',
-        'Transfer-Encoding: chunked',
-        'Vary: Origin',
-      ],
-      'Request Headers (16)View source',
-      [
-        'accept: */*',
-        'Accept-Encoding: gzip, deflate, br',
-        'Connection: keep-alive',
-        'Content-Length: 32',
-        'content-type: application/x-www-form-urlencoded;charset=UTF-8',
-        'Host: localhost:%',
-        'Origin: https://localhost:%',
-        'Referer: https://localhost:%/test/e2e/resources/network/headers-and-payload.html',
-        'sec-ch-ua',
-        'sec-ch-ua-mobile: ?0',
-        'sec-ch-ua-platform',
-        'Sec-Fetch-Dest: empty',
-        'Sec-Fetch-Mode: cors',
-        'Sec-Fetch-Site: same-origin',
-        'User-Agent: Mozilla/5.0 %',
-        'x-same-domain: 1',
-      ],
-    ].flat();
+      {
+        aria: 'General',
+        rows: [
+          'Request URL:',
+          'https://localhost:%/test/e2e/resources/network/image.svg?id=42&param=a%20b',
+          'Request Method:',
+          'POST',
+          'Status Code:',
+          '200 OK',
+          'Remote Address:',
+          '[::1]:%',
+          'Referrer Policy:',
+          'strict-origin-when-cross-origin',
+        ],
+      },
+      {
+        aria: 'Response Headers',
+        rows: [
+          'cache-control:',
+          'max-age=%',
+          'connection:',
+          'keep-alive',
+          'content-type:',
+          'image/svg+xml; charset=utf-8',
+          'date:',
+          '%',
+          'keep-alive:',
+          'timeout=5',
+          'transfer-encoding:',
+          'chunked',
+          'vary:',
+          'Origin',
+        ],
+      },
+      {
+        aria: 'Request Headers',
+        rows: [
+          'accept:',
+          '*/*',
+          'accept-encoding:',
+          'gzip, deflate, br',
+          'connection:',
+          'keep-alive',
+          'content-length:',
+          '32',
+          'content-type:',
+          'application/x-www-form-urlencoded;charset=UTF-8',
+          'host:',
+          'localhost:%',
+          'origin:',
+          'https://localhost:%',
+          'referer:',
+          'https://localhost:%/test/e2e/resources/network/headers-and-payload.html',
+          'sec-ch-ua:',
+          '%',
+          'sec-ch-ua-mobile:',
+          '?0',
+          'sec-ch-ua-platform:',
+          '%',
+          'sec-fetch-dest:',
+          'empty',
+          'sec-fetch-mode:',
+          'cors',
+          'sec-fetch-site:',
+          'same-origin',
+          'user-agent:',
+          'Mozilla/5.0 %',
+          'x-same-domain:',
+          '1',
+        ],
+      },
+    ];
 
-    await assertOutlineMatches(expectedHeadersContent, headersOutline);
+    for (const sectionContent of expectedHeadersContent) {
+      const section = await waitFor(`[aria-label="${sectionContent.aria}"]`);
+      const rows = await $$('.row', section);
+      const rowsText = await (await Promise.all(rows.map(async row => await getTextFromHeadersRow(row)))).flat();
+      assertOutlineMatches(sectionContent.rows, rowsText);
+    }
 
     await click('[aria-label=Payload][role="tab"]', {
       root: networkView,
@@ -327,6 +361,8 @@ describe('The Network Request view', async () => {
     await waitFor('[aria-label=Payload][role=tab][aria-selected=true]', networkView);
     const payloadView = await waitFor('.request-payload-view');
     const payloadOutline = await $$('[role=treeitem]:not(.hidden)', payloadView);
+    const payloadOutlineText =
+        await Promise.all(payloadOutline.map(async item => item.evaluate(el => el.textContent || '')));
     const expectedPayloadContent = [
       'Query String Parameters (2)view sourceview URL-encoded',
       ['id: 42', 'param: a b'],
@@ -339,11 +375,10 @@ describe('The Network Request view', async () => {
       ],
     ].flat();
 
-    await assertOutlineMatches(expectedPayloadContent, payloadOutline);
+    assertOutlineMatches(expectedPayloadContent, payloadOutlineText);
   });
 
-  // Temporarily skip to allow enabling header override experiment by default.
-  it.skip('[crbug.com/1288023] shows raw headers', async () => {
+  it('shows raw headers', async () => {
     await navigateToNetworkTab('headers-and-payload.html');
 
     await waitForSomeRequestsToAppear(2);
@@ -355,55 +390,86 @@ describe('The Network Request view', async () => {
       root: networkView,
     });
     await waitFor('[aria-label=Headers][role=tab][aria-selected=true]', networkView);
-    const headersView = await waitFor('.request-headers-view');
-    const responseHeadersTitle = await waitForElementWithTextContent('Response Headers (7)View source');
-    await click('.header-toggle', {
-      root: responseHeadersTitle,
+    const section = await waitFor('[aria-label="Response Headers"]');
+    await click('input', {
+      root: section,
     });
 
-    const headersOutline = await $$('[role=treeitem]:not(.hidden)', headersView);
-    const expectedHeadersContent = [
-      'General',
-      [
-        'Request URL: https://localhost:%/test/e2e/resources/network/image.svg?id=42&param=a%20b',
-        'Request Method: POST',
-        'Status Code: 200 OK',
-        'Remote Address: [::1]:%',
-        'Referrer Policy: strict-origin-when-cross-origin',
-      ],
-      'Response Headers (7)View parsed',
-      [
-        'HTTP/1.1 200 OK',
-        'Content-Type: image/svg+xml; charset=utf-8',
-        'Cache-Control: max-age=%',
-        'Vary: Origin',
-        'Date: %',
-        'Connection: keep-alive',
-        'Keep-Alive: timeout=5',
-        'Transfer-Encoding: chunked',
-      ].join('\r\n'),
-      'Request Headers (16)View source',
-      [
-        'accept: */*',
-        'Accept-Encoding: gzip, deflate, br',
-        'Connection: keep-alive',
-        'Content-Length: 32',
-        'content-type: application/x-www-form-urlencoded;charset=UTF-8',
-        'Host: localhost:%',
-        'Origin: https://localhost:%',
-        'Referer: https://localhost:%/test/e2e/resources/network/headers-and-payload.html',
-        'sec-ch-ua',
-        'sec-ch-ua-mobile: ?0',
-        'sec-ch-ua-platform',
-        'Sec-Fetch-Dest: empty',
-        'Sec-Fetch-Mode: cors',
-        'Sec-Fetch-Site: same-origin',
-        'User-Agent: Mozilla/5.0 %',
-        'x-same-domain: 1',
-      ],
-    ].flat();
+    const expectedRawHeadersContent = [
+      'HTTP/1.1 200 OK',
+      'Content-Type: image/svg+xml; charset=utf-8',
+      'Cache-Control: max-age=%',
+      'Vary: Origin',
+      'Date: %',
+      'Connection: keep-alive',
+      'Keep-Alive: timeout=5',
+      'Transfer-Encoding: chunked',
+    ].join('\r\n');
+    const rawHeaders = await $('.raw-headers', section);
+    const rawHeadersText = await rawHeaders.evaluate(el => el.textContent || '');
+    assertOutlineMatches([expectedRawHeadersContent], [rawHeadersText]);
 
-    await assertOutlineMatches(expectedHeadersContent, headersOutline);
+    const expectedHeadersContent = [
+      {
+        aria: 'General',
+        rows: [
+          'Request URL:',
+          'https://localhost:%/test/e2e/resources/network/image.svg?id=42&param=a%20b',
+          'Request Method:',
+          'POST',
+          'Status Code:',
+          '200 OK',
+          'Remote Address:',
+          '[::1]:%',
+          'Referrer Policy:',
+          'strict-origin-when-cross-origin',
+        ],
+      },
+      {
+        aria: 'Request Headers',
+        rows: [
+          'accept:',
+          '*/*',
+          'accept-encoding:',
+          'gzip, deflate, br',
+          'connection:',
+          'keep-alive',
+          'content-length:',
+          '32',
+          'content-type:',
+          'application/x-www-form-urlencoded;charset=UTF-8',
+          'host:',
+          'localhost:%',
+          'origin:',
+          'https://localhost:%',
+          'referer:',
+          'https://localhost:%/test/e2e/resources/network/headers-and-payload.html',
+          'sec-ch-ua:',
+          '%',
+          'sec-ch-ua-mobile:',
+          '?0',
+          'sec-ch-ua-platform:',
+          '%',
+          'sec-fetch-dest:',
+          'empty',
+          'sec-fetch-mode:',
+          'cors',
+          'sec-fetch-site:',
+          'same-origin',
+          'user-agent:',
+          'Mozilla/5.0 %',
+          'x-same-domain:',
+          '1',
+        ],
+      },
+    ];
+
+    for (const sectionContent of expectedHeadersContent) {
+      const section = await waitFor(`[aria-label="${sectionContent.aria}"]`);
+      const rows = await $$('.row', section);
+      const rowsText = await (await Promise.all(rows.map(async row => await getTextFromHeadersRow(row)))).flat();
+      assertOutlineMatches(sectionContent.rows, rowsText);
+    }
   });
 
   it('payload tab selection is preserved', async () => {

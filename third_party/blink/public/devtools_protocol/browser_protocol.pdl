@@ -756,6 +756,7 @@ experimental domain Audits
       FormInputAssignedAutocompleteValueToIdOrNameAttributeError
       FormLabelHasNeitherForNorNestedInput
       FormLabelForMatchesNonExistingIdError
+      FormInputHasWrongButWellIntendedAutocompleteValueError
 
   # Depending on the concrete errorType, different properties are set.
   type GenericIssueDetails extends object
@@ -10747,6 +10748,16 @@ experimental domain Preload
       # - https://wicg.github.io/nav-speculation/speculation-rules.html
       # - https://github.com/WICG/nav-speculation/blob/main/triggers.md
       string sourceText
+      # Error information
+      # `errorMessage` is null iff `errorType` is null.
+      optional RuleSetErrorType errorType
+      # TODO(https://crbug.com/1425354): Replace this property with structured error.
+      deprecated optional string errorMessage
+
+  type RuleSetErrorType extends string
+    enum
+      SourceIsNotJsonObject
+      InvalidRulesSkipped
 
   # The type of preloading attempted. It corresponds to
   # mojom::SpeculationAction (although PrefetchWithSubresources is omitted as it
@@ -10842,11 +10853,10 @@ experimental domain Preload
       InactivePageRestriction
       StartFailed
       TimeoutBackgrounded
-      CrossSiteRedirect
-      CrossSiteNavigation
-      SameSiteCrossOriginRedirect
-      SameSiteCrossOriginRedirectNotOptIn
-      SameSiteCrossOriginNavigationNotOptIn
+      CrossSiteRedirectInInitialNavigation
+      CrossSiteNavigationInInitialNavigation
+      SameSiteCrossOriginRedirectNotOptInInInitialNavigation
+      SameSiteCrossOriginNavigationNotOptInInInitialNavigation
       ActivationNavigationParameterMismatch
       ActivatedInBackground
       EmbedderHostDisallowed
@@ -10860,10 +10870,15 @@ experimental domain Preload
       BatterySaverEnabled
       ActivatedDuringMainFrameNavigation
       PreloadingUnsupportedByWebContents
+      CrossSiteRedirectInMainFrameNavigation
+      CrossSiteNavigationInMainFrameNavigation
+      SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation
+      SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation
 
   # Fired when a prerender attempt is completed.
   event prerenderAttemptCompleted
     parameters
+      PreloadingAttemptKey key
       # The frame id of the frame initiating prerendering.
       Page.FrameId initiatingFrameId
       string prerenderingUrl
@@ -10887,6 +10902,7 @@ experimental domain Preload
   # Fired when a prefetch attempt is updated.
   event prefetchStatusUpdated
     parameters
+      PreloadingAttemptKey key
       # The frame id of the frame initiating prefetch.
       Page.FrameId initiatingFrameId
       string prefetchUrl
@@ -10895,14 +10911,16 @@ experimental domain Preload
   # Fired when a prerender attempt is updated.
   event prerenderStatusUpdated
     parameters
+      PreloadingAttemptKey key
       # The frame id of the frame initiating prerender.
       Page.FrameId initiatingFrameId
       string prerenderingUrl
       PreloadingStatus status
 
-  # Send a list of sources for all preloading attempts.
+  # Send a list of sources for all preloading attempts in a document.
   event preloadingAttemptSourcesUpdated
     parameters
+      Network.LoaderId loaderId
       array of PreloadingAttemptSource preloadingAttemptSources
 
 # This domain allows interacting with the FedCM dialog.
@@ -10935,6 +10953,12 @@ experimental domain FedCm
       array of Account accounts
 
   command enable
+    parameters
+      # Allows callers to disable the promise rejection delay that would
+      # normally happen, if this is unimportant to what's being tested.
+      # (step 4 of https://fedidcg.github.io/FedCM/#browser-api-rp-sign-in)
+      optional boolean disableRejectionDelay
+
   command disable
 
   command selectAccount

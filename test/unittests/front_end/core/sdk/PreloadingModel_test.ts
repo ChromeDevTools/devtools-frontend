@@ -60,7 +60,7 @@ describeWithMockConnection('PreloadingModel', async () => {
 
     assert.deepEqual(model.getAllRuleSets(), [
       {
-        id: 'ruleSetId:1',
+        id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
         value: {
           id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
@@ -116,7 +116,7 @@ describeWithMockConnection('PreloadingModel', async () => {
 
     assert.deepEqual(model.getAllRuleSets(), [
       {
-        id: 'ruleSetId:1',
+        id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
         value: {
           id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
@@ -133,7 +133,7 @@ describeWithMockConnection('PreloadingModel', async () => {
         },
       },
       {
-        id: 'ruleSetId:2',
+        id: 'ruleSetId:2' as Protocol.Preload.RuleSetId,
         value: {
 
           id: 'ruleSetId:2' as Protocol.Preload.RuleSetId,
@@ -189,7 +189,7 @@ describeWithMockConnection('PreloadingModel', async () => {
 
     assert.deepEqual(model.getAllRuleSets(), [
       {
-        id: 'ruleSetId:2',
+        id: 'ruleSetId:2' as Protocol.Preload.RuleSetId,
         value: {
           id: 'ruleSetId:2' as Protocol.Preload.RuleSetId,
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
@@ -311,7 +311,7 @@ describeWithMockConnection('PreloadingModel', async () => {
 
     assert.deepEqual(model.getAllRuleSets(), [
       {
-        id: 'ruleSetId:2',
+        id: 'ruleSetId:2' as Protocol.Preload.RuleSetId,
         value: {
           id: 'ruleSetId:2' as Protocol.Preload.RuleSetId,
           loaderId: 'loaderId:2' as Protocol.Network.LoaderId,

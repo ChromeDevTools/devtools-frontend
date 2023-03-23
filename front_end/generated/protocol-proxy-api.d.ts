@@ -3639,14 +3639,14 @@ declare namespace ProtocolProxyApi {
     prerenderStatusUpdated(params: Protocol.Preload.PrerenderStatusUpdatedEvent): void;
 
     /**
-     * Send a list of sources for all preloading attempts.
+     * Send a list of sources for all preloading attempts in a document.
      */
     preloadingAttemptSourcesUpdated(params: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void;
 
   }
 
   export interface FedCmApi {
-    invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_enable(params: Protocol.FedCm.EnableRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
 

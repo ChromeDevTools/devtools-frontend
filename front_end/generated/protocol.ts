@@ -1025,6 +1025,7 @@ export namespace Audits {
     FormInputAssignedAutocompleteValueToIdOrNameAttributeError = 'FormInputAssignedAutocompleteValueToIdOrNameAttributeError',
     FormLabelHasNeitherForNorNestedInput = 'FormLabelHasNeitherForNorNestedInput',
     FormLabelForMatchesNonExistingIdError = 'FormLabelForMatchesNonExistingIdError',
+    FormInputHasWrongButWellIntendedAutocompleteValueError = 'FormInputHasWrongButWellIntendedAutocompleteValueError',
   }
 
   /**
@@ -15287,6 +15288,20 @@ export namespace Preload {
      * - https://github.com/WICG/nav-speculation/blob/main/triggers.md
      */
     sourceText: string;
+    /**
+     * Error information
+     * `errorMessage` is null iff `errorType` is null.
+     */
+    errorType?: RuleSetErrorType;
+    /**
+     * TODO(https://crbug.com/1425354): Replace this property with structured error.
+     */
+    errorMessage?: string;
+  }
+
+  export const enum RuleSetErrorType {
+    SourceIsNotJsonObject = 'SourceIsNotJsonObject',
+    InvalidRulesSkipped = 'InvalidRulesSkipped',
   }
 
   /**
@@ -15377,11 +15392,10 @@ export namespace Preload {
     InactivePageRestriction = 'InactivePageRestriction',
     StartFailed = 'StartFailed',
     TimeoutBackgrounded = 'TimeoutBackgrounded',
-    CrossSiteRedirect = 'CrossSiteRedirect',
-    CrossSiteNavigation = 'CrossSiteNavigation',
-    SameSiteCrossOriginRedirect = 'SameSiteCrossOriginRedirect',
-    SameSiteCrossOriginRedirectNotOptIn = 'SameSiteCrossOriginRedirectNotOptIn',
-    SameSiteCrossOriginNavigationNotOptIn = 'SameSiteCrossOriginNavigationNotOptIn',
+    CrossSiteRedirectInInitialNavigation = 'CrossSiteRedirectInInitialNavigation',
+    CrossSiteNavigationInInitialNavigation = 'CrossSiteNavigationInInitialNavigation',
+    SameSiteCrossOriginRedirectNotOptInInInitialNavigation = 'SameSiteCrossOriginRedirectNotOptInInInitialNavigation',
+    SameSiteCrossOriginNavigationNotOptInInInitialNavigation = 'SameSiteCrossOriginNavigationNotOptInInInitialNavigation',
     ActivationNavigationParameterMismatch = 'ActivationNavigationParameterMismatch',
     ActivatedInBackground = 'ActivatedInBackground',
     EmbedderHostDisallowed = 'EmbedderHostDisallowed',
@@ -15395,6 +15409,10 @@ export namespace Preload {
     BatterySaverEnabled = 'BatterySaverEnabled',
     ActivatedDuringMainFrameNavigation = 'ActivatedDuringMainFrameNavigation',
     PreloadingUnsupportedByWebContents = 'PreloadingUnsupportedByWebContents',
+    CrossSiteRedirectInMainFrameNavigation = 'CrossSiteRedirectInMainFrameNavigation',
+    CrossSiteNavigationInMainFrameNavigation = 'CrossSiteNavigationInMainFrameNavigation',
+    SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation = 'SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation',
+    SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation = 'SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation',
   }
 
   /**
@@ -15425,6 +15443,7 @@ export namespace Preload {
    * Fired when a prerender attempt is completed.
    */
   export interface PrerenderAttemptCompletedEvent {
+    key: PreloadingAttemptKey;
     /**
      * The frame id of the frame initiating prerendering.
      */
@@ -15442,6 +15461,7 @@ export namespace Preload {
    * Fired when a prefetch attempt is updated.
    */
   export interface PrefetchStatusUpdatedEvent {
+    key: PreloadingAttemptKey;
     /**
      * The frame id of the frame initiating prefetch.
      */
@@ -15454,6 +15474,7 @@ export namespace Preload {
    * Fired when a prerender attempt is updated.
    */
   export interface PrerenderStatusUpdatedEvent {
+    key: PreloadingAttemptKey;
     /**
      * The frame id of the frame initiating prerender.
      */
@@ -15463,9 +15484,10 @@ export namespace Preload {
   }
 
   /**
-   * Send a list of sources for all preloading attempts.
+   * Send a list of sources for all preloading attempts in a document.
    */
   export interface PreloadingAttemptSourcesUpdatedEvent {
+    loaderId: Network.LoaderId;
     preloadingAttemptSources: PreloadingAttemptSource[];
   }
 }
@@ -15501,6 +15523,15 @@ export namespace FedCm {
      */
     termsOfServiceUrl?: string;
     privacyPolicyUrl?: string;
+  }
+
+  export interface EnableRequest {
+    /**
+     * Allows callers to disable the promise rejection delay that would
+     * normally happen, if this is unimportant to what's being tested.
+     * (step 4 of https://fedidcg.github.io/FedCM/#browser-api-rp-sign-in)
+     */
+    disableRejectionDelay?: boolean;
   }
 
   export interface SelectAccountRequest {

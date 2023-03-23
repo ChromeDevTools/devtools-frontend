@@ -643,7 +643,7 @@ export namespace ProtocolMapping {
      */
     'Preload.prerenderStatusUpdated': [Protocol.Preload.PrerenderStatusUpdatedEvent];
     /**
-     * Send a list of sources for all preloading attempts.
+     * Send a list of sources for all preloading attempts in a document.
      */
     'Preload.preloadingAttemptSourcesUpdated': [Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent];
     'FedCm.dialogShown': [Protocol.FedCm.DialogShownEvent];
@@ -4092,7 +4092,7 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     'FedCm.enable': {
-      paramsType: [];
+      paramsType: [Protocol.FedCm.EnableRequest?];
       returnType: void;
     };
     'FedCm.disable': {

@@ -1547,7 +1547,8 @@
                         "FormAriaLabelledByToNonExistingId",
                         "FormInputAssignedAutocompleteValueToIdOrNameAttributeError",
                         "FormLabelHasNeitherForNorNestedInput",
-                        "FormLabelForMatchesNonExistingIdError"
+                        "FormLabelForMatchesNonExistingIdError",
+                        "FormInputHasWrongButWellIntendedAutocompleteValueError"
                     ]
                 },
                 {
@@ -22801,7 +22802,28 @@
                             "name": "sourceText",
                             "description": "Source text of JSON representing the rule set. If it comes from\n<script> tag, it is the textContent of the node. Note that it is\na JSON for valid case.\n\nSee also:\n- https://wicg.github.io/nav-speculation/speculation-rules.html\n- https://github.com/WICG/nav-speculation/blob/main/triggers.md",
                             "type": "string"
+                        },
+                        {
+                            "name": "errorType",
+                            "description": "Error information\n`errorMessage` is null iff `errorType` is null.",
+                            "optional": true,
+                            "$ref": "RuleSetErrorType"
+                        },
+                        {
+                            "name": "errorMessage",
+                            "description": "TODO(https://crbug.com/1425354): Replace this property with structured error.",
+                            "deprecated": true,
+                            "optional": true,
+                            "type": "string"
                         }
+                    ]
+                },
+                {
+                    "id": "RuleSetErrorType",
+                    "type": "string",
+                    "enum": [
+                        "SourceIsNotJsonObject",
+                        "InvalidRulesSkipped"
                     ]
                 },
                 {
@@ -22913,11 +22935,10 @@
                         "InactivePageRestriction",
                         "StartFailed",
                         "TimeoutBackgrounded",
-                        "CrossSiteRedirect",
-                        "CrossSiteNavigation",
-                        "SameSiteCrossOriginRedirect",
-                        "SameSiteCrossOriginRedirectNotOptIn",
-                        "SameSiteCrossOriginNavigationNotOptIn",
+                        "CrossSiteRedirectInInitialNavigation",
+                        "CrossSiteNavigationInInitialNavigation",
+                        "SameSiteCrossOriginRedirectNotOptInInInitialNavigation",
+                        "SameSiteCrossOriginNavigationNotOptInInInitialNavigation",
                         "ActivationNavigationParameterMismatch",
                         "ActivatedInBackground",
                         "EmbedderHostDisallowed",
@@ -22930,7 +22951,11 @@
                         "PreloadingDisabled",
                         "BatterySaverEnabled",
                         "ActivatedDuringMainFrameNavigation",
-                        "PreloadingUnsupportedByWebContents"
+                        "PreloadingUnsupportedByWebContents",
+                        "CrossSiteRedirectInMainFrameNavigation",
+                        "CrossSiteNavigationInMainFrameNavigation",
+                        "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation",
+                        "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"
                     ]
                 },
                 {
@@ -22980,6 +23005,10 @@
                     "description": "Fired when a prerender attempt is completed.",
                     "parameters": [
                         {
+                            "name": "key",
+                            "$ref": "PreloadingAttemptKey"
+                        },
+                        {
                             "name": "initiatingFrameId",
                             "description": "The frame id of the frame initiating prerendering.",
                             "$ref": "Page.FrameId"
@@ -23005,6 +23034,10 @@
                     "description": "Fired when a prefetch attempt is updated.",
                     "parameters": [
                         {
+                            "name": "key",
+                            "$ref": "PreloadingAttemptKey"
+                        },
+                        {
                             "name": "initiatingFrameId",
                             "description": "The frame id of the frame initiating prefetch.",
                             "$ref": "Page.FrameId"
@@ -23024,6 +23057,10 @@
                     "description": "Fired when a prerender attempt is updated.",
                     "parameters": [
                         {
+                            "name": "key",
+                            "$ref": "PreloadingAttemptKey"
+                        },
+                        {
                             "name": "initiatingFrameId",
                             "description": "The frame id of the frame initiating prerender.",
                             "$ref": "Page.FrameId"
@@ -23040,8 +23077,12 @@
                 },
                 {
                     "name": "preloadingAttemptSourcesUpdated",
-                    "description": "Send a list of sources for all preloading attempts.",
+                    "description": "Send a list of sources for all preloading attempts in a document.",
                     "parameters": [
+                        {
+                            "name": "loaderId",
+                            "$ref": "Network.LoaderId"
+                        },
                         {
                             "name": "preloadingAttemptSources",
                             "type": "array",
@@ -23138,7 +23179,15 @@
             ],
             "commands": [
                 {
-                    "name": "enable"
+                    "name": "enable",
+                    "parameters": [
+                        {
+                            "name": "disableRejectionDelay",
+                            "description": "Allows callers to disable the promise rejection delay that would\nnormally happen, if this is unimportant to what's being tested.\n(step 4 of https://fedidcg.github.io/FedCM/#browser-api-rp-sign-in)",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
                 },
                 {
                     "name": "disable"

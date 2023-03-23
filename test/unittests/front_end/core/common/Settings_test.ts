@@ -7,6 +7,7 @@ const {assert} = chai;
 import * as Common from '../../../../../front_end/core/common/common.js';
 
 const SettingsStorage = Common.Settings.SettingsStorage;
+const VersionController = Common.Settings.VersionController;
 
 class MockStore implements Common.Settings.SettingsBackingStore {
   #store = new Map();
@@ -197,10 +198,11 @@ describe('Settings instance', () => {
 
 describe('VersionController', () => {
   let settings: Common.Settings.Settings;
+  let settingsStorage: Common.Settings.SettingsStorage;
 
   beforeEach(() => {
     const mockStore = new MockStore();
-    const settingsStorage = new Common.Settings.SettingsStorage({}, mockStore);
+    settingsStorage = new Common.Settings.SettingsStorage({}, mockStore);
     settings = Common.Settings.Settings.instance({
       forceNew: true,
       syncedStorage: settingsStorage,
@@ -213,9 +215,104 @@ describe('VersionController', () => {
     Common.Settings.Settings.removeInstance();
   });
 
+  describe('updateVersion', () => {
+    it('initializes version settings with the current version if the setting doesn\'t exist yet', () => {
+      assert.isFalse(settingsStorage.has(VersionController.GLOBAL_VERSION_SETTING_NAME));
+      assert.isFalse(settingsStorage.has(VersionController.SYNCED_VERSION_SETTING_NAME));
+      assert.isFalse(settingsStorage.has(VersionController.LOCAL_VERSION_SETTING_NAME));
+
+      new VersionController().updateVersion();
+
+      const currentVersion = VersionController.CURRENT_VERSION.toString();
+      assert.strictEqual(settingsStorage.get(VersionController.GLOBAL_VERSION_SETTING_NAME), currentVersion);
+      assert.strictEqual(settingsStorage.get(VersionController.SYNCED_VERSION_SETTING_NAME), currentVersion);
+      assert.strictEqual(settingsStorage.get(VersionController.LOCAL_VERSION_SETTING_NAME), currentVersion);
+    });
+
+    function spyAllUpdateMethods(versionController: Common.Settings.VersionController) {
+      const spies: Array<sinon.SinonSpy<unknown[], unknown>> = [];
+      for (let i = 0; i < VersionController.CURRENT_VERSION; ++i) {
+        spies.push(
+            sinon.spy(versionController, `updateVersionFrom${i}To${i + 1}` as keyof Common.Settings.VersionController));
+      }
+      assert.lengthOf(spies, VersionController.CURRENT_VERSION);
+      return spies;
+    }
+
+    it('does not run any update* methods if no version setting exist yet', () => {
+      const versionController = new VersionController();
+      const spies = spyAllUpdateMethods(versionController);
+
+      versionController.updateVersion();
+
+      for (const spy of spies) {
+        assert.isFalse(spy.called);
+      }
+    });
+
+    it('does not run any update* methods if all version settings are already current', () => {
+      const currentVersion = VersionController.CURRENT_VERSION.toString();
+      settingsStorage.set(VersionController.GLOBAL_VERSION_SETTING_NAME, currentVersion);
+      settingsStorage.set(VersionController.SYNCED_VERSION_SETTING_NAME, currentVersion);
+      settingsStorage.set(VersionController.LOCAL_VERSION_SETTING_NAME, currentVersion);
+      const versionController = new VersionController();
+      const spies = spyAllUpdateMethods(versionController);
+
+      versionController.updateVersion();
+
+      for (const spy of spies) {
+        assert.isFalse(spy.called);
+      }
+    });
+
+    it('runs correct update* methods if the local bucket lags behind', () => {
+      const currentVersion = VersionController.CURRENT_VERSION.toString();
+      const localVersion = (VersionController.CURRENT_VERSION - 3).toString();
+      settingsStorage.set(VersionController.GLOBAL_VERSION_SETTING_NAME, currentVersion);
+      settingsStorage.set(VersionController.SYNCED_VERSION_SETTING_NAME, currentVersion);
+      settingsStorage.set(VersionController.LOCAL_VERSION_SETTING_NAME, localVersion);
+      const versionController = new VersionController();
+      const spies = spyAllUpdateMethods(versionController);
+
+      versionController.updateVersion();
+
+      const expectedUncalledSpies = spies.slice(0, -3);
+      for (const spy of expectedUncalledSpies) {
+        assert.isFalse(spy.called);
+      }
+
+      const expectedCalledSpies = spies.slice(-3);
+      for (const spy of expectedCalledSpies) {
+        assert.isTrue(spy.called);
+      }
+    });
+
+    it('runs correct update* methods if the synced bucket runs ahead', () => {
+      const currentVersion = VersionController.CURRENT_VERSION.toString();
+      const oldVersion = (VersionController.CURRENT_VERSION - 1).toString();
+      settingsStorage.set(VersionController.GLOBAL_VERSION_SETTING_NAME, oldVersion);
+      settingsStorage.set(VersionController.SYNCED_VERSION_SETTING_NAME, currentVersion);
+      settingsStorage.set(VersionController.LOCAL_VERSION_SETTING_NAME, oldVersion);
+      const versionController = new VersionController();
+      const spies = spyAllUpdateMethods(versionController);
+
+      versionController.updateVersion();
+
+      const expectedUncalledSpies = spies.slice(0, -1);
+      for (const spy of expectedUncalledSpies) {
+        assert.isFalse(spy.called);
+      }
+
+      const expectedCalledSpies = spies.slice(-1);
+      for (const spy of expectedCalledSpies) {
+        assert.isTrue(spy.called);
+      }
+    });
+  });
+
   describe('updateVersionFrom31To32', () => {
     it('correctly adds resourceTypeName to breakpoints', () => {
-      const versionController = new Common.Settings.VersionController();
+      const versionController = new VersionController();
       const breakpointsSetting = settings.createLocalSetting('breakpoints', [
         {url: 'webpack:///src/foo.ts', lineNumber: 4, condition: '', enabled: false},
         {url: 'foo.js', lineNumber: 1, columnNumber: 42, condition: 'false', enabled: true},
@@ -240,7 +337,7 @@ describe('VersionController', () => {
 
   describe('updateVersionFrom32To33', () => {
     it('correctly discards previously viewed files without url properties', () => {
-      const versionController = new Common.Settings.VersionController();
+      const versionController = new VersionController();
       const previouslyViewedFilesSetting = settings.createLocalSetting('previouslyViewedFiles', [
         {url: 'http://localhost:3000', scrollLineNumber: 1},
         {scrollLineNumber: 1},
@@ -259,7 +356,7 @@ describe('VersionController', () => {
     });
 
     it('correctly adds resourceTypeName to previously viewed files', () => {
-      const versionController = new Common.Settings.VersionController();
+      const versionController = new VersionController();
       const previouslyViewedFilesSetting = settings.createLocalSetting('previouslyViewedFiles', [
         {url: 'http://localhost:3000', scrollLineNumber: 1},
         {url: 'webpack:///src/foo.ts'},
@@ -280,7 +377,7 @@ describe('VersionController', () => {
 
   describe('updateVersionFrom33To34', () => {
     it('correctly adds isLogpoint to breakpoints', () => {
-      const versionController = new Common.Settings.VersionController();
+      const versionController = new VersionController();
       const breakpointsSetting = settings.createLocalSetting('breakpoints', [
         {
           url: 'webpack:///src/foo.ts',
@@ -311,7 +408,7 @@ describe('VersionController', () => {
 
   describe('updateVersionFrom34To35', () => {
     it('removes the logpoint prefix/suffix from logpoints', () => {
-      const versionController = new Common.Settings.VersionController();
+      const versionController = new VersionController();
       const breakpointsSetting =
           settings.createLocalSetting('breakpoints', [{
                                         url: 'webpack:///src/foo.ts',
@@ -330,7 +427,7 @@ describe('VersionController', () => {
     });
 
     it('leaves conditional breakpoints alone', () => {
-      const versionController = new Common.Settings.VersionController();
+      const versionController = new VersionController();
       const breakpointsSetting = settings.createLocalSetting('breakpoints', [{
                                                                url: 'webpack:///src/foo.ts',
                                                                lineNumber: 4,

@@ -581,29 +581,51 @@ export class RegExpSetting extends Setting<any> {
 
 export class VersionController {
   static readonly GLOBAL_VERSION_SETTING_NAME = 'inspectorVersion';
+  static readonly SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
+  static readonly LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
 
   static readonly CURRENT_VERSION = 35;
 
   readonly #globalVersionSetting: Setting<number>;
+  readonly #syncedVersionSetting: Setting<number>;
+  readonly #localVersionSetting: Setting<number>;
 
   constructor() {
     // If no version setting is found, we initialize with the current version and don't do anything.
     this.#globalVersionSetting = Settings.instance().createSetting(
         VersionController.GLOBAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.Global);
+    this.#syncedVersionSetting = Settings.instance().createSetting(
+        VersionController.SYNCED_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.Synced);
+    this.#localVersionSetting = Settings.instance().createSetting(
+        VersionController.LOCAL_VERSION_SETTING_NAME, VersionController.CURRENT_VERSION, SettingStorageType.Local);
   }
 
   /**
-   * Force re-sets the version number setting to the current version without
+   * Force re-sets all version number settings to the current version without
    * running any migrations.
    */
   resetToCurrent(): void {
     this.#globalVersionSetting.set(VersionController.CURRENT_VERSION);
+    this.#syncedVersionSetting.set(VersionController.CURRENT_VERSION);
+    this.#localVersionSetting.set(VersionController.CURRENT_VERSION);
   }
 
+  /**
+   * Runs the appropriate migrations and updates the version settings accordingly.
+   *
+   * To determine what migrations to run we take the minimum of all version number settings.
+   *
+   * IMPORTANT: All migrations must be idempotent since they might be applied multiple times.
+   */
   updateVersion(): void {
     const currentVersion = VersionController.CURRENT_VERSION;
-    const oldVersion = this.#globalVersionSetting.get();
-    const methodsToRun = this.methodsToRunToUpdateVersion(oldVersion, currentVersion);
+    const minimumVersion =
+        Math.min(this.#globalVersionSetting.get(), this.#syncedVersionSetting.get(), this.#localVersionSetting.get());
+    const methodsToRun = this.methodsToRunToUpdateVersion(minimumVersion, currentVersion);
+    console.assert(
+        // @ts-ignore
+        this[`updateVersionFrom${currentVersion}To${currentVersion + 1}`] === undefined,
+        'Unexpected migration method found. Increment CURRENT_VERSION or remove the method.');
     for (const method of methodsToRun) {
       // @ts-ignore Special version method matching
       this[method].call(this);
@@ -1174,6 +1196,14 @@ export class VersionController {
     }
     breakpointsSetting.set(breakpoints);
   }
+
+  /*
+   * Any new migration should be added before this comment.
+   *
+   * IMPORTANT: Migrations must be idempotent, since they may be applied
+   * multiple times! E.g. when renaming a setting one has to check that the
+   * a setting with the new name does not yet exist.
+   * ----------------------------------------------------------------------- */
 
   private migrateSettingsFromLocalStorage(): void {
     // This step migrates all the settings except for the ones below into the browser profile.

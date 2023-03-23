@@ -21,6 +21,14 @@ const UIStrings = {
    */
   validityValid: 'Valid',
   /**
+   *@description Text in grid: Rule set must be a valid JSON object
+   */
+  validityInvalid: 'Invalid',
+  /**
+   *@description Text in grid: Rule set contains invalid rules and they are ignored
+   */
+  validitySomeRulesInvalid: 'Some rules invalid',
+  /**
    *@description Text in grid and details: Preloading attempt is eligible but pending.
    */
   statusPending: 'Pending',
@@ -93,6 +101,18 @@ class PreloadingUIUtils {
       // internal error.
       case Protocol.Preload.PreloadingStatus.NotSupported:
         return i18n.i18n.lockedString('Internal error');
+    }
+  }
+
+  // Summary of error of rule set shown in grid.
+  static validity({errorType}: Protocol.Preload.RuleSet): string {
+    switch (errorType) {
+      case undefined:
+        return i18nString(UIStrings.validityValid);
+      case Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject:
+        return i18nString(UIStrings.validityInvalid);
+      case Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped:
+        return i18nString(UIStrings.validitySomeRulesInvalid);
     }
   }
 }
@@ -315,9 +335,9 @@ export class PreloadingView extends UI.Widget.VBox {
     //
     // Currently, all rule sets that appear in DevTools are valid.
     // TODO(https://crbug.com/1384419): Add property `validity` to the CDP.
-    const ruleSetRows = this.modelProxy.model.getAllRuleSets().map(({id}) => ({
+    const ruleSetRows = this.modelProxy.model.getAllRuleSets().map(({id, value}) => ({
                                                                      id,
-                                                                     validity: i18nString(UIStrings.validityValid),
+                                                                     validity: PreloadingUIUtils.validity(value),
                                                                    }));
     this.ruleSetGrid.update(ruleSetRows);
 
@@ -399,6 +419,10 @@ export class PreloadingView extends UI.Widget.VBox {
 
   getRuleSetGridForTest(): PreloadingComponents.RuleSetGrid.RuleSetGrid {
     return this.ruleSetGrid;
+  }
+
+  getRuleSetDetailsForTest(): PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView {
+    return this.ruleSetDetails;
   }
 
   getPreloadingGridForTest(): PreloadingComponents.PreloadingGrid.PreloadingGrid {

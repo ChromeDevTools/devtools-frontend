@@ -8,9 +8,11 @@ import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as Resources from '../../../../../../front_end/panels/application/application.js';
 import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import * as ReportView from '../../../../../../front_end/ui/components/report_view/report_view.js';
 import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 import {
   assertShadowRoot,
+  getCleanTextContentFromElements,
   getElementWithinComponent,
 } from '../../../helpers/DOMHelpers.js';
 import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
@@ -23,6 +25,12 @@ import {getHeaderCells, getValuesOfAllBodyRows} from '../../../ui/components/Dat
 const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+
+const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
+  assert.strictEqual(xs.length, ys.length);
+
+  return Array.from(xs.map((_, i) => [xs[i], ys[i]]));
+};
 
 function assertGridContents(gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) {
   const controller = getElementWithinComponent(
@@ -154,19 +162,23 @@ class NavigationEmulator {
   async addSpecRules(specrules: string): Promise<void> {
     this.seq++;
 
+    // For simplicity, we only emit errors if parse failed.
     let json;
     try {
       json = JSON.parse(specrules);
     } catch (_) {
-    }
-
-    if (json === undefined) {
+      dispatchEvent(this.primaryTarget, 'Preload.ruleSetUpdated', {
+        ruleSet: {
+          id: `ruleSetId:${this.seq}`,
+          loaderId: this.loaderId,
+          sourceText: specrules,
+          errorType: Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject,
+          errorMessage: 'fake error message',
+        },
+      });
       return;
     }
 
-    // Currently, invalid rule set is not synced by `Preload.ruleSetUpdated`
-    //
-    // TODO(https://crbug.com/1384419): Include invalid ones.
     dispatchEvent(this.primaryTarget, 'Preload.ruleSetUpdated', {
       ruleSet: {
         id: `ruleSetId:${this.seq}`,
@@ -312,6 +324,54 @@ describeWithMockConnection('PreloadingView', async () => {
     const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
 
     assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+  });
+
+  it('shows error of rule set', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+`);
+
+    await coordinator.done();
+
+    const ruleSetGridComponent = view.getRuleSetGridForTest();
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
+    const ruleSetDetailsComponent = view.getRuleSetDetailsForTest();
+    assertShadowRoot(ruleSetDetailsComponent.shadowRoot);
+
+    assertGridContents(
+        ruleSetGridComponent,
+        ['Validity'],
+        [
+          ['Invalid'],
+        ],
+    );
+
+    const cells = [
+      {columnId: 'id', value: 'ruleSetId:2'},
+      {columnId: 'Validity', value: 'Invalid'},
+    ];
+    ruleSetGridComponent.dispatchEvent(
+        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'Validity', value: 'Invalid'}, {cells}));
+
+    await coordinator.done();
+
+    const report = getElementWithinComponent(ruleSetDetailsComponent, 'devtools-report', ReportView.ReportView.Report);
+
+    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
+    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
+    assert.deepEqual(zip2(keys, values), [
+      ['Validity', 'Invalid; source is not a JSON object'],
+      ['Error', 'fake error message'],
+      ['Source', '{"prerender":[{"source": "list",'],
+    ]);
   });
 
   // TODO(https://crbug.com/1384419): Check that preloading attempts for

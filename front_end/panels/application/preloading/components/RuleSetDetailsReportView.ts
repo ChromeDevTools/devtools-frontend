@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../../../generated/protocol.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Protocol from '../../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
@@ -21,6 +21,10 @@ const UIStrings = {
    */
   detailsValidity: 'Validity',
   /**
+   *@description Description term: error detail of rule set
+   */
+  detailsError: 'Error',
+  /**
    *@description Description term: source text of rule set
    */
   detailsSource: 'Source',
@@ -28,10 +32,32 @@ const UIStrings = {
    *@description Validity: Rule set is valid
    */
   validityValid: 'Valid',
+  /**
+   *@description validity: Rule set must be a valid JSON object
+   */
+  validityInvalid: 'Invalid; source is not a JSON object',
+  /**
+   *@description validity: Rule set contains invalid rules and they are ignored
+   */
+  validitySomeRulesInvalid: 'Some rules are invalid and ignored',
 };
 const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetDetailsReportView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+class PreloadingUIUtils {
+  // Summary of error of rule set.
+  static validity({errorType}: Protocol.Preload.RuleSet): string {
+    switch (errorType) {
+      case undefined:
+        return i18nString(UIStrings.validityValid);
+      case Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject:
+        return i18nString(UIStrings.validityInvalid);
+      case Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped:
+        return i18nString(UIStrings.validitySomeRulesInvalid);
+    }
+  }
+}
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -59,9 +85,9 @@ export class RuleSetDetailsReportView extends HTMLElement {
         return;
       }
 
-      // Currently, all rule sets that appear in DevTools are valid.
-      // TODO(https://crbug.com/1384419): Add property `validity` to the CDP.
-      const validity = i18nString(UIStrings.validityValid);
+      const validity = PreloadingUIUtils.validity(this.#data);
+      // TODO(https://crbug.com/1425354): Support i18n.
+      const error = this.#data.errorMessage || '';
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -75,6 +101,14 @@ export class RuleSetDetailsReportView extends HTMLElement {
           <${ReportView.ReportView.ReportValue.litTagName}>
             <div class="text-ellipsis" title="">
               ${validity}
+            </div>
+          </${ReportView.ReportView.ReportValue.litTagName}>
+
+          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsError)}</${
+            ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportValue.litTagName}>
+            <div class="text-ellipsis" title="">
+              ${error}
             </div>
           </${ReportView.ReportView.ReportValue.litTagName}>
 

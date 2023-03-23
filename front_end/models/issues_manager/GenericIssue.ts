@@ -154,6 +154,14 @@ export const genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError =
   }],
 };
 
+export const genericFormInputHasWrongButWellIntendedAutocompleteValue = {
+  file: 'genericFormInputHasWrongButWellIntendedAutocompleteValueError.md',
+  links: [{
+    link: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values',
+    linkTitle: i18nLazyString(UIStrings.autocompleteAttributePageTitle),
+  }],
+};
+
 export const genericFormLabelForMatchesNonExistingIdError = {
   file: 'genericFormLabelForMatchesNonExistingIdError.md',
   links: [{
@@ -196,6 +204,10 @@ const issueDescriptions: Map<Protocol.Audits.GenericIssueErrorType, LazyMarkdown
     Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInput,
     genericFormLabelHasNeitherForNorNestedInput,
   ],
+  [
+    Protocol.Audits.GenericIssueErrorType.FormInputHasWrongButWellIntendedAutocompleteValueError,
+    genericFormInputHasWrongButWellIntendedAutocompleteValue,
+  ],
 ]);
 
 const issueTypes: Map<Protocol.Audits.GenericIssueErrorType, IssueKind> = new Map([
@@ -212,5 +224,6 @@ const issueTypes: Map<Protocol.Audits.GenericIssueErrorType, IssueKind> = new Ma
   ],
   [Protocol.Audits.GenericIssueErrorType.FormLabelForMatchesNonExistingIdError, IssueKind.PageError],
   [Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInput, IssueKind.Improvement],
+  [Protocol.Audits.GenericIssueErrorType.FormInputHasWrongButWellIntendedAutocompleteValueError, IssueKind.Improvement],
 
 ]);

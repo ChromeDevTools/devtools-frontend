@@ -102,6 +102,7 @@ devtools_issue_description_files = [
   "genericCrossOriginPortalPostMessageError.md",
   "genericFormLabelForNameError.md",
   "genericFormDuplicateIdForInputError.md",
+  "genericFormInputHasWrongButWellIntendedAutocompleteValueError.md",
   "genericFormInputWithNoLabelError.md",
   "genericFormAutocompleteAttributeEmptyError.md",
   "genericFormEmptyIdAndNameAttributesForInputError.md",

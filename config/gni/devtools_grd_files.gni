@@ -352,6 +352,7 @@ grd_files_release_sources = [
   "front_end/models/issues_manager/descriptions/genericFormDuplicateIdForInputError.md",
   "front_end/models/issues_manager/descriptions/genericFormEmptyIdAndNameAttributesForInputError.md",
   "front_end/models/issues_manager/descriptions/genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError.md",
+  "front_end/models/issues_manager/descriptions/genericFormInputHasWrongButWellIntendedAutocompleteValueError.md",
   "front_end/models/issues_manager/descriptions/genericFormInputWithNoLabelError.md",
   "front_end/models/issues_manager/descriptions/genericFormLabelForMatchesNonExistingIdError.md",
   "front_end/models/issues_manager/descriptions/genericFormLabelForNameError.md",

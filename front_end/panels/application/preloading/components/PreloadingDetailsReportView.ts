@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as SDK from '../../../../core/sdk/sdk.js';
+
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
@@ -58,9 +59,9 @@ class PreloadingUIUtils {
   static action({key}: SDK.PreloadingModel.PreloadingAttempt): string {
     // Use "prefetch"/"prerender" as is in SpeculationRules.
     switch (key.action) {
-      case SDK.PreloadingModel.SpeculationAction.Prefetch:
+      case Protocol.Preload.SpeculationAction.Prefetch:
         return i18n.i18n.lockedString('prefetch');
-      case SDK.PreloadingModel.SpeculationAction.Prerender:
+      case Protocol.Preload.SpeculationAction.Prerender:
         return i18n.i18n.lockedString('prerender');
     }
   }

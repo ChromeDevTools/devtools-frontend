@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Protocol from '../../../generated/protocol.js';
@@ -65,9 +66,9 @@ class PreloadingUIUtils {
   static action({key}: SDK.PreloadingModel.PreloadingAttempt): string {
     // Use "prefetch"/"prerender" as is in SpeculationRules.
     switch (key.action) {
-      case SDK.PreloadingModel.SpeculationAction.Prefetch:
+      case Protocol.Preload.SpeculationAction.Prefetch:
         return i18n.i18n.lockedString('prefetch');
-      case SDK.PreloadingModel.SpeculationAction.Prerender:
+      case Protocol.Preload.SpeculationAction.Prerender:
         return i18n.i18n.lockedString('prerender');
     }
   }

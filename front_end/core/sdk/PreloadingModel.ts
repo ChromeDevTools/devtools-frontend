@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import type * as Common from '../common/common.js';
-import type * as Platform from '../platform/platform.js';
-import type * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
+import * as Protocol from '../../generated/protocol.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
@@ -111,38 +110,12 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   }
 
   onPrefetchStatusUpdated(event: Protocol.Preload.PrefetchStatusUpdatedEvent): void {
-    // Currently, prefetch/prerenderStatusUpdated events don't have PreloadingAttemptKey.
-    // Temporarily, we fill this gap by fake key.
-    //
-    // TODO(https://crbug.com/1317959): Correct this.
-    const attempt = {
-      key: {
-        loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
-        action: SpeculationAction.Prefetch,
-        url: event.prefetchUrl as Platform.DevToolsPath.UrlString,
-        targetHint: null,
-      },
-      status: event.status,
-    };
-    this.preloadingAttempts.upsert(attempt);
+    this.preloadingAttempts.upsert(event);
     this.dispatchEventToListeners(Events.ModelUpdated);
   }
 
   onPrerenderStatusUpdated(event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
-    // Currently, prefetch/prerenderStatusUpdated events don't have PreloadingAttemptKey.
-    // Temporarily, we fill this gap by fake key.
-    //
-    // TODO(https://crbug.com/1317959): Correct this.
-    const attempt = {
-      key: {
-        loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
-        action: SpeculationAction.Prerender,
-        url: event.prerenderingUrl as Platform.DevToolsPath.UrlString,
-        targetHint: null,
-      },
-      status: event.status,
-    };
-    this.preloadingAttempts.upsert(attempt);
+    this.preloadingAttempts.upsert(event);
     this.dispatchEventToListeners(Events.ModelUpdated);
   }
 }
@@ -227,55 +200,33 @@ class RuleSetRegistry {
   }
 }
 
-// TODO(https://crbug.com/1317959): Use types Protocol.Preload.* once backend CL lands.
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum SpeculationAction {
-  Prefetch = 'Prefetch',
-  Prerender = 'Prerender',
-}
-
-// TODO(crbug.com/1167717): Make this a const enum again
-// eslint-disable-next-line rulesdir/const_enum
-export enum SpeculationTargetHint {
-  Blank = 'Blank',
-  Self = 'Self',
-}
-
-export interface PreloadingAttemptKey {
-  loaderId: Protocol.Network.LoaderId;
-  action: SpeculationAction;
-  url: Platform.DevToolsPath.UrlString;
-  targetHint: SpeculationTargetHint|null;
-}
-
 export type PreloadingAttemptId = string;
 
 export interface PreloadingAttempt {
-  key: PreloadingAttemptKey;
+  key: Protocol.Preload.PreloadingAttemptKey;
   status: Protocol.Preload.PreloadingStatus;
 }
 
-function makePreloadingAttemptId(key: PreloadingAttemptKey): PreloadingAttemptId {
+function makePreloadingAttemptId(key: Protocol.Preload.PreloadingAttemptKey): PreloadingAttemptId {
   let action;
   switch (key.action) {
-    case SpeculationAction.Prefetch:
+    case Protocol.Preload.SpeculationAction.Prefetch:
       action = 'Prefetch';
       break;
-    case SpeculationAction.Prerender:
+    case Protocol.Preload.SpeculationAction.Prerender:
       action = 'Prerender';
       break;
   }
 
   let targetHint;
   switch (key.targetHint) {
-    case null:
-      targetHint = 'null';
+    case undefined:
+      targetHint = 'undefined';
       break;
-    case SpeculationTargetHint.Blank:
+    case Protocol.Preload.SpeculationTargetHint.Blank:
       targetHint = 'Blank';
       break;
-    case SpeculationTargetHint.Self:
+    case Protocol.Preload.SpeculationTargetHint.Self:
       targetHint = 'Self';
       break;
   }

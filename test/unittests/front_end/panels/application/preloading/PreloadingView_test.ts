@@ -46,6 +46,7 @@ class NavigationEmulator {
   primaryTarget: SDK.Target.Target;
   private frameId: Protocol.Page.FrameId;
   private prerenderTarget: SDK.Target.Target|null = null;
+  private prerenderStatusUpdatedEvent: Protocol.Preload.PrerenderStatusUpdatedEvent|null = null;
 
   constructor() {
     this.tabTarget = createTarget({type: SDK.Target.Type.Tab});
@@ -61,7 +62,7 @@ class NavigationEmulator {
   async navigateAndDispatchEvents(path: string, specrules?: string): Promise<void> {
     const url = 'https://example.com/' + path;
     this.seq++;
-    const loaderId = `loaderId:${this.seq}`;
+    const loaderId = `loaderId:${this.seq}` as Protocol.Network.LoaderId;
 
     assert.isFalse(url === this.prerenderTarget?.targetInfo()?.url);
 
@@ -85,10 +86,11 @@ class NavigationEmulator {
   async activateAndDispatchEvents(path: string, specrules?: string): Promise<void> {
     const url = 'https://example.com/' + path;
     this.seq++;
-    const loaderId = `loaderId:${this.seq}`;
+    const loaderId = `loaderId:${this.seq}` as Protocol.Network.LoaderId;
 
     assertNotNullOrUndefined(this.prerenderTarget);
     assert.isTrue(url === this.prerenderTarget.targetInfo()?.url);
+    assertNotNullOrUndefined(this.prerenderStatusUpdatedEvent);
 
     const targetInfo = this.prerenderTarget.targetInfo();
     assertNotNullOrUndefined(targetInfo);
@@ -109,15 +111,14 @@ class NavigationEmulator {
     // Strictly speaking, we have to emit an event for Protocol.Preload.PreloadingStatus.Ready earlier.
     // It's not so important and omitted.
     dispatchEvent(this.primaryTarget, 'Preload.prerenderStatusUpdated', {
-      initiatingFrameId: this.frameId,
-      prerenderingUrl: targetInfo.url,
+      ...this.prerenderStatusUpdatedEvent,
       status: Protocol.Preload.PreloadingStatus.Success,
     });
 
     await this.processSpecRules(loaderId, specrules);
   }
 
-  private async processSpecRules(loaderId: string, specrules?: string): Promise<void> {
+  private async processSpecRules(loaderId: Protocol.Network.LoaderId, specrules?: string): Promise<void> {
     if (specrules === undefined) {
       return;
     }
@@ -150,11 +151,17 @@ class NavigationEmulator {
 
     const prerenderUrl = 'https://example.com' + json['prerender'][0]['urls'][0];
 
-    dispatchEvent(this.primaryTarget, 'Preload.prerenderStatusUpdated', {
+    this.prerenderStatusUpdatedEvent = {
+      key: {
+        loaderId,
+        action: Protocol.Preload.SpeculationAction.Prerender,
+        url: prerenderUrl,
+      },
       initiatingFrameId: this.frameId,
       prerenderingUrl: prerenderUrl,
       status: Protocol.Preload.PreloadingStatus.Running,
-    });
+    };
+    dispatchEvent(this.primaryTarget, 'Preload.prerenderStatusUpdated', this.prerenderStatusUpdatedEvent);
 
     this.prerenderTarget = createTarget({
       parentTarget: this.tabTarget,

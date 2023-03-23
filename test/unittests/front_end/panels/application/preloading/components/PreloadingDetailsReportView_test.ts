@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
+import type * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
+
 import * as Protocol from '../../../../../../../front_end/generated/protocol.js';
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
@@ -53,9 +54,9 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     const data: SDK.PreloadingModel.PreloadingAttempt = {
       key: {
         loaderId: 'loaderId' as Protocol.Network.LoaderId,
-        action: SDK.PreloadingModel.SpeculationAction.Prerender,
+        action: Protocol.Preload.SpeculationAction.Prerender,
         url,
-        targetHint: null,
+        targetHint: undefined,
       },
       status: Protocol.Preload.PreloadingStatus.Running,
     };
@@ -79,9 +80,9 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     const data: SDK.PreloadingModel.PreloadingAttempt = {
       key: {
         loaderId: 'loaderId' as Protocol.Network.LoaderId,
-        action: SDK.PreloadingModel.SpeculationAction.Prerender,
+        action: Protocol.Preload.SpeculationAction.Prerender,
         url,
-        targetHint: null,
+        targetHint: undefined,
       },
       status: Protocol.Preload.PreloadingStatus.Failure,
     };

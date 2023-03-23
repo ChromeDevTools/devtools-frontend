@@ -53,8 +53,11 @@ describeWithMockConnection('PreloadingModel', async () => {
       },
     });
     dispatchEvent(target, 'Preload.prefetchStatusUpdated', {
-      initiatingFrameId: 'frameId:1',
-      prefetchUrl: 'https://example.com/subresource.js',
+      key: {
+        loaderId: 'loaderId:1',
+        action: Protocol.Preload.SpeculationAction.Prefetch,
+        url: 'https://example.com/subresource.js',
+      },
       status: Protocol.Preload.PreloadingStatus.Running,
     });
 
@@ -79,13 +82,12 @@ describeWithMockConnection('PreloadingModel', async () => {
     ]);
     assert.deepEqual(model.getAllPreloadingAttempts(), [
       {
-        id: 'fakeLoaderId:Prefetch:https://example.com/subresource.js:null',
+        id: 'loaderId:1:Prefetch:https://example.com/subresource.js:undefined',
         value: {
           key: {
-            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
-            action: SDK.PreloadingModel.SpeculationAction.Prefetch,
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            action: Protocol.Preload.SpeculationAction.Prefetch,
             url: 'https://example.com/subresource.js' as Platform.DevToolsPath.UrlString,
-            targetHint: null,
           },
           status: Protocol.Preload.PreloadingStatus.Running,
         },
@@ -109,8 +111,11 @@ describeWithMockConnection('PreloadingModel', async () => {
       },
     });
     dispatchEvent(target, 'Preload.prerenderStatusUpdated', {
-      initiatingFrameId: 'frameId:1',
-      prerenderingUrl: 'https://example.com/page.html',
+      key: {
+        loaderId: 'loaderId:1',
+        action: Protocol.Preload.SpeculationAction.Prerender,
+        url: 'https://example.com/page.html',
+      },
       status: Protocol.Preload.PreloadingStatus.Running,
     });
 
@@ -153,25 +158,23 @@ describeWithMockConnection('PreloadingModel', async () => {
     ]);
     assert.deepEqual(model.getAllPreloadingAttempts(), [
       {
-        id: 'fakeLoaderId:Prefetch:https://example.com/subresource.js:null',
+        id: 'loaderId:1:Prefetch:https://example.com/subresource.js:undefined',
         value: {
           key: {
-            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
-            action: SDK.PreloadingModel.SpeculationAction.Prefetch,
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            action: Protocol.Preload.SpeculationAction.Prefetch,
             url: 'https://example.com/subresource.js' as Platform.DevToolsPath.UrlString,
-            targetHint: null,
           },
           status: Protocol.Preload.PreloadingStatus.Running,
         },
       },
       {
-        id: 'fakeLoaderId:Prerender:https://example.com/page.html:null',
+        id: 'loaderId:1:Prerender:https://example.com/page.html:undefined',
         value: {
           key: {
-            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
-            action: SDK.PreloadingModel.SpeculationAction.Prerender,
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            action: Protocol.Preload.SpeculationAction.Prerender,
             url: 'https://example.com/page.html' as Platform.DevToolsPath.UrlString,
-            targetHint: null,
           },
           status: Protocol.Preload.PreloadingStatus.Running,
         },
@@ -182,8 +185,11 @@ describeWithMockConnection('PreloadingModel', async () => {
       id: 'ruleSetId:1',
     });
     dispatchEvent(target, 'Preload.prefetchStatusUpdated', {
-      initiatingFrameId: 'frameId:1',
-      prefetchUrl: 'https://example.com/subresource.js',
+      key: {
+        loaderId: 'loaderId:1',
+        action: Protocol.Preload.SpeculationAction.Prefetch,
+        url: 'https://example.com/subresource.js',
+      },
       status: Protocol.Preload.PreloadingStatus.Failure,
     });
 
@@ -208,25 +214,23 @@ describeWithMockConnection('PreloadingModel', async () => {
     ]);
     assert.deepEqual(model.getAllPreloadingAttempts(), [
       {
-        id: 'fakeLoaderId:Prefetch:https://example.com/subresource.js:null',
+        id: 'loaderId:1:Prefetch:https://example.com/subresource.js:undefined',
         value: {
           key: {
-            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
-            action: SDK.PreloadingModel.SpeculationAction.Prefetch,
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            action: Protocol.Preload.SpeculationAction.Prefetch,
             url: 'https://example.com/subresource.js' as Platform.DevToolsPath.UrlString,
-            targetHint: null,
           },
           status: Protocol.Preload.PreloadingStatus.Failure,
         },
       },
       {
-        id: 'fakeLoaderId:Prerender:https://example.com/page.html:null',
+        id: 'loaderId:1:Prerender:https://example.com/page.html:undefined',
         value: {
           key: {
-            loaderId: 'fakeLoaderId' as Protocol.Network.LoaderId,
-            action: SDK.PreloadingModel.SpeculationAction.Prerender,
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            action: Protocol.Preload.SpeculationAction.Prerender,
             url: 'https://example.com/page.html' as Platform.DevToolsPath.UrlString,
-            targetHint: null,
           },
           status: Protocol.Preload.PreloadingStatus.Running,
         },

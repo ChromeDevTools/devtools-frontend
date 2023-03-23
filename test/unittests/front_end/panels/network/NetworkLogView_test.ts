@@ -13,8 +13,8 @@ import * as Logs from '../../../../../front_end/models/logs/logs.js';
 import * as HAR from '../../../../../front_end/models/har/har.js';
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConnection.js';
 
 describeWithMockConnection('NetworkLogView', () => {
   const tests = (targetFactory: () => SDK.Target.Target) => {
@@ -22,7 +22,21 @@ describeWithMockConnection('NetworkLogView', () => {
     let networkLogView: Network.NetworkLogView.NetworkLogView;
 
     beforeEach(() => {
-      stubNoopSettings();
+      const dummyStorage = new Common.Settings.SettingsStorage({});
+
+      for (const settingName of ['networkColorCodeResourceTypes', 'network.group-by-frame']) {
+        Common.Settings.registerSettingExtension({
+          settingName,
+          settingType: Common.Settings.SettingType.BOOLEAN,
+          defaultValue: false,
+        });
+      }
+      Common.Settings.Settings.instance({
+        forceNew: true,
+        syncedStorage: dummyStorage,
+        globalStorage: dummyStorage,
+        localStorage: dummyStorage,
+      });
       sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
         shortcutTitleForAction: () => {},
         shortcutsForAction: () => [],
@@ -33,10 +47,21 @@ describeWithMockConnection('NetworkLogView', () => {
 
     let nextId = 0;
     function createNetworkRequest(
-        url: string, options: {requestHeaders?: SDK.NetworkRequest.NameValue[], finished?: boolean}) {
-      const request = SDK.NetworkRequest.NetworkRequest.create(
-          `request${++nextId}` as Protocol.Network.RequestId, url as Platform.DevToolsPath.UrlString,
-          '' as Platform.DevToolsPath.UrlString, null, null, null);
+        url: string, options: {requestHeaders?: SDK.NetworkRequest.NameValue[], finished?: boolean}):
+        SDK.NetworkRequest.NetworkRequest {
+      const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+      assertNotNullOrUndefined(networkManager);
+      let request: SDK.NetworkRequest.NetworkRequest|undefined;
+      const onRequestStarted = (event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.RequestStartedEvent>) => {
+        request = event.data.request;
+      };
+      networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, onRequestStarted);
+      dispatchEvent(
+          target, 'Network.requestWillBeSent',
+          {requestId: `request${++nextId}`, loaderId: 'loaderId', request: {url}} as unknown as
+              Protocol.Network.RequestWillBeSentEvent);
+      networkManager.removeEventListener(SDK.NetworkManager.Events.RequestStarted, onRequestStarted);
+      assertNotNullOrUndefined(request);
       request.requestMethod = 'GET';
       if (options.requestHeaders) {
         request.setRequestHeaders(options.requestHeaders);

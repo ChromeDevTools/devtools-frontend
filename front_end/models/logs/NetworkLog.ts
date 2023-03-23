@@ -44,7 +44,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/logs/NetworkLog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let networkLogInstance: NetworkLog;
+let networkLogInstance: NetworkLog|undefined;
 
 export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
@@ -88,6 +88,10 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       networkLogInstance = new NetworkLog();
     }
     return networkLogInstance;
+  }
+
+  static removeInstance(): void {
+    networkLogInstance = undefined;
   }
 
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {

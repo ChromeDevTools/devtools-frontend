@@ -8,6 +8,7 @@ import networkWaterfallColumnStyles from './networkWaterfallColumn.css.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
@@ -19,6 +20,8 @@ import {RequestTimeRangeNames, RequestTimingView, type RequestTimeRange} from '.
 import networkingTimingTableStyles from './networkTimingTable.css.js';
 
 const BAR_SPACING = 1;
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class NetworkWaterfallColumn extends UI.Widget.VBox {
   private canvas: HTMLCanvasElement;
@@ -39,7 +42,6 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   private nodes: NetworkNode[];
   private hoveredNode: NetworkNode|null;
   private eventDividers: Map<string, number[]>;
-  private updateRequestID!: number|undefined;
   private readonly styleForTimeRangeName: Map<RequestTimeRangeNames, _LayerStyle>;
   private readonly styleForWaitingResourceType: Map<Common.ResourceType.ResourceType, _LayerStyle>;
   private readonly styleForDownloadingResourceType: Map<Common.ResourceType.ResourceType, _LayerStyle>;
@@ -328,10 +330,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   }
 
   scheduleDraw(): void {
-    if (this.updateRequestID) {
-      return;
-    }
-    this.updateRequestID = this.element.window().requestAnimationFrame(() => this.update());
+    void coordinator.write(() => this.update());
   }
 
   update(scrollTop?: number, eventDividers?: Map<string, number[]>, nodes?: NetworkNode[]): void {
@@ -345,10 +344,6 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     }
     if (eventDividers !== undefined) {
       this.eventDividers = eventDividers;
-    }
-    if (this.updateRequestID) {
-      this.element.window().cancelAnimationFrame(this.updateRequestID);
-      delete this.updateRequestID;
     }
 
     this.startTime = this.calculator.minimumBoundary();

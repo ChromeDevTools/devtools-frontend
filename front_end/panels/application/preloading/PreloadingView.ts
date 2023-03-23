@@ -128,7 +128,7 @@ class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.Pre
     this.view = view;
 
     this.model = model;
-    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.onModelUpdated, this.view);
+    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
   }
 
   initialize(): void {
@@ -136,15 +136,15 @@ class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.Pre
   }
 
   modelAdded(model: SDK.PreloadingModel.PreloadingModel): void {
-    this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.onModelUpdated, this.view);
+    this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
     this.model = model;
-    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.onModelUpdated, this.view);
+    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
 
-    this.view.onModelUpdated();
+    this.view.render();
   }
 
   modelRemoved(_model: SDK.PreloadingModel.PreloadingModel): void {
-    this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.onModelUpdated, this.view);
+    this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
   }
 }
 
@@ -247,7 +247,7 @@ export class PreloadingView extends UI.Widget.VBox {
     //    PreloadingModelProxy.initialize()
     // -> TargetManager.observeModels()
     // -> PreloadingModelProxy.modelAdded()
-    // -> PreloadingView.onModelUpdated()
+    // -> PreloadingView.render()
     //
     // , and PreloadingView.onModelAdded() requires all members are
     // initialized. So, here is the best timing.
@@ -278,10 +278,21 @@ export class PreloadingView extends UI.Widget.VBox {
 
   private updatePreloadingDetails(): void {
     const id = this.focusedPreloadingAttemptId;
-    this.preloadingDetails.data = id === null ? null : this.modelProxy.model.getPreloadingAttemptById(id);
+    const preloadingAttempt = id === null ? null : this.modelProxy.model.getPreloadingAttemptById(id);
+    if (preloadingAttempt === null) {
+      this.preloadingDetails.data = null;
+    } else {
+      const ruleSets =
+          preloadingAttempt.ruleSetIds.map(id => this.modelProxy.model.getRuleSetById(id)).filter(x => x !== null) as
+          Protocol.Preload.RuleSet[];
+      this.preloadingDetails.data = {
+        preloadingAttempt,
+        ruleSets,
+      };
+    }
   }
 
-  onModelUpdated(): void {
+  render(): void {
     // Update rule sets grid
     //
     // Currently, all rule sets that appear in DevTools are valid.
@@ -295,13 +306,13 @@ export class PreloadingView extends UI.Widget.VBox {
     this.updateRuleSetDetails();
 
     // Update preloaidng grid
-    const preloadingAttemptRows =
-        this.modelProxy.model.getAllPreloadingAttempts().map(({id, value}) => ({
-                                                               id,
-                                                               action: PreloadingUIUtils.action(value),
-                                                               url: value.key.url,
-                                                               status: PreloadingUIUtils.status(value),
-                                                             }));
+    const preloadingAttemptRows = this.modelProxy.model.getPreloadingAttempts(this.focusedRuleSetId)
+                                      .map(({id, value}) => ({
+                                             id,
+                                             action: PreloadingUIUtils.action(value),
+                                             url: value.key.url,
+                                             status: PreloadingUIUtils.status(value),
+                                           }));
     this.preloadingGrid.update(preloadingAttemptRows);
 
     this.updatePreloadingDetails();
@@ -316,14 +327,14 @@ export class PreloadingView extends UI.Widget.VBox {
     } else {
       this.focusedRuleSetId = id;
     }
-    this.updateRuleSetDetails();
+    this.render();
   }
 
   private onPreloadingGridCellFocused(event: Event): void {
     const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
     this.focusedPreloadingAttemptId = focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as
         SDK.PreloadingModel.PreloadingAttemptId;
-    this.updatePreloadingDetails();
+    this.render();
   }
 
   async getFeatureFlags(): Promise<FeatureFlags> {

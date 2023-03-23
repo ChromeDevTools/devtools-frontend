@@ -45,6 +45,7 @@ class NavigationEmulator {
   private tabTarget: SDK.Target.Target;
   primaryTarget: SDK.Target.Target;
   private frameId: Protocol.Page.FrameId;
+  private loaderId: Protocol.Network.LoaderId;
   private prerenderTarget: SDK.Target.Target|null = null;
   private prerenderStatusUpdatedEvent: Protocol.Preload.PrerenderStatusUpdatedEvent|null = null;
 
@@ -56,20 +57,21 @@ class NavigationEmulator {
       url: 'https://example.com/',
     });
     this.frameId = 'frameId' as Protocol.Page.FrameId;
+    this.loaderId = 'loaderId' as Protocol.Network.LoaderId;
     SDK.TargetManager.TargetManager.instance().setScopeTarget(this.primaryTarget);
   }
 
-  async navigateAndDispatchEvents(path: string, specrules?: string): Promise<void> {
+  async navigateAndDispatchEvents(path: string): Promise<void> {
     const url = 'https://example.com/' + path;
     this.seq++;
-    const loaderId = `loaderId:${this.seq}` as Protocol.Network.LoaderId;
+    this.loaderId = `loaderId:${this.seq}` as Protocol.Network.LoaderId;
 
     assert.isFalse(url === this.prerenderTarget?.targetInfo()?.url);
 
     dispatchEvent(this.primaryTarget, 'Page.frameNavigated', {
       frame: {
         id: this.frameId,
-        loaderId,
+        loaderId: this.loaderId,
         url,
         domainAndRegistry: 'example.com',
         securityOrigin: 'https://example.com/',
@@ -79,18 +81,17 @@ class NavigationEmulator {
         gatedAPIFeatures: [],
       },
     });
-
-    await this.processSpecRules(loaderId, specrules);
   }
 
-  async activateAndDispatchEvents(path: string, specrules?: string): Promise<void> {
+  async activateAndDispatchEvents(path: string): Promise<void> {
     const url = 'https://example.com/' + path;
-    this.seq++;
-    const loaderId = `loaderId:${this.seq}` as Protocol.Network.LoaderId;
 
     assertNotNullOrUndefined(this.prerenderTarget);
     assert.isTrue(url === this.prerenderTarget.targetInfo()?.url);
     assertNotNullOrUndefined(this.prerenderStatusUpdatedEvent);
+
+    this.seq++;
+    this.loaderId = this.prerenderStatusUpdatedEvent.key.loaderId;
 
     const targetInfo = this.prerenderTarget.targetInfo();
     assertNotNullOrUndefined(targetInfo);
@@ -114,14 +115,10 @@ class NavigationEmulator {
       ...this.prerenderStatusUpdatedEvent,
       status: Protocol.Preload.PreloadingStatus.Success,
     });
-
-    await this.processSpecRules(loaderId, specrules);
   }
 
-  private async processSpecRules(loaderId: Protocol.Network.LoaderId, specrules?: string): Promise<void> {
-    if (specrules === undefined) {
-      return;
-    }
+  async addSpecRules(specrules: string): Promise<void> {
+    this.seq++;
 
     let json;
     try {
@@ -139,10 +136,33 @@ class NavigationEmulator {
     dispatchEvent(this.primaryTarget, 'Preload.ruleSetUpdated', {
       ruleSet: {
         id: `ruleSetId:${this.seq}`,
-        loaderId,
+        loaderId: this.loaderId,
         sourceText: specrules,
       },
     });
+
+    for (const prefetchAttempt of json['prefetch'] || []) {
+      // For simplicity
+      assert.strictEqual(prefetchAttempt['source'], 'list');
+      assert.strictEqual(prefetchAttempt['urls'].length, 1);
+
+      const url = 'https://example.com' + prefetchAttempt['urls'][0];
+
+      dispatchEvent(this.primaryTarget, 'Preload.prefetchStatusUpdated', {
+        key: {
+          loaderId: this.loaderId,
+          action: Protocol.Preload.SpeculationAction.Prefetch,
+          url,
+        },
+        initiatingFrameId: this.frameId,
+        prefetchUrl: url,
+        status: Protocol.Preload.PreloadingStatus.Running,
+      });
+    }
+
+    if (json['prerender'] === undefined) {
+      return;
+    }
 
     // For simplicity
     assert.strictEqual(json['prerender'].length, 1);
@@ -153,7 +173,7 @@ class NavigationEmulator {
 
     this.prerenderStatusUpdatedEvent = {
       key: {
-        loaderId,
+        loaderId: this.loaderId,
         action: Protocol.Preload.SpeculationAction.Prerender,
         url: prerenderUrl,
       },
@@ -208,7 +228,8 @@ describeWithMockConnection('PreloadingView', async () => {
     const emulator = new NavigationEmulator();
     const view = createView(emulator.primaryTarget);
 
-    await emulator.navigateAndDispatchEvents('', `
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
 {
   "prerender":[
     {
@@ -260,7 +281,8 @@ describeWithMockConnection('PreloadingView', async () => {
     const emulator = new NavigationEmulator();
     const view = createView(emulator.primaryTarget);
 
-    await emulator.navigateAndDispatchEvents('', `
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
 {
   "prerender":[
     {
@@ -288,7 +310,8 @@ describeWithMockConnection('PreloadingView', async () => {
     const emulator = new NavigationEmulator();
     const view = createView(emulator.primaryTarget);
 
-    await emulator.navigateAndDispatchEvents('', `
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
 {
   "prerender":[
     {
@@ -309,6 +332,134 @@ describeWithMockConnection('PreloadingView', async () => {
         ruleSetGridComponent,
         ['Validity'],
         [],
+    );
+  });
+
+  it('filters preloading attempts by selected rule set', async () => {
+    const emulator = new NavigationEmulator();
+    const view = createView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    // ruleSetId:2
+    await emulator.addSpecRules(`
+{
+  "prefetch": [
+    {
+      "source": "list",
+      "urls": ["/subresource2.js"]
+    }
+  ]
+}
+`);
+    await emulator.addSpecRules(`
+{
+  "prerender": [
+    {
+      "source": "list",
+      "urls": ["/prerendered3.html"]
+    }
+  ]
+}
+`);
+    dispatchEvent(emulator.primaryTarget, 'Preload.preloadingAttemptSourcesUpdated', {
+      preloadingAttemptSources: [
+        {
+          key: {
+            loaderId: 'loaderId:1',
+            action: Protocol.Preload.SpeculationAction.Prefetch,
+            url: 'https://example.com/subresource2.js',
+          },
+          ruleSetIds: ['ruleSetId:2'],
+          nodeIds: [2, 3],
+        },
+        {
+          key: {
+            loaderId: 'loaderId:1',
+            action: Protocol.Preload.SpeculationAction.Prerender,
+            url: 'https://example.com/prerendered3.html',
+          },
+          ruleSetIds: ['ruleSetId:3'],
+          nodeIds: [3],
+        },
+      ],
+    });
+
+    await coordinator.done();
+
+    const ruleSetGridComponent = view.getRuleSetGridForTest();
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+
+    assertGridContents(
+        ruleSetGridComponent,
+        ['Validity'],
+        [
+          ['Valid'],
+          ['Valid'],
+        ],
+    );
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            'https://example.com/subresource2.js',
+            'prefetch',
+            'Running',
+          ],
+          [
+            'https://example.com/prerendered3.html',
+            'prerender',
+            'Running',
+          ],
+        ],
+    );
+
+    // Turn on filtering.
+    const cells = [
+      {columnId: 'id', value: 'ruleSetId:2'},
+      {columnId: 'Validity', value: 'valid'},
+    ];
+    ruleSetGridComponent.dispatchEvent(
+        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'Validity', value: 'valid'}, {cells}));
+
+    await coordinator.done();
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            'https://example.com/subresource2.js',
+            'prefetch',
+            'Running',
+          ],
+        ],
+    );
+
+    // Turn off filtering.
+    ruleSetGridComponent.dispatchEvent(
+        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'Validity', value: 'valid'}, {cells}));
+
+    await coordinator.done();
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            'https://example.com/subresource2.js',
+            'prefetch',
+            'Running',
+          ],
+          [
+            'https://example.com/prerendered3.html',
+            'prerender',
+            'Running',
+          ],
+        ],
     );
   });
 

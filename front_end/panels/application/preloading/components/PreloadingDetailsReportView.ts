@@ -31,6 +31,10 @@ const UIStrings = {
    */
   detailsStatus: 'Status',
   /**
+   *@description Header of rule set
+   */
+  detailsRuleSet: 'Rule set',
+  /**
    *@description Description: status
    */
   detailedStatusPending: 'Preloading attempt is eligible but pending.',
@@ -92,7 +96,11 @@ class PreloadingUIUtils {
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-export type PreloadingDetailsReportViewData = SDK.PreloadingModel.PreloadingAttempt|null;
+export type PreloadingDetailsReportViewData = PreloadingDetailsReportViewDataInternal|null;
+interface PreloadingDetailsReportViewDataInternal {
+  preloadingAttempt: SDK.PreloadingModel.PreloadingAttempt;
+  ruleSets: Protocol.Preload.RuleSet[];
+}
 
 export class PreloadingDetailsReportView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-resources-preloading-details-report-view`;
@@ -125,8 +133,8 @@ export class PreloadingDetailsReportView extends HTMLElement {
         return;
       }
 
-      const action = PreloadingUIUtils.action(this.#data);
-      const detailedStatus = PreloadingUIUtils.detailedStatus(this.#data);
+      const action = PreloadingUIUtils.action(this.#data.preloadingAttempt);
+      const detailedStatus = PreloadingUIUtils.detailedStatus(this.#data.preloadingAttempt);
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -138,7 +146,7 @@ export class PreloadingDetailsReportView extends HTMLElement {
           <${ReportView.ReportView.ReportKey.litTagName}>${i18n.i18n.lockedString('URL')}</${
             ReportView.ReportView.ReportKey.litTagName}>
           <${ReportView.ReportView.ReportValue.litTagName}>
-            <div class="text-ellipsis" title=${this.#data.key.url}>${this.#data.key.url}</div>
+            <div class="text-ellipsis" title=${this.#data.preloadingAttempt.key.url}>${this.#data.preloadingAttempt.key.url}</div>
           </${ReportView.ReportView.ReportValue.litTagName}>
 
           <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsAction)}</${
@@ -154,10 +162,31 @@ export class PreloadingDetailsReportView extends HTMLElement {
           <${ReportView.ReportView.ReportValue.litTagName}>
             ${detailedStatus}
           </${ReportView.ReportView.ReportValue.litTagName}>
+
+${this.#data.ruleSets.map(ruleSet => this.#renderRuleSet(ruleSet))}
+          }
         </${ReportView.ReportView.Report.litTagName}>
       `, this.#shadow, {host: this});
       // clang-format on
     });
+  }
+
+  #renderRuleSet(ruleSet: Protocol.Preload.RuleSet): LitHtml.LitTemplate {
+    // We can assume `sourceText` is a valid JSON because this triggered the preloading attempt.
+    const json = JSON.stringify(JSON.parse(ruleSet.sourceText));
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsRuleSet)}</${
+            ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportValue.litTagName}>
+            <div class="text-ellipsis" title="">
+              ${json}
+            </div>
+          </${ReportView.ReportView.ReportValue.litTagName}>
+    `;
+    // clang-format on
   }
 }
 

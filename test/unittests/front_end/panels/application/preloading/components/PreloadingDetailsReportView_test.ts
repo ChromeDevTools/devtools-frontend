@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
-
 import * as Protocol from '../../../../../../../front_end/generated/protocol.js';
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
@@ -51,14 +49,34 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
 
   it('renders prerendering details', async () => {
     const url = 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString;
-    const data: SDK.PreloadingModel.PreloadingAttempt = {
-      key: {
-        loaderId: 'loaderId' as Protocol.Network.LoaderId,
-        action: Protocol.Preload.SpeculationAction.Prerender,
-        url,
-        targetHint: undefined,
+    const data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData = {
+      preloadingAttempt: {
+        key: {
+          loaderId: 'loaderId' as Protocol.Network.LoaderId,
+          action: Protocol.Preload.SpeculationAction.Prerender,
+          url,
+          targetHint: undefined,
+        },
+        status: Protocol.Preload.PreloadingStatus.Running,
+        ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
+        nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
-      status: Protocol.Preload.PreloadingStatus.Running,
+      ruleSets: [
+        {
+          id: 'ruleSetId' as Protocol.Preload.RuleSetId,
+          loaderId: 'loaderId' as Protocol.Network.LoaderId,
+          sourceText: `
+{
+  "prefetch": [
+    {
+      "source": "list",
+      "urls": ["/subresource.js"]
+    }
+  ]
+}
+`,
+        },
+      ],
     };
 
     const component = await renderPreloadingDetailsReportView(data);
@@ -70,6 +88,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
       ['URL', url],
       ['Action', 'prerender'],
       ['Status', 'Preloading is running.'],
+      ['Rule set', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
     ]);
   });
 
@@ -77,14 +96,34 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
   // finalStatus and disallowedApiMethod added to prerenderStatusUpdated.
   it('renders prerendering details with cancelled reason', async () => {
     const url = 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString;
-    const data: SDK.PreloadingModel.PreloadingAttempt = {
-      key: {
-        loaderId: 'loaderId' as Protocol.Network.LoaderId,
-        action: Protocol.Preload.SpeculationAction.Prerender,
-        url,
-        targetHint: undefined,
+    const data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData = {
+      preloadingAttempt: {
+        key: {
+          loaderId: 'loaderId' as Protocol.Network.LoaderId,
+          action: Protocol.Preload.SpeculationAction.Prerender,
+          url,
+          targetHint: undefined,
+        },
+        status: Protocol.Preload.PreloadingStatus.Failure,
+        ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
+        nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
-      status: Protocol.Preload.PreloadingStatus.Failure,
+      ruleSets: [
+        {
+          id: 'ruleSetId' as Protocol.Preload.RuleSetId,
+          loaderId: 'loaderId' as Protocol.Network.LoaderId,
+          sourceText: `
+{
+  "prefetch": [
+    {
+      "source": "list",
+      "urls": ["/subresource.js"]
+    }
+  ]
+}
+`,
+        },
+      ],
     };
 
     const component = await renderPreloadingDetailsReportView(data);
@@ -96,6 +135,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
       ['URL', url],
       ['Action', 'prerender'],
       ['Status', 'Preloading failed.'],
+      ['Rule set', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
     ]);
   });
 });

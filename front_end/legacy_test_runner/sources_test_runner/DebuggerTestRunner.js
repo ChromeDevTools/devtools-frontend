@@ -462,7 +462,8 @@ SourcesTestRunner.objectForPopover = function(sourceFrame, lineNumber, columnNum
 SourcesTestRunner.setBreakpoint = async function(sourceFrame, lineNumber, condition, enabled) {
   const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
   if (!debuggerPlugin.muted) {
-    await debuggerPlugin.setBreakpoint(lineNumber, 0, condition, enabled);
+    const bp = await debuggerPlugin.setBreakpoint(lineNumber, 0, condition, enabled);
+    await bp.refreshInDebugger();  // Make sure the breakpoint is really set
   }
 };
 

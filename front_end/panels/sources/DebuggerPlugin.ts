@@ -1510,12 +1510,13 @@ export class DebuggerPlugin extends Plugin {
 
   private async setBreakpoint(
       lineNumber: number, columnNumber: number|undefined, condition: Bindings.BreakpointManager.UserCondition,
-      enabled: boolean, isLogpoint: boolean): Promise<void> {
+      enabled: boolean, isLogpoint: boolean): Promise<Bindings.BreakpointManager.Breakpoint|undefined> {
     Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(true);
-    await this.breakpointManager.setBreakpoint(
+    const bp = await this.breakpointManager.setBreakpoint(
         this.uiSourceCode, lineNumber, columnNumber, condition, enabled, isLogpoint,
         Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
     this.breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
+    return bp;
   }
 
   private breakpointWasSetForTest(

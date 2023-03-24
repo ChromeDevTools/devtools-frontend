@@ -3816,6 +3816,14 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: Protocol.CohtmlDebug.GetSystemCacheStatsResponse;
     };
+    'CohtmlDebug.getRenoirCachesState': {
+      paramsType: [];
+      returnType: Protocol.CohtmlDebug.GetRenoirCachesStateResponse;
+    };
+    'CohtmlDebug.setRenoirCachesState': {
+      paramsType: [Protocol.CohtmlDebug.SetRenoirCachesStateRequest];
+      returnType: void;
+    };
     /**
      * Continues execution until specific location is reached.
      */

@@ -13969,6 +13969,20 @@ declare namespace Protocol {
       orphanedImages: ImageData[];
     }
 
+    export interface RenoirCache {
+      type: strign;
+      capacityCount: number;
+      capacityBytes: number;
+    }
+
+    export interface RenoirCachesState {
+      textures: RenoirCache;
+      scratchLayers: RenoirCache;
+      scratchTextures: RenoirCache;
+      commandBuffers: RenoirCache;
+      commandProcessors: RenoirCache;
+    }
+
     export interface SetDrawMetaDataEmitRequest {
       result: boolean;
     }
@@ -13979,6 +13993,14 @@ declare namespace Protocol {
 
     export interface GetSystemCacheStatsResponse extends ProtocolResponseWithError {
       stats: SystemCacheStats;
+    }
+
+    export interface GetRenoirCachesStateResponse extends ProtocolResponseWithError {
+      stats: RenoirCachesState;
+    }
+
+    export interface SetRenoirCachesStateRequest {
+      state: RenoirCache;
     }
   }
 

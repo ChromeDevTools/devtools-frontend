@@ -20809,6 +20809,50 @@
                             }
                         }
                     ]
+                },
+                {
+                    "id": "RenoirCache",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "type",
+                            "$ref": "strign"
+                        },
+                        {
+                            "name": "capacityCount",
+                            "type": "number"
+                        },
+                        {
+                            "name": "capacityBytes",
+                            "type": "number"
+                        }
+                    ]
+                },
+                {
+                    "id": "RenoirCachesState",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "textures",
+                            "$ref": "RenoirCache"
+                        },
+                        {
+                            "name": "scratchLayers",
+                            "$ref": "RenoirCache"
+                        },
+                        {
+                            "name": "scratchTextures",
+                            "$ref": "RenoirCache"
+                        },
+                        {
+                            "name": "commandBuffers",
+                            "$ref": "RenoirCache"
+                        },
+                        {
+                            "name": "commandProcessors",
+                            "$ref": "RenoirCache"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -20863,6 +20907,24 @@
                         {
                             "name": "stats",
                             "$ref": "SystemCacheStats"
+                        }
+                    ]
+                },
+                {
+                    "name": "getRenoirCachesState",
+                    "returns": [
+                        {
+                            "name": "stats",
+                            "$ref": "RenoirCachesState"
+                        }
+                    ]
+                },
+                {
+                    "name": "setRenoirCachesState",
+                    "parameters": [
+                        {
+                            "name": "state",
+                            "$ref": "RenoirCache"
                         }
                     ]
                 }

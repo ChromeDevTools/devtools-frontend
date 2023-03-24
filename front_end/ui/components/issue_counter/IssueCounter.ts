@@ -30,7 +30,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function getIssueKindIconData(issueKind: IssuesManager.Issue.IssueKind): IconButton.Icon.IconWithName {
   switch (issueKind) {
     case IssuesManager.Issue.IssueKind.PageError:
-      return {iconName: 'issue-cross-icon', color: 'var(--issue-color-red)', width: '16px', height: '16px'};
+      return {iconName: 'issue-cross-filled', color: 'var(--icon-error)', width: '20px', height: '20px'};
     case IssuesManager.Issue.IssueKind.BreakingChange:
       return {iconName: 'issue-exclamation-icon', color: 'var(--issue-color-yellow)', width: '16px', height: '16px'};
     case IssuesManager.Issue.IssueKind.Improvement:

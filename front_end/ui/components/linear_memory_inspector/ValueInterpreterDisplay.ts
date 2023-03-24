@@ -149,7 +149,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     const address = getPointerAddress(type, this.#buffer, this.#endianness);
     const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.#memoryLength);
     const buttonTitle = jumpDisabled ? i18nString(UIStrings.addressOutOfRange) : i18nString(UIStrings.jumpToPointer);
-    const iconColor = jumpDisabled ? 'var(--color-text-secondary)' : 'var(--color-primary-old)';
+    const iconColor = jumpDisabled ? 'var(--icon-default)' : 'var(--icon-link)';
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -162,7 +162,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
               <button class="jump-to-button" data-jump="true" title=${buttonTitle} ?disabled=${jumpDisabled}
                 @click=${this.#onJumpToAddressClicked.bind(this, Number(address))}>
                 <${IconButton.Icon.Icon.litTagName} .data=${
-                  {iconName: 'link_icon', color: iconColor, width: '14px'} as IconButton.Icon.IconWithName}>
+                  {iconName: 'open-externally', color: iconColor, width: '16px'} as IconButton.Icon.IconWithName}>
                 </${IconButton.Icon.Icon.litTagName}>
               </button>`}
         </div>

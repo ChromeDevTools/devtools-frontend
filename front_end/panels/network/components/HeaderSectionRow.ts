@@ -344,10 +344,10 @@ export class HeaderSectionRow extends HTMLElement {
       return html`
         <x-link href=${blockedDetails.link.url} class="link">
           <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-            iconName: 'link_icon',
-            color: 'var(--color-link)',
-            width: '16px',
-            height: '16px',
+            iconName: 'open-externally',
+            color: 'var(--icon-link)',
+            width: '20px',
+            height: '20px',
           } as IconButton.Icon.IconData}>
           </${IconButton.Icon.Icon.litTagName}
           >${i18nString(UIStrings.learnMore)}

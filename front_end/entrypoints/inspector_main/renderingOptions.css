@@ -31,10 +31,10 @@
 /* COHERENT_BEGIN */
 
 .cohtml-panel-base {
-  min-height: 1000px;
   overflow: scroll;
-  display: flex;
+  display: block;
   flex-direction: row !important;
+  height: auto;
 }
 
 .controls-panel {
@@ -93,4 +93,30 @@
   color: lightslategrey;
   margin-top: p5gox;
 }
+
+.cache-panel {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.cache-panel div {
+  display: flex;
+  flex-direction: row;
+}
+
+.cache-panel div > * {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.cache-panel div:first-child span {
+  font-weight: bold;
+}
+
+.cache-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
 /* COHERENT_END */

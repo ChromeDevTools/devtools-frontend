@@ -39,6 +39,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import { Size } from '../../ui/legacy/Geometry.js';
 
 const UIStrings = {
 
@@ -92,6 +93,14 @@ const UIStrings = {
 
   getSystemCacheDesc: 'Get statistics for the system-wide caches',
 
+  currentCapacityCountStr : 'Current Capacity Count: ',
+
+  currentCapacityBytesStr : 'Current Capacity Memory: ',
+
+  updateCacheStr : 'Update Cache',
+
+  capacityStr : 'Capacity',
+
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/CohtmlPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -114,6 +123,18 @@ function SizeString(sizeinBytes : number) : string
 
 let cohtmlPanelViewInstance: CohtmlPanelView;
 
+
+class RenoirCacheUIEntry {
+  currentCountSpanElement : HTMLElement|null;
+  currentBytesSpanElement : HTMLElement|null;
+
+  constructor() {
+    this.currentBytesSpanElement = null;
+    this.currentCountSpanElement = null;
+  }
+
+};
+
 export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<SDK.CohtmlDebugModel.CohtmlDebugModel>{
 
   private drawMetaDataSetting: Common.Settings.Setting<any>;
@@ -124,17 +145,25 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
   private contentPanel: HTMLElement;
 
+  private renoirCacheState : Protocol.CohtmlDebug.RenoirCachesState|null;
+
+  private renoirCacehUIState : Map<string, RenoirCacheUIEntry>;
+
   private constructor() {
     super(true);
     this.registerRequiredCSS('entrypoints/inspector_main/renderingOptions.css');
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.CohtmlDebugModel.CohtmlDebugModel, this);
 
+    this.renoirCacheState = null;
+
     let mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (mainTarget)
     {
       this.cohtmlDebugModel = mainTarget.model(SDK.CohtmlDebugModel.CohtmlDebugModel);
     }
+
+    this.renoirCacehUIState = new Map<string, RenoirCacheUIEntry>();
 
     this.drawMetaDataSetting = Common.Settings.Settings.instance().moduleSetting('drawMetaData');
     this.continuousRepaintSetting = Common.Settings.Settings.instance().moduleSetting('continuousRepaint');
@@ -204,6 +233,120 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
         });
       }
     });
+
+    controlsPanel.createChild('div').classList.add('panel-section-separator');
+
+    controlsPanel.createChild('h4').innerText = 'Rendering Caches';
+    this.createPanelForRenoirCache('scratchTextures', 'Scratch Textures', controlsPanel);
+    this.createPanelForRenoirCache('scratchLayers', 'Scratch Layers', controlsPanel);
+    this.createPanelForRenoirCache('textures', 'Textures', controlsPanel);
+    this.createPanelForRenoirCache('commandBuffers', 'Command Buffers', controlsPanel);
+    this.createPanelForRenoirCache('commandProcessors', 'Command Processors', controlsPanel);
+
+    controlsPanel.createChild('div').classList.add('panel-section-separator');
+  }
+
+  private onModelUpdated() {
+    this.fetchCacheStates();
+  }
+
+  private fetchCacheStates() {
+    const cacheStats = this.cohtmlDebugModel?.getRenoirCahcesState();
+    cacheStats?.then((stats) => {
+      this.updateReniorCachesUI(stats);
+    });
+  }
+
+  private updateCacheUI(state: Protocol.CohtmlDebug.RenoirCache|undefined) {
+    if (!state) {
+      return;
+    }
+    if (!this.renoirCacehUIState.has(state.type)) {
+      return;
+    }
+
+    let uiCacheState = this.renoirCacehUIState.get(state.type);
+    if (!uiCacheState
+       || uiCacheState.currentBytesSpanElement == null
+       || uiCacheState.currentCountSpanElement == null)
+    {
+      return;
+    }
+
+    uiCacheState.currentBytesSpanElement.innerText = UIStrings.currentCapacityBytesStr + SizeString(state.capacityBytes);
+    uiCacheState.currentCountSpanElement.innerText = UIStrings.currentCapacityCountStr + state.capacityCount;
+
+  }
+
+  private updateReniorCachesUI(cachesState: Protocol.CohtmlDebug.RenoirCachesState|null)
+  {
+    this.renoirCacheState = cachesState;
+    this.updateCacheUI(this.renoirCacheState?.textures);
+    this.updateCacheUI(this.renoirCacheState?.scratchLayers);
+    this.updateCacheUI(this.renoirCacheState?.scratchTextures);
+    this.updateCacheUI(this.renoirCacheState?.commandBuffers);
+    this.updateCacheUI(this.renoirCacheState?.commandProcessors);
+  }
+
+  private createPanelForRenoirCache(cache:string, title: string, parent: HTMLElement) {
+    let cachePanel = parent.createChild('div', 'cache-panel');
+
+    let cacheName = cachePanel.createChild('span', 'cache-title');
+    cacheName.innerHTML = title;
+
+    let newCacheUIEntry = new RenoirCacheUIEntry();
+
+    let firstRow = cachePanel.createChild('div', '');
+    {
+      let entryName = firstRow.createChild('span', 'info-span');
+      entryName.innerText = UIStrings.capacityStr;
+
+      let entryInput = firstRow.createChild('input');
+
+      let unit = firstRow.createChild('span', 'info-span');
+      unit.innerText = 'Unit:';
+
+      let types:string[] = ["Count", "Bytes", "KBs", "MBs"];
+      let unitSelect = this.appendSelect("Type", types, firstRow);
+
+      let entryButton = firstRow.createChild('span', 'button-link');
+      entryButton.innerText = UIStrings.updateCacheStr;
+
+      entryButton.onclick = () => {
+        let inputElement = (entryInput as HTMLInputElement);
+        let newSize = Number(inputElement.value);
+        if (!isNaN(newSize)) {
+          switch (unitSelect.value) {
+            case "Count": break;
+            case "Bytes": break;
+            case "KBs": newSize *= 1024; break;
+            case "MBs": newSize *= 1024*1024; break;
+          }
+          let setCount = unitSelect.value == "Count";
+          let state: Protocol.CohtmlDebug.RenoirCache = {
+            type: cache,
+            capacityBytes: !setCount ? newSize : -1,
+            capacityCount: setCount ? newSize : -1
+          };
+          this.cohtmlDebugModel?.setRenoirCacheState(state);
+          setTimeout(this.fetchCacheStates.bind(this), 100);
+        }
+      };
+    }
+
+    let secondRow = cachePanel.createChild('div', '');
+    {
+      let currentCapacityCount = secondRow.createChild('span', 'info-span');
+      currentCapacityCount.innerText = UIStrings.currentCapacityCountStr;
+
+      let currentCapacityBytes = secondRow.createChild('span', 'info-span');
+      currentCapacityBytes.innerText = UIStrings.currentCapacityBytesStr;
+
+      newCacheUIEntry.currentBytesSpanElement = currentCapacityBytes;
+      newCacheUIEntry.currentCountSpanElement = currentCapacityCount;
+    }
+
+    this.renoirCacehUIState.set(cache, newCacheUIEntry);
   }
 
   static instance(opts: {
@@ -253,6 +396,17 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     });
   }
 
+  private appendSelect(name: string, options: string[], element: HTMLElement): HTMLSelectElement {
+    const select = element.createChild('select');
+    select.classList.add('chrome-select');
+    for (let index = 0; index < options.length; ++index) {
+      const option = (select.createChild('option') as HTMLOptionElement);
+      option.value = options[index];
+      option.textContent = options[index];
+    }
+    return select as HTMLSelectElement;
+}
+
   private createButton(label: string, desc: string, parent: HTMLElement , click : () => void) {
     const newButtonBlock = parent.createChild('div');
     newButtonBlock.classList.add('button-block');
@@ -284,17 +438,9 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     return checkbox;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private appendSelect(label: string, setting: Common.Settings.Setting<any>, ): void {
-    const control = UI.SettingsUI.createControlForSetting(setting, label);
-    if (control) {
-      this.contentElement.appendChild(control);
-    }
-  }
-
   modelAdded(cohtmlModel: SDK.CohtmlDebugModel.CohtmlDebugModel): void {
     this.cohtmlDebugModel = cohtmlModel;
+    this.onModelUpdated();
   }
 
   modelRemoved(cohtmlModel: SDK.CohtmlDebugModel.CohtmlDebugModel): void {

@@ -32,6 +32,7 @@
 }
 
 .icon,
+.icon-basic,
 .icon-badge {
   margin: -3px -5px;
 }
@@ -48,10 +49,8 @@
 }
 
 .tree-outline {
-  --override-folder-tree-item-color: #555;
+  --override-folder-tree-item-color: var(--icon-default);
   --override-file-tree-item-color: hsl(0deg 0% 50%);
-  --override-sm-folder-fs-tree-fs-folder-item-color: hsl(28deg 75% 50%);
-  --override-nw-folder-tree-item-color: hsl(210deg 82% 62%);
   --override-script-snippet-tree-item-color: hsl(48deg 70% 50%);
   --override-stylesheet-tree-item-color: hsl(256deg 50% 50%);
   --override-image-font-tree-item-color: hsl(109deg 33% 50%);
@@ -59,17 +58,10 @@
 
 .-theme-with-dark-background .tree-outline,
 :host-context(.-theme-with-dark-background) .tree-outline {
-  --override-folder-tree-item-color: rgb(170 170 170);
   --override-file-tree-item-color: rgb(127 127 127);
-  --override-sm-folder-fs-tree-fs-folder-item-color: rgb(223 121 32);
-  --override-nw-folder-tree-item-color: rgb(17 96 176);
   --override-script-snippet-tree-item-color: rgb(217 181 38);
   --override-stylesheet-tree-item-color: rgb(98 64 191);
   --override-image-font-tree-item-color: rgb(101 170 85);
-}
-
-.navigator-file-tree-item .icon {
-  background: var(--override-file-tree-item-color);
 }
 
 .navigator-fs-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection),
@@ -91,22 +83,24 @@
   background-color: var(--item-hover-color);
 }
 
-.navigator-folder-tree-item .icon {
-  background-color: var(--override-folder-tree-item-color);
-}
-
 .navigator-folder-tree-item.force-white-icons {
-  --icon-color: var(--override-force-white-icons-background);
+  --icon-color: var(--icon-force-white);
 }
 
-.navigator-sm-folder-tree-item .icon,
-.navigator-fs-tree-item .icon,
-.navigator-fs-folder-tree-item .icon {
-  background: var(--override-sm-folder-fs-tree-fs-folder-item-color);
+.navigator-sm-folder-tree-item .icons-container {
+  --override-folder-tree-item-color: var(--icon-folder-authored);
 }
 
-.navigator-nw-folder-tree-item .icon {
-  background: var(--override-nw-folder-tree-item-color);
+.navigator-fs-folder-tree-item .icons-container {
+  --override-folder-tree-item-color: var(--icon-folder-workspace);
+}
+
+.navigator-fs-tree-item .icon {
+  background: var(--icon-file-authored);
+}
+
+.navigator-nw-folder-tree-item .icons-container {
+  --override-folder-tree-item-color: var(--icon-folder-deployed);
 }
 
 .navigator-sm-script-tree-item .icon,

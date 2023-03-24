@@ -1175,31 +1175,24 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     this.navigatorView = navigatorView;
     this.hoverCallback = hoverCallback;
 
-    let iconType = 'largeicon-navigator-folder';
-    let legacyIcon = true;
+    let iconType = 'folder';
 
     if (type === Types.Domain) {
-      iconType = 'largeicon-navigator-domain';
+      iconType = 'cloud';
     } else if (type === Types.Frame) {
-      iconType = 'largeicon-navigator-frame';
+      iconType = 'frame';
     } else if (type === Types.Worker) {
-      iconType = 'largeicon-navigator-worker';
+      iconType = 'gears';
     } else if (type === Types.Authored) {
-      iconType = 'ic_sources_authored';
-      legacyIcon = false;
+      iconType = 'code';
     } else if (type === Types.Deployed) {
-      iconType = 'ic_sources_deployed';
-      legacyIcon = false;
+      iconType = 'deployed';
     }
 
-    if (legacyIcon) {
-      this.setLeadingIcons([UI.Icon.Icon.create(iconType, 'icon')]);
-    } else {
-      const icon = new IconButton.Icon.Icon();
-      const iconPath = new URL(`../../Images/${iconType}.svg`, import.meta.url).toString();
-      icon.data = {iconPath: iconPath, color: 'var(--override-folder-tree-item-color)', width: '18px'};
-      this.setLeadingIcons([icon]);
-    }
+    const icon = new IconButton.Icon.Icon();
+    const iconPath = new URL(`../../Images/${iconType}.svg`, import.meta.url).toString();
+    icon.data = {iconPath: iconPath, color: 'var(--override-folder-tree-item-color)', width: '20px', height: '20px'};
+    this.setLeadingIcons([icon]);
   }
 
   async onpopulate(): Promise<void> {

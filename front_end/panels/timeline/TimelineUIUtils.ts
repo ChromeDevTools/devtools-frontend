@@ -1611,9 +1611,7 @@ export class TimelineUIUtils {
     }
   }
 
-  static async buildDetailsNodeForTraceEvent(
-      event: SDK.TracingModel.Event, target: SDK.Target.Target|null,
-      linkifier: Components.Linkifier.Linkifier): Promise<Node|null> {
+  static async buildDetailsNodeForTraceEvent(event: SDK.TracingModel.Event): Promise<Node|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let details: HTMLElement|HTMLSpanElement|(Element | null)|Text|null = null;
     let detailsText;
@@ -1670,8 +1668,7 @@ export class TimelineUIUtils {
       case recordType.JSFrame: {
         details = document.createElement('span');
         UI.UIUtils.createTextChild(details, TimelineUIUtils.frameDisplayName(eventData));
-        const location = linkifyLocation(
-            eventData['scriptId'], eventData['url'], eventData['lineNumber'], eventData['columnNumber']);
+        const location = linkifyLocation(eventData['url'], eventData['lineNumber'], eventData['columnNumber']);
         if (location) {
           UI.UIUtils.createTextChild(details, ' @ ');
           details.appendChild(location);
@@ -1681,7 +1678,7 @@ export class TimelineUIUtils {
 
       case recordType.CompileModule:
       case recordType.CacheModule: {
-        details = linkifyLocation(null, event.args['fileName'], 0, 0);
+        details = linkifyLocation(event.args['fileName'], 0, 0);
         break;
       }
 
@@ -1690,7 +1687,7 @@ export class TimelineUIUtils {
       case recordType.EvaluateScript: {
         const url = eventData['url'];
         if (url) {
-          details = linkifyLocation(null, url, eventData['lineNumber'], 0);
+          details = linkifyLocation(url, eventData['lineNumber'], 0);
         }
         break;
       }
@@ -1698,7 +1695,7 @@ export class TimelineUIUtils {
       case recordType.StreamingCompileScript: {
         const url = eventData['url'];
         if (url) {
-          details = linkifyLocation(null, url, 0, 0);
+          details = linkifyLocation(url, 0, 0);
         }
         break;
       }
@@ -1718,21 +1715,33 @@ export class TimelineUIUtils {
     }
     return details;
 
-    function linkifyLocation(
-        scriptId: Protocol.Runtime.ScriptId|null, url: string, lineNumber: number, columnNumber?: number): Element|
-        null {
-      const options =
-          {columnNumber, showColumnNumber: true, inlineFrameIndex: 0, className: 'timeline-details', tabStop: true};
-      return linkifier.linkifyScriptLocation(
-          target, scriptId, url as Platform.DevToolsPath.UrlString, lineNumber, options);
+    function linkifyLocation(url: string, lineNumber: number, columnNumber?: number): Element|null {
+      const options = {
+        lineNumber,
+        columnNumber,
+        showColumnNumber: true,
+        inlineFrameIndex: 0,
+        className: 'timeline-details',
+        tabStop: true,
+      };
+      return Components.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, options);
     }
 
     function linkifyTopCallFrame(): Element|null {
       const frame = TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
-      return frame ? linkifier.maybeLinkifyConsoleCallFrame(
-                         target, frame,
-                         {className: 'timeline-details', tabStop: true, inlineFrameIndex: 0, showColumnNumber: true}) :
-                     null;
+      if (!frame) {
+        return null;
+      }
+      const options = {
+        className: 'timeline-details',
+        tabStop: true,
+        inlineFrameIndex: 0,
+        showColumnNumber: true,
+        columnNumber: frame.columnNumber,
+        lineNumber: frame.lineNumber,
+      };
+
+      return Components.Linkifier.Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, options);
     }
   }
 
@@ -1879,8 +1888,7 @@ export class TimelineUIUtils {
       case recordTypes.JSIdleFrame:
       case recordTypes.JSSystemFrame:
       case recordTypes.FunctionCall: {
-        const detailsNode =
-            await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
+        const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.function), detailsNode);
         }
@@ -2213,8 +2221,7 @@ export class TimelineUIUtils {
       }
 
       default: {
-        const detailsNode =
-            await TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
+        const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(event);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }

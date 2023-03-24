@@ -100,9 +100,24 @@ export class CohtmlDebugModel extends SDKModel<void> implements ProtocolProxyApi
     if (response.getError()) {
       return null;
     }
-
     return response;
   }
+
+  async getRenoirCahcesState() : Promise<Protocol.CohtmlDebug.RenoirCachesState|null> {
+    const response = await this.cohtmlDebugAgent.invoke_getRenoirCachesState();
+    if (response.getError()) {
+      return null;
+    }
+    return response.stats;
+  }
+
+  setRenoirCacheState(stateToSet: Protocol.CohtmlDebug.RenoirCache) {
+    const param: Protocol.CohtmlDebug.SetRenoirCachesStateRequest = {
+      state : stateToSet
+    };
+    this.cohtmlDebugAgent.invoke_setRenoirCachesState(param);
+  }
+
 }
 // eslint-disable-next-line rulesdir/const_enum
 

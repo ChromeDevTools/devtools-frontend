@@ -544,10 +544,10 @@ export class FrameDetailsReportView extends HTMLElement {
               @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
             >
               <${IconButton.Icon.Icon.litTagName} class="button-icon-with-text" .data=${{
-                iconName: 'elements_panel_icon',
-                color: 'var(--color-primary-old)',
-                width: '16px',
-                height: '16px',
+                iconName: 'code',
+                color: 'var(--icon-link)',
+                width: '20px',
+                height: '20px',
               } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
               &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
             </button>

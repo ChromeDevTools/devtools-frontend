@@ -68,17 +68,17 @@ export interface PermissionsPolicySectionData {
 }
 
 export function renderIconLink(
-    iconName: string, title: Platform.UIString.LocalizedString,
-    clickHandler: (() => void)|(() => Promise<void>)): LitHtml.TemplateResult {
+    iconName: string, title: Platform.UIString.LocalizedString, clickHandler: (() => void)|(() => Promise<void>),
+    size: number = 16): LitHtml.TemplateResult {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
   return LitHtml.html`
     <button class="link" role="link" tabindex=0 @click=${clickHandler} title=${title}>
       <${IconButton.Icon.Icon.litTagName} .data=${{
         iconName: iconName,
-        color: 'var(--color-primary-old)',
-        width: '16px',
-        height: '16px',
+        color: 'var(--icon-link)',
+        width: `${size}px`,
+        height: `${size}px`,
       } as IconButton.Icon.IconData}>
       </${IconButton.Icon.Icon.litTagName}>
     </button>
@@ -187,10 +187,8 @@ export class PermissionsPolicySection extends HTMLElement {
           <div>
             ${
           linkTargetDOMNode ? renderIconLink(
-                                  'elements_panel_icon',
-                                  i18nString(UIStrings.clickToShowIframe),
-                                  (): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode),
-                                  ) :
+                                  'code', i18nString(UIStrings.clickToShowIframe),
+                                  (): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode), 20) :
                               LitHtml.nothing}
             ${
           linkTargetRequest ? renderIconLink(

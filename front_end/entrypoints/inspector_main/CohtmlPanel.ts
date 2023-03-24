@@ -145,8 +145,11 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
   private contentPanel: HTMLElement;
 
+  // The "raw" data for the renoir caches. We get this from the backend through CohtmlDebugModel.getRenoirCahcesState
   private renoirCacheState : Protocol.CohtmlDebug.RenoirCachesState|null;
 
+  // The "frontend" state of the renior renoir caches. In the entries we keep the two HTML element which display the current capacity
+  // count and bytes. The map maps from a cache type (scratchTextures, scratchLayers) to the entry with HTML elements (RenoirCacheUIEntry).
   private renoirCacehUIState : Map<string, RenoirCacheUIEntry>;
 
   private constructor() {
@@ -236,23 +239,26 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     controlsPanel.createChild('div').classList.add('panel-section-separator');
 
+    // The panel which controls the renoir caches. We will create an entry for each cache type.
     controlsPanel.createChild('h4').innerText = 'Rendering Caches';
-    this.createPanelForRenoirCache('scratchTextures', 'Scratch Textures', controlsPanel);
-    this.createPanelForRenoirCache('scratchLayers', 'Scratch Layers', controlsPanel);
-    this.createPanelForRenoirCache('textures', 'Textures', controlsPanel);
-    this.createPanelForRenoirCache('commandBuffers', 'Command Buffers', controlsPanel);
-    this.createPanelForRenoirCache('commandProcessors', 'Command Processors', controlsPanel);
+    this.createCacheEntryForRenoirCache('scratchTextures', 'Scratch Textures', controlsPanel);
+    this.createCacheEntryForRenoirCache('scratchLayers', 'Scratch Layers', controlsPanel);
+    this.createCacheEntryForRenoirCache('textures', 'Textures', controlsPanel);
+    this.createCacheEntryForRenoirCache('commandBuffers', 'Command Buffers', controlsPanel);
+    this.createCacheEntryForRenoirCache('commandProcessors', 'Command Processors', controlsPanel);
 
     controlsPanel.createChild('div').classList.add('panel-section-separator');
   }
 
   private onModelUpdated() {
+    // once we have a valid cohtml model, we'll query the renoir caches states
     this.fetchCacheStates();
   }
 
   private fetchCacheStates() {
     const cacheStats = this.cohtmlDebugModel?.getRenoirCahcesState();
     cacheStats?.then((stats) => {
+      // update the HTML elements displaying the currenet capacity count and bytes
       this.updateReniorCachesUI(stats);
     });
   }
@@ -261,6 +267,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     if (!state) {
       return;
     }
+
     if (!this.renoirCacehUIState.has(state.type)) {
       return;
     }
@@ -268,19 +275,18 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     let uiCacheState = this.renoirCacehUIState.get(state.type);
     if (!uiCacheState
        || uiCacheState.currentBytesSpanElement == null
-       || uiCacheState.currentCountSpanElement == null)
-    {
+       || uiCacheState.currentCountSpanElement == null) {
       return;
     }
 
     uiCacheState.currentBytesSpanElement.innerText = UIStrings.currentCapacityBytesStr + SizeString(state.capacityBytes);
     uiCacheState.currentCountSpanElement.innerText = UIStrings.currentCapacityCountStr + state.capacityCount;
-
   }
 
   private updateReniorCachesUI(cachesState: Protocol.CohtmlDebug.RenoirCachesState|null)
   {
     this.renoirCacheState = cachesState;
+    // iterating over an object is not trivial in typescript so we'll do it manually
     this.updateCacheUI(this.renoirCacheState?.textures);
     this.updateCacheUI(this.renoirCacheState?.scratchLayers);
     this.updateCacheUI(this.renoirCacheState?.scratchTextures);
@@ -288,8 +294,8 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     this.updateCacheUI(this.renoirCacheState?.commandProcessors);
   }
 
-  private createPanelForRenoirCache(cache:string, title: string, parent: HTMLElement) {
-    let cachePanel = parent.createChild('div', 'cache-panel');
+  private createCacheEntryForRenoirCache(cache:string, title: string, parent: HTMLElement) {
+    let cachePanel = parent.createChild('div', 'cache-entry');
 
     let cacheName = cachePanel.createChild('span', 'cache-title');
     cacheName.innerHTML = title;
@@ -301,14 +307,17 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
       let entryName = firstRow.createChild('span', 'info-span');
       entryName.innerText = UIStrings.capacityStr;
 
+      // input field where the user enters the desired cache size
       let entryInput = firstRow.createChild('input');
+      entryInput.setAttribute('type', 'text');
 
+      // unit for the enered number (label + select element)
       let unit = firstRow.createChild('span', 'info-span');
       unit.innerText = 'Unit:';
-
       let types:string[] = ["Count", "Bytes", "KBs", "MBs"];
       let unitSelect = this.appendSelect("Type", types, firstRow);
 
+      // button for updating the corresponding cache.
       let entryButton = firstRow.createChild('span', 'button-link');
       entryButton.innerText = UIStrings.updateCacheStr;
 
@@ -316,24 +325,37 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
         let inputElement = (entryInput as HTMLInputElement);
         let newSize = Number(inputElement.value);
         if (!isNaN(newSize)) {
+
           switch (unitSelect.value) {
             case "Count": break;
             case "Bytes": break;
             case "KBs": newSize *= 1024; break;
             case "MBs": newSize *= 1024*1024; break;
           }
+
           let setCount = unitSelect.value == "Count";
+
+          // create the object that will be send to the backend
           let state: Protocol.CohtmlDebug.RenoirCache = {
             type: cache,
             capacityBytes: !setCount ? newSize : -1,
             capacityCount: setCount ? newSize : -1
           };
+
+          // send the data to the backend (the C++ code)
           this.cohtmlDebugModel?.setRenoirCacheState(state);
+
+          // Cohtml does not update the caches immediatly but rather on the
+          // next frame. Hence we can't request the new cache state immediatly but
+          // have to "wait a little bit". 100ms is plenty of time but still keeps the
+          // updating feeling interactive
           setTimeout(this.fetchCacheStates.bind(this), 100);
         }
       };
     }
 
+    // create a couple of span elements to display the currenet capacity bytes and count
+    // of the cache
     let secondRow = cachePanel.createChild('div', '');
     {
       let currentCapacityCount = secondRow.createChild('span', 'info-span');
@@ -342,10 +364,12 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
       let currentCapacityBytes = secondRow.createChild('span', 'info-span');
       currentCapacityBytes.innerText = UIStrings.currentCapacityBytesStr;
 
+      // save the span elements for later so that we can update them when we have to
       newCacheUIEntry.currentBytesSpanElement = currentCapacityBytes;
       newCacheUIEntry.currentCountSpanElement = currentCapacityCount;
     }
 
+    // create the entry in the frontend map for the caches state
     this.renoirCacehUIState.set(cache, newCacheUIEntry);
   }
 

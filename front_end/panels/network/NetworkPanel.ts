@@ -423,10 +423,10 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     const networkConditionsIcon = new IconButton.Icon.Icon();
     networkConditionsIcon.data = {
-      iconName: 'network_conditions_icon',
-      color: 'rgb(110 110 110)',
-      width: '18px',
-      height: '18px',
+      iconName: 'network-settings',
+      color: 'var(--icon-default)',
+      width: '20px',
+      height: '20px',
     };
     const networkConditionsButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.moreNetworkConditions), networkConditionsIcon);

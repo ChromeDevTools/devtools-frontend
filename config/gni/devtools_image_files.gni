@@ -136,7 +136,7 @@ devtools_svg_sources = [
   "link_icon.svg",
   "mediumIcons.svg",
   "minus_icon.svg",
-  "network_conditions_icon.svg",
+  "network-settings.svg",
   "network_panel_icon.svg",
   "node_search_icon.svg",
   "plus_icon.svg",

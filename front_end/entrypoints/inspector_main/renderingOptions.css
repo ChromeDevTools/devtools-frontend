@@ -94,23 +94,33 @@
   margin-top: p5gox;
 }
 
-.cache-panel {
+.cache-entry {
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
 }
 
-.cache-panel div {
+.cache-entry input {
+  padding: 3px 3px;
+  box-sizing: border-box;
+  border: 1px solid gray;
+  border-radius: 3px;
+}
+.cache-entry input:focus {
+  border: 1px solid #0275d8;
+}
+
+.cache-entry div {
   display: flex;
   flex-direction: row;
 }
 
-.cache-panel div > * {
+.cache-entry div > * {
   margin-left: 5px;
   margin-right: 5px;
 }
 
-.cache-panel div:first-child span {
+.cache-entry div:first-child span {
   font-weight: bold;
 }
 

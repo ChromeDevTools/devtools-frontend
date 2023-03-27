@@ -11,10 +11,10 @@ await FrontendHelpers.initializeGlobalVars();
 
 // Adding a couple image keys to the image map.
 MarkdownView.MarkdownImagesMap.markdownImages.set('test-icon', {
-  src: '../../Images/issue-text-icon.svg',
+  src: '../../Images/issue-text-filled.svg',
   isIcon: true,
-  width: '16px',
-  height: '16px',
+  width: '20px',
+  height: '20px',
 });
 MarkdownView.MarkdownImagesMap.markdownImages.set('test-image', {
   src: '../../Images/lighthouse_logo.svg',

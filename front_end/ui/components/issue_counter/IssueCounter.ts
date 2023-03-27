@@ -34,7 +34,7 @@ export function getIssueKindIconData(issueKind: IssuesManager.Issue.IssueKind): 
     case IssuesManager.Issue.IssueKind.BreakingChange:
       return {iconName: 'issue-exclamation-icon', color: 'var(--issue-color-yellow)', width: '16px', height: '16px'};
     case IssuesManager.Issue.IssueKind.Improvement:
-      return {iconName: 'issue-text-icon', color: 'var(--issue-color-blue)', width: '16px', height: '16px'};
+      return {iconName: 'issue-text-filled', color: 'var(--icon-info)', width: '20px', height: '20px'};
   }
 }
 

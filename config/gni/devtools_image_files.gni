@@ -123,7 +123,7 @@ devtools_svg_sources = [
   "issue-cross-filled.svg",
   "issue-exclamation-icon.svg",
   "issue-questionmark-icon.svg",
-  "issue-text-icon.svg",
+  "issue-text-filled.svg",
   "justify-content-center-icon.svg",
   "justify-content-flex-end-icon.svg",
   "justify-content-flex-start-icon.svg",

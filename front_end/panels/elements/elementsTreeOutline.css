@@ -326,6 +326,8 @@ li.hovered:not(.always-parent) + ol.children,
 li.selected:not(.always-parent) + ol.children {
   background: linear-gradient(to right, var(--override-indentation-level-border-color), var(--override-indentation-level-border-color) 0.5px, transparent 0);
   background-position-x: 5px;
+  background-size: 0.5px 100%;
+  background-repeat: no-repeat;
 }
 
 li.selected:not(.always-parent) + ol.children {

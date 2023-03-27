@@ -95,7 +95,7 @@ class MockIssueResolver {
 
 describeWithLocale('IssueLinkIcon', () => {
   const issueId = 'issue1' as Protocol.Audits.IssueId;
-  const defaultIcon = {iconName: 'issue-questionmark-icon', color: 'var(--color-text-secondary)'};
+  const defaultIcon = {iconName: 'issue-questionmark-filled', color: 'var(--icon-default)'};
   const breakingChangeIcon =
       IssueCounter.IssueCounter.getIssueKindIconData(IssuesManager.Issue.IssueKind.BreakingChange);
   const pageErrorIcon = IssueCounter.IssueCounter.getIssueKindIconData(IssuesManager.Issue.IssueKind.PageError);

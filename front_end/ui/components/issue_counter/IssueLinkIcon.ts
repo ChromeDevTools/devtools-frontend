@@ -125,7 +125,7 @@ export class IssueLinkIcon extends HTMLElement {
     if (this.#issue) {
       return getIssueKindIconData(this.#issue.getKind());
     }
-    return {iconName: 'issue-questionmark-icon', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
+    return {iconName: 'issue-questionmark-filled', color: 'var(--icon-default)', width: '20px', height: '20px'};
   }
 
   handleClick(event: MouseEvent): void {

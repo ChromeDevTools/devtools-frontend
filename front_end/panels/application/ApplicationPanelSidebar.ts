@@ -1647,7 +1647,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
   constructor(storagePanel: ResourcesPanel, domStorage: DOMStorage) {
     super(storagePanel, domStorage.storageKey ? domStorage.storageKey : i18nString(UIStrings.localFiles), false);
     this.domStorage = domStorage;
-    const icon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
+    const icon = UI.Icon.Icon.create('table', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
 

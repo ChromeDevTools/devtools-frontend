@@ -1497,7 +1497,7 @@
     "message": "Adresa URL a hărții"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Hărțile sursă traduc codul minimizat în codul sursă inițial. Astfel, dezvoltatorii pot să remedieze erorile în producție. În plus, Lighthouse poate oferi statistici suplimentare. Implementează hărțile sursă ca să profiți de aceste beneficii. [Află mai multe despre hărțile sursă](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Hărțile sursă traduc codul minimizat în codul sursă inițial. Astfel, dezvoltatorii pot să remedieze erorile în producție. În plus, Lighthouse poate oferi statistici suplimentare. Implementează hărțile sursă ca să profiți de aceste beneficii. [Află mai multe despre hărțile sursă](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "Lipsesc hărțile sursă pentru codul JavaScript primar mare"

@@ -614,13 +614,15 @@ declare function hasLocale(requestedLocale: LH.Locale): boolean;
 declare class DetailsRenderer {
     /**
      * @param {DOM} dom
-     * @param {{fullPageScreenshot?: LH.Result.FullPageScreenshot}} [options]
+     * @param {{fullPageScreenshot?: LH.Result.FullPageScreenshot, entities?: LH.Result.Entities}} [options]
      */
     constructor(dom: DOM, options?: {
         fullPageScreenshot?: LH.Result.FullPageScreenshot;
+        entities?: LH.Result.Entities;
     });
     _dom: DOM;
     _fullPageScreenshot: LH.Result.FullPageScreenshot;
+    _entities: LH.Result.Entities;
     /**
      * @param {AuditDetails} details
      * @return {Element|null}
@@ -710,13 +712,30 @@ declare class DetailsRenderer {
      */
     _renderTableRowsFromItem(item: TableItem, headings: LH.Audit.Details.TableColumnHeading[]): DocumentFragment;
     /**
-     * @param {{headings: TableColumnHeading[], items: TableItem[]}} details
+     * Adorn a table row element with entity chips based on [data-entity] attribute.
+     * @param {HTMLTableRowElement} rowEl
+     */
+    _adornEntityGroupRow(rowEl: HTMLTableRowElement): void;
+    /**
+     * Renders an entity-grouped row.
+     * @param {TableItem} item
+     * @param {LH.Audit.Details.TableColumnHeading[]} headings
+     */
+    _renderEntityGroupRow(item: TableItem, headings: LH.Audit.Details.TableColumnHeading[]): DocumentFragment;
+    /**
+     * Returns an array of entity-grouped TableItems to use as the top-level rows in
+     * an grouped table. Each table item returned represents a unique entity, with every
+     * applicable key that can be grouped as a property. Optionally, supported columns are
+     * summed by entity, and sorted by specified keys.
+     * @param {TableLike} details
+     * @return {TableItem[]}
+     */
+    _getEntityGroupItems(details: TableLike): TableItem[];
+    /**
+     * @param {TableLike} details
      * @return {Element}
      */
-    _renderTable(details: {
-        headings: TableColumnHeading[];
-        items: TableItem[];
-    }): Element;
+    _renderTable(details: TableLike): Element;
     /**
      * @param {LH.FormattedIcu<LH.Audit.Details.List>} details
      * @return {Element}

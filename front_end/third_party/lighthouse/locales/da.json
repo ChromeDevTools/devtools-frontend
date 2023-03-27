@@ -1497,7 +1497,7 @@
     "message": "Kortets webadresse"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Kildekort oversætter formindsket kode til den originale kildekode. Dette hjælper udviklere med at fejlrette under produktion. Derudover kan Lighthouse levere yderligere indsigter. Overvej at implementere kildekort for at drage fordel af disse. [Få flere oplysninger om kildekort](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Kildekort oversætter formindsket kode til den originale kildekode. Dette hjælper udviklere med at fejlrette under produktion. Derudover kan Lighthouse levere yderligere indsigter. Overvej at implementere kildekort for at drage fordel af disse. [Få flere oplysninger om kildekort](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "Manglende kildekort til stor førsteparts-JavaScript"

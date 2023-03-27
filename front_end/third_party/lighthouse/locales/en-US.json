@@ -1323,7 +1323,7 @@
     "message": "robots.txt is valid"
   },
   "core/audits/seo/tap-targets.js | description": {
-    "message": "Interactive elements like buttons and links should be large enough (48x48px), and have enough space around them, to be easy enough to tap without overlapping onto other elements. [Learn more about tap targets](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
+    "message": "Interactive elements like buttons and links should be large enough (48x48px), or have enough space around them, to be easy enough to tap without overlapping onto other elements. [Learn more about tap targets](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
   },
   "core/audits/seo/tap-targets.js | displayValue": {
     "message": "{decimalProportion, number, percent} appropriately sized tap targets"
@@ -1497,7 +1497,7 @@
     "message": "Map URL"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Source maps translate minified code to the original source code. This helps developers debug in production. In addition, Lighthouse is able to provide further insights. Consider deploying source maps to take advantage of these benefits. [Learn more about source maps](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Source maps translate minified code to the original source code. This helps developers debug in production. In addition, Lighthouse is able to provide further insights. Consider deploying source maps to take advantage of these benefits. [Learn more about source maps](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "Missing source maps for large first-party JavaScript"
@@ -3047,6 +3047,9 @@
   "report/renderer/report-utils.js | expandView": {
     "message": "Expand view"
   },
+  "report/renderer/report-utils.js | firstPartyChipLabel": {
+    "message": "1st party"
+  },
   "report/renderer/report-utils.js | footerIssue": {
     "message": "File an issue"
   },
@@ -3064,6 +3067,9 @@
   },
   "report/renderer/report-utils.js | notApplicableAuditsGroupTitle": {
     "message": "Not applicable"
+  },
+  "report/renderer/report-utils.js | openInANewTabTooltip": {
+    "message": "Open in a new tab"
   },
   "report/renderer/report-utils.js | opportunityResourceColumnLabel": {
     "message": "Opportunity"
@@ -3142,6 +3148,9 @@
   },
   "report/renderer/report-utils.js | toplevelWarningsMessage": {
     "message": "There were issues affecting this run of Lighthouse:"
+  },
+  "report/renderer/report-utils.js | unattributable": {
+    "message": "Unattributable"
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Values are estimated and may vary. The [performance score is calculated](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) directly from these metrics."

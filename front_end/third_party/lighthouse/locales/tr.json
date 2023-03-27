@@ -1497,7 +1497,7 @@
     "message": "Eşleme URL'si"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Kaynak eşlemeleri, küçültülmüş kodu orijinal kaynak koduna çevirir. Bu, geliştiricilerin üretimde hata ayıklamasına yardımcı olur. Ek olarak, Lighthouse daha detaylı bilgi sağlayabilir. Bu avantajlardan yararlanmak için kaynak eşlemelerini dağıtmayı düşünün. [Kaynak haritaları hakkında daha fazla bilgi edinin](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Kaynak eşlemeleri, küçültülmüş kodu orijinal kaynak koduna çevirir. Bu, geliştiricilerin üretimde hata ayıklamasına yardımcı olur. Ek olarak, Lighthouse daha detaylı bilgi sağlayabilir. Bu avantajlardan yararlanmak için kaynak eşlemelerini dağıtmayı düşünün. [Kaynak haritaları hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "Büyük birinci taraf JavaScript'te kaynak eşlemeleri eksik"

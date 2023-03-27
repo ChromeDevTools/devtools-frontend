@@ -1497,7 +1497,7 @@
     "message": "URL karte"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Karte izvora prevode umanjeni kôd u originalni izvorni kôd. To pomaže razvojnim programerima pri otklanjanju pogrešaka u produkciji. Osim toga, Lighthouse može pružiti daljnje uvide. Savjetujemo vam da primijenite karte izvora kako biste iskoristili te pogodnosti. [Saznajte više o kartama izvora](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Karte izvora prevode umanjeni kôd u originalni izvorni kôd. To pomaže razvojnim programerima pri otklanjanju pogrešaka u produkciji. Osim toga, Lighthouse može pružiti daljnje uvide. Savjetujemo vam da primijenite karte izvora kako biste iskoristili te pogodnosti. [Saznajte više o kartama izvora](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "Nedostaju karte izvora za veliki JavaScript prve strane"

@@ -1497,7 +1497,7 @@
     "message": "Kartan URL"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Lähdekartat muuntavat pienennetyn koodin alkuperäiseksi lähdekoodiksi. Tämä auttaa kehittäjiä jäljittämään ja korjaamaan virheet tuotantovaiheessa. Lisätietoja saa myös Lighthousesta. Sinun kannattaa ehkä ottaa lähdekartat käyttöön, jotta voit hyödyntää näitä mahdollisuuksia. [Lue lisää lähdekartoista](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Lähdekartat muuntavat pienennetyn koodin alkuperäiseksi lähdekoodiksi. Tämä auttaa kehittäjiä jäljittämään ja korjaamaan virheet tuotantovaiheessa. Lisätietoja saa myös Lighthousesta. Sinun kannattaa ehkä ottaa lähdekartat käyttöön, jotta voit hyödyntää näitä mahdollisuuksia. [Lue lisää lähdekartoista](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "Suuresta ensimmäisen osapuolen JavaScript-kirjastosta puuttuu lähdekarttoja"

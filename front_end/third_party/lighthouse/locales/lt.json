@@ -1497,7 +1497,7 @@
     "message": "Žemėlapio URL"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Šaltinio žemėlapiai išverčia sumažintą kodą į originalų šaltinio kodą. Tai kūrėjams padeda derinti kuriant gamybinę versiją. Be to, „Lighthouse“ gali pateikti daugiau įžvalgų. Apsvarstykite galimybę pritaikyti šaltinio žemėlapius ir pasinaudoti šiais privalumais. [Sužinokite daugiau apie šaltinio žemėlapius](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Šaltinio žemėlapiai išverčia sumažintą kodą į originalų šaltinio kodą. Tai kūrėjams padeda derinti kuriant gamybinę versiją. Be to, „Lighthouse“ gali pateikti daugiau įžvalgų. Apsvarstykite galimybę pritaikyti šaltinio žemėlapius ir pasinaudoti šiais privalumais. [Sužinokite daugiau apie šaltinio žemėlapius](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "Trūksta didelio pirmosios šalies „JavaScript“ failo šaltinio žemėlapių"

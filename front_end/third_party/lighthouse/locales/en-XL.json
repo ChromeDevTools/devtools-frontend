@@ -1323,7 +1323,7 @@
     "message": "r̂ób̂ót̂ś.t̂x́t̂ íŝ v́âĺîd́"
   },
   "core/audits/seo/tap-targets.js | description": {
-    "message": "Îńt̂ér̂áĉt́îv́ê él̂ém̂én̂t́ŝ ĺîḱê b́ût́t̂ón̂ś âńd̂ ĺîńk̂ś ŝh́ôúl̂d́ b̂é l̂ár̂ǵê én̂óûǵĥ (48x́48p̂x́), âńd̂ h́âv́ê én̂óûǵĥ śp̂áĉé âŕôún̂d́ t̂h́êḿ, t̂ó b̂é êáŝý êńôúĝh́ t̂ó t̂áp̂ ẃît́ĥóût́ ôv́êŕl̂áp̂ṕîńĝ ón̂t́ô ót̂h́êŕ êĺêḿêńt̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂áp̂ t́âŕĝét̂ś](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
+    "message": "Îńt̂ér̂áĉt́îv́ê él̂ém̂én̂t́ŝ ĺîḱê b́ût́t̂ón̂ś âńd̂ ĺîńk̂ś ŝh́ôúl̂d́ b̂é l̂ár̂ǵê én̂óûǵĥ (48x́48p̂x́), ôŕ ĥáv̂é êńôúĝh́ ŝṕâćê ár̂óûńd̂ t́ĥém̂, t́ô b́ê éâśŷ én̂óûǵĥ t́ô t́âṕ ŵít̂h́ôút̂ óv̂ér̂ĺâṕp̂ín̂ǵ ôńt̂ó ôt́ĥér̂ él̂ém̂én̂t́ŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́âṕ t̂ár̂ǵêt́ŝ](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
   },
   "core/audits/seo/tap-targets.js | displayValue": {
     "message": "{decimalProportion, number, percent} âṕp̂ŕôṕr̂íât́êĺŷ śîźêd́ t̂áp̂ t́âŕĝét̂ś"
@@ -1497,7 +1497,7 @@
     "message": "M̂áp̂ ÚR̂Ĺ"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Ŝóûŕĉé m̂áp̂ś t̂ŕâńŝĺât́ê ḿîńîf́îéd̂ ćôd́ê t́ô t́ĥé ôŕîǵîńâĺ ŝóûŕĉé ĉód̂é. T̂h́îś ĥél̂ṕŝ d́êv́êĺôṕêŕŝ d́êb́ûǵ îń p̂ŕôd́ûćt̂íôń. Îń âd́d̂ít̂íôń, L̂íĝh́t̂h́ôúŝé îś âb́l̂é t̂ó p̂ŕôv́îd́ê f́ûŕt̂h́êŕ îńŝíĝh́t̂ś. Ĉón̂śîd́êŕ d̂ép̂ĺôýîńĝ śôúr̂ćê ḿâṕŝ t́ô t́âḱê ád̂v́âńt̂áĝé ôf́ t̂h́êśê b́êńêf́ît́ŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ śôúr̂ćê ḿâṕŝ](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Ŝóûŕĉé m̂áp̂ś t̂ŕâńŝĺât́ê ḿîńîf́îéd̂ ćôd́ê t́ô t́ĥé ôŕîǵîńâĺ ŝóûŕĉé ĉód̂é. T̂h́îś ĥél̂ṕŝ d́êv́êĺôṕêŕŝ d́êb́ûǵ îń p̂ŕôd́ûćt̂íôń. Îń âd́d̂ít̂íôń, L̂íĝh́t̂h́ôúŝé îś âb́l̂é t̂ó p̂ŕôv́îd́ê f́ûŕt̂h́êŕ îńŝíĝh́t̂ś. Ĉón̂śîd́êŕ d̂ép̂ĺôýîńĝ śôúr̂ćê ḿâṕŝ t́ô t́âḱê ád̂v́âńt̂áĝé ôf́ t̂h́êśê b́êńêf́ît́ŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ śôúr̂ćê ḿâṕŝ](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "M̂íŝśîńĝ śôúr̂ćê ḿâṕŝ f́ôŕ l̂ár̂ǵê f́îŕŝt́-p̂ár̂t́ŷ J́âv́âŚĉŕîṕt̂"
@@ -3047,6 +3047,9 @@
   "report/renderer/report-utils.js | expandView": {
     "message": "Êx́p̂án̂d́ v̂íêẃ"
   },
+  "report/renderer/report-utils.js | firstPartyChipLabel": {
+    "message": "1ŝt́ p̂ár̂t́ŷ"
+  },
   "report/renderer/report-utils.js | footerIssue": {
     "message": "F̂íl̂é âń îśŝúê"
   },
@@ -3064,6 +3067,9 @@
   },
   "report/renderer/report-utils.js | notApplicableAuditsGroupTitle": {
     "message": "N̂ót̂ áp̂ṕl̂íĉáb̂ĺê"
+  },
+  "report/renderer/report-utils.js | openInANewTabTooltip": {
+    "message": "Ôṕêń îń â ńêẃ t̂áb̂"
   },
   "report/renderer/report-utils.js | opportunityResourceColumnLabel": {
     "message": "Ôṕp̂ór̂t́ûńît́ŷ"
@@ -3142,6 +3148,9 @@
   },
   "report/renderer/report-utils.js | toplevelWarningsMessage": {
     "message": "T̂h́êŕê ẃêŕê íŝśûéŝ áf̂f́êćt̂ín̂ǵ t̂h́îś r̂ún̂ óf̂ Ĺîǵĥt́ĥóûśê:"
+  },
+  "report/renderer/report-utils.js | unattributable": {
+    "message": "Ûńât́t̂ŕîb́ût́âb́l̂é"
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "V̂ál̂úêś âŕê éŝt́îḿât́êd́ âńd̂ ḿâý v̂ár̂ý. T̂h́ê [ṕêŕf̂ór̂ḿâńĉé ŝćôŕê íŝ ćâĺĉúl̂át̂éd̂](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) d́îŕêćt̂ĺŷ f́r̂óm̂ t́ĥéŝé m̂ét̂ŕîćŝ."

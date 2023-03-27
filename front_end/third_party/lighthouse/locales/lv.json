@@ -1497,7 +1497,7 @@
     "message": "Kartes URL"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Avota kartes pārveido saīsināto kodu sākotnējā pirmkodā. Tādējādi izstrādātāji var veikt atkļūdošanu produkcijas kanālā. Turklāt rīkā Lighthouse var gūt plašākus ieskatus. Lai varētu izmantot šīs priekšrocības, apsveriet iespēju izvietot avota kartes. [Uzziniet vairāk par avota kartēm](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)."
+    "message": "Avota kartes pārveido saīsināto kodu sākotnējā pirmkodā. Tādējādi izstrādātāji var veikt atkļūdošanu produkcijas kanālā. Turklāt rīkā Lighthouse var gūt plašākus ieskatus. Lai varētu izmantot šīs priekšrocības, apsveriet iespēju izvietot avota kartes. [Uzziniet vairāk par avota kartēm](https://developer.chrome.com/docs/devtools/javascript/source-maps/)."
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "Lielam pirmās puses JavaScript failam trūkst avota kartes"

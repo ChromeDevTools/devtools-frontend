@@ -1497,7 +1497,7 @@
     "message": "URL de mapa"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Los mapas de origen traducen el código minificado al código fuente original. Esto ayuda a los desarrolladores a depurar en producción. Además, Lighthouse puede proporcionar sugerencias adicionales. Plantéate desplegar mapas de origen para disfrutar de estas ventajas. [Más información sobre los mapas de origen](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "Los mapas de origen traducen el código minificado al código fuente original. Esto ayuda a los desarrolladores a depurar en producción. Además, Lighthouse puede proporcionar sugerencias adicionales. Plantéate desplegar mapas de origen para disfrutar de estas ventajas. [Más información sobre los mapas de origen](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "No hay mapas de origen para JavaScript propio de gran tamaño"

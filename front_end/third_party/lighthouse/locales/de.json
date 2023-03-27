@@ -1497,7 +1497,7 @@
     "message": "Zuordnungs-URL"
   },
   "core/audits/valid-source-maps.js | description": {
-    "message": "Quellzuordnungen übersetzen reduzierten Code in den ursprünglichen Quellcode. Dies hilft Entwicklern beim Debugging in der Produktionsphase. Zusätzlich kann Lighthouse weitere Informationen liefern. Wir empfehlen, Quellzuordnungen bereitzustellen, um diese Vorteile zu nutzen. [Weitere Informationen zu Quellzuordnungen.](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps)"
+    "message": "Quellzuordnungen übersetzen reduzierten Code in den ursprünglichen Quellcode. Dies hilft Entwicklern beim Debugging in der Produktionsphase. Zusätzlich kann Lighthouse weitere Informationen liefern. Wir empfehlen, Quellzuordnungen bereitzustellen, um diese Vorteile zu nutzen. [Weitere Informationen zu Quellzuordnungen.](https://developer.chrome.com/docs/devtools/javascript/source-maps/)"
   },
   "core/audits/valid-source-maps.js | failureTitle": {
     "message": "Fehlende Quellzuordnungen für große eigene JavaScript-Dateien"

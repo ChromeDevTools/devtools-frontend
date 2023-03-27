@@ -32,4 +32,5 @@
   --icon-status-code-ok: var(--color-tertriary);
   --icon-stop: var(--color-error);
   --icon-warning: var(--color-orange-bright);
+  --icon-request: var(--color-on-surface-variant);
 }

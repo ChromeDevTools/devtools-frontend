@@ -462,7 +462,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
     const sdkTarget = target as SDK.Target.Target | null;
     const responseIcon = new IconButton.Icon.Icon();
-    responseIcon.data = {iconName: 'ic_response', color: 'var(--color-text-disabled)', width: '16px', height: '16px'};
+    responseIcon.data = {iconName: 'arrow-up', color: 'var(--icon-request)', width: '20px', height: '20px'};
     const newRow: DataGrid.DataGridUtils.Row = {
       cells: [
         {columnId: 'method', value: message.method, title: message.method},
@@ -501,7 +501,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     const sdkTarget = target as SDK.Target.Target | null;
     const requestResponseIcon = new IconButton.Icon.Icon();
     requestResponseIcon
-        .data = {iconName: 'ic_request_response', color: 'var(--color-primary-old)', width: '16px', height: '16px'};
+        .data = {iconName: 'arrow-up-down', color: 'var(--icon-request-response)', width: '20px', height: '20px'};
     const newRow: DataGrid.DataGridUtils.Row = {
       styles: {
         '--override-data-grid-row-background-color': 'var(--override-data-grid-sent-message-row-background-color)',

@@ -196,10 +196,10 @@ export class HeaderSectionRow extends HTMLElement {
         </div>
         ${showReloadInfoIcon ?
           html`<${IconButton.Icon.Icon.litTagName} class="row-flex-icon flex-right" title=${UIStrings.reloadPrompt} .data=${{
-            iconName: 'info-icon',
-            width: '12px',
-            height: '12px',
-            color: 'var(--color-text-secondary)',
+            iconName: 'info',
+            width: '16px',
+            height: '16px',
+            color: 'var(--icon-default)',
           } as IconButton.Icon.IconData}>
           </${IconButton.Icon.Icon.litTagName}>` : LitHtml.nothing
         }

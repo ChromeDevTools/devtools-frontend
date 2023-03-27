@@ -842,8 +842,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
     }
+    const targetManager = SDK.TargetManager.TargetManager.instance();
     for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
-      this.refreshRequest(request);
+      if (targetManager.isInScope(SDK.NetworkManager.NetworkManager.forRequest(request))) {
+        this.refreshRequest(request);
+      }
     }
   }
 
@@ -1444,7 +1447,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private onRequestUpdated(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
     const request = event.data;
-    this.refreshRequest(request);
+    if (SDK.TargetManager.TargetManager.instance().isInScope(SDK.NetworkManager.NetworkManager.forRequest(request))) {
+      this.refreshRequest(request);
+    }
   }
 
   private refreshRequest(request: SDK.NetworkRequest.NetworkRequest): void {

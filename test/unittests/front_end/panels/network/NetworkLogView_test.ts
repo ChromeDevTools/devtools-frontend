@@ -11,10 +11,13 @@ import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Logs from '../../../../../front_end/models/logs/logs.js';
 import * as HAR from '../../../../../front_end/models/har/har.js';
+import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConnection.js';
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('NetworkLogView', () => {
   const tests = (targetFactory: () => SDK.Target.Target) => {
@@ -47,9 +50,11 @@ describeWithMockConnection('NetworkLogView', () => {
 
     let nextId = 0;
     function createNetworkRequest(
-        url: string, options: {requestHeaders?: SDK.NetworkRequest.NameValue[], finished?: boolean}):
+        url: string,
+        options: {requestHeaders?: SDK.NetworkRequest.NameValue[], finished?: boolean, target?: SDK.Target.Target}):
         SDK.NetworkRequest.NetworkRequest {
-      const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+      const effectiveTarget = options.target || target;
+      const networkManager = effectiveTarget.model(SDK.NetworkManager.NetworkManager);
       assertNotNullOrUndefined(networkManager);
       let request: SDK.NetworkRequest.NetworkRequest|undefined;
       const onRequestStarted = (event: Common.EventTarget.EventTargetEvent<SDK.NetworkManager.RequestStartedEvent>) => {
@@ -57,7 +62,7 @@ describeWithMockConnection('NetworkLogView', () => {
       };
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, onRequestStarted);
       dispatchEvent(
-          target, 'Network.requestWillBeSent',
+          effectiveTarget, 'Network.requestWillBeSent',
           {requestId: `request${++nextId}`, loaderId: 'loaderId', request: {url}} as unknown as
               Protocol.Network.RequestWillBeSentEvent);
       networkManager.removeEventListener(SDK.NetworkManager.Events.RequestStarted, onRequestStarted);
@@ -148,6 +153,35 @@ describeWithMockConnection('NetworkLogView', () => {
     };
     describe('in scope', tests(true));
     describe('out of scope', tests(false));
+
+    const handlesSwitchingScope = (preserveLog: boolean) => async () => {
+      Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').set(preserveLog);
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const anotherTarget = createTarget();
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+      const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+      assertNotNullOrUndefined(networkManager);
+      const request1 = createNetworkRequest('url1', {target});
+      const request2 = createNetworkRequest('url2', {target});
+      const request3 = createNetworkRequest('url3', {target: anotherTarget});
+      await coordinator.done();
+
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+      assert.deepEqual(
+          rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()), [request1, request2]);
+
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
+      await coordinator.done();
+      assert.deepEqual(
+          rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()),
+          preserveLog ? [request1, request2, request3] : [request3]);
+
+      networkLogView.detach();
+    };
+
+    it('replaces requests when switching scope with preserve log off', handlesSwitchingScope(false));
+    it('appends requests when switching scope with preserve log on', handlesSwitchingScope(true));
   };
 
   describe('without tab target', () => tests(createTarget));

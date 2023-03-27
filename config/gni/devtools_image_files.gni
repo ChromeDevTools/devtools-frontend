@@ -163,6 +163,7 @@ devtools_svg_sources = [
   "triangle-down.svg",
   "triangle-left.svg",
   "triangle-right.svg",
+  "warning-filled.svg",
   "warning_icon.svg",
 ]
 

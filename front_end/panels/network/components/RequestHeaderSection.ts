@@ -110,9 +110,10 @@ export class RequestHeaderSection extends HTMLElement {
         <div class="call-to-action-body">
           <div class="explanation" title=${cautionTitle}>
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-                iconName: 'clear-warning_icon',
-                width: '12px',
-                height: '12px',
+                iconName: 'warning-filled',
+                color: 'var(--icon-warning)',
+                width: '16px',
+                height: '16px',
               } as IconButton.Icon.IconData}>
             </${IconButton.Icon.Icon.litTagName}>
             ${cautionText} <x-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString(UIStrings.learnMore)}</x-link>

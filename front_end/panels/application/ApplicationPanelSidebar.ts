@@ -957,7 +957,7 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
         return 'mediumicon-schedule';
       default:
         console.error(`Service ${this.serviceName} does not have a dedicated icon`);
-        return 'mediumicon-table';
+        return 'table';
     }
   }
 

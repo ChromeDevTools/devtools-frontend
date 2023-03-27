@@ -272,9 +272,10 @@ export class HeaderSectionRow extends HTMLElement {
       // clang-format off
       return html`
         <${IconButton.Icon.Icon.litTagName} class="row-flex-icon" title=${titleText} .data=${{
-            iconName: 'clear-warning_icon',
-            width: '12px',
-            height: '12px',
+            iconName: 'warning-filled',
+            color: 'var(--icon-warning)',
+            width: '16px',
+            height: '16px',
           } as IconButton.Icon.IconData}>
         </${IconButton.Icon.Icon.litTagName}>
       `;

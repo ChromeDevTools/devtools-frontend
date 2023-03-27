@@ -155,6 +155,7 @@ devtools_svg_sources = [
   "star_outline.svg",
   "survey_feedback_icon.svg",
   "switcherIcon.svg",
+  "table.svg",
   "three_dots_menu_icon.svg",
   "trash_bin_icon.svg",
   "trash_bin_material_icon.svg",

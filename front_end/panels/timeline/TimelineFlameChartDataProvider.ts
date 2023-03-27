@@ -89,10 +89,6 @@ const UIStrings = {
   /**
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
-  gpu: 'GPU',
-  /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-   */
   thread: 'Thread',
   /**
    *@description Text in Timeline for the Experience title
@@ -312,6 +308,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     return this.timelineDataInternal;
   }
+
   /**
    * Builds the flame chart data using the track appenders
    */
@@ -470,6 +467,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             return 1;
           case 'Interactions':
             return 2;
+          case 'GPU':
+            return 8;
           default:
             return -1;
         }
@@ -486,8 +485,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           return 6;
         case TimelineModel.TimelineModel.TrackType.Raster:
           return 7;
-        case TimelineModel.TimelineModel.TrackType.GPU:
-          return 8;
         case TimelineModel.TimelineModel.TrackType.Other:
           return 9;
         default:
@@ -569,13 +566,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.appendSyncEvents(
             track, track.events, i18nString(UIStrings.rasterizerThreadS, {PH1: this.#rasterCount}), this.headerLevel2,
             eventEntryType, true /* selectable */, expanded);
-        break;
-      }
-
-      case TimelineModel.TimelineModel.TrackType.GPU: {
-        this.appendSyncEvents(
-            track, track.events, i18nString(UIStrings.gpu), this.headerLevel1, eventEntryType, true /* selectable */,
-            expanded);
         break;
       }
 

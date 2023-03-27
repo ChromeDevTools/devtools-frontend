@@ -26,6 +26,7 @@ export const ENABLED_TRACE_HANDLERS = {
   UserTimings: Handlers.ModelHandlers.UserTimings,
   PageLoadMetrics: Handlers.ModelHandlers.PageLoadMetrics,
   UserInteractions: Handlers.ModelHandlers.UserInteractions,
+  GPU: Handlers.ModelHandlers.GPU,
 };
 export type PartialTraceParseDataDuringMigration =
     Readonly<Handlers.Types.EnabledHandlerDataWithMeta<typeof ENABLED_TRACE_HANDLERS>>;
@@ -62,6 +63,8 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     PageLoadMetrics: typeof Handlers.ModelHandlers.PageLoadMetrics,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     UserInteractions: typeof Handlers.ModelHandlers.UserInteractions,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    GPU: typeof Handlers.ModelHandlers.GPU,
   }> {
     return new Model(ENABLED_TRACE_HANDLERS);
   }

@@ -67,6 +67,7 @@ devtools_svg_sources = [
   "console-conditional-breakpoint.svg",
   "console-logpoint.svg",
   "copy_icon.svg",
+  "database.svg",
   "deployed.svg",
   "dropdown_7x6_icon.svg",
   "edit-icon.svg",

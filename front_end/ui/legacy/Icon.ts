@@ -98,6 +98,7 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['arrowicons', {cellWidth: 19, cellHeight: 19, padding: 0}],
 
   ['table', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['database', {cellWidth: 20, cellHeight: 20, padding: 0}],
 ]);
 
 const initialDescriptors = new Map<string, Descriptor>([
@@ -144,7 +145,6 @@ const initialDescriptors = new Map<string, Descriptor>([
 
   ['mediumicon-clear-storage', {position: 'a4', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-cookie', {position: 'b4', spritesheet: 'mediumicons', isMask: true}],
-  ['mediumicon-database', {position: 'c4', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-info', {position: 'c1', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-manifest', {position: 'd4', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-service-worker', {position: 'a3', spritesheet: 'mediumicons', isMask: true}],
@@ -265,6 +265,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['mediumicon-arrow-right', {position: 'a1', spritesheet: 'arrowicons'}],
 
   ['table', {position: 'a1', spritesheet: 'table', isMask: true}],
+  ['database', {position: 'a1', spritesheet: 'database', isMask: true}],
 ]);
 
 const descriptors = (initialDescriptors as Map<string, Descriptor>);

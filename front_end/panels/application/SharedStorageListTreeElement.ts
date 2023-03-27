@@ -30,7 +30,7 @@ export class SharedStorageListTreeElement extends ApplicationPanelTreeElement {
     super(resourcesPanel, i18nString(UIStrings.sharedStorage), false);
     this.#expandedSetting =
         Common.Settings.Settings.instance().createSetting('resourcesSharedStorageExpanded', expandedSettingsDefault);
-    const sharedStorageIcon = UI.Icon.Icon.create('mediumicon-database', 'resource-tree-item');
+    const sharedStorageIcon = UI.Icon.Icon.create('database', 'resource-tree-item');
     this.setLeadingIcons([sharedStorageIcon]);
     this.view = new SharedStorageEventsView();
   }

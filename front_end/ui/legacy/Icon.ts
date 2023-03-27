@@ -148,7 +148,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['mediumicon-info', {position: 'c1', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-manifest', {position: 'd4', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-service-worker', {position: 'a3', spritesheet: 'mediumicons', isMask: true}],
-  ['mediumicon-table', {position: 'b3', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-arrow-in-circle', {position: 'c3', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-file-sync', {position: 'd3', spritesheet: 'mediumicons', invert: true}],
   ['mediumicon-file', {position: 'a2', spritesheet: 'mediumicons', invert: true}],

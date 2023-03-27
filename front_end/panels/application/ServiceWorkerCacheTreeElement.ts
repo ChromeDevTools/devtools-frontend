@@ -144,7 +144,7 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
     this.model = model;
     this.cache = cache;
     this.view = null;
-    const icon = UI.Icon.Icon.create('mediumicon-table', 'resource-tree-item');
+    const icon = UI.Icon.Icon.create('table', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
 

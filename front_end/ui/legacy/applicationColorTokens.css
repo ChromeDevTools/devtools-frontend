@@ -19,6 +19,7 @@
   --icon-file-script: var(--color-orange-bright);
   --icon-file-styles: var(--color-purple-bright);
   --icon-file-styles-small: var(--color-purple);
+  --icon-fold-marker: var(--color-on-surface-variant);
   --icon-folder-authored: var(--color-orange-bright);
   --icon-folder-deployed: var(--color-primary-bright);
   --icon-folder-workspace: var(--color-orange-bright);

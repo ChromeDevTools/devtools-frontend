@@ -163,9 +163,9 @@ export const codeFolding = DynamicSetting.bool('textEditorCodeFolding', [
       icon.setAttribute('class', open ? 'cm-foldGutterElement' : 'cm-foldGutterElement cm-foldGutterElement-folded');
       icon.data = {
         iconName,
-        color: 'var(--color-text-secondary)',
-        width: '12px',
-        height: '12px',
+        color: 'var(--icon-fold-marker)',
+        width: '14px',
+        height: '14px',
       };
       return icon;
     },

@@ -1208,55 +1208,6 @@ const UIStrings = {
   UnknownNode: '[ unknown node ]',
 
   // COHERENT BEGIN
-
-  advance: 'Advance',
-  immediateLayout: 'Immediate Layout',
-  executeScript: 'Execute Script',
-  jsEvent: 'JS Event',
-  synchronizeModels: 'Synchronize Models',
-  bindingsReady: 'Bindings Ready',
-  triggerEvent: 'Trigger Event',
-  recalcVisualStyle: 'Recalc Visual Style',
-  matchElements: 'Match Elements',
-  updateNodeTransforms: 'Update Node Transforms',
-  executeTimers: 'Execute Timers',
-  recordRendering: 'Record Rendering',
-  waitPendingFrame: 'Wait Pending Frame',
-  executeBuffers: 'Execute Buffers',
-  frontEnd: 'Frontend',
-  backEnd: 'Backend',
-  buildDOM: 'Build DOM',
-  batchCommands: 'Batch Commands',
-  processLayer: 'ProcessLayer',
-  distributeLayers: 'Distribute Layers',
-  executeBackendBuffers: 'Execute Backend Buffes',
-  captureTextureData: 'Capture Texture data',
-
-  textureCreated: 'Texture Create',
-  textureDestroyed: 'Texture Destroy',
-  VBCreated: 'VB Create',
-  VBDestroyed: 'VB Destroy',
-  IBCreated: 'IB Create',
-  IBDestroyed: 'IB Destroy',
-
-  submitGlyphs: 'Submit Glyphs',
-  submitManagerChanges: 'Submit Manager Changes',
-  endFrame: 'End Frame',
-  processFrontendCommandsOnly: 'Process Frontend Commands Only',
-  drawSDFGlyphs: 'Draw SDF Glyphs',
-  drawSubLayerWithShaderFilter: 'Draw SubLayer With ShaderFilter',
-  drawSubLayerWithShaderBlendMode: 'Draw SubLayer With BlendMode',
-  drawSubLayer: 'Draw SubLayer',
-  drawSubLayerWithCustomEffect: 'Draw SubLayer With Custom Effect',
-  drawFillRectShaderAndMask: 'Draw Fill Rect Shader And Mask',
-  backendExecute: 'Backend Execute',
-  processSimpleSublayer: 'Process Simple Sublayer',
-
-  processFrontendCommands: 'Process Frontend Commands',
-  customAttributeInit: 'Custom data-bind Attribute Initialization',
-  customAttributeUpdate: 'Custom data-bind Attribute Update',
-  customAttributeDeinit: 'Custom data-bind Attribute Deinitialization',
-
   eventName: 'Event Name',
   attributeName: 'Attribute Name',
   frameId: 'Frame Id',
@@ -1282,19 +1233,19 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const textureTypes = ['Scratch Texture',
-	                    'Layer Texture',
-	                    'Image Texture',
-	                    'Surface Texture',
-	                    'Compositor Texture',
-	                    'Glyph Atlas',
+                      'Layer Texture',
+                      'Image Texture',
+                      'Surface Texture',
+                      'Compositor Texture',
+                      'Glyph Atlas',
                       'Gradient Cache Texture'];
 
 const VBTypes = ['Geometry Buffer',
-	               'Path Buffer',
-	               'Glyph Buffer'];
+                 'Path Buffer',
+                 'Glyph Buffer'];
 const IBTypes = ['Geometry Buffer',
-	               'Path Buffer',
-	               'Glyph Buffer'];
+                 'Path Buffer',
+                 'Glyph Buffer'];
 
 let eventStylesMap: EventStylesMap;
 
@@ -1333,7 +1284,6 @@ export class TimelineUIUtils {
     const loading = categories['loading'];
     const experience = categories['experience'];
     const painting = categories['painting'];
-    const gpu_objects = categories['gpu_objects'];
     const other = categories['other'];
     const idle = categories['idle'];
 
@@ -1456,58 +1406,6 @@ export class TimelineUIUtils {
     eventStyles[type.LayoutShift] = new TimelineRecordStyle(i18nString(UIStrings.layoutShift), experience);
 
     // COHERENT BEGIN
-    eventStyles[type.Coherent_Advance] = new TimelineRecordStyle(UIStrings.advance, rendering);
-    eventStyles[type.Coherent_ExecuteScript] = new TimelineRecordStyle(UIStrings.executeScript, scripting);
-    eventStyles[type.Coherent_JSEvent] = new TimelineRecordStyle(UIStrings.jsEvent, scripting);
-    eventStyles[type.Coherent_SynchronizeModels] = new TimelineRecordStyle(UIStrings.synchronizeModels, scripting);
-    eventStyles[type.Coherent_BindingsReady] = new TimelineRecordStyle(UIStrings.bindingsReady, scripting);
-    eventStyles[type.Coherent_TriggerEvent] = new TimelineRecordStyle(UIStrings.triggerEvent, scripting);
-    eventStyles[type.Coherent_ScheduleStyleRecalculation] = new TimelineRecordStyle(UIStrings.scheduleStyleRecalculation, rendering);
-    eventStyles[type.Coherent_RecalculateStyles] = new TimelineRecordStyle(UIStrings.recalculateStyle, rendering);
-    eventStyles[type.Coherent_RecalcVisualStyle] = new TimelineRecordStyle(UIStrings.recalcVisualStyle, rendering);
-    eventStyles[type.Coherent_MatchElements] = new TimelineRecordStyle(UIStrings.matchElements, rendering);
-    eventStyles[type.Coherent_UpdateNodeTransforms] = new TimelineRecordStyle(UIStrings.updateNodeTransforms, rendering);
-    eventStyles[type.Coherent_ExecuteTimers] = new TimelineRecordStyle(UIStrings.executeTimers, scripting);
-    eventStyles[type.Coherent_Layout] = new TimelineRecordStyle(UIStrings.layout, rendering);
-    eventStyles[type.Coherent_ImmediateLayout] = new TimelineRecordStyle(UIStrings.immediateLayout, rendering);
-    eventStyles[type.Coherent_InvalidateLayout] = new TimelineRecordStyle(UIStrings.invalidateLayout, rendering);
-    eventStyles[type.Coherent_RecordRendering] = new TimelineRecordStyle(UIStrings.recordRendering, painting);
-    eventStyles[type.Coherent_Paint] = new TimelineRecordStyle(UIStrings.paint, painting);
-    eventStyles[type.Coherent_WaitPendingFrame] = new TimelineRecordStyle(UIStrings.waitPendingFrame, rendering);
-    eventStyles[type.Coherent_ExecuteBuffers] = new TimelineRecordStyle(UIStrings.executeBuffers, painting);
-    eventStyles[type.Coherent_Frontend] = new TimelineRecordStyle(UIStrings.frontEnd, painting);
-    eventStyles[type.Coherent_Backend] = new TimelineRecordStyle(UIStrings.backEnd, painting);
-    eventStyles[type.Coherent_GPU] = new TimelineRecordStyle(UIStrings.gpu, categories['gpu']);
-    eventStyles[type.Coherent_BuildDOM] = new TimelineRecordStyle(UIStrings.buildDOM, rendering);
-    eventStyles[type.Coherent_CustomAttributeInit] = new TimelineRecordStyle(UIStrings.customAttributeInit, scripting);
-    eventStyles[type.Coherent_CustomAttributeUpdate] = new TimelineRecordStyle(UIStrings.customAttributeUpdate, scripting);
-    eventStyles[type.Coherent_CustomAttributeDeinit] = new TimelineRecordStyle(UIStrings.customAttributeDeinit, scripting);
-    eventStyles[type.Coherent_ProcessFrontendCommands] = new TimelineRecordStyle(UIStrings.processFrontendCommands, painting);
-    eventStyles[type.Coherent_ProcessLayer] = new TimelineRecordStyle(UIStrings.processLayer, painting);
-    eventStyles[type.Coherent_BatchCommands] = new TimelineRecordStyle(UIStrings.batchCommands, painting);
-    eventStyles[type.Coherent_DistributeLayers] = new TimelineRecordStyle(UIStrings.distributeLayers, painting);
-    eventStyles[type.Coherent_SubmitGlyphs] = new TimelineRecordStyle(UIStrings.submitGlyphs, painting);
-    eventStyles[type.Coherent_SubmitManagerChanges] = new TimelineRecordStyle(UIStrings.submitManagerChanges, painting);
-    eventStyles[type.Coherent_EndFrame] = new TimelineRecordStyle(UIStrings.endFrame, painting);
-    eventStyles[type.Coherent_ProcessFrontendCommandsOnly] = new TimelineRecordStyle(UIStrings.processFrontendCommandsOnly, painting);
-    eventStyles[type.Coherent_DrawSDFGlyphs] = new TimelineRecordStyle(UIStrings.drawSDFGlyphs, painting);
-    eventStyles[type.Coherent_DrawSubLayerWithShaderFilter] = new TimelineRecordStyle(UIStrings.drawSubLayerWithShaderFilter, painting);
-    eventStyles[type.Coherent_DrawSubLayerWithShaderBlendMode] = new TimelineRecordStyle(UIStrings.drawSubLayerWithShaderBlendMode, painting);
-    eventStyles[type.Coherent_DrawSubLayerWithCustomEffect] = new TimelineRecordStyle(UIStrings.drawSubLayerWithCustomEffect, painting);
-    eventStyles[type.Coherent_DrawSubLayer] = new TimelineRecordStyle(UIStrings.drawSubLayer, painting);
-    eventStyles[type.Coherent_DrawFillRectShaderAndMask] = new TimelineRecordStyle(UIStrings.drawFillRectShaderAndMask, painting);
-    eventStyles[type.Coherent_BackendExecute] = new TimelineRecordStyle(UIStrings.backendExecute, painting);
-    eventStyles[type.Coherent_ProcessSimpleSublayer] = new TimelineRecordStyle(UIStrings.processSimpleSublayer, painting);
-    eventStyles[type.Coherent_ExecuteBackendBuffers] = new TimelineRecordStyle(UIStrings.executeBackendBuffers, painting);
-    eventStyles[type.Coherent_CaptureTextureData] = new TimelineRecordStyle(UIStrings.captureTextureData, painting);
-
-    eventStyles[type.Coherent_TextureCreated] = new TimelineRecordStyle(UIStrings.textureCreated, gpu_objects);
-    eventStyles[type.Coherent_TextureDestroyed] = new TimelineRecordStyle(UIStrings.textureDestroyed, gpu_objects);
-    eventStyles[type.Coherent_VBCreated] = new TimelineRecordStyle(UIStrings.VBCreated, gpu_objects);
-    eventStyles[type.Coherent_VBDestroyed] = new TimelineRecordStyle(UIStrings.VBDestroyed, gpu_objects);
-    eventStyles[type.Coherent_IBCreated] = new TimelineRecordStyle(UIStrings.IBCreated, gpu_objects);
-    eventStyles[type.Coherent_IBDestroyed] = new TimelineRecordStyle(UIStrings.IBDestroyed, gpu_objects);
-
     // COHERENT END
     eventStylesMap = eventStyles;
     return eventStyles;
@@ -1611,6 +1509,35 @@ export class TimelineUIUtils {
         TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
     return frame && frame.url || null;
   }
+
+  // COHERENT BEGIN
+  static initCohEventStyle(event: SDK.TracingModel.Event): void {
+    if (!event.name.startsWith('Coherent_')) {
+      return;
+    }
+
+    const eventStyles = TimelineUIUtils._initEventStyles();
+    if (eventStyles[event.name]) {
+      return;
+    }
+
+    const categories = TimelineUIUtils.categories();
+    const otherCategory = categories['other'];
+    const eventCategory = categories[event.category as string] || otherCategory;
+    const eventHidden = eventCategory ? false : true;
+    // The event name is like 'Coherent_EventName'
+    // If the name is not in the format 'Coherent_EventName' we will not format it.
+    const nameParts = event.name.split('_');
+    if (nameParts.length !== 2) {
+      eventStyles[event.name] = new TimelineRecordStyle(event.name, eventCategory, eventHidden);
+      return;
+    }
+    // Will transform 'EventName' to 'Event Name'
+    const name = nameParts[1].replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+    // Coherent events without category will be hidden and have 'other' category by default
+    eventStyles[event.name] = new TimelineRecordStyle(name, eventCategory, eventHidden);
+  }
+  // COHERENT END
 
   static eventStyle(event: SDK.TracingModel.Event): TimelineRecordStyle {
     const eventStyles = TimelineUIUtils._initEventStyles();
@@ -2613,7 +2540,7 @@ export class TimelineUIUtils {
       case recordTypes.Coherent_ScheduleStyleRecalculation:
       case recordTypes.Coherent_InvalidateLayout: {
         contentHelper.appendTextRow(UIStrings.frameId, event.args['int0']);
-        let eventTimelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
+        const eventTimelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
         if (eventTimelineData.url) {
             contentHelper.appendLocationRow(UIStrings.stackTrace, eventTimelineData.url, event.args['int2'], event.args['int3']);
         }
@@ -2652,8 +2579,8 @@ export class TimelineUIUtils {
       case recordTypes.Coherent_DrawFillRectShaderAndMask:
       case recordTypes.Coherent_DrawSubLayerWithShaderFilter: {
         if (parseInt(event.args['int0']) > 0) {
-          contentHelper.appendTextRow('Node id: ', event.args['int0'])
-          relatedNodeLabel = 'Node: '
+          contentHelper.appendTextRow('Node id: ', event.args['int0']);
+          relatedNodeLabel = 'Node: ';
         }
         break;
       }
@@ -3001,7 +2928,7 @@ export class TimelineUIUtils {
     // COHERENT BEGIN
     const initiators = TimelineModel.TimelineModel.TimelineData.forEvent(event).getInitiators();
     if (initiators.length) {
-      var delay = event.startTime - initiators[0].startTime;
+      const delay = event.startTime - initiators[0].startTime;
       contentHelper.appendTextRow(UIStrings.pendingFor, i18n.TimeUtilities.preciseMillisToString(delay, 1));
 
       for(let i = 0; i < initiators.length; i++) {

@@ -35,7 +35,11 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper {
 
     this._timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
     this._frameModel = new TimelineModel.TimelineFrameModel.TimelineFrameModel(
-        event => TimelineUIUtils.eventStyle(event).category.name);
+      event => TimelineUIUtils.eventStyle(event).category.name,
+      // COHERENT BEGIN
+      TimelineUIUtils.initCohEventStyle,
+      // COHERENT END
+    );
     this._filmStripModel = null;
     this._irModel = new TimelineModel.TimelineIRModel.TimelineIRModel();
 

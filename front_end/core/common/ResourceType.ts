@@ -477,6 +477,7 @@ export const mimeTypeByExtension = new Map([
   ['json', 'application/json'],
   ['gyp', 'application/json'],
   ['gypi', 'application/json'],
+  ['map', 'application/json'],
 
   // C#
   ['cs', 'text/x-csharp'],

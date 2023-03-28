@@ -468,6 +468,10 @@ describe('ResourceType', () => {
     it('returns correct MIME type for .webmanifest files', () => {
       assert.strictEqual(ResourceType.mimeFromExtension('webmanifest'), 'application/manifest+json');
     });
+
+    it('returns correct MIME type for source maps', () => {
+      assert.strictEqual(ResourceType.mimeFromExtension('map'), 'application/json');
+    });
   });
 
   describe('mimeFromURL', () => {
@@ -533,6 +537,11 @@ describe('ResourceType', () => {
     it('returns correct MIME type for .webmanifest files', () => {
       const url = 'http://localhost/app.webmanifest' as Platform.DevToolsPath.UrlString;
       assert.strictEqual(ResourceType.mimeFromURL(url), 'application/manifest+json');
+    });
+
+    it('returns correct MIME type for source maps', () => {
+      const url = 'http://localhost/bundle.min.js.map' as Platform.DevToolsPath.UrlString;
+      assert.strictEqual(ResourceType.mimeFromURL(url), 'application/json');
     });
   });
 });

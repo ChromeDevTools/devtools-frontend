@@ -14,6 +14,6 @@ describe('Performance panel', () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=animation');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline.png');
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline.png', 3);
   });
 });

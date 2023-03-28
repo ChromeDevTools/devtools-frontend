@@ -590,7 +590,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private createDropDownButton(): HTMLDivElement {
     const dropDownContainer = document.createElement('div');
     dropDownContainer.classList.add('tabbed-pane-header-tabs-drop-down-container');
-    const chevronIcon = Icon.create('largeicon-chevron', 'chevron-icon');
+    const chevronIcon = Icon.create('chevron-double-right', 'chevron-icon');
     const moreTabsString = i18nString(UIStrings.moreTabs);
     dropDownContainer.title = moreTabsString;
     ARIAUtils.markAsMenuButton(dropDownContainer);

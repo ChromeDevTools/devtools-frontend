@@ -97,6 +97,12 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['largeicons', {cellWidth: 28, cellHeight: 24, padding: 0}],
   ['arrowicons', {cellWidth: 19, cellHeight: 19, padding: 0}],
 
+  ['chevron-double-right', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['cross', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['devices', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['dots-vertical', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['gear', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['select-element', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['table', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['database', {cellWidth: 20, cellHeight: 20, padding: 0}],
 ]);
@@ -189,7 +195,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['largeicon-camera', {position: 'b7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-center', {position: 'c9', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-checkmark', {position: 'c8', spritesheet: 'largeicons', isMask: true}],
-  ['largeicon-chevron', {position: 'c7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-clear', {position: 'a6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-copy', {position: 'b6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-deactivate-breakpoints', {position: 'c6', spritesheet: 'largeicons', isMask: true}],
@@ -220,7 +225,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['largeicon-navigator-frame', {position: 'f7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-snippet', {position: 'f6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-worker', {position: 'f5', spritesheet: 'largeicons', isMask: true}],
-  ['largeicon-node-search', {position: 'f4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-pan', {position: 'a3', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-pause-animation', {position: 'b3', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-pause', {position: 'c3', spritesheet: 'largeicons', isMask: true}],
@@ -264,6 +268,12 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['mediumicon-arrow-left', {position: 'a2', spritesheet: 'arrowicons'}],
   ['mediumicon-arrow-right', {position: 'a1', spritesheet: 'arrowicons'}],
 
+  ['chevron-double-right', {position: 'a1', spritesheet: 'chevron-double-right', isMask: true}],
+  ['cross', {position: 'a1', spritesheet: 'cross', isMask: true}],
+  ['devices', {position: 'a1', spritesheet: 'devices', isMask: true}],
+  ['dots-vertical', {position: 'a1', spritesheet: 'dots-vertical', isMask: true}],
+  ['gear', {position: 'a1', spritesheet: 'gear', isMask: true}],
+  ['select-element', {position: 'a1', spritesheet: 'select-element', isMask: true}],
   ['table', {position: 'a1', spritesheet: 'table', isMask: true}],
   ['database', {position: 'a1', spritesheet: 'database', isMask: true}],
 ]);

@@ -503,9 +503,7 @@ span[is="dt-icon-label"] {
 }
 
 [is="ui-icon"].icon-mask {
-  --override-icon-mask-background-color: rgb(110 110 110);
-
-  background-color: var(--override-icon-mask-background-color);
+  background-color: var(--icon-default);
   -webkit-mask-position: var(--spritesheet-position);
 }
 
@@ -544,6 +542,30 @@ span[is="dt-icon-label"] {
 
 .spritesheet-arrowicons {
   background-image: var(--image-file-popoverArrows);
+}
+
+.spritesheet-cross.icon-mask {
+  -webkit-mask-image: var(--image-file-cross);
+}
+
+.spritesheet-chevron-double-right.icon-mask {
+  -webkit-mask-image: var(--image-file-chevron-double-right);
+}
+
+.spritesheet-devices.icon-mask {
+  -webkit-mask-image: var(--image-file-devices);
+}
+
+.spritesheet-dots-vertical.icon-mask {
+  -webkit-mask-image: var(--image-file-dots-vertical);
+}
+
+.spritesheet-gear.icon-mask {
+  -webkit-mask-image: var(--image-file-gear);
+}
+
+.spritesheet-select-element.icon-mask {
+  -webkit-mask-image: var(--image-file-select-element);
 }
 
 .spritesheet-table.icon-mask {
@@ -645,14 +667,7 @@ span[is="dt-icon-label"] {
 }
 
 ::selection {
-  --override-selection-background-color: rgb(141 199 248 / 60%);
-
-  background-color: var(--override-selection-background-color);
-}
-
-.-theme-with-dark-background *::selection,
-:host-context(.-theme-with-dark-background) *::selection {
-  background-color: rgb(93 93 93 / 60%);
+  background-color: var(--icon-default-hover);
 }
 
 .reload-warning {

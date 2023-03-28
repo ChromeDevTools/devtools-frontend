@@ -53,7 +53,7 @@
 
 .toolbar-item,
 .toolbar-item .devtools-link {
-  color: var(--color-text-secondary);
+  color: var(--icon-default-hover);
 }
 
 .toolbar-item:last-child {

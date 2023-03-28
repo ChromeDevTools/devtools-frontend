@@ -223,19 +223,19 @@ export const ActionCategory = {
 type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];
 
 export const enum IconClass {
-  LARGEICON_NODE_SEARCH = 'largeicon-node-search',
+  LARGEICON_NODE_SEARCH = 'select-element',
   LARGEICON_START_RECORDING = 'largeicon-start-recording',
   LARGEICON_STOP_RECORDING = 'largeicon-stop-recording',
   LARGEICON_REFRESH = 'largeicon-refresh',
   LARGEICON_CLEAR = 'largeicon-clear',
   LARGEICON_VISIBILITY = 'largeicon-visibility',
-  LARGEICON_PHONE = 'largeicon-phone',
+  LARGEICON_PHONE = 'devices',
   LARGEICON_PLAY = 'largeicon-play',
   LARGEICON_DOWNLOAD = 'largeicon-download',
   LARGEICON_PAUSE = 'largeicon-pause',
   LARGEICON_RESUME = 'largeicon-resume',
   LARGEICON_TRASH_BIN = 'largeicon-trash-bin',
-  LARGEICON_SETTINGS_GEAR = 'largeicon-settings-gear',
+  LARGEICON_SETTINGS_GEAR = 'gear',
   LARGEICON_STEP_OVER = 'largeicon-step-over',
   LARGE_ICON_STEP_INTO = 'largeicon-step-into',
   LARGE_ICON_STEP = 'largeicon-step',

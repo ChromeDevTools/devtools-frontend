@@ -87,7 +87,7 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
     super();
     this.canDockInternal = canDock;
 
-    this.closeButton = new ToolbarButton(i18nString(UIStrings.close), 'largeicon-delete');
+    this.closeButton = new ToolbarButton(i18nString(UIStrings.close), 'cross');
     this.closeButton.element.classList.add('close-devtools');
     this.closeButton.addEventListener(
         ToolbarButton.Events.Click,

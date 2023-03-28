@@ -172,9 +172,10 @@ export class HeaderSectionRow extends HTMLElement {
           }
           ${isHeaderNameEditable && !this.#isValidHeaderName ?
             html`<${IconButton.Icon.Icon.litTagName} class="inline-icon disallowed-characters" title=${UIStrings.headerNamesOnlyLetters} .data=${{
-              iconName: 'error_icon',
-              width: '12px',
-              height: '12px',
+              iconName: 'cross-circle-filled',
+              width: '16px',
+              height: '16px',
+              color: 'var(--icon-error)',
             } as IconButton.Icon.IconData}>
             </${IconButton.Icon.Icon.litTagName}>` : LitHtml.nothing
           }

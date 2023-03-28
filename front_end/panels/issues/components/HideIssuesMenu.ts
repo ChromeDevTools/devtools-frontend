@@ -59,16 +59,20 @@ export class HideIssuesMenu extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-      LitHtml.render(LitHtml.html`
-        <button class="hide-issues-menu-btn" @click=${this.onMenuOpen.bind(this)} title=${i18nString(UIStrings.tooltipTitle)}>
+    LitHtml.render(LitHtml.html`
+      <button class="hide-issues-menu-btn" @click=${this.onMenuOpen.bind(this)} title=${i18nString(UIStrings.tooltipTitle)}>
         <${IconButton.Icon.Icon.litTagName}
-          .data=${{ color: '', iconName: 'three_dots_menu_icon', height: '14px', width: '4px' } as IconButton.Icon.IconData}
-        >
-        </${IconButton.Icon.Icon.litTagName}>
-        </button>
-      `, this.#shadow, {host: this});
-    }
+          .data=${{
+            color: 'var(--icon-color)',
+            iconName: 'dots-vertical',
+            height: '20px',
+            width: '20px',
+          } as IconButton.Icon.IconData}
+        ></${IconButton.Icon.Icon.litTagName}>
+      </button>
+    `, this.#shadow, {host: this});
   }
+}
 
 ComponentHelpers.CustomElements.defineComponent('devtools-hide-issues-menu', HideIssuesMenu);
 

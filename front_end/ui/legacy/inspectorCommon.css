@@ -576,6 +576,14 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-database);
 }
 
+.spritesheet-triangle-down.icon-mask {
+  -webkit-mask-image: var(--image-file-triangle-down);
+}
+
+.spritesheet-triangle-right.icon-mask {
+  -webkit-mask-image: var(--image-file-triangle-right);
+}
+
 .force-white-icons [is="ui-icon"].spritesheet-smallicons,
 :host-context(.force-white-icons) [is="ui-icon"].spritesheet-smallicons,
 [is="ui-icon"].force-white-icons.spritesheet-smallicons,

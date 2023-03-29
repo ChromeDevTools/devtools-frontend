@@ -127,7 +127,7 @@
 .command-result-icon {
   position: absolute;
   left: -17px;
-  top: 4px;
+  top: 2px;
   user-select: none;
 }
 
@@ -481,7 +481,7 @@
 }
 
 .console-message-expand-icon {
-  margin-bottom: -2px;
+  margin-bottom: -4px;
 }
 
 .console-searchable-view {

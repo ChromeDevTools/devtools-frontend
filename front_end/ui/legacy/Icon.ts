@@ -105,6 +105,8 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['select-element', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['table', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['database', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['triangle-down', {cellWidth: 14, cellHeight: 14, padding: 0}],
+  ['triangle-right', {cellWidth: 14, cellHeight: 14, padding: 0}],
 ]);
 
 const initialDescriptors = new Map<string, Descriptor>([
@@ -276,6 +278,8 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['select-element', {position: 'a1', spritesheet: 'select-element', isMask: true}],
   ['table', {position: 'a1', spritesheet: 'table', isMask: true}],
   ['database', {position: 'a1', spritesheet: 'database', isMask: true}],
+  ['triangle-down', {position: 'a1', spritesheet: 'triangle-down', isMask: true}],
+  ['triangle-right', {position: 'a1', spritesheet: 'triangle-right', isMask: true}],
 ]);
 
 const descriptors = (initialDescriptors as Map<string, Descriptor>);

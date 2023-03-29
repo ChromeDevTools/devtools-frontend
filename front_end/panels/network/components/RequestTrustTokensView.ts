@@ -242,9 +242,10 @@ const SUCCESS_ICON_DATA: IconButton.Icon.IconWithName = {
 };
 
 const FAILURE_ICON_DATA: IconButton.Icon.IconWithName = {
-  color: '',
-  iconName: 'error_icon',
-  width: '12px',
+  color: 'var(--icon-error)',
+  iconName: 'cross-circle-filled',
+  width: '16px',
+  height: '16px',
 };
 
 export function statusConsideredSuccess(status: Protocol.Network.TrustTokenOperationDoneEventStatus): boolean {

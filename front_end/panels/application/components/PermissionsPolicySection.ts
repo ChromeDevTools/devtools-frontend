@@ -173,11 +173,17 @@ export class PermissionsPolicySection extends HTMLElement {
         await Common.Revealer.reveal(requestLocation);
       };
 
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
       return LitHtml.html`
         <div class="permissions-row">
           <div>
             <${IconButton.Icon.Icon.litTagName} class="allowed-icon"
-              .data=${{color: '', iconName: 'error_icon', width: '14px'} as IconButton.Icon.IconData}>
+              .data=${{
+                color: 'var(--icon-error)',
+                iconName: 'cross-circle-filled',
+                width: '16px', height: '16px',
+              } as IconButton.Icon.IconData}>
             </${IconButton.Icon.Icon.litTagName}>
           </div>
           <div class="feature-name text-ellipsis">
@@ -200,6 +206,7 @@ export class PermissionsPolicySection extends HTMLElement {
           </div>
         </div>
       `;
+      // clang-format on
     }));
 
     return LitHtml.html`

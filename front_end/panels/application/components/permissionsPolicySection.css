@@ -47,7 +47,7 @@ button.link {
 }
 
 .allowed-icon {
-  padding: 2.5px 0;
+  vertical-align: sub;
 }
 
 .block-reason {

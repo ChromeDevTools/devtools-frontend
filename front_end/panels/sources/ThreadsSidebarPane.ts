@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
 
 const UIStrings = {
   /**
@@ -54,7 +55,15 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     element.classList.add('thread-item');
     const title = element.createChild('div', 'thread-item-title');
     const pausedState = element.createChild('div', 'thread-item-paused-state');
-    element.appendChild(UI.Icon.Icon.create('smallicon-thick-right-arrow', 'selected-thread-icon'));
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {
+      iconName: 'large-arrow-right-filled',
+      color: 'var(--icon-arrow-main-thread)',
+      width: '14px',
+      height: '14px',
+    };
+    icon.classList.add('selected-thread-icon');
+    element.appendChild(icon);
     element.tabIndex = -1;
     self.onInvokeElement(element, event => {
       UI.Context.Context.instance().setFlavor(SDK.Target.Target, debuggerModel.target());

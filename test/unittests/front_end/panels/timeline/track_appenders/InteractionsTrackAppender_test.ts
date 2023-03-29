@@ -105,7 +105,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
         await renderTrackAppender('slow-interaction-button-click.json.gz');
     const firstInteraction = traceParsedData.UserInteractions.interactionEvents[0];
     const title = interactionsTrackAppender.titleForEvent(firstInteraction);
-    assert.strictEqual(title, 'Interaction type:pointerdown id:1540');
+    assert.strictEqual(title, 'pointerdown id:1540');
   });
 
   it('highlightedEntryInfo returns the correct information', async () => {

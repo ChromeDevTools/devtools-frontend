@@ -19,6 +19,7 @@
 
 .issues li {
   white-space: normal;
+  align-items: flex-start;
 }
 /* Hide toggle for tree items which cannot be collapsed */
 
@@ -30,6 +31,7 @@
 .issues li.parent::before {
   transition: transform 200ms;
   transform-origin: 25% 50%;
+  margin-top: 8px;
 }
 
 .issues li.parent.expanded::before {
@@ -89,22 +91,22 @@ p {
 .header {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  padding: 6px 0;
+  align-items: flex-start;
+  padding: 4px 0;
   cursor: pointer;
   width: 100%;
 }
 
 .header devtools-hide-issues-menu {
-  display: none;
+  visibility: hidden;
 }
 
 .header:hover devtools-hide-issues-menu {
-  display: block;
+  visibility: visible;
 }
 
 .header devtools-hide-issues-menu.has-context-menu-opened {
-  display: block;
+  visibility: visible;
 }
 
 .issue-category .header,
@@ -119,6 +121,7 @@ p {
   color: var(--color-text-primary);
   font-weight: normal;
   user-select: text;
+  padding-top: 2px;
 }
 
 .issue.expanded .title {
@@ -165,7 +168,7 @@ p {
 }
 
 devtools-icon.leading-issue-icon {
-  margin: 0 7px;
+  margin: 1px 7px -1px;
 }
 
 .message {
@@ -409,6 +412,7 @@ ul > li.plain-enum::before {
 
 .aggregated-issues-count {
   padding-right: 7px;
+  padding-top: 3px;
 }
 
 .affected-resource-directive-info-header {

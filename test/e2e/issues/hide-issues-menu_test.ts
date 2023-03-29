@@ -34,9 +34,9 @@ describe('Hide issues menu', async () => {
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
     assertNotNullOrUndefined(issueHeader);
     const hideIssuesMenu = await getHideIssuesMenu();
-    const menuDisplay =
-        await hideIssuesMenu.evaluate(node => window.getComputedStyle(node as HTMLElement).getPropertyValue('display'));
-    assert.strictEqual(menuDisplay, 'none');
+    const menuDisplay = await hideIssuesMenu.evaluate(
+        node => window.getComputedStyle(node as HTMLElement).getPropertyValue('visibility'));
+    assert.strictEqual(menuDisplay, 'hidden');
   });
 
   it('should become visible on hovering over the issue header', async () => {
@@ -60,13 +60,13 @@ describe('Hide issues menu', async () => {
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
     assertNotNullOrUndefined(issueHeader);
     const hideIssuesMenu = await getHideIssuesMenu();
-    let menuDisplay =
-        await hideIssuesMenu.evaluate(node => window.getComputedStyle(node as HTMLElement).getPropertyValue('display'));
-    assert.strictEqual(menuDisplay, 'none');
+    let menuDisplay = await hideIssuesMenu.evaluate(
+        node => window.getComputedStyle(node as HTMLElement).getPropertyValue('visibility'));
+    assert.strictEqual(menuDisplay, 'hidden');
     await issueHeader.hover();
-    menuDisplay =
-        await hideIssuesMenu.evaluate(node => window.getComputedStyle(node as HTMLElement).getPropertyValue('display'));
-    assert.strictEqual(menuDisplay, 'block');
+    menuDisplay = await hideIssuesMenu.evaluate(
+        node => window.getComputedStyle(node as HTMLElement).getPropertyValue('visibility'));
+    assert.strictEqual(menuDisplay, 'visible');
   });
 
   it('should open a context menu upon clicking', async () => {

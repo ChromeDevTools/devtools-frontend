@@ -564,8 +564,32 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-gear);
 }
 
+.spritesheet-pause.icon-mask {
+  -webkit-mask-image: var(--image-file-pause);
+}
+
+.spritesheet-resume.icon-mask {
+  -webkit-mask-image: var(--image-file-resume);
+}
+
 .spritesheet-select-element.icon-mask {
   -webkit-mask-image: var(--image-file-select-element);
+}
+
+.spritesheet-step-into.icon-mask {
+  -webkit-mask-image: var(--image-file-step-into);
+}
+
+.spritesheet-step-out.icon-mask {
+  -webkit-mask-image: var(--image-file-step-out);
+}
+
+.spritesheet-step-over.icon-mask {
+  -webkit-mask-image: var(--image-file-step-over);
+}
+
+.spritesheet-step.icon-mask {
+  -webkit-mask-image: var(--image-file-step);
 }
 
 .spritesheet-table.icon-mask {

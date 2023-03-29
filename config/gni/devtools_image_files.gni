@@ -143,6 +143,7 @@ devtools_svg_sources = [
   "justify-items-end-icon.svg",
   "justify-items-start-icon.svg",
   "justify-items-stretch-icon.svg",
+  "large-arrow-right-filled.svg",
   "largeIcons.svg",
   "lighthouse_logo.svg",
   "mediumIcons.svg",

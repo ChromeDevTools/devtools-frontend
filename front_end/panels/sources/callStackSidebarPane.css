@@ -113,7 +113,7 @@
 .selected-call-frame-icon {
   display: none;
   position: absolute;
-  top: 5px;
+  top: 3px;
   left: 4px;
 }
 
@@ -124,7 +124,7 @@
 .call-frame-warning-icon {
   display: block;
   position: absolute;
-  top: 5px;
+  top: 3px;
   right: 4px;
 }
 

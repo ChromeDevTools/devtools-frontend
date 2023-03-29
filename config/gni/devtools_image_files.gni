@@ -97,7 +97,6 @@ devtools_svg_sources = [
   "gears.svg",
   "help_outline.svg",
   "ic_changes.svg",
-  "ic_checkmark_16x16.svg",
   "ic_command_go_to_line.svg",
   "ic_command_go_to_symbol.svg",
   "ic_command_help.svg",

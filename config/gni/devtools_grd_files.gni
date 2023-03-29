@@ -37,6 +37,7 @@ grd_files_release_sources = [
   "front_end/Images/arrow-up-down.svg",
   "front_end/Images/arrow-up.svg",
   "front_end/Images/baseline-icon.svg",
+  "front_end/Images/check-circle.svg",
   "front_end/Images/checkboxCheckmark.svg",
   "front_end/Images/checker.png",
   "front_end/Images/chevron-double-right.svg",

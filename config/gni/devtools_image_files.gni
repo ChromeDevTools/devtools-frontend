@@ -54,6 +54,7 @@ devtools_svg_sources = [
   "arrow-up-down.svg",
   "arrow-up.svg",
   "baseline-icon.svg",
+  "check-circle.svg",
   "checkboxCheckmark.svg",
   "chevron-double-right.svg",
   "chevrons.svg",

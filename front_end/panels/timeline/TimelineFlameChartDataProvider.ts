@@ -171,8 +171,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private readonly headerLevel2: PerfUI.FlameChart.GroupStyle;
   private readonly staticHeader: PerfUI.FlameChart.GroupStyle;
   private framesHeader: PerfUI.FlameChart.GroupStyle;
-  private readonly collapsibleTimingsHeader: PerfUI.FlameChart.GroupStyle;
-  private readonly timingsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly screenshotsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly animationsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly experienceHeader: PerfUI.FlameChart.GroupStyle;
@@ -208,10 +206,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.headerLevel2 = this.buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
     this.staticHeader = this.buildGroupStyle({collapsible: false});
     this.framesHeader = this.buildGroupStyle({useFirstLineForOverview: true});
-    this.collapsibleTimingsHeader =
-        this.buildGroupStyle({shareHeaderLine: true, useFirstLineForOverview: true, collapsible: true});
-    this.timingsHeader =
-        this.buildGroupStyle({shareHeaderLine: true, useFirstLineForOverview: true, collapsible: false});
     this.screenshotsHeader =
         this.buildGroupStyle({useFirstLineForOverview: true, nestingLevel: 1, collapsible: false, itemsHeight: 150});
     this.animationsHeader = this.buildGroupStyle({useFirstLineForOverview: false});
@@ -223,8 +217,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.headerLevel2,
         this.staticHeader,
         this.framesHeader,
-        this.collapsibleTimingsHeader,
-        this.timingsHeader,
         this.screenshotsHeader,
         this.animationsHeader,
         this.experienceHeader,

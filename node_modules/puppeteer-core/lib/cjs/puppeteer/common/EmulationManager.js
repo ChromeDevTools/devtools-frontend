@@ -24,10 +24,11 @@ class EmulationManager {
         __classPrivateFieldSet(this, _EmulationManager_client, client, "f");
     }
     async emulateViewport(viewport) {
+        var _a;
         const mobile = viewport.isMobile || false;
         const width = viewport.width;
         const height = viewport.height;
-        const deviceScaleFactor = viewport.deviceScaleFactor || 1;
+        const deviceScaleFactor = (_a = viewport.deviceScaleFactor) !== null && _a !== void 0 ? _a : 1;
         const screenOrientation = viewport.isLandscape
             ? { angle: 90, type: 'landscapePrimary' }
             : { angle: 0, type: 'portraitPrimary' };

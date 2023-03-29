@@ -1064,7 +1064,8 @@
                                 "Ok",
                                 "CompileError",
                                 "BlockedByActiveGenerator",
-                                "BlockedByActiveFunction"
+                                "BlockedByActiveFunction",
+                                "BlockedByTopLevelEsModuleChange"
                             ]
                         },
                         {

@@ -449,10 +449,10 @@ export class BackForwardCacheView extends HTMLElement {
           <${ReportView.ReportView.ReportSection.litTagName}>
             <div class="status">
               <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-                iconName: 'ic_checkmark_16x16',
-                color: 'green',
-                width: '16px',
-                height: '16px',
+                iconName: 'check-circle',
+                color: 'var(--icon-checkmark-green)',
+                width: '20px',
+                height: '20px',
                 } as IconButton.Icon.IconData}>
               </${IconButton.Icon.Icon.litTagName}>
             </div>

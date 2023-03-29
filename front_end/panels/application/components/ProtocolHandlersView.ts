@@ -109,11 +109,9 @@ export class ProtocolHandlersView extends HTMLElement {
   #renderStatusMessage(): LitHtml.TemplateResult {
     const manifestInTextLink = UI.XLink.XLink.create(this.#manifestLink, i18nString(UIStrings.manifest));
     const statusString = this.#protocolHandlers.length > 0 ? UIStrings.protocolDetected : UIStrings.protocolNotDetected;
-    const iconData: IconButton.Icon.IconData = {
-      iconName: this.#protocolHandlers.length > 0 ? 'ic_checkmark_16x16' : 'ic_info_black_18dp',
-      color: this.#protocolHandlers.length > 0 ? 'var( --color-ic-file-image)' : 'var(--color-link)',
-      width: '16px',
-    };
+    const iconData: IconButton.Icon.IconData = this.#protocolHandlers.length > 0 ?
+        {iconName: 'check-circle', color: 'var(--icon-checkmark-green)', width: '16px', height: '16px'} :
+        {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '16px'};
     return LitHtml.html`
     <div class="protocol-handlers-row status">
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${iconData as IconButton.Icon.IconData}>

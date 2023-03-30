@@ -149,16 +149,16 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   }
 
   outermostTarget(): Target|null {
-    let lastFrameTarget: Target|null = null;
+    let lastTarget: Target|null = null;
     let currentTarget: Target|null = this;
     do {
-      if (currentTarget.type() === Type.Frame) {
-        lastFrameTarget = currentTarget;
+      if (currentTarget.type() !== Type.Tab && currentTarget.type() !== Type.Browser) {
+        lastTarget = currentTarget;
       }
       currentTarget = currentTarget.parentTarget();
     } while (currentTarget);
 
-    return lastFrameTarget;
+    return lastTarget;
   }
 
   dispose(reason: string): void {

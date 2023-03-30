@@ -232,8 +232,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       }
     }
 
-    if (target === this.primaryPageTarget() && !this.#defaultScopeSet) {
-      this.#defaultScopeSet = true;
+    if ((target === target.outermostTarget() &&
+         (target.type() !== TargetType.Frame || target === this.primaryPageTarget())) &&
+        !this.#defaultScopeSet) {
       this.setScopeTarget(target);
     }
 

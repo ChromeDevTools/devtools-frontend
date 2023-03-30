@@ -63,8 +63,11 @@ describeWithMockConnection('Target', () => {
     assert.strictEqual(
         createTarget({type: SDK.Target.Type.Worker, parentTarget: subframeTarget}).outermostTarget(),
         mainFrameTargetUnderTab);
-    assert.isNull(createTarget({type: SDK.Target.Type.Node}).outermostTarget());
-    assert.isNull(createTarget({type: SDK.Target.Type.Browser}).outermostTarget());
-    assert.isNull(createTarget({type: SDK.Target.Type.ServiceWorker, parentTarget: tabTarget}).outermostTarget());
+    const nodeTarget = createTarget({type: SDK.Target.Type.Node});
+    assert.strictEqual(nodeTarget.outermostTarget(), nodeTarget);
+    const browserTarget = createTarget({type: SDK.Target.Type.Browser});
+    assert.isNull(browserTarget.outermostTarget());
+    const serviceWorkerTarget = createTarget({type: SDK.Target.Type.ServiceWorker, parentTarget: browserTarget});
+    assert.strictEqual(serviceWorkerTarget.outermostTarget(), serviceWorkerTarget);
   });
 });

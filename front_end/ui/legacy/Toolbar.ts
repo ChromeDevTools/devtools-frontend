@@ -859,12 +859,16 @@ export class ToolbarMenuButton extends ToolbarButton {
 
 export class ToolbarSettingToggle extends ToolbarToggle {
   private readonly defaultTitle: string;
+  readonly #glyph: string;
+  readonly #toggledGlyph: string;
   private readonly setting: Common.Settings.Setting<boolean>;
   private willAnnounceState: boolean;
 
-  constructor(setting: Common.Settings.Setting<boolean>, glyph: string, title: string) {
-    super(title, glyph);
+  constructor(setting: Common.Settings.Setting<boolean>, glyph: string, toggledGlyph: string, title: string) {
+    super(title);
     this.defaultTitle = title;
+    this.#glyph = glyph;
+    this.#toggledGlyph = toggledGlyph;
     this.setting = setting;
     this.settingChanged();
     this.setting.addChangeListener(this.settingChanged, this);
@@ -876,6 +880,7 @@ export class ToolbarSettingToggle extends ToolbarToggle {
   private settingChanged(): void {
     const toggled = this.setting.get();
     this.setToggled(toggled);
+    this.setGlyph(toggled ? this.#toggledGlyph : this.#glyph);
     const toggleAnnouncement = toggled ? i18nString(UIStrings.pressed) : i18nString(UIStrings.notPressed);
     if (this.willAnnounceState) {
       ARIAUtils.alert(toggleAnnouncement);

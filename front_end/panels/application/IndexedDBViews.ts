@@ -281,7 +281,7 @@ export class IDBDataView extends UI.View.SimpleView {
       void this.deleteButtonClicked(null);
     });
 
-    this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearObjectStore), 'largeicon-clear');
+    this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearObjectStore), 'clear');
     this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       void this.clearButtonClicked();
     }, this);

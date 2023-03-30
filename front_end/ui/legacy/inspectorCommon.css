@@ -560,6 +560,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-breakpoint-crossed);
 }
 
+.spritesheet-clear.icon-mask {
+  -webkit-mask-image: var(--image-file-clear);
+}
+
 .spritesheet-cross.icon-mask {
   -webkit-mask-image: var(--image-file-cross);
 }
@@ -578,6 +582,22 @@ span[is="dt-icon-label"] {
 
 .spritesheet-dots-vertical.icon-mask {
   -webkit-mask-image: var(--image-file-dots-vertical);
+}
+
+.spritesheet-eye.icon-mask {
+  -webkit-mask-image: var(--image-file-eye);
+}
+
+.spritesheet-filter-filled.icon-mask {
+  -webkit-mask-image: var(--image-file-filter-filled);
+}
+
+.spritesheet-filter.icon-mask {
+  -webkit-mask-image: var(--image-file-filter);
+}
+
+.spritesheet-gear-filled.icon-mask {
+  -webkit-mask-image: var(--image-file-gear-filled);
 }
 
 .spritesheet-gear.icon-mask {

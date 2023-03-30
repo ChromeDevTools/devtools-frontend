@@ -206,7 +206,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
     this.mainToolbar = new UI.Toolbar.Toolbar('');
 
-    this.clearAllButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
+    this.clearAllButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
     this.clearAllButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clearFrames, this);
     this.mainToolbar.appendToolbarItem(this.clearAllButton);
 

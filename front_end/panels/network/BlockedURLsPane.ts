@@ -84,7 +84,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     const addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addPattern), 'largeicon-add');
     addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.addButtonClicked, this);
     this.toolbar.appendToolbarItem(addButton);
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.removeAllPatterns), 'clear');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.removeAllPatterns), 'largeicon-clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.removeAll, this);
     this.toolbar.appendToolbarItem(clearButton);
 

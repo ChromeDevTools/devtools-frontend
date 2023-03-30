@@ -208,7 +208,8 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.viewSelectComboBox =
         new UI.Toolbar.ToolbarComboBox(this.changeView.bind(this), i18nString(UIStrings.profileViewMode));
 
-    this.focusButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.focusSelectedFunction), 'eye');
+    this.focusButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.focusSelectedFunction), 'largeicon-visibility');
     this.focusButton.setEnabled(false);
     this.focusButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.focusClicked, this);
 

@@ -395,7 +395,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       }
     }
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'largeicon-clear');
     clearButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, () => Logs.NetworkLog.NetworkLog.instance().reset(true), this);
     this.panelToolbar.appendToolbarItem(clearButton);
@@ -438,7 +438,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(this.progressBarContainer));
     this.rightToolbar.appendSeparator();
     this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(
-        this.showSettingsPaneSetting, 'gear', 'gear-filled', i18nString(UIStrings.networkSettings)));
+        this.showSettingsPaneSetting, 'largeicon-settings-gear', i18nString(UIStrings.networkSettings)));
 
     const settingsToolbarLeft = new UI.Toolbar.Toolbar('', this.settingsPane.element);
     settingsToolbarLeft.makeVertical();

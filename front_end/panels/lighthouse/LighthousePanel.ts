@@ -219,7 +219,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.reportSelector = new ReportSelector(() => this.renderStartView());
     toolbar.appendToolbarItem(this.reportSelector.comboBox());
 
-    this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
+    this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
     toolbar.appendToolbarItem(this.clearButton);
     this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clearAll.bind(this));
 
@@ -233,7 +233,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.rightToolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
     this.rightToolbar.appendSeparator();
     this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(
-        this.showSettingsPaneSetting, 'gear', 'gear-filled', i18nString(UIStrings.lighthouseSettings)));
+        this.showSettingsPaneSetting, 'largeicon-settings-gear', i18nString(UIStrings.lighthouseSettings)));
     this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();
 

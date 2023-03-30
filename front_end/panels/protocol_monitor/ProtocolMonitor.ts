@@ -157,7 +157,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     topToolbar.appendToolbarItem(recordButton);
     recordButton.setToggled(true);
 
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this.messages = [];
       this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), rows: []});

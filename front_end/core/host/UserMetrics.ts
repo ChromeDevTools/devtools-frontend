@@ -738,7 +738,6 @@ export enum DevtoolsExperiments {
   'evaluateExpressionsWithSourceMaps' = 58,
   'eyedropperColorPicker' = 60,
   'instrumentationBreakpoints' = 61,
-  'cssAuthoringHints' = 62,
   'authoredDeployedGrouping' = 63,
   'importantDOMProperties' = 64,
   'justMyCode' = 65,

@@ -303,7 +303,6 @@ export enum ExperimentName {
   HEADER_OVERRIDES = 'headerOverrides',
   EYEDROPPER_COLOR_PICKER = 'eyedropperColorPicker',
   INSTRUMENTATION_BREAKPOINTS = 'instrumentationBreakpoints',
-  CSS_AUTHORING_HINTS = 'cssAuthoringHints',
   AUTHORED_DEPLOYED_GROUPING = 'authoredDeployedGrouping',
   IMPORTANT_DOM_PROPERTIES = 'importantDOMProperties',
   JUST_MY_CODE = 'justMyCode',

@@ -7,7 +7,12 @@ import {assert} from 'chai';
 import {$$, clickElement, enableExperiment, goToResource, step, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToElementsTab} from '../helpers/elements-helpers.js';
-import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
+import {
+  getMenuItemAtPosition,
+  getMenuItemTitleAtPosition,
+  openFileQuickOpen,
+  typeIntoQuickOpen,
+} from '../helpers/quick_open-helpers.js';
 import {setIgnoreListPattern, togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import {openSourcesPanel, SourceFileEvents, waitForSourceFiles} from '../helpers/sources-helpers.js';
 
@@ -28,20 +33,6 @@ async function openAFileWithQuickMenu() {
           await waitFor('.navigator-file-tree-item');
         });
       });
-}
-
-async function typeIntoQuickOpen(query: string, expectEmptyResults?: boolean) {
-  await openFileQuickOpen();
-  const prompt = await waitFor('[aria-label="Quick open prompt"]');
-  await prompt.type(query);
-  if (expectEmptyResults) {
-    await waitFor('.filtered-list-widget :not(.hidden).not-found-text');
-  } else {
-    // Because each highlighted character is in its own div, we can count the highlighted
-    // characters in one item to see that the list reflects the full query.
-    const highlightSelector = new Array(query.length).fill('.highlight').join(' ~ ');
-    await waitFor('.filtered-list-widget-title ' + highlightSelector);
-  }
 }
 
 async function readQuickOpenResults(): Promise<string[]> {

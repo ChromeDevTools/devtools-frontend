@@ -136,6 +136,7 @@ devtools_svg_sources = [
   "info-icon.svg",
   "info.svg",
   "issue-cross-filled.svg",
+  "issue-exclamation-filled.svg",
   "issue-exclamation-icon.svg",
   "issue-questionmark-filled.svg",
   "issue-text-filled.svg",

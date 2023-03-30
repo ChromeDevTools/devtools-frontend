@@ -514,15 +514,15 @@ export class UISourceCodeFrame extends
 
 function getIconDataForLevel(level: Workspace.UISourceCode.Message.Level): IconButton.Icon.IconData {
   if (level === Workspace.UISourceCode.Message.Level.Error) {
-    return {color: '', width: '12px', height: '12px', iconName: 'error_icon'};
+    return {color: 'var(--icon-error)', width: '16px', height: '14px', iconName: 'cross-circle-filled'};
   }
   if (level === Workspace.UISourceCode.Message.Level.Warning) {
-    return {color: '', width: '12px', height: '12px', iconName: 'warning_icon'};
+    return {color: 'var(--icon-warning)', width: '18px', height: '14px', iconName: 'warning-filled'};
   }
   if (level === Workspace.UISourceCode.Message.Level.Issue) {
-    return {color: 'var(--issue-color-yellow)', width: '12px', height: '12px', iconName: 'issue-exclamation-icon'};
+    return {color: 'var(--icon-warning)', width: '17px', height: '14px', iconName: 'issue-exclamation-filled'};
   }
-  return {color: '', width: '12px', height: '12px', iconName: 'error_icon'};
+  return {color: 'var(--icon-error)', width: '16px', height: '14px', iconName: 'cross-circle-filled'};
 }
 
 function getBubbleTypePerLevel(level: Workspace.UISourceCode.Message.Level): string {
@@ -801,6 +801,11 @@ const rowMessageTheme = CodeMirror.EditorView.baseTheme({
       verticalAlign: 'text-bottom',
       marginLeft: '2px',
     },
+  },
+
+  '.cm-messageIcon-issue, .cm-messageIcon-error': {
+    marginTop: '-1px',
+    marginBottom: '-1px',
   },
 });
 

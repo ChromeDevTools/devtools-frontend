@@ -39,7 +39,7 @@ async function getRowsText(root: puppeteer.ElementHandle<Element>): Promise<stri
 
 async function getIconFile(iconComponent: puppeteer.ElementHandle<Element>): Promise<string> {
   const issueIcon = await waitFor('.icon-basic', iconComponent);
-  const imageSrc = await issueIcon.evaluate(x => window.getComputedStyle(x).backgroundImage);
+  const imageSrc = await issueIcon.evaluate(x => window.getComputedStyle(x).webkitMaskImage);
   const splitImageSrc = imageSrc.substring(5, imageSrc.length - 2).split('/');
   return splitImageSrc[splitImageSrc.length - 1];
 }
@@ -114,9 +114,9 @@ describe('The row\'s icon bucket', async function() {
       const vbox = await waitFor('div.vbox.flex-auto.no-pointer-events');
       const iconComponents = await getIconComponents('text-editor-row-message-icon', vbox);
       for (const iconComponent of iconComponents) {
-        assert.strictEqual(await getIconFile(iconComponent), 'error_icon.svg');
+        assert.strictEqual(await getIconFile(iconComponent), 'cross-circle-filled.svg');
       }
-      assert.strictEqual(await getIconFile(bucketIconComponent), 'error_icon.svg');
+      assert.strictEqual(await getIconFile(bucketIconComponent), 'cross-circle-filled.svg');
     }
   });
 

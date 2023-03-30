@@ -71,6 +71,7 @@ devtools_svg_sources = [
   "clear.svg",
   "close-icon.svg",
   "cloud.svg",
+  "code-circle.svg",
   "code.svg",
   "console-conditional-breakpoint.svg",
   "console-logpoint.svg",

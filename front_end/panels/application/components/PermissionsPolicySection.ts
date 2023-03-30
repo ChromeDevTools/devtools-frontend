@@ -193,7 +193,7 @@ export class PermissionsPolicySection extends HTMLElement {
           <div>
             ${
           linkTargetDOMNode ? renderIconLink(
-                                  'code', i18nString(UIStrings.clickToShowIframe),
+                                  'code-circle', i18nString(UIStrings.clickToShowIframe),
                                   (): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode), 20) :
                               LitHtml.nothing}
             ${

@@ -970,6 +970,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   updateAuthoringHint(): void {
     this.listItemElement.classList.remove('inactive-property');
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS)) {
+      return;
+    }
+
     const existingElement = this.listItemElement.querySelector('.hint');
     if (existingElement) {
       activeHints.delete(existingElement);

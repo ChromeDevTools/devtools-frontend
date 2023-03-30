@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {
+  enableExperiment,
   getBrowserAndPages,
   goToResource,
   waitForFunction,
@@ -26,6 +27,10 @@ const goToResourceAndWaitForStyleSection = async (path: string) => {
 };
 
 describe('CSS hints in the Styles panel', async () => {
+  beforeEach(async () => {
+    await enableExperiment('cssAuthoringHints');
+  });
+
   it('can detect inactive CSS', async () => {
     await goToResourceAndWaitForStyleSection('elements/inactive-css-page.html');
     await waitForStyleRule('body');

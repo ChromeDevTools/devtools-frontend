@@ -372,6 +372,11 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.HEADER_OVERRIDES, 'Local overrides for response headers');
 
+    // Enable CSS Authoring hints for inactive rules, deprecated properties, etc.
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS,
+        'Enable CSS Authoring hints for inactive rules, deprecated properties, etc.');
+
     // Enable color picking outside the browser window (using Eyedropper API)
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER, 'Enable color picking outside the browser window');
@@ -409,6 +414,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.PRECISE_CHANGES,
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
       'keyboardShortcutEditor',
+      Root.Runtime.ExperimentName.CSS_AUTHORING_HINTS,
       'sourcesPrettyPrint',
       Root.Runtime.ExperimentName.DISABLE_COLOR_FORMAT_SETTING,
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,

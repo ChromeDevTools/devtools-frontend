@@ -858,13 +858,11 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const sidebarHidden = this.showModeInternal === ShowMode.OnlyMain;
     let glyph = '';
     if (sidebarHidden) {
-      glyph = this.isVertical() ?
-          (this.isSidebarSecond() ? 'largeicon-show-right-sidebar' : 'largeicon-show-left-sidebar') :
-          (this.isSidebarSecond() ? 'largeicon-show-bottom-sidebar' : 'largeicon-show-top-sidebar');
+      glyph = this.isVertical() ? (this.isSidebarSecond() ? 'right-panel-open' : 'left-panel-open') :
+                                  (this.isSidebarSecond() ? 'bottom-panel-open' : 'top-panel-open');
     } else {
-      glyph = this.isVertical() ?
-          (this.isSidebarSecond() ? 'largeicon-hide-right-sidebar' : 'largeicon-hide-left-sidebar') :
-          (this.isSidebarSecond() ? 'largeicon-hide-bottom-sidebar' : 'largeicon-hide-top-sidebar');
+      glyph = this.isVertical() ? (this.isSidebarSecond() ? 'right-panel-close' : 'left-panel-close') :
+                                  (this.isSidebarSecond() ? 'bottom-panel-close' : 'top-panel-close');
     }
     this.showHideSidebarButton.setGlyph(glyph);
     this.showHideSidebarButton.setTitle(sidebarHidden ? this.showSidebarButtonTitle : this.hideSidebarButtonTitle);

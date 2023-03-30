@@ -731,7 +731,14 @@ span[is="dt-icon-label"] {
 }
 
 ::selection {
-  background-color: var(--icon-default-hover);
+  --override-selection-background-color: rgb(141 199 248 / 60%);
+
+  background-color: var(--override-selection-background-color);
+}
+
+.-theme-with-dark-background *::selection,
+:host-context(.-theme-with-dark-background) *::selection {
+  background-color: rgb(93 93 93 / 60%);
 }
 
 .reload-warning {

@@ -198,7 +198,7 @@ export class PermissionsPolicySection extends HTMLElement {
                               LitHtml.nothing}
             ${
           linkTargetRequest ? renderIconLink(
-                                  'network_panel_icon',
+                                  'arrow-up-down-circle',
                                   i18nString(UIStrings.clickToShowHeader),
                                   revealHeader,
                                   ) :

@@ -552,6 +552,14 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-bottom-panel-open);
 }
 
+.spritesheet-breakpoint-crossed-filled.icon-mask {
+  -webkit-mask-image: var(--image-file-breakpoint-crossed-filled);
+}
+
+.spritesheet-breakpoint-crossed.icon-mask {
+  -webkit-mask-image: var(--image-file-breakpoint-crossed);
+}
+
 .spritesheet-cross.icon-mask {
   -webkit-mask-image: var(--image-file-cross);
 }

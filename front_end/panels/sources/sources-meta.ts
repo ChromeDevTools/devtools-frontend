@@ -721,7 +721,8 @@ UI.ActionRegistration.registerActionExtension({
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.DEBUGGER,
   actionId: 'debugger.toggle-breakpoints-active',
-  iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_DEACTIVATE_BREAKPOINTS,
+  iconClass: UI.ActionRegistration.IconClass.BREAKPOINT_CROSSED,
+  toggledIconClass: UI.ActionRegistration.IconClass.BREAKPOINT_CROSSED_FILLED,
   toggleable: true,
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();

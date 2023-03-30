@@ -56,6 +56,8 @@ devtools_svg_sources = [
   "baseline-icon.svg",
   "bottom-panel-close.svg",
   "bottom-panel-open.svg",
+  "breakpoint-crossed-filled.svg",
+  "breakpoint-crossed.svg",
   "check-circle.svg",
   "checkboxCheckmark.svg",
   "chevron-double-right.svg",

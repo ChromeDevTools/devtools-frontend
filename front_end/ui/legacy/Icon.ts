@@ -99,6 +99,8 @@ const spriteSheets = new Map<string, SpriteSheet>([
 
   ['bottom-panel-close', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['bottom-panel-open', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['breakpoint-crossed-filled', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['breakpoint-crossed', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['chevron-double-right', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['cross', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['database', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -213,7 +215,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['largeicon-checkmark', {position: 'c8', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-clear', {position: 'a6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-copy', {position: 'b6', spritesheet: 'largeicons', isMask: true}],
-  ['largeicon-deactivate-breakpoints', {position: 'c6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-delete', {position: 'd9', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-delete-filter', {position: 'i5', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-delete-list', {position: 'i6', spritesheet: 'largeicons', isMask: true}],
@@ -272,6 +273,8 @@ const initialDescriptors = new Map<string, Descriptor>([
 
   ['bottom-panel-close', {position: 'a1', spritesheet: 'bottom-panel-close', isMask: true}],
   ['bottom-panel-open', {position: 'a1', spritesheet: 'bottom-panel-open', isMask: true}],
+  ['breakpoint-crossed-filled', {position: 'a1', spritesheet: 'breakpoint-crossed-filled', isMask: true}],
+  ['breakpoint-crossed', {position: 'a1', spritesheet: 'breakpoint-crossed', isMask: true}],
   ['chevron-double-right', {position: 'a1', spritesheet: 'chevron-double-right', isMask: true}],
   ['cross', {position: 'a1', spritesheet: 'cross', isMask: true}],
   ['database', {position: 'a1', spritesheet: 'database', isMask: true}],

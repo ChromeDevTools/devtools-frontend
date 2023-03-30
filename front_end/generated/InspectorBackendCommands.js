@@ -909,7 +909,7 @@ inspectorBackend.registerEnum("Debugger.BreakLocationType", {DebuggerStatement: 
 inspectorBackend.registerEnum("Debugger.ScriptLanguage", {JavaScript: "JavaScript", WebAssembly: "WebAssembly"});
 inspectorBackend.registerEnum("Debugger.DebugSymbolsType", {None: "None", SourceMap: "SourceMap", EmbeddedDWARF: "EmbeddedDWARF", ExternalDWARF: "ExternalDWARF"});
 inspectorBackend.registerEvent("Debugger.breakpointResolved", ["breakpointId", "location"]);
-inspectorBackend.registerEnum("Debugger.PausedEventReason", {Ambiguous: "ambiguous", Assert: "assert", CSPViolation: "CSPViolation", DebugCommand: "debugCommand", DOM: "DOM", EventListener: "EventListener", Exception: "exception", Instrumentation: "instrumentation", OOM: "OOM", Other: "other", PromiseRejection: "promiseRejection", XHR: "XHR"});
+inspectorBackend.registerEnum("Debugger.PausedEventReason", {Ambiguous: "ambiguous", Assert: "assert", CSPViolation: "CSPViolation", DebugCommand: "debugCommand", DOM: "DOM", EventListener: "EventListener", Exception: "exception", Instrumentation: "instrumentation", OOM: "OOM", Other: "other", PromiseRejection: "promiseRejection", XHR: "XHR", Step: "step"});
 inspectorBackend.registerEvent("Debugger.paused", ["callFrames", "reason", "data", "hitBreakpoints", "asyncStackTrace", "asyncStackTraceId", "asyncCallStackTraceId"]);
 inspectorBackend.registerEvent("Debugger.resumed", []);
 inspectorBackend.registerEvent("Debugger.scriptFailedToParse", ["scriptId", "url", "startLine", "startColumn", "endLine", "endColumn", "executionContextId", "hash", "executionContextAuxData", "sourceMapURL", "hasSourceURL", "isModule", "length", "stackTrace", "codeOffset", "scriptLanguage", "embedderName"]);

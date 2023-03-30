@@ -16306,6 +16306,7 @@ export namespace Debugger {
     Other = 'other',
     PromiseRejection = 'promiseRejection',
     XHR = 'XHR',
+    Step = 'step',
   }
 
   /**

@@ -1466,7 +1466,7 @@ export class DebuggerPlugin extends Plugin {
       await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
           callFrame.location(), async(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> => {
             const uiLocation = await liveLocation.uiLocation();
-            if (uiLocation && uiLocation.uiSourceCode.url() === this.uiSourceCode.url()) {
+            if (uiLocation && uiLocation.uiSourceCode === this.uiSourceCode) {
               this.setExecutionLocation(uiLocation);
               this.updateMissingDebugInfoInfobar(callFrame.missingDebugInfoDetails);
             } else {

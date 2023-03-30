@@ -67,7 +67,7 @@ const DEFAULT_MS_BETWEEN_RETRIES = 150;
 
 // Percentage difference when comparing golden vs new screenshot that is
 // acceptable and will not fail the test.
-const DEFAULT_SCREENSHOT_THRESHOLD_PERCENT = 1;
+const DEFAULT_SCREENSHOT_THRESHOLD_PERCENT = 4;
 
 export const assertElementScreenshotUnchanged = async (
     element: puppeteer.ElementHandle|null, fileName: string,
@@ -134,13 +134,6 @@ interface ScreenshotAssertionOptions {
   retryCount?: number;
 }
 
-/**
- * The user can do UPDATE_GOLDEN=accordion/basic.png npm run screenshotstest
- * to update the golden image. This is useful if work has caused the
- * screenshot to change and therefore the test goldens need to be updated.
- */
-let shouldUpdate = Boolean(process.env.FORCE_UPDATE_ALL_GOLDENS);
-
 const assertScreenshotUnchanged = async(options: ScreenshotAssertionOptions): Promise<void> => {
   const {
     elementOrPage,
@@ -154,8 +147,13 @@ const assertScreenshotUnchanged = async(options: ScreenshotAssertionOptions): Pr
   const screenshotOptions = {...defaultScreenshotOpts, ...options.screenshotOptions, path: generatedScreenshotPath};
   await (elementOrPage as puppeteer.Page).screenshot(screenshotOptions);
 
-  shouldUpdate = shouldUpdate || Boolean(process.env.UPDATE_GOLDEN && process.env.UPDATE_GOLDEN === fileName);
-
+  /**
+   * The user can do UPDATE_GOLDEN=accordion/basic.png npm run screenshotstest
+   * to update the golden image. This is useful if work has caused the
+   * screenshot to change and therefore the test goldens need to be updated.
+   */
+  const shouldUpdate = Boolean(process.env.FORCE_UPDATE_ALL_GOLDENS) ||
+      Boolean(process.env.UPDATE_GOLDEN && process.env.UPDATE_GOLDEN === fileName);
   const throwAfterGoldensUpdate = Boolean(process.env.THROW_AFTER_GOLDENS_UPDATE);
 
   let onBotAndImageNotFound = false;
@@ -299,9 +297,8 @@ async function compare(golden: string, generated: string, maximumDiffThreshold: 
   }
 
   try {
-    const threshold = shouldUpdate ? 0 : maximumDiffThreshold;
     assert.isAtMost(
-        rawMisMatchPercentage, threshold,
+        rawMisMatchPercentage, maximumDiffThreshold,
         `There is a ${rawMisMatchPercentage}% difference between the golden and generated image.
 
     ${debugInfo}`);

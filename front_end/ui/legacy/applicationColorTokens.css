@@ -14,15 +14,15 @@
   --icon-error: var(--color-error-bright);
   --icon-error-small: var(--color-error);
   --icon-file-authored: var(--color-orange-bright);
-  --icon-file-image: var(--color-tertriary-bright);
+  --icon-file-image: var(--color-tertiary-bright);
   --icon-file-image-small: var(--color-tertiary);
   --icon-file-script: var(--color-orange-bright);
   --icon-file-styles: var(--color-purple-bright);
   --icon-file-styles-small: var(--color-purple);
   --icon-fold-marker: var(--color-on-surface-variant);
-  --icon-folder-authored: var(--color-orange-bright);
+  --icon-folder-authored: var(--color-orange);
   --icon-folder-deployed: var(--color-primary-bright);
-  --icon-folder-workspace: var(--color-orange-bright);
+  --icon-folder-workspace: var(--color-orange);
   --icon-info: var(--color-primary-bright);
   --icon-info-small: var(--color-primary);
   --icon-link: var(--color-primary);

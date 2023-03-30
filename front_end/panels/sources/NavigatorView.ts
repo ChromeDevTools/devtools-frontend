@@ -1289,44 +1289,38 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   updateIcon(): void {
-    const appendFileSyncIconWithBadge = (iconType: string, badgeIsPurple = true): HTMLSpanElement => {
-      const container = document.createElement('span');
-      container.classList.add('icon-stack');
-      const icon = UI.Icon.Icon.create(iconType, 'icon');
-      const badge = UI.Icon.Icon.create('badge-navigator-file-sync', 'icon-badge');
-      // TODO(allada) This does not play well with dark theme. Add an actual icon and use it.
-      if (badgeIsPurple) {
-        badge.style.filter = 'hue-rotate(160deg)';
-      }
-      container.appendChild(icon);
-      container.appendChild(badge);
-      this.setLeadingIcons([(container as UI.Icon.Icon)]);
-      return container;
-    };
-
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal);
+    let iconType = 'document';
+    let iconStyles: string[] = [];
     if (binding) {
-      const iconType = Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(binding.fileSystem) ?
-          'largeicon-navigator-snippet' :
-          'largeicon-navigator-file-sync';
+      if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(binding.fileSystem)) {
+        iconType = 'snippet';
+      }
       const badgeIsPurple = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() ===
           binding.fileSystem.project();
-      const container = appendFileSyncIconWithBadge(iconType, badgeIsPurple);
-      UI.Tooltip.Tooltip.install(
-          container, Persistence.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(this.uiSourceCodeInternal));
+      iconStyles = badgeIsPurple ? ['sync', 'sync-purple'] : ['sync'];
     } else if (
         this.uiSourceCodeInternal.url().endsWith(Persistence.NetworkPersistenceManager.HEADERS_FILENAME) &&
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance()
             .hasMatchingNetworkUISourceCodeForHeaderOverridesFile(this.uiSourceCodeInternal)) {
-      appendFileSyncIconWithBadge('largeicon-navigator-file-sync');
+      iconStyles = ['sync', 'sync-purple'];
     } else {
-      let iconType = 'largeicon-navigator-file';
       if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCodeInternal)) {
-        iconType = 'largeicon-navigator-snippet';
+        iconType = 'snippet';
       }
-      const defaultIcon = UI.Icon.Icon.create(iconType, 'icon');
-      this.setLeadingIcons([defaultIcon]);
     }
+
+    const icon = new IconButton.Icon.Icon();
+    const iconPath = new URL(`../../Images/${iconType}.svg`, import.meta.url).toString();
+    icon.data = {iconPath: iconPath, color: 'var(--override-file-tree-item-color)', width: '20px', height: '20px'};
+    for (const style of iconStyles) {
+      icon.classList.add(style);
+    }
+    if (binding) {
+      UI.Tooltip.Tooltip.install(
+          icon, Persistence.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(this.uiSourceCodeInternal));
+    }
+    this.setLeadingIcons([icon]);
   }
 
   updateAccessibleName(): void {

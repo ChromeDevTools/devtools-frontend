@@ -111,7 +111,7 @@ export class ProtocolHandlersView extends HTMLElement {
     const statusString = this.#protocolHandlers.length > 0 ? UIStrings.protocolDetected : UIStrings.protocolNotDetected;
     const iconData: IconButton.Icon.IconData = this.#protocolHandlers.length > 0 ?
         {iconName: 'check-circle', color: 'var(--icon-checkmark-green)', width: '16px', height: '16px'} :
-        {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '16px'};
+        {iconName: 'info', color: 'var(--icon-default)', width: '16px', height: '16px'};
     return LitHtml.html`
     <div class="protocol-handlers-row status">
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${iconData as IconButton.Icon.IconData}>

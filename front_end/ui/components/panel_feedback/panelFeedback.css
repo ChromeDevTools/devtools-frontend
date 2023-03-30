@@ -74,3 +74,9 @@ x-link.quick-start-link { /* stylelint-disable-line selector-type-no-unknown */
   flex-basis: min-content;
   flex-grow: 1;
 }
+
+@media (forced-colors: active) {
+  x-link { /* stylelint-disable-line selector-type-no-unknown */
+    color: linktext;
+  }
+}

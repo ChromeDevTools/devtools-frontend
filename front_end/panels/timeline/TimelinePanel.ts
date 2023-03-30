@@ -964,9 +964,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private consoleProfileFinished(data: SDK.CPUProfilerModel.ProfileFinishedData): void {
-    if (!isNode) {
-      return;
-    }
     this.loadFromCpuProfile(data.cpuProfile, data.title);
     void UI.InspectorView.InspectorView.instance().showPanel('timeline');
   }

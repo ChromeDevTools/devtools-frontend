@@ -1403,6 +1403,9 @@ export class DebuggerPlugin extends Plugin {
     if (this.sourceMapInfobar) {
       return;
     }
+    if (!Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get()) {
+      return;
+    }
     this.sourceMapInfobar = UI.Infobar.Infobar.create(
         UI.Infobar.Type.Info, i18nString(UIStrings.sourceMapDetected), [],
         Common.Settings.Settings.instance().createSetting('sourceMapInfobarDisabled', false));

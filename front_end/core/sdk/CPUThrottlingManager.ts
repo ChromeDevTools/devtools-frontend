@@ -52,7 +52,14 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   hasPrimaryPageTargetSet(): boolean {
-    return TargetManager.instance().primaryPageTarget() !== null;
+    // In some environments, such as Node, trying to check if we have a page
+    // target may error. So if we get any errors here at all, assume that we do
+    // not have a target.
+    try {
+      return TargetManager.instance().primaryPageTarget() !== null;
+    } catch {
+      return false;
+    }
   }
 
   async getHardwareConcurrency(): Promise<number> {

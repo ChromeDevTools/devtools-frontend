@@ -29,7 +29,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleContextSelector.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel>,
                                                UI.SoftDropDown.Delegate<SDK.RuntimeModel.ExecutionContext> {
-  private readonly items: UI.ListModel.ListModel<SDK.RuntimeModel.ExecutionContext>;
+  readonly items: UI.ListModel.ListModel<SDK.RuntimeModel.ExecutionContext>;
   private readonly dropDown: UI.SoftDropDown.SoftDropDown<SDK.RuntimeModel.ExecutionContext>;
   private readonly toolbarItemInternal: UI.Toolbar.ToolbarItem;
 
@@ -47,22 +47,22 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this.onExecutionContextCreated,
-        this);
+        this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextChanged, this.onExecutionContextChanged,
-        this);
+        this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.RuntimeModel.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed,
-        this.onExecutionContextDestroyed, this);
+        this.onExecutionContextDestroyed, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.frameNavigated,
-        this);
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.frameNavigated, this,
+        {scoped: true});
 
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.RuntimeModel.ExecutionContext, this.executionContextChangedExternally, this);
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.DebuggerModel.CallFrame, this.callFrameSelectedInUI, this);
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.RuntimeModel.RuntimeModel, this);
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.RuntimeModel.RuntimeModel, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.CallFrameSelected, this.callFrameSelectedInModel,
         this);
@@ -175,6 +175,9 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
   private executionContextChangedExternally({
     data: executionContext,
   }: Common.EventTarget.EventTargetEvent<SDK.RuntimeModel.ExecutionContext|null>): void {
+    if (executionContext && !SDK.TargetManager.TargetManager.instance().isInScope(executionContext.target())) {
+      return;
+    }
     this.dropDown.selectItem(executionContext);
   }
 

@@ -5,7 +5,7 @@
 import {ObjectWrapper} from './Object.js';
 import {reveal} from './Revealer.js';
 
-let consoleInstance: Console;
+let consoleInstance: Console|undefined;
 
 export class Console extends ObjectWrapper<EventTypes> {
   readonly #messagesInternal: Message[];
@@ -17,14 +17,16 @@ export class Console extends ObjectWrapper<EventTypes> {
     this.#messagesInternal = [];
   }
 
-  static instance({forceNew}: {
-    forceNew: boolean,
-  } = {forceNew: false}): Console {
-    if (!consoleInstance || forceNew) {
+  static instance(opts?: {forceNew: boolean}): Console {
+    if (!consoleInstance || opts?.forceNew) {
       consoleInstance = new Console();
     }
 
     return consoleInstance;
+  }
+
+  static removeInstance(): void {
+    consoleInstance = undefined;
   }
 
   addMessage(text: string, level: MessageLevel, show?: boolean): void {

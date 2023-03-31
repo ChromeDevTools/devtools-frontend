@@ -280,6 +280,7 @@ export async function deinitializeGlobalVars() {
   targetManager = null;
   Root.Runtime.Runtime.removeInstance();
   Common.Settings.Settings.removeInstance();
+  Common.Console.Console.removeInstance();
   Workspace.Workspace.WorkspaceImpl.removeInstance();
   Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
   Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();

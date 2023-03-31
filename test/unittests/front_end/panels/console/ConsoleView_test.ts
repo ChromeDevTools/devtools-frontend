@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../../front_end/core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
@@ -16,6 +17,8 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 const {assert} = chai;
 
 describeWithMockConnection('ConsoleView', () => {
+  let consoleView: Console.ConsoleView.ConsoleView;
+
   beforeEach(() => {
     UI.ActionRegistration.maybeRemoveActionExtension('console.clear');
     UI.ActionRegistration.maybeRemoveActionExtension('console.clear.history');
@@ -37,16 +40,17 @@ describeWithMockConnection('ConsoleView', () => {
     });
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    consoleView = Console.ConsoleView.ConsoleView.instance({forceNew: true, viewportThrottlerTimeout: 0});
   });
 
   afterEach(() => {
+    consoleView.detach();
     UI.ActionRegistration.maybeRemoveActionExtension('console.clear');
     UI.ActionRegistration.maybeRemoveActionExtension('console.clear.history');
     UI.ActionRegistration.maybeRemoveActionExtension('console.create-pin');
   });
 
   it('adds a title to every checkbox label in the settings view', async () => {
-    const consoleView = Console.ConsoleView.ConsoleView.instance({forceNew: true});
     const consoleSettingsCheckboxes =
         consoleView.element.querySelector('.toolbar')?.shadowRoot?.querySelectorAll('.toolbar-item.checkbox');
     if (!consoleSettingsCheckboxes) {
@@ -62,19 +66,18 @@ describeWithMockConnection('ConsoleView', () => {
     await consoleView.getScheduledRefreshPromiseForTest();
   });
 
+  function createConsoleMessage(target: SDK.Target.Target, message: string) {
+    return new SDK.ConsoleModel.ConsoleMessage(
+        target.model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Javascript, null, message);
+  }
+
   async function canSaveToFile(targetFactory: () => SDK.Target.Target) {
     const target = targetFactory();
+
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
     assertNotNullOrUndefined(consoleModel);
-    const consoleView = Console.ConsoleView.ConsoleView.instance({forceNew: true});
-    consoleModel.dispatchEventToListeners(
-        SDK.ConsoleModel.Events.MessageAdded,
-        new SDK.ConsoleModel.ConsoleMessage(
-            target.model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Javascript, null, 'message 1'));
-    consoleModel.dispatchEventToListeners(
-        SDK.ConsoleModel.Events.MessageAdded,
-        new SDK.ConsoleModel.ConsoleMessage(
-            target.model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Javascript, null, 'message 2'));
+    consoleModel.addMessage(createConsoleMessage(target, 'message 1'));
+    consoleModel.addMessage(createConsoleMessage(target, 'message 2'));
     const messagesElement = consoleView.element.querySelector('#console-messages');
     assertNotNullOrUndefined(messagesElement);
 
@@ -114,4 +117,79 @@ describeWithMockConnection('ConsoleView', () => {
                                            createTarget({parentTarget: tabTarget, subtype: 'prerender'});
                                            return createTarget({parentTarget: tabTarget});
                                          }));
+
+  async function getConsoleMessages() {
+    const messagesElement = consoleView.element.querySelector('#console-messages');
+    assertNotNullOrUndefined(messagesElement);
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+    return [...messagesElement.querySelectorAll('.console-message-text')].map(e => (e as HTMLElement).innerText);
+  }
+
+  const messageTests = (inScope: boolean) => () => {
+    let target: SDK.Target.Target;
+
+    beforeEach(() => {
+      target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
+      consoleView.markAsRoot();
+      consoleView.show(document.body);
+    });
+
+    it('adds messages', async () => {
+      const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+      assertNotNullOrUndefined(consoleModel);
+      SDK.ConsoleModel.ConsoleModel.requestClearMessages();
+      consoleModel.addMessage(createConsoleMessage(target, 'message 1'));
+      consoleModel.addMessage(createConsoleMessage(target, 'message 2'));
+
+      const messages = await getConsoleMessages();
+      assert.deepEqual(messages, inScope ? ['message 1', 'message 2'] : []);
+    });
+
+    it('prints results', async () => {
+      const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+      assertNotNullOrUndefined(consoleModel);
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assertNotNullOrUndefined(runtimeModel);
+      SDK.ConsoleModel.ConsoleModel.requestClearMessages();
+      consoleModel.dispatchEventToListeners(SDK.ConsoleModel.Events.CommandEvaluated, {
+        result: new SDK.RemoteObject.RemoteObjectImpl(runtimeModel, undefined, 'number', undefined, 42),
+        commandMessage: createConsoleMessage(target, '[ultimateQuestionOfLife, theUniverse, everything].join()'),
+      });
+
+      const messages = await getConsoleMessages();
+      assert.deepEqual(messages, inScope ? ['42'] : []);
+    });
+  };
+
+  describe('in scope', messageTests(true));
+  describe('out of scope', messageTests(false));
+
+  const handlesSwitchingScope = (preserveLog: boolean) => async () => {
+    Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').set(preserveLog);
+    const target = createTarget();
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    const anotherTarget = createTarget();
+    consoleView.markAsRoot();
+    consoleView.show(document.body);
+
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assertNotNullOrUndefined(consoleModel);
+    consoleModel.addMessage(createConsoleMessage(target, 'message 1'));
+    consoleModel.addMessage(createConsoleMessage(target, 'message 2'));
+
+    const anotherConsoleModel = anotherTarget.model(SDK.ConsoleModel.ConsoleModel);
+    assertNotNullOrUndefined(anotherConsoleModel);
+    anotherConsoleModel.addMessage(createConsoleMessage(anotherTarget, 'message 3'));
+    assert.deepEqual(await getConsoleMessages(), ['message 1', 'message 2']);
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
+    assert.deepEqual(await getConsoleMessages(), preserveLog ? ['message 1', 'message 2', 'message 3'] : ['message 3']);
+
+    Common.Settings.Settings.instance().moduleSetting('preserveConsoleLog').set(false);
+  };
+
+  it('replaces messages when switching scope with preserve log off', handlesSwitchingScope(false));
+  it('appends messages when switching scope with preserve log on', handlesSwitchingScope(true));
 });

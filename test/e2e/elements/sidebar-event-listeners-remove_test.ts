@@ -18,8 +18,7 @@ describe('Removing event listeners in the elements sidebar', async () => {
     await loadEventListenersAndSelectButtonNode();
   });
 
-  // TODO: crbug.com/1325790 flaky test.
-  it.skipOnPlatforms(['mac'], '[crbug.com/1325790] shows "Remove" by each node for a given event', async () => {
+  it('shows "Remove" by each node for a given event', async () => {
     await openEventListenersPaneAndWaitForListeners();
     const {
       firstListenerText,

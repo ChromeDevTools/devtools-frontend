@@ -576,6 +576,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-chevron-double-right);
 }
 
+.spritesheet-clear.icon-mask {
+  -webkit-mask-image: var(--image-file-clear);
+}
+
 .spritesheet-database.icon-mask {
   -webkit-mask-image: var(--image-file-database);
 }
@@ -590,6 +594,14 @@ span[is="dt-icon-label"] {
 
 .spritesheet-edit.icon-mask {
   -webkit-mask-image: var(--image-file-edit);
+}
+
+.spritesheet-eye.icon-mask {
+  -webkit-mask-image: var(--image-file-eye);
+}
+
+.spritesheet-gear-filled.icon-mask {
+  -webkit-mask-image: var(--image-file-gear-filled);
 }
 
 .spritesheet-gear.icon-mask {

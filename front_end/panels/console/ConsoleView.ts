@@ -395,7 +395,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.showSettingsPaneSetting =
         Common.Settings.Settings.instance().createSetting('consoleShowSettingsToolbar', false);
     this.showSettingsPaneButton = new UI.Toolbar.ToolbarSettingToggle(
-        this.showSettingsPaneSetting, 'largeicon-settings-gear', i18nString(UIStrings.consoleSettings));
+        this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.consoleSettings), 'gear-filled');
     this.progressToolbarItem = new UI.Toolbar.ToolbarItem(document.createElement('div'));
     this.groupSimilarSetting = Common.Settings.Settings.instance().moduleSetting('consoleGroupSimilar');
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());

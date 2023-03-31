@@ -633,7 +633,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     if (shrinkable) {
       this.element.classList.add('toolbar-has-dropdown-shrinkable');
     }
-    const dropdownArrowIcon = Icon.create('smallicon-triangle-down', 'toolbar-dropdown-arrow');
+    const dropdownArrowIcon = Icon.create('triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
   }
 
@@ -862,8 +862,8 @@ export class ToolbarSettingToggle extends ToolbarToggle {
   private readonly setting: Common.Settings.Setting<boolean>;
   private willAnnounceState: boolean;
 
-  constructor(setting: Common.Settings.Setting<boolean>, glyph: string, title: string) {
-    super(title, glyph);
+  constructor(setting: Common.Settings.Setting<boolean>, glyph: string, title: string, toggledGlyph?: string) {
+    super(title, glyph, toggledGlyph);
     this.defaultTitle = title;
     this.setting = setting;
     this.settingChanged();

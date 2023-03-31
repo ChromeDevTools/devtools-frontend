@@ -51,7 +51,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     this.element.classList.add('soft-dropdown');
     ThemeSupport.ThemeSupport.instance().appendStyle(this.element, softDropDownButtonStyles);
     this.titleElement = this.element.createChild('span', 'title');
-    const dropdownArrowIcon = Icon.create('smallicon-triangle-down');
+    const dropdownArrowIcon = Icon.create('triangle-down');
     this.element.appendChild(dropdownArrowIcon);
     ARIAUtils.setExpanded(this.element, false);
 

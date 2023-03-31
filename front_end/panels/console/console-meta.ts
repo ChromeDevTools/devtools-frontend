@@ -192,7 +192,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'console.clear',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
   title: i18nLazyString(UIStrings.clearConsole),
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_CLEAR,
+  iconClass: UI.ActionRegistration.IconClass.CLEAR,
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
     return Console.ConsoleView.ActionDelegate.instance();
@@ -225,7 +225,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'console.create-pin',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
   title: i18nLazyString(UIStrings.createLiveExpression),
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_VISIBILITY,
+  iconClass: UI.ActionRegistration.IconClass.EYE,
   async loadActionDelegate() {
     const Console = await loadConsoleModule();
     return Console.ConsoleView.ActionDelegate.instance();

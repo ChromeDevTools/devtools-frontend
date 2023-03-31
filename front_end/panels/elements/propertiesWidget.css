@@ -34,7 +34,7 @@
 }
 
 .properties-widget-filter-box > input::placeholder {
-  color: var(--color-text-disabled);
+  color: var(--color-text-secondary);
 }
 
 @media (forced-colors: active) {

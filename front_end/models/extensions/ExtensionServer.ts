@@ -64,10 +64,7 @@ declare global {
   }
 }
 
-const kAllowedOrigins = [
-  'chrome://newtab',
-  'chrome://new-tab-page',
-].map(url => (new URL(url)).origin);
+const kAllowedOrigins = [].map(url => (new URL(url)).origin);
 
 let extensionServerInstance: ExtensionServer|null;
 

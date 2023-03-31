@@ -224,8 +224,8 @@ type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];
 
 export const enum IconClass {
   LARGEICON_NODE_SEARCH = 'select-element',
-  LARGEICON_START_RECORDING = 'largeicon-start-recording',
-  LARGEICON_STOP_RECORDING = 'largeicon-stop-recording',
+  START_RECORDING = 'record-start',
+  STOP_RECORDING = 'record-stop',
   LARGEICON_REFRESH = 'largeicon-refresh',
   CLEAR = 'clear',
   EYE = 'eye',

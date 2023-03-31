@@ -71,7 +71,7 @@ UI.ActionRegistration.registerActionExtension({
   title: () => 'Toggle recording' as Common.UIString.LocalizedString,
   toggleable: true,
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_START_RECORDING,
+  iconClass: UI.ActionRegistration.IconClass.START_RECORDING,
   contextTypes() {
     return [Timeline.TimelinePanel.TimelinePanel];
   },

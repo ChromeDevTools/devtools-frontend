@@ -204,7 +204,7 @@ describeWithMockConnection('TraceSDKServices', function() {
         upload: 1,
         latency: 1,
       });
-      const metadata = await SDK.TraceSDKServices.getMetadataForRecording();
+      const metadata = await SDK.TraceSDKServices.getMetadataForFreshRecording();
       assert.deepEqual(metadata, {
         source: 'DevTools',
         cpuThrottling: 2,
@@ -225,7 +225,7 @@ describeWithMockConnection('TraceSDKServices', function() {
         upload: 1,
         latency: 1,
       });
-      const metadata = await SDK.TraceSDKServices.getMetadataForRecording();
+      const metadata = await SDK.TraceSDKServices.getMetadataForFreshRecording();
       assert.deepEqual(metadata, {
         source: 'DevTools',
         cpuThrottling: 2,
@@ -246,7 +246,7 @@ describeWithMockConnection('TraceSDKServices', function() {
         upload: 1,
         latency: 1,
       });
-      const metadata = await SDK.TraceSDKServices.getMetadataForRecording();
+      const metadata = await SDK.TraceSDKServices.getMetadataForFreshRecording();
       assert.deepEqual(metadata, {
         source: 'DevTools',
         cpuThrottling: 2,

@@ -46,7 +46,6 @@ devtools_module("sources") {
     "ProfilePlugin.ts",
     "ResourceOriginPlugin.ts",
     "ScopeChainSidebarPane.ts",
-    "ScriptFormatterEditorAction.ts",
     "SearchSourcesView.ts",
     "SnippetsPlugin.ts",
     "SourcesNavigator.ts",

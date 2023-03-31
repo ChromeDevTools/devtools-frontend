@@ -107,9 +107,6 @@ Sources.ScopeChainSidebarPane = SourcesModule.ScopeChainSidebarPane.ScopeChainSi
 Sources.ScopeChainSidebarPane.OpenLinearMemoryInspector = SourcesModule.ScopeChainSidebarPane.OpenLinearMemoryInspector;
 
 /** @constructor */
-Sources.ScriptFormatterEditorAction = SourcesModule.ScriptFormatterEditorAction.ScriptFormatterEditorAction;
-
-/** @constructor */
 Sources.SearchSourcesView = SourcesModule.SearchSourcesView.SearchSourcesView;
 
 /** @constructor */

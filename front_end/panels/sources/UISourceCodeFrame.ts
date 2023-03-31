@@ -199,17 +199,12 @@ export class UISourceCodeFrame extends
         this.uiSourceCodeInternal, this.boundOnBindingChanged);
     this.installMessageAndDecorationListeners();
     this.updateStyle();
-    if (Root.Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
-      // TODO(crbug.com/1382752): We need to find a better way to design the in-place
-      // vs pretty-print formatting layering. For now this is basically the inverse of
-      // the condition for in-place formatting.
-      const uiSourceCode = this.uiSourceCodeInternal;
-      const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType) &&
-          !uiSourceCode.project().canSetFileContent() &&
-          Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode) === null;
-      const autoPrettyPrint = !uiSourceCode.contentType().isFromSourceMap();
-      this.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
-    }
+    const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType) &&
+        !this.uiSourceCodeInternal.project().canSetFileContent() &&
+        Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal) === null;
+    const autoPrettyPrint = Root.Runtime.experiments.isEnabled('sourcesPrettyPrint') &&
+        !this.uiSourceCodeInternal.contentType().isFromSourceMap();
+    this.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
   }
 
   wasShown(): void {

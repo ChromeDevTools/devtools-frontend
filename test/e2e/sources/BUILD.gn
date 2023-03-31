@@ -12,7 +12,6 @@ node_ts_library("sources") {
     "breakpoints-sidebarpane_test.ts",
     "can-break-with-wasm-sourcemaps_test.ts",
     "can-disable-auto-sources-focus_test.ts",
-    "can-format-sourcecode_test.ts",
     "can-handle-special-characters_test.ts",
     "can-open-linear-memory-inspector_test.ts",
     "can-pretty-print-sourcecode_test.ts",

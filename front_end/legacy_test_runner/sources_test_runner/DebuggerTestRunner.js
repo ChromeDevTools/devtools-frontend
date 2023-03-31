@@ -644,10 +644,6 @@ SourcesTestRunner.checkUILocation = function(uiSourceCode, lineNumber, columnNum
       'Incorrect columnNumber, expected \'' + columnNumber + '\', but got \'' + location.columnNumber + '\'');
 };
 
-SourcesTestRunner.scriptFormatter = function() {
-  return Promise.resolve(Sources.ScriptFormatterEditorAction.instance());
-};
-
 SourcesTestRunner.waitForExecutionContextInTarget = function(target, callback) {
   const runtimeModel = target.model(SDK.RuntimeModel);
 

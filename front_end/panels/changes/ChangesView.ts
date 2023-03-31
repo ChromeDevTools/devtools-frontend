@@ -106,8 +106,7 @@ export class ChangesView extends UI.Widget.VBox {
     this.diffView = this.diffContainer.appendChild(new DiffView.DiffView.DiffView());
 
     this.toolbar = new UI.Toolbar.Toolbar('changes-toolbar', mainWidget.element);
-    const revertButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.revertAllChangesToCurrentFile), 'largeicon-undo');
+    const revertButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.revertAllChangesToCurrentFile), 'undo');
     revertButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.revert.bind(this));
     this.toolbar.appendToolbarItem(revertButton);
     this.diffStats = new UI.Toolbar.ToolbarText('');

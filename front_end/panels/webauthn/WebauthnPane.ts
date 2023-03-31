@@ -647,8 +647,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     removeButton.addEventListener('click', this.#removeAuthenticator.bind(this, authenticatorId));
 
     const toolbar = new UI.Toolbar.Toolbar('edit-name-toolbar', titleElement);
-    const editName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'largeicon-edit');
-    const saveName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveName), 'largeicon-checkmark');
+    const editName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit');
+    const saveName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveName), 'checkmark');
     saveName.setVisible(false);
 
     const nameField = (titleElement.createChild('input', 'authenticator-name-field') as HTMLInputElement);

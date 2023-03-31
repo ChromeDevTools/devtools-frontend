@@ -544,6 +544,10 @@ span[is="dt-icon-label"] {
   background-image: var(--image-file-popoverArrows);
 }
 
+.spritesheet-bin.icon-mask {
+  -webkit-mask-image: var(--image-file-bin);
+}
+
 .spritesheet-bottom-panel-close.icon-mask {
   -webkit-mask-image: var(--image-file-bottom-panel-close);
 }
@@ -558,6 +562,10 @@ span[is="dt-icon-label"] {
 
 .spritesheet-breakpoint-crossed.icon-mask {
   -webkit-mask-image: var(--image-file-breakpoint-crossed);
+}
+
+.spritesheet-checkmark.icon-mask {
+  -webkit-mask-image: var(--image-file-checkmark);
 }
 
 .spritesheet-cross.icon-mask {
@@ -578,6 +586,10 @@ span[is="dt-icon-label"] {
 
 .spritesheet-dots-vertical.icon-mask {
   -webkit-mask-image: var(--image-file-dots-vertical);
+}
+
+.spritesheet-edit.icon-mask {
+  -webkit-mask-image: var(--image-file-edit);
 }
 
 .spritesheet-gear.icon-mask {
@@ -646,6 +658,10 @@ span[is="dt-icon-label"] {
 
 .spritesheet-triangle-right.icon-mask {
   -webkit-mask-image: var(--image-file-triangle-right);
+}
+
+.spritesheet-undo.icon-mask {
+  -webkit-mask-image: var(--image-file-undo);
 }
 
 .force-white-icons [is="ui-icon"].spritesheet-smallicons,

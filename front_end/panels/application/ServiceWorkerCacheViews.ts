@@ -117,7 +117,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshButtonClicked, this);
     editorToolbar.appendToolbarItem(this.refreshButton);
 
-    this.deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'largeicon-delete');
+    this.deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'cross');
     this.deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       void this.deleteButtonClicked(null);
     });

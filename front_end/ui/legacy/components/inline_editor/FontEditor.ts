@@ -345,8 +345,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     field.appendChild(selectInput);
 
     const deleteToolbar = new UI.Toolbar.Toolbar('', field);
-    const deleteButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteS, {PH1: label}), 'largeicon-trash-bin');
+    const deleteButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteS, {PH1: label}), 'bin');
     deleteToolbar.appendToolbarItem(deleteButton);
     const fontSelectorObject = {label: selectLabel, input: selectInput, deleteButton, index};
     deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {

@@ -152,11 +152,11 @@ export class ListWidget<T> extends VBox {
 
     const toolbar = new Toolbar('', buttons);
 
-    const editButton = new ToolbarButton(i18nString(UIStrings.editString), 'largeicon-edit');
+    const editButton = new ToolbarButton(i18nString(UIStrings.editString), 'edit');
     editButton.addEventListener(ToolbarButton.Events.Click, onEditClicked.bind(this));
     toolbar.appendToolbarItem(editButton);
 
-    const removeButton = new ToolbarButton(i18nString(UIStrings.removeString), 'largeicon-trash-bin');
+    const removeButton = new ToolbarButton(i18nString(UIStrings.removeString), 'bin');
     removeButton.addEventListener(ToolbarButton.Events.Click, onRemoveClicked.bind(this));
     toolbar.appendToolbarItem(removeButton);
 

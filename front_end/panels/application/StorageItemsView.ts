@@ -55,8 +55,7 @@ export class StorageItemsView extends UI.Widget.VBox {
 
     const toolbarSeparator = new UI.Toolbar.ToolbarSeparator();
     this.deleteAllButton = this.addButton(i18nString(UIStrings.clearAll), 'largeicon-clear', this.deleteAllItems);
-    this.deleteSelectedButton =
-        this.addButton(i18nString(UIStrings.deleteSelected), 'largeicon-delete', this.deleteSelectedItem);
+    this.deleteSelectedButton = this.addButton(i18nString(UIStrings.deleteSelected), 'cross', this.deleteSelectedItem);
     this.deleteAllButton.element.id = 'storage-items-delete-all';
 
     const toolbarItems =

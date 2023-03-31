@@ -164,7 +164,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     UI.Tooltip.Tooltip.install(path, fileSystemPath);
 
     const toolbar = new UI.Toolbar.Toolbar('');
-    const button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.remove), 'largeicon-delete');
+    const button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.remove), 'cross');
     button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.removeFileSystemClicked.bind(this, fileSystem));
     toolbar.appendToolbarItem(button);
     header.appendChild(toolbar.element);

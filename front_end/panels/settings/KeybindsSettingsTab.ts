@@ -372,13 +372,13 @@ export class ShortcutListItem {
     this.errorMessageElement = this.element.createChild('div', 'keybinds-info keybinds-error hidden');
     UI.ARIAUtils.markAsAlert(this.errorMessageElement);
     this.element.appendChild(this.createIconButton(
-        i18nString(UIStrings.ResetShortcutsForAction), 'largeicon-undo', '', this.resetShortcutsToDefaults.bind(this)));
+        i18nString(UIStrings.ResetShortcutsForAction), 'undo', '', this.resetShortcutsToDefaults.bind(this)));
     this.confirmButton = this.createIconButton(
-        i18nString(UIStrings.confirmChanges), 'largeicon-checkmark', 'keybinds-confirm-button',
+        i18nString(UIStrings.confirmChanges), 'checkmark', 'keybinds-confirm-button',
         () => this.settingsTab.commitChanges(this.item, this.editedShortcuts));
     this.element.appendChild(this.confirmButton);
     this.element.appendChild(this.createIconButton(
-        i18nString(UIStrings.discardChanges), 'largeicon-delete', 'keybinds-cancel-button',
+        i18nString(UIStrings.discardChanges), 'cross', 'keybinds-cancel-button',
         () => this.settingsTab.stopEditing(this.item)));
     this.element.addEventListener('keydown', event => {
       if (Platform.KeyboardUtilities.isEscKey(event)) {
@@ -430,8 +430,8 @@ export class ShortcutListItem {
           this.secondKeyTimeout = null;
         }
       });
-      shortcutElement.appendChild(this.createIconButton(
-          i18nString(UIStrings.removeShortcut), 'largeicon-trash-bin', 'keybinds-delete-button', () => {
+      shortcutElement.appendChild(
+          this.createIconButton(i18nString(UIStrings.removeShortcut), 'bin', 'keybinds-delete-button', () => {
             const index = this.shortcuts.indexOf(shortcut);
             if (!shortcut.isDefault()) {
               this.shortcuts.splice(index, 1);
@@ -454,7 +454,7 @@ export class ShortcutListItem {
 
   private createEditButton(): Element {
     return this.createIconButton(
-        i18nString(UIStrings.editShortcut), 'largeicon-edit', 'keybinds-edit-button',
+        i18nString(UIStrings.editShortcut), 'edit', 'keybinds-edit-button',
         () => this.settingsTab.startEditing(this.item));
   }
 

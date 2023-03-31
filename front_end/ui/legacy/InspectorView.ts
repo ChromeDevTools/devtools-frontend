@@ -165,7 +165,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.drawerTabbedPane = this.drawerTabbedLocation.tabbedPane();
     this.drawerTabbedPane.setMinimumSize(0, 27);
     this.drawerTabbedPane.element.classList.add('drawer-tabbed-pane');
-    const closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'largeicon-delete');
+    const closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'cross');
     closeDrawerButton.addEventListener(ToolbarButton.Events.Click, this.closeDrawer, this);
     this.drawerTabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.tabSelected, this);
     this.drawerTabbedPane.setTabDelegate(this.tabDelegate);

@@ -404,7 +404,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     });
 
     this.deleteIconToolbar = new UI.Toolbar.Toolbar('delete-color-toolbar');
-    this.deleteButton = new UI.Toolbar.ToolbarButton('', 'largeicon-trash-bin');
+    this.deleteButton = new UI.Toolbar.ToolbarButton('', 'bin');
     this.deleteIconToolbar.appendToolbarItem(this.deleteButton);
 
     const overlay = this.contentElement.createChild('div', 'spectrum-overlay fill');
@@ -571,7 +571,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     const title = this.palettePanel.createChild('div', 'palette-title');
     title.textContent = i18nString(UIStrings.colorPalettes);
     const toolbar = new UI.Toolbar.Toolbar('', this.palettePanel);
-    this.closeButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.returnToColorPicker), 'largeicon-delete');
+    this.closeButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.returnToColorPicker), 'cross');
     this.closeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.togglePalettePanel.bind(this, false));
     this.closeButton.element.addEventListener('keydown', this.onCloseBtnKeydown.bind(this));
     toolbar.appendToolbarItem(this.closeButton);
@@ -1635,7 +1635,7 @@ export class Swatch {
   }
 
   private onCopyText(event: Event): void {
-    this.swatchCopyIcon.setIconType('largeicon-checkmark');
+    this.swatchCopyIcon.setIconType('checkmark');
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.colorString);
     UI.ARIAUtils.setPressed(this.swatchOverlayElement, true);
     event.consume();

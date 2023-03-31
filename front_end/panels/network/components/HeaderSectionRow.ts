@@ -61,7 +61,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/HeaderSectionRow.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const trashIconUrl = new URL('../../../Images/trash_bin_material_icon.svg', import.meta.url).toString();
+const trashIconUrl = new URL('../../../Images/bin.svg', import.meta.url).toString();
 const editIconUrl = new URL('../../../Images/edit-icon.svg', import.meta.url).toString();
 
 export const isValidHeaderName = (headerName: string): boolean => {

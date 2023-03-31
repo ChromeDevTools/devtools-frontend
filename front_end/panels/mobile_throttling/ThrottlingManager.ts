@@ -323,7 +323,7 @@ export class ThrottlingManager {
     input.setEnabled(false);
 
     const toggle = new UI.Toolbar.ToolbarCheckbox(i18nString(UIStrings.hardwareConcurrency));
-    const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'largeicon-undo');
+    const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo');
     reset.setTitle(i18nString(UIStrings.resetConcurrency));
     const warning = new UI.Toolbar.ToolbarItem(UI.Icon.Icon.create('smallicon-warning'));
     warning.setTitle(i18nString(UIStrings.excessConcurrency));

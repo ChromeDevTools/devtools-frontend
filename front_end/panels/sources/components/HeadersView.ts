@@ -51,7 +51,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const plusIconUrl = new URL('../../../Images/plus_icon.svg', import.meta.url).toString();
-const trashIconUrl = new URL('../../../Images/trash_bin_material_icon.svg', import.meta.url).toString();
+const trashIconUrl = new URL('../../../Images/bin.svg', import.meta.url).toString();
 
 export class HeadersView extends UI.View.SimpleView {
   readonly #headersViewComponent = new HeadersViewComponent();

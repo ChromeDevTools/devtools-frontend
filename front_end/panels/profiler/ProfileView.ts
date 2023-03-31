@@ -213,8 +213,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.focusButton.setEnabled(false);
     this.focusButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.focusClicked, this);
 
-    this.excludeButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.excludeSelectedFunction), 'largeicon-delete');
+    this.excludeButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.excludeSelectedFunction), 'cross');
     this.excludeButton.setEnabled(false);
     this.excludeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.excludeClicked, this);
 

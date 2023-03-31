@@ -770,7 +770,7 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
       centered.createChild('p').textContent =
           'This panel is deprecated and will be removed in the next version. Use the Performance panel to record JavaScript CPU profiles.';
       centered.createChild('p').textContent =
-          'You can enable this panel temporarily via Settings > Experiments > Enable JavaScript Profiler temporarily.';
+          'You can temporarily enable this panel with Settings > Experiments > Enable JavaScript Profiler.';
 
       centered.appendChild(UI.UIUtils.createTextButton(
           i18nString(UIStrings.goToPerformancePanel), openPerformancePanel, 'infobar-button primary-button'));

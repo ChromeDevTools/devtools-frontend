@@ -92,7 +92,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       argumentHints,
       autocompleteOnEnter.instance(),
       TextEditor.Config.showCompletionHint,
-      CodeMirror.javascript.javascript(),
       TextEditor.Config.baseConfiguration(this.initialText),
       TextEditor.Config.autocompletion.instance(),
       CodeMirror.javascript.javascriptLanguage.data.of({
@@ -104,7 +103,12 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       CodeMirror.autocompletion({aboveCursor: true}),
     ];
     if (Root.Runtime.Runtime.queryParam('noJavaScriptCompletion') !== 'true') {
-      extensions.push(TextEditor.JavaScript.completion());
+      extensions.push(
+          CodeMirror.javascript.javascript(),
+          TextEditor.JavaScript.completion(),
+      );
+    } else {
+      extensions.push(CodeMirror.javascript.javascriptLanguage);
     }
     const doc = this.initialText;
     const editorState = CodeMirror.EditorState.create({doc, extensions});

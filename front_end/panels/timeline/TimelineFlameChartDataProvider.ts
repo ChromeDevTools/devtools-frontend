@@ -250,10 +250,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.legacyPerformanceModel = performanceModel;
     this.legacyTimelineModel = performanceModel && performanceModel.timelineModel();
     this.traceEngineData = newTraceEngineData;
-    if (!this.traceEngineData) {
-      return;
+    if (this.legacyTimelineModel) {
+      this.minimumBoundaryInternal = this.legacyTimelineModel.minimumRecordTime();
+      this.timeSpan = this.legacyTimelineModel.isEmpty() ?
+          1000 :
+          this.legacyTimelineModel.maximumRecordTime() - this.minimumBoundaryInternal;
+    } else if (this.traceEngineData) {
+      this.setTimingBoundsData(this.traceEngineData);
     }
-    this.setTimingBoundsData(this.traceEngineData);
   }
 
   /**

@@ -37,6 +37,14 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineLoader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+/**
+ * This class handles loading traces from file and URL, and from the Lighthouse panel
+ * It also handles loading cpuprofiles from file, url and console.profileEnd()
+ *
+ * Meanwhile, the normal trace recording flow bypasses TimelineLoader entirely,
+ * as it's handled from TracingManager => TimelineController.
+ */
 export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private client: Client|null;
   private readonly backingStorage: Bindings.TempFile.TempFileBackingStorage;
@@ -149,7 +157,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
   async addEvents(events: SDK.TracingManager.EventPayload[]): Promise<void> {
     this.client?.loadingStarted();
-    const eventsPerChunk = 5000;
+    const eventsPerChunk = 15_000;
     for (let i = 0; i < events.length; i += eventsPerChunk) {
       const chunk = events.slice(i, i + eventsPerChunk);
       (this.tracingModel as SDK.TracingModel.TracingModel).addEvents(chunk);

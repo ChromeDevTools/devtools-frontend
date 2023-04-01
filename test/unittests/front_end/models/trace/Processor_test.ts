@@ -115,12 +115,8 @@ describe('TraceProcessor', async function() {
           Samples: TraceModel.Handlers.ModelHandlers.Samples,
         },
         {
-          // These numbers are much lower than in production, which means we expect
-          // updates more frequently. Otherwise, wiith the fact that most of our
-          // trace files are quite small, we couldn't guarantee that we do get a
-          // status update.
-          pauseFrequencyMs: 10,
-          pauseDuration: 1,
+          // This trace is 8252 events long, lets emit 8 updates
+          eventsPerChunk: 1_000,
         });
 
     let updateEventCount = 0;
@@ -131,9 +127,7 @@ describe('TraceProcessor', async function() {
 
     const rawEvents = await loadEventsFromTraceFile('web-dev.json.gz');
     await processor.parse(rawEvents).then(() => {
-      // Ensure we saw at least one update. We cannot set a specific number as
-      // it can change depending on the machine that it is being run on.
-      assert.isAtLeast(updateEventCount, 1);
+      assert.strictEqual(updateEventCount, 8);
     });
   });
 

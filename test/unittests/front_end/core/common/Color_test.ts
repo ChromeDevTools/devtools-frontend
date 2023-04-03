@@ -822,8 +822,12 @@ describe('Color', () => {
 
     assert.isTrue(Color.parse('hsl(-120deg 130% 50%)')?.isGamutClipped());
     assert.deepEqual(Color.parse('hsl(-120deg 130% 50%)')?.asString(), 'hsl(240deg 100% 50%)');
-    assert.isFalse(Color.parse('hwb(-120deg -130% 50%)')?.isGamutClipped());
-    assert.deepEqual(Color.parse('hwb(-120deg -130% 50%)')?.asString(), 'hwb(240deg 0% 50%)');
+    assert.isTrue(Color.parse('hwb(-120deg -130% 50%)')?.isGamutClipped());
+    assert.deepEqual(Color.parse('hwb(-120deg -130% -50%)')?.asString(), 'hwb(240deg 0% 0%)');
+    assert.isTrue(Color.parse('hwb(-120deg 0% 150%)')?.isGamutClipped());
+    assert.deepEqual(Color.parse('hwb(-120deg 0% 150%)')?.asString(), 'hwb(0deg 0% 100%)');
+    assert.isTrue(Color.parse('hwb(-120deg 130% 0%)')?.isGamutClipped());
+    assert.deepEqual(Color.parse('hwb(-120deg 130% 0%)')?.asString(), 'hwb(0deg 100% 0%)');
 
     assert.isFalse(Color.parse('lch(110 -70 -70)')?.isGamutClipped());
     assert.deepEqual(Color.parse('lch(110 70 -70)')?.asString(), 'lch(100 0 0)');

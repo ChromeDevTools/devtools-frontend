@@ -1790,8 +1790,8 @@ export class HWB implements Color {
     return this.#stringify(...this.#rawParams);
   }
   isGamutClipped(): boolean {
-    // Can HWB even be out of gamut?
-    return false;
+    return !lessOrEquals(this.#rawParams[1], 1) || !lessOrEquals(0, this.#rawParams[1]) ||
+        !lessOrEquals(this.#rawParams[2], 1) || !lessOrEquals(0, this.#rawParams[2]);
   }
 
   static fromSpec(spec: ColorParameterSpec, text: string): HWB|null {

@@ -347,7 +347,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.cookieListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/cookies/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
-    const cookieIcon = UI.Icon.Icon.create('mediumicon-cookie', 'resource-tree-item');
+    const cookieIcon = UI.Icon.Icon.create('cookie', 'resource-tree-item');
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);
 
@@ -1059,7 +1059,7 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
 
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18n.i18n.lockedString('Service Workers'), false);
-    const icon = UI.Icon.Icon.create('mediumicon-service-worker', 'resource-tree-item');
+    const icon = UI.Icon.Icon.create('gears', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
 
@@ -1082,7 +1082,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
   private view: AppManifestView;
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.manifest), true);
-    const icon = UI.Icon.Icon.create('mediumicon-manifest', 'resource-tree-item');
+    const icon = UI.Icon.Icon.create('document', 'resource-tree-item');
     this.setLeadingIcons([icon]);
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
     const emptyView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noManifestDetected));
@@ -1133,7 +1133,7 @@ export class ManifestChildTreeElement extends ApplicationPanelTreeElement {
   #sectionFieldElement: HTMLElement;
   constructor(storagePanel: ResourcesPanel, element: Element, childTitle: string, fieldElement: HTMLElement) {
     super(storagePanel, childTitle, false);
-    const icon = UI.Icon.Icon.create('mediumicon-manifest', 'resource-tree-item');
+    const icon = UI.Icon.Icon.create('document', 'resource-tree-item');
     this.setLeadingIcons([icon]);
     this.#sectionElement = element;
     this.#sectionFieldElement = fieldElement;
@@ -1684,7 +1684,7 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     this.target = frame.resourceTreeModel().target();
     this.cookieDomainInternal = cookieDomain;
     this.tooltip = i18nString(UIStrings.cookiesUsedByFramesFromS, {PH1: cookieDomain});
-    const icon = UI.Icon.Icon.create('mediumicon-cookie', 'resource-tree-item');
+    const icon = UI.Icon.Icon.create('cookie', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
 

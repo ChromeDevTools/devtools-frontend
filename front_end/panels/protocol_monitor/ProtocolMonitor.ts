@@ -462,7 +462,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 
     const sdkTarget = target as SDK.Target.Target | null;
     const responseIcon = new IconButton.Icon.Icon();
-    responseIcon.data = {iconName: 'arrow-up', color: 'var(--icon-request)', width: '20px', height: '20px'};
+    responseIcon.data = {iconName: 'arrow-down', color: 'var(--icon-request)', width: '20px', height: '20px'};
     const newRow: DataGrid.DataGridUtils.Row = {
       cells: [
         {columnId: 'method', value: message.method, title: message.method},

@@ -51,6 +51,7 @@ devtools_svg_sources = [
   "align-self-flex-end-icon.svg",
   "align-self-flex-start-icon.svg",
   "align-self-stretch-icon.svg",
+  "arrow-down.svg",
   "arrow-up-down-circle.svg",
   "arrow-up-down.svg",
   "arrow-up.svg",

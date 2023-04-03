@@ -640,12 +640,32 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-filter);
 }
 
+.spritesheet-frame-crossed.icon-mask {
+  -webkit-mask-image: var(--image-file-frame-crossed);
+}
+
+.spritesheet-frame.icon-mask {
+  -webkit-mask-image: var(--image-file-frame);
+}
+
 .spritesheet-gear-filled.icon-mask {
   -webkit-mask-image: var(--image-file-gear-filled);
 }
 
 .spritesheet-gear.icon-mask {
   -webkit-mask-image: var(--image-file-gear);
+}
+
+.spritesheet-gears.icon-mask {
+  -webkit-mask-image: var(--image-file-gears);
+}
+
+.spritesheet-iframe-crossed.icon-mask {
+  -webkit-mask-image: var(--image-file-iframe-crossed);
+}
+
+.spritesheet-iframe.icon-mask {
+  -webkit-mask-image: var(--image-file-iframe);
 }
 
 .spritesheet-import.icon-mask {
@@ -670,6 +690,10 @@ span[is="dt-icon-label"] {
 
 .spritesheet-pause.icon-mask {
   -webkit-mask-image: var(--image-file-pause);
+}
+
+.spritesheet-popup.icon-mask {
+  -webkit-mask-image: var(--image-file-popup);
 }
 
 .spritesheet-profile.icon-mask {
@@ -855,6 +879,51 @@ span[is="dt-icon-label"] {
   background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
 }
 
+.force-white-icons [is="ui-icon"].spritesheet-frame-crossed,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-frame-crossed,
+[is="ui-icon"].force-white-icons.spritesheet-frame-crossed,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-frame-crossed);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.force-white-icons [is="ui-icon"].spritesheet-frame,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-frame,
+[is="ui-icon"].force-white-icons.spritesheet-frame,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-frame);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.force-white-icons [is="ui-icon"].spritesheet-gears,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-gears,
+[is="ui-icon"].force-white-icons.spritesheet-gears,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-gears);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.force-white-icons [is="ui-icon"].spritesheet-iframe-crossed,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-iframe-crossed,
+[is="ui-icon"].force-white-icons.spritesheet-iframe-crossed,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-iframe-crossed);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.force-white-icons [is="ui-icon"].spritesheet-iframe,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-iframe,
+[is="ui-icon"].force-white-icons.spritesheet-iframe,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-iframe);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
 .force-white-icons [is="ui-icon"].spritesheet-info,
 :host-context(.force-white-icons) [is="ui-icon"].spritesheet-info,
 [is="ui-icon"].force-white-icons.spritesheet-info,
@@ -869,6 +938,15 @@ span[is="dt-icon-label"] {
 [is="ui-icon"].force-white-icons.spritesheet-list,
 .-theme-preserve {
   -webkit-mask-image: var(--image-file-list);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.force-white-icons [is="ui-icon"].spritesheet-popup,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-popup,
+[is="ui-icon"].force-white-icons.spritesheet-popup,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-popup);
   -webkit-mask-position: var(--spritesheet-position);
   background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
 }

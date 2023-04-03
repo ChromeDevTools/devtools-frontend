@@ -29,34 +29,29 @@ li.storage-group-list-item::before {
   display: none;
 }
 
-.icons-container .red-icon {
-  background-color: var(--color-accent-red);
+.icons-container [is="ui-icon"].red-icon {
+  background-color: var(--icon-error);
 }
 
-.navigator-file-tree-item {
-  background: linear-gradient(45deg, hsl(0deg 0% 50%), hsl(0deg 0% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+[is="ui-icon"].navigator-file-tree-item {
+  background-color: var(--icon-file-default);
 }
 
-.navigator-folder-tree-item {
-  background: linear-gradient(45deg, hsl(210deg 82% 65%), hsl(210deg 82% 80%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+[is="ui-icon"].navigator-folder-tree-item {
+  background-color: var(--icon-folder-primary);
 }
 
-.navigator-script-tree-item {
-  background: linear-gradient(45deg, hsl(48deg 70% 50%), hsl(48deg 70% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+[is="ui-icon"].navigator-script-tree-item {
+  background-color: var(--icon-file-script);
 }
 
-.navigator-stylesheet-tree-item {
-  background: linear-gradient(45deg, hsl(256deg 50% 50%), hsl(256deg 50% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+[is="ui-icon"].navigator-stylesheet-tree-item {
+  background-color: var(--icon-file-styles);
 }
 
-.navigator-image-tree-item,
-.navigator-font-tree-item {
-  background: linear-gradient(45deg, hsl(109deg 33% 50%), hsl(109deg 33% 70%)); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+[is="ui-icon"].navigator-image-tree-item,
+[is="ui-icon"].navigator-font-tree-item {
+  background-color: var(--icon-file-image);
 }
 
 .window-closed .tree-element-title {

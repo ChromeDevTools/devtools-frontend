@@ -14,6 +14,7 @@
   --icon-error: var(--color-error-bright);
   --icon-error-small: var(--color-error);
   --icon-file-authored: var(--color-orange-bright);
+  --icon-file-default: var(--color-on-surface-variant);
   --icon-file-image: var(--color-tertiary-bright);
   --icon-file-image-small: var(--color-tertiary);
   --icon-file-script: var(--color-orange-bright);
@@ -21,12 +22,13 @@
   --icon-file-styles-small: var(--color-purple);
   --icon-fold-marker: var(--color-on-surface-variant);
   --icon-folder-authored: var(--color-orange);
+  --icon-folder-primary: var(--color-on-surface-variant);
   --icon-folder-deployed: var(--color-primary-bright);
   --icon-folder-workspace: var(--color-orange);
+  --icon-force-white: var(--color-on-primary);
   --icon-info: var(--color-primary-bright);
   --icon-info-small: var(--color-primary);
   --icon-link: var(--color-primary);
-  --icon-force-white: var(--color-on-primary);
   --icon-record: var(--color-error-bright);
   --icon-request-response: var(--color-primary);
   --icon-security-lock: var(--color-tertiary);

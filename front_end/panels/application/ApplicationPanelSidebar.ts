@@ -1999,12 +1999,12 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     this.view = null;
   }
 
-  getIconTypeForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): 'mediumicon-frame-blocked'|'mediumicon-frame'|
-      'mediumicon-frame-embedded-blocked'|'mediumicon-frame-embedded' {
+  getIconTypeForFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame): 'frame-crossed'|'frame'|'iframe-crossed'|
+      'iframe' {
     if (frame.isOutermostFrame()) {
-      return frame.unreachableUrl() ? 'mediumicon-frame-blocked' : 'mediumicon-frame';
+      return frame.unreachableUrl() ? 'frame-crossed' : 'frame';
     }
-    return frame.unreachableUrl() ? 'mediumicon-frame-embedded-blocked' : 'mediumicon-frame-embedded';
+    return frame.unreachableUrl() ? 'iframe-crossed' : 'iframe';
   }
 
   async frameNavigated(frame: SDK.ResourceTreeModel.ResourceTreeFrame): Promise<void> {
@@ -2207,7 +2207,7 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
     this.tooltip = resource.url;
     resourceToFrameResourceTreeElement.set(this.resource, this);
 
-    const icon = UI.Icon.Icon.create('mediumicon-manifest', 'navigator-file-tree-item');
+    const icon = UI.Icon.Icon.create('document', 'navigator-file-tree-item');
     icon.classList.add('navigator-' + resource.resourceType().name() + '-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -2296,7 +2296,7 @@ class FrameWindowTreeElement extends ApplicationPanelTreeElement {
   }
 
   updateIcon(canAccessOpener: boolean): void {
-    const iconType = canAccessOpener ? 'mediumicon-frame-opened' : 'mediumicon-frame';
+    const iconType = canAccessOpener ? 'popup' : 'frame';
     const icon = UI.Icon.Icon.create(iconType);
     this.setLeadingIcons([icon]);
   }
@@ -2346,7 +2346,7 @@ class WorkerTreeElement extends ApplicationPanelTreeElement {
     super(storagePanel, targetInfo.title || targetInfo.url || i18nString(UIStrings.worker), false);
     this.targetInfo = targetInfo;
     this.view = null;
-    const icon = UI.Icon.Icon.create('mediumicon-service-worker', 'navigator-file-tree-item');
+    const icon = UI.Icon.Icon.create('gears', 'navigator-file-tree-item');
     this.setLeadingIcons([icon]);
   }
 

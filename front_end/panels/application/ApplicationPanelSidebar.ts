@@ -944,17 +944,17 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
   private getIconType(): string {
     switch (this.serviceName) {
       case Protocol.BackgroundService.ServiceName.BackgroundFetch:
-        return 'mediumicon-fetch';
+        return 'arrow-up-down';
       case Protocol.BackgroundService.ServiceName.BackgroundSync:
-        return 'mediumicon-sync';
+        return 'sync';
       case Protocol.BackgroundService.ServiceName.PushMessaging:
-        return 'mediumicon-cloud';
+        return 'cloud';
       case Protocol.BackgroundService.ServiceName.Notifications:
-        return 'mediumicon-bell';
+        return 'bell';
       case Protocol.BackgroundService.ServiceName.PaymentHandler:
-        return 'mediumicon-payment';
+        return 'credit-card';
       case Protocol.BackgroundService.ServiceName.PeriodicBackgroundSync:
-        return 'mediumicon-schedule';
+        return 'watch';
       default:
         console.error(`Service ${this.serviceName} does not have a dedicated icon`);
         return 'table';

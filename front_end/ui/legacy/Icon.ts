@@ -97,6 +97,8 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['largeicons', {cellWidth: 28, cellHeight: 24, padding: 0}],
   ['arrowicons', {cellWidth: 19, cellHeight: 19, padding: 0}],
 
+  ['arrow-up-down', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['bell', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['bin', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['bottom-panel-close', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['bottom-panel-open', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -106,6 +108,8 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['checkmark', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['chevron-double-right', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['clear', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['cloud', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['credit-card', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['cross', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['cross-circle', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['database', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -137,6 +141,7 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['step-out', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['step-over', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['step', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['sync', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['table', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['top-panel-close', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['top-panel-open', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -144,6 +149,7 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['triangle-right', {cellWidth: 14, cellHeight: 14, padding: 0}],
   ['undo', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['warning', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['watch', {cellWidth: 20, cellHeight: 20, padding: 0}],
 ]);
 
 const initialDescriptors = new Map<string, Descriptor>([
@@ -203,12 +209,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['mediumicon-search', {position: 'b1', spritesheet: 'mediumicons'}],
   ['mediumicon-replace', {position: 'c5', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-warning', {position: 'd5', spritesheet: 'mediumicons', isMask: true}],
-  ['mediumicon-sync', {position: 'a5', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-fetch', {position: 'b5', spritesheet: 'mediumicons', isMask: true}],
-  ['mediumicon-cloud', {position: 'a6', spritesheet: 'mediumicons', isMask: true}],
-  ['mediumicon-bell', {position: 'b6', spritesheet: 'mediumicons', isMask: true}],
-  ['mediumicon-payment', {position: 'c6', spritesheet: 'mediumicons', isMask: true}],
-  ['mediumicon-schedule', {position: 'd6', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-frame', {position: 'e6', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-frame-embedded', {position: 'f6', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-frame-opened', {position: 'f5', spritesheet: 'mediumicons', isMask: true}],
@@ -279,6 +280,8 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['mediumicon-arrow-left', {position: 'a2', spritesheet: 'arrowicons'}],
   ['mediumicon-arrow-right', {position: 'a1', spritesheet: 'arrowicons'}],
 
+  ['arrow-up-down', {position: 'a1', spritesheet: 'arrow-up-down', isMask: true}],
+  ['bell', {position: 'a1', spritesheet: 'bell', isMask: true}],
   ['bin', {position: 'a1', spritesheet: 'bin', isMask: true}],
   ['bottom-panel-close', {position: 'a1', spritesheet: 'bottom-panel-close', isMask: true}],
   ['bottom-panel-open', {position: 'a1', spritesheet: 'bottom-panel-open', isMask: true}],
@@ -288,6 +291,8 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['checkmark', {position: 'a1', spritesheet: 'checkmark', isMask: true}],
   ['chevron-double-right', {position: 'a1', spritesheet: 'chevron-double-right', isMask: true}],
   ['clear', {position: 'a1', spritesheet: 'clear', isMask: true}],
+  ['cloud', {position: 'a1', spritesheet: 'cloud', isMask: true}],
+  ['credit-card', {position: 'a1', spritesheet: 'credit-card', isMask: true}],
   ['cross', {position: 'a1', spritesheet: 'cross', isMask: true}],
   ['cross-circle', {position: 'a1', spritesheet: 'cross-circle', isMask: true}],
   ['database', {position: 'a1', spritesheet: 'database', isMask: true}],
@@ -319,6 +324,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['step-over', {position: 'a1', spritesheet: 'step-over', isMask: true}],
   ['step', {position: 'a1', spritesheet: 'step', isMask: true}],
   ['select-element', {position: 'a1', spritesheet: 'select-element', isMask: true}],
+  ['sync', {position: 'a1', spritesheet: 'sync', isMask: true}],
   ['table', {position: 'a1', spritesheet: 'table', isMask: true}],
   ['top-panel-close', {position: 'a1', spritesheet: 'top-panel-close', isMask: true}],
   ['top-panel-open', {position: 'a1', spritesheet: 'top-panel-open', isMask: true}],
@@ -326,6 +332,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['triangle-right', {position: 'a1', spritesheet: 'triangle-right', isMask: true}],
   ['undo', {position: 'a1', spritesheet: 'undo', isMask: true}],
   ['warning', {position: 'a1', spritesheet: 'warning', isMask: true}],
+  ['watch', {position: 'a1', spritesheet: 'watch', isMask: true}],
 ]);
 
 const descriptors = (initialDescriptors as Map<string, Descriptor>);

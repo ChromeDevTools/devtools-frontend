@@ -55,6 +55,7 @@ devtools_svg_sources = [
   "arrow-up-down.svg",
   "arrow-up.svg",
   "baseline-icon.svg",
+  "bell.svg",
   "bin.svg",
   "bottom-panel-close.svg",
   "bottom-panel-open.svg",
@@ -77,6 +78,7 @@ devtools_svg_sources = [
   "console-conditional-breakpoint.svg",
   "console-logpoint.svg",
   "copy_icon.svg",
+  "credit-card.svg",
   "cross-circle-filled.svg",
   "cross-circle.svg",
   "cross.svg",
@@ -201,6 +203,7 @@ devtools_svg_sources = [
   "step.svg",
   "survey_feedback_icon.svg",
   "switcherIcon.svg",
+  "sync.svg",
   "table.svg",
   "three_dots_menu_icon.svg",
   "top-panel-close.svg",
@@ -214,6 +217,7 @@ devtools_svg_sources = [
   "warning-filled.svg",
   "warning.svg",
   "warning_icon.svg",
+  "watch.svg",
 ]
 
 devtools_src_svg_files = []

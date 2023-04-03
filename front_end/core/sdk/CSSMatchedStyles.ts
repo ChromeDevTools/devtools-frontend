@@ -21,6 +21,19 @@ export function parseCSSVariableNameAndFallback(cssVariableValue: string): {
   return {variableName: match && match[1].trim(), fallback: match && match[2]};
 }
 
+interface CSSMatchedStylesPayload {
+  cssModel: CSSModel;
+  node: DOMNode;
+  inlinePayload: Protocol.CSS.CSSStyle|null;
+  attributesPayload: Protocol.CSS.CSSStyle|null;
+  matchedPayload: Protocol.CSS.RuleMatch[];
+  pseudoPayload: Protocol.CSS.PseudoElementMatches[];
+  inheritedPayload: Protocol.CSS.InheritedStyleEntry[];
+  inheritedPseudoPayload: Protocol.CSS.InheritedPseudoElementMatches[];
+  animationsPayload: Protocol.CSS.CSSKeyframesRule[];
+  parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
+}
+
 export class CSSMatchedStyles {
   readonly #cssModelInternal: CSSModel;
   readonly #nodeInternal: DOMNode;
@@ -35,12 +48,18 @@ export class CSSMatchedStyles {
   readonly #styleToDOMCascade: Map<CSSStyleDeclaration, DOMInheritanceCascade>;
   readonly #parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
 
-  constructor(
-      cssModel: CSSModel, node: DOMNode, inlinePayload: Protocol.CSS.CSSStyle|null,
-      attributesPayload: Protocol.CSS.CSSStyle|null, matchedPayload: Protocol.CSS.RuleMatch[],
-      pseudoPayload: Protocol.CSS.PseudoElementMatches[], inheritedPayload: Protocol.CSS.InheritedStyleEntry[],
-      inheritedPseudoPayload: Protocol.CSS.InheritedPseudoElementMatches[],
-      animationsPayload: Protocol.CSS.CSSKeyframesRule[], parentLayoutNodeId: Protocol.DOM.NodeId|undefined) {
+  constructor({
+    cssModel,
+    node,
+    inlinePayload,
+    attributesPayload,
+    matchedPayload,
+    pseudoPayload,
+    inheritedPayload,
+    inheritedPseudoPayload,
+    animationsPayload,
+    parentLayoutNodeId,
+  }: CSSMatchedStylesPayload) {
     this.#cssModelInternal = cssModel;
     this.#nodeInternal = node;
     this.#addedStyles = new Map();

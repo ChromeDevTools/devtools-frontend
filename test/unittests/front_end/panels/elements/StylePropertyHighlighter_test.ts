@@ -23,9 +23,18 @@ describeWithRealConnection('StylePropertyHighlighter', () => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, domModel.existingDocument());
     const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
     const getSectionBlockByName = sinon.stub(stylesSidebarPane, 'getSectionBlockByName');
-    const matchedStyles = new SDK.CSSMatchedStyles.CSSMatchedStyles(
-        stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel, stylesSidebarPane.node() as SDK.DOMModel.DOMNode, null,
-        null, [], [], [], [], [], undefined);
+    const matchedStyles = new SDK.CSSMatchedStyles.CSSMatchedStyles({
+      cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+      node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
+      inlinePayload: null,
+      attributesPayload: null,
+      matchedPayload: [],
+      pseudoPayload: [],
+      inheritedPayload: [],
+      inheritedPseudoPayload: [],
+      animationsPayload: [],
+      parentLayoutNodeId: undefined,
+    });
     const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
     style.leadingProperties.returns([]);
 

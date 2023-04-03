@@ -307,10 +307,18 @@ export class CSSModel extends SDKModel<EventTypes> {
       return null;
     }
 
-    return new CSSMatchedStyles(
-        this, (node as DOMNode), response.inlineStyle || null, response.attributesStyle || null,
-        response.matchedCSSRules || [], response.pseudoElements || [], response.inherited || [],
-        response.inheritedPseudoElements || [], response.cssKeyframesRules || [], response.parentLayoutNodeId);
+    return new CSSMatchedStyles({
+      cssModel: this,
+      node: (node as DOMNode),
+      inlinePayload: response.inlineStyle || null,
+      attributesPayload: response.attributesStyle || null,
+      matchedPayload: response.matchedCSSRules || [],
+      pseudoPayload: response.pseudoElements || [],
+      inheritedPayload: response.inherited || [],
+      inheritedPseudoPayload: response.inheritedPseudoElements || [],
+      animationsPayload: response.cssKeyframesRules || [],
+      parentLayoutNodeId: response.parentLayoutNodeId,
+    });
   }
 
   async getClassNames(styleSheetId: Protocol.CSS.StyleSheetId): Promise<string[]> {

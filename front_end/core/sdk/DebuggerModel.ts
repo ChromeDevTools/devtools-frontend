@@ -164,7 +164,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   #debuggerEnabledInternal: boolean;
   #debuggerId: string|null;
   #skipAllPausesTimeout: number;
-  #beforePausedCallback: ((arg0: DebuggerPausedDetails) => boolean)|null;
+  #beforePausedCallback: ((arg0: DebuggerPausedDetails, stepOver: Location|null) => Promise<boolean>)|null;
   #computeAutoStepRangesCallback: ((arg0: StepMode, arg1: CallFrame) => Promise<Array<{
                                      start: Location,
                                      end: Location,
@@ -176,7 +176,9 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
   readonly #breakpointResolvedEventTarget =
       new Common.ObjectWrapper.ObjectWrapper<{[breakpointId: string]: Location}>();
-  #autoStepOver: boolean;
+  // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted
+  // to by way of its functionLocation (as per Debugger.CallFrame).
+  #autoSteppingContext: Location|null;
   #isPausingInternal: boolean;
 
   constructor(target: Target) {
@@ -203,7 +205,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.evaluateOnCallFrameCallback = null;
     this.#synchronizeBreakpointsCallback = null;
 
-    this.#autoStepOver = false;
+    this.#autoSteppingContext = null;
 
     this.#isPausingInternal = false;
     Common.Settings.Settings.instance()
@@ -366,17 +368,16 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     const pauseOnCaughtEnabled = Common.Settings.Settings.instance().moduleSetting('pauseOnCaughtException').get();
     let state: Protocol.Debugger.SetPauseOnExceptionsRequestState;
 
-      const pauseOnUncaughtEnabled =
-          Common.Settings.Settings.instance().moduleSetting('pauseOnUncaughtException').get();
-      if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
-        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.All;
-      } else if (pauseOnCaughtEnabled) {
-        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Caught;
-      } else if (pauseOnUncaughtEnabled) {
-        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Uncaught;
-      } else {
-        state = Protocol.Debugger.SetPauseOnExceptionsRequestState.None;
-      }
+    const pauseOnUncaughtEnabled = Common.Settings.Settings.instance().moduleSetting('pauseOnUncaughtException').get();
+    if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
+      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.All;
+    } else if (pauseOnCaughtEnabled) {
+      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Caught;
+    } else if (pauseOnUncaughtEnabled) {
+      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.Uncaught;
+    } else {
+      state = Protocol.Debugger.SetPauseOnExceptionsRequestState.None;
+    }
     void this.agent.invoke_setPauseOnExceptions({state});
   }
 
@@ -419,9 +420,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   async stepOver(): Promise<void> {
-    // Mark that in case of auto-stepping, we should be doing
-    // step-over instead of step-in.
-    this.#autoStepOver = true;
+    this.#autoSteppingContext = this.#debuggerPausedDetailsInternal?.callFrames[0]?.functionLocation() ?? null;
     const skipList = await this.computeAutoStepSkipList(StepMode.StepOver);
     void this.agent.invoke_stepOver({skipList});
   }
@@ -535,7 +534,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   globalObjectCleared(): void {
-    this.setDebuggerPausedDetails(null);
+    this.resetDebuggerPausedDetails();
     this.reset();
     // TODO(dgozman): move clients to ExecutionContextDestroyed/ScriptCollected events.
     this.dispatchEventToListeners(Events.GlobalObjectCleared, this);
@@ -548,7 +547,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#scriptsInternal.clear();
     this.#scriptsBySourceURL.clear();
     this.#discardableScripts = [];
-    this.#autoStepOver = false;
+    this.#autoSteppingContext = null;
   }
 
   scripts(): Script[] {
@@ -585,29 +584,31 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return this.#debuggerPausedDetailsInternal;
   }
 
-  private setDebuggerPausedDetails(debuggerPausedDetails: DebuggerPausedDetails|null): boolean {
-    if (debuggerPausedDetails) {
-      this.#isPausingInternal = false;
-      this.#debuggerPausedDetailsInternal = debuggerPausedDetails;
-      if (this.#beforePausedCallback) {
-        if (!this.#beforePausedCallback.call(null, debuggerPausedDetails)) {
-          return false;
-        }
+  private async setDebuggerPausedDetails(debuggerPausedDetails: DebuggerPausedDetails): Promise<boolean> {
+    this.#isPausingInternal = false;
+    this.#debuggerPausedDetailsInternal = debuggerPausedDetails;
+    if (this.#beforePausedCallback) {
+      if (!await this.#beforePausedCallback.call(null, debuggerPausedDetails, this.#autoSteppingContext)) {
+        return false;
       }
-      // If we resolved a location in auto-stepping callback, reset the
-      // step-over marker.
-      this.#autoStepOver = false;
-      this.dispatchEventToListeners(Events.DebuggerPaused, this);
-      this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
-    } else {
-      this.#isPausingInternal = false;
-      this.#debuggerPausedDetailsInternal = null;
-      this.setSelectedCallFrame(null);
     }
+    // If we resolved a location in auto-stepping callback, reset the
+    // auto-step-over context.
+    this.#autoSteppingContext = null;
+    this.dispatchEventToListeners(Events.DebuggerPaused, this);
+    this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
     return true;
   }
 
-  setBeforePausedCallback(callback: ((arg0: DebuggerPausedDetails) => boolean)|null): void {
+  private resetDebuggerPausedDetails(): void {
+    this.#isPausingInternal = false;
+    this.#debuggerPausedDetailsInternal = null;
+    this.setSelectedCallFrame(null);
+  }
+
+  setBeforePausedCallback(callback:
+                              ((arg0: DebuggerPausedDetails, autoSteppingContext: Location|null) => Promise<boolean>)|
+                          null): void {
     this.#beforePausedCallback = callback;
   }
 
@@ -653,8 +654,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       }
     }
 
-    if (!this.setDebuggerPausedDetails(pausedDetails)) {
-      if (this.#autoStepOver) {
+    if (!await this.setDebuggerPausedDetails(pausedDetails)) {
+      if (this.#autoSteppingContext) {
         void this.stepOver();
       } else {
         void this.stepInto();
@@ -665,7 +666,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   resumedScript(): void {
-    this.setDebuggerPausedDetails(null);
+    this.resetDebuggerPausedDetails();
     this.dispatchEventToListeners(Events.DebuggerResumed, this);
   }
 

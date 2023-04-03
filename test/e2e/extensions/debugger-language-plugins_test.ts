@@ -14,6 +14,7 @@ import {
   getBrowserAndPages,
   getResourcesPath,
   goToResource,
+  installEventListener,
   pasteText,
   pressKey,
   typeText,
@@ -45,6 +46,9 @@ import {
   type LabelMapping,
   captureAddedSourceFiles,
   PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR,
+  stepOver,
+  retrieveTopCallFrameWithoutResuming,
+  DEBUGGER_PAUSED_EVENT,
 } from '../helpers/sources-helpers.js';
 import {expectError} from '../../conductor/events.js';
 
@@ -61,6 +65,18 @@ declare function RegisterExtension(
     pluginImpl: Partial<Chrome.DevTools.LanguageExtensionPlugin>, name: string,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     supportedScriptTypes: {language: string, symbol_types: string[]}): void;
+
+function goToWasmResource(
+    moduleName: string, options: {autoLoadModule?: boolean, runFunctionAfterLoad?: string} = {}): Promise<void> {
+  const queryParams = [`module=${moduleName}`];
+  if (!options.autoLoadModule) {
+    queryParams.push('defer=1');
+  }
+  if (options.runFunctionAfterLoad) {
+    queryParams.push(`autorun=${options.runFunctionAfterLoad}`);
+  }
+  return goToResource(`extensions/wasm_module.html?${queryParams.join('&')}`);
+}
 
 // This testcase reaches into DevTools internals to install the extension plugin. At this point, there is no sensible
 // alternative, because loading a real extension is not supported in our test setup.
@@ -86,8 +102,7 @@ describe('The Debugger Language Plugins', async () => {
       RegisterExtension(new SingleFilePlugin(), 'Single File', {language: 'WebAssembly', symbol_types: ['None']});
     });
 
-    await goToResource(
-        'extensions/wasm_module.html?module=/test/e2e/resources/extensions/global_variable.wasm&defer=1');
+    await goToWasmResource('/test/e2e/resources/extensions/global_variable.wasm');
     await openSourcesPanel();
     const capturedFileNames = await captureAddedSourceFiles(2, async () => {
       await target.evaluate('loadModule();');
@@ -136,7 +151,7 @@ describe('The Debugger Language Plugins', async () => {
     await openSourcesPanel();
     await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
 
-    await goToResource('extensions/wasm_module.html?module=unreachable.wasm&autorun=Main');
+    await goToWasmResource('unreachable.wasm', {runFunctionAfterLoad: 'Main', autoLoadModule: true});
     await waitFor('.paused-status');
 
     const pauseLocation = await locationLabels.checkLocationForLabel('PAUSED(unreachable)');
@@ -215,7 +230,7 @@ describe('The Debugger Language Plugins', async () => {
           new LocationMappingPlugin(), 'Location Mapping', {language: 'WebAssembly', symbol_types: ['None']});
     }, locationLabels.getMappingsForPlugin());
 
-    await goToResource('extensions/wasm_module.html?module=/test/e2e/resources/extensions/global_variable.wasm');
+    await goToWasmResource('/test/e2e/resources/extensions/global_variable.wasm', {autoLoadModule: true});
     await openSourcesPanel();
     await openFileInEditor('global_variable.wat');
 
@@ -1166,7 +1181,7 @@ describe('The Debugger Language Plugins', async () => {
       RegisterExtension(new WasmDataExtension(), 'Wasm Data', {language: 'WebAssembly', symbol_types: ['None']});
     });
 
-    await goToResource('extensions/wasm_module.html?module=can_access_wasm_data.wasm');
+    await goToWasmResource('can_access_wasm_data.wasm', {autoLoadModule: true});
     await openSourcesPanel();
 
     await target.evaluate(
@@ -1238,8 +1253,7 @@ describe('The Debugger Language Plugins', async () => {
           {language: 'WebAssembly', symbol_types: ['ExternalDWARF']});
     });
 
-    await goToResource(
-        'extensions/wasm_module.html?module=/test/e2e/resources/extensions/global_variable.wasm&defer=1');
+    await goToWasmResource('/test/e2e/resources/extensions/global_variable.wasm');
     await openSourcesPanel();
 
     {
@@ -1262,5 +1276,85 @@ describe('The Debugger Language Plugins', async () => {
 
       assert.deepEqual(capturedFileNames, ['/source_file.c']);
     }
+  });
+
+  it('auto-steps over unmapped code correctly', async () => {
+    const {frontend} = getBrowserAndPages();
+    const extension = await loadExtension(
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+    const locationLabels = WasmLocationLabels.load('extensions/stepping.wat', 'extensions/stepping.wasm');
+
+    await goToWasmResource('stepping.wasm', {autoLoadModule: true});
+    await openSourcesPanel();
+
+    // Do this after setting the breakpoint, otherwise the helper gets confused
+    await locationLabels.setBreakpointInWasmAndRun('FIRST_PAUSE', 'window.Module.instance.exports.Main(16)');
+    await extension.evaluate((mappings: LabelMapping[]) => {
+      // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
+      // code offset pair.
+      class LocationMappingPlugin {
+        private module: undefined|{rawModuleId: string, sourceFileURL: string} = undefined;
+
+        async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
+          if (this.module) {
+            throw new Error('Expected only one module');
+          }
+          const sourceFileURL = new URL('stepping.wat', rawModule.url || symbols).href;
+          this.module = {rawModuleId, sourceFileURL};
+          return [sourceFileURL];
+        }
+
+        async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
+          if (this.module) {
+            const {rawModuleId, sourceFileURL} = this.module;
+            if (rawModuleId === rawLocation.rawModuleId) {
+              const mapping = mappings.find(m => rawLocation.codeOffset === m.bytecode && m.label !== 'THIRD_PAUSE');
+              if (mapping) {
+                return [{rawModuleId, sourceFileURL, lineNumber: mapping.sourceLine - 1, columnNumber: -1}];
+              }
+            }
+          }
+          return [];
+        }
+
+        async sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
+            Promise<Chrome.DevTools.RawLocationRange[]> {
+          if (this.module) {
+            const {rawModuleId, sourceFileURL} = this.module;
+            if (rawModuleId === sourceLocation.rawModuleId && sourceFileURL === sourceLocation.sourceFileURL) {
+              const mapping = mappings.find(m => sourceLocation.lineNumber === m.sourceLine - 1);
+              if (mapping) {
+                return [{rawModuleId, startOffset: mapping.bytecode, endOffset: mapping.bytecode + 1}];
+              }
+            }
+          }
+          return [];
+        }
+
+        async getMappedLines(rawModuleIdArg: string, sourceFileURLArg: string) {
+          if (this.module) {
+            const {rawModuleId, sourceFileURL} = this.module;
+            if (rawModuleId === rawModuleIdArg && sourceFileURL === sourceFileURLArg) {
+              return Array.from(new Set(mappings.map(m => m.sourceLine - 1)).values()).sort();
+            }
+          }
+          return undefined;
+        }
+      }
+
+      RegisterExtension(
+          new LocationMappingPlugin(), 'Location Mapping', {language: 'WebAssembly', symbol_types: ['None']});
+    }, locationLabels.getMappingsForPlugin());
+
+    await waitFor('.paused-status');
+    await locationLabels.checkLocationForLabel('FIRST_PAUSE');
+    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+    await stepOver();
+    await locationLabels.checkLocationForLabel('SECOND_PAUSE');
+    await stepOver();
+    const pausedLocation = await locationLabels.checkLocationForLabel('THIRD_PAUSE');
+    // We're paused at the right location, but let's also check that we're paused in wasm, not the source code:
+    const pausedFrame = await retrieveTopCallFrameWithoutResuming();
+    assert.deepEqual(pausedFrame, `stepping.wasm:0x${pausedLocation.moduleOffset.toString(16)}`);
   });
 });

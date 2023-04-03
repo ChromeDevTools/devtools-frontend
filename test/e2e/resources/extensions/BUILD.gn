@@ -19,6 +19,7 @@ if (!build_with_chromium) {
     sources = [
       "can_access_wasm_data.wat",
       "global_variable.wat",
+      "stepping.wat",
       "unreachable.wat",
     ]
   }

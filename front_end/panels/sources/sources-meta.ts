@@ -348,6 +348,19 @@ const UIStrings = {
    */
   disallowScrollingPastEndOfFile: 'Disallow scrolling past end of file',
   /**
+   *@description Title of a setting under the Sources category in Settings
+   */
+  wasmAutoStepping: 'When debugging wasm with debug information, do not pause on wasm bytecode if possible',
+  /**
+   *@description Title of a setting under the Sources category in Settings
+   */
+  enableWasmAutoStepping: 'Enable wasm auto-stepping',
+  /**
+   *@description Title of a setting under the Sources category in Settings
+   */
+  disableWasmAutoStepping: 'Disable wasm auto-stepping',
+
+  /**
    *@description Text for command prefix of go to a given line or symbol
    */
   goTo: 'Go to',
@@ -1652,6 +1665,25 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.disallowScrollingPastEndOfFile),
+    },
+  ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.SOURCES,
+  storageType: Common.Settings.SettingStorageType.Local,
+  title: i18nLazyString(UIStrings.wasmAutoStepping),
+  settingName: 'wasmAutoStepping',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.enableWasmAutoStepping),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.disableWasmAutoStepping),
     },
   ],
 });

@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import {CompilerScriptMapping} from './CompilerScriptMapping.js';
 import {DebuggerLanguagePluginManager} from './DebuggerLanguagePlugins.js';
@@ -159,6 +160,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   }
 
   modelAdded(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
+    debuggerModel.setBeforePausedCallback(this.shouldPause.bind(this));
     this.#debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this));
     debuggerModel.setComputeAutoStepRangesCallback(this.computeAutoStepRanges.bind(this));
   }
@@ -488,6 +490,30 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   private debuggerResumed(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {
     this.reset(event.data);
   }
+
+  private async shouldPause(
+      debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails,
+      autoSteppingContext: SDK.DebuggerModel.Location|null): Promise<boolean> {
+    // This function returns false if the debugger should continue stepping
+    const {callFrames: [frame]} = debuggerPausedDetails;
+    if (!frame) {
+      return false;
+    }
+    const functionLocation = frame.functionLocation();
+    if (!autoSteppingContext || debuggerPausedDetails.reason !== Protocol.Debugger.PausedEventReason.Step ||
+        !functionLocation || !this.pluginManager || !frame.script.isWasm() ||
+        !Common.Settings.moduleSetting('wasmAutoStepping').get()) {
+      return true;
+    }
+    const uiLocation = await this.pluginManager.rawLocationToUILocation(frame.location());
+    if (uiLocation) {
+      return true;
+    }
+
+    return autoSteppingContext.script() !== functionLocation.script() ||
+        autoSteppingContext.columnNumber !== functionLocation.columnNumber ||
+        autoSteppingContext.lineNumber !== functionLocation.lineNumber;
+  }
 }
 
 class ModelData {
@@ -513,8 +539,6 @@ class ModelData {
     this.compilerMapping = new CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
     this.#locations = new Platform.MapUtilities.Multimap();
-
-    debuggerModel.setBeforePausedCallback(this.beforePaused.bind(this));
   }
 
   async createLiveLocation(
@@ -589,10 +613,6 @@ class ModelData {
     // and there's currently no way to inform the UI to update.
     // mappedLines = mappedLines ?? this.#resourceMapping.getMappedLines(uiSourceCode);
     return mappedLines;
-  }
-
-  private beforePaused(debuggerPausedDetails: SDK.DebuggerModel.DebuggerPausedDetails): boolean {
-    return Boolean(debuggerPausedDetails.callFrames[0]);
   }
 
   dispose(): void {

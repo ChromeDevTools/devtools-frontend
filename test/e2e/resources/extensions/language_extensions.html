@@ -144,6 +144,20 @@ class ExtensionPluginBase {
     }
     return Promise.resolve();
   }
+
+  getInlinedCalleesRanges(location) {
+    if (this._impl.getInlinedCalleesRanges) {
+      return this._impl.getInlinedCalleesRanges(location);
+    }
+    return Promise.resolve([]);
+  }
+
+  getInlinedFunctionRanges(location) {
+    if (this._impl.getInlinedFunctionRanges) {
+      return this._impl.getInlinedCalleesRanges(location);
+    }
+    return Promise.resolve([]);
+  }
 }
 
 /**

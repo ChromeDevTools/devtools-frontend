@@ -546,6 +546,14 @@ export async function stepIn() {
   await waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
+export async function stepOver() {
+  const {frontend} = getBrowserAndPages();
+  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
+  await frontend.keyboard.press('F10');
+  await waitForFunction(() => hasPausedEvents(frontend));
+  await waitFor(PAUSE_INDICATOR_SELECTOR);
+}
+
 export async function stepOut() {
   const {frontend} = getBrowserAndPages();
   await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
@@ -689,6 +697,7 @@ export async function enableLocalOverrides() {
 }
 
 export type LabelMapping = {
+  label: string,
   moduleOffset: number,
   bytecode: number,
   sourceLine: number,
@@ -738,7 +747,14 @@ export class WasmLocationLabels {
       const labelColumn = m.originalColumn as number;
       const sourceLine = labels.get(`${m.source}:${labelLine}:${labelColumn}`);
       assertNotNullOrUndefined(sourceLine);
-      entry.push({moduleOffset: m.generatedColumn, bytecode: m.bytecodeOffset, sourceLine, labelLine, labelColumn});
+      entry.push({
+        label: m.source,
+        moduleOffset: m.generatedColumn,
+        bytecode: m.bytecodeOffset,
+        sourceLine,
+        labelLine,
+        labelColumn,
+      });
     }
     return new WasmLocationLabels(source, wasm, mappings);
   }

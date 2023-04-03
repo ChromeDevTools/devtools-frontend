@@ -77,23 +77,22 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
       regex: undefined,
     }];
     this.appendGroup(
-        GroupName.All, [], ConsoleFilter.allLevelsFilterValue(), UI.Icon.Icon.create('mediumicon-list'),
-        selectedFilterSetting);
+        GroupName.All, [], ConsoleFilter.allLevelsFilterValue(), UI.Icon.Icon.create('list'), selectedFilterSetting);
     this.appendGroup(
         GroupName.ConsoleAPI, consoleAPIParsedFilters, ConsoleFilter.allLevelsFilterValue(),
-        UI.Icon.Icon.create('mediumicon-account-circle'), selectedFilterSetting);
+        UI.Icon.Icon.create('profile'), selectedFilterSetting);
     this.appendGroup(
         GroupName.Error, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Error),
-        UI.Icon.Icon.create('mediumicon-error-circle'), selectedFilterSetting);
+        UI.Icon.Icon.create('cross-circle'), selectedFilterSetting);
     this.appendGroup(
         GroupName.Warning, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Warning),
-        UI.Icon.Icon.create('mediumicon-warning-triangle'), selectedFilterSetting);
+        UI.Icon.Icon.create('warning'), selectedFilterSetting);
     this.appendGroup(
-        GroupName.Info, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Info),
-        UI.Icon.Icon.create('mediumicon-info-circle'), selectedFilterSetting);
+        GroupName.Info, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Info), UI.Icon.Icon.create('info'),
+        selectedFilterSetting);
     this.appendGroup(
         GroupName.Verbose, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Verbose),
-        UI.Icon.Icon.create('mediumicon-bug'), selectedFilterSetting);
+        UI.Icon.Icon.create('bug'), selectedFilterSetting);
     const selectedTreeElementName = selectedFilterSetting.get();
     const defaultTreeElement =
         this.treeElements.find(x => x.name() === selectedTreeElementName) || this.treeElements[0];
@@ -167,7 +166,7 @@ export class URLGroupTreeElement extends ConsoleSidebarTreeElement {
   constructor(filter: ConsoleFilter) {
     super(filter.name, filter);
     this.countElement = this.listItemElement.createChild('span', 'count');
-    const leadingIcons = [UI.Icon.Icon.create('largeicon-navigator-file')];
+    const leadingIcons = [UI.Icon.Icon.create('document')];
     this.setLeadingIcons(leadingIcons);
     this.messageCount = 0;
   }

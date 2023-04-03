@@ -47,6 +47,18 @@ li .largeicon-navigator-folder {
   background-color: var(--item-hover-color);
 }
 
+[is="ui-icon"].cross-circle {
+  background-color: var(--icon-error);
+}
+
+[is="ui-icon"].warning {
+  background-color: var(--icon-warning);
+}
+
+[is="ui-icon"].info {
+  background-color: var(--icon-info);
+}
+
 @media (forced-colors: active) {
   [is="ui-icon"].icon-mask {
     background-color: ButtonText;

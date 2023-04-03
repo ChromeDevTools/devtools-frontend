@@ -400,9 +400,10 @@ export class BreakpointsView extends HTMLElement {
     // clang-format on
   }
 
-  #renderRemoveBreakpointButton(breakpointItems: BreakpointItem[], tooltipText: string): LitHtml.TemplateResult {
+  #renderRemoveBreakpointButton(
+      breakpointItems: BreakpointItem[], tooltipText: string, action: Host.UserMetrics.Action): LitHtml.TemplateResult {
     const clickHandler = (event: Event): void => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromRemoveButton);
+      Host.userMetrics.actionTaken(action);
       this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
       event.consume();
     };
@@ -426,11 +427,13 @@ export class BreakpointsView extends HTMLElement {
     const menu = new UI.ContextMenu.ContextMenu(event);
 
     menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpointsInFile), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileRemovedFromContextMenu);
       this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
     });
     const notDisabledItems =
         breakpointItems.filter(breakpointItem => breakpointItem.status !== BreakpointStatus.DISABLED);
     menu.defaultSection().appendItem(i18nString(UIStrings.disableAllBreakpointsInFile), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
       for (const breakpointItem of notDisabledItems) {
         this.dispatchEvent(new CheckboxToggledEvent(breakpointItem, false));
       }
@@ -438,6 +441,7 @@ export class BreakpointsView extends HTMLElement {
     const notEnabledItems =
         breakpointItems.filter(breakpointItem => breakpointItem.status !== BreakpointStatus.ENABLED);
     menu.defaultSection().appendItem(i18nString(UIStrings.enableAllBreakpointsInFile), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
       for (const breakpointItem of notEnabledItems) {
         this.dispatchEvent(new CheckboxToggledEvent(breakpointItem, true));
       }
@@ -493,7 +497,7 @@ export class BreakpointsView extends HTMLElement {
                    @click=${clickHandler}>
             <span class='group-header' aria-hidden=true><span class='group-icon-or-disable'>${this.#renderFileIcon()}${this.#renderGroupCheckbox(group)}</span><span class='group-header-title' title='${group.url}'>${group.name}<span class='group-header-differentiator'>${this.#urlToDifferentiatingPath.get(group.url)}</span></span></span>
             <span class='group-hover-actions'>
-              ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile))}
+              ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile), Host.UserMetrics.Action.BreakpointsInFileRemovedFromRemoveButton)}
             </span>
           </summary>
         ${LitHtml.Directives.repeat(
@@ -507,10 +511,10 @@ export class BreakpointsView extends HTMLElement {
 
   #renderGroupCheckbox(group: BreakpointGroup): LitHtml.TemplateResult {
     const groupCheckboxToggled = (e: Event): void => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileCheckboxToggled);
       const element = e.target as HTMLInputElement;
       const updatedStatus = element.checked ? BreakpointStatus.ENABLED : BreakpointStatus.DISABLED;
       const itemsToUpdate = group.breakpointItems.filter(item => item.status !== updatedStatus);
-
       itemsToUpdate.forEach(item => {
         this.dispatchEvent(new CheckboxToggledEvent(item, element.checked));
       });
@@ -542,6 +546,7 @@ export class BreakpointsView extends HTMLElement {
         i18nString(UIStrings.editCondition);
 
     menu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromContextMenu);
       this.dispatchEvent(new BreakpointsRemovedEvent([breakpointItem]));
     });
     menu.defaultSection().appendItem(editBreakpointText, () => {
@@ -616,7 +621,7 @@ export class BreakpointsView extends HTMLElement {
       <span class='code-snippet' @click=${codeSnippetClickHandler} title=${codeSnippetTooltip}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
         ${editable ? this.#renderEditBreakpointButton(breakpointItem) : LitHtml.nothing}
-        ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint))}
+        ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint), Host.UserMetrics.Action.BreakpointRemovedFromRemoveButton)}
         <span class='location'>${breakpointItem.location}</span>
       </span>
     </div>

@@ -427,7 +427,12 @@ export enum Action {
   HeaderOverrideHeadersFileEdited = 65,
   PersistenceNetworkOverridesEnabled = 66,
   PersistenceNetworkOverridesDisabled = 67,
-  MaxValue = 68,
+  BreakpointRemovedFromContextMenu = 68,
+  BreakpointsInFileRemovedFromRemoveButton = 69,
+  BreakpointsInFileRemovedFromContextMenu = 70,
+  BreakpointsInFileCheckboxToggled = 71,
+  BreakpointsInFileEnabledDisabledFromContextMenu = 72,
+  MaxValue = 73,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

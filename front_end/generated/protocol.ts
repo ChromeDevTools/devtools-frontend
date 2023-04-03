@@ -2402,6 +2402,36 @@ export namespace CSS {
   }
 
   /**
+   * CSS try rule representation.
+   */
+  export interface CSSTryRule {
+    /**
+     * The css style sheet identifier (absent for user agent stylesheet and user-specified
+     * stylesheet rules) this rule came from.
+     */
+    styleSheetId?: StyleSheetId;
+    /**
+     * Parent stylesheet's origin.
+     */
+    origin: StyleSheetOrigin;
+    /**
+     * Associated style declaration.
+     */
+    style?: CSSStyle;
+  }
+
+  /**
+   * CSS position-fallback rule representation.
+   */
+  export interface CSSPositionFallbackRule {
+    name: Value;
+    /**
+     * List of keyframes.
+     */
+    tryRules: CSSTryRule[];
+  }
+
+  /**
    * CSS keyframes rule representation.
    */
   export interface CSSKeyframesRule {
@@ -2600,6 +2630,10 @@ export namespace CSS {
      * A list of CSS keyframed animations matching this node.
      */
     cssKeyframesRules?: CSSKeyframesRule[];
+    /**
+     * A list of CSS position fallbacks matching this node.
+     */
+    cssPositionFallbackRules?: CSSPositionFallbackRule[];
     /**
      * Id of the first parent element that does not have display: contents.
      */

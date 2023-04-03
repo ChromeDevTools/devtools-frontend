@@ -128,7 +128,7 @@ inspectorBackend.registerCommand("CSS.forcePseudoState", [{"name": "nodeId", "ty
 inspectorBackend.registerCommand("CSS.getBackgroundColors", [{"name": "nodeId", "type": "number", "optional": false}], ["backgroundColors", "computedFontSize", "computedFontWeight"]);
 inspectorBackend.registerCommand("CSS.getComputedStyleForNode", [{"name": "nodeId", "type": "number", "optional": false}], ["computedStyle"]);
 inspectorBackend.registerCommand("CSS.getInlineStylesForNode", [{"name": "nodeId", "type": "number", "optional": false}], ["inlineStyle", "attributesStyle"]);
-inspectorBackend.registerCommand("CSS.getMatchedStylesForNode", [{"name": "nodeId", "type": "number", "optional": false}], ["inlineStyle", "attributesStyle", "matchedCSSRules", "pseudoElements", "inherited", "inheritedPseudoElements", "cssKeyframesRules", "parentLayoutNodeId"]);
+inspectorBackend.registerCommand("CSS.getMatchedStylesForNode", [{"name": "nodeId", "type": "number", "optional": false}], ["inlineStyle", "attributesStyle", "matchedCSSRules", "pseudoElements", "inherited", "inheritedPseudoElements", "cssKeyframesRules", "cssPositionFallbackRules", "parentLayoutNodeId"]);
 inspectorBackend.registerCommand("CSS.getMediaQueries", [], ["medias"]);
 inspectorBackend.registerCommand("CSS.getPlatformFontsForNode", [{"name": "nodeId", "type": "number", "optional": false}], ["fonts"]);
 inspectorBackend.registerCommand("CSS.getStyleSheetText", [{"name": "styleSheetId", "type": "string", "optional": false}], ["text"]);

@@ -716,6 +716,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-pause);
 }
 
+.spritesheet-play.icon-mask {
+  -webkit-mask-image: var(--image-file-play);
+}
+
 .spritesheet-popup.icon-mask {
   -webkit-mask-image: var(--image-file-popup);
 }

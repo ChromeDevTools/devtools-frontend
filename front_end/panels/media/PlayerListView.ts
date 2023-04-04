@@ -79,7 +79,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     element.addEventListener('click', this.selectPlayer.bind(this, playerID, element));
     element.addEventListener('contextmenu', this.rightClickPlayer.bind(this, playerID));
 
-    entry.$('icon').appendChild(UI.Icon.Icon.create('largeicon-pause-animation', 'media-player'));
+    entry.$('icon').appendChild(UI.Icon.Icon.create('pause', 'media-player'));
     return entry;
   }
 
@@ -201,17 +201,17 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     }
 
     if (eventType === 'kPlay') {
-      this.setMediaElementPlayerIcon(playerID, 'largeicon-play-animation');
+      this.setMediaElementPlayerIcon(playerID, 'play');
       return;
     }
 
     if (eventType === 'kPause' || eventType === 'kEnded') {
-      this.setMediaElementPlayerIcon(playerID, 'largeicon-pause-animation');
+      this.setMediaElementPlayerIcon(playerID, 'pause');
       return;
     }
 
     if (eventType === 'kWebMediaPlayerDestroyed') {
-      this.setMediaElementPlayerIcon(playerID, 'smallicon-videoplayer-destroyed');
+      this.setMediaElementPlayerIcon(playerID, 'cross');
       return;
     }
   }

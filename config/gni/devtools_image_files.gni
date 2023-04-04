@@ -186,6 +186,7 @@ devtools_svg_sources = [
   "open-externally.svg",
   "pause.svg",
   "play.svg",
+  "plus.svg",
   "plus_icon.svg",
   "popup.svg",
   "preview_feature_video_thumbnail.svg",

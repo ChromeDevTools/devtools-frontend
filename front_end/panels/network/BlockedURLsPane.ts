@@ -16,11 +16,11 @@ const UIStrings = {
    */
   enableNetworkRequestBlocking: 'Enable network request blocking',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon add button in the Blocked URLs Pane of the Network panel
+   *@description Tooltip text that appears when hovering over the plus button in the Blocked URLs Pane of the Network panel
    */
   addPattern: 'Add pattern',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon clear button in the Blocked URLs Pane of the Network panel
+   *@description Tooltip text that appears when hovering over the clear button in the Blocked URLs Pane of the Network panel
    */
   removeAllPatterns: 'Remove all patterns',
   /**
@@ -81,10 +81,10 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
         i18nString(UIStrings.enableNetworkRequestBlocking), undefined, this.toggleEnabled.bind(this));
     this.toolbar.appendToolbarItem(this.enabledCheckbox);
     this.toolbar.appendSeparator();
-    const addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addPattern), 'largeicon-add');
+    const addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addPattern), 'plus');
     addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.addButtonClicked, this);
     this.toolbar.appendToolbarItem(addButton);
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.removeAllPatterns), 'largeicon-clear');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.removeAllPatterns), 'clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.removeAll, this);
     this.toolbar.appendToolbarItem(clearButton);
 

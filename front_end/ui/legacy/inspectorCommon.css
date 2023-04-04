@@ -720,6 +720,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-play);
 }
 
+.spritesheet-plus.icon-mask {
+  -webkit-mask-image: var(--image-file-plus);
+}
+
 .spritesheet-popup.icon-mask {
   -webkit-mask-image: var(--image-file-popup);
 }

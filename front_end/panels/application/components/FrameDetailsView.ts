@@ -437,7 +437,7 @@ export class FrameDetailsReportView extends HTMLElement {
     }
     const sourceCode = this.#uiSourceCodeForFrame(this.#frame);
     return renderIconLink(
-        'sources_panel_icon',
+        'breakpoint-circle',
         i18nString(UIStrings.clickToRevealInSourcesPanel),
         (): Promise<void> => Common.Revealer.reveal(sourceCode),
     );
@@ -449,7 +449,7 @@ export class FrameDetailsReportView extends HTMLElement {
       if (resource && resource.request) {
         const request = resource.request;
         return renderIconLink(
-            'network_panel_icon', i18nString(UIStrings.clickToRevealInNetworkPanel), (): Promise<void> => {
+            'arrow-up-down-circle', i18nString(UIStrings.clickToRevealInNetworkPanel), (): Promise<void> => {
               const headersTab = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES) ?
                   NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent :
                   NetworkForward.UIRequestLocation.UIRequestTabs.Headers;
@@ -495,7 +495,7 @@ export class FrameDetailsReportView extends HTMLElement {
       const unreachableUrl = Common.ParsedURL.ParsedURL.fromString(this.#frame.unreachableUrl());
       if (unreachableUrl) {
         return renderIconLink(
-            'network_panel_icon',
+            'arrow-up-down-circle',
             i18nString(UIStrings.clickToRevealInNetworkPanelMight),
             ():
                 void => {
@@ -536,21 +536,31 @@ export class FrameDetailsReportView extends HTMLElement {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         return LitHtml.html`
-            <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.ownerElement)}</${ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.ownerElement)}</${ReportView.ReportView.ReportKey.litTagName}>
           <${ReportView.ReportView.ReportValue.litTagName} class="without-min-width">
-              <button class="link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
-              @mouseenter=${(): Promise<void>|undefined => this.#frame?.highlight()}
-              @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
-              @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
-            >
-              <${IconButton.Icon.Icon.litTagName} class="button-icon-with-text" .data=${{
-                iconName: 'code',
-                color: 'var(--icon-link)',
-                width: '20px',
-                height: '20px',
-              } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
-              &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
-            </button>
+            <div class="inline-items">
+              <button class="link" role="link" tabindex=0
+                @mouseenter=${(): Promise<void>|undefined => this.#frame?.highlight()}
+                @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+                @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
+                title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
+              >
+                <${IconButton.Icon.Icon.litTagName} .data=${{
+                  iconName: 'code-circle',
+                  color: 'var(--icon-link)',
+                  width: '20px',
+                  height: '20px',
+                } as IconButton.Icon.IconData}>
+                </${IconButton.Icon.Icon.litTagName}>
+              </button>
+              <button class="link text-link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
+                @mouseenter=${(): Promise<void>|undefined => this.#frame?.highlight()}
+                @mouseleave=${(): void => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+                @click=${(): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)}
+              >
+                &lt;${linkTargetDOMNode.nodeName().toLocaleLowerCase()}&gt;
+              </button>
+            </div>
           </${ReportView.ReportView.ReportValue.litTagName}>
         `;
         // clang-format on

@@ -60,6 +60,7 @@ devtools_svg_sources = [
   "bin.svg",
   "bottom-panel-close.svg",
   "bottom-panel-open.svg",
+  "breakpoint-circle.svg",
   "breakpoint-crossed-filled.svg",
   "breakpoint-crossed.svg",
   "bug.svg",

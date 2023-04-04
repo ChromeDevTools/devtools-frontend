@@ -68,8 +68,8 @@ export interface PermissionsPolicySectionData {
 }
 
 export function renderIconLink(
-    iconName: string, title: Platform.UIString.LocalizedString, clickHandler: (() => void)|(() => Promise<void>),
-    size: number = 16): LitHtml.TemplateResult {
+    iconName: string, title: Platform.UIString.LocalizedString,
+    clickHandler: (() => void)|(() => Promise<void>)): LitHtml.TemplateResult {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
   return LitHtml.html`
@@ -77,8 +77,8 @@ export function renderIconLink(
       <${IconButton.Icon.Icon.litTagName} .data=${{
         iconName: iconName,
         color: 'var(--icon-link)',
-        width: `${size}px`,
-        height: `${size}px`,
+        width: '20px',
+        height: '20px',
       } as IconButton.Icon.IconData}>
       </${IconButton.Icon.Icon.litTagName}>
     </button>
@@ -181,8 +181,8 @@ export class PermissionsPolicySection extends HTMLElement {
             <${IconButton.Icon.Icon.litTagName} class="allowed-icon"
               .data=${{
                 color: 'var(--icon-error)',
-                iconName: 'cross-circle-filled',
-                width: '16px', height: '16px',
+                iconName: 'cross-circle',
+                width: '20px', height: '20px',
               } as IconButton.Icon.IconData}>
             </${IconButton.Icon.Icon.litTagName}>
           </div>
@@ -194,7 +194,7 @@ export class PermissionsPolicySection extends HTMLElement {
             ${
           linkTargetDOMNode ? renderIconLink(
                                   'code-circle', i18nString(UIStrings.clickToShowIframe),
-                                  (): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode), 20) :
+                                  (): Promise<void> => Common.Revealer.reveal(linkTargetDOMNode)) :
                               LitHtml.nothing}
             ${
           linkTargetRequest ? renderIconLink(

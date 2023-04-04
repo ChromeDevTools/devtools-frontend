@@ -32,7 +32,12 @@ button.link {
 }
 
 button.link:has(devtools-icon) {
-  margin: 5px 1px 0;
+  margin-top: 3px;
+}
+
+button.text-link {
+  padding-left: 2px;
+  height: 26px;
 }
 
 .inline-button {
@@ -71,10 +76,6 @@ button.link:has(devtools-icon) {
   grid-column-start: span 2;
   margin: 0 0 8px 30px;
   line-height: 28px;
-}
-
-.button-icon-with-text {
-  vertical-align: sub;
 }
 
 .without-min-width {

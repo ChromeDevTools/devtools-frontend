@@ -2417,7 +2417,7 @@ export namespace CSS {
     /**
      * Associated style declaration.
      */
-    style?: CSSStyle;
+    style: CSSStyle;
   }
 
   /**

@@ -207,7 +207,7 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-glyph {
-  background-color: var(--color-primary-old);
+  background-color: var(--icon-toggled);
 }
 
 .toolbar-button.toolbar-state-on .toolbar-icon {

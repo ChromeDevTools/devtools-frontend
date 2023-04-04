@@ -62,18 +62,18 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
 
     this.modeButtons = {};
     if (!disableRotate) {
-      const panModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.panModeX), 'largeicon-pan');
+      const panModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.panModeX), '3d-pan');
       panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.setMode.bind(this, Modes.Pan));
       this.modeButtons[Modes.Pan] = panModeButton;
       this.controlPanelToolbar.appendToolbarItem(panModeButton);
-      const rotateModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.rotateModeV), 'largeicon-rotate');
+      const rotateModeButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.rotateModeV), '3d-rotate');
       rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.setMode.bind(this, Modes.Rotate));
       this.modeButtons[Modes.Rotate] = rotateModeButton;
       this.controlPanelToolbar.appendToolbarItem(rotateModeButton);
     }
     this.setMode(Modes.Pan);
 
-    const resetButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resetTransform), 'largeicon-center');
+    const resetButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resetTransform), '3d-center');
     resetButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.resetAndNotify.bind(this, undefined));
     this.controlPanelToolbar.appendToolbarItem(resetButton);
 

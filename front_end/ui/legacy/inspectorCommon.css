@@ -544,6 +544,18 @@ span[is="dt-icon-label"] {
   background-image: var(--image-file-popoverArrows);
 }
 
+.spritesheet-3d-center.icon-mask {
+  -webkit-mask-image: var(--image-file-3d-center);
+}
+
+.spritesheet-3d-pan.icon-mask {
+  -webkit-mask-image: var(--image-file-3d-pan);
+}
+
+.spritesheet-3d-rotate.icon-mask {
+  -webkit-mask-image: var(--image-file-3d-rotate);
+}
+
 .spritesheet-arrow-up-down.icon-mask {
   -webkit-mask-image: var(--image-file-arrow-up-down);
 }

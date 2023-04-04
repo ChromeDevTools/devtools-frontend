@@ -29,6 +29,9 @@ devtools_image_files = [
 ]
 
 devtools_svg_sources = [
+  "3d-center.svg",
+  "3d-pan.svg",
+  "3d-rotate.svg",
   "accelerometer-back.svg",
   "accelerometer-front.svg",
   "accessibility-icon.svg",

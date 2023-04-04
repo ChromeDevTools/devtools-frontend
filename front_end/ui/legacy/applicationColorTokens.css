@@ -34,6 +34,7 @@
   --icon-security-lock: var(--color-tertiary);
   --icon-status-code-ok: var(--color-tertiary);
   --icon-stop: var(--color-error);
+  --icon-toggled: var(--color-primary-bright);
   --icon-warning: var(--color-orange-bright);
   --icon-request: var(--color-on-surface-variant);
 }

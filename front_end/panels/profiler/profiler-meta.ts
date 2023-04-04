@@ -120,7 +120,7 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'live-heap-profile.start-with-reload',
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_REFRESH,
+  iconClass: UI.ActionRegistration.IconClass.REFRESH,
   async loadActionDelegate() {
     const Profiler = await loadProfilerModule();
     return Profiler.LiveHeapProfileView.ActionDelegate.instance();

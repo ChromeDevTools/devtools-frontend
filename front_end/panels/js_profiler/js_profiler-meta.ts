@@ -196,7 +196,7 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.record-reload',
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_REFRESH,
+  iconClass: UI.ActionRegistration.IconClass.REFRESH,
   contextTypes() {
     return maybeRetrieveTimelineContextTypes(Timeline => [Timeline.TimelinePanel.TimelinePanel]);
   },

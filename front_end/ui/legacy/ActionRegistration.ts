@@ -226,7 +226,7 @@ export const enum IconClass {
   LARGEICON_NODE_SEARCH = 'select-element',
   START_RECORDING = 'record-start',
   STOP_RECORDING = 'record-stop',
-  LARGEICON_REFRESH = 'largeicon-refresh',
+  REFRESH = 'refresh',
   CLEAR = 'clear',
   EYE = 'eye',
   LARGEICON_PHONE = 'devices',

@@ -39,7 +39,7 @@ SDK.CPUThrottlingManager.CPUThrottlingManager.instance().setHardwareConcurrency(
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.record-reload',
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_REFRESH,
+  iconClass: UI.ActionRegistration.IconClass.REFRESH,
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   contextTypes() {
     return [Timeline.TimelinePanel.TimelinePanel];

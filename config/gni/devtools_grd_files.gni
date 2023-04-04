@@ -187,6 +187,7 @@ grd_files_release_sources = [
   "front_end/Images/profile.svg",
   "front_end/Images/record-start.svg",
   "front_end/Images/record-stop.svg",
+  "front_end/Images/refresh.svg",
   "front_end/Images/refresh_12x12_icon.svg",
   "front_end/Images/resizeDiagonal.svg",
   "front_end/Images/resizeHorizontal.svg",

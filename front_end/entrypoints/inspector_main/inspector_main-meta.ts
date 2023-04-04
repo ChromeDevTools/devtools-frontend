@@ -146,7 +146,7 @@ UI.ActionRegistration.registerActionExtension({
     const InspectorMain = await loadInspectorMainModule();
     return InspectorMain.InspectorMain.ReloadActionDelegate.instance();
   },
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_REFRESH,
+  iconClass: UI.ActionRegistration.IconClass.REFRESH,
   title: i18nLazyString(UIStrings.reloadPage),
   bindings: [
     {

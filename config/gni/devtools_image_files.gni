@@ -190,6 +190,7 @@ devtools_svg_sources = [
   "profile.svg",
   "record-start.svg",
   "record-stop.svg",
+  "refresh.svg",
   "refresh_12x12_icon.svg",
   "resizeDiagonal.svg",
   "resizeHorizontal.svg",

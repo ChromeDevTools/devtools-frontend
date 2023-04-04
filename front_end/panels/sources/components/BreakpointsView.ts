@@ -430,31 +430,32 @@ export class BreakpointsView extends HTMLElement {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileRemovedFromContextMenu);
       this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
     });
-    const notDisabledItems =
-        breakpointItems.filter(breakpointItem => breakpointItem.status !== BreakpointStatus.DISABLED);
-    menu.defaultSection().appendItem(i18nString(UIStrings.disableAllBreakpointsInFile), () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
-      for (const breakpointItem of notDisabledItems) {
-        this.dispatchEvent(new CheckboxToggledEvent(breakpointItem, false));
-      }
-    }, notDisabledItems.length === 0);
-    const notEnabledItems =
-        breakpointItems.filter(breakpointItem => breakpointItem.status !== BreakpointStatus.ENABLED);
-    menu.defaultSection().appendItem(i18nString(UIStrings.enableAllBreakpointsInFile), () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
-      for (const breakpointItem of notEnabledItems) {
-        this.dispatchEvent(new CheckboxToggledEvent(breakpointItem, true));
-      }
-    }, notEnabledItems.length === 0);
-    menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
-      const breakpointItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
-      this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
-    });
     const otherGroups = this.#breakpointGroups.filter(group => group !== breakpointGroup);
     menu.defaultSection().appendItem(i18nString(UIStrings.removeOtherBreakpoints), () => {
       const breakpointItems = otherGroups.map(({breakpointItems}) => breakpointItems).flat();
       this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
     }, otherGroups.length === 0);
+    menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
+      const breakpointItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
+      this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
+    });
+
+    const notEnabledItems =
+        breakpointItems.filter(breakpointItem => breakpointItem.status !== BreakpointStatus.ENABLED);
+    menu.debugSection().appendItem(i18nString(UIStrings.enableAllBreakpointsInFile), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
+      for (const breakpointItem of notEnabledItems) {
+        this.dispatchEvent(new CheckboxToggledEvent(breakpointItem, true));
+      }
+    }, notEnabledItems.length === 0);
+    const notDisabledItems =
+        breakpointItems.filter(breakpointItem => breakpointItem.status !== BreakpointStatus.DISABLED);
+    menu.debugSection().appendItem(i18nString(UIStrings.disableAllBreakpointsInFile), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
+      for (const breakpointItem of notDisabledItems) {
+        this.dispatchEvent(new CheckboxToggledEvent(breakpointItem, false));
+      }
+    }, notDisabledItems.length === 0);
 
     void menu.show();
   }
@@ -544,22 +545,15 @@ export class BreakpointsView extends HTMLElement {
     const editBreakpointText = breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT ?
         i18nString(UIStrings.editLogpoint) :
         i18nString(UIStrings.editCondition);
-
-    menu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromContextMenu);
-      this.dispatchEvent(new BreakpointsRemovedEvent([breakpointItem]));
-    });
-    menu.defaultSection().appendItem(editBreakpointText, () => {
+    menu.revealSection().appendItem(editBreakpointText, () => {
       Host.userMetrics.breakpointEditDialogRevealedFrom(
           Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointSidebarContextMenu);
       this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
     }, !editable);
-    menu.defaultSection().appendItem(i18nString(UIStrings.revealLocation), () => {
-      this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));
-    });
-    menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
-      const breakpointItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
-      this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
+
+    menu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromContextMenu);
+      this.dispatchEvent(new BreakpointsRemovedEvent([breakpointItem]));
     });
     const otherItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems)
                            .flat()
@@ -567,6 +561,14 @@ export class BreakpointsView extends HTMLElement {
     menu.defaultSection().appendItem(i18nString(UIStrings.removeOtherBreakpoints), () => {
       this.dispatchEvent(new BreakpointsRemovedEvent(otherItems));
     }, otherItems.length === 0);
+    menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
+      const breakpointItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
+      this.dispatchEvent(new BreakpointsRemovedEvent(breakpointItems));
+    });
+
+    menu.editSection().appendItem(i18nString(UIStrings.revealLocation), () => {
+      this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));
+    });
 
     void menu.show();
   }

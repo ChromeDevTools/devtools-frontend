@@ -60,6 +60,7 @@ generate_css("legacy_css_files") {
 
 copy_to_gen("copy_stylesheets_for_server") {
   sources = [
+    "applicationColorTokens.css",
     "inspectorCommon.css",
     "themeColors.css",
   ]

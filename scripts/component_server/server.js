@@ -153,6 +153,7 @@ function createServerIndexFile(componentNames) {
       <meta name="viewport" content="width=device-width" />
       <title>DevTools components</title>
       <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/legacy/themeColors.css" />
+      <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/legacy/applicationColorTokens.css" />
       <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/components/docs/component_docs_styles.css" />
     </head>
     <body id="index-page">
@@ -281,12 +282,17 @@ async function requestHandler(request, response) {
     const fileContents = await fs.promises.readFile(path.join(componentDocsBaseFolder, filePath), {encoding: 'utf8'});
     const themeColoursLink = `<link rel="stylesheet" href="${
         path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'themeColors.css')}" type="text/css" />`;
+    const applicationColorTokensLink = `<link rel="stylesheet" href="${
+        path.join(
+            baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'applicationColorTokens.css')}" type="text/css" />`;
     const inspectorCommonLink = `<link rel="stylesheet" href="${
         path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'inspectorCommon.css')}" type="text/css" />`;
     const toggleDarkModeScript = `<script type="module" src="${
         path.join(baseUrlForSharedResource, 'front_end', 'ui', 'components', 'docs', 'component_docs.js')}"></script>`;
-    const newFileContents = fileContents.replace('</head>', `${themeColoursLink}\n${inspectorCommonLink}\n</head>`)
-                                .replace('</body>', toggleDarkModeScript + '\n</body>');
+    const newFileContents =
+        fileContents
+            .replace('</head>', `${themeColoursLink}\n${applicationColorTokensLink}\n${inspectorCommonLink}\n</head>`)
+            .replace('</body>', toggleDarkModeScript + '\n</body>');
     respondWithHtml(response, newFileContents);
 
   } else {

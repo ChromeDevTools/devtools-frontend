@@ -38,7 +38,7 @@ iconName2.textContent = 'issue-exclamation-icon';
 row2.appendChild(iconName2);
 
 const otherIcon = new IconButton.Icon.Icon();
-const otherPath = '/Images/issue-exclamation-icon.svg';
+const otherPath = '../../../../Images/src/issue-exclamation-icon.svg';
 otherIcon.data = {
   iconPath: otherPath,
   width: '24px',
@@ -113,8 +113,8 @@ iconTable?.appendChild(row3);
 
 const iconInFlex = document.getElementById('icon-in-flex') as IconButton.Icon.Icon;
 iconInFlex.data = {
-  iconName: 'error_icon',
-  width: '16px',
-  height: '16px',
-  color: '',
+  iconName: 'cross-circle',
+  width: '20px',
+  height: '20px',
+  color: 'var(--icon-error)',
 };

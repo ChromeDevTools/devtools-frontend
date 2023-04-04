@@ -35,7 +35,7 @@ describeWithEnvironment('View registration', () => {
     // from the command menu.
     UI.ViewManager.registerLocationResolver({
       name: UI.ViewManager.ViewLocationValues.PANEL,
-      category: UI.ViewManager.ViewLocationCategoryValues.PANEL,
+      category: UI.ViewManager.ViewLocationCategory.PANEL,
       async loadResolver() {
         return new MockView();
       },
@@ -54,7 +54,7 @@ describeWithEnvironment('View registration', () => {
     const allCommands = QuickOpen.CommandMenu.CommandMenu.instance({forceNew: true}).commands();
     const filteredCommands = allCommands.filter(
         command => command.title() === commandPrompt &&
-            command.category() === UI.ViewManager.ViewLocationCategoryValues.PANEL);
+            command.isPanelOrDrawer() === QuickOpen.CommandMenu.PanelOrDrawer.PANEL);
     assert.strictEqual(filteredCommands.length, 1, 'Command for showing a preregistered view was not added correctly');
   });
 

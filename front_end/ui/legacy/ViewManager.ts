@@ -18,10 +18,11 @@ import {type TabbedViewLocation, type View, type ViewLocation, type ViewLocation
 import {
   getRegisteredLocationResolvers,
   getRegisteredViewExtensions,
+  getLocalizedViewLocationCategory,
   maybeRemoveViewExtension,
   registerLocationResolver,
   registerViewExtension,
-  ViewLocationCategoryValues,
+  ViewLocationCategory,
   ViewLocationValues,
   ViewPersistence,
   type ViewRegistration,
@@ -924,6 +925,7 @@ export {
   ViewLocationValues,
   getRegisteredLocationResolvers,
   registerLocationResolver,
-  ViewLocationCategoryValues,
+  ViewLocationCategory,
+  getLocalizedViewLocationCategory,
   resetViewRegistration,
 };

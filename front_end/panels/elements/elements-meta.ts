@@ -539,7 +539,7 @@ UI.ContextMenu.registerProvider({
 
 UI.ViewManager.registerLocationResolver({
   name: UI.ViewManager.ViewLocationValues.ELEMENTS_SIDEBAR,
-  category: UI.ViewManager.ViewLocationCategoryValues.ELEMENTS,
+  category: UI.ViewManager.ViewLocationCategory.ELEMENTS,
   async loadResolver() {
     const Elements = await loadElementsModule();
     return Elements.ElementsPanel.ElementsPanel.instance();

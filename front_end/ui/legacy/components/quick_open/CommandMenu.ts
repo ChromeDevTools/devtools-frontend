@@ -152,15 +152,18 @@ export class CommandMenu {
 
   static createRevealViewCommand(options: RevealViewCommandOptions): Command {
     const {title, tags, category, userActionCode, id} = options;
+    if (!category) {
+      throw new Error(`Creating '${title}' reveal view command failed. Reveal view has no category.`);
+    }
     let panelOrDrawer = undefined;
-    if (category === UI.ViewManager.ViewLocationCategoryValues.PANEL) {
+    if (category === UI.ViewManager.ViewLocationCategory.PANEL) {
       panelOrDrawer = PanelOrDrawer.PANEL;
-    } else if (category === UI.ViewManager.ViewLocationCategoryValues.DRAWER) {
+    } else if (category === UI.ViewManager.ViewLocationCategory.DRAWER) {
       panelOrDrawer = PanelOrDrawer.DRAWER;
     }
 
     return CommandMenu.createCommand({
-      category,
+      category: UI.ViewManager.getLocalizedViewLocationCategory(category),
       keys: tags,
       title,
       shortcut: '',
@@ -173,7 +176,7 @@ export class CommandMenu {
   }
 
   private loadCommands(): void {
-    const locations = new Map<UI.ViewManager.ViewLocationValues, string>();
+    const locations = new Map<UI.ViewManager.ViewLocationValues, UI.ViewManager.ViewLocationCategory>();
     for (const {category, name} of UI.ViewManager.getRegisteredLocationResolvers()) {
       if (category && name) {
         locations.set(name, category);
@@ -223,7 +226,7 @@ export interface RevealViewCommandOptions {
   id: string;
   title: string;
   tags: string;
-  category: string;
+  category: UI.ViewManager.ViewLocationCategory;
   userActionCode?: number;
 }
 
@@ -239,7 +242,8 @@ export interface CreateCommandOptions {
   isPanelOrDrawer?: PanelOrDrawer;
 }
 
-const enum PanelOrDrawer {
+// eslint-disable-next-line rulesdir/const_enum
+export enum PanelOrDrawer {
   PANEL = 'PANEL',
   DRAWER = 'DRAWER',
 }

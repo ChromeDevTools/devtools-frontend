@@ -826,7 +826,7 @@ Common.Settings.registerSettingExtension({
 
 UI.ViewManager.registerLocationResolver({
   name: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
-  category: UI.ViewManager.ViewLocationCategoryValues.DRAWER,
+  category: UI.ViewManager.ViewLocationCategory.DRAWER,
   async loadResolver() {
     return UI.InspectorView.InspectorView.instance();
   },
@@ -834,7 +834,7 @@ UI.ViewManager.registerLocationResolver({
 
 UI.ViewManager.registerLocationResolver({
   name: UI.ViewManager.ViewLocationValues.DRAWER_SIDEBAR,
-  category: UI.ViewManager.ViewLocationCategoryValues.DRAWER_SIDEBAR,
+  category: UI.ViewManager.ViewLocationCategory.DRAWER_SIDEBAR,
   async loadResolver() {
     return UI.InspectorView.InspectorView.instance();
   },
@@ -842,7 +842,7 @@ UI.ViewManager.registerLocationResolver({
 
 UI.ViewManager.registerLocationResolver({
   name: UI.ViewManager.ViewLocationValues.PANEL,
-  category: UI.ViewManager.ViewLocationCategoryValues.PANEL,
+  category: UI.ViewManager.ViewLocationCategory.PANEL,
   async loadResolver() {
     return UI.InspectorView.InspectorView.instance();
   },

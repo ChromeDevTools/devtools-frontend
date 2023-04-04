@@ -188,7 +188,7 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ViewManager.registerLocationResolver({
   name: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
-  category: UI.ViewManager.ViewLocationCategoryValues.SETTINGS,
+  category: UI.ViewManager.ViewLocationCategory.SETTINGS,
   async loadResolver() {
     const Settings = await loadSettingsModule();
     return Settings.SettingsScreen.SettingsScreen.instance();

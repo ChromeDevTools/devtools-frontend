@@ -2,6 +2,7 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
@@ -9,6 +10,39 @@ import {type ViewLocationResolver} from './View.js';
 import {PreRegisteredView} from './ViewManager.js';
 
 import {type Widget} from './Widget.js';
+
+const UIStrings = {
+  /**
+   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Elements' panel.
+   */
+  elements: 'Elements',
+  /**
+   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer' panel.
+   */
+  drawer: 'Drawer',
+  /**
+   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Drawer sidebar' panel.
+   */
+  drawer_sidebar: 'Drawer sidebar',
+  /**
+   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Panel'.
+   */
+  panel: 'Panel',
+  /**
+   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Network' panel.
+   */
+  network: 'Network',
+  /**
+   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Settings' panel.
+   */
+  settings: 'Settings',
+  /**
+   *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Sources' panel.
+   */
+  sources: 'Sources',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/ViewRegistration.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const registeredViewExtensions: Array<PreRegisteredView> = [];
 
@@ -164,18 +198,38 @@ export function resetViewRegistration(): void {
   viewLocationNameSet.clear();
 }
 
-// TODO(crbug.com/1181019)
-export const ViewLocationCategoryValues = {
-  ELEMENTS: 'Elements',
-  DRAWER: 'Drawer',
-  DRAWER_SIDEBAR: 'Drawer sidebar',
-  PANEL: 'Panel',
-  NETWORK: 'Network',
-  SETTINGS: 'Settings',
-  SOURCES: 'Sources',
-};
+// eslint-disable-next-line rulesdir/const_enum
+export enum ViewLocationCategory {
+  NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.
+  ELEMENTS = 'ELEMENTS',
+  DRAWER = 'DRAWER',
+  DRAWER_SIDEBAR = 'DRAWER_SIDEBAR',
+  PANEL = 'PANEL',
+  NETWORK = 'NETWORK',
+  SETTINGS = 'SETTINGS',
+  SOURCES = 'SOURCES',
+}
 
-type ViewLocationCategory = typeof ViewLocationCategoryValues[keyof typeof ViewLocationCategoryValues];
+export function getLocalizedViewLocationCategory(category: ViewLocationCategory): Platform.UIString.LocalizedString {
+  switch (category) {
+    case ViewLocationCategory.ELEMENTS:
+      return i18nString(UIStrings.elements);
+    case ViewLocationCategory.DRAWER:
+      return i18nString(UIStrings.drawer);
+    case ViewLocationCategory.DRAWER_SIDEBAR:
+      return i18nString(UIStrings.drawer_sidebar);
+    case ViewLocationCategory.PANEL:
+      return i18nString(UIStrings.panel);
+    case ViewLocationCategory.NETWORK:
+      return i18nString(UIStrings.network);
+    case ViewLocationCategory.SETTINGS:
+      return i18nString(UIStrings.settings);
+    case ViewLocationCategory.SOURCES:
+      return i18nString(UIStrings.sources);
+    case ViewLocationCategory.NONE:
+      return i18n.i18n.lockedString('');
+  }
+}
 
 export interface LocationResolverRegistration {
   name: ViewLocationValues;

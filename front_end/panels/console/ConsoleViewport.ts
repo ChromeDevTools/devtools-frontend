@@ -637,8 +637,9 @@ export class ConsoleViewport {
     let node: Node|null = itemElement;
     while ((node = node.traverseNextNode(itemElement)) && node !== selectionNode) {
       if (node.nodeType !== Node.TEXT_NODE ||
-          (node.parentElement &&
-           (node.parentElement.nodeName === 'STYLE' || node.parentElement.nodeName === 'SCRIPT'))) {
+          (node.parentNode &&
+           (node.parentNode.nodeName === 'STYLE' || node.parentNode.nodeName === 'SCRIPT' ||
+            node.parentNode.nodeName === '#document-fragment'))) {
         continue;
       }
       chars += Components.Linkifier.Linkifier.untruncatedNodeText(node).length;

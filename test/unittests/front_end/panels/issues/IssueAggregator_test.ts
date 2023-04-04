@@ -7,12 +7,13 @@ const {assert} = chai;
 import * as Issues from '../../../../../front_end/panels/issues/issues.js';
 import type * as Common from '../../../../../front_end/core/common/common.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
-import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {StubIssue} from '../../models/issues_manager/StubIssue.js';
-import {MockIssuesModel} from '../../models/issues_manager/MockIssuesModel.js';
 import {MockIssuesManager} from '../../models/issues_manager/MockIssuesManager.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {createFakeSetting, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {createFakeSetting, describeWithEnvironment, createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 describeWithEnvironment('AggregatedIssue', async () => {
   const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
@@ -43,18 +44,25 @@ describeWithEnvironment('AggregatedIssue', async () => {
   });
 });
 
-describeWithEnvironment('IssueAggregator', async () => {
+function createModel() {
+  const target = createTarget();
+  const model = target.model(SDK.IssuesModel.IssuesModel);
+  assertNotNullOrUndefined(model);
+  return model;
+}
+
+describeWithMockConnection('IssueAggregator', async () => {
   it('deduplicates issues with the same code', () => {
     const issue1 = StubIssue.createFromRequestIds(['id1']);
     const issue2 = StubIssue.createFromRequestIds(['id2']);
 
-    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+    const model = createModel();
     const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
-        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: model, issue: issue1});
     mockManager.dispatchEventToListeners(
-        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: model, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 1);
@@ -68,14 +76,14 @@ describeWithEnvironment('IssueAggregator', async () => {
     const issue1b = StubIssue.createFromRequestIds(['id1']);  // Duplicate id.
     const issue3 = StubIssue.createFromRequestIds(['id3']);
 
-    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+    const model = createModel();
     const mockManager =
         new MockIssuesManager([issue1b, issue3]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
-        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: model, issue: issue1});
     mockManager.dispatchEventToListeners(
-        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: model, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 1);
@@ -89,14 +97,14 @@ describeWithEnvironment('IssueAggregator', async () => {
     const issue1b = new StubIssue('codeC', ['id1'], []);
     const issue3 = new StubIssue('codeA', ['id1'], []);
 
-    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+    const model = createModel();
     const mockManager =
         new MockIssuesManager([issue1b, issue3]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
-        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: model, issue: issue1});
     mockManager.dispatchEventToListeners(
-        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: model, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 3);
@@ -151,28 +159,28 @@ describeWithEnvironment('IssueAggregator', async () => {
   });
 });
 
-describeWithEnvironment('IssueAggregator', async () => {
+describeWithMockConnection('IssueAggregator', async () => {
   it('aggregates heavy ad issues correctly', () => {
-    const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+    const model = createModel();
     const details1 = {
       resolution: Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked,
       reason: Protocol.Audits.HeavyAdReason.CpuPeakLimit,
       frame: {frameId: 'main' as Protocol.Page.FrameId},
     };
-    const issue1 = new IssuesManager.HeavyAdIssue.HeavyAdIssue(details1, mockModel);
+    const issue1 = new IssuesManager.HeavyAdIssue.HeavyAdIssue(details1, model);
     const details2 = {
       resolution: Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning,
       reason: Protocol.Audits.HeavyAdReason.NetworkTotalLimit,
       frame: {frameId: 'main' as Protocol.Page.FrameId},
     };
-    const issue2 = new IssuesManager.HeavyAdIssue.HeavyAdIssue(details2, mockModel);
+    const issue2 = new IssuesManager.HeavyAdIssue.HeavyAdIssue(details2, model);
 
     const mockManager = new MockIssuesManager([]) as unknown as IssuesManager.IssuesManager.IssuesManager;
     const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
     mockManager.dispatchEventToListeners(
-        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue1});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: model, issue: issue1});
     mockManager.dispatchEventToListeners(
-        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue2});
+        IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: model, issue: issue2});
 
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 1);
@@ -187,7 +195,7 @@ describeWithEnvironment('IssueAggregator', async () => {
 
   describe('IssueAggregator', async () => {
     it('aggregates affected locations correctly', () => {
-      const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
+      const model = createModel();
       const issue1 = StubIssue.createFromAffectedLocations([{url: 'foo', lineNumber: 1, columnNumber: 1}]);
       const issue2 = StubIssue.createFromAffectedLocations([
         {url: 'foo', lineNumber: 1, columnNumber: 1},
@@ -206,7 +214,7 @@ describeWithEnvironment('IssueAggregator', async () => {
       const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
       for (const issue of [issue1, issue2, issue3, issue4]) {
         mockManager.dispatchEventToListeners(
-            IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: mockModel, issue: issue});
+            IssuesManager.IssuesManager.Events.IssueAdded, {issuesModel: model, issue: issue});
       }
 
       const issues = Array.from(aggregator.aggregatedIssues());
@@ -224,11 +232,11 @@ describeWithEnvironment('IssueAggregator', async () => {
   });
 });
 
-describeWithEnvironment('IssueAggregator', () => {
+describeWithMockConnection('IssueAggregator', () => {
   let hideIssueByCodeSetting: Common.Settings.Setting<IssuesManager.IssuesManager.HideIssueMenuSetting>;
   let showThirdPartyIssuesSetting: Common.Settings.Setting<boolean>;
   let issuesManager: IssuesManager.IssuesManager.IssuesManager;
-  let mockModel: SDK.IssuesModel.IssuesModel;
+  let model: SDK.IssuesModel.IssuesModel;
   let aggregator: Issues.IssueAggregator.IssueAggregator;
 
   beforeEach(() => {
@@ -236,8 +244,8 @@ describeWithEnvironment('IssueAggregator', () => {
         createFakeSetting('hide by code', ({} as IssuesManager.IssuesManager.HideIssueMenuSetting));
     showThirdPartyIssuesSetting = createFakeSetting('third party flag', false);
     issuesManager = new IssuesManager.IssuesManager.IssuesManager(showThirdPartyIssuesSetting, hideIssueByCodeSetting);
-    mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
-    issuesManager.modelAdded(mockModel);
+    const target = createTarget();
+    model = target.model(SDK.IssuesModel.IssuesModel) as SDK.IssuesModel.IssuesModel;
     aggregator = new Issues.IssueAggregator.IssueAggregator(issuesManager);
   });
 
@@ -255,7 +263,7 @@ describeWithEnvironment('IssueAggregator', () => {
     });
 
     for (const issue of issues) {
-      issuesManager.addIssue(mockModel, issue);
+      issuesManager.addIssue(model, issue);
     }
     assert.strictEqual(aggregator.numberOfAggregatedIssues(), 2);
     assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 2);
@@ -270,7 +278,7 @@ describeWithEnvironment('IssueAggregator', () => {
     ];
 
     for (const issue of issues) {
-      issuesManager.addIssue(mockModel, issue);
+      issuesManager.addIssue(model, issue);
     }
 
     hideIssueByCodeSetting.set({
@@ -303,7 +311,7 @@ describeWithEnvironment('IssueAggregator', () => {
     });
 
     for (const issue of issues) {
-      issuesManager.addIssue(mockModel, issue);
+      issuesManager.addIssue(model, issue);
     }
 
     assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 4);
@@ -336,7 +344,7 @@ describeWithEnvironment('IssueAggregator', () => {
     });
 
     for (const issue of issues) {
-      issuesManager.addIssue(mockModel, issue);
+      issuesManager.addIssue(model, issue);
     }
 
     assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 4);

@@ -390,9 +390,11 @@ export class FrameDetailsReportView extends HTMLElement {
       clickHandler: refreshOriginTrials,
       groups: [
         {
-          iconName: 'refresh_12x12_icon',
+          iconName: 'refresh',
           text: i18nString(UIStrings.refresh),
-          iconColor: 'var(--color-text-primary)',
+          iconColor: 'var(--icon-default-hover)',
+          iconWidth: '14px',
+          iconHeight: '14px',
         } as IconButton.IconButton.IconWithTextData,
       ],
     } as IconButton.IconButton.IconButtonData}>

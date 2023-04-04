@@ -23,12 +23,12 @@ describe('The Console Tab', async () => {
     await waitForIssueButtonLabel('1 Issue:');
   });
 
-  it('shows the toolbar button for two issues correctly', async () => {
-    // Navigate to page which causes two issues.
-    await goToResource('issues/cross-origin-portal-post-2.html');
+  it('shows the toolbar button for three issues correctly', async () => {
+    // Navigate to page which causes three issues.
+    await goToResource('issues/cors-issue-2.html');
     await navigateToConsoleTab();
 
-    await waitForIssueButtonLabel('2 Issues:');
+    await waitForIssueButtonLabel('3 Issues:');
   });
 
   it('updates the toolbar button correctly', async () => {

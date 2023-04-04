@@ -171,6 +171,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #hiddenIssueCount = new Map<IssueKind, number>();
   #hasSeenOutermostFrameNavigated = false;
   #issuesById: Map<string, Issue> = new Map();
+  #issuesByOutermostTarget: WeakMap<SDK.Target.Target, Set<Issue>> = new Map();
 
   constructor(
       private readonly showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>,
@@ -187,6 +188,16 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     // a full update when the setting changes to get an up-to-date issues list.
     this.showThirdPartyIssuesSetting?.addChangeListener(() => this.#updateFilteredIssues());
     this.hideIssueSetting?.addChangeListener(() => this.#updateFilteredIssues());
+    SDK.TargetManager.TargetManager.instance().observeTargets(
+        {
+          targetAdded: (target: SDK.Target.Target) => {
+            if (target.outermostTarget() === target) {
+              this.#updateFilteredIssues();
+            }
+          },
+          targetRemoved: (_: SDK.Target.Target) => {},
+        },
+        {scoped: true});
   }
 
   static instance(opts: IssuesManagerCreationOptions = {
@@ -276,6 +287,15 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
     this.#allIssues.set(primaryKey, issue);
 
+    const outermostTarget = issuesModel.target().outermostTarget();
+    if (outermostTarget) {
+      let issuesForTarget = this.#issuesByOutermostTarget.get(outermostTarget);
+      if (!issuesForTarget) {
+        issuesForTarget = new Set();
+        this.#issuesByOutermostTarget.set(outermostTarget, issuesForTarget);
+      }
+      issuesForTarget.add(issue);
+    }
     if (this.#issueFilter(issue)) {
       this.#filteredIssues.set(primaryKey, issue);
       this.#issueCounts.set(issue.getKind(), 1 + (this.#issueCounts.get(issue.getKind()) || 0));
@@ -322,6 +342,13 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   #issueFilter(issue: Issue): boolean {
+    const scopeTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
+    if (!scopeTarget) {
+      return false;
+    }
+    if (!this.#issuesByOutermostTarget.get(scopeTarget)?.has(issue)) {
+      return false;
+    }
     return this.showThirdPartyIssuesSetting?.get() || !issue.isCausedByThirdParty();
   }
 

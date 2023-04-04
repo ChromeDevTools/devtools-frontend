@@ -35,22 +35,6 @@ describe('Cross-origin portal post message issue', async () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  it('should handle multiple issue correctly', async () => {
-    await goToResource('issues/cross-origin-portal-post-2.html');
-    await navigateToIssuesTab();
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Cross-origin portal post messages are blocked on your site');
-    assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('2 resources', issueElement);
-    await ensureResourceSectionIsExpanded(section);
-    const expectedTableRows = [
-      ['Frame'],
-      [`https://localhost:${getTestServerPort()}/test/e2e/resources/issues/cross-origin-portal-post-2.html`],
-      [`https://devtools.xorigin.test:${getTestServerPort()}/test/e2e/resources/issues/cross-origin-portal-post.html`],
-    ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
-  });
-
   it('should remove issue on update', async () => {
     await goToResource('issues/cross-origin-portal-post.html');
     await navigateToIssuesTab();

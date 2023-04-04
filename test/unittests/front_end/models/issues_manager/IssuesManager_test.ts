@@ -42,6 +42,35 @@ describeWithMockConnection('IssuesManager', () => {
     assert.deepStrictEqual(issueCodes, expected);
   });
 
+  function getBlockedUrl(issue: IssuesManager.Issue.Issue): string|undefined {
+    const cspIssue = issue as IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue;
+    return cspIssue.details().blockedURL;
+  }
+
+  it('filter out-of-scope issues', () => {
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
+
+    const dispatchedIssues: IssuesManager.Issue.Issue[] = [];
+    issuesManager.addEventListener(
+        IssuesManager.IssuesManager.Events.IssueAdded, event => dispatchedIssues.push(event.data.issue));
+
+    model.dispatchEventToListeners(
+        SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
+    const anotherTarget = createTarget();
+    const anotherModel = anotherTarget.model(SDK.IssuesModel.IssuesModel);
+    assertNotNullOrUndefined(anotherModel);
+    anotherModel.dispatchEventToListeners(
+        SDK.IssuesModel.Events.IssueAdded, {issuesModel: anotherModel, inspectorIssue: mkInspectorCspIssue('url2')});
+
+    const expected = ['url1'];
+    assert.deepStrictEqual(dispatchedIssues.map(getBlockedUrl), expected);
+
+    assert.deepStrictEqual(Array.from(issuesManager.issues()).map(getBlockedUrl), expected);
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
+    assert.deepStrictEqual(Array.from(issuesManager.issues()).map(getBlockedUrl), ['url2']);
+  });
+
   it('filters third-party issues when the third-party issues setting is false, includes them otherwise', () => {
     const issues = [
       new ThirdPartyStubIssue('AllowedStubIssue1', false),
@@ -254,5 +283,14 @@ describeWithMockConnection('IssuesManager', () => {
     issuesManager.unhideAllIssues();
     assert.deepStrictEqual(
         UnhiddenIssues, ['HiddenStubIssue1', 'HiddenStubIssue2', 'UnhiddenStubIssue1', 'UnhiddenStubIssue2']);
+  });
+
+  it('send update event on scope change', async () => {
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
+
+    const updateRequired = issuesManager.once(IssuesManager.IssuesManager.Events.FullUpdateRequired);
+    const anotherTarget = createTarget();
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
+    await updateRequired;
   });
 });

@@ -57,8 +57,17 @@ export class CommandMenu {
   }
 
   static createCommand(options: CreateCommandOptions): Command {
-    const {category, keys, title, shortcut, executeHandler, availableHandler, userActionCode, deprecationWarning} =
-        options;
+    const {
+      category,
+      keys,
+      title,
+      shortcut,
+      executeHandler,
+      availableHandler,
+      userActionCode,
+      deprecationWarning,
+      isPanelOrDrawer,
+    } = options;
 
     let handler = executeHandler;
     if (userActionCode) {
@@ -78,7 +87,7 @@ export class CommandMenu {
       };
     }
 
-    return new Command(category, title, keys, shortcut, handler, availableHandler, deprecationWarning);
+    return new Command(category, title, keys, shortcut, handler, availableHandler, deprecationWarning, isPanelOrDrawer);
   }
 
   static createSettingCommand<V>(setting: Common.Settings.Setting<V>, title: string, value: V): Command {
@@ -117,21 +126,38 @@ export class CommandMenu {
 
   static createActionCommand(options: ActionCommandOptions): Command {
     const {action, userActionCode} = options;
+    const category = action.category();
+    if (!category) {
+      throw new Error(`Creating '${action.title()}' action command failed. Action has no category.`);
+    }
+
+    let panelOrDrawer = undefined;
+    if (category === UI.ActionRegistration.ActionCategory.DRAWER) {
+      panelOrDrawer = PanelOrDrawer.DRAWER;
+    }
+
     const shortcut = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action.id()) || '';
 
     return CommandMenu.createCommand({
-      category: action.category(),
+      category: category,
       keys: action.tags() || '',
       title: action.title() || '',
       shortcut,
       executeHandler: action.execute.bind(action),
       userActionCode,
       availableHandler: undefined,
+      isPanelOrDrawer: panelOrDrawer,
     });
   }
 
   static createRevealViewCommand(options: RevealViewCommandOptions): Command {
     const {title, tags, category, userActionCode, id} = options;
+    let panelOrDrawer = undefined;
+    if (category === UI.ViewManager.ViewLocationCategoryValues.PANEL) {
+      panelOrDrawer = PanelOrDrawer.PANEL;
+    } else if (category === UI.ViewManager.ViewLocationCategoryValues.DRAWER) {
+      panelOrDrawer = PanelOrDrawer.DRAWER;
+    }
 
     return CommandMenu.createCommand({
       category,
@@ -142,6 +168,7 @@ export class CommandMenu {
           UI.ViewManager.ViewManager.instance(), id, /* userGesture */ true),
       userActionCode,
       availableHandler: undefined,
+      isPanelOrDrawer: panelOrDrawer,
     });
   }
 
@@ -209,6 +236,12 @@ export interface CreateCommandOptions {
   availableHandler?: () => boolean;
   userActionCode?: number;
   deprecationWarning?: Platform.UIString.LocalizedString;
+  isPanelOrDrawer?: PanelOrDrawer;
+}
+
+const enum PanelOrDrawer {
+  PANEL = 'PANEL',
+  DRAWER = 'DRAWER',
 }
 
 export class CommandMenuProvider extends Provider {
@@ -265,9 +298,9 @@ export class CommandMenuProvider extends Provider {
     let score = Diff.Diff.DiffWrapper.characterScore(query.toLowerCase(), command.title().toLowerCase());
 
     // Score panel/drawer reveals above regular actions.
-    if (command.category().startsWith('Panel')) {
+    if (command.isPanelOrDrawer() === PanelOrDrawer.PANEL) {
       score += 2;
-    } else if (command.category().startsWith('Drawer')) {
+    } else if (command.isPanelOrDrawer() === PanelOrDrawer.DRAWER) {
       score += 1;
     }
 
@@ -342,10 +375,12 @@ export class Command {
   private readonly executeHandler: () => void;
   private readonly availableHandler?: () => boolean;
   private readonly deprecationWarningInternal?: Platform.UIString.LocalizedString;
+  private readonly isPanelOrDrawerInternal?: PanelOrDrawer;
 
   constructor(
       category: string, title: string, key: string, shortcut: string, executeHandler: () => void,
-      availableHandler?: () => boolean, deprecationWarning?: Platform.UIString.LocalizedString) {
+      availableHandler?: () => boolean, deprecationWarning?: Platform.UIString.LocalizedString,
+      isPanelOrDrawer?: PanelOrDrawer) {
     this.categoryInternal = category;
     this.titleInternal = title;
     this.keyInternal = category + '\0' + title + '\0' + key;
@@ -353,6 +388,7 @@ export class Command {
     this.executeHandler = executeHandler;
     this.availableHandler = availableHandler;
     this.deprecationWarningInternal = deprecationWarning;
+    this.isPanelOrDrawerInternal = isPanelOrDrawer;
   }
 
   category(): string {
@@ -381,6 +417,10 @@ export class Command {
 
   deprecationWarning(): Platform.UIString.LocalizedString|undefined {
     return this.deprecationWarningInternal;
+  }
+
+  isPanelOrDrawer(): PanelOrDrawer|undefined {
+    return this.isPanelOrDrawerInternal;
   }
 }
 

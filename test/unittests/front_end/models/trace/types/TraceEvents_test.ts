@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js';
+import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
 const {assert} = chai;
 
 describe('TraceEvent types', () => {
@@ -45,5 +46,29 @@ describe('TraceEvent types', () => {
     assert.isFalse(isFlowPhase(Phase.ASYNC_STEP_INTO));
     assert.isFalse(isFlowPhase(Phase.ASYNC_NESTABLE_START));
     assert.isFalse(isFlowPhase(Phase.BEGIN));
+  });
+
+  it('is able to determine that an event is a synthetic user timing event', async () => {
+    const traceParsedData = await loadModelDataFromTraceFile('timings-track.json.gz');
+    const timingEvent = traceParsedData.UserTimings.performanceMeasures[0];
+    assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticUserTimingTraceEvent(timingEvent));
+    const consoleEvent = traceParsedData.UserTimings.consoleTimings[0];
+    assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticUserTimingTraceEvent(consoleEvent));
+  });
+
+  it('is able to determine that an event is a synthetic console event', async () => {
+    const traceParsedData = await loadModelDataFromTraceFile('timings-track.json.gz');
+    const consoleEvent = traceParsedData.UserTimings.consoleTimings[0];
+    assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticConsoleTimingTraceEvent(consoleEvent));
+    const timingEvent = traceParsedData.UserTimings.performanceMeasures[0];
+    assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticConsoleTimingTraceEvent(timingEvent));
+  });
+
+  it('is able to detemrine that an event is a synthetic network request event', async () => {
+    const traceParsedData = await loadModelDataFromTraceFile('lcp-images.json.gz');
+    const networkEvent = traceParsedData.NetworkRequests.byTime[0];
+    assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestDetailsEvent(networkEvent));
+    const otherEvent = traceParsedData.Renderer.allRendererEvents[0];
+    assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestDetailsEvent(otherEvent));
   });
 });

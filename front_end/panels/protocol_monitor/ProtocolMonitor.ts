@@ -147,8 +147,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     const topToolbar = new UI.Toolbar.Toolbar('protocol-monitor-toolbar', this.contentElement);
 
     this.contentElement.classList.add('protocol-monitor');
-    const recordButton = new UI.Toolbar.ToolbarToggle(
-        i18nString(UIStrings.record), 'largeicon-start-recording', 'largeicon-stop-recording');
+    const recordButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.record), 'record-start', 'record-stop');
     recordButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       recordButton.setToggled(!recordButton.toggled());
       this.setRecording(recordButton.toggled());
@@ -157,7 +156,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     topToolbar.appendToolbarItem(recordButton);
     recordButton.setToggled(true);
 
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       this.messages = [];
       this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), rows: []});
@@ -165,7 +164,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     });
     topToolbar.appendToolbarItem(clearButton);
 
-    const saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.save), 'largeicon-download');
+    const saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.save), 'download');
     saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
       void this.saveAsFile();
     });

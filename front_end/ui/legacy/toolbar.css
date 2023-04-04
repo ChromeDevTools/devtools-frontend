@@ -232,7 +232,7 @@ it. */
 
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
 .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-glyph {
-  background-color: var(--color-accent-red) !important; /* stylelint-disable-line declaration-no-important */
+  background-color: var(--icon-error) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-icon,

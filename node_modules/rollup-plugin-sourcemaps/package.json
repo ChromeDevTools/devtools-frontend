@@ -1,0 +1,66 @@
+{
+  "name": "rollup-plugin-sourcemaps",
+  "version": "0.6.2",
+  "description": "Rollup plugin for grabbing source maps from sourceMappingURLs",
+  "author": "Max Davidson <davidsonmax@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.cjs"
+  },
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maxdavidson/rollup-plugin-sourcemaps"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "build": "rimraf dist && rollup --config",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.ts",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "preversion": "npm run test"
+  },
+  "keywords": [
+    "rollup",
+    "rollup-plugin",
+    "sourcemap",
+    "source-map",
+    "sourceMappingURL"
+  ],
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@rollup/pluginutils": "^3.0.9",
+    "source-map-resolve": "^0.6.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^4.1.1",
+    "@types/jest": "^25.1.0",
+    "@types/node": "^10.17.21",
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@typescript-eslint/parser": "^2.25.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "jest": "^25.1.0",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.0",
+    "rollup": "^2.7.5",
+    "ts-jest": "^25.1.0",
+    "typescript": "^3.7.4"
+  },
+  "peerDependencies": {
+    "@types/node": ">=10.0.0",
+    "rollup": ">=0.31.2"
+  }
+}

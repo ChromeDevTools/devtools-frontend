@@ -53,8 +53,8 @@ describeWithEnvironment('View registration', () => {
   it('adds command for showing a pre registered view', () => {
     const allCommands = QuickOpen.CommandMenu.CommandMenu.instance({forceNew: true}).commands();
     const filteredCommands = allCommands.filter(
-        command => command.title() === commandPrompt &&
-            command.isPanelOrDrawer() === QuickOpen.CommandMenu.PanelOrDrawer.PANEL);
+        command =>
+            command.title === commandPrompt && command.isPanelOrDrawer === QuickOpen.CommandMenu.PanelOrDrawer.PANEL);
     assert.strictEqual(filteredCommands.length, 1, 'Command for showing a preregistered view was not added correctly');
   });
 

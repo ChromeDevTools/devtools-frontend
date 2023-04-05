@@ -280,8 +280,8 @@ export class CommandMenuProvider extends Provider {
     this.commands = this.commands.sort(commandComparator);
 
     function commandComparator(left: Command, right: Command): number {
-      const cats = Platform.StringUtilities.compare(left.category(), right.category());
-      return cats ? cats : Platform.StringUtilities.compare(left.title(), right.title());
+      const cats = Platform.StringUtilities.compare(left.category, right.category);
+      return cats ? cats : Platform.StringUtilities.compare(left.title, right.title);
     }
   }
 
@@ -294,17 +294,17 @@ export class CommandMenuProvider extends Provider {
   }
 
   itemKeyAt(itemIndex: number): string {
-    return this.commands[itemIndex].key();
+    return this.commands[itemIndex].key;
   }
 
   itemScoreAt(itemIndex: number, query: string): number {
     const command = this.commands[itemIndex];
-    let score = Diff.Diff.DiffWrapper.characterScore(query.toLowerCase(), command.title().toLowerCase());
+    let score = Diff.Diff.DiffWrapper.characterScore(query.toLowerCase(), command.title.toLowerCase());
 
     // Score panel/drawer reveals above regular actions.
-    if (command.isPanelOrDrawer() === PanelOrDrawer.PANEL) {
+    if (command.isPanelOrDrawer === PanelOrDrawer.PANEL) {
       score += 2;
-    } else if (command.isPanelOrDrawer() === PanelOrDrawer.DRAWER) {
+    } else if (command.isPanelOrDrawer === PanelOrDrawer.DRAWER) {
       score += 1;
     }
 
@@ -315,12 +315,12 @@ export class CommandMenuProvider extends Provider {
     const command = this.commands[itemIndex];
 
     titleElement.removeChildren();
-    UI.UIUtils.createTextChild(titleElement, command.title());
+    UI.UIUtils.createTextChild(titleElement, command.title);
     FilteredListWidget.highlightRanges(titleElement, query, true);
 
-    subtitleElement.textContent = command.shortcut();
+    subtitleElement.textContent = command.shortcut;
 
-    const deprecationWarning = command.deprecationWarning();
+    const deprecationWarning = command.deprecationWarning;
     if (deprecationWarning) {
       const deprecatedTagElement = (titleElement.parentElement?.createChild('span', 'deprecated-tag') as HTMLElement);
       if (deprecatedTagElement) {
@@ -332,10 +332,10 @@ export class CommandMenuProvider extends Provider {
     if (!tagElement) {
       return;
     }
-    const index = Platform.StringUtilities.hashCode(command.category()) % MaterialPaletteColors.length;
+    const index = Platform.StringUtilities.hashCode(command.category) % MaterialPaletteColors.length;
     tagElement.style.backgroundColor = MaterialPaletteColors[index];
     tagElement.style.color = 'var(--color-background)';
-    tagElement.textContent = command.category();
+    tagElement.textContent = command.category;
   }
 
   selectItem(itemIndex: number|null, _promptValue: string): void {
@@ -372,59 +372,36 @@ export const MaterialPaletteColors = [
 ];
 
 export class Command {
-  private readonly categoryInternal: string;
-  private readonly titleInternal: string;
-  private readonly keyInternal: string;
-  private readonly shortcutInternal: string;
-  private readonly executeHandler: () => void;
-  private readonly availableHandler?: () => boolean;
-  private readonly deprecationWarningInternal?: Platform.UIString.LocalizedString;
-  private readonly isPanelOrDrawerInternal?: PanelOrDrawer;
+  readonly category: string;
+  readonly title: string;
+  readonly key: string;
+  readonly shortcut: string;
+  readonly deprecationWarning?: Platform.UIString.LocalizedString;
+  readonly isPanelOrDrawer?: PanelOrDrawer;
+
+  readonly #executeHandler: () => void;
+  readonly #availableHandler?: () => boolean;
 
   constructor(
       category: string, title: string, key: string, shortcut: string, executeHandler: () => void,
       availableHandler?: () => boolean, deprecationWarning?: Platform.UIString.LocalizedString,
       isPanelOrDrawer?: PanelOrDrawer) {
-    this.categoryInternal = category;
-    this.titleInternal = title;
-    this.keyInternal = category + '\0' + title + '\0' + key;
-    this.shortcutInternal = shortcut;
-    this.executeHandler = executeHandler;
-    this.availableHandler = availableHandler;
-    this.deprecationWarningInternal = deprecationWarning;
-    this.isPanelOrDrawerInternal = isPanelOrDrawer;
-  }
-
-  category(): string {
-    return this.categoryInternal;
-  }
-
-  title(): string {
-    return this.titleInternal;
-  }
-
-  key(): string {
-    return this.keyInternal;
-  }
-
-  shortcut(): string {
-    return this.shortcutInternal;
+    this.category = category;
+    this.title = title;
+    this.key = category + '\0' + title + '\0' + key;
+    this.shortcut = shortcut;
+    this.#executeHandler = executeHandler;
+    this.#availableHandler = availableHandler;
+    this.deprecationWarning = deprecationWarning;
+    this.isPanelOrDrawer = isPanelOrDrawer;
   }
 
   available(): boolean {
-    return this.availableHandler ? this.availableHandler() : true;
+    return this.#availableHandler ? this.#availableHandler() : true;
   }
 
   execute(): void {
-    this.executeHandler();
-  }
-
-  deprecationWarning(): Platform.UIString.LocalizedString|undefined {
-    return this.deprecationWarningInternal;
-  }
-
-  isPanelOrDrawer(): PanelOrDrawer|undefined {
-    return this.isPanelOrDrawerInternal;
+    this.#executeHandler();
   }
 }
 

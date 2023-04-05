@@ -61,11 +61,11 @@ describe('Setting registration', () => {
   it('adds commands for changing a setting\'s value', () => {
     const allCommands = QuickOpen.CommandMenu.CommandMenu.instance({forceNew: true}).commands();
     const disableSettingCommands = allCommands.filter(
-        command => command.title() === disableTitle &&
-            command.category() === Common.Settings.getLocalizedSettingsCategory(settingCategory));
+        command => command.title === disableTitle &&
+            command.category === Common.Settings.getLocalizedSettingsCategory(settingCategory));
     const enableSettingCommands = allCommands.filter(
-        command => command.title() === enableTitle &&
-            command.category() === Common.Settings.getLocalizedSettingsCategory(settingCategory));
+        command => command.title === enableTitle &&
+            command.category === Common.Settings.getLocalizedSettingsCategory(settingCategory));
     assert.strictEqual(
         disableSettingCommands.length, 1, 'Commands for changing a setting\'s value were not added correctly');
     assert.strictEqual(

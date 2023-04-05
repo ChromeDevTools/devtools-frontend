@@ -55,7 +55,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     this.consoleCounter.data = {
       clickHandler: Common.Console.Console.instance().show.bind(Common.Console.Console.instance()),
       groups: [
-        {iconName: 'cross-circle-filled', iconColor: 'var(--icon-error-small)', iconHeight: '14px', iconWidth: '14px'},
+        {iconName: 'cross-circle-filled', iconColor: 'var(--icon-error)', iconHeight: '14px', iconWidth: '14px'},
         {iconName: 'warning-filled', iconColor: 'var(--icon-warning)', iconHeight: '14px', iconWidth: '14px'},
       ],
     };

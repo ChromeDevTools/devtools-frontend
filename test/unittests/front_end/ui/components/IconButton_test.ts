@@ -19,8 +19,8 @@ const renderIconButton = (data: IconButton.IconButton.IconButtonData):
     };
 
 const defaultIcon: IconButton.IconButton.IconWithTextData = {
-  iconName: 'error_icon',
-  iconColor: '#1a73e8',
+  iconName: 'cross-circle',
+  iconColor: 'var(--icon-error)',
   text: '1',
 };
 
@@ -48,7 +48,7 @@ describe('IconButton', () => {
     assert.strictEqual(icons.length, 1);
     assert.deepEqual(icons.map(c => c.label), ['1']);
     const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-    assert.deepEqual(iconNames, ['error_icon']);
+    assert.deepEqual(iconNames, ['cross-circle']);
   });
 
   it('renders correctly with two icons', () => {
@@ -57,8 +57,8 @@ describe('IconButton', () => {
       groups: [
         defaultIcon,
         {
-          iconName: 'warning_icon',
-          iconColor: '#1a73e8',
+          iconName: 'warning',
+          iconColor: 'var(--icon-warning)',
           text: '12',
         },
       ],
@@ -68,7 +68,7 @@ describe('IconButton', () => {
     assert.strictEqual(icons.length, 2);
     assert.deepEqual(icons.map(c => c.label), ['1', '12']);
     const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-    assert.deepEqual(iconNames, ['error_icon', 'warning_icon']);
+    assert.deepEqual(iconNames, ['cross-circle', 'warning']);
   });
 
   describe('compact mode', async () => {
@@ -79,7 +79,7 @@ describe('IconButton', () => {
       assert.strictEqual(icons.length, 1);
       assert.deepEqual(icons.map(c => c.label), [null]);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-      assert.deepEqual(iconNames, ['error_icon']);
+      assert.deepEqual(iconNames, ['cross-circle']);
     });
 
     it('renders correctly with two icons', () => {
@@ -88,8 +88,8 @@ describe('IconButton', () => {
         groups: [
           defaultIcon,
           {
-            iconName: 'warning_icon',
-            iconColor: '#1a73e8',
+            iconName: 'warning',
+            iconColor: 'var(--icon-warning)',
             text: '12',
           },
         ],
@@ -100,7 +100,7 @@ describe('IconButton', () => {
       assert.strictEqual(icons.length, 1);
       assert.deepEqual(icons.map(c => c.label), [null]);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-      assert.deepEqual(iconNames, ['error_icon']);
+      assert.deepEqual(iconNames, ['cross-circle']);
     });
   });
 
@@ -109,8 +109,8 @@ describe('IconButton', () => {
       clickHandler: () => {},
       groups: [
         {
-          iconName: 'warning_icon',
-          iconColor: '#1a73e8',
+          iconName: 'warning',
+          iconColor: 'var(--icon-warning)',
           text: undefined,
         },
         defaultIcon,
@@ -121,7 +121,7 @@ describe('IconButton', () => {
     assert.strictEqual(icons.length, 1);
     assert.deepEqual(icons.map(c => c.label), ['1']);
     const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-    assert.deepEqual(iconNames, ['error_icon']);
+    assert.deepEqual(iconNames, ['cross-circle']);
   });
 
   it('renders correctly with a customly sized icon', () => {
@@ -129,8 +129,8 @@ describe('IconButton', () => {
       clickHandler: () => {},
       groups: [
         {
-          iconName: 'warning_icon',
-          iconColor: '#1a73e8',
+          iconName: 'warning',
+          iconColor: 'var(--icon-warning)',
           text: 'Text',
           iconHeight: '2ex',
           iconWidth: '3ex',
@@ -152,8 +152,8 @@ describe('IconButton', () => {
         groups: [
           defaultIcon,
           {
-            iconName: 'warning_icon',
-            iconColor: '#1a73e8',
+            iconName: 'warning',
+            iconColor: 'var(--icon-warning)',
             text: '31',
           },
         ],
@@ -163,7 +163,7 @@ describe('IconButton', () => {
       assert.strictEqual(iconsBefore.length, 2);
       assert.deepEqual(iconsBefore.map(c => c.label), ['1', '31']);
       const iconNamesBefore = iconsBefore.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-      assert.deepEqual(iconNamesBefore, ['error_icon', 'warning_icon']);
+      assert.deepEqual(iconNamesBefore, ['cross-circle', 'warning']);
 
       const data = component.data;
       component.data = {...data, groups: data.groups.map((group, index) => ({...group, text: `${index}`}))};
@@ -172,7 +172,7 @@ describe('IconButton', () => {
       assert.strictEqual(iconsAfter.length, 2);
       assert.deepEqual(iconsAfter.map(c => c.label), ['0', '1']);
       const iconNamesAfter = iconsAfter.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-      assert.deepEqual(iconNamesAfter, ['error_icon', 'warning_icon']);
+      assert.deepEqual(iconNamesAfter, ['cross-circle', 'warning']);
     });
   });
 

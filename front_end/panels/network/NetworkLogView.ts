@@ -1177,7 +1177,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private invalidateAllItems(deferUpdate?: boolean): void {
-    this.staleRequests = new Set(Logs.NetworkLog.NetworkLog.instance().requests());
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    this.staleRequests = new Set(Logs.NetworkLog.NetworkLog.instance().requests().filter(
+        r => targetManager.isInScope(SDK.NetworkManager.NetworkManager.forRequest(r))));
     if (deferUpdate) {
       this.scheduleRefresh();
     } else {

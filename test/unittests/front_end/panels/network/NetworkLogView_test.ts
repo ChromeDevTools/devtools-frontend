@@ -44,7 +44,7 @@ describeWithMockConnection('NetworkLogView', () => {
         shortcutTitleForAction: () => {},
         shortcutsForAction: () => [],
       } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
-      networkLogView = createNetworkLogView();
+      Logs.NetworkLog.NetworkLog.instance();
       target = targetFactory();
     });
 
@@ -99,8 +99,12 @@ describeWithMockConnection('NetworkLogView', () => {
     }
 
     const tests = (inScope: boolean) => () => {
-      it('adds dividers on main frame load events', async () => {
+      beforeEach(() => {
+        networkLogView = createNetworkLogView();
         SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
+      });
+
+      it('adds dividers on main frame load events', async () => {
         const addEventDividers = sinon.spy(networkLogView.columns(), 'addEventDividers');
 
         networkLogView.setRecording(true);
@@ -158,13 +162,14 @@ describeWithMockConnection('NetworkLogView', () => {
       Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').set(preserveLog);
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       const anotherTarget = createTarget();
-      networkLogView.markAsRoot();
-      networkLogView.show(document.body);
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
       assertNotNullOrUndefined(networkManager);
       const request1 = createNetworkRequest('url1', {target});
       const request2 = createNetworkRequest('url2', {target});
       const request3 = createNetworkRequest('url3', {target: anotherTarget});
+      networkLogView = createNetworkLogView();
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
       await coordinator.done();
 
       const rootNode = networkLogView.columns().dataGrid().rootNode();

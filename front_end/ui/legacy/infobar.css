@@ -94,25 +94,18 @@
 }
 
 .info-icon {
-  -webkit-mask-image: var(--image-file-ic_info_black_18dp);
-  background-color: var(--color-primary-old);
+  -webkit-mask-image: var(--image-file-info);
+  background-color: var(--icon-info);
 }
 
 .warning-icon {
-  --override-warning-icon-color: hsl(44deg 92% 50%);
-
-  -webkit-mask-image: var(--image-file-ic_warning_black_18dp);
-  background-color: var(--override-warning-icon-color);
+  -webkit-mask-image: var(--image-file-warning);
+  background-color: var(--icon-warning);
 }
 
 .error-icon {
-  background-image: var(--image-file-error_icon);
-  background-size: contain;
-}
-
-.-theme-with-dark-background .warning-icon,
-:host-context(.-theme-with-dark-background) .warning-icon {
-  --override-warning-icon-color: rgb(245 182 10);
+  -webkit-mask-image: var(--image-file-cross-circle);
+  background-color: var(--icon-error);
 }
 
 .issue-icon {
@@ -121,8 +114,8 @@
 }
 
 .icon {
-  -webkit-mask-size: 18px 18px;
-  width: 18px;
-  height: 18px;
+  -webkit-mask-size: 20px 20px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
 }

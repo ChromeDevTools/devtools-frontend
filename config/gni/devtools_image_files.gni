@@ -100,7 +100,6 @@ devtools_svg_sources = [
   "edit.svg",
   "empty.svg",
   "errorWave.svg",
-  "error_icon.svg",
   "eye.svg",
   "feedback_button_icon.svg",
   "file-sync-badge.svg",

@@ -169,7 +169,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #filteredIssues = new Map<string, Issue>();
   #issueCounts = new Map<IssueKind, number>();
   #hiddenIssueCount = new Map<IssueKind, number>();
-  #hasSeenOutermostFrameNavigated = false;
+  #hasSeenPrimaryPageChanged = false;
   #issuesById: Map<string, Issue> = new Map();
   #issuesByOutermostTarget: WeakMap<SDK.Target.Target, Set<Issue>> = new Map();
 
@@ -179,8 +179,9 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     super();
     new SourceFrameIssuesManager(this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
-    SDK.FrameManager.FrameManager.instance().addEventListener(
-        SDK.FrameManager.Events.OutermostFrameNavigated, this.#onOutermostFrameNavigated, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.#onPrimaryPageChanged, this);
     SDK.FrameManager.FrameManager.instance().addEventListener(
         SDK.FrameManager.Events.FrameAddedToTarget, this.#onFrameAddedToTarget, this);
 
@@ -221,17 +222,17 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   /**
-   * Once we have seen at least one `OutermostFrameNavigated` event, we can be reasonably sure
+   * Once we have seen at least one `PrimaryPageChanged` event, we can be reasonably sure
    * that we also collected issues that were reported during the navigation to the current
    * page. If we haven't seen a main frame navigated, we might have missed issues that arose
    * during navigation.
    */
   reloadForAccurateInformationRequired(): boolean {
-    return !this.#hasSeenOutermostFrameNavigated;
+    return !this.#hasSeenPrimaryPageChanged;
   }
 
-  #onOutermostFrameNavigated(
-      event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>): void {
+  #onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>):
+      void {
     const {frame} = event.data;
     const keptIssues = new Map<string, Issue>();
     for (const [key, issue] of this.#allIssues.entries()) {
@@ -240,7 +241,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       }
     }
     this.#allIssues = keptIssues;
-    this.#hasSeenOutermostFrameNavigated = true;
+    this.#hasSeenPrimaryPageChanged = true;
     this.#updateFilteredIssues();
   }
 
@@ -251,7 +252,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     // When DevTools is opened after navigation has completed, issues may be received
     // before the outermost frame is available. Thus, we trigger a recalcuation of third-party-ness
     // when we attach to the outermost frame.
-    if (frame.isOutermostFrame()) {
+    if (frame.isOutermostFrame() && SDK.TargetManager.TargetManager.instance().isInScope(frame.resourceTreeModel())) {
       this.#updateFilteredIssues();
     }
   }

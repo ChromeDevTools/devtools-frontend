@@ -8,7 +8,7 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
 
 import {createFakeSetting, createTarget} from '../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConnection.js';
 import {mkInspectorCspIssue, StubIssue, ThirdPartyStubIssue} from './StubIssue.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
@@ -70,6 +70,32 @@ describeWithMockConnection('IssuesManager', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
     assert.deepStrictEqual(Array.from(issuesManager.issues()).map(getBlockedUrl), ['url2']);
   });
+
+  const updatesOnPrimaryPageChange = (primary: boolean) => () => {
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
+
+    model.dispatchEventToListeners(
+        SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
+    assert.strictEqual(issuesManager.numberOfIssues(), 1);
+
+    const FRAME = {
+      id: 'main',
+      loaderId: 'test',
+      url: 'http://example.com',
+      securityOrigin: 'http://example.com',
+      mimeType: 'text/html',
+    };
+    if (primary) {
+      dispatchEvent(target, 'Page.frameNavigated', {frame: FRAME});
+    } else {
+      const prerenderTarget = createTarget({subtype: 'prerender'});
+      dispatchEvent(prerenderTarget, 'Page.frameNavigated', {frame: FRAME});
+    }
+    assert.strictEqual(issuesManager.numberOfIssues(), primary ? 0 : 1);
+  };
+
+  it('clears issues after primary page navigation', updatesOnPrimaryPageChange(true));
+  it('does not clear issues after non-primary page navigation', updatesOnPrimaryPageChange(false));
 
   it('filters third-party issues when the third-party issues setting is false, includes them otherwise', () => {
     const issues = [
@@ -293,4 +319,5 @@ describeWithMockConnection('IssuesManager', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
     await updateRequired;
   });
+
 });

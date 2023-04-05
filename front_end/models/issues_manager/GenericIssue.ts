@@ -64,7 +64,8 @@ export class GenericIssue extends Issue {
   }
 
   primaryKey(): string {
-    return `${this.code()}-(${this.#issueDetails.frameId})-(${this.#issueDetails.violatingNodeId})`;
+    return `${this.code()}-(${this.#issueDetails.frameId})-(${this.#issueDetails.violatingNodeId})-(${
+        this.#issueDetails.violatingNodeAttribute})`;
   }
 
   getDescription(): MarkdownIssueDescription|null {

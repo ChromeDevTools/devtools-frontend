@@ -73,6 +73,7 @@ function launchChrome() {
     'SharedStorageAPI',
     'FencedFrames',
     'PrivacySandboxAdsAPIsOverride',
+    'AutofillEnableDevtoolsIssues',
   ];
   const launchArgs = [
     '--remote-allow-origins=*', '--remote-debugging-port=0', '--enable-experimental-web-platform-features',

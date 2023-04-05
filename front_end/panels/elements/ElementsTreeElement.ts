@@ -420,6 +420,20 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
+  highlightTagAsViolating(): void {
+    this.listItemElement.getElementsByClassName('webkit-html-tag-name')[0].classList.add('violating-element');
+  }
+
+  highlightViolatingAttr(name: string): void {
+    const tag = this.listItemElement.getElementsByClassName('webkit-html-tag')[0];
+    const attributes = tag.getElementsByClassName('webkit-html-attribute');
+    for (const attribute of attributes) {
+      if (attribute.getElementsByClassName('webkit-html-attribute-name')[0].textContent === name) {
+        attribute.getElementsByClassName('webkit-html-attribute-name')[0].classList.add('violating-element');
+      }
+    }
+  }
+
   expandedChildrenLimit(): number {
     return this.expandedChildrenLimitInternal;
   }

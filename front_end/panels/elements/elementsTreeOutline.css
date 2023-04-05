@@ -364,3 +364,10 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
     forced-color-adjust: none;
   }
 }
+
+.violating-element {
+  background-image: var(--image-file-errorWave);
+  background-repeat: repeat-x;
+  background-position: bottom;
+  padding-bottom: 1px;
+}

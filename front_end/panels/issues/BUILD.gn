@@ -50,7 +50,7 @@ devtools_module("issues") {
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
     "../../panels/console_counters:bundle",
-    "../../panels/elements/components:bundle",
+    "../../panels/elements:bundle",
     "../../panels/network/forward:bundle",
     "../../ui/components/adorners:bundle",
     "../../ui/components/data_grid:bundle",

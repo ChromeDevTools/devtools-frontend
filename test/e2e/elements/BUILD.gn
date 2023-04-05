@@ -29,6 +29,7 @@ node_ts_library("elements") {
     "style-pane-properties_test.ts",
     "styles-disable-inherited_test.ts",
     "switch-panels-while-editing-as-html_test.ts",
+    "violating-element-and-attributes_test.ts",
   ]
 
   deps = [

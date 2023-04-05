@@ -34,11 +34,13 @@ describeWithLocale('GenericIssue', async () => {
     sinon.stub(console, 'warn');
   });
 
+  // TODO(crbug/1399414): Make this test reflect reality, cross origin errors do not have a violating node.
   it('adds a cross origin portal post message issue with valid details', () => {
     const issueDetails = {
       errorType: Protocol.Audits.GenericIssueErrorType.CrossOriginPortalPostMessageError,
       frameId: 'main' as Protocol.Page.FrameId,
       violatingNodeId: 1 as Protocol.DOM.BackendNodeId,
+      violatingNodeAttribute: 'attribute',
     };
     const issue = createProtocolIssueWithDetails(issueDetails);
 
@@ -49,7 +51,7 @@ describeWithLocale('GenericIssue', async () => {
     assert.strictEqual(genericIssue.getCategory(), IssuesManager.Issue.IssueCategory.Generic);
     assert.strictEqual(
         genericIssue.primaryKey(),
-        `GenericIssue::CrossOriginPortalPostMessageError-(${'main' as Protocol.Page.FrameId})-(1)`);
+        `GenericIssue::CrossOriginPortalPostMessageError-(${'main' as Protocol.Page.FrameId})-(1)-(attribute)`);
     assert.strictEqual(genericIssue.getKind(), IssuesManager.Issue.IssueKind.Improvement);
     assert.isNotNull(genericIssue.getDescription());
   });

@@ -36,6 +36,7 @@ copy_to_gen("elements") {
     "elements-search-test.html",
     "flexbox-editor.html",
     "focus.html",
+    "form-with-issues.html",
     "grid-editor.html",
     "highlight-pseudo-inheritance.html",
     "hover.html",

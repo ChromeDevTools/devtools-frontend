@@ -197,7 +197,8 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       },
     });
 
-    await Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().breakpointEdited(breakpointItem);
+    await Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance().breakpointEdited(
+        breakpointItem, false /* editButtonClicked */);
     assert.isTrue(revealer.reveal.calledOnceWith(location));
   });
 

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -45,8 +46,9 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
         });
     this.#breakpointsView.addEventListener(
         SourcesComponents.BreakpointsView.BreakpointEditedEvent.eventName, (event: Event) => {
-          const {data: {breakpointItem}} = event as SourcesComponents.BreakpointsView.BreakpointEditedEvent;
-          void this.#controller.breakpointEdited(breakpointItem);
+          const {data: {breakpointItem, editButtonClicked}} =
+              event as SourcesComponents.BreakpointsView.BreakpointEditedEvent;
+          void this.#controller.breakpointEdited(breakpointItem, editButtonClicked);
           event.consume();
         });
     this.#breakpointsView.addEventListener(
@@ -99,6 +101,9 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   readonly #collapsedFilesSettings: Common.Settings.Setting<Platform.DevToolsPath.UrlString[]>;
   readonly #collapsedFiles: Set<Platform.DevToolsPath.UrlString>;
 
+  // This is used to keep track of outstanding edits to breakpoints that were initiated
+  // by the breakpoint edit button (for UMA).
+  #outstandingBreakpointEdited: Bindings.BreakpointManager.Breakpoint|undefined;
   #updateScheduled = false;
   #updateRunning = false;
 
@@ -148,6 +153,15 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     void this.update();
   }
 
+  breakpointEditFinished(breakpoint: Bindings.BreakpointManager.Breakpoint|null, edited: boolean): void {
+    if (this.#outstandingBreakpointEdited && this.#outstandingBreakpointEdited === breakpoint) {
+      if (edited) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointConditionEditedFromSidebar);
+      }
+      this.#outstandingBreakpointEdited = undefined;
+    }
+  }
+
   breakpointStateChanged(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem, checked: boolean): void {
     const locations = this.#getLocationsForBreakpointItem(breakpointItem);
     locations.forEach((value: Bindings.BreakpointManager.BreakpointLocation) => {
@@ -156,7 +170,8 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     });
   }
 
-  async breakpointEdited(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem): Promise<void> {
+  async breakpointEdited(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem, editButtonClicked: boolean):
+      Promise<void> {
     const locations = this.#getLocationsForBreakpointItem(breakpointItem);
     let location: Bindings.BreakpointManager.BreakpointLocation|undefined;
     for (const locationCandidate of locations) {
@@ -165,6 +180,9 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
       }
     }
     if (location) {
+      if (editButtonClicked) {
+        this.#outstandingBreakpointEdited = location.breakpoint;
+      }
       await Common.Revealer.reveal(location);
     }
   }

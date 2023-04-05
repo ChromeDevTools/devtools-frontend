@@ -48,6 +48,7 @@ import {AddDebugInfoURLDialog} from './AddSourceMapURLDialog.js';
 import {BreakpointEditDialog, type BreakpointEditDialogResult} from './BreakpointEditDialog.js';
 import {Plugin} from './Plugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
+import {BreakpointsSidebarController} from './BreakpointsSidebarPane.js';
 
 const {EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION} = Bindings.BreakpointManager;
 
@@ -802,9 +803,10 @@ export class DebuggerPlugin extends Plugin {
       dialog.detach();
       editor.dispatch({effects: compartment.reconfigure([])});
       if (!result.committed) {
+        BreakpointsSidebarController.instance().breakpointEditFinished(breakpoint, false);
         return;
       }
-
+      BreakpointsSidebarController.instance().breakpointEditFinished(breakpoint, oldCondition !== result.condition);
       recordBreakpointWithConditionAdded(result);
       if (breakpoint) {
         breakpoint.setCondition(result.condition, result.isLogpoint);
@@ -833,6 +835,7 @@ export class DebuggerPlugin extends Plugin {
     dialog.focusEditor();
     this.activeBreakpointDialog = dialog;
 
+    // This counts new conditional breakpoints or logpoints that are added.
     function recordBreakpointWithConditionAdded(result: BreakpointEditDialogResult): void {
       const {condition: newCondition, isLogpoint} = result;
       const isConditionalBreakpoint = newCondition.length !== 0 && !isLogpoint;
@@ -1563,6 +1566,8 @@ export class BreakpointLocationRevealer implements Common.Revealer.Revealer {
     const debuggerPlugin = debuggerPluginForUISourceCode.get(uiLocation.uiSourceCode);
     if (debuggerPlugin) {
       debuggerPlugin.editBreakpointLocation(breakpointLocation);
+    } else {
+      BreakpointsSidebarController.instance().breakpointEditFinished(breakpointLocation.breakpoint, false);
     }
   }
 }

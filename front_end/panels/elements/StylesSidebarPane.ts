@@ -66,6 +66,7 @@ import {
   BlankStylePropertiesSection,
   KeyframePropertiesSection,
   HighlightPseudoStylePropertiesSection,
+  TryRuleSection,
 } from './StylePropertiesSection.js';
 
 import * as LayersWidget from './LayersWidget.js';
@@ -1015,6 +1016,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     // For sniffing in tests.
   }
 
+  rebuildSectionsForMatchedStyleRulesForTest(
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>|null,
+      parentsComputedStyles: Map<string, string>|null): Promise<SectionBlock[]> {
+    return this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles);
+  }
+
   private async rebuildSectionsForMatchedStyleRules(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>|null,
       parentsComputedStyles: Map<string, string>|null): Promise<SectionBlock[]> {
@@ -1153,6 +1160,18 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       for (const keyframe of keyframesRule.keyframes()) {
         this.idleCallbackManager.schedule(() => {
           block.sections.push(new KeyframePropertiesSection(this, matchedStyles, keyframe.style, sectionIdx));
+          sectionIdx++;
+        });
+      }
+      blocks.push(block);
+    }
+
+    for (const positionFallbackRule of matchedStyles.positionFallbackRules()) {
+      const block = SectionBlock.createPositionFallbackBlock(positionFallbackRule.name().text);
+      for (const tryRule of positionFallbackRule.tryRules()) {
+        this.idleCallbackManager.schedule(() => {
+          block.sections.push(new TryRuleSection(
+              this, matchedStyles, tryRule.style, sectionIdx, computedStyles, parentsComputedStyles));
           sectionIdx++;
         });
       }
@@ -1623,6 +1642,13 @@ export class SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
     separatorElement.textContent = `@keyframes ${keyframesName}`;
+    return new SectionBlock(separatorElement);
+  }
+
+  static createPositionFallbackBlock(positionFallbackName: string): SectionBlock {
+    const separatorElement = document.createElement('div');
+    separatorElement.className = 'sidebar-separator';
+    separatorElement.textContent = `@position-fallback ${positionFallbackName}`;
     return new SectionBlock(separatorElement);
   }
 

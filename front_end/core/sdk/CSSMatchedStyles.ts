@@ -9,7 +9,7 @@ import {cssMetadata, VariableRegex} from './CSSMetadata.js';
 
 import {type CSSModel} from './CSSModel.js';
 import {type CSSProperty} from './CSSProperty.js';
-import {CSSKeyframesRule, CSSStyleRule} from './CSSRule.js';
+import {CSSKeyframesRule, CSSPositionFallbackRule, CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {type DOMNode} from './DOMModel.js';
 
@@ -32,6 +32,7 @@ interface CSSMatchedStylesPayload {
   inheritedPseudoPayload: Protocol.CSS.InheritedPseudoElementMatches[];
   animationsPayload: Protocol.CSS.CSSKeyframesRule[];
   parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
+  positionFallbackRules: Protocol.CSS.CSSPositionFallbackRule[];
 }
 
 export class CSSMatchedStyles {
@@ -47,6 +48,7 @@ export class CSSMatchedStyles {
   readonly #customHighlightPseudoDOMCascades: Map<string, DOMInheritanceCascade>;
   readonly #styleToDOMCascade: Map<CSSStyleDeclaration, DOMInheritanceCascade>;
   readonly #parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
+  readonly #positionFallbackRules: CSSPositionFallbackRule[];
 
   constructor({
     cssModel,
@@ -59,6 +61,7 @@ export class CSSMatchedStyles {
     inheritedPseudoPayload,
     animationsPayload,
     parentLayoutNodeId,
+    positionFallbackRules,
   }: CSSMatchedStylesPayload) {
     this.#cssModelInternal = cssModel;
     this.#nodeInternal = node;
@@ -68,6 +71,7 @@ export class CSSMatchedStyles {
     if (animationsPayload) {
       this.#keyframesInternal = animationsPayload.map(rule => new CSSKeyframesRule(cssModel, rule));
     }
+    this.#positionFallbackRules = positionFallbackRules.map(rule => new CSSPositionFallbackRule(cssModel, rule));
     this.#parentLayoutNodeId = parentLayoutNodeId;
 
     this.#nodeForStyleInternal = new Map();
@@ -539,6 +543,10 @@ export class CSSMatchedStyles {
 
   keyframes(): CSSKeyframesRule[] {
     return this.#keyframesInternal;
+  }
+
+  positionFallbackRules(): CSSPositionFallbackRule[] {
+    return this.#positionFallbackRules;
   }
 
   pseudoStyles(pseudoType: Protocol.DOM.PseudoType): CSSStyleDeclaration[] {

@@ -9,7 +9,7 @@ import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
@@ -102,6 +102,42 @@ describeWithRealConnection('StylesSidebarPane', async () => {
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().modelRemoved(cssModel);
     workspace.removeProject(project);
     await stylesSidebarPane.trackURLForChanges(URL);  // Clean up diff subscription
+  });
+
+  describe('rebuildSectionsForMatchedStyleRulesForTest', () => {
+    it('should add @position-fallback section to the end', async () => {
+      const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+      const matchedStyles = new SDK.CSSMatchedStyles.CSSMatchedStyles({
+        cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+        node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
+        inlinePayload: null,
+        attributesPayload: null,
+        matchedPayload: [],
+        pseudoPayload: [],
+        inheritedPayload: [],
+        inheritedPseudoPayload: [],
+        animationsPayload: [],
+        parentLayoutNodeId: undefined,
+        positionFallbackRules: [{
+          name: {text: '--compass'},
+          tryRules: [{
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {
+              cssProperties: [{name: 'bottom', value: 'anchor(--anchor-name bottom)'}],
+              shorthandEntries: [],
+            },
+          }],
+        }],
+      });
+
+      const sectionBlocks =
+          await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map());
+
+      assert.strictEqual(sectionBlocks.length, 2);
+      assert.strictEqual(sectionBlocks[1].titleElement()?.textContent, '@position-fallback --compass');
+      assert.strictEqual(sectionBlocks[1].sections.length, 1);
+      assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.TryRuleSection);
+    });
   });
 });
 

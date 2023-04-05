@@ -94,6 +94,10 @@
   color: var(--color-text-primary);
 }
 
+.styles-section .try-rule-selector-element {
+  color: var(--color-text-disabled);
+}
+
 .styles-section .style-properties {
   margin: 0;
   padding: 2px 4px 0 0;

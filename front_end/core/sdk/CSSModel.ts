@@ -318,6 +318,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       inheritedPseudoPayload: response.inheritedPseudoElements || [],
       animationsPayload: response.cssKeyframesRules || [],
       parentLayoutNodeId: response.parentLayoutNodeId,
+      positionFallbackRules: response.cssPositionFallbackRules || [],
     });
   }
 

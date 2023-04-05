@@ -344,6 +344,8 @@ export function getLocalizedActionCategory(category: ActionCategory): Platform.U
     case ActionCategory.NONE:
       return i18n.i18n.lockedString('');
   }
+  // Not all categories are cleanly typed yet. Return the category as-is in this case.
+  return i18n.i18n.lockedString(category);
 }
 
 export const enum IconClass {

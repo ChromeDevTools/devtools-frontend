@@ -1570,6 +1570,11 @@
                             "name": "violatingNodeId",
                             "optional": true,
                             "$ref": "DOM.BackendNodeId"
+                        },
+                        {
+                            "name": "violatingNodeAttribute",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },

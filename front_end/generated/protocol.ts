@@ -1038,6 +1038,7 @@ export namespace Audits {
     errorType: GenericIssueErrorType;
     frameId?: Page.FrameId;
     violatingNodeId?: DOM.BackendNodeId;
+    violatingNodeAttribute?: string;
   }
 
   /**

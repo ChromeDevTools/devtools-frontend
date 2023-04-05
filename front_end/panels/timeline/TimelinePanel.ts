@@ -1232,7 +1232,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     try {
       // Run the new engine in parallel with the parsing done in the performanceModel
       await Promise.all([
-        this.performanceModel.setTracingModel(tracingModel),
+        this.performanceModel.setTracingModel(tracingModel, recordingIsFresh),
         this.#executeNewTraceEngine(tracingModel, recordingIsFresh),
       ]);
       const traceParsedData = this.#traceEngineModel.traceParsedData();

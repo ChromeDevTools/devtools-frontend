@@ -311,21 +311,6 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
       void {
   }
 
-  linkifyLocation(event: SDK.TracingModel.Event): Element|null {
-    if (!this.modelInternal) {
-      return null;
-    }
-    const target = this.modelInternal.timelineModel().targetByEvent(event);
-    if (!target) {
-      return null;
-    }
-    const frame = TimelineModel.TimelineProfileTree.eventStackFrame(event);
-    if (!frame) {
-      return null;
-    }
-    return this.linkifier.maybeLinkifyConsoleCallFrame(target, frame, {showColumnNumber: true, inlineFrameIndex: 0});
-  }
-
   selectProfileNode(treeNode: TimelineModel.TimelineProfileTree.Node, suppressSelectedEvent: boolean): void {
     const pathToRoot = [];
     let node: (TimelineModel.TimelineProfileTree.Node|null)|TimelineModel.TimelineProfileTree.Node = treeNode;
@@ -615,7 +600,10 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       }
 
       name.textContent = TimelineUIUtils.eventTitle(event);
-      this.linkElement = this.treeView.linkifyLocation(event);
+      const target = this.treeView.modelInternal?.timelineModel().targetByEvent(event) || null;
+      const linkifier = this.treeView.linkifier;
+      const isFreshRecording = Boolean(this.treeView.modelInternal?.timelineModel().isFreshRecording());
+      this.linkElement = TimelineUIUtils.linkifyTopCallFrame(event, target, linkifier, isFreshRecording);
       if (this.linkElement) {
         container.createChild('div', 'activity-link').appendChild(this.linkElement);
       }

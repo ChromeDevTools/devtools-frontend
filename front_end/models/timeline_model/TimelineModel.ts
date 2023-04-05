@@ -155,6 +155,7 @@ export class TimelineModelImpl {
   private currentTaskLayoutAndRecalcEvents: SDK.TracingModel.Event[];
   private tracingModelInternal: SDK.TracingModel.TracingModel|null;
   private mainFrameLayerTreeId?: any;
+  #isFreshRecording = false;
 
   constructor() {
     this.minimumRecordTimeInternal = 0;
@@ -375,7 +376,12 @@ export class TimelineModelImpl {
     return this.tracingModelInternal.navStartTimes();
   }
 
-  setEvents(tracingModel: SDK.TracingModel.TracingModel): void {
+  isFreshRecording(): boolean {
+    return this.#isFreshRecording;
+  }
+
+  setEvents(tracingModel: SDK.TracingModel.TracingModel, isFreshRecording: boolean = false): void {
+    this.#isFreshRecording = isFreshRecording;
     this.reset();
     this.resetProcessingState();
     this.tracingModelInternal = tracingModel;

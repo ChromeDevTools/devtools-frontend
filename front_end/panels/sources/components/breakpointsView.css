@@ -143,7 +143,7 @@ summary:hover button {
 }
 
 button:hover devtools-icon {
-  --icon-color: var(--color-text-primary);
+  --icon-color: var(--icon-default-hover);
 }
 
 .type-indicator {

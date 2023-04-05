@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as i18n from '../../../../../front_end/core/i18n/i18n.js';
 import * as QuickOpen from '../../../../../front_end/ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
@@ -22,8 +22,8 @@ describeWithEnvironment('View registration', () => {
     UI.ViewManager.registerViewExtension({
       location: UI.ViewManager.ViewLocationValues.PANEL,
       id: viewId,
-      commandPrompt: (): Platform.UIString.LocalizedString => commandPrompt as Platform.UIString.LocalizedString,
-      title: (): Platform.UIString.LocalizedString => viewTitle as Platform.UIString.LocalizedString,
+      commandPrompt: i18n.i18n.lockedLazyString(commandPrompt),
+      title: i18n.i18n.lockedLazyString(viewTitle),
       order,
       persistence: UI.ViewManager.ViewPersistence.PERMANENT,
       hasToolbar: false,
@@ -64,8 +64,8 @@ describeWithEnvironment('View registration', () => {
     assert.doesNotThrow(() => {
       UI.ViewManager.registerViewExtension({
         id: viewId,
-        commandPrompt: (): Platform.UIString.LocalizedString => commandPrompt as Platform.UIString.LocalizedString,
-        title: (): Platform.UIString.LocalizedString => viewTitle as Platform.UIString.LocalizedString,
+        commandPrompt: i18n.i18n.lockedLazyString(commandPrompt),
+        title: i18n.i18n.lockedLazyString(viewTitle),
         async loadView() {
           return new MockView();
         },

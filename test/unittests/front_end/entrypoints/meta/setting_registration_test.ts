@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../front_end/core/common/common.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as i18n from '../../../../../front_end/core/i18n/i18n.js';
 import * as QuickOpen from '../../../../../front_end/ui/legacy/components/quick_open/quick_open.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
 
@@ -22,18 +22,18 @@ describe('Setting registration', () => {
     Common.Settings.registerSettingsForTest(
         [{
           category: settingCategory,
-          title: (): Platform.UIString.LocalizedString => settingTitle as Platform.UIString.LocalizedString,
+          title: i18n.i18n.lockedLazyString(settingTitle),
           settingType: Common.Settings.SettingType.BOOLEAN,
           settingName,
           defaultValue: false,
           options: [
             {
               value: true,
-              title: (): Platform.UIString.LocalizedString => enableTitle as Platform.UIString.LocalizedString,
+              title: i18n.i18n.lockedLazyString(enableTitle),
             },
             {
               value: false,
-              title: (): Platform.UIString.LocalizedString => disableTitle as Platform.UIString.LocalizedString,
+              title: i18n.i18n.lockedLazyString(disableTitle),
             },
           ],
         }],

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as i18n from '../../../../../front_end/core/i18n/i18n.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as QuickOpen from '../../../../../front_end/ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
@@ -30,7 +30,7 @@ describeWithEnvironment('Action registration', () => {
     UI.ActionRegistration.registerActionExtension({
       actionId,
       category: UI.ActionRegistration.ActionCategory.ELEMENTS,
-      title: (): Platform.UIString.LocalizedString => actionTitle as Platform.UIString.LocalizedString,
+      title: i18n.i18n.lockedLazyString(actionTitle),
       async loadActionDelegate() {
         return new MockActionDelegate();
       },

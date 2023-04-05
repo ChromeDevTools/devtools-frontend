@@ -14,6 +14,7 @@ ts_library("meta") {
 
   deps = [
     "../../../../../front_end/core/common:bundle",
+    "../../../../../front_end/core/i18n:bundle",
     "../../../../../front_end/ui/legacy:bundle",
     "../../../../../front_end/ui/legacy/components/quick_open:bundle",
     "../../helpers",

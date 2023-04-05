@@ -6,6 +6,7 @@
 
 import {defaultStrategy} from 'minify-html-literals/src/strategy';  // eslint-disable-line rulesdir/es_modules_import
 import minifyHTML from 'rollup-plugin-minify-html-template-literals';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 import {terser} from 'rollup-plugin-terser';
 
 const devtools_plugin = require('./devtools_plugin.js');
@@ -31,13 +32,14 @@ const minifyHTMLStrategy = {
   }
 };
 
-/** @type {function({configDCHECK: boolean}): import("rollup").MergedRollupOptions} */
+/** @type {function({configDCHECK: boolean, configSourcemaps: boolean}): import("rollup").MergedRollupOptions} */
 // eslint-disable-next-line import/no-default-export
 export default commandLineArgs => ({
   treeshake: false,
   context: 'self',
   output: [{
     format: 'esm',
+    sourcemap: Boolean(commandLineArgs.configSourcemaps),
   }],
   plugins: [
     minifyHTML({
@@ -63,5 +65,6 @@ export default commandLineArgs => ({
         return devtools_plugin.devtoolsPlugin(source, importer);
       },
     },
+    sourcemaps(),
   ]
 });

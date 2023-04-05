@@ -26,14 +26,14 @@ appendComponent({
 appendComponent({
   clickHandler: (): void => {},
   groups: [
-    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23', iconHeight: '2ex', iconWidth: '2ex'},
+    {iconName: 'issue-exclamation-filled', iconColor: 'yellow', text: '23', iconHeight: '2ex', iconWidth: '2ex'},
     {iconName: 'issue-text-filled', iconColor: 'blue', text: '1'},
   ],
 });
 
 appendComponent({
   groups: [
-    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
+    {iconName: 'issue-exclamation-filled', iconColor: 'yellow', text: '23'},
     {iconName: 'issue-text-filled', iconColor: 'blue', text: '1'},
   ],
 });
@@ -41,7 +41,7 @@ appendComponent({
 appendComponent({
   clickHandler: (): void => {},
   groups: [
-    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
+    {iconName: 'issue-exclamation-filled', iconColor: 'yellow', text: '23'},
     {iconName: 'issue-text-filled', iconColor: 'blue', text: '1'},
   ],
   trailingText: 'Issues',
@@ -50,7 +50,7 @@ appendComponent({
 appendComponent({
   clickHandler: (): void => {},
   groups: [
-    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
+    {iconName: 'issue-exclamation-filled', iconColor: 'yellow', text: '23'},
     {iconName: 'issue-text-filled', iconColor: 'blue', text: '1'},
   ],
   leadingText: 'Issues:',
@@ -59,7 +59,7 @@ appendComponent({
 appendComponent({
   clickHandler: (): void => {},
   groups: [
-    {iconName: 'issue-exclamation-icon', iconColor: 'yellow', text: '23'},
+    {iconName: 'issue-exclamation-filled', iconColor: 'yellow', text: '23'},
     {iconName: 'issue-text-filled', iconColor: 'blue', text: '1'},
   ],
   leadingText: 'Issues:',

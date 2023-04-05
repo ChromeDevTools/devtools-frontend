@@ -329,10 +329,10 @@ export class HeaderSectionRow extends HTMLElement {
       return html`
         <div class="devtools-link" @click=${blockedDetails.reveal}>
           <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-            iconName: 'issue-exclamation-icon',
-            color: 'var(--issue-color-yellow)',
-            width: '16px',
-            height: '16px',
+            iconName: 'issue-exclamation-filled',
+            color: 'var(--icon-warning)',
+            width: '20px',
+            height: '20px',
           } as IconButton.Icon.IconData}>
           </${IconButton.Icon.Icon.litTagName}
           >${i18nString(UIStrings.learnMoreInTheIssuesTab)}

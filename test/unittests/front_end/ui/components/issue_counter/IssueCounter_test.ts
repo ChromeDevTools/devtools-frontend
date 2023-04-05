@@ -64,7 +64,7 @@ describeWithLocale('IssueCounter', () => {
       assert.strictEqual(icons.length, 2);
       assert.deepEqual(icons.map(c => c.label), ['2', '1']);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-      assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-icon']);
+      assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled']);
     });
 
     it('updates correctly', () => {
@@ -79,7 +79,7 @@ describeWithLocale('IssueCounter', () => {
         assert.strictEqual(icons.length, 2);
         assert.deepEqual(icons.map(c => c.label), ['2', '1']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-icon']);
+        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled']);
       }
 
       issuesManager.incrementIssueCountsOfAllKinds();
@@ -89,7 +89,7 @@ describeWithLocale('IssueCounter', () => {
         assert.strictEqual(icons.length, 3);
         assert.deepEqual(icons.map(c => c.label), ['3', '2', '1']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-icon', 'issue-text-filled']);
+        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled', 'issue-text-filled']);
       }
     });
 
@@ -105,7 +105,7 @@ describeWithLocale('IssueCounter', () => {
         assert.strictEqual(icons.length, 2);
         assert.deepEqual(icons.map(c => c.label), ['2', '1']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-icon']);
+        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled']);
       }
 
       component.data = {...component.data, displayMode: IssueCounter.IssueCounter.DisplayMode.OnlyMostImportant};
@@ -148,7 +148,7 @@ describeWithLocale('IssueCounter', () => {
       assert.strictEqual(icons.length, 3);
       assert.deepEqual(icons.map(c => c.label), ['2', '1', '0']);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-      assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-icon', 'issue-text-filled']);
+      assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled', 'issue-text-filled']);
     });
 
     it('updates correctly', () => {
@@ -164,7 +164,7 @@ describeWithLocale('IssueCounter', () => {
         assert.strictEqual(icons.length, 3);
         assert.deepEqual(icons.map(c => c.label), ['2', '1', '0']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-icon', 'issue-text-filled']);
+        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled', 'issue-text-filled']);
       }
 
       issuesManager.incrementIssueCountsOfAllKinds();
@@ -174,7 +174,7 @@ describeWithLocale('IssueCounter', () => {
         assert.strictEqual(icons.length, 3);
         assert.deepEqual(icons.map(c => c.label), ['3', '2', '1']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
-        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-icon', 'issue-text-filled']);
+        assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled', 'issue-text-filled']);
       }
     });
   });

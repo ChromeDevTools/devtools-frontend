@@ -34,11 +34,11 @@ icon.onclick = (): void => {
 
 const row2 = document.createElement('tr');
 const iconName2 = document.createElement('td');
-iconName2.textContent = 'issue-exclamation-icon';
+iconName2.textContent = 'issue-exclamation-filled';
 row2.appendChild(iconName2);
 
 const otherIcon = new IconButton.Icon.Icon();
-const otherPath = '../../../../Images/src/issue-exclamation-icon.svg';
+const otherPath = '../../../../Images/src/issue-exclamation-filled.svg';
 otherIcon.data = {
   iconPath: otherPath,
   width: '24px',

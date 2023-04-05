@@ -3,10 +3,92 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
 import {Context} from './Context.js';
+
+const UIStrings = {
+  /**
+   *@description Title of the keybind category 'Elements' in Settings' Shortcuts pannel.
+   */
+  elements: 'Elements',
+  /**
+   *@description Title of the keybind category 'Screenshot' in Settings' Shortcuts pannel.
+   */
+  screenshot: 'Screenshot',
+  /**
+   *@description Title of the keybind category 'Network' in Settings' Shortcuts pannel.
+   */
+  network: 'Network',
+  /**
+   *@description Title of the keybind category 'Memory' in Settings' Shortcuts pannel.
+   */
+  memory: 'Memory',
+  /**
+   *@description Title of the keybind category 'JavaScript Profiler' in Settings' Shortcuts pannel.
+   */
+  javascript_profiler: 'JavaScript Profiler',
+  /**
+   *@description Title of the keybind category 'Console' in Settings' Shortcuts pannel.
+   */
+  console: 'Console',
+  /**
+   *@description Title of the keybind category 'Performance' in Settings' Shortcuts pannel.
+   */
+  performance: 'Performance',
+  /**
+   *@description Title of the keybind category 'Mobile' in Settings' Shortcuts pannel.
+   */
+  mobile: 'Mobile',
+  /**
+   *@description Title of the keybind category 'Help' in Settings' Shortcuts pannel.
+   */
+  help: 'Help',
+  /**
+   *@description Title of the keybind category 'Layers' in Settings' Shortcuts pannel.
+   */
+  layers: 'Layers',
+  /**
+   *@description Title of the keybind category 'Navigation' in Settings' Shortcuts pannel.
+   */
+  navigation: 'Navigation',
+  /**
+   *@description Title of the keybind category 'Drawer' in Settings' Shortcuts pannel.
+   */
+  drawer: 'Drawer',
+  /**
+   *@description Title of the keybind category 'Global' in Settings' Shortcuts pannel.
+   */
+  global: 'Global',
+  /**
+   *@description Title of the keybind category 'Resources' in Settings' Shortcuts pannel.
+   */
+  resources: 'Resources',
+  /**
+   *@description Title of the keybind category 'Background Services' in Settings' Shortcuts pannel.
+   */
+  background_services: 'Background Services',
+  /**
+   *@description Title of the keybind category 'Settings' in Settings' Shortcuts pannel.
+   */
+  settings: 'Settings',
+  /**
+   *@description Title of the keybind category 'Debugger' in Settings' Shortcuts pannel.
+   */
+  debugger: 'Debugger',
+  /**
+   *@description Title of the keybind category 'Sources' in Settings' Shortcuts pannel.
+   */
+  sources: 'Sources',
+  /**
+   *@description Title of the keybind category 'Rendering' in Settings' Shortcuts pannel.
+   */
+  rendering: 'Rendering',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/ActionRegistration.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ActionDelegate {
   handleAction(_context: Context, _actionId: string): boolean;
@@ -59,7 +141,7 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return this.enabledInternal;
   }
 
-  category(): string {
+  category(): ActionCategory {
     return this.actionRegistration.category;
   }
 
@@ -195,32 +277,74 @@ export type EventTypes = {
   [Events.Toggled]: boolean,
 };
 
-// TODO(crbug.com/1181019)
-export const ActionCategory = {
-  ELEMENTS: 'Elements',
-  SCREENSHOT: 'Screenshot',
-  NETWORK: 'Network',
-  MEMORY: 'Memory',
-  JAVASCRIPT_PROFILER: 'JavaScript Profiler',
-  CONSOLE: 'Console',
-  PERFORMANCE: 'Performance',
-  MOBILE: 'Mobile',
-  SENSORS: 'Sensors',
-  HELP: 'Help',
-  INPUTS: 'Inputs',
-  LAYERS: 'Layers',
-  NAVIGATION: 'Navigation',
-  DRAWER: 'Drawer',
-  GLOBAL: 'Global',
-  RESOURCES: 'Resources',
-  BACKGROUND_SERVICES: 'Background Services',
-  SETTINGS: 'Settings',
-  DEBUGGER: 'Debugger',
-  SOURCES: 'Sources',
-  RENDERING: 'Rendering',
-};
+// eslint-disable-next-line rulesdir/const_enum
+export enum ActionCategory {
+  NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.
+  ELEMENTS = 'ELEMENTS',
+  SCREENSHOT = 'SCREENSHOT',
+  NETWORK = 'NETWORK',
+  MEMORY = 'MEMORY',
+  JAVASCRIPT_PROFILER = 'JAVASCRIPT_PROFILER',
+  CONSOLE = 'CONSOLE',
+  PERFORMANCE = 'PERFORMANCE',
+  MOBILE = 'MOBILE',
+  HELP = 'HELP',
+  LAYERS = 'LAYERS',
+  NAVIGATION = 'NAVIGATION',
+  DRAWER = 'DRAWER',
+  GLOBAL = 'GLOBAL',
+  RESOURCES = 'RESOURCES',
+  BACKGROUND_SERVICES = 'BACKGROUND_SERVICES',
+  SETTINGS = 'SETTINGS',
+  DEBUGGER = 'DEBUGGER',
+  SOURCES = 'SOURCES',
+  RENDERING = 'RENDERING',
+}
 
-type ActionCategory = typeof ActionCategory[keyof typeof ActionCategory];
+export function getLocalizedActionCategory(category: ActionCategory): Platform.UIString.LocalizedString {
+  switch (category) {
+    case ActionCategory.ELEMENTS:
+      return i18nString(UIStrings.elements);
+    case ActionCategory.SCREENSHOT:
+      return i18nString(UIStrings.screenshot);
+    case ActionCategory.NETWORK:
+      return i18nString(UIStrings.network);
+    case ActionCategory.MEMORY:
+      return i18nString(UIStrings.memory);
+    case ActionCategory.JAVASCRIPT_PROFILER:
+      return i18nString(UIStrings.javascript_profiler);
+    case ActionCategory.CONSOLE:
+      return i18nString(UIStrings.console);
+    case ActionCategory.PERFORMANCE:
+      return i18nString(UIStrings.performance);
+    case ActionCategory.MOBILE:
+      return i18nString(UIStrings.mobile);
+    case ActionCategory.HELP:
+      return i18nString(UIStrings.help);
+    case ActionCategory.LAYERS:
+      return i18nString(UIStrings.layers);
+    case ActionCategory.NAVIGATION:
+      return i18nString(UIStrings.navigation);
+    case ActionCategory.DRAWER:
+      return i18nString(UIStrings.drawer);
+    case ActionCategory.GLOBAL:
+      return i18nString(UIStrings.global);
+    case ActionCategory.RESOURCES:
+      return i18nString(UIStrings.resources);
+    case ActionCategory.BACKGROUND_SERVICES:
+      return i18nString(UIStrings.background_services);
+    case ActionCategory.SETTINGS:
+      return i18nString(UIStrings.settings);
+    case ActionCategory.DEBUGGER:
+      return i18nString(UIStrings.debugger);
+    case ActionCategory.SOURCES:
+      return i18nString(UIStrings.sources);
+    case ActionCategory.RENDERING:
+      return i18nString(UIStrings.rendering);
+    case ActionCategory.NONE:
+      return i18n.i18n.lockedString('');
+  }
+}
 
 export const enum IconClass {
   LARGEICON_NODE_SEARCH = 'select-element',

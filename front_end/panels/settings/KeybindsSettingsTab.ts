@@ -138,7 +138,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     if (typeof item === 'string') {
       UI.ARIAUtils.setLevel(itemElement, 1);
       itemElement.classList.add('keybinds-category-header');
-      itemElement.textContent = item;
+      itemElement.textContent = UI.ActionRegistration.getLocalizedActionCategory(item);
     } else {
       const listItem = new ShortcutListItem(item, this, item === this.editingItem);
       itemElement = listItem.element;
@@ -248,7 +248,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
 
     const items: KeybindsItem[] = [];
 
-    let currentCategory: string;
+    let currentCategory: UI.ActionRegistration.ActionCategory;
     actions.forEach(action => {
       if (action.id() === 'elements.toggle-element-search') {
         return;
@@ -603,4 +603,4 @@ export class ShortcutListItem {
   }
 }
 
-export type KeybindsItem = string|UI.ActionRegistration.Action;
+export type KeybindsItem = UI.ActionRegistration.ActionCategory|UI.ActionRegistration.Action;

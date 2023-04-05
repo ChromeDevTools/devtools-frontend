@@ -146,7 +146,7 @@ export enum SettingCategory {
   SYNC = 'SYNC',
 }
 
-export function getLocalizedSettingsCategory(category: SettingCategory): string|Platform.UIString.LocalizedString {
+export function getLocalizedSettingsCategory(category: SettingCategory): Platform.UIString.LocalizedString {
   switch (category) {
     case SettingCategory.ELEMENTS:
       return i18nString(UIStrings.elements);
@@ -181,7 +181,7 @@ export function getLocalizedSettingsCategory(category: SettingCategory): string|
     case SettingCategory.ADORNER:
       return i18nString(UIStrings.adorner);
     case SettingCategory.NONE:
-      return '';
+      return i18n.i18n.lockedString('');
     case SettingCategory.SYNC:
       return i18nString(UIStrings.sync);
   }

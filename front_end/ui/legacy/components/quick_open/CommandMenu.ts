@@ -139,7 +139,7 @@ export class CommandMenu {
     const shortcut = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action.id()) || '';
 
     return CommandMenu.createCommand({
-      category: category,
+      category: UI.ActionRegistration.getLocalizedActionCategory(category),
       keys: action.tags() || '',
       title: action.title() || '',
       shortcut,
@@ -231,7 +231,7 @@ export interface RevealViewCommandOptions {
 }
 
 export interface CreateCommandOptions {
-  category: string;
+  category: Platform.UIString.LocalizedString;
   keys: string;
   title: string;
   shortcut: string;

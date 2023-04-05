@@ -628,6 +628,22 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-devices);
 }
 
+.spritesheet-dock-bottom.icon-mask {
+  -webkit-mask-image: var(--image-file-dock-bottom);
+}
+
+.spritesheet-dock-left.icon-mask {
+  -webkit-mask-image: var(--image-file-dock-left);
+}
+
+.spritesheet-dock-right.icon-mask {
+  -webkit-mask-image: var(--image-file-dock-right);
+}
+
+.spritesheet-dock-window.icon-mask {
+  -webkit-mask-image: var(--image-file-dock-window);
+}
+
 .spritesheet-document.icon-mask {
   -webkit-mask-image: var(--image-file-document);
 }
@@ -911,6 +927,42 @@ span[is="dt-icon-label"] {
 [is="ui-icon"].force-white-icons.spritesheet-database,
 .-theme-preserve {
   -webkit-mask-image: var(--image-file-database);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.force-white-icons [is="ui-icon"].spritesheet-dock-bottom,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-dock-bottom,
+[is="ui-icon"].force-white-icons.spritesheet-dock-bottom,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-dock-bottom);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.force-white-icons [is="ui-icon"].spritesheet-dock-left,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-dock-left,
+[is="ui-icon"].force-white-icons.spritesheet-dock-left,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-dock-left);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.force-white-icons [is="ui-icon"].spritesheet-dock-right,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-dock-right,
+[is="ui-icon"].force-white-icons.spritesheet-dock-right,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-dock-right);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.force-white-icons [is="ui-icon"].spritesheet-dock-window,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-dock-window,
+[is="ui-icon"].force-white-icons.spritesheet-dock-window,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-dock-window);
   -webkit-mask-position: var(--spritesheet-position);
   background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
 }

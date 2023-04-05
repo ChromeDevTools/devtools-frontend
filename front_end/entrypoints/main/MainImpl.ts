@@ -884,10 +884,10 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       dockItemElement.appendChild(titleElement);
       const dockItemToolbar = new UI.Toolbar.Toolbar('', dockItemElement);
       dockItemToolbar.makeBlueOnHover();
-      const undock = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.undockIntoSeparateWindow), 'largeicon-undock');
-      const bottom = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.dockToBottom), 'largeicon-dock-to-bottom');
-      const right = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.dockToRight), 'largeicon-dock-to-right');
-      const left = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.dockToLeft), 'largeicon-dock-to-left');
+      const undock = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.undockIntoSeparateWindow), 'dock-window');
+      const bottom = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.dockToBottom), 'dock-bottom');
+      const right = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.dockToRight), 'dock-right');
+      const left = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.dockToLeft), 'dock-left');
       undock.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());
       bottom.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());
       right.addEventListener(UI.Toolbar.ToolbarButton.Events.MouseDown, event => event.data.consume());

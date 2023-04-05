@@ -47,14 +47,9 @@ def deprecations_from_file(file_name):
                 "chrome_status_feature"]
         if len(meta_for_entry): meta[name] = meta_for_entry
 
-        # The PRESUBMIT script in chromium prevents unicode characters,
-        # but there are still a few special cases we need to handle.
         ui_strings[name] = {
-            "message":
-            entry["message"].replace("\\", "\\\\").replace("'", "\\'"),
-            "note":
-            entry["translation_note"].replace("\n",
-                                              "\\n").replace("\r", "\\r")
+            "message": entry["message"],
+            "note": entry["translation_note"],
         }
 
     return meta, ui_strings
@@ -80,7 +75,7 @@ with open(GENERATED_LOCATION, mode="w+") as f:
         f.write("  /**\n")
         f.write("   * @description %s\n" % note)
         f.write("   */\n")
-        f.write("  %s: '%s',\n" % (name, message))
+        f.write("  %s: %s,\n" % (name, json.dumps(message)))
     f.write("};\n")
     f.write("\n")
     f.write("export interface DeprecationDescriptor {\n")

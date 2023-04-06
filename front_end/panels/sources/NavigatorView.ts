@@ -734,7 +734,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
 
     const rootOrDeployed = this.rootOrDeployedNode();
-    if (target === SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (target === SDK.TargetManager.TargetManager.instance().scopeTarget()) {
       return rootOrDeployed;
     }
 

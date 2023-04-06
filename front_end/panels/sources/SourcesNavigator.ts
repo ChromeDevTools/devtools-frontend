@@ -136,7 +136,7 @@ export class NetworkNavigatorView extends NavigatorView {
   }
 
   private inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
     if (event.data !== mainTarget) {
       return;
     }
@@ -152,7 +152,7 @@ export class NetworkNavigatorView extends NavigatorView {
   }
 
   uiSourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (!inspectedURL) {
       return;

@@ -480,9 +480,9 @@ export class NetworkLogViewColumns {
     this.waterfallRequestsAreStale = true;
     if (columnId === 'waterfall') {
       if (this.dataGridInternal.sortOrder() === DataGrid.DataGrid.Order.Ascending) {
-        this.waterfallColumnSortIcon.setIconType('smallicon-triangle-up');
+        this.waterfallColumnSortIcon.setIconType('triangle-up');
       } else {
-        this.waterfallColumnSortIcon.setIconType('smallicon-triangle-down');
+        this.waterfallColumnSortIcon.setIconType('triangle-down');
       }
 
       const sortFunction =

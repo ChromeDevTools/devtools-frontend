@@ -25,6 +25,10 @@ const UIStrings = {
    */
   breakpoint: 'Breakpoint',
   /**
+   *@description Tooltip text in Breakpoint Edit Dialog of the Sources panel that shows up when hovering over the close icon
+   */
+  closeDialog: 'Close edit dialog and save changes',
+  /**
    *@description Text in Breakpoint Edit Dialog of the Sources panel
    */
   conditionalBreakpoint: 'Conditional breakpoint',
@@ -100,7 +104,8 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.element.tabIndex = -1;
 
     this.element.classList.add('sources-edit-breakpoint-dialog');
-    const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);
+    const header = this.contentElement.createChild('div', 'dialog-header');
+    const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', header);
     toolbar.appendText(`Line ${editorLineNumber + 1}:`);
 
     this.typeSelector =
@@ -166,6 +171,13 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       ],
     }));
     editorWrapper.appendChild(this.editor);
+
+    const closeIcon = new IconButton.Icon.Icon();
+    closeIcon.data = {iconName: 'cross', color: 'var(--icon-default)', width: '20px', height: '20px'};
+    closeIcon.title = i18nString(UIStrings.closeDialog);
+    closeIcon.onclick = (): void => this.finishEditing(true, this.editor.state.doc.toString());
+    header.appendChild(closeIcon);
+
     this.#history = new TextEditor.AutocompleteHistory.AutocompleteHistory(
         Common.Settings.Settings.instance().createLocalSetting('breakpointConditionHistory', []));
     this.#editorHistory = new TextEditor.TextEditorHistory.TextEditorHistory(this.editor, this.#history);

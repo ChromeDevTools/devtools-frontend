@@ -27,8 +27,7 @@
 
 :host-context(.sources-edit-breakpoint-dialog) .condition-editor {
   background-color: var(--color-background);
-  margin-left: 3px;
-  margin-bottom: 20px;
+  margin: 0 6px 20px 3px;
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .source-frame-breakpoint-toolbar {
@@ -50,4 +49,14 @@
 
 :host-context(.sources-edit-breakpoint-dialog) .link-wrapper {
   display: inline-flex;
+}
+
+:host-context(.sources-edit-breakpoint-dialog) .dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+:host-context(.sources-edit-breakpoint-dialog) .dialog-header > devtools-icon:hover {
+  --icon-color: var(--icon-default-hover);
 }

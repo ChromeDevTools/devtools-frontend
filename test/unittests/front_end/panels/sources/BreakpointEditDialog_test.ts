@@ -6,6 +6,7 @@ import type * as CodeMirror from '../../../../../front_end/third_party/codemirro
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
 import {dispatchKeyDownEvent} from '../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 function setCodeMirrorContent(editor: CodeMirror.EditorView, content: string) {
   editor.dispatch({
@@ -42,6 +43,22 @@ describeWithEnvironment('BreakpointEditDialog', () => {
 
     const {committed} = await resultPromise;
     assert.isFalse(committed);
+  });
+
+  it('commits condition when close button is clicked', async () => {
+    const resultPromise = new Promise<Sources.BreakpointEditDialog.BreakpointEditDialogResult>(resolve => {
+      const dialog = new Sources.BreakpointEditDialog.BreakpointEditDialog(0, '', false, resolve);
+      const {editorForTest: {editor}} = dialog;
+      setCodeMirrorContent(editor, 'x === 5');
+
+      const closeIcon = dialog.contentElement.querySelector('devtools-icon');
+      assertNotNullOrUndefined(closeIcon);
+      closeIcon.click();
+    });
+
+    const {committed, condition} = await resultPromise;
+    assert.isTrue(committed);
+    assert.strictEqual(condition, 'x === 5');
   });
 
   it('leaves the condition as-is for logpoints', async () => {

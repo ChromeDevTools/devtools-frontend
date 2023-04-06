@@ -1271,7 +1271,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!icon) {
       return;
     }
-    icon.setIconType(sortOrder === Order.Ascending ? 'smallicon-triangle-up' : 'smallicon-triangle-down');
+    icon.setIconType(sortOrder === Order.Ascending ? 'triangle-up' : 'triangle-down');
 
     this.dispatchEventToListeners(Events.SortingChanged);
   }

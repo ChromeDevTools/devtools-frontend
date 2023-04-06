@@ -820,6 +820,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-triangle-right);
 }
 
+.spritesheet-triangle-up.icon-mask {
+  -webkit-mask-image: var(--image-file-triangle-up);
+}
+
 .spritesheet-undo.icon-mask {
   -webkit-mask-image: var(--image-file-undo);
 }

@@ -19,8 +19,7 @@ import {
 } from '../helpers/sources-helpers.js';
 
 describe('Snippets subpane', () => {
-  // Flaky on mac
-  it.skipOnPlatforms(['mac', 'win32'], '[crbug.com/1321713]: can stop on breakpoints', async () => {
+  it('can stop on breakpoints', async () => {
     const snippetName = 'Script snippet #7';
     const {frontend} = getBrowserAndPages();
 

@@ -379,11 +379,11 @@ export class Command {
   readonly deprecationWarning?: Platform.UIString.LocalizedString;
   readonly isPanelOrDrawer?: PanelOrDrawer;
 
-  readonly #executeHandler: () => void;
+  readonly #executeHandler: () => unknown;
   readonly #availableHandler?: () => boolean;
 
   constructor(
-      category: string, title: string, key: string, shortcut: string, executeHandler: () => void,
+      category: string, title: string, key: string, shortcut: string, executeHandler: () => unknown,
       availableHandler?: () => boolean, deprecationWarning?: Platform.UIString.LocalizedString,
       isPanelOrDrawer?: PanelOrDrawer) {
     this.category = category;
@@ -400,8 +400,8 @@ export class Command {
     return this.#availableHandler ? this.#availableHandler() : true;
   }
 
-  execute(): void {
-    this.#executeHandler();
+  execute(): unknown {
+    return this.#executeHandler();  // Tests might want to await the action in case it's async.
   }
 }
 

@@ -5,6 +5,8 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
 
+import {getNavigationForTraceEvent} from './Trace.js';
+
 export const millisecondsToMicroseconds = (value: Types.Timing.MilliSeconds): Types.Timing.MicroSeconds =>
     Types.Timing.MicroSeconds(value * 1000);
 
@@ -112,4 +114,25 @@ export function formatMicrosecondsTime(
       return `${minuteFormatter.format(Number(mins.value))} ${secondFormatter.format(seconds)}`;
     }
   }
+}
+
+export function timeStampForEventAdjustedByClosestNavigation(
+    event: Types.TraceEvents.TraceEventData,
+    traceBounds: Types.Timing.TraceWindow,
+    navigationsByNavigationId: Map<string, Types.TraceEvents.TraceEventNavigationStart>,
+    navigationsByFrameId: Map<string, Types.TraceEvents.TraceEventNavigationStart[]>,
+    ): Types.Timing.MicroSeconds {
+  let eventTimeStamp = event.ts - traceBounds.min;
+  if (event.args?.data?.navigationId) {
+    const navigationForEvent = navigationsByNavigationId.get(event.args.data.navigationId);
+    if (navigationForEvent) {
+      eventTimeStamp = event.ts - navigationForEvent.ts;
+    }
+  } else if (event.args?.data?.frame) {
+    const navigationForEvent = getNavigationForTraceEvent(event, event.args.data.frame, navigationsByFrameId);
+    if (navigationForEvent) {
+      eventTimeStamp = event.ts - navigationForEvent.ts;
+    }
+  }
+  return Types.Timing.MicroSeconds(eventTimeStamp);
 }

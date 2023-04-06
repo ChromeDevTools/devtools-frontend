@@ -3580,20 +3580,13 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(
     null): TraceEngine.Types.Timing.MilliSeconds {
   if (event instanceof SDK.TracingModel.PayloadEvent && traceParsedData) {
     const payload = event.rawPayload();
-    let eventTimeStamp = payload.ts - traceParsedData.Meta.traceBounds.min;
-    if (payload.args?.data?.navigationId) {
-      const navigationForEvent = traceParsedData.Meta.navigationsByNavigationId.get(payload.args.data.navigationId);
-      if (navigationForEvent) {
-        eventTimeStamp = payload.ts - navigationForEvent.ts;
-      }
-    } else if (payload.args?.data?.frame) {
-      const navigationForEvent = TraceEngine.Helpers.Trace.getNavigationForTraceEvent(
-          payload, payload.args.data.frame, traceParsedData.Meta.navigationsByFrameId);
-      if (navigationForEvent) {
-        eventTimeStamp = payload.ts - navigationForEvent.ts;
-      }
-    }
-    return TraceEngine.Helpers.Timing.microSecondsToMilliseconds(TraceEngine.Types.Timing.MicroSeconds(eventTimeStamp));
+    const time = TraceEngine.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
+        payload,
+        traceParsedData.Meta.traceBounds,
+        traceParsedData.Meta.navigationsByNavigationId,
+        traceParsedData.Meta.navigationsByFrameId,
+    );
+    return TraceEngine.Helpers.Timing.microSecondsToMilliseconds(time);
   }
 
   let eventTimeStamp = event.startTime - model.minimumRecordTime();

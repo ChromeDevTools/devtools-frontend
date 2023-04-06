@@ -39,7 +39,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
@@ -148,9 +147,8 @@ const UIStrings = {
    *@description Text in Timeline Panel of the Performance panel
    *@example {wrong format} PH1
    *@example {ERROR_FILE_NOT_FOUND} PH2
-   *@example {2} PH3
    */
-  failedToSaveTimelineSSS: 'Failed to save timeline: {PH1} ({PH2}, {PH3})',
+  failedToSaveTimelineSS: 'Failed to save timeline: {PH1} ({PH2})',
   /**
    *@description Text in Timeline Panel of the Performance panel
    */
@@ -262,6 +260,24 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let timelinePanelInstance: TimelinePanel;
 let isNode: boolean;
 
+// TypeScript will presumably get these types at some stage, and when it
+// does these temporary types should be removed.
+// TODO: Remove types when available in TypeScript.
+declare global {
+  interface FileSystemWritableFileStream extends WritableStream {
+    write(data: unknown): Promise<void>;
+    close(): Promise<void>;
+  }
+
+  interface FileSystemHandle {
+    createWritable(): Promise<FileSystemWritableFileStream>;
+  }
+
+  interface Window {
+    showSaveFilePicker(opts: unknown): Promise<FileSystemHandle>;
+  }
+}
+
 export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineModeViewDelegate {
   private readonly dropTarget: UI.DropTarget.DropTarget;
   private readonly recordingOptionUIControls: UI.Toolbar.ToolbarItem[];
@@ -314,6 +330,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private fileSelectorElement?: HTMLInputElement;
   private selection?: TimelineSelection|null;
   #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.TraceModel.ENABLED_TRACE_HANDLERS>;
+  // Tracks the index of the trace that the user is currently viewing.
+  #traceEngineActiveTraceIndex = -1;
   constructor() {
     super('timeline');
     this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithRequiredHandlersForMigration();
@@ -646,29 +664,38 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     const now = Platform.DateUtilities.toISO8601Compact(new Date());
+
     let fileName: Platform.DevToolsPath.RawPathString;
     if (isNode) {
       fileName = `CPU-${now}.cpuprofile` as Platform.DevToolsPath.RawPathString;
     } else {
-      fileName = `Profile-${now}.json` as Platform.DevToolsPath.RawPathString;
+      fileName = `Trace-${now}.json` as Platform.DevToolsPath.RawPathString;
     }
-    const stream = new Bindings.FileUtils.FileOutputStream();
 
-    const accepted = await stream.open(fileName);
-    if (!accepted) {
+    const traceEvents = this.#traceEngineModel.traceEvents(this.#traceEngineActiveTraceIndex);
+    const metadata = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex);
+    if (!traceEvents) {
       return;
     }
 
-    const error = (await performanceModel.save(stream) as {
-      message: string,
-      name: string,
-      code: number,
-    } | null);
-    if (!error) {
-      return;
+    try {
+      const encoder = new TextEncoder();
+      const buffer = encoder.encode(JSON.stringify({traceEvents, metadata}));
+      const handler = await window.showSaveFilePicker({
+        suggestedName: fileName,
+      });
+      const writable = await handler.createWritable();
+      await writable.write(buffer);
+      await writable.close();
+    } catch (error) {
+      console.error(error.stack);
+      if (error.name === 'AbortError') {
+        // The user cancelled the action, so this is not an error we need to report.
+        return;
+      }
+      Common.Console.Console.instance().error(
+          i18nString(UIStrings.failedToSaveTimelineSS, {PH1: error.message, PH2: error.name}));
     }
-    Common.Console.Console.instance().error(
-        i18nString(UIStrings.failedToSaveTimelineSSS, {PH1: error.message, PH2: error.name, PH3: error.code}));
   }
 
   async showHistory(): Promise<void> {
@@ -1237,6 +1264,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       ]);
       const traceParsedData = this.#traceEngineModel.traceParsedData();
       this.setModel(this.performanceModel, exclusiveFilter, traceParsedData);
+      // This code path is only executed when a new trace is recorded/imported,
+      // so we know that the active index will be the size of the model because
+      // the newest trace will be automatically set to active.
+      this.#traceEngineActiveTraceIndex = this.#traceEngineModel.size() - 1;
 
       if (this.statusPane) {
         this.statusPane.remove();

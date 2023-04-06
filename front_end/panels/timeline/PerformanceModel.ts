@@ -4,9 +4,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Bindings from '../../models/bindings/bindings.js';
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
@@ -195,14 +194,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     const filmStripModel = (this.filmStripModelInternal as SDK.FilmStripModel.FilmStripModel);
     const filmStripFrame = filmStripModel.frameByTimestamp(screenshotTime);
     return filmStripFrame && filmStripFrame.timestamp - frame.endTime < 10 ? filmStripFrame : null;
-  }
-
-  save(stream: Common.StringOutputStream.OutputStream): Promise<DOMError|null> {
-    if (!this.tracingModelInternal) {
-      throw 'call setTracingModel before accessing PerformanceModel';
-    }
-    const backingStorage = (this.tracingModelInternal.backingStorage() as Bindings.TempFile.TempFileBackingStorage);
-    return backingStorage.writeToStream(stream);
   }
 
   setWindow(window: Window, animate?: boolean): void {

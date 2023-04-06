@@ -219,7 +219,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.reportSelector = new ReportSelector(() => this.renderStartView());
     toolbar.appendToolbarItem(this.reportSelector.comboBox());
 
-    this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'largeicon-clear');
+    this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
     toolbar.appendToolbarItem(this.clearButton);
     this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clearAll.bind(this));
 

@@ -269,7 +269,7 @@ export class OverridesNavigatorView extends NavigatorView {
       this.toolbar.appendToolbarItem(enableCheckbox);
 
       this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator(true));
-      const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearConfiguration), 'largeicon-clear');
+      const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearConfiguration), 'clear');
       clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
         project.remove();
       });

@@ -592,6 +592,14 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-checkmark);
 }
 
+.spritesheet-chevron-double-right.icon-mask {
+  -webkit-mask-image: var(--image-file-chevron-double-right);
+}
+
+.spritesheet-clear.icon-mask {
+  -webkit-mask-image: var(--image-file-clear);
+}
+
 .spritesheet-cloud.icon-mask {
   -webkit-mask-image: var(--image-file-cloud);
 }
@@ -610,14 +618,6 @@ span[is="dt-icon-label"] {
 
 .spritesheet-cross-circle.icon-mask {
   -webkit-mask-image: var(--image-file-cross-circle);
-}
-
-.spritesheet-chevron-double-right.icon-mask {
-  -webkit-mask-image: var(--image-file-chevron-double-right);
-}
-
-.spritesheet-clear.icon-mask {
-  -webkit-mask-image: var(--image-file-clear);
 }
 
 .spritesheet-database.icon-mask {

@@ -1161,9 +1161,9 @@ export class TabbedPaneTab {
     closeIconContainer.classList.add('close-button', 'tabbed-pane-close-button');
     const closeIcon = new IconButton.Icon.Icon();
     closeIcon.data = {
-      iconName: 'close-icon',
+      iconName: 'cross',
       color: 'var(--tabbed-pane-close-icon-color)',
-      width: '7px',
+      width: '16px',
     };
     closeIconContainer.appendChild(closeIcon);
     closeIconContainer.setAttribute('role', 'button');
@@ -1177,9 +1177,9 @@ export class TabbedPaneTab {
     previewIcon.classList.add('preview-icon');
     const closeIcon = new IconButton.Icon.Icon();
     closeIcon.data = {
-      iconName: 'ic_preview_feature',
+      iconName: 'experiment',
       color: 'var(--override-tabbed-pane-preview-icon-color)',
-      width: '14px',
+      width: '16px',
     };
     previewIcon.appendChild(closeIcon);
     previewIcon.setAttribute('title', i18nString(UIStrings.previewFeature));

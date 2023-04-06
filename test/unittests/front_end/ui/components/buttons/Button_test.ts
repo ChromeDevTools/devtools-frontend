@@ -11,7 +11,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 const {assert} = chai;
 
 describe('Button', async () => {
-  const iconUrl = new URL('../../../../../../front_end/Images/ic_file_image.svg', import.meta.url).toString();
+  const iconUrl = new URL('../../../../../../front_end/Images/file-image.svg', import.meta.url).toString();
 
   async function renderButton(
       data: Buttons.Button.ButtonData = {

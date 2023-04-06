@@ -11,6 +11,7 @@
   display: flex;
   font-weight: bold;
   padding: calc(2 * var(--icon-padding)) var(--icon-padding);
+  line-height: 20px;
 }
 
 .icon {

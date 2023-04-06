@@ -7,26 +7,27 @@ import * as Formatter from '../../models/formatter/formatter.js';
 import type * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 
-export function imageNameForResourceType(resourceType: Common.ResourceType.ResourceType): string {
+export function iconDataForResourceType(resourceType: Common.ResourceType.ResourceType):
+    {iconName: string, color: string} {
   if (resourceType.isDocument()) {
-    return 'ic_file_document';
+    return {iconName: 'file-document', color: 'var(--icon-file-document)'};
   }
   if (resourceType.isImage()) {
-    return 'ic_file_image';
+    return {iconName: 'file-image', color: 'var(--icon-file-image)'};
   }
   if (resourceType.isFont()) {
-    return 'ic_file_font';
+    return {iconName: 'file-font', color: 'var(--icon-file-font)'};
   }
   if (resourceType.isScript()) {
-    return 'ic_file_script';
+    return {iconName: 'file-script', color: 'var(--icon-file-script)'};
   }
   if (resourceType.isStyleSheet()) {
-    return 'ic_file_stylesheet';
+    return {iconName: 'file-stylesheet', color: 'var(--icon-file-styles)'};
   }
   if (resourceType.isWebbundle()) {
-    return 'ic_file_webbundle';
+    return {iconName: 'bundle', color: 'var(--icon-default)'};
   }
-  return 'ic_file_default';
+  return {iconName: 'document', color: 'var(--icon-default)'};
 }
 
 export async function formatCSSChangesFromDiff(diff: Diff.Diff.DiffArray): Promise<string> {

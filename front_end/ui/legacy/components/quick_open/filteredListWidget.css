@@ -160,34 +160,6 @@ devtools-text-prompt {
   color: var(--color-background);
 }
 
-.filtered-list-widget-item-wrapper devtools-icon.ic_file_document {
-  --icon-color: var(--color-ic-file-document);
-}
-
-.filtered-list-widget-item-wrapper devtools-icon.ic_file_image {
-  --icon-color: var(--color-ic-file-image);
-}
-
-.filtered-list-widget-item-wrapper devtools-icon.ic_file_font {
-  --icon-color: var(--color-ic-file-font);
-}
-
-.filtered-list-widget-item-wrapper devtools-icon.ic_file_script {
-  --icon-color: var(--color-ic-file-script);
-}
-
-.filtered-list-widget-item-wrapper devtools-icon.ic_file_stylesheet {
-  --icon-color: var(--color-ic-file-stylesheet);
-}
-
-.filtered-list-widget-item-wrapper devtools-icon.ic_file_webbundle {
-  --icon-color: var(--color-ic-file-webbundle);
-}
-
-.filtered-list-widget-item-wrapper devtools-icon.ic_file_default {
-  --icon-color: var(--color-ic-file-default);
-}
-
 .filtered-list-widget-item-wrapper.selected devtools-icon {
   --icon-color: var(--color-background);
 }

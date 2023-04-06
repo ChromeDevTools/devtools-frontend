@@ -15,6 +15,10 @@
   --icon-error-small: var(--color-error);
   --icon-file-authored: var(--color-orange-bright);
   --icon-file-default: var(--color-on-surface-variant);
+  --icon-file-document: var(--color-primary);
+  --icon-file-document-small: var(--color-primary-bright);
+  --icon-file-font: var(--color-turqoise);
+  --icon-file-font-small: var(--color-turqoise-bright);
   --icon-file-image: var(--color-tertiary-bright);
   --icon-file-image-small: var(--color-tertiary);
   --icon-file-script: var(--color-orange-bright);

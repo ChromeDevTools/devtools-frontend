@@ -351,7 +351,7 @@ describe('The Network Tab', async function() {
     const getNetworkRequestIcons = () => frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.name-column > .icon'))
           .slice(1, 4)
-          .map(node => (node as HTMLImageElement).alt);
+          .map(node => (node as HTMLDivElement).title);
     });
     assert.sameMembers(await getNetworkRequestIcons(), [
       'Script',
@@ -359,7 +359,7 @@ describe('The Network Tab', async function() {
     ]);
     const getFromWebBundleIcons = () => frontend.evaluate(() => {
       return Array.from(document.querySelectorAll('.name-column > [role="link"] > .icon'))
-          .map(node => (node as HTMLImageElement).alt);
+          .map(node => (node as HTMLDivElement).title);
     });
     assert.sameMembers(await getFromWebBundleIcons(), [
       'Served from Web Bundle',

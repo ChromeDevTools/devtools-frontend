@@ -10,7 +10,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import {imageNameForResourceType} from '../../../panels/utils/utils.js';
+import {iconDataForResourceType} from '../../../panels/utils/utils.js';
 import webBundleInfoViewStyles from './WebBundleInfoView.css.js';
 
 const {render, html} = LitHtml;
@@ -57,7 +57,7 @@ export class WebBundleInfoElement extends HTMLElement {
       const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) || null;
       const resourceType = Common.ResourceType.ResourceType.fromMimeTypeOverride(mimeType) ||
           Common.ResourceType.ResourceType.fromMimeType(mimeType);
-      const iconName = imageNameForResourceType(resourceType);
+      const iconData = iconDataForResourceType(resourceType);
       return {
         cells: [
           {
@@ -67,7 +67,7 @@ export class WebBundleInfoElement extends HTMLElement {
               return html`
                 <div style="display: flex;">
                   <${IconButton.Icon.Icon.litTagName} class="icon"
-                    .data=${{color: '', iconName, width: '18px'} as IconButton.Icon.IconData}>
+                    .data=${{...iconData, width: '20px'} as IconButton.Icon.IconData}>
                   </${IconButton.Icon.Icon.litTagName}>
                   <span>${url}</span>
                 </div>`;
@@ -80,7 +80,7 @@ export class WebBundleInfoElement extends HTMLElement {
         html`
       <div class="header">
         <${IconButton.Icon.Icon.litTagName} class="icon"
-          .data=${{color: '', iconName: 'resourceWebBundle', width: '16px'} as IconButton.Icon.IconData}>
+          .data=${{color: 'var(--icon-default)', iconName: 'bundle', width: '20px'} as IconButton.Icon.IconData}>
         </${IconButton.Icon.Icon.litTagName}>
         <span>${this.#webBundleName}</span>
         <x-link href="https://web.dev/web-bundles/#explaining-web-bundles">

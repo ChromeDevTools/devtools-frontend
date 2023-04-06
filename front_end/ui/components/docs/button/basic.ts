@@ -9,7 +9,7 @@ import * as ComponentHelpers from '../../helpers/helpers.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const testIcon = '/front_end/Images/ic_file_image.svg';
+const testIcon = '/front_end/Images/file-image.svg';
 const fileIcon = '/front_end/Images/file_icon.svg';
 const plusIcon = '/front_end/Images/plus_icon.svg';
 const minusIcon = '/front_end/Images/minus_icon.svg';

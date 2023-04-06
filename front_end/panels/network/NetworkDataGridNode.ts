@@ -54,7 +54,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 
-import {imageNameForResourceType} from '../utils/utils.js';
+import {iconDataForResourceType} from '../utils/utils.js';
 
 const UIStrings = {
   /**
@@ -1077,12 +1077,13 @@ export class NetworkRequestNode extends NetworkNode {
         iconElement.classList.add('image');
         iconElement.appendChild(previewImage);
       } else {
-        iconElement = document.createElement('img');
-        iconElement.alt = this.requestInternal.resourceType().title();
-        iconElement.src =
-            new URL(
-                `../../Images/${imageNameForResourceType(this.requestInternal.resourceType())}.svg`, import.meta.url)
-                .toString();
+        const iconData = iconDataForResourceType(this.requestInternal.resourceType());
+        iconElement = document.createElement('div');
+        iconElement.title = this.requestInternal.resourceType().title();
+        iconElement.style.setProperty(
+            '-webkit-mask',
+            `url('${new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url).toString()}')  no-repeat center`);
+        iconElement.style.setProperty('background-color', iconData.color);
       }
       iconElement.classList.add('icon');
 
@@ -1093,10 +1094,13 @@ export class NetworkRequestNode extends NetworkNode {
     if (columnId === 'name') {
       const webBundleInnerRequestInfo = this.requestInternal.webBundleInnerRequestInfo();
       if (webBundleInnerRequestInfo) {
-        const secondIconElement = document.createElement('img');
+        const secondIconElement = document.createElement('div');
         secondIconElement.classList.add('icon');
-        secondIconElement.alt = i18nString(UIStrings.webBundleInnerRequest);
-        secondIconElement.src = new URL('../../Images/ic_file_webbundle_inner_request.svg', import.meta.url).toString();
+        secondIconElement.title = i18nString(UIStrings.webBundleInnerRequest);
+        secondIconElement.style.setProperty(
+            '-webkit-mask',
+            `url('${new URL('../../Images/bundle.svg', import.meta.url).toString()}')  no-repeat center`);
+        secondIconElement.style.setProperty('background-color', 'var(--icon-info)');
 
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);
         if (webBundleInnerRequestInfo.bundleRequestId && networkManager) {

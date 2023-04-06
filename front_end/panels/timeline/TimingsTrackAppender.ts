@@ -18,7 +18,10 @@ import {
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import {TimelineFlameChartMarker} from './TimelineFlameChartView.js';
-import {type TimelineMarkerStyle, TimelineUIUtils} from './TimelineUIUtils.js';
+import {
+  type TimelineMarkerStyle,
+  TimelineUIUtils,
+} from './TimelineUIUtils.js';
 import * as Common from '../../core/common/common.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 
@@ -331,6 +334,9 @@ export class TimingsTrackAppender implements TrackAppender {
     if (TraceEngine.Types.TraceEvents.isTraceEventTimeStamp(event)) {
       return `${event.name}: ${event.args.data.message}`;
     }
+    if (TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(event)) {
+      return `[mark]: ${event.name}`;
+    }
     return event.name;
   }
 
@@ -342,6 +348,24 @@ export class TimingsTrackAppender implements TrackAppender {
     const title = this.titleForEvent(event);
     const totalTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
         (event.dur || 0) as TraceEngine.Types.Timing.MicroSeconds);
+
+    // If the event is a performance mark, we show the time of the mark when
+    // the user hovers, rather than its duration (as a mark does not have any
+    // duration). Because the times at the top of the panel are adjusted per
+    // navigation, we need to adjust this timestamp by any previous navigation
+    // also so that the time aligns with what the user is seeing.
+    if (TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(event)) {
+      const timeOfEvent = TraceEngine.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
+          event,
+          this.#traceParsedData.Meta.traceBounds,
+          this.#traceParsedData.Meta.navigationsByNavigationId,
+          this.#traceParsedData.Meta.navigationsByFrameId,
+      );
+      const timeMS = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(timeOfEvent);
+      const formattedTime = i18n.TimeUtilities.millisToString(timeMS, true);
+      return {title, formattedTime};
+    }
+
     const selfTime = totalTime;
     if (totalTime === TraceEngine.Types.Timing.MilliSeconds(0)) {
       return {title, formattedTime: ''};

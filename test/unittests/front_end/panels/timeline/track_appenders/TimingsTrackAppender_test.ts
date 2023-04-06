@@ -158,11 +158,10 @@ describeWithEnvironment('TimingTrackAppender', () => {
           TraceModel.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
     });
 
-    it('returns the correct title for user timings', () => {
-      const performanceMarks = traceParsedData.UserTimings.performanceMarks;
+    it('returns the correct title for performance measures', () => {
       const performanceMeasures = traceParsedData.UserTimings.performanceMeasures;
-      for (const mark of [...performanceMarks, ...performanceMeasures]) {
-        assert.strictEqual(timingsTrackAppender.titleForEvent(mark), mark.name);
+      for (const measure of performanceMeasures) {
+        assert.strictEqual(timingsTrackAppender.titleForEvent(measure), measure.name);
       }
     });
 
@@ -172,6 +171,14 @@ describeWithEnvironment('TimingTrackAppender', () => {
         assert.strictEqual(timingsTrackAppender.titleForEvent(mark), mark.name);
       }
     });
+
+    it('returns the correct title for performance marks', () => {
+      const traceMarkers = traceParsedData.UserTimings.performanceMarks;
+      for (const mark of traceMarkers) {
+        assert.strictEqual(timingsTrackAppender.titleForEvent(mark), `[mark]: ${mark.name}`);
+      }
+    });
+
     it('returns the correct title for console timestamps', () => {
       const traceMarkers = traceParsedData.UserTimings.timestampEvents;
       for (const mark of traceMarkers) {
@@ -179,6 +186,7 @@ describeWithEnvironment('TimingTrackAppender', () => {
       }
     });
   });
+
   describe('highlightedEntryInfo', () => {
     it('returns the info for a entries with no duration correctly', () => {
       const traceMarkers = traceParsedData.PageLoadMetrics.allMarkerEvents;
@@ -192,12 +200,23 @@ describeWithEnvironment('TimingTrackAppender', () => {
         }
       }
     });
+
+    it('shows the time of the mark, not the duration, if the event is a performance mark', () => {
+      const firstMark = traceParsedData.UserTimings.performanceMarks[0];
+      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(firstMark);
+      assert.deepEqual(highlightedEntryInfo, {
+        title: '[mark]: myMark',
+        formattedTime: '1.12\u00A0s',
+      });
+    });
+
     it('returns the info for a performance.measure calls correctly', () => {
       const performanceMeasures = traceParsedData.UserTimings.performanceMeasures;
       const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(performanceMeasures[0]);
       // The i18n encondes spaces using the u00A0 unicode character.
       assert.strictEqual(highlightedEntryInfo.formattedTime, ('500.07\u00A0ms'));
     });
+
     it('returns the info for a console.time calls correctly', () => {
       const consoleTimings = traceParsedData.UserTimings.consoleTimings;
       const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(consoleTimings[0]);

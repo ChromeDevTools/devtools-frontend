@@ -179,7 +179,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         const model = new modelClass(this);
         this.#modelByConstructor.set(modelClass, model);
         if (!this.#creatingModels) {
-          this.#targetManagerInternal.modelAdded(this, modelClass, model);
+          this.#targetManagerInternal.modelAdded(this, modelClass, model, this.#targetManagerInternal.isInScope(this));
         }
       }
     }

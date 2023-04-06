@@ -130,17 +130,17 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#scopedObservers.delete(observer);
   }
 
-  modelAdded(target: Target, modelClass: ModelClass, model: SDKModel): void {
+  modelAdded(target: Target, modelClass: ModelClass, model: SDKModel, inScope: boolean): void {
     for (const observer of this.#modelObservers.get(modelClass).values()) {
-      if (!this.#scopedObservers.has(observer) || this.isInScope(model)) {
+      if (!this.#scopedObservers.has(observer) || inScope) {
         observer.modelAdded(model);
       }
     }
   }
 
-  private modelRemoved(target: Target, modelClass: ModelClass, model: SDKModel): void {
+  private modelRemoved(target: Target, modelClass: ModelClass, model: SDKModel, inScope: boolean): void {
     for (const observer of this.#modelObservers.get(modelClass).values()) {
-      if (!this.#scopedObservers.has(observer) || this.isInScope(model)) {
+      if (!this.#scopedObservers.has(observer) || inScope) {
         observer.modelRemoved(model);
       }
     }
@@ -212,15 +212,16 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     target.createModels(new Set(this.#modelObservers.keysArray()));
     this.#targetsInternal.add(target);
 
+    const inScope = this.isInScope(target);
     // Iterate over a copy. #observers might be modified during iteration.
     for (const observer of [...this.#observers]) {
-      if (!this.#scopedObservers.has(observer) || this.isInScope(target)) {
+      if (!this.#scopedObservers.has(observer) || inScope) {
         observer.targetAdded(target);
       }
     }
 
     for (const [modelClass, model] of target.models().entries()) {
-      this.modelAdded(target, modelClass, model);
+      this.modelAdded(target, modelClass, model, inScope);
     }
 
     for (const key of this.#modelListeners.keysArray()) {
@@ -246,16 +247,17 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       return;
     }
 
+    const inScope = this.isInScope(target);
     this.#targetsInternal.delete(target);
     for (const modelClass of target.models().keys()) {
       const model = target.models().get(modelClass);
       assertNotNullOrUndefined(model);
-      this.modelRemoved(target, modelClass, model);
+      this.modelRemoved(target, modelClass, model, inScope);
     }
 
     // Iterate over a copy. #observers might be modified during iteration.
     for (const observer of [...this.#observers]) {
-      if (!this.#scopedObservers.has(observer) || this.isInScope(target)) {
+      if (!this.#scopedObservers.has(observer) || inScope) {
         observer.targetRemoved(target);
       }
     }

@@ -29,13 +29,12 @@ describe('The Layers Panel', async () => {
     });
   });
 
-  // Disabled due to flakiness, original regression: crbug.com/1053901
-  it.skip('[crbug.com/1111256] should update the layers view when going offline', async () => {
+  it('should update the layers view when going offline', async () => {
     const {target} = getBrowserAndPages();
     await openPanelViaMoreTools('Layers');
 
     const targetUrl = 'layers/default.html';
-    await goToResource(targetUrl);
+    await goToResource(targetUrl, {waitUntil: 'networkidle0'});
     await waitFor('[aria-label="layers"]:not([test-current-url=""])');
     assert.strictEqual(await getCurrentUrl(), `${getResourcesPath()}/${targetUrl}`);
 
@@ -46,7 +45,7 @@ describe('The Layers Panel', async () => {
       downloadThroughput: 0,
       uploadThroughput: 0,
     });
-    await target.reload();
+    await target.reload({waitUntil: 'networkidle0'});
     await waitFor(`[aria-label="layers"]:not([test-current-url="${targetUrl}"])`);
     assert.strictEqual(await getCurrentUrl(), 'chrome-error://chromewebdata/');
   });

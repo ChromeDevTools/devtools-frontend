@@ -415,9 +415,9 @@ export const setDevToolsSettings = async (settings: Record<string, string>) => {
   await reloadDevTools();
 };
 
-export const goTo = async (url: string) => {
+export const goTo = async (url: string, options: puppeteer.WaitForOptions = {}) => {
   const {target} = getBrowserAndPages();
-  await target.goto(url);
+  await target.goto(url, options);
 };
 
 export const overridePermissions = async (permissions: puppeteer.Permission[]) => {
@@ -430,8 +430,8 @@ export const clearPermissionsOverride = async () => {
   await browser.defaultBrowserContext().clearPermissionOverrides();
 };
 
-export const goToResource = async (path: string) => {
-  await goTo(`${getResourcesPath()}/${path}`);
+export const goToResource = async (path: string, options: puppeteer.WaitForOptions = {}) => {
+  await goTo(`${getResourcesPath()}/${path}`, options);
 };
 
 export const goToResourceWithCustomHost = async (host: string, path: string) => {

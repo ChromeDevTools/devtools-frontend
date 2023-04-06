@@ -2705,16 +2705,28 @@ export class TimelineData {
   }
 
   static forEvent(event: SDK.TracingModel.Event): TimelineData {
-    let data = eventToData.get(event);
-    if (!data) {
-      data = new TimelineData();
-      eventToData.set(event, data);
+    if (event instanceof SDK.TracingModel.PayloadEvent) {
+      return TimelineData.forTraceEventData(event.rawPayload());
     }
-    return data;
+    return getOrCreateEventData(event);
+  }
+
+  static forTraceEventData(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineData {
+    return getOrCreateEventData(event);
   }
 }
 
-const eventToData = new WeakMap();
+function getOrCreateEventData(event: SDK.TracingModel.ConstructedEvent|
+                              TraceEngine.Types.TraceEvents.TraceEventData): TimelineData {
+  let data = eventToData.get(event);
+  if (!data) {
+    data = new TimelineData();
+    eventToData.set(event, data);
+  }
+  return data;
+}
+
+const eventToData = new WeakMap<SDK.TracingModel.ConstructedEvent|TraceEngine.Types.TraceEvents.TraceEventData>();
 const eventToInvalidation = new WeakMap();
 export interface InvalidationCause {
   reason: string;

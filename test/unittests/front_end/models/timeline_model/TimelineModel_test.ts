@@ -6,6 +6,7 @@ const {assert} = chai;
 
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
@@ -18,6 +19,8 @@ import {
   makeFakeSDKEventFromPayload,
   traceModelFromTraceFile,
 } from '../../helpers/TimelineHelpers.js';
+import {allModelsFromFile} from '../../helpers/TraceHelpers.js';
+import {StubbedThread} from '../../helpers/TimelineHelpers.js';
 
 // Various events listing processes and threads used by all the tests.
 const preamble = [
@@ -1751,5 +1754,67 @@ describe('groupLayoutShiftsIntoClusters', () => {
 
     assert.strictEqual(shiftThree.args.data._current_cluster_id, 2);
     assert.strictEqual(shiftThree.args.data._current_cluster_score, 0.05);
+  });
+});
+
+describeWithEnvironment('TimelineData', () => {
+  function getAllTracingModelPayloadEvents(tracingModel: SDK.TracingModel.TracingModel):
+      SDK.TracingModel.PayloadEvent[] {
+    const allSDKEvents = tracingModel.sortedProcesses().flatMap(process => {
+      return process.sortedThreads().flatMap(thread => thread.events().filter(SDK.TracingModel.eventHasPayload));
+    });
+    allSDKEvents.sort((eventA, eventB) => {
+      if (eventA.startTime > eventB.startTime) {
+        return 1;
+      }
+      if (eventB.startTime > eventA.startTime) {
+        return -1;
+      }
+      return 0;
+    });
+    return allSDKEvents;
+  }
+
+  it('stores data for an SDK.TracingModel.PayloadEvent using the raw payload as the key', async () => {
+    const data = await allModelsFromFile('web-dev.json.gz');
+    const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
+    // The exact event we use is not important, so let's use the first LCP event.
+    const lcpSDKEvent =
+        allSDKEvents.find(event => event.name === TimelineModel.TimelineModel.RecordType.MarkLCPCandidate);
+    if (!lcpSDKEvent) {
+      throw new Error('Could not find SDK Event.');
+    }
+    const dataForEvent = TimelineModel.TimelineModel.TimelineData.forEvent(lcpSDKEvent);
+    dataForEvent.backendNodeIds.push(123 as Protocol.DOM.BackendNodeId);
+
+    // Now find the same event from the new engine
+    const lcpNewEngineEvent = data.traceParsedData.PageLoadMetrics.allMarkerEvents.find(event => {
+      return TraceEngine.Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(event);
+    });
+    if (!lcpNewEngineEvent) {
+      throw new Error('Could not find LCP New engine event.');
+    }
+    // Make sure we got the matching events.
+    assert.strictEqual(lcpNewEngineEvent, lcpSDKEvent.rawPayload());
+
+    assert.strictEqual(
+        TimelineModel.TimelineModel.TimelineData.forEvent(lcpSDKEvent).backendNodeIds,
+        TimelineModel.TimelineModel.TimelineData.forTraceEventData(lcpNewEngineEvent).backendNodeIds,
+    );
+  });
+
+  it('stores data for a constructed event using the event as the key', async () => {
+    const thread = StubbedThread.make(1);
+    // None of the details here matter, we just need some constructed event.
+    const fakeConstructedEvent = new SDK.TracingModel.ConstructedEvent(
+        'blink.user_timing',
+        'some-test-event',
+        TraceEngine.Types.TraceEvents.Phase.INSTANT,
+        100,
+        thread,
+    );
+    const dataForEvent = TimelineModel.TimelineModel.TimelineData.forEvent(fakeConstructedEvent);
+    dataForEvent.backendNodeIds.push(123 as Protocol.DOM.BackendNodeId);
+    assert.strictEqual(dataForEvent, TimelineModel.TimelineModel.TimelineData.forEvent(fakeConstructedEvent));
   });
 });

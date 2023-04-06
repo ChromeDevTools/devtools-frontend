@@ -10,6 +10,7 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 
+import {getAllTracingModelPayloadEvents} from '../../helpers/TraceHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {
   DevToolsTimelineCategory,
@@ -1648,14 +1649,6 @@ describeWithEnvironment('TimelineModel', () => {
       ]);
     });
   });
-
-  function getAllTracingModelPayloadEvents(tracingModel: SDK.TracingModel.TracingModel):
-      SDK.TracingModel.PayloadEvent[] {
-    const allSDKEvents = tracingModel.sortedProcesses().flatMap(process => {
-      return process.sortedThreads().flatMap(thread => thread.events().filter(SDK.TracingModel.eventHasPayload));
-    });
-    return allSDKEvents;
-  }
 
   it('marks an LCP event on the main thread as an LCP Candidate Event', async () => {
     const {timelineModel, tracingModel} = await traceModelFromTraceFile('lcp-images.json.gz');

@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -176,6 +177,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private currentResult?: any;
+  #traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null;
 
   constructor() {
     super();
@@ -199,8 +201,13 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     this.searchableView = searchableView;
   }
 
-  setModel(model: PerformanceModel|null, track: TimelineModel.TimelineModel.Track|null): void {
+  setModel(
+      model: PerformanceModel|null,
+      track: TimelineModel.TimelineModel.Track|null,
+      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
+      ): void {
     this.modelInternal = model;
+    this.#traceParseData = traceParseData;
     this.track = track;
     this.refreshTree();
   }
@@ -211,6 +218,10 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
 
   model(): PerformanceModel|null {
     return this.modelInternal;
+  }
+
+  traceParseData(): TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null {
+    return this.#traceParseData;
   }
 
   init(): void {
@@ -721,8 +732,12 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.executionContextNamesByOrigin = new Map();
   }
 
-  setModel(model: PerformanceModel|null, track: TimelineModel.TimelineModel.Track|null): void {
-    super.setModel(model, track);
+  setModel(
+      model: PerformanceModel|null,
+      track: TimelineModel.TimelineModel.Track|null,
+      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
+      ): void {
+    super.setModel(model, track, traceParseData);
   }
 
   updateContents(selection: TimelineSelection): void {

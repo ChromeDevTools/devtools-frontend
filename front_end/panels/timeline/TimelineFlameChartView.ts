@@ -168,12 +168,15 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private needsResizeToPreferredHeights?: boolean;
   private selectedSearchResult?: number;
   private searchRegex?: RegExp;
+  #traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null;
+
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.classList.add('timeline-flamechart');
     this.delegate = delegate;
     this.model = null;
     this.eventListeners = [];
+    this.#traceEngineData = null;
 
     this.showMemoryGraphSetting = Common.Settings.Settings.instance().createSetting('timelineShowMemory', false);
     this.showWebVitalsSetting = Common.Settings.Settings.instance().createSetting('timelineWebVitals', false);
@@ -308,6 +311,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (model === this.model) {
       return;
     }
+    this.#traceEngineData = newTraceEngineData;
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.model = model;
     this.selectedTrack = null;
@@ -331,7 +335,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   private updateTrack(): void {
     this.countersView.setModel(this.model, this.selectedTrack);
-    this.detailsView.setModel(this.model, this.selectedTrack);
+    this.detailsView.setModel(this.model, this.#traceEngineData, this.selectedTrack);
   }
 
   private refresh(): void {

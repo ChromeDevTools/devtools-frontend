@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
 
@@ -81,6 +82,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private lazyLayersView?: TimelineLayersView|null;
   private preferredTabId?: string;
   private selection?: TimelineSelection|null;
+  #traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -118,7 +120,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
   }
 
-  setModel(model: PerformanceModel|null, track: TimelineModel.TimelineModel.Track|null): void {
+  setModel(
+      model: PerformanceModel|null, traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
+      track: TimelineModel.TimelineModel.Track|null): void {
     if (this.model !== model) {
       if (this.model) {
         this.model.removeEventListener(Events.WindowChanged, this.onWindowChanged, this);
@@ -128,10 +132,11 @@ export class TimelineDetailsView extends UI.Widget.VBox {
         this.model.addEventListener(Events.WindowChanged, this.onWindowChanged, this);
       }
     }
+    this.#traceEngineData = traceEngineData;
     this.track = track;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
-      view.setModel(model, track);
+      view.setModel(model, track, traceEngineData);
     }
     this.lazyPaintProfilerView = null;
     this.lazyLayersView = null;
@@ -215,7 +220,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     switch (this.selection.type()) {
       case TimelineSelection.Type.TraceEvent: {
         const event = (this.selection.object() as SDK.TracingModel.Event);
-        void TimelineUIUtils.buildTraceEventDetails(event, this.model.timelineModel(), this.detailsLinkifier, true)
+        void TimelineUIUtils
+            .buildTraceEventDetails(
+                event, this.model.timelineModel(), this.detailsLinkifier, true, this.#traceEngineData)
             .then(fragment => this.appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
         break;
       }

@@ -264,6 +264,27 @@ export async function allModelsFromFile(file: string): Promise<{
   };
 }
 
+/**
+ * Takes a TracingModel and returns a set of all events that have a payload, sorted by timestamp.
+ * Useful in tests to locate a legacy SDK Event to use for tests.
+ **/
+export function getAllTracingModelPayloadEvents(tracingModel: SDK.TracingModel.TracingModel):
+    SDK.TracingModel.PayloadEvent[] {
+  const allSDKEvents = tracingModel.sortedProcesses().flatMap(process => {
+    return process.sortedThreads().flatMap(thread => thread.events().filter(SDK.TracingModel.eventHasPayload));
+  });
+  allSDKEvents.sort((eventA, eventB) => {
+    if (eventA.startTime > eventB.startTime) {
+      return 1;
+    }
+    if (eventB.startTime > eventA.startTime) {
+      return -1;
+    }
+    return 0;
+  });
+  return allSDKEvents;
+}
+
 // We create here a cross-test base trace event. It is assumed that each
 // test will import this default event and copy-override properties at will.
 export const defaultTraceEvent: TraceModel.Types.TraceEvents.TraceEventData = {

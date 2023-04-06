@@ -1832,8 +1832,16 @@ export class TimelineUIUtils {
   }
 
   static async buildTraceEventDetails(
-      event: SDK.TracingModel.Event, model: TimelineModel.TimelineModel.TimelineModelImpl,
-      linkifier: Components.Linkifier.Linkifier, detailed: boolean): Promise<DocumentFragment> {
+      event: SDK.TracingModel.Event,
+      model: TimelineModel.TimelineModel.TimelineModelImpl,
+      linkifier: Components.Linkifier.Linkifier,
+      detailed: boolean,
+      // TODO(crbug.com/1430809): the order of these arguments is slightly
+      // awkward because to change them is to cause a lot of layout tests to be
+      // updated. We should rewrite those tests as unit tests in this codebase,
+      // and then we can more easily change this method.
+      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
+      ): Promise<DocumentFragment> {
     const maybeTarget = model.targetByEvent(event);
     let relatedNodesMap: (Map<number, SDK.DOMModel.DOMNode|null>|null)|null = null;
     if (maybeTarget) {
@@ -2208,20 +2216,14 @@ export class TimelineUIUtils {
       case recordTypes.MarkFCP:
       case recordTypes.MarkLoad:
       case recordTypes.MarkDOMContent: {
-        let eventTime: number = event.startTime - model.minimumRecordTime();
-
-        // Find the appropriate navStart based on the navigation ID.
-        const {navigationId} = event.args.data;
-        if (navigationId) {
-          const navStartTime = model.navStartTimes().get(navigationId);
-
-          if (navStartTime) {
-            eventTime = event.startTime - navStartTime.startTime;
-          }
-        }
+        const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(
+            event,
+            model,
+            traceParseData,
+        );
 
         contentHelper.appendTextRow(
-            i18nString(UIStrings.timestamp), i18n.TimeUtilities.preciseMillisToString(eventTime, 1));
+            i18nString(UIStrings.timestamp), i18n.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
         contentHelper.appendElementRow(
             i18nString(UIStrings.details), TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
         break;
@@ -3559,4 +3561,49 @@ export interface TimelineMarkerStyle {
   dashStyle: number[];
   tall: boolean;
   lowPriority: boolean;
+}
+
+/**
+ * Given a particular event, this method can adjust its timestamp by
+ * substracting the timestamp of the previous navigation. This helps in cases
+ * where the user has navigated multiple times in the trace, so that we can show
+ * the LCP (for example) relative to the last navigation.
+ *
+ * Currently this helper lives here and can deal with legacy events or new
+ * events, preferring to use the new engine's data structure if possible. In the
+ * future, once the old engine is removed, we can move this method into the
+ * TraceEngine helpers, and not have it take the legacy model.
+ **/
+export function timeStampForEventAdjustedForClosestNavigationIfPossible(
+    event: SDK.TracingModel.Event, model: TimelineModel.TimelineModel.TimelineModelImpl,
+    traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|
+    null): TraceEngine.Types.Timing.MilliSeconds {
+  if (event instanceof SDK.TracingModel.PayloadEvent && traceParsedData) {
+    const payload = event.rawPayload();
+    let eventTimeStamp = payload.ts - traceParsedData.Meta.traceBounds.min;
+    if (payload.args?.data?.navigationId) {
+      const navigationForEvent = traceParsedData.Meta.navigationsByNavigationId.get(payload.args.data.navigationId);
+      if (navigationForEvent) {
+        eventTimeStamp = payload.ts - navigationForEvent.ts;
+      }
+    } else if (payload.args?.data?.frame) {
+      const navigationForEvent = TraceEngine.Helpers.Trace.getNavigationForTraceEvent(
+          payload, payload.args.data.frame, traceParsedData.Meta.navigationsByFrameId);
+      if (navigationForEvent) {
+        eventTimeStamp = payload.ts - navigationForEvent.ts;
+      }
+    }
+    return TraceEngine.Helpers.Timing.microSecondsToMilliseconds(TraceEngine.Types.Timing.MicroSeconds(eventTimeStamp));
+  }
+
+  let eventTimeStamp = event.startTime - model.minimumRecordTime();
+  const {navigationId} = event.args.data;
+  if (navigationId) {
+    const navStartTime = model.navStartTimes().get(navigationId);
+    if (navStartTime) {
+      eventTimeStamp = event.startTime - navStartTime.startTime;
+    }
+  }
+
+  return TraceEngine.Types.Timing.MilliSeconds(eventTimeStamp);
 }

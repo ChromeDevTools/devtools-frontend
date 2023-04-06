@@ -15,6 +15,7 @@ import * as Workspace from '../../../../../front_end/models/workspace/workspace.
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {allModelsFromFile, getAllTracingModelPayloadEvents} from '../../helpers/TraceHelpers.js';
 
 const {assert} = chai;
 
@@ -159,7 +160,7 @@ describeWithMockConnection('TimelineUIUtils', () => {
         linkifierCallback = res;
       });
       linkifier.setLiveLocationUpdateCallback(linkifierCallback);
-      const node = await Timeline.TimelineUIUtils.TimelineUIUtils.linkifyLocation({
+      const node = Timeline.TimelineUIUtils.TimelineUIUtils.linkifyLocation({
         scriptId: SCRIPT_ID,
         url: 'https://google.com/test.js',
         lineNumber: 0,
@@ -199,14 +200,74 @@ describeWithMockConnection('TimelineUIUtils', () => {
         linkifierCallback = res;
       });
       linkifier.setLiveLocationUpdateCallback(linkifierCallback);
-      const node = await Timeline.TimelineUIUtils.TimelineUIUtils.linkifyTopCallFrame(
-          functionCallEvent, target, linkifier, true);
+      const node =
+          Timeline.TimelineUIUtils.TimelineUIUtils.linkifyTopCallFrame(functionCallEvent, target, linkifier, true);
       if (!node) {
         throw new Error('Node was unexpectedly null');
       }
       // Wait for the location to be resolved using the registered source map.
       await likifiedPromise;
       assert.strictEqual(node.textContent, 'original-script.ts:1:1');
+    });
+  });
+  describe('adjusting timestamps for events and navigations', () => {
+    it('adjusts the time for a DCL event after a navigation', async () => {
+      const data = await allModelsFromFile('web-dev.json.gz');
+      const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
+      const mainFrameID = data.timelineModel.mainFrameID();
+      const dclSDKEvent = allSDKEvents.find(event => {
+        return event.name === TimelineModel.TimelineModel.RecordType.MarkDOMContent &&
+            mainFrameID === event.args.data.frame;
+      });
+      if (!dclSDKEvent) {
+        throw new Error('Could not find DCL event');
+      }
+
+      // Round the time to 2DP to avoid needlessly long expectation numbers!
+      const unAdjustedTime = (dclSDKEvent.startTime - data.timelineModel.minimumRecordTime()).toFixed(2);
+      assert.strictEqual(unAdjustedTime, String(190.79));
+
+      const adjustedTime = Timeline.TimelineUIUtils.timeStampForEventAdjustedForClosestNavigationIfPossible(
+          dclSDKEvent, data.timelineModel, data.traceParsedData);
+      assert.strictEqual(adjustedTime.toFixed(2), String(178.92));
+    });
+
+    it('falls back to the legacy model if the new data is not available', async () => {
+      const data = await allModelsFromFile('web-dev.json.gz');
+      const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
+      const lcpSDKEvent = allSDKEvents.find(event => {
+        // Can use find here as this trace file only has one LCP Candidate
+        return event.name === TimelineModel.TimelineModel.RecordType.MarkLCPCandidate && event.args.data.isMainFrame;
+      });
+      if (!lcpSDKEvent) {
+        throw new Error('Could not find LCP event');
+      }
+
+      const adjustedLCPTime = Timeline.TimelineUIUtils.timeStampForEventAdjustedForClosestNavigationIfPossible(
+          lcpSDKEvent,
+          data.timelineModel,
+          // Fake the new engine not being available by passing in null here.
+          null,
+      );
+      assert.strictEqual(adjustedLCPTime.toFixed(2), String(118.44));
+    });
+
+    it('can adjust the times for events that are not PageLoad markers', async () => {
+      const data = await allModelsFromFile('user-timings.json.gz');
+      const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
+      // Use a performance.mark event. Exact event is unimportant except that
+      // it should not be a Page Load event as those are covered by the tests
+      // above.
+      const userMark = allSDKEvents.find(event => {
+        return event.hasCategory('blink.user_timing') && event.name === 'mark1';
+      });
+      if (!userMark) {
+        throw new Error('Could not find user mark');
+      }
+
+      const adjustedMarkTime = Timeline.TimelineUIUtils.timeStampForEventAdjustedForClosestNavigationIfPossible(
+          userMark, data.timelineModel, data.traceParsedData);
+      assert.strictEqual(adjustedMarkTime.toFixed(2), String(79.88));
     });
   });
 });

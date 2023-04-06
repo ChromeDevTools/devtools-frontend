@@ -142,7 +142,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     if (!model) {
       return false;
     }
-    void TimelineUIUtils.buildTraceEventDetails(traceEvent, model.timelineModel(), this.linkifier, false)
+    void TimelineUIUtils
+        .buildTraceEventDetails(traceEvent, model.timelineModel(), this.linkifier, false, this.traceParseData())
         .then(fragment => this.detailsView.element.appendChild(fragment));
     return true;
   }

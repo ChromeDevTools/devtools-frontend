@@ -251,7 +251,7 @@ ol.expanded {
   user-select: none;
   margin-left: -6px;
   margin-right: 2px;
-  margin-bottom: -2px;
+  margin-bottom: -4px;
 }
 
 .tree-outline li:not(.parent) .expand-icon {

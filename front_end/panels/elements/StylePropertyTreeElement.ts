@@ -820,9 +820,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     if (this.expanded) {
-      this.expandElement.setIconType('smallicon-triangle-down');
+      this.expandElement.setIconType('triangle-down');
     } else {
-      this.expandElement.setIconType('smallicon-triangle-right');
+      this.expandElement.setIconType('triangle-right');
     }
   }
 
@@ -843,7 +843,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private innerUpdateTitle(): void {
     this.updateState();
     if (this.isExpandable()) {
-      this.expandElement = UI.Icon.Icon.create('smallicon-triangle-right', 'expand-icon');
+      this.expandElement = UI.Icon.Icon.create('triangle-right', 'expand-icon');
     } else {
       this.expandElement = null;
     }

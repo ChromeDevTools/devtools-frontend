@@ -284,6 +284,8 @@ export class PlayerMessagesView extends UI.Widget.VBox {
     dropDownItem.element.classList.add('toolbar-has-dropdown');
     dropDownItem.setEnabled(true);
     dropDownItem.setTitle(this.messageLevelSelector.defaultTitle());
+    UI.ARIAUtils.setAccessibleName(
+        dropDownItem.element, `${i18nString(UIStrings.logLevel)} ${this.messageLevelSelector.defaultTitle()}`);
     return dropDownItem;
   }
 

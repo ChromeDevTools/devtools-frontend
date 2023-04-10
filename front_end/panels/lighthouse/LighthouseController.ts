@@ -3,12 +3,16 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as EmulationModel from '../../models/emulation/emulation.js';
+import * as Emulation from '../emulation/emulation.js';
 
-import {type ProtocolService} from './LighthouseProtocolService.js';
+import {type ProtocolService, type LighthouseRun} from './LighthouseProtocolService.js';
+import {type RunnerResult} from './LighthouseReporterTypes.js';
 
 const UIStrings = {
   /**
@@ -192,13 +196,28 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.ServiceWorkerManager.ServiceWorkerManager> {
+  private readonly protocolService: ProtocolService;
   private manager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
   private serviceWorkerListeners?: Common.EventTarget.EventDescriptor[];
   private inspectedURL?: Platform.DevToolsPath.UrlString;
+  private currentLighthouseRun?: LighthouseRun;
+  private emulationStateBefore?: {
+    emulation: {
+      type: EmulationModel.DeviceModeModel.Type,
+      enabled: boolean,
+      outlineEnabled: boolean,
+      toolbarControlsEnabled: boolean,
+      scale: number,
+      device: EmulationModel.EmulatedDevices.EmulatedDevice|null,
+      mode: EmulationModel.EmulatedDevices.Mode|null,
+    },
+    network: {conditions: SDK.NetworkManager.Conditions},
+  };
 
   constructor(protocolService: ProtocolService) {
     super();
 
+    this.protocolService = protocolService;
     protocolService.registerStatusCallback(
         message => this.dispatchEventToListeners(Events.AuditProgressChanged, {message}));
 
@@ -345,6 +364,10 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     return navigationEntry.url as Platform.DevToolsPath.UrlString;
   }
 
+  getCurrentRun(): LighthouseRun|undefined {
+    return this.currentLighthouseRun;
+  }
+
   getFlags(): {
     formFactor: (string|undefined),
     legacyNavigation: boolean,
@@ -403,6 +426,175 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       }
       this.dispatchEventToListeners(Events.PageWarningsChanged, {warning});
     });
+  }
+
+  private recordMetrics(flags: {mode: string, legacyNavigation: boolean}): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
+
+    switch (flags.mode) {
+      case 'navigation':
+        if (flags.legacyNavigation) {
+          Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.LegacyNavigation);
+        } else {
+          Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Navigation);
+        }
+        break;
+      case 'timespan':
+        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Timespan);
+        break;
+      case 'snapshot':
+        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Snapshot);
+        break;
+    }
+  }
+
+  async startLighthouse(): Promise<void> {
+    try {
+      const inspectedURL = await this.getInspectedURL({force: true});
+      const categoryIDs = this.getCategoryIDs();
+      const flags = this.getFlags();
+
+      this.recordMetrics(flags);
+
+      this.currentLighthouseRun = {inspectedURL, categoryIDs, flags};
+
+      await this.setupEmulationAndProtocolConnection();
+
+      if (flags.mode === 'timespan') {
+        await this.protocolService.startTimespan(this.currentLighthouseRun);
+      }
+    } catch (err) {
+      await this.restoreEmulationAndProtocolConnection();
+      throw err;
+    }
+  }
+
+  async collectLighthouseResults(): Promise<RunnerResult> {
+    try {
+      if (!this.currentLighthouseRun) {
+        throw new Error('Lighthouse is not started');
+      }
+
+      const lighthouseResponse = await this.protocolService.collectLighthouseResults(this.currentLighthouseRun);
+      if (!lighthouseResponse) {
+        throw new Error('Auditing failed to produce a result');
+      }
+
+      if (lighthouseResponse.fatal) {
+        const error = new Error(lighthouseResponse.message);
+        error.stack = lighthouseResponse.stack;
+        throw error;
+      }
+
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseFinished);
+
+      await this.restoreEmulationAndProtocolConnection();
+      return lighthouseResponse;
+    } catch (err) {
+      await this.restoreEmulationAndProtocolConnection();
+      throw err;
+    } finally {
+      this.currentLighthouseRun = undefined;
+    }
+  }
+
+  async cancelLighthouse(): Promise<void> {
+    await this.restoreEmulationAndProtocolConnection();
+    this.currentLighthouseRun = undefined;
+  }
+
+  /**
+   * We set the device emulation on the DevTools-side for two reasons:
+   * 1. To workaround some odd device metrics emulation bugs like occuluding viewports
+   * 2. To get the attractive device outline
+   */
+  private async setupEmulationAndProtocolConnection(): Promise<void> {
+    const flags = this.getFlags();
+
+    const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+    this.emulationStateBefore = {
+      emulation: {
+        type: emulationModel.type(),
+        enabled: emulationModel.enabledSetting().get(),
+        outlineEnabled: emulationModel.deviceOutlineSetting().get(),
+        toolbarControlsEnabled: emulationModel.toolbarControlsEnabledSetting().get(),
+        scale: emulationModel.scaleSetting().get(),
+        device: emulationModel.device(),
+        mode: emulationModel.mode(),
+      },
+      network: {conditions: SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions()},
+    };
+
+    emulationModel.toolbarControlsEnabledSetting().set(false);
+    if ('formFactor' in flags && flags.formFactor === 'desktop') {
+      emulationModel.enabledSetting().set(false);
+      emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+    } else if (flags.formFactor === 'mobile') {
+      emulationModel.enabledSetting().set(true);
+      emulationModel.deviceOutlineSetting().set(true);
+
+      for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
+        if (device.title === 'Moto G Power') {
+          emulationModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
+        }
+      }
+    }
+
+    await this.protocolService.attach();
+  }
+
+  private async restoreEmulationAndProtocolConnection(): Promise<void> {
+    if (!this.currentLighthouseRun) {
+      return;
+    }
+
+    await this.protocolService.detach();
+
+    if (this.emulationStateBefore) {
+      const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+
+      // Detaching a session after overriding device metrics will prevent other sessions from overriding device metrics in the future.
+      // A workaround is to call "Emulation.clearDeviceMetricOverride" which is the result of the next line.
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=1337089
+      emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+
+      const {type, enabled, outlineEnabled, toolbarControlsEnabled, scale, device, mode} =
+          this.emulationStateBefore.emulation;
+      emulationModel.enabledSetting().set(enabled);
+      emulationModel.deviceOutlineSetting().set(outlineEnabled);
+      emulationModel.toolbarControlsEnabledSetting().set(toolbarControlsEnabled);
+
+      // `emulate` will ignore the `scale` parameter for responsive emulation.
+      // In this case we can just set it here.
+      if (type === EmulationModel.DeviceModeModel.Type.Responsive) {
+        emulationModel.scaleSetting().set(scale);
+      }
+
+      emulationModel.emulate(type, device, mode, scale);
+
+      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
+          this.emulationStateBefore.network.conditions);
+      delete this.emulationStateBefore;
+    }
+
+    Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance().update(true);
+
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!mainTarget) {
+      return;
+    }
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceTreeModel) {
+      return;
+    }
+
+    // Reload to reset page state after a navigation.
+    // We want to retain page state for timespan and snapshot modes.
+    const mode = this.currentLighthouseRun.flags.mode;
+    if (mode === 'navigation') {
+      const inspectedURL = await this.getInspectedURL();
+      await resourceTreeModel.navigate(inspectedURL);
+    }
   }
 }
 
@@ -570,10 +762,6 @@ export enum Events {
   PageAuditabilityChanged = 'PageAuditabilityChanged',
   PageWarningsChanged = 'PageWarningsChanged',
   AuditProgressChanged = 'AuditProgressChanged',
-  RequestLighthouseTimespanStart = 'RequestLighthouseTimespanStart',
-  RequestLighthouseTimespanEnd = 'RequestLighthouseTimespanEnd',
-  RequestLighthouseStart = 'RequestLighthouseStart',
-  RequestLighthouseCancel = 'RequestLighthouseCancel',
 }
 
 export interface PageAuditabilityChangedEvent {
@@ -592,10 +780,6 @@ export type EventTypes = {
   [Events.PageAuditabilityChanged]: PageAuditabilityChangedEvent,
   [Events.PageWarningsChanged]: PageWarningsChangedEvent,
   [Events.AuditProgressChanged]: AuditProgressChangedEvent,
-  [Events.RequestLighthouseTimespanStart]: boolean,
-  [Events.RequestLighthouseTimespanEnd]: boolean,
-  [Events.RequestLighthouseStart]: boolean,
-  [Events.RequestLighthouseCancel]: void,
 };
 
 export interface Preset {

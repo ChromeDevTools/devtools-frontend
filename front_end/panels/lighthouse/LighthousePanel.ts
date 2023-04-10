@@ -3,12 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as SDK from '../../core/sdk/sdk.js';
-import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Emulation from '../emulation/emulation.js';
 
 import {
   Events,
@@ -19,7 +15,7 @@ import {
 } from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
 
-import {ProtocolService, type LighthouseRun} from './LighthouseProtocolService.js';
+import {ProtocolService} from './LighthouseProtocolService.js';
 
 import {type ReportJSON, type RunnerResultArtifacts} from './LighthouseReporterTypes.js';
 import {LighthouseReportRenderer} from './LighthouseReportRenderer.js';
@@ -65,7 +61,6 @@ let lighthousePanelInstace: LighthousePanel;
 type Nullable<T> = T|null;
 
 export class LighthousePanel extends UI.Panel.Panel {
-  private readonly protocolService: ProtocolService;
   private readonly controller: LighthouseController;
   private readonly startView: StartView;
   private readonly statusView: StatusView;
@@ -81,32 +76,16 @@ export class LighthousePanel extends UI.Panel.Panel {
   private settingsPane!: UI.Widget.Widget;
   private rightToolbar!: UI.Toolbar.Toolbar;
   private showSettingsPaneSetting!: Common.Settings.Setting<boolean>;
-  private stateBefore?: {
-    emulation: {
-      type: EmulationModel.DeviceModeModel.Type,
-      enabled: boolean,
-      outlineEnabled: boolean,
-      toolbarControlsEnabled: boolean,
-      scale: number,
-      device: EmulationModel.EmulatedDevices.EmulatedDevice|null,
-      mode: EmulationModel.EmulatedDevices.Mode|null,
-    },
-    network: {conditions: SDK.NetworkManager.Conditions},
-  };
-  private isLHAttached?: boolean;
-  private currentLighthouseRun?: LighthouseRun;
 
   private constructor(
-      protocolService: ProtocolService,
       controller: LighthouseController,
   ) {
     super('lighthouse');
 
-    this.protocolService = protocolService;
     this.controller = controller;
-    this.startView = new StartView(this.controller);
-    this.timespanView = new TimespanView(this.controller);
-    this.statusView = new StatusView(this.controller);
+    this.startView = new StartView(this.controller, this);
+    this.timespanView = new TimespanView(this);
+    this.statusView = new StatusView(this);
 
     this.warningText = null;
     this.unauditableExplanation = null;
@@ -119,10 +98,6 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.controller.addEventListener(Events.PageAuditabilityChanged, this.refreshStartAuditUI.bind(this));
     this.controller.addEventListener(Events.PageWarningsChanged, this.refreshWarningsUI.bind(this));
     this.controller.addEventListener(Events.AuditProgressChanged, this.refreshStatusUI.bind(this));
-    this.controller.addEventListener(Events.RequestLighthouseTimespanStart, this.onLighthouseTimespanStart.bind(this));
-    this.controller.addEventListener(Events.RequestLighthouseTimespanEnd, this.onLighthouseTimespanEnd.bind(this));
-    this.controller.addEventListener(Events.RequestLighthouseStart, this.onLighthouseStart.bind(this));
-    this.controller.addEventListener(Events.RequestLighthouseCancel, this.onLighthouseCancel.bind(this));
 
     this.renderToolbar();
     this.auditResultsElement = this.contentElement.createChild('div', 'lighthouse-results-container');
@@ -137,7 +112,7 @@ export class LighthousePanel extends UI.Panel.Panel {
       const protocolService = opts?.protocolService ?? new ProtocolService();
       const controller = opts?.controller ?? new LighthouseController(protocolService);
 
-      lighthousePanelInstace = new LighthousePanel(protocolService, controller);
+      lighthousePanelInstace = new LighthousePanel(controller);
     }
 
     return lighthousePanelInstace;
@@ -147,30 +122,54 @@ export class LighthousePanel extends UI.Panel.Panel {
     return Events;
   }
 
-  private async onLighthouseTimespanStart(): Promise<void> {
-    this.timespanView.show(this.contentElement);
-    await this.startLighthouse();
-    this.timespanView.ready();
+  async handleTimespanStart(): Promise<void> {
+    try {
+      this.timespanView.show(this.contentElement);
+      await this.controller.startLighthouse();
+      this.timespanView.ready();
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
-  private async onLighthouseTimespanEnd(): Promise<void> {
+  async handleTimespanEnd(): Promise<void> {
+    try {
+      this.timespanView.hide();
+      this.renderStatusView();
+      const {lhr, artifacts} = await this.controller.collectLighthouseResults();
+      this.buildReportUI(lhr, artifacts);
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  async handleCompleteRun(): Promise<void> {
+    try {
+      await this.controller.startLighthouse();
+      this.renderStatusView();
+      const {lhr, artifacts} = await this.controller.collectLighthouseResults();
+      this.buildReportUI(lhr, artifacts);
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  async handleRunCancel(): Promise<void> {
+    this.statusView.updateStatus(i18nString(UIStrings.cancelling));
     this.timespanView.hide();
-    await this.collectLighthouseResults();
+    await this.controller.cancelLighthouse();
+    this.renderStartView();
   }
 
-  private async onLighthouseStart(): Promise<void> {
-    await this.startLighthouse();
-    await this.collectLighthouseResults();
-  }
-
-  private async onLighthouseCancel(): Promise<void> {
-    this.timespanView.hide();
-    void this.cancelLighthouse();
+  private handleError(err: unknown): void {
+    if (err instanceof Error) {
+      this.statusView.renderBugReport(err);
+    }
   }
 
   private refreshWarningsUI(evt: Common.EventTarget.EventTargetEvent<PageWarningsChangedEvent>): void {
     // PageWarningsChanged fires multiple times during an audit, which we want to ignore.
-    if (this.isLHAttached) {
+    if (this.controller.getCurrentRun()) {
       return;
     }
 
@@ -180,7 +179,7 @@ export class LighthousePanel extends UI.Panel.Panel {
 
   private refreshStartAuditUI(evt: Common.EventTarget.EventTargetEvent<PageAuditabilityChangedEvent>): void {
     // PageAuditabilityChanged fires multiple times during an audit, which we want to ignore.
-    if (this.isLHAttached) {
+    if (this.controller.getCurrentRun()) {
       return;
     }
 
@@ -271,7 +270,8 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.setDefaultFocusedChild(this.startView);
   }
 
-  private renderStatusView(inspectedURL: string): void {
+  private renderStatusView(): void {
+    const inspectedURL = this.controller.getCurrentRun()?.inspectedURL;
     this.contentElement.classList.toggle('in-progress', true);
     this.statusView.setInspectedURL(inspectedURL);
     this.statusView.show(this.contentElement);
@@ -321,6 +321,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.reportSelector.prepend(optionElement);
     this.refreshToolbarUI();
     this.renderReport(lighthouseResult);
+    this.newButton.element.focus();
   }
 
   private handleDrop(dataTransfer: DataTransfer): void {
@@ -347,186 +348,6 @@ export class LighthousePanel extends UI.Panel.Panel {
       return;
     }
     this.buildReportUI(data as ReportJSON);
-  }
-
-  private recordMetrics(flags: {mode: string, legacyNavigation: boolean}): void {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
-
-    switch (flags.mode) {
-      case 'navigation':
-        if (flags.legacyNavigation) {
-          Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.LegacyNavigation);
-        } else {
-          Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Navigation);
-        }
-        break;
-      case 'timespan':
-        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Timespan);
-        break;
-      case 'snapshot':
-        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Snapshot);
-        break;
-    }
-  }
-
-  private async startLighthouse(): Promise<void> {
-    try {
-      const inspectedURL = await this.controller.getInspectedURL({force: true});
-      const categoryIDs = this.controller.getCategoryIDs();
-      const flags = this.controller.getFlags();
-
-      this.recordMetrics(flags);
-
-      this.currentLighthouseRun = {inspectedURL, categoryIDs, flags};
-
-      await this.setupEmulationAndProtocolConnection();
-
-      if (flags.mode === 'timespan') {
-        await this.protocolService.startTimespan(this.currentLighthouseRun);
-      }
-
-    } catch (err) {
-      await this.restoreEmulationAndProtocolConnection();
-      if (err instanceof Error) {
-        this.statusView.renderBugReport(err);
-      }
-    }
-  }
-
-  private async collectLighthouseResults(): Promise<void> {
-    try {
-      if (!this.currentLighthouseRun) {
-        throw new Error('Lighthouse is not started');
-      }
-      this.renderStatusView(this.currentLighthouseRun.inspectedURL);
-
-      const lighthouseResponse = await this.protocolService.collectLighthouseResults(this.currentLighthouseRun);
-
-      if (lighthouseResponse && lighthouseResponse.fatal) {
-        const error = new Error(lighthouseResponse.message);
-        error.stack = lighthouseResponse.stack;
-        throw error;
-      }
-
-      if (!lighthouseResponse) {
-        throw new Error('Auditing failed to produce a result');
-      }
-
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseFinished);
-
-      await this.restoreEmulationAndProtocolConnection();
-      this.buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);
-      // Give focus to the new audit button when completed
-      this.newButton.element.focus();
-    } catch (err) {
-      await this.restoreEmulationAndProtocolConnection();
-      if (err instanceof Error) {
-        this.statusView.renderBugReport(err);
-      }
-    } finally {
-      this.currentLighthouseRun = undefined;
-    }
-  }
-
-  private async cancelLighthouse(): Promise<void> {
-    this.currentLighthouseRun = undefined;
-    this.statusView.updateStatus(i18nString(UIStrings.cancelling));
-    await this.restoreEmulationAndProtocolConnection();
-    this.renderStartView();
-  }
-
-  /**
-   * We set the device emulation on the DevTools-side for two reasons:
-   * 1. To workaround some odd device metrics emulation bugs like occuluding viewports
-   * 2. To get the attractive device outline
-   */
-  private async setupEmulationAndProtocolConnection(): Promise<void> {
-    const flags = this.controller.getFlags();
-
-    const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-    this.stateBefore = {
-      emulation: {
-        type: emulationModel.type(),
-        enabled: emulationModel.enabledSetting().get(),
-        outlineEnabled: emulationModel.deviceOutlineSetting().get(),
-        toolbarControlsEnabled: emulationModel.toolbarControlsEnabledSetting().get(),
-        scale: emulationModel.scaleSetting().get(),
-        device: emulationModel.device(),
-        mode: emulationModel.mode(),
-      },
-      network: {conditions: SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions()},
-    };
-
-    emulationModel.toolbarControlsEnabledSetting().set(false);
-    if ('formFactor' in flags && flags.formFactor === 'desktop') {
-      emulationModel.enabledSetting().set(false);
-      emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
-    } else if (flags.formFactor === 'mobile') {
-      emulationModel.enabledSetting().set(true);
-      emulationModel.deviceOutlineSetting().set(true);
-
-      for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
-        if (device.title === 'Moto G Power') {
-          emulationModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
-        }
-      }
-    }
-
-    await this.protocolService.attach();
-    this.isLHAttached = true;
-  }
-
-  private async restoreEmulationAndProtocolConnection(): Promise<void> {
-    if (!this.isLHAttached) {
-      return;
-    }
-
-    this.isLHAttached = false;
-    await this.protocolService.detach();
-
-    if (this.stateBefore) {
-      const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-
-      // Detaching a session after overriding device metrics will prevent other sessions from overriding device metrics in the future.
-      // A workaround is to call "Emulation.clearDeviceMetricOverride" which is the result of the next line.
-      // https://bugs.chromium.org/p/chromium/issues/detail?id=1337089
-      emulationModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
-
-      const {type, enabled, outlineEnabled, toolbarControlsEnabled, scale, device, mode} = this.stateBefore.emulation;
-      emulationModel.enabledSetting().set(enabled);
-      emulationModel.deviceOutlineSetting().set(outlineEnabled);
-      emulationModel.toolbarControlsEnabledSetting().set(toolbarControlsEnabled);
-
-      // `emulate` will ignore the `scale` parameter for responsive emulation.
-      // In this case we can just set it here.
-      if (type === EmulationModel.DeviceModeModel.Type.Responsive) {
-        emulationModel.scaleSetting().set(scale);
-      }
-
-      emulationModel.emulate(type, device, mode, scale);
-
-      SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(this.stateBefore.network.conditions);
-      delete this.stateBefore;
-    }
-
-    Emulation.InspectedPagePlaceholder.InspectedPagePlaceholder.instance().update(true);
-
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!mainTarget) {
-      return;
-    }
-    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    if (!resourceTreeModel) {
-      return;
-    }
-
-    // Reload to reset page state after a navigation.
-    // We want to retain page state for timespan and snapshot modes.
-    const mode = this.currentLighthouseRun?.flags.mode;
-    if (mode === 'navigation') {
-      const inspectedURL = await this.controller.getInspectedURL();
-      await resourceTreeModel.navigate(inspectedURL);
-    }
   }
 
   wasShown(): void {

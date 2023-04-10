@@ -5,7 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {Events, type LighthouseController} from './LighthouseController.js';
+import {type LighthousePanel} from './LighthousePanel.js';
 import lighthouseDialogStyles from './lighthouseDialog.css.js';
 
 const UIStrings = {
@@ -31,13 +31,13 @@ const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseTimespanVi
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class TimespanView extends UI.Dialog.Dialog {
-  private controller: LighthouseController;
+  private panel: LighthousePanel;
   private statusHeader: Element|null;
   private endButton: HTMLButtonElement|null;
 
-  constructor(controller: LighthouseController) {
+  constructor(panel: LighthousePanel) {
     super();
-    this.controller = controller;
+    this.panel = panel;
     this.statusHeader = null;
     this.endButton = null;
     this.setDimmed(true);
@@ -95,11 +95,11 @@ export class TimespanView extends UI.Dialog.Dialog {
     this.reset();
   }
 
-  private endTimespan(): void {
-    this.controller.dispatchEventToListeners(Events.RequestLighthouseTimespanEnd, false);
+  private async endTimespan(): Promise<void> {
+    await this.panel.handleTimespanEnd();
   }
 
-  private cancel(): void {
-    this.controller.dispatchEventToListeners(Events.RequestLighthouseCancel);
+  private async cancel(): Promise<void> {
+    await this.panel.handleRunCancel();
   }
 }

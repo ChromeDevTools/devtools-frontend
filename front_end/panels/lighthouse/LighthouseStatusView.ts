@@ -6,9 +6,10 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {RuntimeSettings} from './LighthouseController.js';
 import lighthouseDialogStyles from './lighthouseDialog.css.js';
 
-import {Events, RuntimeSettings, type LighthouseController} from './LighthouseController.js';
+import {type LighthousePanel} from './LighthousePanel.js';
 
 const UIStrings = {
   /**
@@ -149,7 +150,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 export class StatusView {
-  private readonly controller: LighthouseController;
+  private readonly panel: LighthousePanel;
   private statusView: Element|null;
   private statusHeader: Element|null;
   private progressWrapper: Element|null;
@@ -164,8 +165,8 @@ export class StatusView {
   private scheduledFastFactTimeout: number|null;
   private readonly dialog: UI.Dialog.Dialog;
 
-  constructor(controller: LighthouseController) {
-    this.controller = controller;
+  constructor(panel: LighthousePanel) {
+    this.panel = panel;
 
     this.statusView = null;
     this.statusHeader = null;
@@ -300,7 +301,7 @@ export class StatusView {
   }
 
   private cancel(): void {
-    this.controller.dispatchEventToListeners(Events.RequestLighthouseCancel);
+    void this.panel.handleRunCancel();
   }
 
   private getMessageForPhase(phase: StatusPhase): string {

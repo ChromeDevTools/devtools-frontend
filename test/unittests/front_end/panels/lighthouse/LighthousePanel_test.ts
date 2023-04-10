@@ -65,8 +65,9 @@ describeWithMockConnection('LighthousePanel', async () => {
     });
 
     it('restores the original URL when done', async () => {
-      LighthouseModule.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
-      controller.dispatchEventToListeners(LighthouseModule.LighthouseController.Events.RequestLighthouseStart, true);
+      const instance =
+          LighthouseModule.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+      void instance.handleCompleteRun();
 
       await new Promise<void>(resolve => resourceTreeModelNavigate.withArgs(URL).callsFake(() => {
         resolve();
@@ -75,8 +76,9 @@ describeWithMockConnection('LighthousePanel', async () => {
     });
 
     it('waits for main taget to load before linkifying', async () => {
-      LighthouseModule.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
-      controller.dispatchEventToListeners(LighthouseModule.LighthouseController.Events.RequestLighthouseStart, true);
+      const instance =
+          LighthouseModule.LighthousePanel.LighthousePanel.instance({forceNew: true, protocolService, controller});
+      void instance.handleCompleteRun();
 
       await new Promise<void>(
           resolve =>

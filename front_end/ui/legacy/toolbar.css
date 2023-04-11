@@ -56,7 +56,7 @@
   color: var(--icon-default-hover);
 }
 
-.toolbar-item:last-child {
+.toolbar-item:last-child:not(:first-child) {
   flex-shrink: 1;
   justify-content: left;
 }

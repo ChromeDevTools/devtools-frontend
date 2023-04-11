@@ -436,7 +436,7 @@ export class _ExpandableContainerWidget extends VBox {
     this.titleElement = document.createElement('div');
     this.titleElement.classList.add('expandable-view-title');
     ARIAUtils.markAsTreeitem(this.titleElement);
-    this.titleExpandIcon = Icon.create('smallicon-triangle-right', 'title-expand-icon');
+    this.titleExpandIcon = Icon.create('triangle-right', 'title-expand-icon');
     this.titleElement.appendChild(this.titleExpandIcon);
     const titleText = view.title();
     createTextChild(this.titleElement, titleText);
@@ -493,7 +493,7 @@ export class _ExpandableContainerWidget extends VBox {
     }
     this.titleElement.classList.add('expanded');
     ARIAUtils.setExpanded(this.titleElement, true);
-    this.titleExpandIcon.setIconType('smallicon-triangle-down');
+    this.titleExpandIcon.setIconType('triangle-down');
     return this.materialize().then(() => {
       if (this.widget) {
         this.widget.show(this.element);
@@ -507,7 +507,7 @@ export class _ExpandableContainerWidget extends VBox {
     }
     this.titleElement.classList.remove('expanded');
     ARIAUtils.setExpanded(this.titleElement, false);
-    this.titleExpandIcon.setIconType('smallicon-triangle-right');
+    this.titleExpandIcon.setIconType('triangle-right');
     void this.materialize().then(() => {
       if (this.widget) {
         this.widget.detach();

@@ -346,6 +346,12 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
     return this.stickyPositionConstraintInternal || null;
   }
 
+  async requestCompositingReasons(): Promise<string[]> {
+    const reasons = await this.layerTreeModel.layerTreeAgent.invoke_compositingReasons({layerId: this.id()});
+    return reasons.compositingReasons || [];
+  }
+
+  // TODO(wangxianzhu): Remove this function after updating blink web tests.
   async requestCompositingReasonIds(): Promise<string[]> {
     const reasons = await this.layerTreeModel.layerTreeAgent.invoke_compositingReasons({layerId: this.id()});
     return reasons.compositingReasonIds || [];

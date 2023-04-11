@@ -30,6 +30,8 @@ export interface Layer {
   scrollRects(): Protocol.LayerTree.ScrollRect[];
   stickyPositionConstraint(): StickyPositionConstraint|null;
   gpuMemoryUsage(): number;
+  requestCompositingReasons(): Promise<string[]>;
+  // TODO(wangxianzhu): Remove this function after updating blink web tests.
   requestCompositingReasonIds(): Promise<string[]>;
   drawsContent(): boolean;
   snapshots(): Promise<SnapshotWithRect|null>[];

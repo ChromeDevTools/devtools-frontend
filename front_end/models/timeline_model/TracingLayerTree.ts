@@ -134,7 +134,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   private scrollRectsInternal: Protocol.LayerTree.ScrollRect[];
   private gpuMemoryUsageInternal: number;
   private paints: LayerPaintEvent[];
-  private compositingReasonIds: string[];
+  private compositingReasons: string[];
   private drawsContentInternal: boolean;
   private paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
   constructor(paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null, payload: TracingLayerPayload) {
@@ -151,7 +151,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     this.scrollRectsInternal = [];
     this.gpuMemoryUsageInternal = -1;
     this.paints = [];
-    this.compositingReasonIds = [];
+    this.compositingReasons = [];
     this.drawsContentInternal = false;
 
     this.paintProfilerModel = paintProfilerModel;
@@ -171,11 +171,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     this.quadInternal = payload.layer_quad || [];
     this.createScrollRects(payload);
 
-    // Keep payload.compositing_reasons as a default
-    // but use the newer payload.debug_info.compositing_reasons
-    // if the first one is not set.
-    this.compositingReasonIds =
-        payload.compositing_reason_ids || (payload.debug_info && payload.debug_info.compositing_reason_ids) || [];
+    this.compositingReasons = payload.compositing_reasons || [];
     this.drawsContentInternal = Boolean(payload.draws_content);
     this.gpuMemoryUsageInternal = payload.gpu_memory_usage;
     this.paints = [];
@@ -358,8 +354,13 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     this.paints.push(paint);
   }
 
+  requestCompositingReasons(): Promise<string[]> {
+    return Promise.resolve(this.compositingReasons);
+  }
+
+  // TODO(wangxianzhu): Remove this function after updating blink web tests.
   requestCompositingReasonIds(): Promise<string[]> {
-    return Promise.resolve(this.compositingReasonIds);
+    return Promise.resolve([]);
   }
 
   drawsContent(): boolean {
@@ -378,10 +379,8 @@ export interface TracingLayerPayload {
   gpu_memory_usage: number;
   transform: number[];
   owner_node: Protocol.DOM.BackendNodeId;
-  reasons: string[];
-  compositing_reason: string[];
+  compositing_reasons: string[];
   compositing_reason_ids: string[];
-  debug_info: {compositing_reason_ids: string[]};
   non_fast_scrollable_region: number[];
   touch_event_handler_region: number[];
   wheel_event_handler_region: number[];

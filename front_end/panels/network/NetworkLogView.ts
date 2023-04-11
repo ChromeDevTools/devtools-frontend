@@ -413,7 +413,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly filterParser: TextUtils.TextUtils.FilterParser;
   private readonly suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
   private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>;
-  private readonly summaryToolbar: UI.Toolbar.Toolbar;
+  private readonly summaryToolbarInternal: UI.Toolbar.Toolbar;
   private readonly filterBar: UI.FilterBar.FilterBar;
   private readonly textFilterSetting: Common.Settings.Setting<string>;
 
@@ -544,8 +544,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     filterBar.filterButton().addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this.dataGrid.scheduleUpdate.bind(this.dataGrid, true /* isFromUser */));
 
-    this.summaryToolbar = new UI.Toolbar.Toolbar('network-summary-bar', this.element);
-    this.summaryToolbar.element.setAttribute('role', 'status');
+    this.summaryToolbarInternal = new UI.Toolbar.Toolbar('network-summary-bar', this.element);
+    this.summaryToolbarInternal.element.setAttribute('role', 'status');
 
     new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File], i18nString(UIStrings.dropHarFilesHere), this.handleDrop.bind(this));
@@ -830,6 +830,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     return this.columnsInternal;
   }
 
+  summaryToolbar(): UI.Toolbar.Toolbar {
+    return this.summaryToolbarInternal;
+  }
+
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {
     // TODO(allada) Remove dependency on networkManager and instead use NetworkLog and PageLoad for needed data.
     const target = networkManager.target();
@@ -959,7 +963,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private setHidden(value: boolean): void {
     this.columnsInternal.setHidden(value);
-    UI.ARIAUtils.setHidden(this.summaryToolbar.element, value);
+    UI.ARIAUtils.setHidden(this.summaryToolbarInternal.element, value);
   }
 
   elementsToRestoreScrollPositionsFor(): Element[] {
@@ -1078,7 +1082,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       // inspected url.
       if (networkManager && request.url() === networkManager.target().inspectedURL() &&
           request.resourceType() === Common.ResourceType.resourceTypes.Document &&
-          !networkManager.target().parentTarget()) {
+          networkManager.target().parentTarget()?.type() !== SDK.Target.Type.Frame) {
         baseTime = request.startTime;
       }
       if (request.endTime > maxTime) {
@@ -1091,24 +1095,24 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       return;
     }
 
-    this.summaryToolbar.removeToolbarItems();
+    this.summaryToolbarInternal.removeToolbarItems();
     const appendChunk = (chunk: string, title?: string): HTMLDivElement => {
       const toolbarText = new UI.Toolbar.ToolbarText(chunk);
       toolbarText.setTitle(title ? title : chunk);
-      this.summaryToolbar.appendToolbarItem(toolbarText);
+      this.summaryToolbarInternal.appendToolbarItem(toolbarText);
       return toolbarText.element as HTMLDivElement;
     };
 
     if (selectedNodeNumber !== nodeCount) {
       appendChunk(i18nString(UIStrings.sSRequests, {PH1: selectedNodeNumber, PH2: nodeCount}));
-      this.summaryToolbar.appendSeparator();
+      this.summaryToolbarInternal.appendSeparator();
       appendChunk(
           i18nString(UIStrings.sSTransferred, {
             PH1: Platform.NumberUtilities.bytesToString(selectedTransferSize),
             PH2: Platform.NumberUtilities.bytesToString(transferSize),
           }),
           i18nString(UIStrings.sBSBTransferredOverNetwork, {PH1: selectedTransferSize, PH2: transferSize}));
-      this.summaryToolbar.appendSeparator();
+      this.summaryToolbarInternal.appendSeparator();
       appendChunk(
           i18nString(UIStrings.sSResources, {
             PH1: Platform.NumberUtilities.bytesToString(selectedResourceSize),
@@ -1117,28 +1121,28 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           i18nString(UIStrings.sBSBResourcesLoadedByThePage, {PH1: selectedResourceSize, PH2: resourceSize}));
     } else {
       appendChunk(i18nString(UIStrings.sRequests, {PH1: nodeCount}));
-      this.summaryToolbar.appendSeparator();
+      this.summaryToolbarInternal.appendSeparator();
       appendChunk(
           i18nString(UIStrings.sTransferred, {PH1: Platform.NumberUtilities.bytesToString(transferSize)}),
           i18nString(UIStrings.sBTransferredOverNetwork, {PH1: transferSize}));
-      this.summaryToolbar.appendSeparator();
+      this.summaryToolbarInternal.appendSeparator();
       appendChunk(
           i18nString(UIStrings.sResources, {PH1: Platform.NumberUtilities.bytesToString(resourceSize)}),
           i18nString(UIStrings.sBResourcesLoadedByThePage, {PH1: resourceSize}));
     }
 
     if (baseTime !== -1 && maxTime !== -1) {
-      this.summaryToolbar.appendSeparator();
+      this.summaryToolbarInternal.appendSeparator();
       appendChunk(i18nString(UIStrings.finishS, {PH1: i18n.TimeUtilities.secondsToString(maxTime - baseTime)}));
       if (this.mainRequestDOMContentLoadedTime !== -1 && this.mainRequestDOMContentLoadedTime > baseTime) {
-        this.summaryToolbar.appendSeparator();
+        this.summaryToolbarInternal.appendSeparator();
         const domContentLoadedText = i18nString(
             UIStrings.domcontentloadedS,
             {PH1: i18n.TimeUtilities.secondsToString(this.mainRequestDOMContentLoadedTime - baseTime)});
         appendChunk(domContentLoadedText).style.color = NetworkLogView.getDCLEventColor();
       }
       if (this.mainRequestLoadTime !== -1) {
-        this.summaryToolbar.appendSeparator();
+        this.summaryToolbarInternal.appendSeparator();
         const loadText =
             i18nString(UIStrings.loadS, {PH1: i18n.TimeUtilities.secondsToString(this.mainRequestLoadTime - baseTime)});
         appendChunk(loadText).style.color = NetworkLogView.getLoadEventColor();

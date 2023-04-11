@@ -154,6 +154,41 @@ describeWithMockConnection('NetworkLogView', () => {
           assert.isFalse(fileManagerClose.called);
         }
       });
+
+      it('shows summary toolbar with content', () => {
+        target.setInspectedURL('http://example.com/' as Platform.DevToolsPath.UrlString);
+        const request = createNetworkRequest('http://example.com/', {finished: true});
+        request.endTime = 0.669414;
+        request.setIssueTime(0.435136, 0.435136);
+        request.setResourceType(Common.ResourceType.resourceTypes.Document);
+
+        networkLogView.setRecording(true);
+        const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+        assertNotNullOrUndefined(resourceTreeModel);
+        resourceTreeModel.dispatchEventToListeners(
+            SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 0.686191});
+        resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 0.683709);
+        networkLogView.markAsRoot();
+        networkLogView.show(document.body);
+
+        const toolbar = networkLogView.summaryToolbar();
+        const textElements = toolbar.element.shadowRoot?.querySelectorAll('.toolbar-text');
+        assertNotNullOrUndefined(textElements);
+        const textContents = [...textElements].map(item => item.textContent);
+        if (inScope) {
+          assert.deepEqual(textContents, [
+            '1 requests',
+            '0\u00a0B transferred',
+            '0\u00a0B resources',
+            'Finish: 234\u00a0ms',
+            'DOMContentLoaded: 249\u00a0ms',
+            'Load: 251\u00a0ms',
+          ]);
+        } else {
+          assert.strictEqual(textElements.length, 0);
+        }
+        networkLogView.detach();
+      });
     };
     describe('in scope', tests(true));
     describe('out of scope', tests(false));

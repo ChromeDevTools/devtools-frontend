@@ -349,12 +349,13 @@ export class TimingsTrackAppender implements TrackAppender {
     const totalTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
         (event.dur || 0) as TraceEngine.Types.Timing.MicroSeconds);
 
-    // If the event is a performance mark, we show the time of the mark when
-    // the user hovers, rather than its duration (as a mark does not have any
-    // duration). Because the times at the top of the panel are adjusted per
-    // navigation, we need to adjust this timestamp by any previous navigation
-    // also so that the time aligns with what the user is seeing.
-    if (TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(event)) {
+    // If an event is a marker event, rather than show a duration of 0, we can instead show the time that the event happened, which is much more useful. We do this currently for:
+    // Page load events: DCL, FCP and LCP
+    // performance.mark() events
+    // console.timestamp() events
+    if (TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.isTraceEventMarkerEvent(event) ||
+        TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(event) ||
+        TraceEngine.Types.TraceEvents.isTraceEventTimeStamp(event)) {
       const timeOfEvent = TraceEngine.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           event,
           this.#traceParsedData.Meta.traceBounds,

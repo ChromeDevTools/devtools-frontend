@@ -188,25 +188,60 @@ describeWithEnvironment('TimingTrackAppender', () => {
   });
 
   describe('highlightedEntryInfo', () => {
-    it('returns the info for a entries with no duration correctly', () => {
-      const traceMarkers = traceParsedData.PageLoadMetrics.allMarkerEvents;
-      const performanceMarks = traceParsedData.UserTimings.performanceMarks;
-      const consoleTimestamps = traceParsedData.UserTimings.timestampEvents;
-      const allTrackEvents = [...traceMarkers, ...performanceMarks, ...consoleTimestamps];
-      for (const event of allTrackEvents) {
-        const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(event);
-        if (TraceModel.Handlers.ModelHandlers.PageLoadMetrics.isTraceEventMarkerEvent(event)) {
-          assert.strictEqual(highlightedEntryInfo.formattedTime, '');
-        }
-      }
-    });
-
     it('shows the time of the mark, not the duration, if the event is a performance mark', () => {
       const firstMark = traceParsedData.UserTimings.performanceMarks[0];
       const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(firstMark);
       assert.deepEqual(highlightedEntryInfo, {
         title: '[mark]: myMark',
         formattedTime: '1.12\u00A0s',
+      });
+    });
+
+    it('shows the time of the mark for an LCP event', () => {
+      const largestContentfulPaint = traceParsedData.PageLoadMetrics.allMarkerEvents.find(
+          marker => marker.name === 'largestContentfulPaint::Candidate');
+      if (!largestContentfulPaint) {
+        throw new Error('Could not find LCP event');
+      }
+      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(largestContentfulPaint);
+      assert.deepEqual(highlightedEntryInfo, {
+        title: 'LCP',
+        formattedTime: '2.42\u00A0s',
+      });
+    });
+
+    it('shows the time of the mark for an FCP event', () => {
+      const firstContentfulPaint =
+          traceParsedData.PageLoadMetrics.allMarkerEvents.find(marker => marker.name === 'firstContentfulPaint');
+      if (!firstContentfulPaint) {
+        throw new Error('Could not find FCP event');
+      }
+      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(firstContentfulPaint);
+      assert.deepEqual(highlightedEntryInfo, {
+        title: 'FCP',
+        formattedTime: '2.42\u00A0s',
+      });
+    });
+
+    it('shows the time of the mark for a DCL event', () => {
+      const dclEvent = traceParsedData.PageLoadMetrics.allMarkerEvents.find(marker => marker.name === 'MarkDOMContent');
+      if (!dclEvent) {
+        throw new Error('Could not find DCL event');
+      }
+      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(dclEvent);
+      assert.deepEqual(highlightedEntryInfo, {
+        title: 'DCL',
+        formattedTime: '2.42\u00A0s',
+      });
+    });
+
+    it('shows the time of a console.timestamp event in the hover info', () => {
+      const timestampEvent = traceParsedData.UserTimings.timestampEvents[0];
+      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(timestampEvent);
+
+      assert.deepEqual(highlightedEntryInfo, {
+        title: 'TimeStamp: a timestamp',
+        formattedTime: '615.25\u00A0ms',
       });
     });
 

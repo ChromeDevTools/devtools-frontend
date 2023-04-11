@@ -182,11 +182,11 @@ export class BreakpointSelectedEvent extends Event {
 
 export class BreakpointEditedEvent extends Event {
   static readonly eventName = 'breakpointedited';
-  data: {breakpointItem: BreakpointItem};
+  data: {breakpointItem: BreakpointItem, editButtonClicked: boolean};
 
-  constructor(breakpointItem: BreakpointItem) {
+  constructor(breakpointItem: BreakpointItem, editButtonClicked: boolean) {
     super(BreakpointEditedEvent.eventName);
-    this.data = {breakpointItem};
+    this.data = {breakpointItem, editButtonClicked};
   }
 }
 
@@ -379,7 +379,7 @@ export class BreakpointsView extends HTMLElement {
     const clickHandler = (event: Event): void => {
       Host.userMetrics.breakpointEditDialogRevealedFrom(
           Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointSidebarEditButton);
-      this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
+      this.dispatchEvent(new BreakpointEditedEvent(breakpointItem, true /* editButtonClicked */));
       event.consume();
     };
     const title = breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT ?
@@ -552,7 +552,7 @@ export class BreakpointsView extends HTMLElement {
     menu.defaultSection().appendItem(editBreakpointText, () => {
       Host.userMetrics.breakpointEditDialogRevealedFrom(
           Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointSidebarContextMenu);
-      this.dispatchEvent(new BreakpointEditedEvent(breakpointItem));
+      this.dispatchEvent(new BreakpointEditedEvent(breakpointItem, false /* editButtonClicked */));
     }, !editable);
     menu.defaultSection().appendItem(i18nString(UIStrings.revealLocation), () => {
       this.dispatchEvent(new BreakpointSelectedEvent(breakpointItem));

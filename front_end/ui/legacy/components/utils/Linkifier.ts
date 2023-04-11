@@ -754,7 +754,13 @@ export class Linkifier implements SDK.TargetManager.Observer {
       result.push({
         section: 'reveal',
         title: destination ? i18nString(UIStrings.revealInS, {PH1: destination}) : i18nString(UIStrings.reveal),
-        handler: (): Promise<void> => Common.Revealer.reveal(revealable),
+        handler: (): Promise<void> => {
+          if (revealable instanceof Bindings.BreakpointManager.BreakpointLocation) {
+            Host.userMetrics.breakpointEditDialogRevealedFrom(
+                Host.UserMetrics.BreakpointEditDialogRevealedFrom.Linkifier);
+          }
+          return Common.Revealer.reveal(revealable);
+        },
       });
     }
     if (contentProvider) {

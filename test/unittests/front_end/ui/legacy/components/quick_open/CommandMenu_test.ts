@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../../../front_end/core/common/common.js';
+import * as i18n from '../../../../../../../front_end/core/i18n/i18n.js';
 import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
 import * as QuickOpen from '../../../../../../../front_end/ui/legacy/components/quick_open/quick_open.js';
 import {createFakeSetting, describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
@@ -18,7 +19,8 @@ function createCommandMenuProvider(
     defaultValue: false,
     deprecationNotice,
   });
-  const command = QuickOpen.CommandMenu.CommandMenu.createSettingCommand(setting, 'Test Set Value', true);
+  const command =
+      QuickOpen.CommandMenu.CommandMenu.createSettingCommand(setting, i18n.i18n.lockedString('Test Set Value'), true);
   const provider = new QuickOpen.CommandMenu.CommandMenuProvider([command]);
   return {setting, provider, command};
 }

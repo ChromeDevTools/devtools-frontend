@@ -156,8 +156,8 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return Boolean(this.actionRegistration.toggleable);
   }
 
-  title(): string {
-    let title = this.actionRegistration.title ? this.actionRegistration.title() : '';
+  title(): Common.UIString.LocalizedString {
+    let title = this.actionRegistration.title ? this.actionRegistration.title() : i18n.i18n.lockedString('');
     const options = this.actionRegistration.options;
     if (options) {
       // Actions with an 'options' property don't have a title field. Instead, the displayed

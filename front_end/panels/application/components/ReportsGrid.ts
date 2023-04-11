@@ -56,8 +56,8 @@ export class ReportsGridStatusHeader extends HTMLElement {
       ${i18nString(UIStrings.status)}
       <x-link href="https://web.dev/reporting-api/#report-status">
         <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-          iconName: 'help_outline',
-          color: 'var(--color-primary-old)',
+          iconName: 'help',
+          color: 'var(--icon-link)',
           width: '16px',
           height: '16px',
           } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>

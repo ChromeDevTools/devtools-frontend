@@ -298,8 +298,8 @@ export class RequestHeadersComponent extends HTMLElement {
     return html`
       <x-link href="https://goo.gle/devtools-override" class="link devtools-link">
         <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-            iconName: 'help_outline',
-            color: 'var(--color-primary-old)',
+            iconName: 'help',
+            color: 'var(--icon-link)',
             width: '16px',
             height: '16px',
           } as IconButton.Icon.IconData}>

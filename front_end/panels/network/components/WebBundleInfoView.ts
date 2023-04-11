@@ -85,9 +85,7 @@ export class WebBundleInfoElement extends HTMLElement {
         <span>${this.#webBundleName}</span>
         <x-link href="https://web.dev/web-bundles/#explaining-web-bundles">
           <${IconButton.Icon.Icon.litTagName} class="icon"
-            .data=${
-            {color: 'var(--color-text-secondary)', iconName: 'help_outline', width: '16px'} as
-            IconButton.Icon.IconData}>
+            .data=${{color: 'var(--icon-default)', iconName: 'help', width: '16px'} as IconButton.Icon.IconData}>
           </${IconButton.Icon.Icon.litTagName}>
         </x-link>
       </div>

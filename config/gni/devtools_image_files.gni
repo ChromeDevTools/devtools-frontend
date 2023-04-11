@@ -132,7 +132,6 @@ devtools_svg_sources = [
   "heap-snapshot.svg",
   "heap-snapshots.svg",
   "help.svg",
-  "help_outline.svg",
   "ic_changes.svg",
   "ic_command_go_to_line.svg",
   "ic_command_go_to_symbol.svg",

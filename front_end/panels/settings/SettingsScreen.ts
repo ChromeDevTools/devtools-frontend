@@ -503,7 +503,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
       link.setAttribute('aria-label', i18nString(UIStrings.learnMore));
 
       const linkIcon = new IconButton.Icon.Icon();
-      linkIcon.data = {iconName: 'help_outline', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
+      linkIcon.data = {iconName: 'help', color: 'var(--icon-default)', width: '16px', height: '16px'};
       linkIcon.classList.add('link-icon');
       link.prepend(linkIcon);
 

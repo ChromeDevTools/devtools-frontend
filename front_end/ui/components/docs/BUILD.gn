@@ -47,7 +47,6 @@ group("docs") {
     "./trust_tokens_view",
     "./two_states_counter",
     "./user_agent_client_hints",
-    "./webvitals",
   ]
 }
 

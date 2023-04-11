@@ -10,8 +10,6 @@ import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
-
-import {getAllTracingModelPayloadEvents} from '../../helpers/TraceHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {
   DevToolsTimelineCategory,
@@ -1651,33 +1649,6 @@ describeWithEnvironment('TimelineModel', () => {
         'https://via.placeholder.com/3000.jpg',
       ]);
     });
-  });
-
-  it('marks an LCP event on the main thread as an LCP Candidate Event', async () => {
-    const {timelineModel, tracingModel} = await traceModelFromTraceFile('lcp-images.json.gz');
-    const allSDKEvents = getAllTracingModelPayloadEvents(tracingModel);
-    const firstLCPEvent = allSDKEvents.find(event => {
-      return event.name === TimelineModel.TimelineModel.RecordType.MarkLCPCandidate;
-    });
-
-    if (!firstLCPEvent) {
-      throw new Error('Could not find LCP event');
-    }
-    assert.isTrue(timelineModel.isLCPCandidateEvent(firstLCPEvent));
-  });
-
-  it('does not mark an LCP event on another frame as an LCP Candidate Event', async () => {
-    const {timelineModel, tracingModel} = await traceModelFromTraceFile('multiple-navigations-with-iframes.json.gz');
-    const mainFrameID = timelineModel.mainFrameID();
-    const allSDKEvents = getAllTracingModelPayloadEvents(tracingModel);
-
-    const firstLCPEventNotOnMainFrame = allSDKEvents.find(event => {
-      return event.name === TimelineModel.TimelineModel.RecordType.MarkLCPCandidate && event.args.frame !== mainFrameID;
-    });
-    if (!firstLCPEventNotOnMainFrame) {
-      throw new Error('Could not find LCP event');
-    }
-    assert.isFalse(timelineModel.isLCPCandidateEvent(firstLCPEventNotOnMainFrame));
   });
 });
 

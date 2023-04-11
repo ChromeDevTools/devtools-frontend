@@ -92,10 +92,6 @@ const UIStrings = {
    */
   memory: 'Memory',
   /**
-   *@description Text in Timeline for the Web Vitals lane
-   */
-  webVitals: 'Web Vitals',
-  /**
    *@description Text to clear content
    */
   clear: 'Clear',
@@ -115,10 +111,6 @@ const UIStrings = {
    *@description Text in Timeline Panel of the Performance panel
    */
   showMemoryTimeline: 'Show memory timeline',
-  /**
-   *@description Text in Timeline for the Web Vitals lane checkbox
-   */
-  showWebVitals: 'Show Web Vitals',
   /**
    *@description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel
    */
@@ -300,9 +292,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private showMemorySetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private showWebVitalsSetting: Common.Settings.Setting<any>;
   private readonly panelToolbar: UI.Toolbar.Toolbar;
   private readonly panelRightToolbar: UI.Toolbar.Toolbar;
   private readonly timelinePane: UI.Widget.VBox;
@@ -324,7 +313,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private loader?: TimelineLoader;
   private showScreenshotsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private showMemoryToolbarCheckbox?: UI.Toolbar.ToolbarItem;
-  private showWebVitalsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private networkThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
@@ -370,10 +358,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
     this.showMemorySetting.addChangeListener(this.onModeChanged, this);
 
-    this.showWebVitalsSetting = Common.Settings.Settings.instance().createSetting('timelineWebVitals', false);
-    this.showWebVitalsSetting.setTitle(i18nString(UIStrings.webVitals));
-    this.showWebVitalsSetting.addChangeListener(this.onWebVitalsChanged, this);
-
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
     this.panelToolbar = new UI.Toolbar.Toolbar('timeline-main-toolbar', timelineToolbarContainer);
     this.panelToolbar.makeWrappable(true);
@@ -411,7 +395,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.searchableViewInternal.hideWidget();
 
     this.onModeChanged();
-    this.onWebVitalsChanged();
     this.populateToolbar();
     this.showLandingPage();
     this.updateTimelineControls();
@@ -547,12 +530,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showMemoryToolbarCheckbox =
         this.createSettingCheckbox(this.showMemorySetting, i18nString(UIStrings.showMemoryTimeline));
     this.panelToolbar.appendToolbarItem(this.showMemoryToolbarCheckbox);
-
-    if (!isNode) {
-      this.showWebVitalsToolbarCheckbox =
-          this.createSettingCheckbox(this.showWebVitalsSetting, i18nString(UIStrings.showWebVitals));
-      this.panelToolbar.appendToolbarItem(this.showWebVitalsToolbarCheckbox);
-    }
 
     // GC
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
@@ -758,10 +735,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.updateOverviewControls();
     this.doResize();
     this.select(null);
-  }
-
-  private onWebVitalsChanged(): void {
-    this.flameChart.toggleWebVitalsLane();
   }
 
   private updateSettingsPaneVisibility(): void {

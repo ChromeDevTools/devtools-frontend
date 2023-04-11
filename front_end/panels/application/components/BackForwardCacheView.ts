@@ -337,11 +337,11 @@ export class BackForwardCacheView extends HTMLElement {
       return LitHtml.html`
         <div class="text-ellipsis">
           ${node.treeNodeData.iconName ? LitHtml.html`
-            <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+            <${IconButton.Icon.Icon.litTagName} class="inline-icon" style="margin-bottom: -3px;" .data=${{
               iconName: node.treeNodeData.iconName,
               color: 'var(--color-text-secondary)',
-              width: '16px',
-              height: '16px',
+              width: '20px',
+              height: '20px',
             } as IconButton.Icon.IconData}>
             </${IconButton.Icon.Icon.litTagName}>
           ` : LitHtml.nothing}
@@ -353,7 +353,7 @@ export class BackForwardCacheView extends HTMLElement {
 
     const frameTreeData = this.#buildFrameTreeDataRecursive(explanationTree, {blankCount: 1});
     // Override the icon for the outermost frame.
-    frameTreeData.node.treeNodeData.iconName = 'frame-icon';
+    frameTreeData.node.treeNodeData.iconName = 'frame';
     let title = '';
     // The translation pipeline does not support nested plurals. We avoid this
     // here by pulling out the logic for one of the plurals into code instead.
@@ -432,7 +432,7 @@ export class BackForwardCacheView extends HTMLElement {
         ...node,
         children: () => Promise.resolve(children),
       };
-      node.treeNodeData.iconName = 'frame-embedded-icon';
+      node.treeNodeData.iconName = 'iframe';
     } else if (!explanationTree.url.length) {
       // If the current node increased the blank count, but it has no children and
       // is therefore not shown, decrement the blank count again.
@@ -550,8 +550,8 @@ export class BackForwardCacheView extends HTMLElement {
           ${category}
           <div class="help-outline-icon">
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-              iconName: 'help_outline',
-              color: 'var(--color-text-secondary)',
+              iconName: 'help',
+              color: 'var(--icon-default)',
               width: '16px',
               height: '16px',
               } as IconButton.Icon.IconData} title=${explainerText}>

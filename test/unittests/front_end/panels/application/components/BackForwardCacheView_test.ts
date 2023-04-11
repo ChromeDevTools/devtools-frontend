@@ -220,7 +220,7 @@ describeWithEnvironment('BackForwardCacheView', () => {
           {
             treeNodeData: {
               text: '(2) https://www.example.com',
-              iconName: 'frame-icon',
+              iconName: 'frame',
             },
             children: [
               {
@@ -231,7 +231,7 @@ describeWithEnvironment('BackForwardCacheView', () => {
               {
                 treeNodeData: {
                   text: '(1) https://www.example.com/frame.html',
-                  iconName: 'frame-embedded-icon',
+                  iconName: 'iframe',
                 },
                 children: [
                   {

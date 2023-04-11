@@ -692,7 +692,7 @@ describeWithEnvironment('TimelineModel', () => {
       const track = new TimelineModel.TimelineModel.Track();
       track.asyncEvents = nestableAsyncEvents;
       track.events = syncEvents;
-      const syncLikeEvents = track.syncLikeEvents();
+      const syncLikeEvents = track.eventsForTreeView();
       assert.strictEqual(syncLikeEvents.length, nestableAsyncEvents.length + syncEvents.length);
       const syncLikeEventIds = syncLikeEvents.map(e => e.id);
       for (const event of [...nestableAsyncEvents, ...syncEvents]) {
@@ -703,7 +703,7 @@ describeWithEnvironment('TimelineModel', () => {
       const track = new TimelineModel.TimelineModel.Track();
       track.asyncEvents = nonNestableAsyncEvents;
       track.events = syncEvents;
-      const syncLikeEvents = track.syncLikeEvents();
+      const syncLikeEvents = track.eventsForTreeView();
       assert.strictEqual(syncLikeEvents.length, syncEvents.length);
       const syncLikeEventIds = syncLikeEvents.map(e => e.id);
       for (const event of [...syncEvents]) {
@@ -1470,7 +1470,7 @@ describeWithEnvironment('TimelineModel', () => {
         if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
           continue;
         }
-        for (const event of track.syncLikeEvents()) {
+        for (const event of track.eventsForTreeView()) {
           if (event.phase !== TraceEngine.Types.TraceEvents.Phase.MARK) {
             continue;
           }

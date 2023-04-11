@@ -1924,7 +1924,16 @@ export class Track {
   type: TrackType;
   forMainFrame: boolean;
   url: Platform.DevToolsPath.UrlString;
+  /**
+   * For tracks that correspond to a thread in a trace, this field contains all the events in the
+   * thread (both sync and async). Other tracks (like Timings) only include events with instant
+   * ("I") or mark ("R") phases.
+   */
   events: SDK.TracingModel.Event[];
+  /**
+   * For tracks that correspond to a thread in a trace, this field will be empty. Other tracks (like
+   * Interactions and Animations) have non-instant/mark events.
+   */
   asyncEvents: SDK.TracingModel.AsyncEvent[];
   tasks: SDK.TracingModel.Event[];
   private syncLikeEventsInternal: SDK.TracingModel.Event[]|null;
@@ -1944,18 +1953,31 @@ export class Track {
   }
 
   /**
-   * Gets the sync events in a track and async events if they can be
-   * organized in a tree structure. This latter condition is met if
-   * there is *not* a pair of async events e1 and e2 where:
+   * Gets trace events that can be organized in a tree structure. This
+   * is used for the tree views in the Bottom-up, Call tree and Event
+   * log view in the details pane.
    *
-   * e1.startTime <= e2.startTime && e1.endTime > e2.startTime && e1.endTime > e2.endTime.
-   * or, graphically:
-   * |------- e1 ------|
-   *   |------- e2 --------|
+   * Depending on the type of track, this data can vary:
+   * 1. Tracks that correspond to a thread in a trace:
+   *    Returns all the events (sync and async). For these tracks, all
+   *    events will be inside the `events` field. Async events will be
+   *    filtered later when the trees are actually built. For these
+   *    tracks, the asyncEvents field will be empty.
    *
-   * If the condition isn't met only sync events are returned.
+   * 2. Other tracks (Interactions, Timings, etc.):
+   *    Returns instant events (which for these tracks are stored in the
+   *    `events` field) and async events (contained in `syncEvents`) if
+   *    they can be organized in a tree structure. This latter condition
+   *    is met if there is *not* a pair of async events e1 and e2 where:
+   *
+   *    e1.startTime <= e2.startTime && e1.endTime > e2.startTime && e1.endTime > e2.endTime.
+   *    or, graphically:
+   *    |------- e1 ------|
+   *      |------- e2 --------|
+   *    Because async events are filtered later, fake sync events are
+   *    created from the async events when the condition above is met.
    */
-  syncLikeEvents(): SDK.TracingModel.Event[] {
+  eventsForTreeView(): SDK.TracingModel.Event[] {
     if (this.syncLikeEventsInternal) {
       return this.syncLikeEventsInternal;
     }
@@ -1995,12 +2017,12 @@ export class Track {
         this.syncLikeEventsInternal = [...this.events];
         break;
       }
-      const syncEvent = new SDK.TracingModel.ConstructedEvent(
+      const fakeSyncEvent = new SDK.TracingModel.ConstructedEvent(
           event.categoriesString, event.name, TraceEngine.Types.TraceEvents.Phase.COMPLETE, startTime, event.thread);
-      syncEvent.setEndTime(endTime);
-      syncEvent.addArgs(event.args);
-      this.syncLikeEventsInternal.push(syncEvent);
-      stack.push(syncEvent);
+      fakeSyncEvent.setEndTime(endTime);
+      fakeSyncEvent.addArgs(event.args);
+      this.syncLikeEventsInternal.push(fakeSyncEvent);
+      stack.push(fakeSyncEvent);
     }
     return this.syncLikeEventsInternal;
   }

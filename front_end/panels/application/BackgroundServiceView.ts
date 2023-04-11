@@ -239,7 +239,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
     this.toolbar.appendSeparator();
 
-    this.saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveEvents), 'largeicon-download');
+    this.saveButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveEvents), 'download');
     this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, _event => {
       void this.saveToFile();
     });

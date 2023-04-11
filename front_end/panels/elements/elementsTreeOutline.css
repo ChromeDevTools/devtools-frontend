@@ -306,17 +306,14 @@ select {
   display: none;
 }
 
-.gutter-menu-icon {
+.gutter-container > devtools-icon {
   display: block;
   visibility: hidden;
-  transform: rotate(-90deg) scale(0.8);
-  background-color: var(--color-background);
   position: relative;
-  left: -7px;
-  top: -3px;
+  left: -1px;
 }
 
-.elements-disclosure li.selected .gutter-container:not(.has-decorations) .gutter-menu-icon {
+.elements-disclosure li.selected .gutter-container:not(.has-decorations) > devtools-icon {
   visibility: visible;
 }
 /** Guide line */
@@ -360,7 +357,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
     border: 1px solid Highlight !important; /* stylelint-disable-line declaration-no-important */
   }
 
-  .gutter-menu-icon {
+  .gutter-container > devtools-icon {
     forced-color-adjust: none;
   }
 }

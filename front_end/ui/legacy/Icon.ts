@@ -245,7 +245,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['largeicon-large-list', {position: 'e5', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-layout-editor', {position: 'a4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-longclick-triangle', {position: 'b4', spritesheet: 'largeicons', isMask: true}],
-  ['largeicon-menu', {position: 'c4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-domain', {position: 'd4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-file', {position: 'e4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-file-sync', {position: 'f9', spritesheet: 'largeicons', isMask: true}],

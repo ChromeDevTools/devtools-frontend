@@ -94,6 +94,7 @@ devtools_svg_sources = [
   "dock-right.svg",
   "dock-window.svg",
   "document.svg",
+  "dots-horizontal.svg",
   "dots-vertical.svg",
   "download.svg",
   "dropdown_7x6_icon.svg",

@@ -254,7 +254,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.contentElement = this.listItemElement.createChild('div');
     this.gutterContainer = this.contentElement.createChild('div', 'gutter-container');
     this.gutterContainer.addEventListener('click', this.showContextMenu.bind(this));
-    const gutterMenuIcon = UI.Icon.Icon.create('largeicon-menu', 'gutter-menu-icon');
+    const gutterMenuIcon = new IconButton.Icon.Icon();
+    gutterMenuIcon.data = {
+      color: 'var(--icon-default)',
+      iconName: 'dots-horizontal',
+      height: '16px',
+      width: '16px',
+    };
     this.gutterContainer.append(gutterMenuIcon);
     this.decorationsElement = this.gutterContainer.createChild('div', 'hidden');
 

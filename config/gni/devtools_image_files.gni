@@ -101,7 +101,6 @@ devtools_svg_sources = [
   "dots-vertical.svg",
   "download.svg",
   "dropdown_7x6_icon.svg",
-  "edit-icon.svg",
   "edit.svg",
   "empty.svg",
   "errorWave.svg",

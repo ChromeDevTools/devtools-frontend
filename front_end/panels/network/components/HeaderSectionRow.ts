@@ -62,7 +62,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/components/HeaderSectio
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const trashIconUrl = new URL('../../../Images/bin.svg', import.meta.url).toString();
-const editIconUrl = new URL('../../../Images/edit-icon.svg', import.meta.url).toString();
+const editIconUrl = new URL('../../../Images/edit.svg', import.meta.url).toString();
 
 export const isValidHeaderName = (headerName: string): boolean => {
   return /^[a-z0-9_\-]+$/i.test(headerName);
@@ -225,8 +225,8 @@ export class HeaderSectionRow extends HTMLElement {
           .size=${Buttons.Button.Size.TINY}
           .iconUrl=${editIconUrl}
           .variant=${Buttons.Button.Variant.ROUND}
-          .iconWidth=${'13px'}
-          .iconHeight=${'13px'}
+          .iconWidth=${'16px'}
+          .iconHeight=${'16px'}
           @click=${(): void => {
             this.dispatchEvent(new EnableHeaderEditingEvent());
           }}

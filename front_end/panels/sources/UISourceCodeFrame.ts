@@ -756,6 +756,9 @@ function countDuplicates(messages: RowMessage[]): number[] {
 function renderMessage(message: RowMessage, count: number): HTMLElement {
   const element = document.createElement('div');
   element.classList.add('text-editor-row-message');
+  element.style.display = 'flex';
+  element.style.alignItems = 'center';
+  element.style.gap = '4px';
 
   if (count === 1) {
     const icon = element.appendChild(new IconButton.Icon.Icon());
@@ -767,6 +770,7 @@ function renderMessage(message: RowMessage, count: number): HTMLElement {
         document.createElement('span', {is: 'dt-small-bubble'}) as UI.UIUtils.DevToolsSmallBubble;
     repeatCountElement.textContent = String(count);
     repeatCountElement.classList.add('text-editor-row-message-repeat-count');
+    repeatCountElement.style.flexShrink = '0';
     element.appendChild(repeatCountElement);
     repeatCountElement.type = getBubbleTypePerLevel(message.level());
   }

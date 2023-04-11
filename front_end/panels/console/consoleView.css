@@ -184,8 +184,8 @@
   user-select: none;
   flex: none;
   position: relative;
-  left: 10px;
-  top: 5px;
+  left: 8px;
+  top: 3px;
   margin-right: 2px;
 }
 
@@ -194,10 +194,9 @@
 }
 
 .console-message-repeat-count .expand-group-icon {
-  left: 2px;
-  top: 2px;
+  position: static;
   background-color: var(--color-background);
-  margin-right: 4px;
+  margin-left: -1px;
 }
 
 .console-group {

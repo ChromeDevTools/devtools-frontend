@@ -24,8 +24,7 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
   #lastRequestedContext?: SDK.RuntimeModel.ExecutionContext;
   private constructor() {
     super();
-    this.#refreshButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refreshGlobalListeners), 'largeicon-refresh');
+    this.#refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refreshGlobalListeners), 'refresh');
     this.#refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshClick, this);
     this.#refreshButton.setEnabled(false);
 

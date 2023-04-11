@@ -106,7 +106,7 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
     this.eventListenersView = new EventListeners.EventListenersView.EventListenersView(this.update.bind(this));
     this.eventListenersView.show(this.element);
 
-    const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
+    const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
     refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.update.bind(this));
     this.toolbarItemsInternal.push(refreshButton);
     this.toolbarItemsInternal.push(new UI.Toolbar.ToolbarSettingCheckbox(

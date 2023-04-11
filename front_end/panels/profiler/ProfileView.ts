@@ -217,7 +217,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.excludeButton.setEnabled(false);
     this.excludeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.excludeClicked, this);
 
-    this.resetButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.restoreAllFunctions), 'largeicon-refresh');
+    this.resetButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.restoreAllFunctions), 'refresh');
     this.resetButton.setEnabled(false);
     this.resetButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.resetClicked, this);
 

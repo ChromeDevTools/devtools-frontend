@@ -12,7 +12,7 @@ import {Icon} from './Icon.js';
 
 import {Events as TabbedPaneEvents, TabbedPane, type EventData} from './TabbedPane.js';
 
-import {Toolbar, ToolbarMenuButton, type ToolbarItem} from './Toolbar.js';
+import {Toolbar, ToolbarMenuButton, type ToolbarItem, type ItemsProvider} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
 import {type TabbedViewLocation, type View, type ViewLocation, type ViewLocationResolver} from './View.js';
 import {
@@ -102,13 +102,9 @@ export class PreRegisteredView implements View {
     return this.viewRegistration.persistence;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async toolbarItems(): Promise<any> {
+  async toolbarItems(): Promise<ToolbarItem[]> {
     if (this.viewRegistration.hasToolbar) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return this.widget().then(widget => (widget as any).toolbarItems());
+      return this.widget().then(widget => (widget as unknown as ItemsProvider).toolbarItems());
     }
     return [];
   }
@@ -364,7 +360,7 @@ const widgetForView = new WeakMap<View, Widget>();
 
 export class ContainerWidget extends VBox {
   private readonly view: View;
-  private materializePromise?: Promise<void[]>;
+  private materializePromise?: Promise<void>;
 
   constructor(view: View) {
     super();
@@ -376,9 +372,7 @@ export class ContainerWidget extends VBox {
     this.setDefaultFocusedElement(this.element);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  materialize(): Promise<any> {
+  materialize(): Promise<void> {
     if (this.materializePromise) {
       return this.materializePromise;
     }
@@ -400,7 +394,7 @@ export class ContainerWidget extends VBox {
         widget.focus();
       }
     }));
-    this.materializePromise = Promise.all(promises);
+    this.materializePromise = Promise.all(promises).then(() => {});
     return this.materializePromise;
   }
 
@@ -426,7 +420,7 @@ export class _ExpandableContainerWidget extends VBox {
   private readonly titleExpandIcon: Icon;
   private readonly view: View;
   private widget?: Widget;
-  private materializePromise?: Promise<void[]>;
+  private materializePromise?: Promise<void>;
 
   constructor(view: View) {
     super(true);
@@ -462,9 +456,7 @@ export class _ExpandableContainerWidget extends VBox {
     }
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private materialize(): Promise<any> {
+  private materialize(): Promise<void> {
     if (this.materializePromise) {
       return this.materializePromise;
     }
@@ -481,13 +473,11 @@ export class _ExpandableContainerWidget extends VBox {
       widgetForView.set(this.view, widget);
       widget.show(this.element);
     }));
-    this.materializePromise = Promise.all(promises);
+    this.materializePromise = Promise.all(promises).then(() => {});
     return this.materializePromise;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  expand(): Promise<any> {
+  expand(): Promise<void> {
     if (this.titleElement.classList.contains('expanded')) {
       return this.materialize();
     }

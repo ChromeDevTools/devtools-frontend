@@ -576,6 +576,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-bottom-panel-open);
 }
 
+.spritesheet-brackets.icon-mask {
+  -webkit-mask-image: var(--image-file-brackets);
+}
+
 .spritesheet-breakpoint-crossed-filled.icon-mask {
   -webkit-mask-image: var(--image-file-breakpoint-crossed-filled);
 }

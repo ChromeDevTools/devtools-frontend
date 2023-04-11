@@ -46,6 +46,7 @@ grd_files_release_sources = [
   "front_end/Images/bin.svg",
   "front_end/Images/bottom-panel-close.svg",
   "front_end/Images/bottom-panel-open.svg",
+  "front_end/Images/brackets.svg",
   "front_end/Images/breakpoint-circle.svg",
   "front_end/Images/breakpoint-crossed-filled.svg",
   "front_end/Images/breakpoint-crossed.svg",

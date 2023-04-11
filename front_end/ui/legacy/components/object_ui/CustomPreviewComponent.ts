@@ -56,7 +56,7 @@ export class CustomPreviewSection {
         this.header.classList.add('custom-expandable-section-header');
       }
       this.header.addEventListener('click', this.onClick.bind(this), false);
-      this.expandIcon = UI.Icon.Icon.create('smallicon-triangle-right', 'custom-expand-icon');
+      this.expandIcon = UI.Icon.Icon.create('triangle-right', 'custom-expand-icon');
       this.header.insertBefore(this.expandIcon, this.header.firstChild);
     }
 
@@ -147,9 +147,9 @@ export class CustomPreviewSection {
     }
     if (this.expandIcon) {
       if (this.expanded) {
-        this.expandIcon.setIconType('smallicon-triangle-down');
+        this.expandIcon.setIconType('triangle-down');
       } else {
-        this.expandIcon.setIconType('smallicon-triangle-right');
+        this.expandIcon.setIconType('triangle-right');
       }
     }
   }

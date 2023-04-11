@@ -11,10 +11,8 @@
 
 .custom-expand-icon {
   user-select: none;
-  opacity: 50%;
   margin-right: 4px;
-  margin-bottom: -2px;
-  background: var(--color-primary-old);
+  margin-bottom: -4px;
 }
 
 .custom-expandable-section-standard-section {

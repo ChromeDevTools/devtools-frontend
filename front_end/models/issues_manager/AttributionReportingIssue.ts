@@ -15,7 +15,6 @@ export const enum IssueCode {
   InvalidRegisterSourceHeader = 'AttributionReportingIssue::InvalidRegisterSourceHeader',
   InvalidRegisterTriggerHeader = 'AttributionReportingIssue::InvalidRegisterTriggerHeader',
   InvalidEligibleHeader = 'AttributionReportingIssue::InvalidEligibleHeader',
-  TooManyConcurrentRequests = 'AttributionReportingIssue::TooManyConcurrentRequests',
   SourceAndTriggerHeaders = 'AttributionReportingIssue::SourceAndTriggerHeaders',
   SourceIgnored = 'AttributionReportingIssue::SourceIgnored',
   TriggerIgnored = 'AttributionReportingIssue::TriggerIgnored',
@@ -24,8 +23,6 @@ export const enum IssueCode {
   InvalidRegisterOsSourceHeader = 'AttributionReportingIssue::InvalidRegisterOsSourceHeader',
   InvalidRegisterOsTriggerHeader = 'AttributionReportingIssue::InvalidRegisterOsTriggerHeader',
   WebAndOsHeaders = 'AttributionReportingIssue::WebAndOsHeaders',
-  // TODO(apaseltiner): Remove this once old issue types are removed from
-  // protocol.
   Unknown = 'AttributionReportingIssue::Unknown',
 }
 
@@ -43,8 +40,6 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.InvalidRegisterTriggerHeader;
     case Protocol.Audits.AttributionReportingIssueType.InvalidEligibleHeader:
       return IssueCode.InvalidEligibleHeader;
-    case Protocol.Audits.AttributionReportingIssueType.TooManyConcurrentRequests:
-      return IssueCode.TooManyConcurrentRequests;
     case Protocol.Audits.AttributionReportingIssueType.SourceAndTriggerHeaders:
       return IssueCode.SourceAndTriggerHeaders;
     case Protocol.Audits.AttributionReportingIssueType.SourceIgnored:
@@ -143,11 +138,6 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
             structuredHeaderLink,
           ],
         };
-      case IssueCode.TooManyConcurrentRequests:
-        return {
-          file: 'arTooManyConcurrentRequests.md',
-          links: [],
-        };
       case IssueCode.SourceAndTriggerHeaders:
         return {
           file: 'arSourceAndTriggerHeaders.md',
@@ -197,7 +187,6 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.InvalidRegisterOsSourceHeader:
       case IssueCode.InvalidRegisterOsTriggerHeader:
       case IssueCode.InvalidEligibleHeader:
-      case IssueCode.TooManyConcurrentRequests:
       case IssueCode.SourceAndTriggerHeaders:
       case IssueCode.WebAndOsHeaders:
       case IssueCode.SourceIgnored:

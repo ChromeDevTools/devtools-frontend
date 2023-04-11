@@ -113,7 +113,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this.cache = cache;
     this.dataGrid = null;
     this.refreshThrottler = new Common.Throttler.Throttler(300);
-    this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
+    this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
     this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshButtonClicked, this);
     editorToolbar.appendToolbarItem(this.refreshButton);
 

@@ -1143,10 +1143,13 @@ export function createRadioLabel(name: string, title: string, checked?: boolean)
   return element;
 }
 
-export function createIconLabel(title: string, iconClass: string): HTMLElement {
+export function createIconLabel(title: string, iconClass: string, iconColor?: string): HTMLElement {
   const element = (document.createElement('span', {is: 'dt-icon-label'}) as DevToolsIconLabel);
   element.createChild('span').textContent = title;
   element.type = iconClass;
+  if (iconColor) {
+    element.color = iconColor;
+  }
   return element;
 }
 
@@ -1237,6 +1240,10 @@ export class DevToolsIconLabel extends HTMLSpanElement {
 
   set type(type: string) {
     this.iconElement.setIconType(type);
+  }
+
+  set color(color: string) {
+    this.iconElement.setIconColor(color);
   }
 }
 

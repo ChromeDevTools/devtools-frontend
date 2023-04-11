@@ -74,7 +74,7 @@ export class InterestGroupAccessGrid extends HTMLElement {
         <${IconButton.Icon.Icon.litTagName} class="info-icon" title=${
             i18nString(UIStrings.allInterestGroupStorageEvents)}
           .data=${
-            {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as
+            {iconName: 'info', color: 'var(--icon-default)', width: '16px'} as
             IconButton.Icon.IconWithName}>
         </${IconButton.Icon.Icon.litTagName}>
         ${this.#renderGridOrNoDataMessage()}

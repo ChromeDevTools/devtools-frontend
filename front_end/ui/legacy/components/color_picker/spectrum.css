@@ -198,7 +198,7 @@
   content: " ";
   width: 13px;
   height: 13px;
-  background-image: var(--image-file-ic_suggest_color);
+  background-image: var(--image-file-refresh);
   background-size: contain;
   position: absolute;
   left: 5.5px;

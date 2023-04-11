@@ -43,7 +43,7 @@ export class StorageItemsView extends UI.Widget.VBox {
     super(false);
     this.filterRegex = null;
 
-    this.refreshButton = this.addButton(i18nString(UIStrings.refresh), 'largeicon-refresh', () => {
+    this.refreshButton = this.addButton(i18nString(UIStrings.refresh), 'refresh', () => {
       this.refreshItems();
       UI.ARIAUtils.alert(i18nString(UIStrings.refreshedStatus));
     });

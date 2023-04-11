@@ -273,10 +273,10 @@ export class CookieItemsView extends StorageItemsView {
     this.shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
     if (this.hasFilter()) {
       this.setDeleteAllTitle(i18nString(UIStrings.clearFilteredCookies));
-      this.setDeleteAllGlyph('largeicon-delete-filter');
+      this.setDeleteAllGlyph('filter-clear');
     } else {
       this.setDeleteAllTitle(i18nString(UIStrings.clearAllCookies));
-      this.setDeleteAllGlyph('largeicon-delete-list');
+      this.setDeleteAllGlyph('clear-list');
     }
     this.cookiesTable.setCookies(this.shownCookies, this.model.getCookieToBlockedReasonsMap());
     UI.ARIAUtils.alert(i18nString(UIStrings.numberOfCookiesShownInTableS, {PH1: this.shownCookies.length}));

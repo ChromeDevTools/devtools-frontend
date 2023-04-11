@@ -599,7 +599,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
       appIdField.textContent = appId;
 
       const helpIcon = new IconButton.Icon.Icon();
-      helpIcon.data = {iconName: 'help_outline', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
+      helpIcon.data = {iconName: 'help', color: 'var(--icon-default)', width: '16px', height: '16px'};
       helpIcon.classList.add('inline-icon');
       helpIcon.title = i18nString(UIStrings.appIdExplainer);
       helpIcon.tabIndex = 0;
@@ -625,11 +625,11 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         copyButton.title = i18nString(UIStrings.copyToClipboard);
         copyButton.data = {
           groups: [{
-            iconName: 'copy_icon',
-            iconHeight: '12px',
-            iconWidth: '12px',
+            iconName: 'copy',
+            iconHeight: '14px',
+            iconWidth: '14px',
             text: '',
-            iconColor: 'var(--color-text-primary)',
+            iconColor: 'var(--icon-default-hover)',
           }],
           clickHandler: (): void => {
             UI.ARIAUtils.alert(i18nString(UIStrings.copiedToClipboard, {PH1: recommendedId}));

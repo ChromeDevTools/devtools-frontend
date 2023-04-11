@@ -604,8 +604,20 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-clear);
 }
 
+.spritesheet-clear-list.icon-mask {
+  -webkit-mask-image: var(--image-file-clear-list);
+}
+
 .spritesheet-cloud.icon-mask {
   -webkit-mask-image: var(--image-file-cloud);
+}
+
+.spritesheet-color-picker-filled.icon-mask {
+  -webkit-mask-image: var(--image-file-color-picker-filled);
+}
+
+.spritesheet-color-picker.icon-mask {
+  -webkit-mask-image: var(--image-file-color-picker);
 }
 
 .spritesheet-cookie.icon-mask {
@@ -666,6 +678,10 @@ span[is="dt-icon-label"] {
 
 .spritesheet-eye.icon-mask {
   -webkit-mask-image: var(--image-file-eye);
+}
+
+.spritesheet-filter-clear.icon-mask {
+  -webkit-mask-image: var(--image-file-filter-clear);
 }
 
 .spritesheet-filter-filled.icon-mask {
@@ -818,6 +834,10 @@ span[is="dt-icon-label"] {
 
 .spritesheet-triangle-down.icon-mask {
   -webkit-mask-image: var(--image-file-triangle-down);
+}
+
+.spritesheet-triangle-left.icon-mask {
+  -webkit-mask-image: var(--image-file-triangle-left);
 }
 
 .spritesheet-triangle-right.icon-mask {

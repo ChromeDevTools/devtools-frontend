@@ -59,6 +59,10 @@ export class Icon extends HTMLSpanElement {
     }
   }
 
+  setIconColor(color: string): void {
+    this.style.setProperty('background-color', color);
+  }
+
   private toggleClasses(value: boolean): void {
     if (this.descriptor) {
       this.classList.toggle('spritesheet-' + this.descriptor.spritesheet, value);
@@ -111,8 +115,11 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['bug', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['checkmark', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['chevron-double-right', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['clear-list', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['clear', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['cloud', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['color-picker-filled', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['color-picker', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['cookie', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['credit-card', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['cross', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -128,6 +135,7 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['download', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['edit', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['eye', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['filter-clear', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['filter-filled', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['filter', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['frame-crossed', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -166,6 +174,7 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['top-panel-close', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['top-panel-open', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['triangle-down', {cellWidth: 14, cellHeight: 14, padding: 0}],
+  ['triangle-left', {cellWidth: 14, cellHeight: 14, padding: 0}],
   ['triangle-right', {cellWidth: 14, cellHeight: 14, padding: 0}],
   ['triangle-up', {cellWidth: 14, cellHeight: 14, padding: 0}],
   ['undo', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -241,6 +250,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['largeicon-copy', {position: 'b6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-delete-filter', {position: 'i5', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-delete-list', {position: 'i6', spritesheet: 'largeicons', isMask: true}],
+  ['largeicon-download', {position: 'h6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-eyedropper', {position: 'b5', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-font-editor', {position: 'i7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-large-list', {position: 'e5', spritesheet: 'largeicons', isMask: true}],
@@ -290,8 +300,11 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['bug', {position: 'a1', spritesheet: 'bug', isMask: true}],
   ['checkmark', {position: 'a1', spritesheet: 'checkmark', isMask: true}],
   ['chevron-double-right', {position: 'a1', spritesheet: 'chevron-double-right', isMask: true}],
+  ['clear-list', {position: 'a1', spritesheet: 'clear-list', isMask: true}],
   ['clear', {position: 'a1', spritesheet: 'clear', isMask: true}],
   ['cloud', {position: 'a1', spritesheet: 'cloud', isMask: true}],
+  ['color-picker-filled', {position: 'a1', spritesheet: 'color-picker-filled', isMask: true}],
+  ['color-picker', {position: 'a1', spritesheet: 'color-picker', isMask: true}],
   ['cookie', {position: 'a1', spritesheet: 'cookie', isMask: true}],
   ['credit-card', {position: 'a1', spritesheet: 'credit-card', isMask: true}],
   ['cross', {position: 'a1', spritesheet: 'cross', isMask: true}],
@@ -307,6 +320,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['download', {position: 'a1', spritesheet: 'download', isMask: true}],
   ['edit', {position: 'a1', spritesheet: 'edit', isMask: true}],
   ['eye', {position: 'a1', spritesheet: 'eye', isMask: true}],
+  ['filter-clear', {position: 'a1', spritesheet: 'filter-clear', isMask: true}],
   ['filter-filled', {position: 'a1', spritesheet: 'filter-filled', isMask: true}],
   ['filter', {position: 'a1', spritesheet: 'filter', isMask: true}],
   ['frame-crossed', {position: 'a1', spritesheet: 'frame-crossed', isMask: true}],
@@ -345,6 +359,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['top-panel-close', {position: 'a1', spritesheet: 'top-panel-close', isMask: true}],
   ['top-panel-open', {position: 'a1', spritesheet: 'top-panel-open', isMask: true}],
   ['triangle-down', {position: 'a1', spritesheet: 'triangle-down', isMask: true}],
+  ['triangle-left', {position: 'a1', spritesheet: 'triangle-left', isMask: true}],
   ['triangle-right', {position: 'a1', spritesheet: 'triangle-right', isMask: true}],
   ['triangle-up', {position: 'a1', spritesheet: 'triangle-up', isMask: true}],
   ['undo', {position: 'a1', spritesheet: 'undo', isMask: true}],

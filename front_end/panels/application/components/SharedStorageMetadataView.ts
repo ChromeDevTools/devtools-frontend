@@ -128,7 +128,7 @@ class SharedStorageResetBudgetButton extends HTMLElement {
         title=${i18nString(UIStrings.resetBudget)}
         @click=${(): void => this.#resetBudgetHandler()}>
       <${IconButton.Icon.Icon.litTagName} .data=${
-      {iconName: 'ic_undo_16x16_icon', color: 'var(--color-text-secondary)', width: '12px', height: '14px'} as
+      {iconName: 'revert', color: 'var(--icon-default)', width: '14px', height: '14px'} as
       IconButton.Icon.IconWithName}>
         </${IconButton.Icon.Icon.litTagName}>
       </button>`, this.#shadow, {host: this});
@@ -196,8 +196,7 @@ export class SharedStorageMetadataReportView extends HTMLElement {
      <${ReportView.ReportView.ReportValue.litTagName}>${this.#length}</${ReportView.ReportView.ReportValue.litTagName}>
      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.entropyBudget)}<${
         IconButton.Icon.Icon.litTagName} class="info-icon" title=${i18nString(UIStrings.budgetExplanation)}
-          .data=${
-        {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'} as IconButton.Icon.IconWithName}>
+          .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'} as IconButton.Icon.IconWithName}>
         </${IconButton.Icon.Icon.litTagName}></${ReportView.ReportView.ReportKey.litTagName}><${
         ReportView.ReportView.ReportValue.litTagName}>${this.#remainingBudget}${this.#renderResetBudgetButton()}
         </${ReportView.ReportView.ReportValue.litTagName}>

@@ -297,7 +297,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         toggleEyeDropperShortcut[0]?.descriptors.flatMap(descriptor => descriptor.name.split(' + '))[0];
 
     this.colorPickerButton = new UI.Toolbar.ToolbarToggle(
-        i18nString(UIStrings.toggleColorPicker, {PH1: definedShortcutKey || ''}), 'largeicon-eyedropper');
+        i18nString(UIStrings.toggleColorPicker, {PH1: definedShortcutKey || ''}), 'color-picker',
+        'color-picker-filled');
     this.colorPickerButton.setToggled(true);
     this.colorPickerButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this.toggleColorPicker.bind(this, undefined));

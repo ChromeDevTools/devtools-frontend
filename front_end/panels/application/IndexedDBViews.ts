@@ -34,6 +34,7 @@ import indexedDBViewsStyles from './indexedDBViews.css.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -86,11 +87,11 @@ const UIStrings = {
    */
   refresh: 'Refresh',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon delete button in the Indexed DBViews of the Application panel
+   *@description Tooltip text that appears when hovering over the delete button in the Indexed DBViews of the Application panel
    */
   deleteSelected: 'Delete selected',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon clear button in the Indexed DBViews of the Application panel
+   *@description Tooltip text that appears when hovering over the clear button in the Indexed DBViews of the Application panel
    */
   clearObjectStore: 'Clear object store',
   /**
@@ -122,11 +123,11 @@ const UIStrings = {
    */
   keyPath: 'Key path: ',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon play back button in the Indexed DBViews of the Application panel
+   *@description Tooltip text that appears when hovering over the triangle left button in the Indexed DBViews of the Application panel
    */
   showPreviousPage: 'Show previous page',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon play button in the Indexed DBViews of the Application panel
+   *@description Tooltip text that appears when hovering over the triangle right button in the Indexed DBViews of the Application panel
    */
   showNextPage: 'Show next page',
   /**
@@ -273,7 +274,7 @@ export class IDBDataView extends UI.View.SimpleView {
 
     this.element.classList.add('indexed-db-data-view', 'storage-view');
 
-    this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'largeicon-refresh');
+    this.refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
     this.refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.refreshButtonClicked, this);
 
     this.deleteSelectedButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteSelected), 'cross');
@@ -287,7 +288,7 @@ export class IDBDataView extends UI.View.SimpleView {
     }, this);
 
     this.needsRefresh = new UI.Toolbar.ToolbarItem(
-        UI.UIUtils.createIconLabel(i18nString(UIStrings.dataMayBeStale), 'smallicon-warning'));
+        UI.UIUtils.createIconLabel(i18nString(UIStrings.dataMayBeStale), 'warning', 'var(--icon-warning)'));
     this.needsRefresh.setVisible(false);
     this.needsRefresh.setTitle(i18nString(UIStrings.someEntriesMayHaveBeenModified));
     this.clearingObjectStore = false;
@@ -399,11 +400,25 @@ export class IDBDataView extends UI.View.SimpleView {
 
     editorToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
 
-    this.pageBackButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showPreviousPage), 'largeicon-play-back');
+    const triangleLeftIcon = new IconButton.Icon.Icon();
+    triangleLeftIcon.data = {
+      iconName: 'triangle-left',
+      color: 'var(--icon-default)',
+      width: '20px',
+      height: '20px',
+    };
+    this.pageBackButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showPreviousPage), triangleLeftIcon);
     this.pageBackButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.pageBackButtonClicked, this);
     editorToolbar.appendToolbarItem(this.pageBackButton);
 
-    this.pageForwardButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNextPage), 'largeicon-play');
+    const triangleRightIcon = new IconButton.Icon.Icon();
+    triangleRightIcon.data = {
+      iconName: 'triangle-right',
+      color: 'var(--icon-default)',
+      width: '20px',
+      height: '20px',
+    };
+    this.pageForwardButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showNextPage), triangleRightIcon);
     this.pageForwardButton.setEnabled(false);
     this.pageForwardButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this.pageForwardButton);

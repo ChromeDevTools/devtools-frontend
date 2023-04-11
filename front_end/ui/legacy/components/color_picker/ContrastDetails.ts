@@ -7,6 +7,7 @@ import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
+import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
 import {Events as ContrastInfoEvents, type ContrastInfo} from './ContrastInfo.js';
@@ -165,8 +166,8 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const bgColorContainer = this.expandedDetails.createChild('div', 'background-color');
 
     const pickerToolbar = new UI.Toolbar.Toolbar('spectrum-eye-dropper', bgColorContainer);
-    this.bgColorPickerButton =
-        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleBackgroundColorPicker), 'largeicon-eyedropper');
+    this.bgColorPickerButton = new UI.Toolbar.ToolbarToggle(
+        i18nString(UIStrings.toggleBackgroundColorPicker), 'color-picker', 'color-picker-filled');
     this.bgColorPickerButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this.toggleBackgroundColorPickerInternal.bind(this, undefined, true));
     pickerToolbar.appendToolbarItem(this.bgColorPickerButton);
@@ -276,9 +277,14 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         this.contrastPassFailAPCA.createChild('span').textContent = `: ${apcaThreshold.toFixed(2)}%`;
       }
       if (passesAPCA) {
-        this.contrastPassFailAPCA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+        const iconCheckmark = new IconButton.Icon.Icon();
+        iconCheckmark
+            .data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '20px', height: '14px'};
+        this.contrastPassFailAPCA.appendChild(iconCheckmark);
       } else {
-        this.contrastPassFailAPCA.appendChild(UI.Icon.Icon.create('smallicon-no'));
+        const iconNo = new IconButton.Icon.Icon();
+        iconNo.data = {iconName: 'clear', color: 'var(--icon-error-small)', width: '14px', height: '14px'};
+        this.contrastPassFailAPCA.appendChild(iconNo);
         const suggestedColor = this.computeSuggestedColor('APCA');
         if (suggestedColor) {
           const fixAPCA = this.createFixColorButton(this.contrastPassFailAPCA, suggestedColor);
@@ -321,9 +327,13 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.contrastPassFailAA.createChild('span').textContent =
         i18nString(UIStrings.placeholderWithColon, {PH1: aa.toFixed(1)});
     if (this.passesAA) {
-      this.contrastPassFailAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+      const iconCheckmark = new IconButton.Icon.Icon();
+      iconCheckmark.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '20px', height: '14px'};
+      this.contrastPassFailAA.appendChild(iconCheckmark);
     } else {
-      this.contrastPassFailAA.appendChild(UI.Icon.Icon.create('smallicon-no'));
+      const iconNo = new IconButton.Icon.Icon();
+      iconNo.data = {iconName: 'clear', color: 'var(--icon-error-small)', width: '14px', height: '14px'};
+      this.contrastPassFailAA.appendChild(iconNo);
       const suggestedColor = this.computeSuggestedColor('aa');
       if (suggestedColor) {
         const fixAA = this.createFixColorButton(this.contrastPassFailAA, suggestedColor);
@@ -340,9 +350,13 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.contrastPassFailAAA.createChild('span').textContent =
         i18nString(UIStrings.placeholderWithColon, {PH1: aaa.toFixed(1)});
     if (passesAAA) {
-      this.contrastPassFailAAA.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+      const iconCheckmark = new IconButton.Icon.Icon();
+      iconCheckmark.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '20px', height: '14px'};
+      this.contrastPassFailAAA.appendChild(iconCheckmark);
     } else {
-      this.contrastPassFailAAA.appendChild(UI.Icon.Icon.create('smallicon-no'));
+      const iconNo = new IconButton.Icon.Icon();
+      iconNo.data = {iconName: 'clear', color: 'var(--icon-error-small)', width: '14px', height: '14px'};
+      this.contrastPassFailAAA.appendChild(iconNo);
       const suggestedColor = this.computeSuggestedColor('aaa');
       if (suggestedColor) {
         const fixAAA = this.createFixColorButton(this.contrastPassFailAAA, suggestedColor);

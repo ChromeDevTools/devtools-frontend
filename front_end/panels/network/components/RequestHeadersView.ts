@@ -276,8 +276,8 @@ export class RequestHeadersComponent extends HTMLElement {
         } as IconButton.Icon.IconData}>
       </${IconButton.Icon.Icon.litTagName}>` : html`
       <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-          iconName: 'file_icon',
-          color: 'var(--color-text-primary)',
+          iconName: 'document',
+          color: 'var(--icon-default)',
           width: '12px',
           height: '12px',
         } as IconButton.Icon.IconData}>

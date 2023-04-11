@@ -50,7 +50,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const plusIconUrl = new URL('../../../Images/plus_icon.svg', import.meta.url).toString();
+const plusIconUrl = new URL('../../../Images/plus.svg', import.meta.url).toString();
 const trashIconUrl = new URL('../../../Images/bin.svg', import.meta.url).toString();
 
 export class HeadersView extends UI.View.SimpleView {
@@ -413,8 +413,8 @@ export class HeadersViewComponent extends HTMLElement {
           title=${i18nString(UIStrings.addHeader)}
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${plusIconUrl}
-          .iconWidth=${'16px'}
-          .iconHeight=${'16px'}
+          .iconWidth=${'20px'}
+          .iconHeight=${'20px'}
           .variant=${Buttons.Button.Variant.ROUND}
           class="add-header inline-button"
         ></${Buttons.Button.Button.litTagName}>

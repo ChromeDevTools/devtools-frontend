@@ -78,7 +78,7 @@ class TrustTokensDeleteButton extends HTMLElement {
           title=${i18nString(UIStrings.deleteTrustTokens, {PH1: this.#issuer as string})}
           @click=${(): void => this.#deleteClickHandler(this.#issuer as string)}>
           <${IconButton.Icon.Icon.litTagName} .data=${
-        {iconName: 'trash_bin_icon', color: 'var(--color-text-secondary)', width: '9px', height: '14px'} as
+        {iconName: 'bin', color: 'var(--icon-default)', width: '14px', height: '14px'} as
         IconButton.Icon.IconWithName}>
           </${IconButton.Icon.Icon.litTagName}>
         </button>

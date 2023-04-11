@@ -576,8 +576,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           />
           <${IconButton.Icon.Icon.litTagName}
             .data=${
-          {color: 'var(--client-hints-form-icon-color)', iconName: 'trash_bin_icon', width: '10px', height: '14px'} as
-          IconButton.Icon.IconData}
+          {color: 'var(--icon-default)', iconName: 'bin', width: '14px', height: '14px'} as IconButton.Icon.IconData}
             title=${i18nString(UIStrings.deleteTooltip)}
             class="delete-icon"
             tabindex="0"
@@ -669,8 +668,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           />
           <${IconButton.Icon.Icon.litTagName}
             .data=${
-          {color: 'var(--client-hints-form-icon-color)', iconName: 'trash_bin_icon', width: '10px', height: '14px'} as
-          IconButton.Icon.IconData}
+          {color: 'var(--icon-default)', iconName: 'bin', width: '14px', height: '14px'} as IconButton.Icon.IconData}
             title=${i18nString(UIStrings.deleteTooltip)}
             class="delete-icon"
             tabindex="0"

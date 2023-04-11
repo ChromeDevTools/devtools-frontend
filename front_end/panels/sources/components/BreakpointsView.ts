@@ -394,7 +394,7 @@ export class BreakpointsView extends HTMLElement {
         height: '16px',
         color: 'var(--icon-default)',
       } as IconButton.Icon.IconData}
-      }>
+      >
       </${IconButton.Icon.Icon.litTagName}>
     </button>
       `;

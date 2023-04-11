@@ -10,11 +10,11 @@ await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 const testIcon = '/front_end/Images/file-image.svg';
-const fileIcon = '/front_end/Images/file_icon.svg';
-const plusIcon = '/front_end/Images/plus_icon.svg';
+const fileIcon = '/front_end/Images/document.svg';
+const plusIcon = '/front_end/Images/plus.svg';
 const minusIcon = '/front_end/Images/minus_icon.svg';
-const trashBinIcon = '/front_end/Images/trash_bin_icon.svg';
-const closeIcon = '/front_end/Images/close-icon.svg';
+const trashBinIcon = '/front_end/Images/bin.svg';
+const closeIcon = '/front_end/Images/cross.svg';
 
 function appendButton(button: Buttons.Button.Button): void {
   document.querySelector('#container')?.appendChild(button);

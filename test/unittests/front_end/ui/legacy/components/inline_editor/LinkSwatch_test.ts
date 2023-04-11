@@ -9,7 +9,7 @@ import {describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
-function assertSwatch(swatch: InlineEditor.LinkSwatch.CSSVarSwatch, expected: {
+function assertVarSwatch(swatch: InlineEditor.LinkSwatch.CSSVarSwatch, expected: {
   valueTooltip: string|null,
   linkTooltip: string,
   isDefined: boolean,
@@ -19,7 +19,7 @@ function assertSwatch(swatch: InlineEditor.LinkSwatch.CSSVarSwatch, expected: {
   assertShadowRoot(swatch.shadowRoot);
   const container = swatch.shadowRoot.querySelector('span');
   assertNotNullOrUndefined(container);
-  const linkSwatch = container.querySelector('devtools-link-swatch');
+  const linkSwatch = container.querySelector('devtools-base-link-swatch');
   assertNotNullOrUndefined(linkSwatch);
 
   assertShadowRoot(linkSwatch.shadowRoot);
@@ -53,7 +53,7 @@ describeWithLocale('CSSVarSwatch', () => {
       onLinkActivate: () => {},
     };
 
-    assertSwatch(component, {
+    assertVarSwatch(component, {
       valueTooltip: '2px',
       linkTooltip: '2px',
       isDefined: true,
@@ -71,7 +71,7 @@ describeWithLocale('CSSVarSwatch', () => {
       onLinkActivate: () => {},
     };
 
-    assertSwatch(component, {
+    assertVarSwatch(component, {
       valueTooltip: null,
       linkTooltip: '--undefined is not defined',
       isDefined: false,
@@ -89,7 +89,7 @@ describeWithLocale('CSSVarSwatch', () => {
       onLinkActivate: () => {},
     };
 
-    assertSwatch(component, {
+    assertVarSwatch(component, {
       valueTooltip: '3px',
       linkTooltip: '--undefined is not defined',
       isDefined: false,
@@ -107,7 +107,7 @@ describeWithLocale('CSSVarSwatch', () => {
       onLinkActivate: () => {},
     };
 
-    assertSwatch(component, {
+    assertVarSwatch(component, {
       valueTooltip: 'green',
       linkTooltip: '--undefined-color is not defined',
       isDefined: false,
@@ -125,7 +125,7 @@ describeWithLocale('CSSVarSwatch', () => {
       onLinkActivate: () => {},
     };
 
-    assertSwatch(component, {
+    assertVarSwatch(component, {
       valueTooltip: 'green',
       linkTooltip: '--undefined-color is not defined',
       isDefined: false,
@@ -143,7 +143,7 @@ describeWithLocale('CSSVarSwatch', () => {
       onLinkActivate: () => {},
     };
 
-    assertSwatch(component, {
+    assertVarSwatch(component, {
       valueTooltip: 'red',
       linkTooltip: 'red',
       isDefined: true,
@@ -161,7 +161,7 @@ describeWithLocale('CSSVarSwatch', () => {
       onLinkActivate: () => {},
     };
 
-    assertSwatch(component, {
+    assertVarSwatch(component, {
       valueTooltip: 'red',
       linkTooltip: 'red',
       isDefined: true,
@@ -179,7 +179,7 @@ describeWithLocale('CSSVarSwatch', () => {
       onLinkActivate: () => {},
     };
 
-    assertSwatch(component, {
+    assertVarSwatch(component, {
       valueTooltip: 'red',
       linkTooltip: 'red',
       isDefined: true,
@@ -188,40 +188,39 @@ describeWithLocale('CSSVarSwatch', () => {
   });
 });
 
-function assertAnimationNameSwatch(swatch: InlineEditor.LinkSwatch.AnimationNameSwatch, expected: {
-  animationName: string|null,
+function assertLinkSwatch(swatch: InlineEditor.LinkSwatch.LinkSwatch, expected: {
+  text: string|null,
   title: string|null,
   isDefined: boolean,
 }) {
   assertShadowRoot(swatch.shadowRoot);
   const container = swatch.shadowRoot.querySelector('span');
   assertNotNullOrUndefined(container);
-  const linkSwatch = container.querySelector('devtools-link-swatch');
+  const linkSwatch = container.querySelector('devtools-base-link-swatch');
   assertNotNullOrUndefined(linkSwatch);
 
   assertShadowRoot(linkSwatch.shadowRoot);
   const link = linkSwatch.shadowRoot.querySelector('.link-swatch-link');
   assertNotNullOrUndefined(link);
 
-  assert.strictEqual(
-      container.getAttribute('title'), expected.animationName, 'The animation name appears as a tooltip');
+  assert.strictEqual(container.getAttribute('title'), expected.text, 'The text appears as a tooltip');
   assert.strictEqual(
       link.classList.contains('undefined'), !expected.isDefined,
       'The link only has the class undefined when the property is undefined');
   assert.strictEqual(link.getAttribute('title'), expected.title, 'The link has the right tooltip');
-  assert.strictEqual(link.textContent, expected.animationName, 'The link has the right text content');
+  assert.strictEqual(link.textContent, expected.text, 'The link has the right text content');
 }
 
-describeWithLocale('AnimationNameSwatch', () => {
+describeWithLocale('LinkSwatch', () => {
   it('can be instantiated successfully', () => {
-    const component = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+    const component = new InlineEditor.LinkSwatch.LinkSwatch();
     renderElementIntoDOM(component);
 
     assert.instanceOf(component, HTMLElement, 'The swatch is an instance of HTMLElement');
   });
 
-  it('renders a simple animation name', () => {
-    const component = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+  it('renders a simple text', () => {
+    const component = new InlineEditor.LinkSwatch.LinkSwatch();
     component.data = {
       text: 'test',
       isDefined: true,
@@ -229,15 +228,15 @@ describeWithLocale('AnimationNameSwatch', () => {
     };
     renderElementIntoDOM(component);
 
-    assertAnimationNameSwatch(component, {
-      animationName: 'test',
+    assertLinkSwatch(component, {
+      text: 'test',
       title: 'test',
       isDefined: true,
     });
   });
 
-  it('renders a missing animation name', () => {
-    const component = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+  it('renders a missing test', () => {
+    const component = new InlineEditor.LinkSwatch.LinkSwatch();
     component.data = {
       text: 'test',
       isDefined: false,
@@ -245,15 +244,15 @@ describeWithLocale('AnimationNameSwatch', () => {
     };
     renderElementIntoDOM(component);
 
-    assertAnimationNameSwatch(component, {
-      animationName: 'test',
+    assertLinkSwatch(component, {
+      text: 'test',
       title: 'test is not defined',
       isDefined: false,
     });
   });
 
   it('calls the onLinkActivate callback', async () => {
-    const component = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+    const component = new InlineEditor.LinkSwatch.LinkSwatch();
     let callbackCalled = false;
     component.data = {
       text: 'testHandler',
@@ -264,7 +263,7 @@ describeWithLocale('AnimationNameSwatch', () => {
     };
 
     const element = renderElementIntoDOM(component)
-                        ?.shadowRoot?.querySelector('devtools-link-swatch')
+                        ?.shadowRoot?.querySelector('devtools-base-link-swatch')
                         ?.shadowRoot?.querySelector('.link-swatch-link');
     assertNotNullOrUndefined(element);
     element.dispatchEvent(new MouseEvent('mousedown'));

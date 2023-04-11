@@ -143,8 +143,8 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
          });
     });
 
-    describe('animation-name swatch', () => {
-      it('should be rendered for animation-name declaration', () => {
+    describe('animation-name', () => {
+      it('should link-swatch be rendered for animation-name declaration', () => {
         const cssAnimationNameProperty = new SDK.CSSProperty.CSSProperty(
             mockCssStyleDeclaration, 0, 'animation-name', 'first-keyframe', true, false, true, false, '', undefined);
         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
@@ -152,24 +152,24 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
 
         stylePropertyTreeElement.updateTitle();
 
-        const animationNameSwatch =
-            stylePropertyTreeElement.valueElement?.querySelector('devtools-animation-name-swatch');
+        const animationNameSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch');
         assert.isNotNull(animationNameSwatch);
       });
 
-      it('should two swatches be rendered for animation-name declaration that contains two keyframe references', () => {
-        const cssAnimationNameProperty = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'animation-name', 'first-keyframe, second-keyframe', true, false, true, false,
-            '', undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
-            mockStylesSidebarPane, mockMatchedStyles, cssAnimationNameProperty, false, false, false, true);
+      it('should two link-swatches be rendered for animation-name declaration that contains two keyframe references',
+         () => {
+           const cssAnimationNameProperty = new SDK.CSSProperty.CSSProperty(
+               mockCssStyleDeclaration, 0, 'animation-name', 'first-keyframe, second-keyframe', true, false, true,
+               false, '', undefined);
+           const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement(
+               mockStylesSidebarPane, mockMatchedStyles, cssAnimationNameProperty, false, false, false, true);
 
-        stylePropertyTreeElement.updateTitle();
+           stylePropertyTreeElement.updateTitle();
 
-        const animationNameSwatches =
-            stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-animation-name-swatch');
-        assert.strictEqual(animationNameSwatches?.length, 2);
-      });
+           const animationNameSwatches =
+               stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-link-swatch');
+           assert.strictEqual(animationNameSwatches?.length, 2);
+         });
     });
   });
 

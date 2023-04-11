@@ -205,6 +205,17 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
     const node = renderer.renderValue();
     assert.deepEqual(node.textContent, nodeContents);
   });
+
+  it('runs positionFallbackHandler for position-fallback property', () => {
+    const nodeContents = 'nodeContents';
+    const renderer =
+        new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'position-fallback', '--compass');
+    renderer.setPositionFallbackHandler(() => document.createTextNode(nodeContents));
+
+    const node = renderer.renderValue();
+
+    assert.deepEqual(node.textContent, nodeContents);
+  });
 });
 
 describe('IdleCallbackManager', () => {

@@ -281,13 +281,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const contentChild = document.createElement('span');
     for (let i = 0; i < animationNames.length; i++) {
       const animationName = animationNames[i];
-      const swatch = new InlineEditor.LinkSwatch.AnimationNameSwatch();
+      const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
       UI.UIUtils.createTextChild(swatch, animationName);
       const isDefined = Boolean(this.matchedStylesInternal.keyframes().find(kf => kf.name().text === animationName));
       swatch.data = {
         text: animationName,
         isDefined,
-        onLinkActivate: this.handleAnimationNameDefinitionActivate.bind(this),
+        onLinkActivate: () => this.parentPaneInternal.jumpToSectionBlock(`@keyframes ${animationName}`),
       };
       contentChild.appendChild(swatch);
 
@@ -331,6 +331,22 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         contentChild.appendChild(document.createTextNode(' '));
       }
     }
+
+    return contentChild;
+  }
+
+  private processPositionFallback(propertyText: string): Node {
+    const contentChild = document.createElement('span');
+    const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
+    UI.UIUtils.createTextChild(swatch, propertyText);
+    const isDefined =
+        Boolean(this.matchedStylesInternal.positionFallbackRules().find(pf => pf.name().text === propertyText));
+    swatch.data = {
+      text: propertyText,
+      isDefined,
+      onLinkActivate: () => this.parentPaneInternal.jumpToSectionBlock(`@position-fallback ${propertyText}`),
+    };
+    contentChild.appendChild(swatch);
 
     return contentChild;
   }
@@ -473,10 +489,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     return this.processColor(computedValue, varSwatch);
-  }
-
-  private handleAnimationNameDefinitionActivate(animationName: string): void {
-    this.parentPaneInternal.jumpToSectionBlock(`@keyframes ${animationName}`);
   }
 
   private handleVarDefinitionActivate(variableName: string): void {
@@ -862,6 +874,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       propertyRenderer.setGridHandler(this.processGrid.bind(this));
       propertyRenderer.setAngleHandler(this.processAngle.bind(this));
       propertyRenderer.setLengthHandler(this.processLength.bind(this));
+      propertyRenderer.setPositionFallbackHandler(this.processPositionFallback.bind(this));
     }
 
     this.listItemElement.removeChildren();

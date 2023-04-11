@@ -2135,6 +2135,7 @@ export class StylesSidebarPropertyRenderer {
   private lengthHandler: ((arg0: string) => Node)|null;
   private animationNameHandler: ((data: string) => Node)|null;
   private animationHandler: ((data: string) => Node)|null;
+  private positionFallbackHandler: ((data: string) => Node)|null;
 
   constructor(rule: SDK.CSSRule.CSSRule|null, node: SDK.DOMModel.DOMNode|null, name: string, value: string) {
     this.rule = rule;
@@ -2152,6 +2153,7 @@ export class StylesSidebarPropertyRenderer {
     this.angleHandler = null;
     this.lengthHandler = null;
     this.animationHandler = null;
+    this.positionFallbackHandler = null;
   }
 
   setColorHandler(handler: (arg0: string) => Node): void {
@@ -2196,6 +2198,10 @@ export class StylesSidebarPropertyRenderer {
 
   setLengthHandler(handler: (arg0: string) => Node): void {
     this.lengthHandler = handler;
+  }
+
+  setPositionFallbackHandler(handler: (arg0: string) => Node): void {
+    this.positionFallbackHandler = handler;
   }
 
   renderName(): Element {
@@ -2292,6 +2298,12 @@ export class StylesSidebarPropertyRenderer {
       regexes.push(/^.*$/g);
       processors.push(this.animationNameHandler);
     }
+
+    if (this.positionFallbackHandler && this.propertyName === 'position-fallback') {
+      regexes.push(/^.*$/g);
+      processors.push(this.positionFallbackHandler);
+    }
+
     const results = TextUtils.TextUtils.Utils.splitStringByRegexes(this.propertyValue, regexes);
     for (let i = 0; i < results.length; i++) {
       const result = results[i];

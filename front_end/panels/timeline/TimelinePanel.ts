@@ -568,7 +568,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showSettingsPaneSetting =
         Common.Settings.Settings.instance().createSetting('timelineShowSettingsToolbar', false);
     this.showSettingsPaneButton = new UI.Toolbar.ToolbarSettingToggle(
-        this.showSettingsPaneSetting, 'largeicon-settings-gear', i18nString(UIStrings.captureSettings));
+        this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.captureSettings), 'gear-filled');
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.ConditionsChanged, this.updateShowSettingsToolbarButton,
         this);

@@ -233,7 +233,7 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.rightToolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
     this.rightToolbar.appendSeparator();
     this.rightToolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingToggle(
-        this.showSettingsPaneSetting, 'largeicon-settings-gear', i18nString(UIStrings.lighthouseSettings)));
+        this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.lighthouseSettings), 'gear-filled'));
     this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();
 

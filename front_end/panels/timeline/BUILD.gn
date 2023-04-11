@@ -27,6 +27,7 @@ devtools_module("timeline") {
     "EventsTimelineTreeView.ts",
     "GPUTrackAppender.ts",
     "InteractionsTrackAppender.ts",
+    "LayoutShiftsTrackAppender.ts",
     "PerformanceModel.ts",
     "TimelineController.ts",
     "TimelineDetailsView.ts",

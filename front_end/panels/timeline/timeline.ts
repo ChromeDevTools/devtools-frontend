@@ -8,6 +8,7 @@ import * as CountersGraph from './CountersGraph.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
 import * as GPUTrackAppender from './GPUTrackAppender.js';
 import * as InteractionsTrackAppender from './InteractionsTrackAppender.js';
+import * as LayoutShiftsTrackAppender from './LayoutShiftsTrackAppender.js';
 import * as PerformanceModel from './PerformanceModel.js';
 import * as TimelineController from './TimelineController.js';
 import * as TimelineDetailsView from './TimelineDetailsView.js';
@@ -34,6 +35,7 @@ export {
   EventsTimelineTreeView,
   GPUTrackAppender,
   InteractionsTrackAppender,
+  LayoutShiftsTrackAppender,
   PerformanceModel,
   TimelineController,
   TimelineDetailsView,

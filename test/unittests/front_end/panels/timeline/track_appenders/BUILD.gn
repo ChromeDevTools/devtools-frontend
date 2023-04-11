@@ -9,6 +9,7 @@ ts_library("track_appenders") {
   sources = [
     "GPUTrackAppender_test.ts",
     "InteractionsTrackAppender_test.ts",
+    "LayoutShiftsTrackAppender_test.ts",
     "TimingsTrackAppender_test.ts",
   ]
 

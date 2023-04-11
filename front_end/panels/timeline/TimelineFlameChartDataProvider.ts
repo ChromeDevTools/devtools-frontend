@@ -91,10 +91,6 @@ const UIStrings = {
    */
   thread: 'Thread',
   /**
-   *@description Text in Timeline for the Experience title
-   */
-  experience: 'Experience',
-  /**
    *@description Text for rendering frames
    */
   frames: 'Frames',
@@ -173,7 +169,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private framesHeader: PerfUI.FlameChart.GroupStyle;
   private readonly screenshotsHeader: PerfUI.FlameChart.GroupStyle;
   private readonly animationsHeader: PerfUI.FlameChart.GroupStyle;
-  private readonly experienceHeader: PerfUI.FlameChart.GroupStyle;
   private readonly flowEventIndexById: Map<string, number>;
   private entryData!: TimelineFlameChartEntry[];
   private entryTypeByLevel!: EntryType[];
@@ -209,7 +204,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.screenshotsHeader =
         this.buildGroupStyle({useFirstLineForOverview: true, nestingLevel: 1, collapsible: false, itemsHeight: 150});
     this.animationsHeader = this.buildGroupStyle({useFirstLineForOverview: false});
-    this.experienceHeader = this.buildGroupStyle({collapsible: false});
 
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       const headers = [
@@ -219,7 +213,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.framesHeader,
         this.screenshotsHeader,
         this.animationsHeader,
-        this.experienceHeader,
       ];
       for (const header of headers) {
         header.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
@@ -463,6 +456,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             return 1;
           case 'Interactions':
             return 2;
+          case 'LayoutShifts':
+            return 3;
           case 'GPU':
             return 8;
           default:
@@ -473,8 +468,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       switch (track.type) {
         case TimelineModel.TimelineModel.TrackType.Animation:
           return 0;
-        case TimelineModel.TimelineModel.TrackType.Experience:
-          return 3;
         case TimelineModel.TimelineModel.TrackType.MainThread:
           return track.forMainFrame ? 4 : 5;
         case TimelineModel.TimelineModel.TrackType.Worker:
@@ -571,13 +564,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             true /* selectable */, expanded);
         this.appendAsyncEventsGroup(
             track, track.name, track.asyncEvents, this.headerLevel1, eventEntryType, true /* selectable */, expanded);
-        break;
-      }
-
-      case TimelineModel.TimelineModel.TrackType.Experience: {
-        this.appendSyncEvents(
-            track, track.events, i18nString(UIStrings.experience), this.experienceHeader, eventEntryType,
-            true /* selectable */, expanded);
         break;
       }
     }
@@ -882,6 +868,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
       warning = TimelineUIUtils.eventWarning(event);
 
+      // TODO: this can be removed.
       if (this.legacyTimelineModel && this.legacyTimelineModel.isLayoutShiftEvent(event)) {
         // TODO: Update this to be dynamic when the trace data supports it.
         const occurrences = 1;
@@ -1296,9 +1283,18 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   eventByIndex(entryIndex: number): SDK.TracingModel.Event|null {
-    return entryIndex >= 0 && this.entryType(entryIndex) === EntryType.Event ?
-        this.entryData[entryIndex] as SDK.TracingModel.Event :
-        null;
+    if (entryIndex < 0) {
+      return null;
+    }
+    const entryType = this.entryType(entryIndex);
+    if (entryType === EntryType.TrackAppender) {
+      return this.compatibilityTracksAppenderInstance().getLegacyEvent(
+          this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
+    }
+    if (entryType === EntryType.Event) {
+      return this.entryData[entryIndex] as SDK.TracingModel.Event;
+    }
+    return null;
   }
 
   setEventColorMapping(colorForEvent: (arg0: SDK.TracingModel.Event) => string): void {

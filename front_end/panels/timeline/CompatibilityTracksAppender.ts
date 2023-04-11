@@ -10,6 +10,7 @@ import {type TimelineFlameChartEntry, type EntryType} from './TimelineFlameChart
 import {TimingsTrackAppender} from './TimingsTrackAppender.js';
 import {InteractionsTrackAppender} from './InteractionsTrackAppender.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
+import {LayoutShiftsTrackAppender} from './LayoutShiftsTrackAppender.js';
 
 export type HighlightedEntryInfo = {
   title: string,
@@ -67,7 +68,7 @@ export interface TrackAppender {
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo;
 }
 
-export const TrackNames = ['Timings', 'Interactions', 'GPU'] as const;
+export const TrackNames = ['Timings', 'Interactions', 'GPU', 'LayoutShifts'] as const;
 export type TrackAppenderName = typeof TrackNames[number];
 
 export class CompatibilityTracksAppender {
@@ -88,6 +89,7 @@ export class CompatibilityTracksAppender {
   #timingsTrackAppender: TimingsTrackAppender;
   #interactionsTrackAppender: InteractionsTrackAppender;
   #gpuTrackAppender: GPUTrackAppender;
+  #layoutShiftsTrackAppender: LayoutShiftsTrackAppender;
 
   /**
    * @param flameChartData the data used by the flame chart renderer on
@@ -132,6 +134,15 @@ export class CompatibilityTracksAppender {
         this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel,
         gpuLegacyTrack);
     this.#allTrackAppenders.push(this.#gpuTrackAppender);
+
+    // Layout Shifts track in OPP was called the "Experience" track even though
+    // all it shows are layout shifts.
+    const layoutShiftsLegacyTrack = this.#legacyTimelineModel.tracks().find(
+        track => track.type === TimelineModel.TimelineModel.TrackType.Experience);
+    this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(
+        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel,
+        layoutShiftsLegacyTrack);
+    this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
   }
 
   /**
@@ -157,6 +168,10 @@ export class CompatibilityTracksAppender {
 
   gpuTrackAppender(): GPUTrackAppender {
     return this.#gpuTrackAppender;
+  }
+
+  layoutShiftsTrackAppender(): LayoutShiftsTrackAppender {
+    return this.#layoutShiftsTrackAppender;
   }
 
   /**

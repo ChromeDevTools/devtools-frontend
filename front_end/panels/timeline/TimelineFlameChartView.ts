@@ -355,6 +355,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private onEntryHighlighted(commonEvent: Common.EventTarget.EventTargetEvent<number>): void {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     const entryIndex = commonEvent.data;
+    // TODO(crbug.com/1431166): explore how we can make highlighting agnostic
+    // and take either legacy events, or new trace engine events. Currently if
+    // this highlight comes from a TrackAppender, we create a new legacy event
+    // from the event payload, mainly to satisfy this method.
     const event = this.mainDataProvider.eventByIndex(entryIndex);
     if (!event) {
       return;
@@ -364,7 +368,22 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       return;
     }
     const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
-    const backendNodeIds = timelineData.backendNodeIds;
+    let backendNodeIds = timelineData.backendNodeIds;
+
+    // When we process events and store their data in the TimelineData class,
+    // we key them by their raw payload. However because of crbug.com/1431161,
+    // LayoutShift payloads cannot be matched as the LayoutShift handler
+    // returns new objects that represent the events. So as a work around, we
+    // detect here if the event we want to highlight is a LayoutShift, and read
+    // the impacted nodes directly from the args object.
+    if (event instanceof SDK.TracingModel.PayloadEvent) {
+      const payload = event.rawPayload();
+      if (TraceEngine.Types.TraceEvents.isTraceEventLayoutShift(payload)) {
+        const impactedNodes = payload.args.data?.impacted_nodes ?? [];
+        backendNodeIds = impactedNodes.map(node => node.node_id);
+      }
+    }
+
     if (!backendNodeIds) {
       return;
     }

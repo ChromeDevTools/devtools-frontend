@@ -679,7 +679,7 @@ export class TimelineModelImpl {
           let urlForOther: Platform.DevToolsPath.UrlString|null = null;
           let workletTypeForOther: WorkletType = WorkletType.NotWorklet;
           if (thread.name() === TimelineModelImpl.AuctionWorkletThreadName ||
-              thread.name() === TimelineModelImpl.UtilityMainThreadName) {
+              thread.name().endsWith(TimelineModelImpl.UtilityMainThreadNameSuffix)) {
             if (typeof workletUrl !== 'boolean') {
               urlForOther = workletUrl;
             }
@@ -973,7 +973,9 @@ export class TimelineModelImpl {
     } else if (thread.name() === TimelineModelImpl.AuctionWorkletThreadName) {
       track.url = url || Platform.DevToolsPath.EmptyUrlString;
       track.name = TimelineModelImpl.nameAuctionWorklet(workletType, url);
-    } else if (workletType !== WorkletType.NotWorklet && thread.name() === TimelineModelImpl.UtilityMainThreadName) {
+    } else if (
+        workletType !== WorkletType.NotWorklet &&
+        thread.name().endsWith(TimelineModelImpl.UtilityMainThreadNameSuffix)) {
       track.url = url || Platform.DevToolsPath.EmptyUrlString;
       track.name = url ? i18nString(UIStrings.workletServiceS, {PH1: url}) : i18nString(UIStrings.workletService);
     }
@@ -1896,7 +1898,9 @@ export namespace TimelineModelImpl {
   export const WorkerThreadNameLegacy = 'DedicatedWorker Thread';
   export const RendererMainThreadName = 'CrRendererMain';
   export const BrowserMainThreadName = 'CrBrowserMain';
-  export const UtilityMainThreadName = 'CrUtilityMain';
+  // The names of threads before M111 were exactly this, but afterwards have
+  // it a suffix after the exact role.
+  export const UtilityMainThreadNameSuffix = 'CrUtilityMain';
   export const AuctionWorkletThreadName = 'AuctionV8HelperThread';
 
   export const DevToolsMetadataEvent = {

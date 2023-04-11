@@ -567,18 +567,20 @@ class Location {
 
 const locationForView = new WeakMap<View, Location>();
 
+interface CloseableTabSetting {
+  [tabName: string]: boolean;
+}
+
+interface TabOrderSetting {
+  [tabName: string]: number;
+}
+
 class TabbedLocation extends Location implements TabbedViewLocation {
   private tabbedPaneInternal: TabbedPane;
   private readonly allowReorder: boolean|undefined;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly closeableTabSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly tabOrderSetting: Common.Settings.Setting<any>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly lastSelectedTabSetting: Common.Settings.Setting<any>|undefined;
+  private readonly closeableTabSetting: Common.Settings.Setting<CloseableTabSetting>;
+  private readonly tabOrderSetting: Common.Settings.Setting<TabOrderSetting>;
+  private readonly lastSelectedTabSetting?: Common.Settings.Setting<string>;
   private readonly defaultTab: string|null|undefined;
   private readonly views: Map<string, View>;
 
@@ -619,12 +621,10 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   private setOrUpdateCloseableTabsSetting(): void {
     // Update the setting value, we respect the closed state decided by the user
     // and append the new tabs with value of true so they are shown open
-    const tabs = this.closeableTabSetting.get();
-    const newClosable = Object.assign(
-        {
-          ...defaultOptionsForTabs,
-        },
-        tabs);
+    const newClosable = {
+      ...defaultOptionsForTabs,
+      ...this.closeableTabSetting.get(),
+    };
     this.closeableTabSetting.set(newClosable);
   }
 
@@ -648,13 +648,11 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     if (this.allowReorder) {
       let i = 0;
       const persistedOrders = this.tabOrderSetting.get();
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const orders = new Map<string, any>();
+      const orders = new Map<string, number>();
       for (const view of views) {
         orders.set(view.viewId(), persistedOrders[view.viewId()] || (++i) * TabbedLocation.orderStep);
       }
-      views.sort((a, b) => orders.get(a.viewId()) - orders.get(b.viewId()));
+      views.sort((a, b) => (orders.get(a.viewId()) as number) - (orders.get(b.viewId()) as number));
     }
 
     for (const view of views) {
@@ -826,9 +824,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.tabOrderSetting.set(tabOrders);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getCloseableTabSetting(): Common.Settings.Setting<any> {
+  getCloseableTabSetting(): CloseableTabSetting {
     return this.closeableTabSetting.get();
   }
 

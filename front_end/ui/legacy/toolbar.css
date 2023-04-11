@@ -71,6 +71,7 @@
   background-color: var(--color-text-secondary);
   pointer-events: none;
   flex: none;
+  margin-left: -4px;
 }
 
 .toolbar-button.dark-text .toolbar-dropdown-arrow {

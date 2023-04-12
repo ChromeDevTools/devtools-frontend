@@ -387,6 +387,10 @@ const UIStrings = {
    */
   requestAnimationFrame: 'Request Animation Frame',
   /**
+   *@description Text shown next to the interaction event's ID in the detail view.
+   */
+  interactionID: 'ID',
+  /**
    *@description Text to cancel the animation frame
    */
   cancelAnimationFrame: 'Cancel Animation Frame',
@@ -505,12 +509,6 @@ const UIStrings = {
    *@description Text to parse something
    */
   parse: 'Parse',
-  /**
-   *@description Text shown when rendering an interaction/
-   *@example {click} PH1
-   *@example {1200} PH2
-   */
-  interactionEvent: 'Interaction type:{PH1} id:{PH2}',
   /**
    *@description Text with two placeholders separated by a colon
    *@example {Node removed} PH1
@@ -1420,7 +1418,8 @@ export class TimelineUIUtils {
     }
 
     if (event.name === 'EventTiming' && event.args.data && event.args.data.interactionId) {
-      return i18nString(UIStrings.interactionEvent, {PH1: event.args.data.type, PH2: event.args.data.interactionId});
+      // This is an interaction event because it has an ID, so just show the type of interaction.
+      return event.args.data.type;
     }
     const title = TimelineUIUtils.eventStyle(event).title;
     if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
@@ -2226,6 +2225,18 @@ export class TimelineUIUtils {
             i18nString(UIStrings.timestamp), i18n.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
         contentHelper.appendElementRow(
             i18nString(UIStrings.details), TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
+        break;
+      }
+
+      case recordTypes.EventTiming: {
+        const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
+            event, model.targetByEvent(event), linkifier, model.isFreshRecording());
+        if (detailsNode) {
+          contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
+        }
+        if (eventData.interactionId) {
+          contentHelper.appendTextRow(i18nString(UIStrings.interactionID), eventData.interactionId);
+        }
         break;
       }
 

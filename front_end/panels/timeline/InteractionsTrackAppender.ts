@@ -190,7 +190,14 @@ export class InteractionsTrackAppender implements TrackAppender {
    * Gets the color an event added by this appender should be rendered with.
    */
   colorForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    return this.#colorGenerator.colorForID(this.titleForEvent(event));
+    let idForColorGeneration = this.titleForEvent(event);
+    if (TraceEngine.Handlers.ModelHandlers.UserInteractions.eventIsInteractionEvent(event)) {
+      // Append the ID so that we vary the colours, ensuring that two events of
+      // the same type are coloured differently.
+      const interactionId = event.args?.data?.interactionId;
+      idForColorGeneration += interactionId;
+    }
+    return this.#colorGenerator.colorForID(idForColorGeneration);
   }
 
   /**
@@ -198,9 +205,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    */
   titleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
     if (TraceEngine.Handlers.ModelHandlers.UserInteractions.eventIsInteractionEvent(event)) {
-      let eventText = event.args.data?.type || 'Interaction';
-      eventText += ` id:${event.interactionId}`;
-      return eventText;
+      return event.args.data?.type || 'Interaction';
     }
     return event.name;
   }

@@ -270,4 +270,34 @@ describeWithMockConnection('TimelineUIUtils', () => {
       assert.strictEqual(adjustedMarkTime.toFixed(2), String(79.88));
     });
   });
+
+  describe('traceEventDetails', () => {
+    it('shows the interaction ID for EventTiming events that have an interaction ID', async () => {
+      const data = await allModelsFromFile('slow-interaction-button-click.json.gz');
+      const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
+      const interactionEvent = allSDKEvents.find(event => {
+        return event.name === 'EventTiming' && event.args?.data?.interactionId === 1540;
+      });
+      if (!interactionEvent) {
+        throw new Error('Could not find interaction event.');
+      }
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          interactionEvent,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          false,
+          data.traceParsedData,
+      );
+      const rowData = Array.from(details.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
+        const title = row.querySelector<HTMLDivElement>('.timeline-details-view-row-title')?.innerText;
+        const value = row.querySelector<HTMLDivElement>('.timeline-details-view-row-value')?.innerText;
+        return {title, value};
+      });
+      assert.deepEqual(rowData, [{
+                         title: 'ID',
+                         value: '1540',
+                       }]);
+    });
+  });
 });

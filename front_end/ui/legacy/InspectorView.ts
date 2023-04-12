@@ -32,6 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import type * as IconButton from '../components/icon_button/icon_button.js';
 
 import {type ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';
 import {type Context} from './Context.js';
@@ -297,7 +298,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     await ViewManager.instance().showView(panelName);
   }
 
-  setPanelIcon(tabId: string, icon: Icon|null): void {
+  setPanelIcon(tabId: string, icon: Icon|IconButton.Icon.Icon|null): void {
     // Find the tabbed location where the panel lives
     const tabbedPane = this.getTabbedPaneForTabId(tabId);
     if (tabbedPane) {

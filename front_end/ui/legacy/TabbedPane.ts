@@ -391,7 +391,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.tabsHistory.slice(0, tabsCount).map(tabToTabId);
   }
 
-  setTabIcon(id: string, icon: Icon|null): void {
+  setTabIcon(id: string, icon: Icon|IconButton.Icon.Icon|null): void {
     const tab = this.tabsById.get(id);
     if (!tab) {
       return;
@@ -987,7 +987,7 @@ export class TabbedPaneTab {
   measuredWidth!: number|undefined;
   private tabElementInternal!: HTMLElement|undefined;
   private readonly iconContainer: Element|null;
-  private icon?: Icon|null;
+  private icon?: Icon|IconButton.Icon.Icon|null;
   private widthInternal?: number;
   private delegate?: TabbedPaneTabDelegate;
   private titleElement?: HTMLElement;
@@ -1032,7 +1032,7 @@ export class TabbedPaneTab {
     return this.closeable;
   }
 
-  setIcon(icon: Icon|null): void {
+  setIcon(icon: Icon|IconButton.Icon.Icon|null): void {
     this.icon = icon;
     if (this.tabElementInternal && this.titleElement) {
       this.createIconElement(this.tabElementInternal, this.titleElement, false);

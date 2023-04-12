@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as MobileThrottling from '../../panels/mobile_throttling/mobile_throttling.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -215,10 +216,11 @@ export class SourcesPanelIndicator {
     javaScriptDisabledChanged();
 
     function javaScriptDisabledChanged(): void {
-      let icon: UI.Icon.Icon|null = null;
+      let icon: IconButton.Icon.Icon|null = null;
       const javaScriptDisabled = Common.Settings.Settings.instance().moduleSetting('javaScriptDisabled').get();
       if (javaScriptDisabled) {
-        icon = UI.Icon.Icon.create('smallicon-warning');
+        icon = new IconButton.Icon.Icon();
+        icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.javascriptIsDisabled));
       }
       UI.InspectorView.InspectorView.instance().setPanelIcon('sources', icon);

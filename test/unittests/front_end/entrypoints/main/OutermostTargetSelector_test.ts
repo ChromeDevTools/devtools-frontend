@@ -44,6 +44,12 @@ describeWithMockConnection('OutermostTargetSelector', () => {
     assert.deepEqual([...selector.listItems], [primaryTarget, prerenderTarget2]);
   });
 
+  it('hides when only one target is present', () => {
+    assert.isTrue(selector.item().visible());
+    prerenderTarget.dispose('');
+    assert.isFalse(selector.item().visible());
+  });
+
   it('updates selected target when UI context flavor changes', () => {
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, primaryTarget);
     assert.strictEqual(selector.item().element.title, 'Page: Main');

@@ -18,7 +18,7 @@ MarkdownView.MarkdownImagesMap.markdownImages.set('lighthouse-icon', {
   isIcon: true,
 });
 MarkdownView.MarkdownImagesMap.markdownImages.set('baseline', {
-  src: '../../Images/baseline-icon.svg',
+  src: '../../Images/align-items-baseline.svg',
   width: '200px',
   height: '200px',
   isIcon: false,

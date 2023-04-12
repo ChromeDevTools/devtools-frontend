@@ -10,6 +10,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -23,6 +24,7 @@ import {
 import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
+
 import {type StylePropertiesSection} from './StylePropertiesSection.js';
 import {CSSPropertyPrompt, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
@@ -1011,7 +1013,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         Host.userMetrics.cssHintShown(validator.getMetricType());
         const wrapper = document.createElement('span');
         wrapper.classList.add('hint-wrapper');
-        const hintIcon = UI.Icon.Icon.create('mediumicon-info', 'hint');
+        const hintIcon = new IconButton.Icon.Icon();
+        hintIcon.data = {iconName: 'info', color: 'var(--icon-default)', width: '14px', height: '14px'};
+        hintIcon.classList.add('hint');
         wrapper.append(hintIcon);
         activeHints.set(hintIcon, hint);
         this.listItemElement.append(wrapper);

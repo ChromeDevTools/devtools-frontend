@@ -157,7 +157,7 @@ function createButton(buttonTitle: string): HTMLButtonElement {
     event.stopPropagation();
   };
   const icon = new IconButton.Icon.Icon();
-  icon.data = {iconName: 'flex-wrap-icon', color: 'var(--color-text-secondary)', width: '12px', height: '12px'};
+  icon.data = {iconName: 'flex-wrap', color: 'var(--color-text-secondary)', width: '16px', height: '16px'};
   button.appendChild(icon);
   return button;
 }

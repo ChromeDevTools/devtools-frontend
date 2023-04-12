@@ -159,7 +159,7 @@ describe('CSSPropertyIconResolver', async () => {
         ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
             ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT),
         {
-          iconName: 'flex-direction-icon',
+          iconName: 'flex-direction',
           rotate: -90,
           scaleX: -1,
           scaleY: 1,
@@ -168,7 +168,7 @@ describe('CSSPropertyIconResolver', async () => {
         ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
             ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT),
         {
-          iconName: 'flex-direction-icon',
+          iconName: 'flex-direction',
           rotate: 90,
           scaleX: 1,
           scaleY: 1,
@@ -177,7 +177,7 @@ describe('CSSPropertyIconResolver', async () => {
         ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
             ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM),
         {
-          iconName: 'flex-direction-icon',
+          iconName: 'flex-direction',
           rotate: 0,
           scaleX: 1,
           scaleY: 1,
@@ -186,7 +186,7 @@ describe('CSSPropertyIconResolver', async () => {
         ElementsComponents.CSSPropertyIconResolver.rotateFlexDirectionIcon(
             ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.BOTTOM_TO_TOP),
         {
-          iconName: 'flex-direction-icon',
+          iconName: 'flex-direction',
           rotate: 0,
           scaleX: 1,
           scaleY: -1,
@@ -377,7 +377,7 @@ describe('CSSPropertyIconResolver', async () => {
           'align-content': 'center',
           display: 'flex',
         },
-        iconName: 'align-content-center-icon',
+        iconName: 'align-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -386,7 +386,7 @@ describe('CSSPropertyIconResolver', async () => {
           'align-content': 'center',
           display: 'flex',
         },
-        iconName: 'align-content-center-icon',
+        iconName: 'align-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -396,7 +396,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'flex',
         },
-        iconName: 'align-content-center-icon',
+        iconName: 'align-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
@@ -406,7 +406,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-lr',
           display: 'flex',
         },
-        iconName: 'align-content-center-icon',
+        iconName: 'align-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -416,7 +416,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'flex',
         },
-        iconName: 'align-content-center-icon',
+        iconName: 'align-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       // grid
@@ -425,7 +425,7 @@ describe('CSSPropertyIconResolver', async () => {
           'align-content': 'center',
           display: 'grid',
         },
-        iconName: 'align-content-center-icon',
+        iconName: 'align-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -434,7 +434,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'grid',
         },
-        iconName: 'align-content-center-icon',
+        iconName: 'align-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
     ];
@@ -497,7 +497,7 @@ describe('CSSPropertyIconResolver', async () => {
           'justify-content': 'center',
           display: 'flex',
         },
-        iconName: 'justify-content-center-icon',
+        iconName: 'justify-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -506,7 +506,7 @@ describe('CSSPropertyIconResolver', async () => {
           'justify-content': 'center',
           display: 'flex',
         },
-        iconName: 'justify-content-center-icon',
+        iconName: 'justify-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -516,7 +516,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'flex',
         },
-        iconName: 'justify-content-center-icon',
+        iconName: 'justify-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -526,7 +526,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-lr',
           display: 'flex',
         },
-        iconName: 'justify-content-center-icon',
+        iconName: 'justify-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -535,7 +535,7 @@ describe('CSSPropertyIconResolver', async () => {
           'justify-content': 'center',
           display: 'flex',
         },
-        iconName: 'justify-content-center-icon',
+        iconName: 'justify-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       // grid
@@ -544,7 +544,7 @@ describe('CSSPropertyIconResolver', async () => {
           'justify-content': 'center',
           display: 'grid',
         },
-        iconName: 'justify-content-center-icon',
+        iconName: 'justify-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -553,7 +553,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'grid',
         },
-        iconName: 'justify-content-center-icon',
+        iconName: 'justify-content-center',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
     ];
@@ -616,7 +616,7 @@ describe('CSSPropertyIconResolver', async () => {
           'align-items': 'flex-start',
           display: 'flex',
         },
-        iconName: 'align-items-flex-start-icon',
+        iconName: 'align-items-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -625,7 +625,7 @@ describe('CSSPropertyIconResolver', async () => {
           'align-items': 'flex-start',
           display: 'flex',
         },
-        iconName: 'align-items-flex-start-icon',
+        iconName: 'align-items-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -635,7 +635,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'flex',
         },
-        iconName: 'align-items-flex-start-icon',
+        iconName: 'align-items-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
@@ -645,7 +645,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-lr',
           display: 'flex',
         },
-        iconName: 'align-items-flex-start-icon',
+        iconName: 'align-items-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -654,7 +654,7 @@ describe('CSSPropertyIconResolver', async () => {
           'align-items': 'flex-start',
           display: 'flex',
         },
-        iconName: 'align-items-flex-start-icon',
+        iconName: 'align-items-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       // grid
@@ -663,7 +663,7 @@ describe('CSSPropertyIconResolver', async () => {
           'align-items': 'start',
           display: 'grid',
         },
-        iconName: 'align-items-flex-start-icon',
+        iconName: 'align-items-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -672,7 +672,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-lr',
           display: 'grid',
         },
-        iconName: 'align-items-flex-start-icon',
+        iconName: 'align-items-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
     ];
@@ -688,7 +688,7 @@ describe('CSSPropertyIconResolver', async () => {
 
   it('can find baseline icons', () => {
     const baselineIconInfo = {
-      iconName: 'baseline-icon',
+      iconName: 'align-items-baseline',
       rotate: 0,
       scaleX: 1,
       scaleY: 1,
@@ -718,7 +718,7 @@ describe('CSSPropertyIconResolver', async () => {
           'flex-direction': 'row',
           display: 'flex',
         },
-        iconName: 'align-self-flex-start-icon',
+        iconName: 'align-self-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -729,7 +729,7 @@ describe('CSSPropertyIconResolver', async () => {
           'flex-direction': 'column',
           display: 'flex',
         },
-        iconName: 'align-self-flex-start-icon',
+        iconName: 'align-self-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -741,7 +741,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'flex',
         },
-        iconName: 'align-self-flex-start-icon',
+        iconName: 'align-self-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
@@ -753,7 +753,7 @@ describe('CSSPropertyIconResolver', async () => {
           'flex-direction': 'row',
           display: 'flex',
         },
-        iconName: 'align-self-flex-start-icon',
+        iconName: 'align-self-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -764,7 +764,7 @@ describe('CSSPropertyIconResolver', async () => {
           'flex-direction': 'column-reverse',
           display: 'flex',
         },
-        iconName: 'align-self-flex-start-icon',
+        iconName: 'align-self-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       // grid
@@ -775,7 +775,7 @@ describe('CSSPropertyIconResolver', async () => {
         parentStyle: {
           display: 'grid',
         },
-        iconName: 'align-self-flex-start-icon',
+        iconName: 'align-self-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -786,7 +786,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-rl',
           display: 'grid',
         },
-        iconName: 'align-self-flex-start-icon',
+        iconName: 'align-self-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
       {
@@ -797,7 +797,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-lr',
           display: 'grid',
         },
-        iconName: 'align-self-flex-start-icon',
+        iconName: 'align-self-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
     ];
@@ -819,7 +819,7 @@ describe('CSSPropertyIconResolver', async () => {
           'flex-wrap': 'wrap',
           display: 'flex',
         },
-        iconName: 'flex-wrap-icon',
+        iconName: 'flex-wrap',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -828,7 +828,7 @@ describe('CSSPropertyIconResolver', async () => {
           'flex-wrap': 'nowrap',
           display: 'flex',
         },
-        iconName: 'flex-nowrap-icon',
+        iconName: 'flex-no-wrap',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.LEFT_TO_RIGHT,
       },
       {
@@ -837,7 +837,7 @@ describe('CSSPropertyIconResolver', async () => {
           'flex-wrap': 'wrap',
           display: 'flex',
         },
-        iconName: 'flex-wrap-icon',
+        iconName: 'flex-wrap',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -846,7 +846,7 @@ describe('CSSPropertyIconResolver', async () => {
           'flex-wrap': 'nowrap',
           display: 'flex',
         },
-        iconName: 'flex-nowrap-icon',
+        iconName: 'flex-no-wrap',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
     ];
@@ -908,7 +908,7 @@ describe('CSSPropertyIconResolver', async () => {
           'justify-items': 'start',
           display: 'grid',
         },
-        iconName: 'justify-items-start-icon',
+        iconName: 'justify-items-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.TOP_TO_BOTTOM,
       },
       {
@@ -917,7 +917,7 @@ describe('CSSPropertyIconResolver', async () => {
           'writing-mode': 'vertical-lr',
           display: 'grid',
         },
-        iconName: 'justify-items-start-icon',
+        iconName: 'justify-items-start',
         expected: ElementsComponents.CSSPropertyIconResolver.PhysicalDirection.RIGHT_TO_LEFT,
       },
     ];

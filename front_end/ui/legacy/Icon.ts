@@ -208,7 +208,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['smallicon-clear-info', {position: 'f2', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-clear-error', {position: 'f3', spritesheet: 'smallicons', isMask: true}],
 
-  ['mediumicon-info', {position: 'c1', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-file-sync', {position: 'd3', spritesheet: 'mediumicons', invert: true}],
   ['mediumicon-file', {position: 'a2', spritesheet: 'mediumicons', invert: true}],
   ['mediumicon-gray-cross-active', {position: 'b2', spritesheet: 'mediumicons'}],

@@ -138,7 +138,7 @@ export class StylePropertyEditor extends HTMLElement {
     return html`<button title=${title} class=${classes} @click=${
         (): void => this.#onButtonClick(propertyName, propertyValue, selected)}>
        <${IconButton.Icon.Icon.litTagName} style=${transform} .data=${
-        {iconName: iconInfo.iconName, color: 'var(--icon-color)', width: '18px', height: '18px'} as
+        {iconName: iconInfo.iconName, color: 'var(--icon-color)', width: '20px', height: '20px'} as
         IconButton.Icon.IconWithName}></${IconButton.Icon.Icon.litTagName}>
     </button>`;
   }

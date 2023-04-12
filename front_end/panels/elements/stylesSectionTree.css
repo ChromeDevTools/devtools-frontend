@@ -173,9 +173,6 @@ ol.expanded {
   position: relative;
   left: -1.5px;
   top: -1.5px;
-  /* Scale down to 14px instead of 16px. The line height is 13px but we make the icon a bit larger. */
-  /* TODO: scale here messes up popup positioning by 2px but I found no solution so far. Maybe once an SVG icon is used here. */
-  transform: scale(0.875);
 }
 
 .has-ignorable-error {

@@ -6,10 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("formatter") {
   testonly = true
-  sources = [
-    "ScriptFormatter_test.ts",
-    "SourceFormatter_test.ts",
-  ]
+  sources = [ "ScriptFormatter_test.ts" ]
   deps = [
     "../../../../../front_end/core/common:bundle",
     "../../../../../front_end/core/sdk:bundle",

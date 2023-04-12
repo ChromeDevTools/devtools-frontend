@@ -10,7 +10,6 @@ devtools_module("formatter") {
   sources = [
     "FormatterWorkerPool.ts",
     "ScriptFormatter.ts",
-    "SourceFormatter.ts",
   ]
 
   deps = [

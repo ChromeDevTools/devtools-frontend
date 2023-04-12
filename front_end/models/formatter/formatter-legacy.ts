@@ -16,6 +16,3 @@ Formatter.formatterWorkerPool = FormatterModule.FormatterWorkerPool.formatterWor
 
 /** @interface */
 Formatter.FormatterSourceMapping = FormatterModule.ScriptFormatter.FormatterSourceMapping;
-
-/** @constructor */
-Formatter.SourceFormatter = FormatterModule.SourceFormatter.SourceFormatter;

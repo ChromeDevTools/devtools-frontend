@@ -203,7 +203,7 @@ export class ElementsTreeOutline extends
       Promise<void> {
     if (event.data.issue instanceof IssuesManager.GenericIssue.GenericIssue) {
       this.#onIssueAdded(event.data.issue);
-      await this.#updateViolatingElement(event.data.issue);
+      await this.#addTreeElementIssue(event.data.issue);
     }
   }
 
@@ -211,13 +211,13 @@ export class ElementsTreeOutline extends
     this.#genericIssues.push(issue);
   }
 
-  #updateAllViolatingElements(): void {
+  #addAllElementIssues(): void {
     for (const issue of this.#genericIssues) {
-      void this.#updateViolatingElement(issue);
+      void this.#addTreeElementIssue(issue);
     }
   }
 
-  async #updateViolatingElement(issue: IssuesManager.GenericIssue.GenericIssue): Promise<void> {
+  async #addTreeElementIssue(issue: IssuesManager.GenericIssue.GenericIssue): Promise<void> {
     const issueDetails = issue.details();
 
     if (!this.rootDOMNode || !issueDetails.violatingNodeId) {
@@ -232,14 +232,8 @@ export class ElementsTreeOutline extends
     }
 
     const treeElement = this.findTreeElement(node);
-    if (!treeElement) {
-      return;
-    }
-
-    if (issueDetails.violatingNodeAttribute) {
-      treeElement.highlightViolatingAttr(issueDetails.violatingNodeAttribute);
-    } else {
-      treeElement.highlightTagAsViolating();
+    if (treeElement) {
+      treeElement.addIssue(issue);
     }
   }
 
@@ -1100,7 +1094,7 @@ export class ElementsTreeOutline extends
     if (domModel.existingDocument()) {
       this.rootDOMNode = domModel.existingDocument();
       if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL)) {
-        this.#updateAllViolatingElements();
+        this.#addAllElementIssues();
       }
     }
   }

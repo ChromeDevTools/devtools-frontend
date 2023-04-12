@@ -13,7 +13,6 @@ import * as CSSPropertyIconResolver from './CSSPropertyIconResolver.js';
 import * as CSSQuery from './CSSQuery.js';
 import * as ElementsBreadcrumbs from './ElementsBreadcrumbs.js';
 import * as ElementsBreadcrumbsUtils from './ElementsBreadcrumbsUtils.js';
-import * as ElementsPanelLink from './ElementsPanelLink.js';
 import * as ElementsTreeExpandButton from './ElementsTreeExpandButton.js';
 import * as Helper from './Helper.js';
 import * as LayoutPane from './LayoutPane.js';
@@ -33,7 +32,6 @@ export {
   CSSQuery,
   ElementsBreadcrumbs,
   ElementsBreadcrumbsUtils,
-  ElementsPanelLink,
   ElementsTreeExpandButton,
   Helper,
   LayoutPane,

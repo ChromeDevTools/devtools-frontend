@@ -176,6 +176,7 @@ devtools_entrypoint("bundle") {
     "../../panels/console/*",
     "../../panels/console_counters/*",
     "../../panels/elements/*",
+    "../../panels/elements/*",
     "../../panels/issues/*",
     "../../panels/network/*",
     "../../panels/sources/*",

@@ -79,10 +79,12 @@ devtools_module("elements") {
     "../../models/bindings:bundle",
     "../../models/extensions:bundle",
     "../../models/issues_manager:bundle",
+    "../../models/issues_manager:bundle",
     "../../models/workspace:bundle",
     "../../models/workspace_diff:bundle",
     "../../panels/emulation:bundle",
     "../../panels/event_listeners:bundle",
+    "../../panels/issues:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/utils:bundle",
     "../../ui/components/adorners:bundle",
@@ -124,7 +126,6 @@ devtools_entrypoint("bundle") {
     "../../ui/components/docs/layout_pane/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
-    "../issues/*",
     "../network/*",
   ]
 

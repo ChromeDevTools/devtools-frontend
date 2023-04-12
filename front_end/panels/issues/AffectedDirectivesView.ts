@@ -9,7 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import * as ElementsComponents from '../elements/components/components.js';
+import * as IssuesComponents from './components/components.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -88,7 +88,7 @@ export class AffectedDirectivesView extends AffectedResourcesView {
 
   #appendBlockedElement(
       element: Element, nodeId: Protocol.DOM.BackendNodeId|undefined, model: SDK.IssuesModel.IssuesModel): void {
-    const elementsPanelLinkComponent = new ElementsComponents.ElementsPanelLink.ElementsPanelLink();
+    const elementsPanelLinkComponent = new IssuesComponents.ElementsPanelLink.ElementsPanelLink();
     if (nodeId) {
       const violatingNodeId = nodeId;
       elementsPanelLinkComponent.title = i18nString(UIStrings.clickToRevealTheViolatingDomNode);

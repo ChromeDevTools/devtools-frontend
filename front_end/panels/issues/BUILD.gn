@@ -50,7 +50,6 @@ devtools_module("issues") {
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
     "../../panels/console_counters:bundle",
-    "../../panels/elements:bundle",
     "../../panels/network/forward:bundle",
     "../../ui/components/adorners:bundle",
     "../../ui/components/data_grid:bundle",
@@ -79,6 +78,7 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../../test/unittests/front_end/panels/issues/*",
     "../../entrypoints/*",
+    "../elements/*",
   ]
 
   visibility += devtools_panels_visibility

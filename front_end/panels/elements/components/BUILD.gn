@@ -16,7 +16,6 @@ generate_css("css_files") {
     "cssPropertyDocsView.css",
     "cssQuery.css",
     "elementsBreadcrumbs.css",
-    "elementsPanelLink.css",
     "elementsTreeExpandButton.css",
     "queryContainer.css",
     "stylePropertyEditor.css",
@@ -36,7 +35,6 @@ devtools_module("components") {
     "ComputedStyleTrace.ts",
     "ElementsBreadcrumbs.ts",
     "ElementsBreadcrumbsUtils.ts",
-    "ElementsPanelLink.ts",
     "ElementsTreeExpandButton.ts",
     "Helper.ts",
     "LayoutPane.ts",
@@ -77,6 +75,5 @@ devtools_entrypoint("bundle") {
     "../../../../test/unittests/front_end/panels/elements/components",
     "../../../ui/components/docs/*",
     "../../application/components/*",
-    "../../issues/*",
   ]
 }

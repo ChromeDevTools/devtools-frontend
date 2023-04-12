@@ -88,6 +88,7 @@ h1 {
 
 .keybinds-modified {
   grid-column: 2 / span 1;
+  margin-top: 2px;
 }
 
 .keybinds-list-item button {

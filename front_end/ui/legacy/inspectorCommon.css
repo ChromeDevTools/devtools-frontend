@@ -740,6 +740,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-info);
 }
 
+.spritesheet-keyboard-pen.icon-mask {
+  -webkit-mask-image: var(--image-file-keyboard-pen);
+}
+
 .spritesheet-left-panel-close.icon-mask {
   -webkit-mask-image: var(--image-file-left-panel-close);
 }

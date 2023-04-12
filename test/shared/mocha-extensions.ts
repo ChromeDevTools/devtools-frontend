@@ -82,21 +82,13 @@ export function wrapDescribe<ReturnT>(
       if (stackTraces.length < 3) {
         return '<unknown>';
       }
-      let filename = stackTraces[2].getFileName();
+      const filename = stackTraces[2].getFileName();
       if (!filename) {
         return '<unknown>';
       }
-      let parsedPath = Path.parse(filename);
-      let directories = parsedPath.dir.split(Path.sep);
-      let index = directories.lastIndexOf('e2e');
-      if (index < 0 && stackTraces.length > 3) {
-        filename = stackTraces[3].getFileName();
-        if (filename) {
-          parsedPath = Path.parse(filename);
-          directories = parsedPath.dir.split(Path.sep);
-          index = directories.lastIndexOf('e2e');
-        }
-      }
+      const parsedPath = Path.parse(filename);
+      const directories = parsedPath.dir.split(Path.sep);
+      const index = directories.lastIndexOf('e2e');
       if (index < 0) {
         return parsedPath.name;
       }

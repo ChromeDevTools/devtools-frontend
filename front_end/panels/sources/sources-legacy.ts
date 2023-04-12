@@ -66,9 +66,6 @@ Sources.FilteredUISourceCodeListProvider =
 Sources.GoToLineQuickOpen = SourcesModule.GoToLineQuickOpen.GoToLineQuickOpen;
 
 /** @constructor */
-Sources.InplaceFormatterEditorAction = SourcesModule.InplaceFormatterEditorAction.InplaceFormatterEditorAction;
-
-/** @constructor */
 Sources.NavigatorView = SourcesModule.NavigatorView.NavigatorView;
 
 Sources.NavigatorView.Types = SourcesModule.NavigatorView.Types;

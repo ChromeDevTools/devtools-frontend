@@ -3179,9 +3179,7 @@ export class TimelineUIUtils {
     return span;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static displayNameForFrame(frame: TimelineModel.TimelineModel.PageFrame, trimAt?: number): any {
+  static displayNameForFrame(frame: TimelineModel.TimelineModel.PageFrame, trimAt: number = 30): string {
     const url = frame.url;
     if (!trimAt) {
       trimAt = 30;

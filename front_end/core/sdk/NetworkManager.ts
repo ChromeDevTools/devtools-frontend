@@ -1599,29 +1599,59 @@ export class InterceptedRequest {
   static mergeSetCookieHeaders(
       originalSetCookieHeaders: Protocol.Fetch.HeaderEntry[],
       setCookieHeadersFromOverrides: Protocol.Fetch.HeaderEntry[]): Protocol.Fetch.HeaderEntry[] {
-    const malformedHeaders = new Set<string>();
-    const validHeaders = new Map<string, string>();
-    for (const header of originalSetCookieHeaders.concat(setCookieHeadersFromOverrides)) {
-      // The regex matches cookie headers of the form '<header-name>=<header-value>'.
-      // <header-name> is a token as defined in https://www.rfc-editor.org/rfc/rfc9110.html#name-tokens.
-      // The shape of <header-value> is not being validated at all here.
-      const match = header.value.match(/([a-zA-Z0-9!#$%&'*+.^_`|~-]+)=(.*)/);
-      if (match) {
-        // This step merges headers for cookies with the same name, e.g. if there
-        // are both 'set-cookie: foo=original' and 'set-cookie: foo=override',
-        // only the later one will be stored.
-        validHeaders.set(match[1], match[2]);
+    // Generates a map containing the `set-cookie` headers. Valid `set-cookie`
+    // headers are stored by the cookie name. Malformed `set-cookie` headers are
+    // stored by the whole header value. Duplicates are allowed.
+    const generateHeaderMap = (headers: Protocol.Fetch.HeaderEntry[]): Map<string, string[]> => {
+      const result = new Map<string, string[]>();
+      for (const header of headers) {
+        // The regex matches cookie headers of the form '<header-name>=<header-value>'.
+        // <header-name> is a token as defined in https://www.rfc-editor.org/rfc/rfc9110.html#name-tokens.
+        // The shape of <header-value> is not being validated at all here.
+        const match = header.value.match(/^([a-zA-Z0-9!#$%&'*+.^_`|~-]+=)(.*)$/);
+        if (match) {
+          if (result.has(match[1])) {
+            result.get(match[1])?.push(header.value);
+          } else {
+            result.set(match[1], [header.value]);
+          }
+        } else {
+          if (result.has(header.value)) {
+            result.get(header.value)?.push(header.value);
+          } else {
+            result.set(header.value, [header.value]);
+          }
+        }
+      }
+      return result;
+    };
+
+    const originalHeadersMap = generateHeaderMap(originalSetCookieHeaders);
+    const overridesHeaderMap = generateHeaderMap(setCookieHeadersFromOverrides);
+
+    // Iterate over original headers. If the same key is found among the
+    // overrides, use those instead.
+    const mergedHeaders: Protocol.Fetch.HeaderEntry[] = [];
+    for (const [key, headerValues] of originalHeadersMap) {
+      if (overridesHeaderMap.has(key)) {
+        for (const headerValue of overridesHeaderMap.get(key) || []) {
+          mergedHeaders.push({name: 'set-cookie', value: headerValue});
+        }
       } else {
-        malformedHeaders.add(header.value);
+        for (const headerValue of headerValues) {
+          mergedHeaders.push({name: 'set-cookie', value: headerValue});
+        }
       }
     }
 
-    const mergedHeaders: Protocol.Fetch.HeaderEntry[] = [];
-    for (const [cookieName, cookieValue] of validHeaders) {
-      mergedHeaders.push({name: 'set-cookie', value: `${cookieName}=${cookieValue}`});
-    }
-    for (const headerValue of malformedHeaders) {
-      mergedHeaders.push({name: 'set-cookie', value: headerValue});
+    // Finally add all overrides which have not been added yet.
+    for (const [key, headerValues] of overridesHeaderMap) {
+      if (originalHeadersMap.has(key)) {
+        continue;
+      }
+      for (const headerValue of headerValues) {
+        mergedHeaders.push({name: 'set-cookie', value: headerValue});
+      }
     }
     return mergedHeaders;
   }

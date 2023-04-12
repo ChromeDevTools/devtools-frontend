@@ -916,8 +916,8 @@ describeWithMockConnection('InterceptedRequest', () => {
       {name: 'set-cookie', value: 'malformed_override'},
     ];
     const expectedPersistedSetCookieHeaders = [
-      {name: 'set-cookie', value: 'userName=DevTools'},
       {name: 'set-cookie', value: 'malformed_original'},
+      {name: 'set-cookie', value: 'userName=DevTools'},
       {name: 'set-cookie', value: 'malformed_override'},
     ];
     await checkSetCookieOverride(
@@ -945,5 +945,59 @@ describeWithMockConnection('InterceptedRequest', () => {
     await checkSetCookieOverride(
         'https://www.example.com/cookies/mergeCookies.html', headersFromServer, expectedOverriddenHeaders,
         expectedPersistedSetCookieHeaders);
+  });
+
+  it('correctly merges \'set-cookie\' headers with duplicates', () => {
+    const original = [
+      {name: 'set-cookie', value: 'foo=original'},
+      {name: 'set-cookie', value: 'bar=original'},
+      {name: 'set-cookie', value: 'baz=original'},
+      {name: 'set-cookie', value: 'duplicate=duplicate'},
+      {name: 'set-cookie', value: 'duplicate=duplicate'},
+      {name: 'set-cookie', value: 'duplicate2=duplicate2'},
+      {name: 'set-cookie', value: 'duplicate2=duplicate2'},
+      {name: 'set-cookie', value: 'duplicate3=duplicate3'},
+      {name: 'set-cookie', value: 'duplicate3=duplicate3'},
+      {name: 'set-cookie', value: 'malformed'},
+      {name: 'set-cookie', value: 'both'},
+      {name: 'set-cookie', value: 'double'},
+      {name: 'set-cookie', value: 'double'},
+      {name: 'set-cookie', value: 'original_duplicate'},
+      {name: 'set-cookie', value: 'original_duplicate'},
+      {name: 'set-cookie', value: 'override_duplicate'},
+    ];
+    const overrides = [
+      {name: 'set-cookie', value: 'bar=overridden'},
+      {name: 'set-cookie', value: 'baz=overridden1'},
+      {name: 'set-cookie', value: 'baz=overridden2'},
+      {name: 'set-cookie', value: 'duplicate2=overridden'},
+      {name: 'set-cookie', value: 'duplicate3=overridden'},
+      {name: 'set-cookie', value: 'duplicate3=overridden'},
+      {name: 'set-cookie', value: 'malformed_override'},
+      {name: 'set-cookie', value: 'both'},
+      {name: 'set-cookie', value: 'original_duplicate'},
+      {name: 'set-cookie', value: 'override_duplicate'},
+      {name: 'set-cookie', value: 'override_duplicate'},
+    ];
+    const expected = [
+      {name: 'set-cookie', value: 'foo=original'},
+      {name: 'set-cookie', value: 'bar=overridden'},
+      {name: 'set-cookie', value: 'baz=overridden1'},
+      {name: 'set-cookie', value: 'baz=overridden2'},
+      {name: 'set-cookie', value: 'duplicate=duplicate'},
+      {name: 'set-cookie', value: 'duplicate=duplicate'},
+      {name: 'set-cookie', value: 'duplicate2=overridden'},
+      {name: 'set-cookie', value: 'duplicate3=overridden'},
+      {name: 'set-cookie', value: 'duplicate3=overridden'},
+      {name: 'set-cookie', value: 'malformed'},
+      {name: 'set-cookie', value: 'both'},
+      {name: 'set-cookie', value: 'double'},
+      {name: 'set-cookie', value: 'double'},
+      {name: 'set-cookie', value: 'original_duplicate'},
+      {name: 'set-cookie', value: 'override_duplicate'},
+      {name: 'set-cookie', value: 'override_duplicate'},
+      {name: 'set-cookie', value: 'malformed_override'},
+    ];
+    assert.deepStrictEqual(SDK.NetworkManager.InterceptedRequest.mergeSetCookieHeaders(original, overrides), expected);
   });
 });

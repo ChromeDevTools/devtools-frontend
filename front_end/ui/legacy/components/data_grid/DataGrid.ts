@@ -1958,6 +1958,13 @@ export class DataGridNode<T> {
           cell.style.setProperty('padding-left', this.leftPadding + 'px');
         }
       }
+
+      // Allow accessibility tool to identify the editable cell and display context menu
+      const editableCell = this.dataGrid.columns[columnId].editable;
+      if (editableCell) {
+        cell.tabIndex = 0;
+        cell.ariaHasPopup = 'true';
+      }
     }
 
     return cell;

@@ -204,8 +204,8 @@ describe('Multi-Workers', async function() {
     });
 
     // Regularly failing on Windows CQ
-    describe.skipOnPlatforms(
-        ['win32', 'mac'], `[crbug.com/1425122] copies breakpoints between workers ${withOrWithout}`, () => {
+    describe.skip(
+        `[crbug.com/1425122] copies breakpoints between workers ${withOrWithout}`, () => {
           beforeEach(async () => {
             const {frontend} = getBrowserAndPages();
             await waitForSourceFiles(

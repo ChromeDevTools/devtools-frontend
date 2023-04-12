@@ -225,6 +225,9 @@ export async function registerServiceWorker() {
 export async function unregisterAllServiceWorkers() {
   const {target} = await getBrowserAndPages();
   await target.evaluate(async () => {
+    if (!navigator.serviceWorker) {
+      return;
+    }
     const registrations = await navigator.serviceWorker.getRegistrations();
     await Promise.all(registrations.map(r => r.unregister()));
   });

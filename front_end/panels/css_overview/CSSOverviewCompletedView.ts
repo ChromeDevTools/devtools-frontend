@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -769,23 +770,23 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     if (showAPCA) {
       const apca = (blockFragment.$('apca') as HTMLElement);
       if (minContrastIssue.thresholdsViolated.apca) {
-        apca.appendChild(UI.Icon.Icon.create('smallicon-no'));
+        apca.appendChild(createClearIcon());
       } else {
-        apca.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+        apca.appendChild(createCheckIcon());
       }
       apca.classList.remove('hidden');
     } else {
       const aa = (blockFragment.$('aa') as HTMLElement);
       if (minContrastIssue.thresholdsViolated.aa) {
-        aa.appendChild(UI.Icon.Icon.create('smallicon-no'));
+        aa.appendChild(createClearIcon());
       } else {
-        aa.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+        aa.appendChild(createCheckIcon());
       }
       const aaa = (blockFragment.$('aaa') as HTMLElement);
       if (minContrastIssue.thresholdsViolated.aaa) {
-        aaa.appendChild(UI.Icon.Icon.create('smallicon-no'));
+        aaa.appendChild(createClearIcon());
       } else {
-        aaa.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+        aaa.appendChild(createCheckIcon());
       }
       aa.classList.remove('hidden');
       aaa.classList.remove('hidden');
@@ -1132,22 +1133,22 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
       if (showAPCA) {
         container.append(UI.Fragment.Fragment.build`<span>${i18nString(UIStrings.apca)}</span>`.element());
         if (this.data.thresholdsViolated.apca) {
-          container.appendChild(UI.Icon.Icon.create('smallicon-no'));
+          container.appendChild(createClearIcon());
         } else {
-          container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+          container.appendChild(createCheckIcon());
         }
       } else {
         container.append(UI.Fragment.Fragment.build`<span>${i18nString(UIStrings.aa)}</span>`.element());
         if (this.data.thresholdsViolated.aa) {
-          container.appendChild(UI.Icon.Icon.create('smallicon-no'));
+          container.appendChild(createClearIcon());
         } else {
-          container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+          container.appendChild(createCheckIcon());
         }
         container.append(UI.Fragment.Fragment.build`<span>${i18nString(UIStrings.aaa)}</span>`.element());
         if (this.data.thresholdsViolated.aaa) {
-          container.appendChild(UI.Icon.Icon.create('smallicon-no'));
+          container.appendChild(createClearIcon());
         } else {
-          container.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square'));
+          container.appendChild(createCheckIcon());
         }
       }
       cell.appendChild(contrastFragment.element());
@@ -1169,4 +1170,16 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     const matchingSelectorLocation = new SDK.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
     return linkifier.linkifyCSSLocation(matchingSelectorLocation);
   }
+}
+
+function createClearIcon(): IconButton.Icon.Icon {
+  const icon = new IconButton.Icon.Icon();
+  icon.data = {iconName: 'clear', color: 'var(--icon-error-small)', width: '14px', height: '14px'};
+  return icon;
+}
+
+function createCheckIcon(): IconButton.Icon.Icon {
+  const icon = new IconButton.Icon.Icon();
+  icon.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '14px', height: '14px'};
+  return icon;
 }

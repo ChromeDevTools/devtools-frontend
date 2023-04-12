@@ -301,7 +301,8 @@
 
 .contrast-warning {
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  margin-top: 2px;
 }
 
 .contrast-warning .threshold-label {
@@ -309,8 +310,8 @@
   width: 30px;
 }
 
-.contrast-warning [is="ui-icon"] {
-  margin-left: 5px;
+.contrast-warning devtools-icon {
+  margin-left: 2px;
 }
 
 .contrast-preview {
@@ -319,20 +320,12 @@
 
 .contrast-container-in-grid {
   display: flex;
-  align-items: baseline;
+  align-items: center;
 }
 
 .contrast-container-in-grid > * {
   margin-right: 5px;
   min-width: initial;
-}
-
-[is="ui-icon"].smallicon-checkmark-square {
-  background-color: var(--color-green);
-}
-
-[is="ui-icon"].smallicon-no {
-  background-color: var(--color-red);
 }
 
 .data .nodeId-column {

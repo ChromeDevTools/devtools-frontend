@@ -37,6 +37,7 @@ devtools_module("css_overview") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../models/text_utils:bundle",
+    "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",
     "../../ui/legacy/components/data_grid:bundle",

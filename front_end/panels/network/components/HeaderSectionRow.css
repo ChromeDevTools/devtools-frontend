@@ -154,6 +154,7 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
   opacity: 0%;
   visibility: hidden;
   transition: opacity 200ms;
+  padding-left: 2px;
 }
 
 .row.header-overridden:focus-within .inline-button,

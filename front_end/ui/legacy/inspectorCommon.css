@@ -624,6 +624,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-cookie);
 }
 
+.spritesheet-copy.icon-mask {
+  -webkit-mask-image: var(--image-file-copy);
+}
+
 .spritesheet-credit-card.icon-mask {
   -webkit-mask-image: var(--image-file-credit-card);
 }

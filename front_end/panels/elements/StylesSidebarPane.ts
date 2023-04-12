@@ -1555,8 +1555,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   private createCopyAllChangesButton(): UI.Toolbar.ToolbarButton {
-    const copyAllChangesButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyAllCSSChanges), 'largeicon-copy');
+    const copyAllChangesButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyAllCSSChanges), 'copy');
     // TODO(1296947): implement a dedicated component to share between all copy buttons
     copyAllChangesButton.element.setAttribute('data-content', i18nString(UIStrings.copiedToClipboard));
     let timeout: number|undefined;

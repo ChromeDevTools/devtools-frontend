@@ -112,8 +112,8 @@ export class ChangesView extends UI.Widget.VBox {
     this.diffStats = new UI.Toolbar.ToolbarText('');
     this.toolbar.appendToolbarItem(this.diffStats);
 
-    this.copyButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.copyAllChangesFromCurrentFile), 'largeicon-copy', UIStrings.copy);
+    this.copyButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyAllChangesFromCurrentFile), 'copy', UIStrings.copy);
     this.copyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.copyChanges.bind(this));
     this.copyButtonSeparator = new UI.Toolbar.ToolbarSeparator();
     this.toolbar.setEnabled(false);

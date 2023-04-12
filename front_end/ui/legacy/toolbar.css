@@ -119,10 +119,6 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   text-align: right;
 }
 
-.toolbar-has-glyph .toolbar-text {
-  margin-left: -4px;
-}
-
 .toolbar-render-as-links * {
   font-weight: initial;
   color: var(--color-link);

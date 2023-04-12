@@ -110,14 +110,13 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 .tree-outline li::before {
   user-select: none;
   -webkit-mask-image: var(--image-file-triangle-right);
-  -webkit-mask-size: 14px 14px;
-  -webkit-mask-position: 0 14;
   background-color: var(--icon-default);
   content: "\A0\A0";
   text-shadow: none;
   margin-right: -2px;
   height: 14px;
   width: 14px;
+  transition: transform 200ms;
 }
 
 .tree-outline li:not(.parent)::before {
@@ -125,8 +124,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 }
 
 .tree-outline li.parent.expanded::before {
-  -webkit-mask-image: var(--image-file-triangle-down);
-  -webkit-mask-position: 0 14;
+  transform: rotate(90deg);
 }
 
 .tree-outline ol.children {

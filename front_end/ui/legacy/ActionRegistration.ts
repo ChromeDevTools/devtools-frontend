@@ -368,7 +368,7 @@ export const enum IconClass {
   LARGE_ICON_STEP_OUT = 'step-out',
   BREAKPOINT_CROSSED_FILLED = 'breakpoint-crossed-filled',
   BREAKPOINT_CROSSED = 'breakpoint-crossed',
-  LARGE_ICON_ADD = 'largeicon-add',
+  PLUS = 'plus',
 }
 
 export const enum KeybindSet {

@@ -2355,7 +2355,7 @@ let buttonProviderInstance: ButtonProvider;
 export class ButtonProvider implements UI.Toolbar.Provider {
   private readonly button: UI.Toolbar.ToolbarButton;
   private constructor() {
-    this.button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newStyleRule), 'largeicon-add');
+    this.button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newStyleRule), 'plus');
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     const longclickTriangle = UI.Icon.Icon.create('largeicon-longclick-triangle', 'long-click-glyph');
     this.button.element.appendChild(longclickTriangle);

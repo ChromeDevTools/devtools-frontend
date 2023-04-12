@@ -1204,7 +1204,7 @@ if (!Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       const Sources = await loadSourcesModule();
       return Sources.SourcesNavigator.ActionDelegate.instance();
     },
-    iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_ADD,
+    iconClass: UI.ActionRegistration.IconClass.PLUS,
     title: i18nLazyString(UIStrings.addFolderToWorkspace),
     condition: Root.Runtime.ConditionName.NOT_SOURCES_HIDE_ADD_FOLDER,
   });

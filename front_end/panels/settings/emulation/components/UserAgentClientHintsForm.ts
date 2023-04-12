@@ -606,7 +606,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         <${IconButton.Icon.Icon.litTagName}
           aria-hidden="true"
           .data=${
-        {color: 'var(--client-hints-form-icon-color)', iconName: 'add-icon', width: '10px'} as IconButton.Icon.IconData}
+        {color: 'var(--client-hints-form-icon-color)', iconName: 'plus', width: '14px'} as IconButton.Icon.IconData}
         >
         </${IconButton.Icon.Icon.litTagName}>
         ${i18nString(UIStrings.addBrand)}
@@ -698,7 +698,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         <${IconButton.Icon.Icon.litTagName}
           aria-hidden="true"
           .data=${
-        {color: 'var(--client-hints-form-icon-color)', iconName: 'add-icon', width: '10px'} as IconButton.Icon.IconData}
+        {color: 'var(--client-hints-form-icon-color)', iconName: 'plus', width: '14px'} as IconButton.Icon.IconData}
         >
         </${IconButton.Icon.Icon.litTagName}>
         ${i18nString(UIStrings.addBrand)}

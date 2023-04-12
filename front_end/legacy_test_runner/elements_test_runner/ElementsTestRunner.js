@@ -1196,7 +1196,7 @@ ElementsTestRunner.addNewRuleInStyleSheet = function(styleSheetHeader, selector,
 
 ElementsTestRunner.addNewRule = function(selector, callback) {
   UI.panels.elements.stylesWidget.contentElement.querySelector('.styles-pane-toolbar')
-      .shadowRoot.querySelector('.largeicon-add')
+      .shadowRoot.querySelector('.plus')
       .click();
   TestRunner.addSniffer(
       Elements.StylesSidebarPane.prototype, 'addBlankSection', onBlankSection.bind(null, selector, callback));

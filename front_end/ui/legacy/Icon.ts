@@ -220,7 +220,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['mediumicon-elements-panel', {position: 'f3', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-network-panel', {position: 'f2', spritesheet: 'mediumicons', isMask: true}],
 
-  ['largeicon-add', {position: 'a8', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-font-editor', {position: 'i7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-longclick-triangle', {position: 'b4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-file', {position: 'e4', spritesheet: 'largeicons', isMask: true}],

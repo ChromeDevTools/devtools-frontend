@@ -412,7 +412,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     overlay.addEventListener('click', this.togglePalettePanel.bind(this, false));
 
     this.addColorToolbar = new UI.Toolbar.Toolbar('add-color-toolbar');
-    const addColorButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addToPalette), 'largeicon-add');
+    const addColorButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addToPalette), 'plus');
     addColorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onAddColorMousedown.bind(this));
     addColorButton.element.addEventListener('keydown', this.onAddColorKeydown.bind(this));
     this.addColorToolbar.appendToolbarItem(addColorButton);

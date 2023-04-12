@@ -209,7 +209,7 @@ export class LighthousePanel extends UI.Panel.Panel {
 
     const toolbar = new UI.Toolbar.Toolbar('', lighthouseToolbarContainer);
 
-    this.newButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.performAnAudit), 'largeicon-add');
+    this.newButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.performAnAudit), 'plus');
     toolbar.appendToolbarItem(this.newButton);
     this.newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.renderStartView.bind(this));
 

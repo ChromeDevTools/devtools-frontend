@@ -5,7 +5,7 @@
  */
 
 :host {
-  --client-hints-form-icon-color: var(--color-text-primary);
+  --client-hints-form-icon-color: var(--icon-default);
 }
 
 .root {

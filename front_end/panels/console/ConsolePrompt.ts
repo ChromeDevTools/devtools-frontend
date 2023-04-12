@@ -245,6 +245,13 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         },
       },
       {
+        key: 'Ctrl-Enter',
+        run: (): boolean => {
+          void this.handleEnter(/* forceEvaluate */ true);
+          return true;
+        },
+      },
+      {
         key: 'Enter',
         run: (): boolean => {
           void this.handleEnter();
@@ -255,13 +262,19 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     ];
   }
 
-  private async enterWillEvaluate(): Promise<boolean> {
-    const {state} = this.editor;
-    return state.doc.length > 0 && await TextEditor.JavaScript.isExpressionComplete(state.doc.toString());
+  private async enterWillEvaluate(forceEvaluate?: boolean): Promise<boolean> {
+    const {doc, selection} = this.editor.state;
+    if (!doc.length) {
+      return false;
+    }
+    if (forceEvaluate || selection.main.head < doc.length) {
+      return true;
+    }
+    return await TextEditor.JavaScript.isExpressionComplete(doc.toString());
   }
 
-  private async handleEnter(): Promise<void> {
-    if (await this.enterWillEvaluate()) {
+  private async handleEnter(forceEvaluate?: boolean): Promise<void> {
+    if (await this.enterWillEvaluate(forceEvaluate)) {
       this.appendCommand(this.text(), true);
       TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
       this.editor.dispatch({

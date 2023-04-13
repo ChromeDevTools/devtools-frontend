@@ -715,7 +715,7 @@ UI.ActionRegistration.registerActionExtension({
     return Sources.SourcesPanel.ActionDelegate.instance();
   },
   title: i18nLazyString(UIStrings.runSnippet),
-  iconClass: UI.ActionRegistration.IconClass.LARGEICON_PLAY,
+  iconClass: UI.ActionRegistration.IconClass.PLAY,
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
   },

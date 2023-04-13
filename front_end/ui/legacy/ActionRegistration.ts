@@ -356,7 +356,7 @@ export const enum IconClass {
   CLEAR = 'clear',
   EYE = 'eye',
   LARGEICON_PHONE = 'devices',
-  LARGEICON_PLAY = 'largeicon-play',
+  PLAY = 'play',
   DOWNLOAD = 'download',
   LARGEICON_PAUSE = 'pause',
   LARGEICON_RESUME = 'resume',

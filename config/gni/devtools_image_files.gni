@@ -204,6 +204,7 @@ devtools_svg_sources = [
   "step-out.svg",
   "step-over.svg",
   "step.svg",
+  "stop.svg",
   "survey_feedback_icon.svg",
   "switcherIcon.svg",
   "sync.svg",

@@ -824,6 +824,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-step);
 }
 
+.spritesheet-stop.icon-mask {
+  -webkit-mask-image: var(--image-file-stop);
+}
+
 .spritesheet-sync.icon-mask {
   -webkit-mask-image: var(--image-file-sync);
 }

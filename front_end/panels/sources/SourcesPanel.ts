@@ -827,10 +827,10 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     const debugToolbar = new UI.Toolbar.Toolbar('scripts-debug-toolbar');
 
     const longResumeButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resumeWithAllPausesBlockedForMs), 'largeicon-play');
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resumeWithAllPausesBlockedForMs), 'play');
     longResumeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.longResume, this);
-    const terminateExecutionButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.terminateCurrentJavascriptCall), 'largeicon-terminate-execution');
+    const terminateExecutionButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.terminateCurrentJavascriptCall), 'stop');
     terminateExecutionButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.terminateExecution, this);
     debugToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createLongPressActionButton(
         this.togglePauseAction, [terminateExecutionButton, longResumeButton], []));

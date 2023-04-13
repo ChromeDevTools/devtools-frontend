@@ -205,6 +205,7 @@ grd_files_release_sources = [
   "front_end/Images/step-out.svg",
   "front_end/Images/step-over.svg",
   "front_end/Images/step.svg",
+  "front_end/Images/stop.svg",
   "front_end/Images/survey_feedback_icon.svg",
   "front_end/Images/switcherIcon.svg",
   "front_end/Images/sync.svg",

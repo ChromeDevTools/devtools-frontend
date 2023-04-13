@@ -56,15 +56,15 @@
   color: var(--icon-default-hover);
 }
 
-.toolbar-item:last-child:not(:first-child) {
-  flex-shrink: 1;
-  justify-content: left;
-}
-
 .toolbar-shadow.vertical .toolbar-item {
   height: auto;
   min-height: var(--toolbar-height);
   white-space: normal;
+}
+
+.toolbar:not(.floating) .toolbar-item:last-child:not(:first-child) {
+  flex-shrink: 1;
+  justify-content: left;
 }
 
 .toolbar-dropdown-arrow {

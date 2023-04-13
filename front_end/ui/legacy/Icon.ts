@@ -231,7 +231,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['largeicon-play-animation', {position: 'f3', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-replay-animation', {position: 'e2', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-rotate-screen', {position: 'g8', spritesheet: 'largeicons', isMask: true}],
-  ['largeicon-visibility', {position: 'h9', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-breaking-change', {position: 'h3', spritesheet: 'largeicons'}],
   ['largeicon-link', {position: 'i1', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-dual-screen', {position: 'i2', spritesheet: 'largeicons', isMask: true}],

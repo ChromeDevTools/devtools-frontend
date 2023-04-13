@@ -49,8 +49,6 @@
 }
 
 .soft-context-menu-item devtools-icon {
-  --icon-color: var(--color-text-secondary);
-
   pointer-events: none;
 }
 
@@ -129,9 +127,8 @@
 }
 
 .checkmark {
-  opacity: 70%;
   pointer-events: none;
-  margin: auto 5px auto 0;
+  margin: -1px 5px -1px 0;
 }
 
 .soft-context-menu-item-mouse-over .checkmark {

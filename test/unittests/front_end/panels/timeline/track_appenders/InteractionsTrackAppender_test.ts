@@ -78,7 +78,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
           await renderTrackAppender('slow-interaction-button-click.json.gz');
       const events = traceParsedData.UserInteractions.interactionEvents;
       for (const event of events) {
-        const markerIndex = entryData.indexOf(event);
+        const markerIndex = entryData.indexOf(event.args.data.beginEvent);
         assert.isDefined(markerIndex);
         assert.strictEqual(
             flameChartData.entryStartTimes[markerIndex],
@@ -91,7 +91,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
           await renderTrackAppender('slow-interaction-button-click.json.gz');
       const events = traceParsedData.UserInteractions.interactionEvents;
       for (const event of events) {
-        const markerIndex = entryData.indexOf(event);
+        const markerIndex = entryData.indexOf(event.args.data.beginEvent);
         assert.isDefined(markerIndex);
         const expectedTotalTimeForEvent = TraceModel.Helpers.Timing.microSecondsToMilliseconds(
             (event.dur || 0) as TraceModel.Types.Timing.MicroSeconds);
@@ -104,7 +104,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
     const {interactionsTrackAppender, traceParsedData} =
         await renderTrackAppender('slow-interaction-button-click.json.gz');
     const firstInteraction = traceParsedData.UserInteractions.interactionEvents[0];
-    const title = interactionsTrackAppender.titleForEvent(firstInteraction);
+    const title = interactionsTrackAppender.titleForEvent(firstInteraction.args.data.beginEvent);
     assert.strictEqual(title, 'pointerdown');
   });
 
@@ -112,8 +112,8 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
     const {interactionsTrackAppender, traceParsedData} =
         await renderTrackAppender('slow-interaction-button-click.json.gz');
     const firstInteraction = traceParsedData.UserInteractions.interactionEvents[0];
-    const highlightedEntryInfo = interactionsTrackAppender.highlightedEntryInfo(firstInteraction);
+    const highlightedEntryInfo = interactionsTrackAppender.highlightedEntryInfo(firstInteraction.args.data.beginEvent);
     // The i18n encondes spaces using the u00A0 unicode character.
-    assert.strictEqual(highlightedEntryInfo.formattedTime, ('32.00\u00A0ms'));
+    assert.strictEqual(highlightedEntryInfo.formattedTime, ('31.72\u00A0ms'));
   });
 });

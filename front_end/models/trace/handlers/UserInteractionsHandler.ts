@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {HandlerState} from './types.js';
@@ -18,24 +17,19 @@ const allEvents: Types.TraceEvents.TraceEventEventTiming[] = [];
 
 export interface UserInteractionsData {
   allEvents: readonly Types.TraceEvents.TraceEventEventTiming[];
-  interactionEvents: readonly InteractionEvent[];
+  interactionEvents: readonly Types.TraceEvents.SyntheticInteractionEvent[];
 }
 
-export interface InteractionEvent extends Types.TraceEvents.TraceEventEventTiming {
-  dur: Types.Timing.MicroSeconds;
-  interactionId: number;
-}
-
-export function eventIsInteractionEvent(event: Types.TraceEvents.TraceEventData): event is InteractionEvent {
-  return Types.TraceEvents.isTraceEventEventTiming(event) && 'interactionId' in event;
-}
-
-const interactionEvents: InteractionEvent[] = [];
+const interactionEvents: Types.TraceEvents.SyntheticInteractionEvent[] = [];
+const eventTimingEndEventsById = new Map<string, Types.TraceEvents.TraceEventEventTimingEnd>();
+const eventTimingStartEventsForInteractions: Types.TraceEvents.TraceEventEventTimingBegin[] = [];
 
 let handlerState = HandlerState.UNINITIALIZED;
 export function reset(): void {
   allEvents.length = 0;
   interactionEvents.length = 0;
+  eventTimingStartEventsForInteractions.length = 0;
+  eventTimingEndEventsById.clear();
   handlerState = HandlerState.INITIALIZED;
 }
 
@@ -48,9 +42,17 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     return;
   }
 
+  if (Types.TraceEvents.isTraceEventEventTimingEnd(event)) {
+    // Store the end event; for each start event that is an interaction, we need the matching end event to calculate the duration correctly.
+    eventTimingEndEventsById.set(event.id, event);
+  }
+
   allEvents.push(event);
 
-  if (!event.args.data) {
+  // From this point on we want to find events that represent interactions.
+  // These events are always start events - those are the ones that contain all
+  // the metadata about the interaction.
+  if (!event.args.data || !Types.TraceEvents.isTraceEventEventTimingStart(event)) {
     return;
   }
   const {duration, interactionId} = event.args.data;
@@ -66,21 +68,49 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     return;
   }
 
-  const interactionEvent: InteractionEvent = {
-    ...event,
-    // We also store the interactionId on the top level for easier access
-    interactionId,
-    // EventTiming events do not have a duration, but ones we use for
-    // Interactions do, in args.data.duration. But that value is in milliseconds.
-    // To avoid confusion and accidental bad maths adding micro + milliseconds,
-    // we set `dur` to the MicroSeconds value here before returning the events.
-    dur: Helpers.Timing.millisecondsToMicroseconds(duration),
-  };
-
-  interactionEvents.push(interactionEvent);
+  // Store the start event. In the finalize() function we will pair this with
+  // its end event and create the synthetic interaction event.
+  eventTimingStartEventsForInteractions.push(event);
 }
 
 export async function finalize(): Promise<void> {
+  // For each interaction start event, find the async end event by the ID, and then create the Synthetic Interaction event.
+  for (const interactionStartEvent of eventTimingStartEventsForInteractions) {
+    const endEvent = eventTimingEndEventsById.get(interactionStartEvent.id);
+    if (!endEvent) {
+      // If we cannot find an end event, bail and drop this event.
+      continue;
+    }
+    if (!interactionStartEvent.args.data?.type || !interactionStartEvent.args.data?.interactionId) {
+      // A valid interaction event that we care about has to have a type (e.g.
+      // pointerdown, keyup).
+      //
+      // We also need to ensure it has an interactionId. We already checked
+      // this in the handleEvent() function, but we do it here also to satisfy
+      // TypeScript.
+      continue;
+    }
+
+    const interactionEvent: Types.TraceEvents.SyntheticInteractionEvent = {
+      // Use the start event to define the common fields.
+      cat: interactionStartEvent.cat,
+      name: interactionStartEvent.name,
+      pid: interactionStartEvent.pid,
+      tid: interactionStartEvent.tid,
+      ph: interactionStartEvent.ph,
+      args: {
+        data: {
+          beginEvent: interactionStartEvent,
+          endEvent: endEvent,
+        },
+      },
+      ts: interactionStartEvent.ts,
+      dur: Types.Timing.MicroSeconds(endEvent.ts - interactionStartEvent.ts),
+      type: interactionStartEvent.args.data.type,
+      interactionId: interactionStartEvent.args.data.interactionId,
+    };
+    interactionEvents.push(interactionEvent);
+  }
   handlerState = HandlerState.FINALIZED;
 }
 

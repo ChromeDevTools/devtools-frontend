@@ -152,6 +152,7 @@ export class InteractionsTrackAppender implements TrackAppender {
       // that is, where it wouldn't overlap with other events.
       for (level = 0; level < lastUsedTimeByLevel.length && lastUsedTimeByLevel[level] > startTime; ++level) {
       }
+
       this.#appendEventAtLevel(event, currentLevel + level);
       const endTime = event.ts + (event.dur || 0);
       lastUsedTimeByLevel[level] = endTime;
@@ -167,14 +168,18 @@ export class InteractionsTrackAppender implements TrackAppender {
    * @returns the position occupied by the new event in the entryData
    * array, which contains all the events in the timeline.
    */
-  #appendEventAtLevel(event: TraceEngine.Types.TraceEvents.TraceEventData, level: number): number {
+  #appendEventAtLevel(syntheticEvent: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, level: number): number {
     this.#compatibilityBuilder.registerTrackForLevel(level, this);
     const index = this.#entryData.length;
-    this.#entryData.push(event);
+    // Because interactions are synthetic events, we cannot push the event
+    // itself. So we push the startEvent onto the flame chart, because the
+    // startEvent is the event with all the metadata on (interactionId, type)
+    this.#entryData.push(syntheticEvent.args.data.beginEvent);
     this.#legacyEntryTypeByLevel[level] = EntryType.TrackAppender;
     this.#flameChartData.entryLevels[index] = level;
-    this.#flameChartData.entryStartTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
-    const msDuration = event.dur || TraceEngine.Types.Timing.MicroSeconds(0);
+    this.#flameChartData.entryStartTimes[index] =
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(syntheticEvent.ts);
+    const msDuration = syntheticEvent.dur || TraceEngine.Types.Timing.MicroSeconds(0);
     this.#flameChartData.entryTotalTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(msDuration);
     return index;
   }
@@ -191,7 +196,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    */
   colorForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
     let idForColorGeneration = this.titleForEvent(event);
-    if (TraceEngine.Handlers.ModelHandlers.UserInteractions.eventIsInteractionEvent(event)) {
+    if (TraceEngine.Types.TraceEvents.isTraceEventEventTimingStart(event)) {
       // Append the ID so that we vary the colours, ensuring that two events of
       // the same type are coloured differently.
       const interactionId = event.args?.data?.interactionId;
@@ -204,7 +209,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    * Gets the title an event added by this appender should be rendered with.
    */
   titleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    if (TraceEngine.Handlers.ModelHandlers.UserInteractions.eventIsInteractionEvent(event)) {
+    if (TraceEngine.Types.TraceEvents.isTraceEventEventTimingStart(event)) {
       return event.args.data?.type || 'Interaction';
     }
     return event.name;
@@ -216,8 +221,18 @@ export class InteractionsTrackAppender implements TrackAppender {
    */
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo {
     const title = this.titleForEvent(event);
-    const totalTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
+    let totalTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
         (event.dur || 0) as TraceEngine.Types.Timing.MicroSeconds);
+
+    // We can find the synthetic event for this start event and use its duration field.
+    // Whilst we have to guard against nils here, this should always resolve to an actual evenet.
+    if (TraceEngine.Types.TraceEvents.isTraceEventEventTimingStart(event)) {
+      const syntheticEvent = this.#findSyntheticEventForStartEvent(event);
+      if (syntheticEvent) {
+        totalTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(syntheticEvent.dur);
+      }
+    }
+
     const selfTime = totalTime;
     if (totalTime === TraceEngine.Types.Timing.MilliSeconds(0)) {
       return {title, formattedTime: ''};
@@ -230,5 +245,13 @@ export class InteractionsTrackAppender implements TrackAppender {
         }) :
         i18n.TimeUtilities.millisToString(totalTime, true);
     return {title, formattedTime: time};
+  }
+
+  #findSyntheticEventForStartEvent(beginEvent: TraceEngine.Types.TraceEvents.TraceEventEventTimingBegin):
+      TraceEngine.Types.TraceEvents.SyntheticInteractionEvent|null {
+    return this.#traceParsedData.UserInteractions.interactionEvents.find(event => {
+      return event.args.data.beginEvent === beginEvent;
+    }) ||
+        null;
   }
 }

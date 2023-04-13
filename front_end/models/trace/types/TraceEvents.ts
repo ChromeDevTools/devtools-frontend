@@ -167,6 +167,7 @@ export interface TraceEventDispatch extends TraceEventComplete {
 
 export interface TraceEventEventTiming extends TraceEventData {
   ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_END;
+  id: string;
   args: TraceEventArgs&{
     frame: string,
     data?: TraceEventArgsData&{
@@ -178,6 +179,13 @@ export interface TraceEventEventTiming extends TraceEventData {
       interactionId?: number, type: string,
     },
   };
+}
+
+export interface TraceEventEventTimingBegin extends TraceEventEventTiming {
+  ph: Phase.ASYNC_NESTABLE_START;
+}
+export interface TraceEventEventTimingEnd extends TraceEventEventTiming {
+  ph: Phase.ASYNC_NESTABLE_END;
 }
 
 export interface TraceEventGPUTask extends TraceEventComplete {
@@ -742,6 +750,25 @@ export interface TraceEventSyntheticConsoleTiming extends TraceEventSyntheticNes
   };
 }
 
+export interface SyntheticInteractionEvent extends TraceEventSyntheticNestableAsyncEvent {
+  // InteractionID and type are available within the beginEvent's data, but we
+  // put them on the top level for ease of access.
+  interactionId: number;
+  type: string;
+  // This is equivalent to startEvent.ts;
+  ts: MicroSeconds;
+  // This duration can be calculated via endEvent.ts - startEvent.ts, but we do
+  // that and put it here to make it easier. This also makes these events
+  // consistent with real events that have a dur field.
+  dur: MicroSeconds;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      beginEvent: TraceEventEventTimingBegin,
+      endEvent: TraceEventEventTimingEnd,
+    },
+  };
+}
+
 class ProfileIdTag {
   readonly #profileIdTag: (symbol|undefined);
 }
@@ -891,6 +918,14 @@ export function isTraceEventInteractiveTime(traceEventData: TraceEventData):
 
 export function isTraceEventEventTiming(traceEventData: TraceEventData): traceEventData is TraceEventEventTiming {
   return traceEventData.name === 'EventTiming';
+}
+
+export function isTraceEventEventTimingEnd(traceEventData: TraceEventData): traceEventData is TraceEventEventTimingEnd {
+  return isTraceEventEventTiming(traceEventData) && traceEventData.ph === Phase.ASYNC_NESTABLE_END;
+}
+export function isTraceEventEventTimingStart(traceEventData: TraceEventData):
+    traceEventData is TraceEventEventTimingBegin {
+  return isTraceEventEventTiming(traceEventData) && traceEventData.ph === Phase.ASYNC_NESTABLE_START;
 }
 
 export function isTraceEventGPUTask(traceEventData: TraceEventData): traceEventData is TraceEventGPUTask {

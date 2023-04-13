@@ -65,17 +65,13 @@ describe('UserInteractions', function() {
       assert.strictEqual(data.interactionEvents.length, 3);
     });
 
-    it('sets the `dur` key on each event', async () => {
+    it('sets the `dur` key on each event by finding the begin and end events and subtracting the ts', async () => {
       await processTrace('slow-interaction-button-click.json.gz');
       const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
-      assert.deepEqual(data.interactionEvents.map(i => i.dur), [
-        // pointerdown
-        TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(32)),
-        // pointerup
-        TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(136)),
-        // click
-        TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(136)),
-      ]);
+      for (const syntheticEvent of data.interactionEvents) {
+        assert.strictEqual(
+            syntheticEvent.dur, syntheticEvent.args.data.endEvent.ts - syntheticEvent.args.data.beginEvent.ts);
+      }
     });
 
     it('gets the right interaction IDs for each interaction', async () => {
@@ -103,18 +99,6 @@ describe('UserInteractions', function() {
         7378,
         // keyup from typing character
         7378,
-      ]);
-      assert.deepEqual(data.interactionEvents.map(i => i.dur), [
-        // pointerdown
-        TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(16)),
-        // pointerup
-        TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(8)),
-        // click
-        TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(8)),
-        // keydown
-        TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(160)),
-        // keyup
-        TraceModel.Helpers.Timing.millisecondsToMicroseconds(TraceModel.Types.Timing.MilliSeconds(32)),
       ]);
     });
   });

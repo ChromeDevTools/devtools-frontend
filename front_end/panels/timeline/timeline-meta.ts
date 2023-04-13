@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Profiler from '../profiler/profiler.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -137,6 +138,7 @@ UI.ViewManager.registerViewExtension({
   commandPrompt: i18nLazyString(UIStrings.showJavascriptProfiler),
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   order: 65,
+  experiment: Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   async loadView() {
     const Profiler = await loadProfilerModule();
     return Profiler.ProfilesPanel.JSProfilerPanel.instance();

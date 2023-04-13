@@ -310,6 +310,7 @@ export enum ExperimentName {
   DISABLE_COLOR_FORMAT_SETTING = 'disableColorFormatSetting',
   TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL = 'timelineAsConsoleProfileResultPanel',
   OUTERMOST_TARGET_SELECTOR = 'outermostTargetSelector',
+  JS_PROFILER_TEMP_ENABLE = 'jsProfilerTemporarilyEnable',
   HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlightErrorsElementsPanel',
 }
 

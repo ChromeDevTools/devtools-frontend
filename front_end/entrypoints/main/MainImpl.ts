@@ -313,7 +313,10 @@ export class MainImpl {
         true);
 
     // JS Profiler
-    Root.Runtime.experiments.register('jsProfilerTemporarilyEnable', 'Enable JavaScript Profiler temporarily');
+    Root.Runtime.experiments.register(
+        'jsProfilerTemporarilyEnable', 'Enable JavaScript Profiler temporarily', /* unstable= */ false,
+        'https://developer.chrome.com/blog/js-profiler-deprecation/',
+        'https://bugs.chromium.org/p/chromium/issues/detail?id=1354548');
 
     // Debugging
     Root.Runtime.experiments.register(

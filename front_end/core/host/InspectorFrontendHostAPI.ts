@@ -300,7 +300,7 @@ export interface InspectorFrontendHostAPI {
 }
 
 export interface ContextMenuDescriptor {
-  type: string;
+  type: 'checkbox'|'item'|'separator'|'subMenu';
   id?: number;
   label?: string;
   enabled?: boolean;

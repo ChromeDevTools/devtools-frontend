@@ -582,7 +582,7 @@ export class SoftContextMenu {
   }
 }
 export interface SoftContextMenuDescriptor {
-  type: string;
+  type: 'checkbox'|'item'|'separator'|'subMenu';
   id?: number;
   label?: string;
   enabled?: boolean;

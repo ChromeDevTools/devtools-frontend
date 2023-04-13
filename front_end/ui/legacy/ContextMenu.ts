@@ -51,8 +51,8 @@ export class Item {
   #tooltip: Common.UIString.LocalizedString|undefined;
 
   constructor(
-      contextMenu: ContextMenu|null, type: string, label?: string, disabled?: boolean, checked?: boolean,
-      tooltip?: Platform.UIString.LocalizedString) {
+      contextMenu: ContextMenu|null, type: 'checkbox'|'item'|'separator'|'subMenu', label?: string, disabled?: boolean,
+      checked?: boolean, tooltip?: Platform.UIString.LocalizedString) {
     this.typeInternal = type;
     this.label = label;
     this.disabled = disabled;
@@ -87,7 +87,7 @@ export class Item {
   buildDescriptor(): SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor {
     switch (this.typeInternal) {
       case 'item': {
-        const result = {
+        const result: SoftContextMenuDescriptor = {
           type: 'item',
           id: this.idInternal,
           label: this.label,
@@ -97,12 +97,10 @@ export class Item {
           tooltip: this.#tooltip,
         };
         if (this.customElement) {
-          const resultAsSoftContextMenuItem = (result as SoftContextMenuDescriptor);
-          resultAsSoftContextMenuItem.element = (this.customElement as Element);
+          result.element = this.customElement;
         }
         if (this.shortcut) {
-          const resultAsSoftContextMenuItem = (result as SoftContextMenuDescriptor);
-          resultAsSoftContextMenuItem.shortcut = this.shortcut;
+          result.shortcut = this.shortcut;
         }
         return result;
       }
@@ -117,7 +115,7 @@ export class Item {
         };
       }
       case 'checkbox': {
-        const result = {
+        const result: SoftContextMenuDescriptor = {
           type: 'checkbox',
           id: this.idInternal,
           label: this.label,
@@ -126,8 +124,7 @@ export class Item {
           subItems: undefined,
         };
         if (this.customElement) {
-          const resultAsSoftContextMenuItem = (result as SoftContextMenuDescriptor);
-          resultAsSoftContextMenuItem.element = (this.customElement as Element);
+          result.element = this.customElement;
         }
         return result;
       }

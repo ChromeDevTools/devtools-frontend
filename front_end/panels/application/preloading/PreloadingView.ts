@@ -153,6 +153,11 @@ class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.Pre
   }
 
   modelAdded(model: SDK.PreloadingModel.PreloadingModel): void {
+    // Ignore models/targets of non-outermost frames like iframe/FencedFrames.
+    if (model.target().outermostTarget() !== model.target()) {
+      return;
+    }
+
     this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
     this.model = model;
     this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);

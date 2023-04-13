@@ -438,6 +438,77 @@ describeWithMockConnection('PreloadingView', async () => {
     assert.include(usedPreloadingComponent.shadowRoot.textContent, 'This page was prerendered');
   });
 
+  // See https://crbug.com/1432880
+  it('preserves information even if iframe loaded', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    const targetInfo = {
+      targetId: 'targetId' as Protocol.Target.TargetID,
+      type: 'iframe',
+      title: 'title',
+      url: 'https://example.com/iframe.html',
+      attached: true,
+      canAccessOpener: false,
+    };
+    const childTargetManager = emulator.primaryTarget.model(SDK.ChildTargetManager.ChildTargetManager);
+    assertNotNullOrUndefined(childTargetManager);
+
+    dispatchEvent(emulator.primaryTarget, 'Target.targetCreated', {targetInfo});
+
+    await childTargetManager.attachedToTarget({
+      sessionId: 'sessionId' as Protocol.Target.SessionID,
+      targetInfo,
+      waitingForDebugger: false,
+    });
+
+    await coordinator.done();
+
+    const ruleSetGridComponent = view.getRuleSetGridForTest();
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
+
+    assertGridContents(
+        ruleSetGridComponent,
+        ['Validity'],
+        [
+          ['Valid'],
+        ],
+    );
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            'https://example.com/prerendered.html',
+            'prerender',
+            'Running',
+          ],
+        ],
+    );
+
+    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
+
+    assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+  });
+
   it('filters preloading attempts by selected rule set', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();

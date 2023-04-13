@@ -134,12 +134,9 @@ interface FeatureFlags {
 // Context switching is managed by scoped target. This class handles
 // switching events and holds PreloadingModel of current context.
 //
-// Note that switching at the timing of activation implies that view is
-// almost cleared automatically. This behavior is aligned to one of
-// PreloadingModel.onPrimaryPageChanged.
-//
-// TODO(https://crbug.com/1410709): Consider to add handing over logic
-// to support non volatile history.
+// Note that switching at the timing of activation triggers handing over
+// from the old model to the new model. See
+// PreloadingMoedl.onPrimaryPageChanged.
 class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.PreloadingModel.PreloadingModel> {
   private readonly view: PreloadingView;
   model: SDK.PreloadingModel.PreloadingModel;

@@ -273,9 +273,6 @@ function createView(target: SDK.Target.Target): Resources.PreloadingView.Preload
 
 describeWithMockConnection('PreloadingView', async () => {
   it('renders grid and details', async () => {
-    const TIMESTAMP = 42;
-    sinon.stub(Date, 'now').returns(TIMESTAMP);
-
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
     const view = createView(emulator.primaryTarget);

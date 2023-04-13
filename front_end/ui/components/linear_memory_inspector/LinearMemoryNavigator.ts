@@ -139,13 +139,13 @@ export class LinearMemoryNavigator extends HTMLElement {
               event: new HistoryNavigationEvent(Navigation.Forward), enabled: this.#canGoForwardInHistory})}
         </div>
         <div class="navigator-item">
-          ${this.#createButton({icon: 'ic_page_prev_16x16_icon', title: i18nString(UIStrings.previousPage),
+          ${this.#createButton({icon: 'chevron-left', title: i18nString(UIStrings.previousPage),
               event: new PageNavigationEvent(Navigation.Backward), enabled: true})}
           ${this.#createAddressInput()}
-          ${this.#createButton({icon: 'ic_page_next_16x16_icon', title: i18nString(UIStrings.nextPage),
+          ${this.#createButton({icon: 'chevron-right', title: i18nString(UIStrings.nextPage),
               event: new PageNavigationEvent(Navigation.Forward), enabled: true})}
         </div>
-        ${this.#createButton({icon: 'refresh_12x12_icon', title: i18nString(UIStrings.refresh),
+        ${this.#createButton({icon: 'refresh', title: i18nString(UIStrings.refresh),
             event: new RefreshRequestedEvent(), enabled: true})}
       </div>
       `;
@@ -170,13 +170,13 @@ export class LinearMemoryNavigator extends HTMLElement {
   }
 
   #createButton(data: {icon: string, title: string, event: Event, enabled: boolean}): LitHtml.TemplateResult {
-    const iconColor = data.enabled ? 'var(--color-text-secondary)' : 'var(--color-background-highlight)';
     return html`
       <button class="navigator-button" ?disabled=${!data.enabled}
         data-button=${data.event.type} title=${data.title}
         @click=${this.dispatchEvent.bind(this, data.event)}>
         <${IconButton.Icon.Icon.litTagName} .data=${
-        {iconName: data.icon, color: iconColor, width: '14px'} as IconButton.Icon.IconWithName}>
+        {iconName: data.icon, color: 'var(--icon-default)', width: '20px', height: '20px'} as
+        IconButton.Icon.IconWithName}>
         </${IconButton.Icon.Icon.litTagName}>
       </button>`;
   }

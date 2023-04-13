@@ -47,17 +47,14 @@
   cursor: pointer;
 }
 
-.navigator-button devtools-icon {
-  height: 14px;
-  width: 14px;
-  min-height: 14px;
-  min-width: 14px;
+.navigator-button:disabled devtools-icon {
+  opacity: 50%;
 }
 
 .navigator-button:enabled:hover devtools-icon {
-  --icon-color: var(--color-text-primary);
+  --icon-color: var(--icon-default-hover);
 }
 
 .navigator-button:enabled:focus devtools-icon {
-  --icon-color: var(--color-text-secondary);
+  --icon-color: var(--icon-default-hover);
 }

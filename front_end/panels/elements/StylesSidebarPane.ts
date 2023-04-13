@@ -319,14 +319,20 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
 
     this.#hintPopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
-      const hoveredNode = event.composedPath()[0] as Element;
+      const hoveredNode = event.composedPath()[0];
+      // This is a workaround to fix hint popover not showing after icon update.
+      // Previously our `.hint` element was an icon itself and `composedPath()[0]` was referring to it.
+      // However, our `Icon` component now is an element with shadow root and `event.composedPath()[0]`
+      // refers to the markup inside shadow root. Though we want a reference to the `.hint` element itself.
+      // So we trace back and reach to the possible `.hint` element from inside the shadow root.
+      const possibleHintNodeFromHintIcon = event.composedPath()[2];
 
-      if (!hoveredNode) {
+      if (!hoveredNode || !(hoveredNode instanceof Element)) {
         return null;
       }
 
-      if (hoveredNode.matches('.hint')) {
-        const hint = activeHints.get(hoveredNode);
+      if (possibleHintNodeFromHintIcon instanceof Element && possibleHintNodeFromHintIcon.matches('.hint')) {
+        const hint = activeHints.get(possibleHintNodeFromHintIcon);
 
         if (hint) {
           return {

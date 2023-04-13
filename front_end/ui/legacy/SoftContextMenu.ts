@@ -312,7 +312,7 @@ export class SoftContextMenu {
       ARIAUtils.markAsHidden(subMenuArrowElement);
       subMenuArrowElement.textContent = '\u25B6';  // BLACK RIGHT-POINTING TRIANGLE
     } else {
-      const subMenuArrowElement = Icon.create('smallicon-triangle-right', 'soft-context-menu-item-submenu-arrow');
+      const subMenuArrowElement = Icon.create('triangle-right', 'soft-context-menu-item-submenu-arrow');
       menuItemElement.appendChild(subMenuArrowElement);
     }
 

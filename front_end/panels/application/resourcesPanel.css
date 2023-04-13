@@ -99,8 +99,12 @@
   user-select: none;
 }
 
+.database-user-query .prompt-icon {
+  margin-top: -10px;
+}
+
 .database-query-prompt-container .prompt-icon {
-  top: 10px;
+  top: 6px;
 }
 
 .database-user-query {
@@ -131,6 +135,10 @@
 .database-query-result.error {
   color: var(--color-syntax-1);
   user-select: text;
+}
+
+.database-query-result.error .prompt-icon {
+  margin-top: -9px;
 }
 
 .resources-sidebar {

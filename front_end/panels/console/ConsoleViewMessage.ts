@@ -1801,8 +1801,10 @@ export class ConsoleCommand extends ConsoleViewMessage {
     const newContentElement = document.createElement('div');
     this.setContentElement(newContentElement);
     newContentElement.classList.add('console-user-command');
-    const icon = UI.Icon.Icon.create('smallicon-user-command', 'command-result-icon');
-    newContentElement.appendChild(icon);
+    const userCommandIcon = new IconButton.Icon.Icon();
+    userCommandIcon.data = {iconName: 'chevron-right', color: 'var(--icon-default)', width: '16px', height: '16px'};
+    userCommandIcon.classList.add('command-result-icon');
+    newContentElement.appendChild(userCommandIcon);
 
     elementToMessage.set(newContentElement, this);
     this.formattedCommand = document.createElement('span');

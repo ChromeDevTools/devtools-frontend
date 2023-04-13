@@ -30,6 +30,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -75,7 +76,10 @@ export class DatabaseQueryView extends Common.ObjectWrapper.eventMixin<EventType
     this.queryWrapper.tabIndex = -1;
 
     this.promptContainer = this.element.createChild('div', 'database-query-prompt-container');
-    this.promptContainer.appendChild(UI.Icon.Icon.create('smallicon-text-prompt', 'prompt-icon'));
+    const promptIcon = new IconButton.Icon.Icon();
+    promptIcon.data = {iconName: 'chevron-right', color: 'var(--icon-action)', width: '16px', height: '16px'};
+    promptIcon.classList.add('prompt-icon');
+    this.promptContainer.appendChild(promptIcon);
     this.promptElement = this.promptContainer.createChild('div');
     this.promptElement.className = 'database-query-prompt';
     this.promptElement.addEventListener('keydown', (this.promptKeyDown.bind(this) as EventListener));
@@ -277,7 +281,10 @@ export class DatabaseQueryView extends Common.ObjectWrapper.eventMixin<EventType
   private appendErrorQueryResult(query: string, errorText: string): void {
     const resultElement = this.appendQueryResult(query);
     resultElement.classList.add('error');
-    resultElement.appendChild(UI.Icon.Icon.create('smallicon-error', 'prompt-icon'));
+    const errorIcon = new IconButton.Icon.Icon();
+    errorIcon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error-small)', width: '14px', height: '14px'};
+    errorIcon.classList.add('prompt-icon');
+    resultElement.appendChild(errorIcon);
     UI.UIUtils.createTextChild(resultElement, errorText);
 
     this.scrollResultIntoView();
@@ -297,7 +304,10 @@ export class DatabaseQueryView extends Common.ObjectWrapper.eventMixin<EventType
     this.queryResults.push(element);
     this.updateFocusedItem();
 
-    element.appendChild(UI.Icon.Icon.create('smallicon-user-command', 'prompt-icon'));
+    const userCommandIcon = new IconButton.Icon.Icon();
+    userCommandIcon.data = {iconName: 'chevron-right', color: 'var(--icon-default)', width: '16px', height: '16px'};
+    userCommandIcon.classList.add('prompt-icon');
+    element.appendChild(userCommandIcon);
 
     const commandTextElement = document.createElement('span');
     commandTextElement.className = 'database-query-text';

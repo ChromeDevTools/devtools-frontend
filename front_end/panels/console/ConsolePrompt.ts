@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -39,7 +40,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private requestPreviewBound: () => Promise<void>;
   private requestPreviewCurrent = 0;
   private readonly innerPreviewElement: HTMLElement;
-  private readonly promptIcon: UI.Icon.Icon;
+  private readonly promptIcon: IconButton.Icon.Icon;
   private readonly iconThrottler: Common.Throttler.Throttler;
   private readonly eagerEvalSetting: Common.Settings.Setting<boolean>;
   private previewRequestForTest: Promise<void>|null;
@@ -69,7 +70,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const editorContainerElement = this.element.createChild('div', 'console-prompt-editor-container');
     this.element.appendChild(this.eagerPreviewElement);
 
-    this.promptIcon = UI.Icon.Icon.create('smallicon-text-prompt', 'console-prompt-icon');
+    this.promptIcon = new IconButton.Icon.Icon();
+    this.promptIcon.data = {iconName: 'chevron-right', color: 'var(--icon-action)', width: '16px', height: '16px'};
+    this.promptIcon.classList.add('console-prompt-icon');
     this.element.appendChild(this.promptIcon);
     this.iconThrottler = new Common.Throttler.Throttler(0);
 

@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 :root {
+  --icon-action: var(--color-primary);
   --icon-arrow-main-thread: var(--color-primary);
   --icon-checkmark-green: var(--color-tertiary);
   --icon-checkmark-purple: var(--color-purple);

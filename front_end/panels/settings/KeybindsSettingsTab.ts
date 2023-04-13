@@ -213,6 +213,8 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   }
 
   startEditing(action: UI.ActionRegistration.Action): void {
+    this.list.selectItem(action);
+
     if (this.editingItem) {
       this.stopEditing(this.editingItem);
     }
@@ -539,6 +541,10 @@ export class ShortcutListItem {
     }
     const disabledDefaults = UI.ShortcutRegistry.ShortcutRegistry.instance().disabledDefaultsForAction(this.item.id());
     disabledDefaults.forEach(shortcut => {
+      if (this.shortcuts.includes(shortcut)) {
+        return;
+      }
+
       this.shortcuts.push(shortcut);
       this.editedShortcuts.set(shortcut, shortcut.descriptors);
     });

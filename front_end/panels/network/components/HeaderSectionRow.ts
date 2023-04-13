@@ -69,11 +69,14 @@ export const isValidHeaderName = (headerName: string): boolean => {
 };
 
 export const compareHeaders = (first: string|null|undefined, second: string|null|undefined): boolean => {
-  // Replaces non-breaking spaces(NBSPs) with regular spaces.
-  // When working with contenteditables, their content can contain (non-obvious) NBSPs.
-  // It would be tricky to get rid of NBSPs during editing and saving, so we just
-  // handle them after reading them in.
-  return first?.replaceAll('\xa0', ' ') === second?.replaceAll('\xa0', ' ');
+  // Replaces all whitespace characters with regular spaces.
+  // When working with contenteditables, their content can contain (non-obvious)
+  // non-breaking spaces (NBSPs). It would be tricky to get rid of NBSPs during
+  // editing and saving, so we just handle them after reading them in.
+  // Tab characters are invalid in headers (and DevTools shows a warning for
+  // them), the replacement here ensures that headers containing tabs are not
+  // incorrectly marked as being overridden.
+  return first?.replaceAll(/\s/g, ' ') === second?.replaceAll(/\s/g, ' ');
 };
 
 export class HeaderEditedEvent extends Event {
@@ -436,7 +439,7 @@ export class HeaderSectionRow extends HTMLElement {
   #onHeaderValueEdit(event: Event): void {
     const editable = event.target as EditableSpan;
     const isEdited =
-        this.#header?.originalValue !== undefined && (this.#header?.originalValue || '') !== editable.value;
+        this.#header?.originalValue !== undefined && !compareHeaders(this.#header?.originalValue || '', editable.value);
     if (this.#isHeaderValueEdited !== isEdited) {
       this.#isHeaderValueEdited = isEdited;
       if (this.#header) {

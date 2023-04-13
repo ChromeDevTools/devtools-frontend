@@ -7,6 +7,7 @@ devtools_image_files = [
   "accelerometer-left.png",
   "accelerometer-right.png",
   "accelerometer-top.png",
+  "checker.png",
   "chromeLeft.avif",
   "chromeMiddle.avif",
   "chromeRight.avif",

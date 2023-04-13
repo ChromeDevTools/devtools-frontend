@@ -12,6 +12,7 @@ import * as CSSAngleUtils from './CSSAngleUtils.js';
 import * as CSSAnimationModel from './CSSAnimationModel.js';
 import * as CSSLength from './CSSLength.js';
 import * as CSSLengthUtils from './CSSLengthUtils.js';
+import * as CSSLinearEasingModel from './CSSLinearEasingModel.js';
 import * as CSSShadowEditor from './CSSShadowEditor.js';
 import * as CSSShadowModel from './CSSShadowModel.js';
 import * as FontEditor from './FontEditor.js';
@@ -33,6 +34,7 @@ export {
   CSSAnimationModel,
   CSSLength,
   CSSLengthUtils,
+  CSSLinearEasingModel,
   CSSShadowEditor,
   CSSShadowModel,
   FontEditor,

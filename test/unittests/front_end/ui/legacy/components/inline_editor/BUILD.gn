@@ -11,6 +11,7 @@ ts_library("inline_editor") {
     "CSSAngle_test.ts",
     "CSSAnimationModel_test.ts",
     "CSSLength_test.ts",
+    "CSSLinearEasingModel_test.ts",
     "ColorMixModel_test.ts",
     "ColorMixSwatch_test.ts",
     "ColorSwatch_test.ts",

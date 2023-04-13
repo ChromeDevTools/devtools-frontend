@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -43,19 +44,19 @@ export class NetworkPanelIndicator {
     updateVisibility();
 
     function updateVisibility(): void {
-      let icon: UI.Icon.Icon|null = null;
+      let icon: IconButton.Icon.Icon|null = new IconButton.Icon.Icon();
+      icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
       if (manager.isThrottling()) {
-        icon = UI.Icon.Icon.create('smallicon-warning');
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.networkThrottlingIsEnabled));
       } else if (SDK.NetworkManager.MultitargetNetworkManager.instance().isIntercepting()) {
-        icon = UI.Icon.Icon.create('smallicon-warning');
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeRewrittenByLocal));
       } else if (manager.isBlocking()) {
-        icon = UI.Icon.Icon.create('smallicon-warning');
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeBlocked));
       } else if (manager.isAcceptedEncodingOverrideSet()) {
-        icon = UI.Icon.Icon.create('smallicon-warning');
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.acceptedEncodingOverrideSet));
+      } else {
+        // Remove icon in case it was already set by passing a null icon.
+        icon = null;
       }
       UI.InspectorView.InspectorView.instance().setPanelIcon('network', icon);
     }

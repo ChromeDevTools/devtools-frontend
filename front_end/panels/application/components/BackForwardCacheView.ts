@@ -339,7 +339,7 @@ export class BackForwardCacheView extends HTMLElement {
           ${node.treeNodeData.iconName ? LitHtml.html`
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" style="margin-bottom: -3px;" .data=${{
               iconName: node.treeNodeData.iconName,
-              color: 'var(--color-text-secondary)',
+              color: 'var(--icon-default)',
               width: '20px',
               height: '20px',
             } as IconButton.Icon.IconData}>
@@ -612,8 +612,8 @@ export class BackForwardCacheView extends HTMLElement {
           LitHtml.html`
             <div class="circled-exclamation-icon">
               <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
-                iconName: 'circled_exclamation_icon',
-                color: 'orange',
+                iconName: 'warning',
+                color: 'var(--icon-warning)',
                 width: '16px',
                 height: '16px',
               } as IconButton.Icon.IconData}>

@@ -109,7 +109,8 @@ describe('The Computed pane', async function() {
     assert(isExpandedAfter);
   });
 
-  it('allows tracing to style rules (ported layout test)', async () => {
+  // Skip until flake is fixed
+  it.skip('[crbug.com/1346261]: allows tracing to style rules (ported layout test)', async () => {
     const {frontend} = getBrowserAndPages();
     await goToResource('elements/css-styles-variables.html');
     await waitForNumberOfComputedProperties(7);

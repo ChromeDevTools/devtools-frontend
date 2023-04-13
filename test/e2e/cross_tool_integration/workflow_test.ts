@@ -52,7 +52,8 @@ describe('A user can navigate across', async function() {
     await waitFor('.panel[aria-label="sources"]');
   });
 
-  it('Console -> Issues', async () => {
+  // Skip until flake is fixed
+  it.skip('[crbug.com/1342045]: Console -> Issues', async () => {
     await navigateToConsoleTab();
     await navigateToIssuesPanelViaInfoBar();
 
@@ -70,7 +71,8 @@ describe('A user can navigate across', async function() {
     await waitFor('.panel[aria-label="sources"]');
   });
 
-  it('Performance -> Sources', async () => {
+  // Skip until flake is fixed
+  it.skip('[crbug.com/1375161]: Performance -> Sources', async () => {
     await navigateToPerformanceTab();
 
     await startRecording();

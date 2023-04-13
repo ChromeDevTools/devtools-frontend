@@ -156,7 +156,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableView.Searchable {
   modelInternal: PerformanceModel|null;
   private track: TimelineModel.TimelineModel.Track|null;
-  private readonly tree: TimelineModel.TimelineProfileTree.Node|null;
   private searchResults: TimelineModel.TimelineProfileTree.Node[];
   linkifier!: Components.Linkifier.Linkifier;
   dataGrid!: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
@@ -172,18 +171,16 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private currentThreadSetting?: Common.Settings.Setting<any>;
   private lastSelectedNodeInternal?: TimelineModel.TimelineProfileTree.Node|null;
-  private textFilterUI?: UI.Toolbar.ToolbarInput;
   private root?: TimelineModel.TimelineProfileTree.Node;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private currentResult?: any;
+  private currentResult?: number;
+  textFilterUI?: UI.Toolbar.ToolbarInput;
+
   #traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null;
 
   constructor() {
     super();
     this.modelInternal = null;
     this.track = null;
-    this.tree = null;
     this.element.classList.add('timeline-tree-view');
 
     this.searchResults = [];
@@ -427,8 +424,6 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
       const nodeB = (b as TreeGridNode);
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return (nodeA.profileNode as any)[field] - (nodeB.profileNode as any)[field];
     }
 
@@ -534,7 +529,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   jumpToNextSearchResult(): void {
-    if (!this.searchResults.length) {
+    if (!this.searchResults.length || this.currentResult === undefined) {
       return;
     }
     this.selectProfileNode(this.searchResults[this.currentResult], false);
@@ -542,7 +537,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   jumpToPreviousSearchResult(): void {
-    if (!this.searchResults.length) {
+    if (!this.searchResults.length || this.currentResult === undefined) {
       return;
     }
     this.selectProfileNode(this.searchResults[this.currentResult], false);
@@ -698,10 +693,6 @@ export class TreeGridNode extends GridNode {
       this.insertChildOrdered(gridNode);
     }
   }
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  private static readonly gridNodeSymbol = Symbol('treeGridNode');
 }
 
 const profileNodeToTreeGridNode = new WeakMap<TimelineModel.TimelineProfileTree.Node, TreeGridNode>();
@@ -711,13 +702,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected readonly groupBySetting: Common.Settings.Setting<any>;
   private readonly stackView: TimelineStackView;
-  private readonly productByURLCache: Map<string, string>;
-  private readonly colorByURLCache: Map<string, string>;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private executionContextNamesByOrigin: Map<any, any>;
+  private executionContextNamesByOrigin = new Map<Platform.DevToolsPath.UrlString, string>();
 
   constructor() {
     super();
@@ -727,9 +712,6 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.init();
     this.stackView = new TimelineStackView(this);
     this.stackView.addEventListener(TimelineStackView.Events.SelectionChanged, this.onStackViewSelectionChanged, this);
-    this.productByURLCache = new Map();
-    this.colorByURLCache = new Map();
-    this.executionContextNamesByOrigin = new Map();
   }
 
   setModel(
@@ -764,7 +746,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     } else if (AggregatedTimelineTreeView.isV8NativeURL(name as Platform.DevToolsPath.UrlString)) {
       name = i18nString(UIStrings.vRuntime);
     } else if (name.startsWith('chrome-extension')) {
-      name = this.executionContextNamesByOrigin.get(name) || name;
+      name = this.executionContextNamesByOrigin.get(name as Platform.DevToolsPath.UrlString) || name;
     }
     return name;
   }
@@ -960,10 +942,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     return url.startsWith(AggregatedTimelineTreeView.v8NativePrefix);
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
   private static readonly extensionInternalPrefix = 'extensions::';
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
   private static readonly v8NativePrefix = 'native ';
 }

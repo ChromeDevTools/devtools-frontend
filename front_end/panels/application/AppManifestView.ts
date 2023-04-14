@@ -200,11 +200,6 @@ const UIStrings = {
       'Declaring an icon with \'`purpose: "any maskable"`\' is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding.',
   /**
    *@description Manifest installability error in the Application panel
-   */
-  noMatchingServiceWorkerDetected:
-      'No matching `service worker` detected. You may need to reload the page, or check that the scope of the `service worker` for the current page encloses the scope and start URL from the manifest.',
-  /**
-   *@description Manifest installability error in the Application panel
    *@example {100} PH1
    */
   noSuppliedIconIsAtLeastSpxSquare:
@@ -855,9 +850,6 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
           }
           errorMessage =
               i18nString(UIStrings.manifestDoesNotContainASuitable, {PH1: installabilityError.errorArguments[0].value});
-          break;
-        case 'no-matching-service-worker':
-          errorMessage = i18nString(UIStrings.noMatchingServiceWorkerDetected);
           break;
         case 'no-acceptable-icon':
           if (installabilityError.errorArguments.length !== 1 ||

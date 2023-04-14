@@ -53,18 +53,22 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
   describe('appendTrackAtLevel', () => {
     it('marks all levels used by the track with the `TrackAppender` type', async () => {
       const {entryTypeByLevel} = await renderTrackAppender('slow-interaction-button-click.json.gz');
-      // There are enough events to fill two levels of track.
-      const levelCount = 2;
-      assert.strictEqual(entryTypeByLevel.length, levelCount);
-      const allEntriesAreTrackAppender =
-          entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender);
-      assert.isTrue(allEntriesAreTrackAppender);
+      // All events fit on the top level
+      assert.strictEqual(entryTypeByLevel.length, 1);
+      assert.deepEqual(entryTypeByLevel, [
+        Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      ]);
     });
 
     it('takes over no levels if there are no interactions', async () => {
       // animation trace has no interactions in it.
       const {entryTypeByLevel} = await renderTrackAppender('animation.json.gz');
       assert.strictEqual(entryTypeByLevel.length, 0);
+    });
+
+    it('only shows the top level interactions', async () => {
+      const {entryData, traceParsedData} = await renderTrackAppender('nested-interactions.json.gz');
+      assert.strictEqual(entryData.length, traceParsedData.UserInteractions.interactionEventsWithNoNesting.length);
     });
 
     it('creates a flamechart group', async () => {
@@ -76,7 +80,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
     it('adds all interactions with the correct start times', async () => {
       const {flameChartData, traceParsedData, entryData} =
           await renderTrackAppender('slow-interaction-button-click.json.gz');
-      const events = traceParsedData.UserInteractions.interactionEvents;
+      const events = traceParsedData.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
         const markerIndex = entryData.indexOf(event.args.data.beginEvent);
         assert.isDefined(markerIndex);
@@ -89,7 +93,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
     it('adds total times correctly', async () => {
       const {flameChartData, traceParsedData, entryData} =
           await renderTrackAppender('slow-interaction-button-click.json.gz');
-      const events = traceParsedData.UserInteractions.interactionEvents;
+      const events = traceParsedData.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
         const markerIndex = entryData.indexOf(event.args.data.beginEvent);
         assert.isDefined(markerIndex);

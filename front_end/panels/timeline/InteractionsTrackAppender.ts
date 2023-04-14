@@ -142,7 +142,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    */
 
   #appendInteractionsAtLevel(currentLevel: number): number {
-    const interactions = this.#traceParsedData.UserInteractions.interactionEvents;
+    const interactions = this.#traceParsedData.UserInteractions.interactionEventsWithNoNesting;
     const lastUsedTimeByLevel: number[] = [];
     for (let i = 0; i < interactions.length; ++i) {
       const event = interactions[i];

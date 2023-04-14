@@ -4,10 +4,6 @@
  * found in the LICENSE file.
  */
 
-:host {
-  --client-hints-form-icon-color: var(--icon-default);
-}
-
 .root {
   color: var(--color-text-primary);
   width: 100%;
@@ -20,7 +16,7 @@
 }
 
 .rotate-icon {
-  transform: rotate(-90deg);
+  transform: rotate(90deg);
 }
 
 .form-container {
@@ -86,9 +82,17 @@
   width: 100%;
 }
 
-.info-link {
-  height: 14px;
+.info-icon {
   margin-left: 5px;
+}
+
+.link,
+.devtools-link {
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+  outline-offset: 2px;
+  font-weight: 400;
 }
 
 .hide-container {
@@ -102,10 +106,6 @@
 }
 
 @media (forced-colors: active) {
-  :host {
-    --client-hints-form-icon-color: fieldtext;
-  }
-
   .input-field {
     border: 1px solid;
   }

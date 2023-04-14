@@ -182,17 +182,13 @@ label {
   grid-template-columns: auto min-content 1fr;
 }
 
-.settings-experiment [is="dt-checkbox"] {
-  padding-right: 10px;
-}
-
 .settings-experiment .devtools-link {
   display: flex !important; /* stylelint-disable-line declaration-no-important */
   align-items: center;
 }
 
 .settings-experiment .link-icon {
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 .settings-experiment-unstable {

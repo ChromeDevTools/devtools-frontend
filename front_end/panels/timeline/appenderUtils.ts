@@ -28,10 +28,10 @@ export function buildGroupStyle(extra: Object): PerfUI.FlameChart.GroupStyle {
  * Builds the header corresponding to the track. A header is added in the shape of a group in the flame chart data.
  * @param startLevel the flame chart level at which the track header is appended.
  * @param name the display name of the track.
- * @param style the flame chart level at which the track header is appended.
- * @param selectable it the track is selectable.
+ * @param style the GroupStyle for the track header.
+ * @param selectable if the track is selectable.
  * @param expanded if the track is expanded.
- * @param track this is set only when `selectable` is true, and it is used for `updateSelectedGroup`.
+ * @param track this is set only when `selectable` is true, and it is used for selecting a track in the details panel.
  * @returns the group that built from the give data
  */
 export function buildTrackHeader(

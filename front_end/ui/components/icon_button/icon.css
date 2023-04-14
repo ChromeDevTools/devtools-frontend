@@ -8,3 +8,9 @@
   display: inline-block;
   white-space: nowrap;
 }
+
+@media (forced-colors: active) {
+  .icon-basic {
+    forced-color-adjust: none;
+  }
+}

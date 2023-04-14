@@ -21,7 +21,7 @@ export class SettingDeprecationWarning extends HTMLElement {
   }
 
   #render({disabled, warning, experiment}: Common.Settings.Deprecation): void {
-    const iconData = {iconName: 'ic_info_black_18dp', color: 'var(--color-link)', width: '14px'};
+    const iconData = {iconName: 'info', color: 'var(--icon-default)', width: '16px'};
 
     const classes = {clickable: false};
     let onclick: (() => void)|undefined;

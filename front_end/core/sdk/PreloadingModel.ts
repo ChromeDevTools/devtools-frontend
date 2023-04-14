@@ -15,7 +15,6 @@ import {
   ResourceTreeModel,
   type ResourceTreeFrame,
 } from './ResourceTreeModel.js';
-import {assertNotNullOrUndefined} from '../platform/platform.js';
 
 export interface WithId<I, V> {
   id: I;
@@ -213,13 +212,10 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   }
 
   onPreloadingAttemptSourcesUpdated(event: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void {
-    // We expect that Preload.ruleSetUpdated is followed by Preload.preloadingAttemptSourcesUpdated.
-    assertNotNullOrUndefined(this.currentDocument());
-    // It is more robust if Preload.preloadingAttemptSourcesUpdated has loadingId.
-    //
-    // TODO(https://crbug.com/1410709): Consider to add loadingId to
-    // Preload.preloadingAttemptSourcesUpdated.
-    this.currentDocument()?.sources.update(event.preloadingAttemptSources);
+    const loaderId = event.loaderId;
+    this.ensureDocumentPreloadingData(loaderId);
+    this.documents.get(loaderId)?.sources.update(event.preloadingAttemptSources);
+    this.dispatchEventToListeners(Events.ModelUpdated);
   }
 
   onPrefetchStatusUpdated(event: Protocol.Preload.PrefetchStatusUpdatedEvent): void {

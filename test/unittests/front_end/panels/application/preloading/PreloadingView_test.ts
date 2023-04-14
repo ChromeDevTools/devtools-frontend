@@ -537,6 +537,7 @@ describeWithMockConnection('PreloadingView', async () => {
 }
 `);
     dispatchEvent(emulator.primaryTarget, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId: 'loaderId:1',
       preloadingAttemptSources: [
         {
           key: {

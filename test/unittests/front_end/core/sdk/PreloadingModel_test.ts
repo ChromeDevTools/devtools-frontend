@@ -53,6 +53,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       },
     });
     dispatchEvent(target, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId: 'loaderId:1',
       preloadingAttemptSources: [
         {
           key: {
@@ -126,6 +127,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       },
     });
     dispatchEvent(target, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId: 'loaderId:1',
       preloadingAttemptSources: [
         {
           key: {
@@ -226,6 +228,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       id: 'ruleSetId:1',
     });
     dispatchEvent(target, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId: 'loaderId:1',
       preloadingAttemptSources: [
         {
           key: {
@@ -342,6 +345,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       },
     });
     dispatchEvent(target, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId: 'loaderId:1',
       preloadingAttemptSources: [
         {
           key: {
@@ -394,6 +398,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       },
     });
     dispatchEvent(target, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId: 'loaderId:2',
       preloadingAttemptSources: [
         {
           key: {
@@ -506,6 +511,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       },
     });
     dispatchEvent(target, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId: 'loaderId:1',
       preloadingAttemptSources: [
         {
           key: {

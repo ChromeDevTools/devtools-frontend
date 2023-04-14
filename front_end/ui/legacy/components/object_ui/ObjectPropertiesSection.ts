@@ -414,9 +414,9 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 
     const memoryIcon = new IconButton.Icon.Icon();
     memoryIcon.data = {
-      iconName: 'ic_memory_16x16',
-      color: 'var(--color-text-secondary)',
-      width: '13px',
+      iconName: 'memory',
+      color: 'var(--icon-default)',
+      width: '16px',
       height: '13px',
     };
 

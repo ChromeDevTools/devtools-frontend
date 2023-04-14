@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
@@ -267,7 +268,8 @@ export class ThrottlingManager {
       UI.InspectorView.InspectorView.instance().setPanelIcon('timeline', null);
       return;
     }
-    const icon = UI.Icon.Icon.create('smallicon-warning');
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
     const tooltips: string[] = [];
     if (cpuRate !== SDK.CPUThrottlingManager.CPUThrottlingRates.NoThrottling) {
       tooltips.push(i18nString(UIStrings.cpuThrottlingIsEnabled));
@@ -325,7 +327,9 @@ export class ThrottlingManager {
     const toggle = new UI.Toolbar.ToolbarCheckbox(i18nString(UIStrings.hardwareConcurrency));
     const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo');
     reset.setTitle(i18nString(UIStrings.resetConcurrency));
-    const warning = new UI.Toolbar.ToolbarItem(UI.Icon.Icon.create('smallicon-warning'));
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
+    const warning = new UI.Toolbar.ToolbarItem(icon);
     warning.setTitle(i18nString(UIStrings.excessConcurrency));
 
     toggle.inputElement.disabled = true;  // Prevent modification while still wiring things up asynchronously below

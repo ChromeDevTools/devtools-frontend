@@ -42,7 +42,7 @@ describe('The Performance panel', () => {
 
     // Check for the warning icon on the tab header
     const tabHeader = await waitForAria('Performance');
-    const tabIcon = await waitFor('.smallicon-warning', tabHeader);
+    const tabIcon = await waitFor('devtools-icon', tabHeader);
     {
       const tooltipText = await tabIcon.evaluate(e => e.getAttribute('title'));
       assert.deepEqual(tooltipText, 'Hardware concurrency override is enabled');

@@ -41,7 +41,7 @@
 .preview-result-icon {
   position: absolute;
   left: -13px;
-  top: 1px;
+  top: -1px;
 }
 
 .console-eager-inner-preview:empty,

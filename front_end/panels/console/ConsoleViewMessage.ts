@@ -1834,7 +1834,9 @@ export class ConsoleCommandResult extends ConsoleViewMessage {
     if (!element.classList.contains('console-user-command-result')) {
       element.classList.add('console-user-command-result');
       if (this.consoleMessage().level === Protocol.Log.LogEntryLevel.Info) {
-        const icon = UI.Icon.Icon.create('smallicon-command-result', 'command-result-icon');
+        const icon = new IconButton.Icon.Icon();
+        icon.data = {iconName: 'chevron-left-dot', color: 'var(--icon-default)', width: '16px', height: '16px'};
+        icon.classList.add('command-result-icon');
         element.insertBefore(icon, element.firstChild);
       }
     }

@@ -65,6 +65,7 @@ devtools_svg_sources = [
   "checkboxCheckmark.svg",
   "checkmark.svg",
   "chevron-double-right.svg",
+  "chevron-left-dot.svg",
   "chevron-left.svg",
   "chevron-right.svg",
   "chevrons.svg",

@@ -1715,6 +1715,9 @@
   "core/gather/driver/storage.js | warningOriginDataTimeout": {
     "message": "Clearing the origin data timed out. Try auditing this page again and file a bug if the issue persists."
   },
+  "core/gather/gatherers/link-elements.js | headerParseWarning": {
+    "message": "Error parsing `link` header ({error}): `{header}`"
+  },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Pages that requested an AppBanner are not currently eligible for back/forward cache."
   },

@@ -1715,6 +1715,9 @@
   "core/gather/driver/storage.js | warningOriginDataTimeout": {
     "message": "Ĉĺêár̂ín̂ǵ t̂h́ê ór̂íĝín̂ d́ât́â t́îḿêd́ ôút̂. T́r̂ý âúd̂ít̂ín̂ǵ t̂h́îś p̂áĝé âǵâín̂ án̂d́ f̂íl̂é â b́ûǵ îf́ t̂h́ê íŝśûé p̂ér̂śîśt̂ś."
   },
+  "core/gather/gatherers/link-elements.js | headerParseWarning": {
+    "message": "Êŕr̂ór̂ ṕâŕŝín̂ǵ `link` ĥéâd́êŕ ({error}): `{header}`"
+  },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "P̂áĝéŝ t́ĥát̂ ŕêq́ûéŝt́êd́ âń Âṕp̂B́âńn̂ér̂ ár̂é n̂ót̂ ćûŕr̂én̂t́l̂ý êĺîǵîb́l̂é f̂ór̂ b́âćk̂/f́ôŕŵár̂d́ ĉáĉh́ê."
   },

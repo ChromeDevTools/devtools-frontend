@@ -143,8 +143,8 @@ describeWithLocale('RequestLinkIcon', () => {
       });
 
       const {iconData, label} = extractData(shadowRoot);
-      assert.strictEqual('iconName' in iconData ? iconData.iconName : null, 'network_panel_icon');
-      assert.strictEqual(iconData.color, 'var(--issue-color-yellow)');
+      assert.strictEqual('iconName' in iconData ? iconData.iconName : null, 'arrow-up-down-circle');
+      assert.strictEqual(iconData.color, 'var(--icon-no-request)');
       assert.isNull(label, 'Didn\'t expect a label');
     });
 
@@ -154,8 +154,8 @@ describeWithLocale('RequestLinkIcon', () => {
       });
 
       const {iconData, label} = extractData(shadowRoot);
-      assert.strictEqual('iconName' in iconData ? iconData.iconName : null, 'network_panel_icon');
-      assert.strictEqual(iconData.color, 'var(--color-link)');
+      assert.strictEqual('iconName' in iconData ? iconData.iconName : null, 'arrow-up-down-circle');
+      assert.strictEqual(iconData.color, 'var(--icon-link)');
       assert.isNull(label, 'Didn\'t expect a label');
     });
 
@@ -265,7 +265,7 @@ describeWithLocale('RequestLinkIcon', () => {
       });
 
       const {iconData: iconDataBefore} = extractData(shadowRoot);
-      assert.strictEqual(iconDataBefore.color, 'var(--issue-color-yellow)');
+      assert.strictEqual(iconDataBefore.color, 'var(--icon-no-request)');
 
       resolver.resolve(mockRequest as unknown as SDK.NetworkRequest.NetworkRequest);
 
@@ -273,7 +273,7 @@ describeWithLocale('RequestLinkIcon', () => {
       await coordinator.done();
 
       const {iconData: iconDataAfter} = extractData(shadowRoot);
-      assert.strictEqual(iconDataAfter.color, 'var(--color-link)');
+      assert.strictEqual(iconDataAfter.color, 'var(--icon-link)');
     });
 
     it('handles multiple data assignments', async () => {

@@ -8,9 +8,8 @@
   --override-element-reveal-icon-background: rgb(110 110 110);
 
   display: inline-block;
-  width: 28px;
-  height: 24px;
-  -webkit-mask-position: -140px 96px;
-  -webkit-mask-image: var(--image-file-largeIcons);
-  background-color: var(--override-element-reveal-icon-background);
+  width: 20px;
+  height: 20px;
+  -webkit-mask-image: var(--image-file-select-element);
+  background-color: var(--icon-default);
 }

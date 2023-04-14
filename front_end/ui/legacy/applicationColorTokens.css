@@ -34,12 +34,13 @@
   --icon-info: var(--color-primary-bright);
   --icon-info-small: var(--color-primary);
   --icon-link: var(--color-primary);
+  --icon-no-request: var(--color-orange-bright);
   --icon-record: var(--color-error-bright);
   --icon-request-response: var(--color-primary);
+  --icon-request: var(--color-on-surface-variant);
   --icon-security-lock: var(--color-tertiary);
   --icon-status-code-ok: var(--color-tertiary);
   --icon-stop: var(--color-error);
   --icon-toggled: var(--color-primary-bright);
   --icon-warning: var(--color-orange-bright);
-  --icon-request: var(--color-on-surface-variant);
 }

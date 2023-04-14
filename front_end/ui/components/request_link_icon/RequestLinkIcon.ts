@@ -123,17 +123,17 @@ export class RequestLinkIcon extends HTMLElement {
 
   #iconColor(): string {
     if (!this.#request) {
-      return '--issue-color-yellow';
+      return '--icon-no-request';
     }
-    return '--color-link';
+    return '--icon-link';
   }
 
   iconData(): IconButton.Icon.IconData {
     return {
-      iconName: 'network_panel_icon',
+      iconName: 'arrow-up-down-circle',
       color: `var(${this.#iconColor()})`,
-      width: '16px',
-      height: '16px',
+      width: '20px',
+      height: '20px',
     };
   }
 

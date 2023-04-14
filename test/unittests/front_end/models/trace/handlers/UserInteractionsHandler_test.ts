@@ -101,5 +101,127 @@ describe('UserInteractions', function() {
         7378,
       ]);
     });
+
+    describe('collapsing nested interactions', () => {
+      function makeFakeInteraction(options: {startTime: number, endTime: number, interactionId: number}):
+          TraceModel.Types.TraceEvents.SyntheticInteractionEvent {
+        const event = {
+          name: 'EventTiming',
+          type: 'pointerdown',
+          ts: TraceModel.Types.Timing.MicroSeconds(options.startTime),
+          dur: TraceModel.Types.Timing.MicroSeconds(options.endTime - options.startTime),
+          interactionId: options.interactionId,
+        };
+
+        return event as unknown as TraceModel.Types.TraceEvents.SyntheticInteractionEvent;
+      }
+
+      const {removeNestedInteractions} = TraceModel.Handlers.ModelHandlers.UserInteractions;
+
+      it('removes interactions that have the same end time but are not the first event in that block', () => {
+        /**
+         * ========A=============
+         *   ===========B========
+         *   ===========C========
+         *         =====D========
+         */
+        const eventA = makeFakeInteraction({startTime: 0, endTime: 10, interactionId: 1});
+        const eventB = makeFakeInteraction({startTime: 2, endTime: 10, interactionId: 2});
+        const eventC = makeFakeInteraction({startTime: 4, endTime: 10, interactionId: 3});
+        const eventD = makeFakeInteraction({startTime: 6, endTime: 10, interactionId: 4});
+        const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
+        assert.deepEqual(result, [eventA]);
+      });
+
+      it('does not remove interactions that overlap but have a different end time', () => {
+        /**
+         * ========A=============
+         *   ===========B========
+         *   ===========C========
+         *         =====D================
+         */
+        const eventA = makeFakeInteraction({startTime: 0, endTime: 10, interactionId: 1});
+        const eventB = makeFakeInteraction({startTime: 2, endTime: 10, interactionId: 2});
+        const eventC = makeFakeInteraction({startTime: 4, endTime: 10, interactionId: 3});
+        const eventD = makeFakeInteraction({startTime: 6, endTime: 20, interactionId: 4});
+        const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
+        assert.deepEqual(result, [eventA, eventD]);
+      });
+
+      it('correctly identifies nested events when their parent overlaps with multiple events', () => {
+        /**
+         * Here although it does not look like it on first glance, C is nested
+         * within B and should therefore be hidden. Similarly, D is nested within A and
+         * so should be hidden.
+         *
+         * ========A====== ======C====
+         *   ===========B=============
+         *   ======D======
+         */
+        const eventA = makeFakeInteraction({startTime: 0, endTime: 5, interactionId: 1});
+        const eventB = makeFakeInteraction({startTime: 2, endTime: 20, interactionId: 2});
+        const eventC = makeFakeInteraction({startTime: 10, endTime: 20, interactionId: 3});
+        const eventD = makeFakeInteraction({startTime: 2, endTime: 5, interactionId: 3});
+        const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
+        assert.deepEqual(result, [eventA, eventB]);
+      });
+
+      it('returns the events in timestamp order', () => {
+        /**
+         * None of the events below overlap at all, this test makes sure that the order of events does not change.
+         */
+        const eventA = makeFakeInteraction({startTime: 0, endTime: 5, interactionId: 1});
+        const eventB = makeFakeInteraction({startTime: 10, endTime: 20, interactionId: 2});
+        const eventC = makeFakeInteraction({startTime: 30, endTime: 40, interactionId: 3});
+        const eventD = makeFakeInteraction({startTime: 50, endTime: 60, interactionId: 4});
+        const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
+        assert.deepEqual(result, [eventA, eventB, eventC, eventD]);
+      });
+
+      it('can remove nested interactions in a real trace', async () => {
+        await processTrace('nested-interactions.json.gz');
+        const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
+
+        const visibleEventInteractionIds = data.interactionEventsWithNoNesting.map(event => {
+          return `${event.type}:${event.interactionId}`;
+        });
+
+        // Note: it is very hard to explain in comments all these assertions, so
+        // it is highly recommended that you load the trace file above into
+        // DevTools to look at the timeline whilst working on this test.
+
+        /**
+         * This is a block of events with identical end times, so only the
+         * first should be kept:
+         * =====[keydown 3579]====
+         *    ==[keydown 3558]====
+         *       =[keyup 3558]====
+         **/
+        assert.isTrue(visibleEventInteractionIds.includes('keydown:3579'));
+        assert.isFalse(visibleEventInteractionIds.includes('keydown:3558'));
+        assert.isFalse(visibleEventInteractionIds.includes('keyup:3558'));
+
+        /** This is a slightly offset block of events:
+         * ====[keydown 3572]=====
+         *    =[keydown 3565]=====
+         *          ====[keydown 3586]========
+         * In this test we want to make sure that 3565 is collapsed, but the
+         * others are not.
+         **/
+        assert.isTrue(visibleEventInteractionIds.includes('keydown:3572'));
+        assert.isTrue(visibleEventInteractionIds.includes('keydown:3586'));
+        assert.isFalse(visibleEventInteractionIds.includes('keydown:3565'));
+
+        /** This is a block of events that have offset overlaps:
+         * ====[keydown 3614]=====  =====[keydown 3621]======
+         *       =====[keydown 3628]=========================
+         * In this test we want to make sure that 3621 is collapsed as it fits
+         * iwthin 3628, but 3614 is not collapsed.
+         **/
+        assert.isTrue(visibleEventInteractionIds.includes('keydown:3614'));
+        assert.isTrue(visibleEventInteractionIds.includes('keydown:3628'));
+        assert.isFalse(visibleEventInteractionIds.includes('keydown:3621'));
+      });
+    });
   });
 });

@@ -28,6 +28,7 @@ copy_to_gen("traces") {
     "multiple-navigations-with-iframes.json.gz",
     "multiple-navigations.json.gz",
     "multiple-top-level-renderers.json.gz",
+    "nested-interactions.json.gz",
     "recursive-blocking-js.json.gz",
     "recursive-counting-js.json.gz",
     "redirects-subresource-multiple.json.gz",

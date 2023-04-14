@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 
 import {
   type TrackAppender,
@@ -10,15 +12,12 @@ import {
   type CompatibilityTracksAppender,
   type HighlightedEntryInfo,
 } from './CompatibilityTracksAppender.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-
 import {
   EntryType,
   InstantEventVisibleDurationMs,
   type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
+import {buildGroupStyle, buildTrackHeader} from './appenderUtils.js';
 
 const UIStrings = {
   /**
@@ -94,23 +93,10 @@ export class GPUTrackAppender implements TrackAppender {
    * @param expanded wether the track should be rendered expanded.
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
-    const trackIsCollapsible = this.#traceParsedData.GPU.mainGPUThreadTasks.length > 0;
-
-    const style: PerfUI.FlameChart.GroupStyle = {
-      padding: 4,
-      height: 17,
-      collapsible: trackIsCollapsible,
-      color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
-      backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
-      nestingLevel: 0,
-      shareHeaderLine: false,
-      useFirstLineForOverview: false,
-    };
-    const group =
-        ({startLevel: currentLevel, name: i18nString(UIStrings.gpu), style: style, selectable: true, expanded} as
-         PerfUI.FlameChart.Group);
+    const style = buildGroupStyle({shareHeaderLine: false});
+    const group = buildTrackHeader(
+        currentLevel, i18nString(UIStrings.gpu), style, /* selectable= */ true, expanded, this.#legacyTrack);
     this.#flameChartData.groups.push(group);
-    group.track = this.#legacyTrack;
   }
 
   /**

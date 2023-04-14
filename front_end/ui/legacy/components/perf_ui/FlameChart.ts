@@ -2094,6 +2094,7 @@ export interface Group {
   style: GroupStyle;
   track?: TimelineModel.TimelineModel.Track|null;
 }
+
 export interface GroupStyle {
   height: number;
   padding: number;

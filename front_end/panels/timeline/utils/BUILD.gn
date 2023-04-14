@@ -1,0 +1,23 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../visibility.gni")
+
+devtools_entrypoint("bundle") {
+  entrypoint = "utils.ts"
+
+  deps = [
+    # "../../core/common:bundle",
+    # "../../models/formatter:bundle",
+    # "../../ui/components/diff_view:bundle",
+  ]
+
+  visibility = [
+    "../*",
+    # "../../../test/unittests/front_end/panels/utils/*",
+  ]
+
+  visibility += devtools_panels_visibility
+}

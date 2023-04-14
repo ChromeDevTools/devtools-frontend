@@ -46,6 +46,7 @@ devtools_module("timeline") {
     "TimingsTrackAppender.ts",
     "UIDevtoolsController.ts",
     "UIDevtoolsUtils.ts",
+    "appenderUtils.ts",
   ]
 
   deps = [

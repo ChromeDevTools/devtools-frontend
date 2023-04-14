@@ -14,10 +14,10 @@ import {
   type HighlightedEntryInfo,
   type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Common from '../../core/common/common.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import {buildGroupStyle, buildTrackHeader} from './appenderUtils.js';
 
 const UIStrings = {
   /**
@@ -75,7 +75,7 @@ export class InteractionsTrackAppender implements TrackAppender {
 
   /**
    * Appends into the flame chart data the data corresponding to the
-   * timings track.
+   * interactions track.
    * @param level the horizontal level of the flame chart events where
    * the track's events will start being appended.
    * @param expanded wether the track should be rendered expanded.
@@ -92,7 +92,7 @@ export class InteractionsTrackAppender implements TrackAppender {
 
   /**
    * Adds into the flame chart data the header corresponding to the
-   * timings track. A header is added in the shape of a group in the
+   * interactions track. A header is added in the shape of a group in the
    * flame chart data. A group has a predefined style and a reference
    * to the definition of the legacy track (which should be removed
    * in the future).
@@ -101,44 +101,20 @@ export class InteractionsTrackAppender implements TrackAppender {
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#traceParsedData.UserInteractions.interactionEvents.length > 0;
-    const style: PerfUI.FlameChart.GroupStyle = {
-      padding: 4,
-      height: 17,
-      collapsible: trackIsCollapsible,
-      color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
-      backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
-      nestingLevel: 0,
-      shareHeaderLine: true,
-      useFirstLineForOverview: true,
-    };
-    const group = ({
-      startLevel: currentLevel,
-      name: i18nString(UIStrings.interactions),
-      style: style,
-      selectable: true,
-      expanded,
-    } as PerfUI.FlameChart.Group);
+    const style = buildGroupStyle({useFirstLineForOverview: true, collapsible: trackIsCollapsible});
+    const group = buildTrackHeader(
+        currentLevel, i18nString(UIStrings.interactions), style, /* selectable= */ true, expanded, this.#legacyTrack);
     this.#flameChartData.groups.push(group);
-    group.track = this.#legacyTrack;
   }
 
   /**
-   * Adds into the flame chart data the trace events corresponding to
-   * user timings (performance.measure and performance.mark). These are
-   * taken straight from the UserTimings handler.
-   * @param currentLevel the flame chart level from which user timings will
-   * be appended.
-   * @returns the next level after the last occupied by the appended
-   * timings (the first available level to append more data).
-   */
-  /**
    * Adds into the flame chart data the trace events dispatched by the
-   * performace.measure API. These events are taken from the UserTimings
+   * performace.measure API. These events are taken from the UserInteractions
    * handler.
-   * @param currentLevel the flame chart level from which timings will
+   * @param currentLevel the flame chart level from which interactions will
    * be appended.
    * @returns the next level after the last occupied by the appended
-   * timings (the first available level to append more data).
+   * interactions (the first available level to append more data).
    */
 
   #appendInteractionsAtLevel(currentLevel: number): number {

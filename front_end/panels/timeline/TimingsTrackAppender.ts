@@ -15,7 +15,6 @@ import {
   type HighlightedEntryInfo,
   type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import {TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {
@@ -24,6 +23,7 @@ import {
 } from './TimelineUIUtils.js';
 import * as Common from '../../core/common/common.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import {buildGroupStyle, buildTrackHeader} from './appenderUtils.js';
 
 const UIStrings = {
   /**
@@ -108,22 +108,11 @@ export class TimingsTrackAppender implements TrackAppender {
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#traceParsedData.UserTimings.performanceMeasures.length > 0;
-
-    const style: PerfUI.FlameChart.GroupStyle = {
-      padding: 4,
-      height: 17,
-      collapsible: trackIsCollapsible,
-      color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
-      backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
-      nestingLevel: 0,
-      shareHeaderLine: true,
-      useFirstLineForOverview: true,
-    };
-    const group =
-        ({startLevel: currentLevel, name: i18nString(UIStrings.timings), style: style, selectable: true, expanded} as
-         PerfUI.FlameChart.Group);
+    const style =
+        buildGroupStyle({shareHeaderLine: true, useFirstLineForOverview: true, collapsible: trackIsCollapsible});
+    const group = buildTrackHeader(
+        currentLevel, i18nString(UIStrings.timings), style, /* selectable= */ true, expanded, this.#legacyTrack);
     this.#flameChartData.groups.push(group);
-    group.track = this.#legacyTrack;
   }
 
   /**
@@ -195,6 +184,7 @@ export class TimingsTrackAppender implements TrackAppender {
     }
     return this.#appendTimingsAtLevel(newLevel, this.#traceParsedData.UserTimings.consoleTimings);
   }
+
   /**
    * Adds into the flame chart data the syntetic nestable async events
    * These events are taken from the UserTimings handler from console

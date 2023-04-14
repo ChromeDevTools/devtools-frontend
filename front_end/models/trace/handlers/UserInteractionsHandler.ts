@@ -37,7 +37,11 @@ export interface UserInteractionsData {
    * entirely.
    **/
   interactionEventsWithNoNesting: readonly Types.TraceEvents.SyntheticInteractionEvent[];
+  // The longest duration interaction event. Can be null if the trace has no interaction events.
+  longestInteractionEvent: Readonly<Types.TraceEvents.SyntheticInteractionEvent>|null;
 }
+
+let longestInteractionEvent: Types.TraceEvents.SyntheticInteractionEvent|null = null;
 
 const interactionEvents: Types.TraceEvents.SyntheticInteractionEvent[] = [];
 const interactionEventsWithNoNesting: Types.TraceEvents.SyntheticInteractionEvent[] = [];
@@ -159,8 +163,12 @@ export async function finalize(): Promise<void> {
       type: interactionStartEvent.args.data.type,
       interactionId: interactionStartEvent.args.data.interactionId,
     };
+    if (!longestInteractionEvent || longestInteractionEvent.dur < interactionEvent.dur) {
+      longestInteractionEvent = interactionEvent;
+    }
     interactionEvents.push(interactionEvent);
   }
+
   handlerState = HandlerState.FINALIZED;
   interactionEventsWithNoNesting.push(...removeNestedInteractions(interactionEvents));
 }
@@ -170,5 +178,6 @@ export function data(): UserInteractionsData {
     allEvents: [...allEvents],
     interactionEvents: [...interactionEvents],
     interactionEventsWithNoNesting: [...interactionEventsWithNoNesting],
+    longestInteractionEvent,
   };
 }

@@ -26,25 +26,23 @@ describe('UserInteractions', function() {
     });
   });
 
-  describe('parsing', () => {
-    it('returns all user interactions', async () => {
-      const traceEvents = await loadEventsFromTraceFile('slow-interaction-button-click.json.gz');
-      for (const event of traceEvents) {
-        TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
+  it('returns all user interactions', async () => {
+    const traceEvents = await loadEventsFromTraceFile('slow-interaction-button-click.json.gz');
+    for (const event of traceEvents) {
+      TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
+    }
+
+    const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
+    const clicks = data.allEvents.filter(event => {
+      if (!event.args.data) {
+        return false;
       }
 
-      const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
-      const clicks = data.allEvents.filter(event => {
-        if (!event.args.data) {
-          return false;
-        }
-
-        return event.args.data.type === 'click';
-      });
-
-      assert.strictEqual(data.allEvents.length, 58);
-      assert.strictEqual(clicks.length, 1);
+      return event.args.data.type === 'click';
     });
+
+    assert.strictEqual(data.allEvents.length, 58);
+    assert.strictEqual(clicks.length, 1);
   });
 
   describe('interactions', () => {
@@ -63,6 +61,18 @@ describe('UserInteractions', function() {
       // pointerdown on the button (start of the click)
       // pointerup & click on the button (end of the click)
       assert.strictEqual(data.interactionEvents.length, 3);
+    });
+
+    it('identifies the longest interaction', async () => {
+      await processTrace('slow-interaction-keydown.json.gz');
+      const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
+      assert.lengthOf(data.interactionEvents, 5);
+
+      const expectedLongestEvent = data.interactionEvents.find(event => {
+        return event.type === 'keydown' && event.interactionId === 7378;
+      });
+      assert.isNotNull(expectedLongestEvent);
+      assert.strictEqual(data.longestInteractionEvent, expectedLongestEvent);
     });
 
     it('sets the `dur` key on each event by finding the begin and end events and subtracting the ts', async () => {

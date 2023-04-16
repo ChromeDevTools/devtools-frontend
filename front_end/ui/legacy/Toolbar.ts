@@ -33,6 +33,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as Utils from './utils/utils.js';
 
@@ -45,9 +46,9 @@ import {Icon} from './Icon.js';
 import {bindCheckbox} from './SettingsUI.js';
 import {type Suggestion} from './SuggestBox.js';
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
+import toolbarStyles from './toolbar.css.legacy.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, LongClickController} from './UIUtils.js';
-import toolbarStyles from './toolbar.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -704,7 +705,10 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
 
     const clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
     clearButton.title = UIStrings.clearInput;
-    clearButton.appendChild(Icon.create('mediumicon-gray-cross-active', 'search-cancel-button'));
+    const clearIcon = new IconButton.Icon.Icon();
+    clearIcon.data = {color: 'var(--icon-default)', width: '16px', height: '16px', iconName: 'cross-circle-filled'};
+    clearIcon.classList.add('search-cancel-button');
+    clearButton.appendChild(clearIcon);
     clearButton.addEventListener('click', () => {
       this.setValue('', true);
       this.prompt.focus();

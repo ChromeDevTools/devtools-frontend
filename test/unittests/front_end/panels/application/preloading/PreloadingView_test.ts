@@ -151,11 +151,11 @@ class NavigationEmulator {
     this.prerenderTarget = null;
     SDK.TargetManager.TargetManager.instance().setScopeTarget(this.primaryTarget);
 
-    // Strictly speaking, we have to emit an event for Protocol.Preload.PreloadingStatus.Ready earlier.
+    // Strictly speaking, we have to emit an event for SDK.PreloadingModel.PreloadingStatus.Ready earlier.
     // It's not so important and omitted.
     dispatchEvent(this.primaryTarget, 'Preload.prerenderStatusUpdated', {
       ...this.prerenderStatusUpdatedEvent,
-      status: Protocol.Preload.PreloadingStatus.Success,
+      status: SDK.PreloadingModel.PreloadingStatus.Success,
     });
   }
 
@@ -202,7 +202,7 @@ class NavigationEmulator {
         },
         initiatingFrameId: this.frameId,
         prefetchUrl: url,
-        status: Protocol.Preload.PreloadingStatus.Running,
+        status: SDK.PreloadingModel.PreloadingStatus.Running,
       });
     }
 

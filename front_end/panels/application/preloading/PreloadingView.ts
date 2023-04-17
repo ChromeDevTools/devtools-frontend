@@ -29,6 +29,10 @@ const UIStrings = {
    */
   validitySomeRulesInvalid: 'Some rules invalid',
   /**
+   *@description Text in grid and details: Preloading attempt is not yet triggered.
+   */
+  statusNotTriggered: 'Not triggered',
+  /**
    *@description Text in grid and details: Preloading attempt is eligible but pending.
    */
   statusPending: 'Pending',
@@ -84,22 +88,24 @@ class PreloadingUIUtils {
   static status({status}: SDK.PreloadingModel.PreloadingAttempt): string {
     // See content/public/browser/preloading.h PreloadingAttemptOutcome.
     switch (status) {
-      case Protocol.Preload.PreloadingStatus.Pending:
+      case SDK.PreloadingModel.PreloadingStatus.NotTriggered:
+        return i18nString(UIStrings.statusNotTriggered);
+      case SDK.PreloadingModel.PreloadingStatus.Pending:
         return i18nString(UIStrings.statusPending);
-      case Protocol.Preload.PreloadingStatus.Running:
+      case SDK.PreloadingModel.PreloadingStatus.Running:
         return i18nString(UIStrings.statusRunning);
-      case Protocol.Preload.PreloadingStatus.Ready:
+      case SDK.PreloadingModel.PreloadingStatus.Ready:
         return i18nString(UIStrings.statusReady);
-      case Protocol.Preload.PreloadingStatus.Success:
+      case SDK.PreloadingModel.PreloadingStatus.Success:
         return i18nString(UIStrings.statusSuccess);
-      case Protocol.Preload.PreloadingStatus.Failure:
+      case SDK.PreloadingModel.PreloadingStatus.Failure:
         return i18nString(UIStrings.statusFailure);
       // NotSupported is used to handle unreachable case. For example,
       // there is no code path for
       // PreloadingTriggeringOutcome::kTriggeredButPending in prefetch,
       // which is mapped to NotSupported. So, we regard it as an
       // internal error.
-      case Protocol.Preload.PreloadingStatus.NotSupported:
+      case SDK.PreloadingModel.PreloadingStatus.NotSupported:
         return i18n.i18n.lockedString('Internal error');
     }
   }

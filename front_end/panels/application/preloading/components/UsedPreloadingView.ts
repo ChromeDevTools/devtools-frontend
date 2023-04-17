@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../../../../core/sdk/sdk.js';
-
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
@@ -45,7 +44,7 @@ export class UsedPreloadingView extends HTMLElement {
 
   async #render(): Promise<void> {
     await coordinator.write('UsedPreloadingView render', () => {
-      const used = this.#data.filter(attempt => attempt.status === Protocol.Preload.PreloadingStatus.Success);
+      const used = this.#data.filter(attempt => attempt.status === SDK.PreloadingModel.PreloadingStatus.Success);
       const prefetchCount =
           used.filter(attempt => attempt.key.action === Protocol.Preload.SpeculationAction.Prefetch).length;
       const prerenderCount = used.length - prefetchCount;

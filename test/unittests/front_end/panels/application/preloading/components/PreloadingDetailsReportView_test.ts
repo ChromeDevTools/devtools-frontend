@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
+
 import * as Protocol from '../../../../../../../front_end/generated/protocol.js';
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
+import * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../../../../front_end/ui/components/report_view/report_view.js';
-import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
 import {
   assertShadowRoot,
   getCleanTextContentFromElements,
@@ -57,7 +59,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
           url,
           targetHint: undefined,
         },
-        status: Protocol.Preload.PreloadingStatus.Running,
+        status: SDK.PreloadingModel.PreloadingStatus.Running,
         ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -104,7 +106,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
           url,
           targetHint: undefined,
         },
-        status: Protocol.Preload.PreloadingStatus.Failure,
+        status: SDK.PreloadingModel.PreloadingStatus.Failure,
         ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },

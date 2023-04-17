@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
+import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
 
 import * as Protocol from '../../../../../../../front_end/generated/protocol.js';
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
+import * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
 import {
   assertShadowRoot,
   renderElementIntoDOM,
@@ -37,7 +37,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
           action: Protocol.Preload.SpeculationAction.Prefetch,
           url: 'https://example.com/subresource1.js' as Platform.DevToolsPath.UrlString,
         },
-        status: Protocol.Preload.PreloadingStatus.Ready,
+        status: SDK.PreloadingModel.PreloadingStatus.Ready,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -47,7 +47,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
           action: Protocol.Preload.SpeculationAction.Prefetch,
           url: 'https://example.com/subresource2.js' as Platform.DevToolsPath.UrlString,
         },
-        status: Protocol.Preload.PreloadingStatus.Failure,
+        status: SDK.PreloadingModel.PreloadingStatus.Failure,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -57,7 +57,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
           action: Protocol.Preload.SpeculationAction.Prerender,
           url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
         },
-        status: Protocol.Preload.PreloadingStatus.Ready,
+        status: SDK.PreloadingModel.PreloadingStatus.Ready,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -77,7 +77,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
           action: Protocol.Preload.SpeculationAction.Prefetch,
           url: 'https://example.com/subresource1.js' as Platform.DevToolsPath.UrlString,
         },
-        status: Protocol.Preload.PreloadingStatus.Success,
+        status: SDK.PreloadingModel.PreloadingStatus.Success,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -87,7 +87,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
           action: Protocol.Preload.SpeculationAction.Prefetch,
           url: 'https://example.com/subresource2.js' as Platform.DevToolsPath.UrlString,
         },
-        status: Protocol.Preload.PreloadingStatus.Success,
+        status: SDK.PreloadingModel.PreloadingStatus.Success,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -97,7 +97,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
           action: Protocol.Preload.SpeculationAction.Prerender,
           url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
         },
-        status: Protocol.Preload.PreloadingStatus.Ready,
+        status: SDK.PreloadingModel.PreloadingStatus.Ready,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -117,7 +117,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
           action: Protocol.Preload.SpeculationAction.Prefetch,
           url: 'https://example.com/subresource1.js' as Platform.DevToolsPath.UrlString,
         },
-        status: Protocol.Preload.PreloadingStatus.Ready,
+        status: SDK.PreloadingModel.PreloadingStatus.Ready,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -127,7 +127,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
           action: Protocol.Preload.SpeculationAction.Prefetch,
           url: 'https://example.com/subresource2.js' as Platform.DevToolsPath.UrlString,
         },
-        status: Protocol.Preload.PreloadingStatus.Failure,
+        status: SDK.PreloadingModel.PreloadingStatus.Failure,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -137,7 +137,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
           action: Protocol.Preload.SpeculationAction.Prerender,
           url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
         },
-        status: Protocol.Preload.PreloadingStatus.Success,
+        status: SDK.PreloadingModel.PreloadingStatus.Success,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },

@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../../../../core/sdk/sdk.js';
-
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
@@ -34,6 +33,10 @@ const UIStrings = {
    *@description Header of rule set
    */
   detailsRuleSet: 'Rule set',
+  /**
+   *@description Description: status
+   */
+  detailedStatusNotTriggered: 'Preloading attempt is not yet triggered.',
   /**
    *@description Description: status
    */
@@ -73,22 +76,24 @@ class PreloadingUIUtils {
   static detailedStatus({status}: SDK.PreloadingModel.PreloadingAttempt): string {
     // See content/public/browser/preloading.h PreloadingAttemptOutcome.
     switch (status) {
-      case Protocol.Preload.PreloadingStatus.Pending:
+      case SDK.PreloadingModel.PreloadingStatus.NotTriggered:
+        return i18nString(UIStrings.detailedStatusNotTriggered);
+      case SDK.PreloadingModel.PreloadingStatus.Pending:
         return i18nString(UIStrings.detailedStatusPending);
-      case Protocol.Preload.PreloadingStatus.Running:
+      case SDK.PreloadingModel.PreloadingStatus.Running:
         return i18nString(UIStrings.detailedStatusRunning);
-      case Protocol.Preload.PreloadingStatus.Ready:
+      case SDK.PreloadingModel.PreloadingStatus.Ready:
         return i18nString(UIStrings.detailedStatusReady);
-      case Protocol.Preload.PreloadingStatus.Success:
+      case SDK.PreloadingModel.PreloadingStatus.Success:
         return i18nString(UIStrings.detailedStatusSuccess);
-      case Protocol.Preload.PreloadingStatus.Failure:
+      case SDK.PreloadingModel.PreloadingStatus.Failure:
         return i18nString(UIStrings.detailedStatusFailure);
       // NotSupported is used to handle unreachable case. For example,
       // there is no code path for
       // PreloadingTriggeringOutcome::kTriggeredButPending in prefetch,
       // which is mapped to NotSupported. So, we regard it as an
       // internal error.
-      case Protocol.Preload.PreloadingStatus.NotSupported:
+      case SDK.PreloadingModel.PreloadingStatus.NotSupported:
         return i18n.i18n.lockedString('Internal error');
     }
   }

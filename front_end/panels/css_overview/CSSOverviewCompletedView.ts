@@ -1175,7 +1175,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
 
 function createClearIcon(): IconButton.Icon.Icon {
   const icon = new IconButton.Icon.Icon();
-  icon.data = {iconName: 'clear', color: 'var(--icon-error-small)', width: '14px', height: '14px'};
+  icon.data = {iconName: 'clear', color: 'var(--icon-error)', width: '14px', height: '14px'};
   return icon;
 }
 

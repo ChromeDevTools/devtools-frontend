@@ -4,28 +4,23 @@
  * found in the LICENSE file.
  */
 :root {
-  --icon-action: var(--color-primary);
-  --icon-arrow-main-thread: var(--color-primary);
-  --icon-checkmark-green: var(--color-tertiary);
-  --icon-checkmark-purple: var(--color-purple);
-  --icon-checkmark-red: var(--color-error);
-  --icon-contrast-issue: var(--color-error);
+  --icon-action: var(--color-primary-bright);
+  --icon-arrow-main-thread: var(--color-primary-bright);
+  --icon-checkmark-green: var(--color-tertiary-bright);
+  --icon-checkmark-purple: var(--color-purple-bright);
+  --icon-checkmark-red: var(--color-error-bright);
+  --icon-contrast-issue: var(--color-error-bright);
   --icon-default: var(--color-on-surface-variant);
   --icon-default-hover: var(--color-on-surface);
   --icon-disabled: color-mix(in sRGB, var(--color-on-surface-variant) 55%, transparent);
   --icon-error: var(--color-error-bright);
-  --icon-error-small: var(--color-error);
   --icon-file-authored: var(--color-orange-bright);
   --icon-file-default: var(--color-on-surface-variant);
-  --icon-file-document: var(--color-primary);
-  --icon-file-document-small: var(--color-primary-bright);
-  --icon-file-font: var(--color-turqoise);
-  --icon-file-font-small: var(--color-turqoise-bright);
+  --icon-file-document: var(--color-primary-bright);
+  --icon-file-font: var(--color-turqoise-bright);
   --icon-file-image: var(--color-tertiary-bright);
-  --icon-file-image-small: var(--color-tertiary);
   --icon-file-script: var(--color-orange-bright);
   --icon-file-styles: var(--color-purple-bright);
-  --icon-file-styles-small: var(--color-purple);
   --icon-fold-marker: var(--color-on-surface-variant);
   --icon-folder-authored: var(--color-orange);
   --icon-folder-primary: var(--color-on-surface-variant);
@@ -33,15 +28,14 @@
   --icon-folder-workspace: var(--color-orange);
   --icon-force-white: var(--color-on-primary);
   --icon-info: var(--color-primary-bright);
-  --icon-info-small: var(--color-primary);
-  --icon-link: var(--color-primary);
+  --icon-link: var(--color-primary-bright);
   --icon-no-request: var(--color-orange-bright);
   --icon-record: var(--color-error-bright);
-  --icon-request-response: var(--color-primary);
+  --icon-request-response: var(--color-primary-bright);
   --icon-request: var(--color-on-surface-variant);
-  --icon-security-lock: var(--color-tertiary);
-  --icon-status-code-ok: var(--color-tertiary);
-  --icon-stop: var(--color-error);
+  --icon-security-lock: var(--color-tertiary-bright);
+  --icon-status-code-ok: var(--color-tertiary-bright);
+  --icon-stop: var(--color-error-bright);
   --icon-toggled: var(--color-primary-bright);
   --icon-warning: var(--color-orange-bright);
 }

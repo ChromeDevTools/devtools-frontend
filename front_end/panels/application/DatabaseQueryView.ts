@@ -282,7 +282,7 @@ export class DatabaseQueryView extends Common.ObjectWrapper.eventMixin<EventType
     const resultElement = this.appendQueryResult(query);
     resultElement.classList.add('error');
     const errorIcon = new IconButton.Icon.Icon();
-    errorIcon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error-small)', width: '14px', height: '14px'};
+    errorIcon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
     errorIcon.classList.add('prompt-icon');
     resultElement.appendChild(errorIcon);
     UI.UIUtils.createTextChild(resultElement, errorText);

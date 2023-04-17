@@ -1307,6 +1307,9 @@
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "Nettstedet forespurte en underressurs fra et nettverk det kun hadde tilgang til på grunn av den privilegerte nettverksposisjonen til brukerne sine. Disse forespørslene eksponerer ikke-offentlige enheter og tjenere for internett, noe som øker risikoen for angrep via forfalskning av tredjepartsforespørsler (CSRF) og/eller informasjonslekkasjer. For å forebygge disse risikoene avvikler Chrome forespørsler til ikke-offentlige underressurser når disse igangsettes fra ikke-sikre kontekster, og kommer til å begynne å blokkere dem."
   },
+  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
+    "message": "Feltet dailyUpdateUrl for InterestGroups, som ble sendt til joinAdInterestGroup(), har fått det nye navnet updateUrl, for en mer nøyaktig atferd."
+  },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "CSS-filer kan ikke lastes inn fra file:-nettadresser med mindre de har filetternavnet .css."
   },
@@ -1320,7 +1323,7 @@
     "message": "Web MIDI kommer til å be om brukstillatelse selv om sysex ikke er angitt i MIDIOptions."
   },
   "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
-    "message": "Det eldre, ikke-standardiserte shadowroot-attributtet er avviklet. Bruk det nye, standardiserte shadowrootmode-attributtet i stedet."
+    "message": "Det eldre, ikke-standardiserte shadowroot-attributtet er avviklet og *fungerer derfor ikke lenger* i M119. Bruk det nye, standardiserte shadowrootmode-attributtet i stedet."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
     "message": "Notification-API-et kan ikke lenger brukes fra usikre opphav. Vurder å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
@@ -1402,6 +1405,12 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Utvidelser må slå på isolering fra andre opphav for å fortsette å bruke SharedArrayBuffer. Se https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Tillatelsesbeskrivelsen window-placement er avviklet. Bruk window-management i stedet. Du finner mer hjelp på https://bit.ly/window-placement-rename."
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
+    "message": "Tillatelsesregelen window-placement er avviklet. Bruk window-management i stedet. Du finner mer hjelp på https://bit.ly/window-placement-rename."
   },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 støttes ikke av JSON-svaret i XMLHttpRequest"
@@ -2664,7 +2673,7 @@
     "message": "Antall informasjonskapsler som vises i tabellen: {PH1}"
   },
   "panels/application/CookieItemsView.ts | onlyShowCookiesWhichHaveAn": {
-    "message": "Vis kun informasjonskapsler med tilknyttede problemer"
+    "message": "Vis kun informasjonskapsler med et tilknyttet problem"
   },
   "panels/application/CookieItemsView.ts | onlyShowCookiesWithAnIssue": {
     "message": "Vis kun informasjonskapsler med problemer"
@@ -3177,7 +3186,7 @@
     "message": "Nett-SQL"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "Tillitstokener"
+    "message": "Private tilstandstokens"
   },
   "panels/application/application-meta.ts | application": {
     "message": "Program"
@@ -4083,19 +4092,43 @@
     "message": "{n,plural, =1{Vis # ramme til}other{Vis # flere rammer}}"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "Alle lagrede tillitstokener som er tilgjengelige i denne nettleserforekomsten."
+    "message": "Alle lagrede private tilstandstokens som er tilgjengelige i denne nettleserforekomsten."
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "Slett alle lagrede tillitstokener som er utstedt av {PH1}."
+    "message": "Slett alle lagrede private tilstandstokens som er utstedt av {PH1}."
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Utsteder"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Ingen tillitstokener er lagret for øyeblikket."
+    "message": "Ingen private tilstandstokens er lagret for øyeblikket."
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Lagret tokenantall"
+  },
+  "panels/application/components/TrustTokensView.ts | trustTokens": {
+    "message": "Private tilstandstokens"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusFailure": {
+    "message": "Mislyktes"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPending": {
+    "message": "Venter"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusReady": {
+    "message": "Klar"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusRunning": {
+    "message": "Kjører"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusSuccess": {
+    "message": "Fullført"
+  },
+  "panels/application/preloading/PreloadingView.ts | validityInvalid": {
+    "message": "Ugyldig"
+  },
+  "panels/application/preloading/PreloadingView.ts | validitySomeRulesInvalid": {
+    "message": "Noen regler er ugyldige"
   },
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Gyldig"
@@ -4112,11 +4145,38 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Forhåndsgjengivelse er deaktivert, men er tvunget aktivert nå"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
+    "message": "Kunne ikke forhåndslaste."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
+    "message": "Forsøket på forhåndslasting er kvalifisert, men venter på behandling."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
+    "message": "Forhåndslasting er ferdig, og resultatet er klart for neste navigasjon."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
+    "message": "Forhåndslasting kjører."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
+    "message": "Forhåndslasting er ferdig og brukes til navigering."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
+    "message": "Handling"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "Detaljert informasjon"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
+    "message": "Regel er angitt"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Velg et element for å se flere detaljer"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | action": {
+    "message": "Handling"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
@@ -4124,17 +4184,32 @@
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Detaljert informasjon"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
+    "message": "Feil"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Kilde"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
     "message": "Gyldighet"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
+    "message": "Ugyldig. Kilden er ikke et JSON-objekt"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
+    "message": "Enkelte regler er ugyldige og ignorert"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "Gyldig"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Gyldighet"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
+    "message": "{PH1} forhåndshentede ressurser brukes for denne siden"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
+    "message": "Denne siden ble forhåndsgjengitt"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "stoppunkt truffet"
@@ -4370,6 +4445,9 @@
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsollen er tømt"
   },
+  "panels/console/ConsoleView.ts | consolePasteBlocked": {
+    "message": "Innliming av kode i utviklerverktøy brukes ofte til å svindle folk og overta kontoene deres. Det er blokkert på denne siden."
+  },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsollinnstillinger"
   },
@@ -4583,6 +4661,9 @@
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Autofullfør fra loggen"
   },
+  "panels/console/console-meta.ts | autocompleteOnEnter": {
+    "message": "Godta forslag til autofullføring på Enter"
+  },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "Tøm konsollen"
   },
@@ -4600,6 +4681,9 @@
   },
   "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
     "message": "Ikke autofullfør fra loggen"
+  },
+  "panels/console/console-meta.ts | doNotAutocompleteOnEnter": {
+    "message": "Ikke godta forslag til autofullføring på Enter"
   },
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
     "message": "Ikke evaluer konsoll-ledeteksten ivrig"
@@ -4620,7 +4704,7 @@
     "message": "Evaluer konsoll-ledeteksten ivrig"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "Evaluering utløser brukeraktivering"
+    "message": "Behandle kodeevaluering som brukerhandling"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
     "message": "Utvid console.trace()-meldinger automatisk"
@@ -4901,6 +4985,9 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Tøm oversikten"
   },
+  "panels/css_overview/CSSOverviewSidebarPanel.ts | cssOverviewPanelSidebar": {
+    "message": "Sidefelt for CSS-oversikt"
+  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom brukes på et element med statisk posisjon"
   },
@@ -5002,6 +5089,9 @@
   },
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Vis utviklerressurser"
+  },
+  "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
+    "message": "Verdi for innstillingen «{PH1}» {PH2} er utenfor det støttede området [{PH3}, {PH4}] for skrifttypefamilien «{PH5}»."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
     "message": "Prøv å sette {EXISTING_PARENT_ELEMENT_RULE}-egenskapen på det overordnede elementet til {TARGET_PARENT_ELEMENT_RULE}."
@@ -5962,9 +6052,6 @@
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Ugyldig hodeverdi"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
-    "message": "Maksimalt antall samtidige registreringer"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# overtredelse}other{# overtredelser}}"
@@ -7178,6 +7265,9 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Ferdig"
   },
+  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
+    "message": "Forespørselen har overstyrte overskrifter"
+  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "nivå 1"
   },
@@ -7323,10 +7413,10 @@
     "message": "Tidsbruk"
   },
   "panels/network/NetworkItemView.ts | trustTokenOperationDetails": {
-    "message": "Detaljer om operasjon med tillitstoken"
+    "message": "Detaljer om operasjonen for privat tilstandstoken"
   },
   "panels/network/NetworkItemView.ts | trustTokens": {
-    "message": "Tillitstokener"
+    "message": "Private tilstandstokens"
   },
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "WebSocket-meldinger"
@@ -8256,7 +8346,7 @@
     "message": "Enten er ingen inndata tilgjengelig for denne operasjonen, eller så overskrider utdataene kvoten for operasjoner."
   },
   "panels/network/components/RequestTrustTokensView.ts | failure": {
-    "message": "Mislykket"
+    "message": "Mislyktes"
   },
   "panels/network/components/RequestTrustTokensView.ts | issuer": {
     "message": "Utsteder"
@@ -9022,6 +9112,9 @@
   },
   "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
     "message": "Dette panelet blir avviklet i den kommende versjonen. Bruk ytelsespanelet for å registrere JavaScript-prosessorprofiler."
+  },
+  "panels/profiler/ProfilesPanel.ts | enableThisPanelTemporarily": {
+    "message": "Aktiver dette panelet midlertidig"
   },
   "panels/profiler/ProfilesPanel.ts | feedback": {
     "message": "Tilbakemelding"
@@ -10250,15 +10343,6 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Pause aldri her"
   },
-  "panels/sources/DebuggerPlugin.ts | prettyprint": {
-    "message": "Pen formatering"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintThisMinifiedFile": {
-    "message": "Pen formatering i denne minifiserte filen?"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
-    "message": "Pen formatering formaterer denne filen i en ny fane der du kan fortsette feilsøking. Du kan også pent formatere denne filen ved å klikke på {PH1}-knappen i statusfeltet nederst."
-  },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Fjern stoppunkt}other{Fjern alle stoppunkter på linjen}}"
   },
@@ -10279,6 +10363,9 @@
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
     "message": "Finner ingen filer"
+  },
+  "panels/sources/FilteredUISourceCodeListProvider.ts | sIgnoreListed": {
+    "message": "{PH1} (står på ignoreringslisten)"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "Gjeldende linje: {PH1}. Skriv inn et linjenummer mellom 1 og {PH2} å navigere til."
@@ -10309,54 +10396,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "Formatér {PH1}"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | activateBreakpoints": {
-    "message": "Aktiver stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | checked": {
-    "message": "avmerket"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | deactivateBreakpoints": {
-    "message": "Deaktiver stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableAllBreakpoints": {
-    "message": "Deaktiver alle stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableBreakpointsInFile": {
-    "message": "Deaktiver stoppunkter registrert"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableAllBreakpoints": {
-    "message": "Aktiver alle stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableBreakpointsInFile": {
-    "message": "Aktiver stoppunkter registrert"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "blandet"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Ingen stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpoints": {
-    "message": "Fjern alle stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
-    "message": "Fjern alle stoppunkter på linjen"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "Fjern stoppunkt"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
-    "message": "Fjern andre stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
-    "message": "Vis plassering"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
-    "message": "{PH1}-stoppunkttreff"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | unchecked": {
-    "message": "ikke avmerket"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
     "message": "Er du sikker på at du vil slette alle overstyrringer i denne mappen?"
@@ -10469,12 +10508,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
     "message": "Vis i Memory Inspector-panel"
   },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrint": {
-    "message": "Pen formatering"
-  },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
-    "message": "Pen formatering {PH1}"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10544,9 +10577,6 @@
   "panels/sources/SourcesPanel.ts | debuggerShown": {
     "message": "Sidefeltet for feilsøking vises"
   },
-  "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
-    "message": "Ikke sett på pause ved unntak"
-  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Dra arbeidsområdemappe hit"
   },
@@ -10579,9 +10609,6 @@
   },
   "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
     "message": "Sett på pause ved fangede unntak"
-  },
-  "panels/sources/SourcesPanel.ts | pauseOnExceptions": {
-    "message": "Pause ved unntak"
   },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "Gjenoppta med alle pauser blokkert i 500 ms"
@@ -10698,7 +10725,7 @@
     "message": "Fjern andre stoppunkter"
   },
   "panels/sources/components/BreakpointsView.ts | revealLocation": {
-    "message": "Vis plassering"
+    "message": "Vis lokasjon"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "ikke avmerket"
@@ -10711,6 +10738,9 @@
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Feil ved parsing av «{PH1}»."
+  },
+  "panels/sources/components/HeadersView.ts | learnMore": {
+    "message": "Finn ut mer"
   },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
     "message": "Dette skyldes sannsynligvis en syntaksfeil i «{PH1}». Prøv å åpne denne filen i et eksternt redigeringsprogram for å rette feilen, eller slett filen og opprett overstyringen på nytt."
@@ -10790,6 +10820,9 @@
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Deaktiver fane, flytter fokus"
   },
+  "panels/sources/sources-meta.ts | disableWasmAutoStepping": {
+    "message": "Deaktiver wasm autotrinn"
+  },
   "panels/sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
     "message": "Ikke tillat å rulle forbi slutten av filen"
   },
@@ -10831,6 +10864,9 @@
   },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Aktiver fane, flytter fokus"
+  },
+  "panels/sources/sources-meta.ts | enableWasmAutoStepping": {
+    "message": "Slå på automatisk trinn"
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Evaluer valgt tekst i konsoll"
@@ -10991,6 +11027,9 @@
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Sporer"
   },
+  "panels/sources/sources-meta.ts | wasmAutoStepping": {
+    "message": "Når feilsøking var på med feilsøkingsinformasjon, bør du ikke vente med å slå på wasm bytecode hvis det er mulig"
+  },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Se"
   },
@@ -11026,6 +11065,18 @@
   },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Starttid"
+  },
+  "panels/timeline/GPUTrackAppender.ts | gpu": {
+    "message": "GPU"
+  },
+  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (egen {PH2})"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | interactions": {
+    "message": "Interaksjoner"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (egen {PH2})"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU-profil for et mål er ikke tilgjengelig"
@@ -11078,14 +11129,8 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
     "message": "Animasjon"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | console": {
-    "message": "Konsoll"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Falt ramme"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | experience": {
-    "message": "Opplev"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Ramme"
@@ -11095,9 +11140,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Rammer"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | gpu": {
-    "message": "GPU"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Inaktiv ramme"
@@ -11134,9 +11176,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Tråd"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
-    "message": "Interaksjoner"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Nettverk"
@@ -11243,9 +11282,6 @@
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Aktiver avansert instrumentering ved opptegning (sakte)"
   },
-  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSSS": {
-    "message": "Kunne ikke lagre tidslinje: {PH1} ({PH2}, {PH3})"
-  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initialiserer profiler …"
   },
@@ -11288,9 +11324,6 @@
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Vis tidslinje for minne"
   },
-  "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Vis Statistikk for nett"
-  },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} sek."
   },
@@ -11308,9 +11341,6 @@
   },
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
-  },
-  "panels/timeline/TimelinePanel.ts | webVitals": {
-    "message": "Web Vitals"
   },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "Aktivitet"
@@ -11695,9 +11725,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installeringstimer"
-  },
-  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
-    "message": "Interaksjonstype:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Ugylddigjør layout"
@@ -12140,6 +12167,12 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ja"
   },
+  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (egen {PH2})"
+  },
+  "panels/timeline/TimingsTrackAppender.ts | timings": {
+    "message": "Tid"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "Tegn ramme"
   },
@@ -12163,36 +12196,6 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "System"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | fcp": {
-    "message": "FCP"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | firstContentfulPaint": {
-    "message": "Første innholdsrike opptegning (FCP)"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | good": {
-    "message": "God"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | largestContentfulPaint": {
-    "message": "Største innholdsrike opptegning (LCP)"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | lcp": {
-    "message": "LCP"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTask": {
-    "message": "Lang oppgave"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTasks": {
-    "message": "Lange oppgaver"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | ls": {
-    "message": "LS"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | needsImprovement": {
-    "message": "Trenger forbedring"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | poor": {
-    "message": "Dårlig"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Skjul chrome-ramme i lagvisning"
@@ -13100,6 +13103,9 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Ingen egenskaper"
   },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | revealInMemoryInpector": {
+    "message": "Vis i Memory Inspector-panel"
+  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Vis alle {PH1}"
   },
@@ -13299,7 +13305,7 @@
     "message": "Laster inn …"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | prettyPrint": {
-    "message": "Pen formatering"
+    "message": "Pretty print"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | source": {
     "message": "Kilde"

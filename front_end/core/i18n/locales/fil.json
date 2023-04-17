@@ -1307,6 +1307,9 @@
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "Humiling ang website ng subresource mula sa isang network na maa-access lang nito dahil sa privileged na posisyon ng network ng mga user nito. Inilalantad ng mga kahilingang ito ang mga hindi pampublikong device at server sa internet, na nagpapataas sa panganib ng cross-site request forgery (CSRF) na pag-atake, at/o pag-leak ng impormasyon. Para mapigilan ang mga panganib na ito, hindi na gagamitin ng Chrome ang mga kahilingan sa mga hindi pampublikong subresource kapag sinimulan mula sa mga hindi secure na konteksto, at magsisimula itong i-block ang mga iyon."
   },
+  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
+    "message": "Na-rename sa updateUrl ang field ng dailyUpdateUrl ng InterestGroups na ipinasa sa joinAdInterestGroup(), para mas tumpak na maipakita ang gawi nito."
+  },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "Hindi ma-load ang CSS mula sa mga URL ng file: maliban kung nagtatapos ang mga ito sa file extension na .css."
   },
@@ -1320,7 +1323,7 @@
     "message": "Hihingi ng pahintulot ang Web MIDI sa paggamit kahit na hindi tinukoy ang sysex sa MIDIOptions."
   },
   "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
-    "message": "Hindi na ginagamit ang luma at hindi standardized na attribute na shadowroot. Pakigamit na lang ang bago at standardized na attribute na shadowrootmode."
+    "message": "Hindi na ginagamit ang luma at hindi standardized na attribute na shadowroot at *hindi na ito gagana* sa M119. Pakigamit na lang ang bago at standardized na attribute na shadowrootmode."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
     "message": "Posibleng hindi na magamit ang Notification API mula sa mga hindi secure na origin. Dapat mong isaalang-alang ang paglipat ng iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
@@ -1402,6 +1405,12 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Dapat mag-opt in ang mga extension sa mga pag-isolate ng cross-origin para patuloy na magamit ang SharedArrayBuffer. Tingnan ang https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Hindi na ginagamit ang window-placement ng descriptor ng pahintulot. window-management na lang ang gamitin. Para sa higit pang tulong, tingnan ang https://bit.ly/window-placement-rename."
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
+    "message": "Hindi na ginagamit ang window-placement ng patakaran sa pahintulot. window-management na lang ang gamitin. Para sa higit pang tulong, tingnan ang https://bit.ly/window-placement-rename."
   },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "Hindi sinusuportahan ang UTF-16 ng sagot na json sa XMLHttpRequest"
@@ -3177,7 +3186,7 @@
     "message": "SQL ng Web"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "Mga Trust Token"
+    "message": "Mga Private State Token"
   },
   "panels/application/application-meta.ts | application": {
     "message": "Application"
@@ -4083,19 +4092,43 @@
     "message": "{n,plural, =1{Magpakita ng # pang frame}one{Magpakita ng # pang frame}other{Magpakita ng # pang frame}}"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "Lahat ng naka-store na available na Trust Token sa instance ng browser na ito."
+    "message": "Lahat ng naka-store na available na Private State Token sa instance ng browser na ito."
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "I-delete ang lahat ng naka-store na Trust Token na ibinigay ng {PH1}."
+    "message": "I-delete ang lahat ng naka-store na Private State Token na ibinigay ng {PH1}."
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Nagbigay"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Walang naka-store na Trust Token sa kasalukuyan."
+    "message": "Walang naka-store na Private State Token sa kasalukuyan."
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Bilang ng naka-store na token"
+  },
+  "panels/application/components/TrustTokensView.ts | trustTokens": {
+    "message": "Mga Private State Token"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusFailure": {
+    "message": "Hindi Nagtagumpay"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPending": {
+    "message": "Nakabinbin"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusReady": {
+    "message": "Handa na"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusRunning": {
+    "message": "Tumatakbo"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusSuccess": {
+    "message": "Tagumpay"
+  },
+  "panels/application/preloading/PreloadingView.ts | validityInvalid": {
+    "message": "Invalid"
+  },
+  "panels/application/preloading/PreloadingView.ts | validitySomeRulesInvalid": {
+    "message": "Invalid ang ilang panuntunan"
   },
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Valid"
@@ -4112,11 +4145,38 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Na-disable ang pag-prerender, pero sapilitan itong naka-enable ngayon"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
+    "message": "Hindi na-preload."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
+    "message": "Kwalipikado pero nakabinbin ang pagsubok sa pag-preload."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
+    "message": "Natapos ang pag-preload at handa na ang resulta para sa susunod na pag-navigate."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
+    "message": "Tumatakbo ang pag-preload."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
+    "message": "Natapos at ginagamit ang pag-preload para sa pag-navigate."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
+    "message": "Pagkilos"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "Detalyadong impormasyon"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
+    "message": "Hanay ng panuntunan"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Pumili ng element para sa higit pang detalye"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | action": {
+    "message": "Pagkilos"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
@@ -4124,17 +4184,32 @@
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Detalyadong impormasyon"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
+    "message": "Error"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Source"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
     "message": "Validity"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
+    "message": "Invalid; hindi JSON object ang source"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
+    "message": "Invalid at binalewala ang ilang panuntunan"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "Valid"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Validity"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
+    "message": "Ginagamit para sa page na ito ang {PH1} (na) na-prefetch na resource"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
+    "message": "Na-prerender ang page na ito"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "breakpoint na hit"
@@ -4370,6 +4445,9 @@
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "na-clear ang Console"
   },
+  "panels/console/ConsoleView.ts | consolePasteBlocked": {
+    "message": "Karaniwang ginagamit ang pag-paste ng code sa mga devtool para mang-scam ng mga tao at pangasiwaan ang kanilang mga account. Na-block ito sa page na ito."
+  },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Mga setting ng Console"
   },
@@ -4583,6 +4661,9 @@
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "I-autocomplete mula sa history"
   },
+  "panels/console/console-meta.ts | autocompleteOnEnter": {
+    "message": "Tanggapin ang autocomplete na suhestyon kapag pinindot ang Enter"
+  },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "I-clear ang console"
   },
@@ -4600,6 +4681,9 @@
   },
   "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
     "message": "Huwag mag-autocomplete mula sa history"
+  },
+  "panels/console/console-meta.ts | doNotAutocompleteOnEnter": {
+    "message": "Huwag tanggapin ang autocomplete na suhestyon kapag pinindot ang Enter"
   },
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
     "message": "Huwag masigasig na suriin ang text ng prompt ng console"
@@ -4620,7 +4704,7 @@
     "message": "Masigasig na suriin ang text sa prompt ng console"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "Tini-trigger ng pagsusuri ang pag-activate ng user"
+    "message": "Ituring bilang pagkilos ng user ang pagsusuri ng code"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
     "message": "Awtomatikong palawakin ang mga mensaheng console.trace()"
@@ -4901,6 +4985,9 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "I-clear ang pangkalahatang-ideya"
   },
+  "panels/css_overview/CSSOverviewSidebarPanel.ts | cssOverviewPanelSidebar": {
+    "message": "Sidebar ng panel ng Pangkalahatang-ideya ng CSS"
+  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Inilalapat ang nasa Bottom sa static na nakaposisyong element"
   },
@@ -5002,6 +5089,9 @@
   },
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Ipakita ang Mga Resource ng Developer"
+  },
+  "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
+    "message": "Ang value para sa pagtatakda ng “{PH1}” {PH2} ay wala sa sinusuportahang hanay [{PH3}, {PH4}] para sa font-family na “{PH5}.”"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
     "message": "Subukang itakda ang property na {EXISTING_PARENT_ELEMENT_RULE} sa parent sa {TARGET_PARENT_ELEMENT_RULE}."
@@ -5962,9 +6052,6 @@
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Invalid na Value ng Header"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
-    "message": "Maximum na Mga Magkakasabay-sabay na Pagpaparehistro"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# paglabag}one{# paglabag}other{# na paglabag}}"
@@ -7178,6 +7265,9 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Tapos na"
   },
+  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
+    "message": "May mga na-override na header ang request"
+  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "antas 1"
   },
@@ -7323,10 +7413,10 @@
     "message": "Timing"
   },
   "panels/network/NetworkItemView.ts | trustTokenOperationDetails": {
-    "message": "Mga detalye ng pagpapatakbo ng Trust Token"
+    "message": "Mga detalye ng pagpapatakbo ng Private State Token"
   },
   "panels/network/NetworkItemView.ts | trustTokens": {
-    "message": "Mga Trust Token"
+    "message": "Mga Private State Token"
   },
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "Mga mensahe mula sa WebSocket"
@@ -8280,7 +8370,7 @@
     "message": "Status"
   },
   "panels/network/components/RequestTrustTokensView.ts | success": {
-    "message": "Matagumpay"
+    "message": "Tagumpay"
   },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Nabigo ang pagpapatakbo sa hindi malamang dahilan."
@@ -9022,6 +9112,9 @@
   },
   "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
     "message": "Hindi na gagamitin ang panel na ito sa paparating na bersyon. Gamitin ang Panel ng performance para mag-record ng mga profile ng CPU ng JavaScript."
+  },
+  "panels/profiler/ProfilesPanel.ts | enableThisPanelTemporarily": {
+    "message": "Pansamantalang i-enable ang panel na ito"
   },
   "panels/profiler/ProfilesPanel.ts | feedback": {
     "message": "Feedback"
@@ -10250,15 +10343,6 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Huwag na huwag mag-pause dito"
   },
-  "panels/sources/DebuggerPlugin.ts | prettyprint": {
-    "message": "I-pretty print"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintThisMinifiedFile": {
-    "message": "I-pretty print ang pinaliit na file na ito?"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
-    "message": "Kapag nag-pretty print, mafo-format ang file na ito sa bagong tab kung saan maipagpapatuloy mo ang pag-debug. Puwede mo ring i-pretty print ang file na ito sa pamamagitan ng pag-click sa button na {PH1} sa status bar sa ibaba."
-  },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Alisin ang breakpoint}one{Alisin ang lahat ng breakpoint sa linya}other{Alisin ang lahat ng breakpoint sa linya}}"
   },
@@ -10279,6 +10363,9 @@
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
     "message": "Walang nahanap na file"
+  },
+  "panels/sources/FilteredUISourceCodeListProvider.ts | sIgnoreListed": {
+    "message": "{PH1} (nakalistang babalewalain)"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "Kasalukuyang linya: {PH1}. Mag-type ng numero ng linya mula 1 hanggang {PH2} kung saan magna-navigate."
@@ -10309,54 +10396,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "I-format ang {PH1}"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | activateBreakpoints": {
-    "message": "I-activate ang mga breakpoint"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | checked": {
-    "message": "na-check"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | deactivateBreakpoints": {
-    "message": "Mga breakpoint sa pag-deactivate"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableAllBreakpoints": {
-    "message": "I-disable ang lahat ng breakpoint"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableBreakpointsInFile": {
-    "message": "I-disable ang mga breakpoint sa file"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableAllBreakpoints": {
-    "message": "I-enable ang lahat ng breakpoint"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableBreakpointsInFile": {
-    "message": "I-enable ang mga breakpoint sa file"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "halo-halo"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Walang breakpoint"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpoints": {
-    "message": "Alisin ang lahat ng breakpoint"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
-    "message": "Alisin ang lahat ng breakpoint sa linya"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "Mag-alis ng breakpoint"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
-    "message": "Alisin ang iba pang breakpoint"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
-    "message": "Ipakita ang lokasyon"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
-    "message": "{PH1} breakpoint na hit"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | unchecked": {
-    "message": "naka-uncheck"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
     "message": "Sigurado ka bang gusto mong i-delete ang lahat ng override na nasa folder na ito?"
@@ -10469,12 +10508,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
     "message": "Ipakita sa panel ng Inspector ng Memory"
   },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrint": {
-    "message": "Mag-pretty print"
-  },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
-    "message": "I-pretty print ang {PH1}"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10544,9 +10577,6 @@
   "panels/sources/SourcesPanel.ts | debuggerShown": {
     "message": "Ipinapakita ang sidebar ng debugger"
   },
-  "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
-    "message": "Huwag mag-pause sa mga exception"
-  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "I-drop ang folder ng workspace dito"
   },
@@ -10579,9 +10609,6 @@
   },
   "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
     "message": "Mag-pause sa mga na-catch na exception"
-  },
-  "panels/sources/SourcesPanel.ts | pauseOnExceptions": {
-    "message": "Mag-pause sa mga exception"
   },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "Magpatuloy nang naka-block ang lahat ng pag-pause sa loob ng 500 ms"
@@ -10712,6 +10739,9 @@
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Nagka-error noong pina-parse ang ''{PH1}''."
   },
+  "panels/sources/components/HeadersView.ts | learnMore": {
+    "message": "Matuto pa"
+  },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
     "message": "Malamang dahil ito sa error sa syntax sa ''{PH1}''. Subukang buksan ang file na ito sa isang panlabas na editor para ayusin ang error o i-delete ang file at gawin ulit ang override."
   },
@@ -10790,6 +10820,9 @@
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "I-disable ang inililipat ng tab ang focus"
   },
+  "panels/sources/sources-meta.ts | disableWasmAutoStepping": {
+    "message": "I-disable ang auto-stepping ng wasm"
+  },
   "panels/sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
     "message": "Huwag payagan ang pag-scroll nang lampas sa dulo ng file"
   },
@@ -10831,6 +10864,9 @@
   },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "I-enable ang inililipat ng tab ang focus"
+  },
+  "panels/sources/sources-meta.ts | enableWasmAutoStepping": {
+    "message": "I-enable ang auto-stepping ng wasm"
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Suriin ang napiling text sa console"
@@ -10991,6 +11027,9 @@
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Trailing"
   },
+  "panels/sources/sources-meta.ts | wasmAutoStepping": {
+    "message": "Kapag nagde-debug ng wasm gamit ang impormasyon sa pag-debug, huwag mag-pause sa bytecode ng wasm kung posible"
+  },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Pagbabantay"
   },
@@ -11026,6 +11065,18 @@
   },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Oras ng Pagsisimula"
+  },
+  "panels/timeline/GPUTrackAppender.ts | gpu": {
+    "message": "GPU"
+  },
+  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (oras ng isang aktibidad {PH2})"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | interactions": {
+    "message": "Mga Pakikipag-ugnayan"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (oras ng isang aktibidad {PH2})"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Hindi available ang profile ng CPU para sa isang target."
@@ -11078,14 +11129,8 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
     "message": "Animation"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | console": {
-    "message": "Console"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Na-drop na Frame"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | experience": {
-    "message": "Karanasan"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Frame"
@@ -11095,9 +11140,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Mga Frame"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | gpu": {
-    "message": "GPU"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Idle na Frame"
@@ -11134,9 +11176,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Thread"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
-    "message": "Mga Pakikipag-ugnayan"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Network"
@@ -11243,9 +11282,6 @@
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "I-enable ang advanced na instrumentation ng paint (mabagal)"
   },
-  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSSS": {
-    "message": "Hindi na-save ang timeline na: {PH1} ({PH2}, {PH3})"
-  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Sinisimulan ang profiler…"
   },
@@ -11288,9 +11324,6 @@
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Ipakita ang timeline ng memory"
   },
-  "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Ipakita ang Web Vitals"
-  },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} seg"
   },
@@ -11308,9 +11341,6 @@
   },
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
-  },
-  "panels/timeline/TimelinePanel.ts | webVitals": {
-    "message": "Web Vitals"
   },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "Aktibidad"
@@ -11695,9 +11725,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Pag-install ng Timer"
-  },
-  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
-    "message": "Uri ng pakikipag-ugnayan:{PH1} id:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Pag-invalidate sa Layout"
@@ -12140,6 +12167,12 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Oo"
   },
+  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (oras ng isang aktibidad {PH2})"
+  },
+  "panels/timeline/TimingsTrackAppender.ts | timings": {
+    "message": "Mga Timing"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "Pagguhit ng Frame"
   },
@@ -12163,36 +12196,6 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "System"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | fcp": {
-    "message": "FCP"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | good": {
-    "message": "Mahusay"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | lcp": {
-    "message": "LCP"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTask": {
-    "message": "Mahabang Gawain"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTasks": {
-    "message": "Mahahabang Gawain"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | ls": {
-    "message": "LS"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | needsImprovement": {
-    "message": "Kailangang pahusayin"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | poor": {
-    "message": "Hindi maganda"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Itago ang frame ng chrome sa view na Mga Layer"
@@ -13099,6 +13102,9 @@
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Walang property"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | revealInMemoryInpector": {
+    "message": "Ipakita sa panel ng Inspector ng Memory"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Ipakita ang lahat {PH1}"

@@ -780,7 +780,7 @@
     "message": "无模拟"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
-    "message": "在遇到异常时暂停"
+    "message": "遇到异常时暂停"
   },
   "core/sdk/sdk-meta.ts | preserveLogUponNavigation": {
     "message": "在浏览时保留日志"
@@ -1307,6 +1307,9 @@
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "该网站向网络请求了一项子资源，而且仅仅因为其用户的特权网络位置而能够访问此项资源。此类请求会向互联网公开非公用设备和服务器，这会增加跨站请求伪造 (CSRF) 攻击和/或信息泄露的风险。为降低这类风险，Chrome 不再支持从非安全上下文发起针对非公用子资源的请求，并将开始阻止此类请求。"
   },
+  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
+    "message": "向 joinAdInterestGroup() 传递的 InterestGroups 所含 dailyUpdateUrl 字段已被重命名为 updateUrl，以便更准确地反映其行为。"
+  },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "无法从 file: 网址加载 CSS，除非它们以 .css 文件扩展名结尾。"
   },
@@ -1320,7 +1323,7 @@
     "message": "即使 MIDIOptions 中未指定 sysex，Web MIDI 也会请求获得使用许可。"
   },
   "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
-    "message": "较为老旧的非标准化 shadowroot 属性已被弃用。请改用新的标准化 shadowrootmode 属性。"
+    "message": "较旧的非标准化 shadowroot 属性已被弃用，自 M119 起将*不再起作用*。请改用新的标准化 shadowrootmode 属性。"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
     "message": "无法再从不安全的源使用 Notification API。您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
@@ -1402,6 +1405,12 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "扩展程序应选择启用跨域隔离，以便继续使用 SharedArrayBuffer。请参阅 https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/。"
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
+    "message": "权限描述符 window-placement 已被弃用。请改用 window-management。如需更多帮助，请访问 https://bit.ly/window-placement-rename。"
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
+    "message": "权限政策 window-placement 已被弃用。请改用 window-management。如需更多帮助，请访问 https://bit.ly/window-placement-rename。"
   },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequest 中的响应 JSON 不再支持 UTF-16"
@@ -2664,7 +2673,7 @@
     "message": "表格中显示的 Cookie 数量：{PH1}"
   },
   "panels/application/CookieItemsView.ts | onlyShowCookiesWhichHaveAn": {
-    "message": "仅显示具有相关问题的 Cookie"
+    "message": "仅显示那些有相关问题的 Cookie"
   },
   "panels/application/CookieItemsView.ts | onlyShowCookiesWithAnIssue": {
     "message": "仅显示有问题的 Cookie"
@@ -2673,7 +2682,7 @@
     "message": "选择一个 Cookie 以预览其值"
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
-    "message": "显示已编码网址"
+    "message": "显示已解码的网址"
   },
   "panels/application/DOMStorageItemsView.ts | domStorage": {
     "message": "DOM 存储空间"
@@ -3177,7 +3186,7 @@
     "message": "Web SQL"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "信任令牌"
+    "message": "私密状态令牌"
   },
   "panels/application/application-meta.ts | application": {
     "message": "应用"
@@ -4083,19 +4092,43 @@
     "message": "{n,plural, =1{显示另外 # 个框架}other{显示另外 # 个框架}}"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "在此浏览器实例中可用的所有已存储信任令牌。"
+    "message": "在此浏览器实例中可用的所有已存储私密状态令牌。"
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "删除 {PH1} 上提供的所有已存储信任令牌。"
+    "message": "删除 {PH1} 颁发的所有已存储私密状态令牌。"
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "颁发者"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "尚未存储任何信任令牌。"
+    "message": "尚未存储任何私密状态令牌。"
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "已存储的令牌数"
+  },
+  "panels/application/components/TrustTokensView.ts | trustTokens": {
+    "message": "私密状态令牌"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusFailure": {
+    "message": "失败"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPending": {
+    "message": "待处理"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusReady": {
+    "message": "已就绪"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusRunning": {
+    "message": "正在运行"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusSuccess": {
+    "message": "成功"
+  },
+  "panels/application/preloading/PreloadingView.ts | validityInvalid": {
+    "message": "无效"
+  },
+  "panels/application/preloading/PreloadingView.ts | validitySomeRulesInvalid": {
+    "message": "部分规则无效"
   },
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "有效"
@@ -4112,11 +4145,38 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "预渲染功能之前已停用，但现已强制启用"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
+    "message": "预加载失败。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
+    "message": "预加载尝试符合条件，但尚待处理。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
+    "message": "预加载完毕，结果已就绪，可供下次导航使用。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
+    "message": "预加载正在运行。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
+    "message": "预加载完毕，且已用于导航。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
+    "message": "操作"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "详细信息"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
+    "message": "规则集"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "状态"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "选择一个元素即可了解更多详情"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | action": {
+    "message": "操作"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "状态"
@@ -4124,17 +4184,32 @@
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "详细信息"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
+    "message": "错误"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "来源"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
     "message": "有效期"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
+    "message": "无效；来源不是 JSON 对象"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
+    "message": "某些规则无效，会被忽略"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "有效"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "有效期"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
+    "message": "此网页使用了 {PH1} 个预提取的资源"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
+    "message": "此网页是预呈现的网页"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "断点命中"
@@ -4370,6 +4445,9 @@
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "已清除控制台"
   },
+  "panels/console/ConsoleView.ts | consolePasteBlocked": {
+    "message": "不良之徒往往会通过将代码粘贴到开发者工具中来欺骗用户及侵占帐号。系统已禁止在此网页上执行这类粘贴。"
+  },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "控制台设置"
   },
@@ -4583,6 +4661,9 @@
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "根据历史记录自动补全"
   },
+  "panels/console/console-meta.ts | autocompleteOnEnter": {
+    "message": "按 Enter 键时接受自动补全建议"
+  },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "清除控制台"
   },
@@ -4600,6 +4681,9 @@
   },
   "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
     "message": "不根据历史记录自动补全"
+  },
+  "panels/console/console-meta.ts | doNotAutocompleteOnEnter": {
+    "message": "按 Enter 键时不接受自动补全建议"
   },
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
     "message": "不即时评估控制台提示文字"
@@ -4620,7 +4704,7 @@
     "message": "即时评估控制台提示文字"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "评估会触发用户激活"
+    "message": "将代码评估视为用户操作"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
     "message": "自动展开 console.trace() 消息"
@@ -4901,6 +4985,9 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "清除概览"
   },
+  "panels/css_overview/CSSOverviewSidebarPanel.ts | cssOverviewPanelSidebar": {
+    "message": "“CSS 概览”面板边栏"
+  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom值已应用于静态放置的元素"
   },
@@ -5002,6 +5089,9 @@
   },
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "显示“开发者资源”面板"
+  },
+  "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
+    "message": "“{PH1}”设置的值 {PH2} 超出了字体系列“{PH5}”的支持范围 [{PH3}，{PH4}]。"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
     "message": "不妨尝试将父级元素的 {EXISTING_PARENT_ELEMENT_RULE} 属性设为 {TARGET_PARENT_ELEMENT_RULE}。"
@@ -5962,9 +6052,6 @@
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "无效的标头值"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
-    "message": "最大并发注册数"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# 项违规行为}other{# 项违规行为}}"
@@ -7178,6 +7265,9 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "已完成"
   },
+  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
+    "message": "此请求的标头已被替换"
+  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "级别 1"
   },
@@ -7323,10 +7413,10 @@
     "message": "时间"
   },
   "panels/network/NetworkItemView.ts | trustTokenOperationDetails": {
-    "message": "信任令牌操作详情"
+    "message": "私密状态令牌操作详情"
   },
   "panels/network/NetworkItemView.ts | trustTokens": {
-    "message": "信任令牌"
+    "message": "私密状态令牌"
   },
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "WebSocket 消息"
@@ -9023,6 +9113,9 @@
   "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
     "message": "在即将发布的版本中，此面板会被弃用。请改用“性能”面板记录 JavaScript CPU 性能分析报告。"
   },
+  "panels/profiler/ProfilesPanel.ts | enableThisPanelTemporarily": {
+    "message": "暂时启用此面板"
+  },
   "panels/profiler/ProfilesPanel.ts | feedback": {
     "message": "反馈"
   },
@@ -10250,15 +10343,6 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "一律不在此处暂停"
   },
-  "panels/sources/DebuggerPlugin.ts | prettyprint": {
-    "message": "美观输出"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintThisMinifiedFile": {
-    "message": "要美观输出此压缩文件吗？"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
-    "message": "美观输出会在新标签页中为此文件设置格式，您可以继续在新标签页中调试。您也可以点击底部状态栏上的 {PH1} 按钮，美观输出此文件。"
-  },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{移除 1 个断点}other{移除行内所有断点}}"
   },
@@ -10279,6 +10363,9 @@
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
     "message": "找不到任何文件"
+  },
+  "panels/sources/FilteredUISourceCodeListProvider.ts | sIgnoreListed": {
+    "message": "{PH1}（位于忽略列表中）"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "当前行：{PH1}。输入介于 1 和 {PH2} 之间的行号即可转到相应行。"
@@ -10309,54 +10396,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "格式化“{PH1}”"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | activateBreakpoints": {
-    "message": "启用断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | checked": {
-    "message": "已勾选"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | deactivateBreakpoints": {
-    "message": "停用断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableAllBreakpoints": {
-    "message": "停用所有断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableBreakpointsInFile": {
-    "message": "停用文件中的断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableAllBreakpoints": {
-    "message": "启用所有断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableBreakpointsInFile": {
-    "message": "在文件中启用断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "混合"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "无断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpoints": {
-    "message": "移除所有断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
-    "message": "移除行内所有断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "移除断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
-    "message": "移除其他断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
-    "message": "显示位置"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
-    "message": "遇到{PH1}断点"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | unchecked": {
-    "message": "未选中"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
     "message": "确定要删除此文件夹中包含的所有替换项吗？"
@@ -10469,12 +10508,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
     "message": "在“内存检查器”面板中显示"
   },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrint": {
-    "message": "美观输出"
-  },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
-    "message": "美观输出{PH1}"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10544,9 +10577,6 @@
   "panels/sources/SourcesPanel.ts | debuggerShown": {
     "message": "调试程序边栏处于显示状态"
   },
-  "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
-    "message": "不在遇到异常时暂停"
-  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "将工作区文件夹拖放到此处"
   },
@@ -10578,9 +10608,6 @@
     "message": "在“来源”面板中打开"
   },
   "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
-    "message": "在遇到异常时暂停"
-  },
-  "panels/sources/SourcesPanel.ts | pauseOnExceptions": {
     "message": "在遇到异常时暂停"
   },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
@@ -10712,6 +10739,9 @@
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "解析“{PH1}”时出错。"
   },
+  "panels/sources/components/HeadersView.ts | learnMore": {
+    "message": "了解详情"
+  },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
     "message": "这很可能是由于“{PH1}”中存在语法错误。请尝试在外部编辑器中打开此文件以修正该错误，或者删除此文件然后重新创建替换项。"
   },
@@ -10790,6 +10820,9 @@
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "停用通过 Tab 键移动焦点功能"
   },
+  "panels/sources/sources-meta.ts | disableWasmAutoStepping": {
+    "message": "停用 wasm 自动步进"
+  },
   "panels/sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
     "message": "不允许滚动范围超出文件末尾"
   },
@@ -10831,6 +10864,9 @@
   },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "启用通过 Tab 键移动焦点功能"
+  },
+  "panels/sources/sources-meta.ts | enableWasmAutoStepping": {
+    "message": "启用 wasm 自动步进"
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "在控制台中评估所选文本"
@@ -10991,6 +11027,9 @@
   "panels/sources/sources-meta.ts | trailing": {
     "message": "尾随"
   },
+  "panels/sources/sources-meta.ts | wasmAutoStepping": {
+    "message": "使用调试信息调试 wasm 时，尽量别在 wasm 字节码处暂停"
+  },
   "panels/sources/sources-meta.ts | watch": {
     "message": "监视"
   },
@@ -11026,6 +11065,18 @@
   },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "开始时间"
+  },
+  "panels/timeline/GPUTrackAppender.ts | gpu": {
+    "message": "GPU"
+  },
+  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
+    "message": "{PH1}（自身耗时 {PH2}）"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | interactions": {
+    "message": "互动"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
+    "message": "{PH1}（自身耗时 {PH2}）"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "无法显示目标的 CPU 性能分析报告。"
@@ -11078,14 +11129,8 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
     "message": "动画"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | console": {
-    "message": "控制台"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "丢弃的帧"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | experience": {
-    "message": "体验"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "帧"
@@ -11095,9 +11140,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "帧"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | gpu": {
-    "message": "GPU"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "空闲帧"
@@ -11134,9 +11176,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "线程"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
-    "message": "互动"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "网络"
@@ -11243,9 +11282,6 @@
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "启用高级绘制插桩（慢速）"
   },
-  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSSS": {
-    "message": "未能保存时间轴：{PH1}（{PH2}、{PH3}）"
-  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "正在初始化性能剖析器…"
   },
@@ -11288,9 +11324,6 @@
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "显示内存时间轴"
   },
-  "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "显示网页指标"
-  },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} 秒"
   },
@@ -11308,9 +11341,6 @@
   },
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
-  },
-  "panels/timeline/TimelinePanel.ts | webVitals": {
-    "message": "网页指标"
   },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "活动"
@@ -11695,9 +11725,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "安装定时器"
-  },
-  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
-    "message": "互动类型：{PH1} ID：{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "使布局失效"
@@ -12140,6 +12167,12 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "是"
   },
+  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
+    "message": "{PH1}（自身耗时 {PH2}）"
+  },
+  "panels/timeline/TimingsTrackAppender.ts | timings": {
+    "message": "时间"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "绘制帧"
   },
@@ -12163,36 +12196,6 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "系统"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | fcp": {
-    "message": "FCP"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | firstContentfulPaint": {
-    "message": "First Contentful Paint"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | good": {
-    "message": "良好"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | largestContentfulPaint": {
-    "message": "Largest Contentful Paint"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | lcp": {
-    "message": "LCP"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTask": {
-    "message": "长时间执行的任务"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTasks": {
-    "message": "长时间执行的任务"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | ls": {
-    "message": "LS"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | needsImprovement": {
-    "message": "需要改进"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | poor": {
-    "message": "较差"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "在“图层”视图中隐藏 chrome 框架"
@@ -13099,6 +13102,9 @@
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "无属性"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | revealInMemoryInpector": {
+    "message": "在“内存检查器”面板中显示"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "显示全部 {PH1} 项"

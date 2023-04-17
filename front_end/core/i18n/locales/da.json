@@ -1307,6 +1307,9 @@
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "Websitet har anmodet om en underressource fra et netværk, som websitet kun havde adgang til på grund af dets brugeres privilegerede netværksposition. Disse anmodninger eksponerer ikke-offentlige enheder og servere på internettet, hvilket øger risikoen for et angreb med en forfalsket anmodning fra et andet website og/eller læk af oplysninger. For at minimere disse risici udfaser Chrome anmodninger til ikke-offentlige underressourcer, når de stammer fra usikre kontekster, og begynder at blokere dem."
   },
+  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
+    "message": "Feltet dailyUpdateUrl i InterestGroups, der sendes til joinAdInterestGroup(), er blevet omdøbt til updateUrl for at afspejle adfærden mere nøjagtigt."
+  },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "CSS kan ikke indlæses fra webadresser med file:, medmindre de slutter med filtypen .css."
   },
@@ -1320,7 +1323,7 @@
     "message": "Web MIDI anmoder om tilladelse til brug, selvom sysex ikke er angivet i MIDIOptions."
   },
   "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
-    "message": "Den ældre, ikke-standardiserede shadowroot-attribut er udfaset. Brug den nye standardiserede shadowrootmode-attribut i stedet."
+    "message": "Den ældre, ikke-standardiserede shadowroot-attribut er udfaset og *fungerer ikke længere* i M119. Brug den nye standardiserede shadowrootmode-attribut i stedet."
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
     "message": "Notification API kan ikke længere bruges fra usikre oprindelser. Overvej at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
@@ -1402,6 +1405,12 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Udvidelser skal tilvælge domæneisolering for fortsat at kunne bruge SharedArrayBuffer. Se https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Tilladelsesbeskrivelsen window-placement er udfaset. Brug window-management i stedet. Du kan få yderligere hjælp på https://bit.ly/window-placement-rename."
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
+    "message": "Tilladelsespolitikken window-placement er udfaset. Brug window-management i stedet. Du kan få yderligere hjælp på https://bit.ly/window-placement-rename."
   },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 understøttes ikke af svar-json i XMLHttpRequest"
@@ -3177,7 +3186,7 @@
     "message": "Web SQL"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "Godkend tokens"
+    "message": "Private state tokens"
   },
   "panels/application/application-meta.ts | application": {
     "message": "App"
@@ -4083,19 +4092,43 @@
     "message": "{n,plural, =1{Vis # ramme mere}one{Vis # ramme mere}other{Vis # rammer mere}}"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "Alle lagrede Trust-tokens, der er tilgængelige i denne browserforekomst."
+    "message": "Alle gemte private state tokens, der er tilgængelige i denne browserforekomst."
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "Slet alle gemte Trust-tokens udstedt af {PH1}."
+    "message": "Slet alle gemte private state tokens, der stammer fra {PH1}."
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Udsteder"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Der er i øjeblikket ikke gemt nogen Trust-tokens."
+    "message": "Der er i øjeblikket ikke gemt nogen private state tokens."
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Antal lagrede tokens"
+  },
+  "panels/application/components/TrustTokensView.ts | trustTokens": {
+    "message": "Private state tokens"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusFailure": {
+    "message": "Mislykket"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPending": {
+    "message": "Afventer"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusReady": {
+    "message": "Klar"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusRunning": {
+    "message": "Kører"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusSuccess": {
+    "message": "Gennemført"
+  },
+  "panels/application/preloading/PreloadingView.ts | validityInvalid": {
+    "message": "Ugyldig"
+  },
+  "panels/application/preloading/PreloadingView.ts | validitySomeRulesInvalid": {
+    "message": "Nogle regler er ugyldige"
   },
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Gyldig"
@@ -4112,11 +4145,38 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Forhåndsgengivelse blev deaktiveret, men er nu aktiveret ved tvang"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
+    "message": "Forudindlæsningen mislykkedes."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
+    "message": "Forsøget på forudindlæsning er kvalificeret, men afventer."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
+    "message": "Forudindlæsningen er afsluttet, og resultatet er klar til næste navigation."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
+    "message": "Forudindlæsningen kører."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
+    "message": "Forudindlæsningen er afsluttet og blev brugt til navigation."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
+    "message": "Handling"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "Detaljerede oplysninger"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
+    "message": "Regelsæt"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Vælg et element for at få flere oplysninger"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | action": {
+    "message": "Handling"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
@@ -4124,17 +4184,32 @@
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Detaljerede oplysninger"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
+    "message": "Fejl"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Kilde"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
     "message": "Gyldighed"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
+    "message": "Ugyldig: Kilden er ikke et JSON-objekt"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
+    "message": "Nogle regler er ugyldige og ignoreres"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "Gyldig"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Gyldighed"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
+    "message": "{PH1} ressourcer, der hentes på forhånd, bruges til denne side"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
+    "message": "Denne side blev gengivet på forhånd"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ramt skillepunkt"
@@ -4370,6 +4445,9 @@
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsollen er ryddet"
   },
+  "panels/console/ConsoleView.ts | consolePasteBlocked": {
+    "message": "Indsættelse af kode i Udviklerværktøjer bruges ofte til at svindle folk og overtage deres konti. Funktionen er blokeret på denne side."
+  },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsolindstillinger"
   },
@@ -4583,6 +4661,9 @@
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "Autofuldfør ud fra historik"
   },
+  "panels/console/console-meta.ts | autocompleteOnEnter": {
+    "message": "Acceptér forslag til autofuldførelse ved tryk på Enter"
+  },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "Ryd konsol"
   },
@@ -4600,6 +4681,9 @@
   },
   "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
     "message": "Autofuldfør ikke fra historik"
+  },
+  "panels/console/console-meta.ts | doNotAutocompleteOnEnter": {
+    "message": "Acceptér ikke forslag til autofuldførelse ved tryk på Enter"
   },
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
     "message": "Evaluer ikke konsollens meddelelsestekst ivrigt"
@@ -4620,7 +4704,7 @@
     "message": "Evaluer ivrigt konsollens meddelelsestekst"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "Evaluering forårsager brugeraktivering"
+    "message": "Håndter kodeevaluering som brugerhandling"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
     "message": "Udvid automatisk console.trace()-meddelelser"
@@ -4901,6 +4985,9 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "Ryd oversigt"
   },
+  "panels/css_overview/CSSOverviewSidebarPanel.ts | cssOverviewPanelSidebar": {
+    "message": "Sidepanel med CSS-oversigt"
+  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Bottom anvendt på et statisk placeret element"
   },
@@ -5002,6 +5089,9 @@
   },
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "Vis udviklerressourcer"
+  },
+  "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
+    "message": "Værdien for indstillingen \"{PH1}\" {PH2} er uden for det understøttede område [{PH3}, {PH4}] til skrifttypefamilien \"{PH5}\"."
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
     "message": "Prøv at angive egenskaben {EXISTING_PARENT_ELEMENT_RULE} for det overordnede element som {TARGET_PARENT_ELEMENT_RULE}."
@@ -5962,9 +6052,6 @@
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "Ugyldig headerværdi"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
-    "message": "Maksimale antal samtidige registreringer"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{# overtrædelse}one{# overtrædelse}other{# overtrædelser}}"
@@ -7178,6 +7265,9 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Udført"
   },
+  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
+    "message": "Anmodningen har tilsidesatte headere"
+  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "niveau 1"
   },
@@ -7323,10 +7413,10 @@
     "message": "Timing"
   },
   "panels/network/NetworkItemView.ts | trustTokenOperationDetails": {
-    "message": "Oplysninger om Trust Token-handling"
+    "message": "Oplysninger om handlinger for private state tokens"
   },
   "panels/network/NetworkItemView.ts | trustTokens": {
-    "message": "Godkend tokens"
+    "message": "Private state tokens"
   },
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "WebSocket-beskeder"
@@ -8256,7 +8346,7 @@
     "message": "Enten er der ingen tilgængelige input for denne proces, eller også overstiger outputtet proceskvoten."
   },
   "panels/network/components/RequestTrustTokensView.ts | failure": {
-    "message": "Fejl"
+    "message": "Mislykket"
   },
   "panels/network/components/RequestTrustTokensView.ts | issuer": {
     "message": "Udsteder"
@@ -9022,6 +9112,9 @@
   },
   "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
     "message": "Dette panel udfases i den kommende version. Brug Ydeevnepanel til at registrere JavaScript-profileringsværktøjer til CPU."
+  },
+  "panels/profiler/ProfilesPanel.ts | enableThisPanelTemporarily": {
+    "message": "Aktivér dette panel midlertidigt"
   },
   "panels/profiler/ProfilesPanel.ts | feedback": {
     "message": "Feedback"
@@ -10250,15 +10343,6 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Sæt aldrig på pause her"
   },
-  "panels/sources/DebuggerPlugin.ts | prettyprint": {
-    "message": "Anvend pretty print"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintThisMinifiedFile": {
-    "message": "Vil du anvende pretty print på denne formindskede fil?"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
-    "message": "Anvendelse af pretty print formaterer denne fil i en ny fane, hvor du kan fortsætte fejlretning. Du kan også anvende pretty print på denne fil ved at klikke på {PH1}-knappen på den nederste statusbjælke."
-  },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Fjern stoppunkt}one{Fjern stoppunkt på linjen}other{Fjern alle stoppunkter på linjen}}"
   },
@@ -10279,6 +10363,9 @@
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
     "message": "Der blev ikke fundet nogen filer"
+  },
+  "panels/sources/FilteredUISourceCodeListProvider.ts | sIgnoreListed": {
+    "message": "{PH1} (på liste over ignorerede)"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "Aktuel linje: {PH1}. Angiv et linjenummer mellem 1 og {PH2}, du vil navigere til."
@@ -10309,54 +10396,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "Formatér {PH1}"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | activateBreakpoints": {
-    "message": "Aktivér stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | checked": {
-    "message": "markeret"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | deactivateBreakpoints": {
-    "message": "Deaktiver stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableAllBreakpoints": {
-    "message": "Deaktiver alle stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableBreakpointsInFile": {
-    "message": "Deaktiver stoppunkter i filen"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableAllBreakpoints": {
-    "message": "Aktivér alle stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableBreakpointsInFile": {
-    "message": "Aktivér stoppunkter i filen"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "blandet"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Ingen skillepunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpoints": {
-    "message": "Fjern alle stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
-    "message": "Fjern alle stoppunkter på linjen"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "Fjern skillepunkt"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
-    "message": "Fjern andre stoppunkter"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
-    "message": "Vis lokation"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
-    "message": "{PH1} ramt stoppunkt"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | unchecked": {
-    "message": "ikke markeret"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
     "message": "Er du sikker på, at du vil slette alle tilsidesættelser i denne mappe?"
@@ -10469,12 +10508,6 @@
   "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
     "message": "Vis i panelet Hukommelsesinspektør"
   },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrint": {
-    "message": "Anvend pretty print"
-  },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
-    "message": "Anvend pretty print på {PH1}"
-  },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
   },
@@ -10544,9 +10577,6 @@
   "panels/sources/SourcesPanel.ts | debuggerShown": {
     "message": "Debugger-sidebjælken vises"
   },
-  "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
-    "message": "Sæt ikke på pause ved undtagelser"
-  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "Slip arbejdsområdemappen her"
   },
@@ -10579,9 +10609,6 @@
   },
   "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
     "message": "Sæt registrerede undtagelser på pause"
-  },
-  "panels/sources/SourcesPanel.ts | pauseOnExceptions": {
-    "message": "Sæt på pause ved undtagelser"
   },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "Genoptag alle pauser med blokering på 500 ms"
@@ -10698,7 +10725,7 @@
     "message": "Fjern andre stoppunkter"
   },
   "panels/sources/components/BreakpointsView.ts | revealLocation": {
-    "message": "Vis lokation"
+    "message": "Vis placering"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "ikke markeret"
@@ -10711,6 +10738,9 @@
   },
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "Der opstod en fejl under parsingen af \"{PH1}\"."
+  },
+  "panels/sources/components/HeadersView.ts | learnMore": {
+    "message": "Få flere oplysninger"
   },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
     "message": "Dette skyldes højst sandsynligt, at der er en syntaksfejl i ''{PH1}''. Prøv at åbne denne fil i et eksternt redigeringsprogram for at rette fejlen eller slette filen og oprette tilsidesættelsen igen."
@@ -10790,6 +10820,9 @@
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Deaktiveringsfane flytter fokus"
   },
+  "panels/sources/sources-meta.ts | disableWasmAutoStepping": {
+    "message": "Deaktiver automatisk overspringning af wasm"
+  },
   "panels/sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
     "message": "Tillad ikke rulning forbi slutningen af filen"
   },
@@ -10831,6 +10864,9 @@
   },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Aktiveringsfane flytter fokus"
+  },
+  "panels/sources/sources-meta.ts | enableWasmAutoStepping": {
+    "message": "Aktivér automatisk overspringning af wasm"
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "Evaluer den markerede tekst i konsollen"
@@ -10991,6 +11027,9 @@
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Efterstillede"
   },
+  "panels/sources/sources-meta.ts | wasmAutoStepping": {
+    "message": "Ved fejlretning af wasm med fejlretningsoplysninger skal du undgå at sætte wasm-bytekoden på pause, hvis det er muligt"
+  },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Se"
   },
@@ -11026,6 +11065,18 @@
   },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "Starttidspunkt"
+  },
+  "panels/timeline/GPUTrackAppender.ts | gpu": {
+    "message": "GPU"
+  },
+  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (egen {PH2})"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | interactions": {
+    "message": "Interaktioner"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (egen {PH2})"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Profileringsværktøjet til CPU for en destination er ikke tilgængelig."
@@ -11078,14 +11129,8 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
     "message": "Animation"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | console": {
-    "message": "Konsol"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Mistet ramme"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | experience": {
-    "message": "Oplev"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "Ramme"
@@ -11095,9 +11140,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "Rammer"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | gpu": {
-    "message": "GPU"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Inaktiv ramme"
@@ -11134,9 +11176,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Tråd"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
-    "message": "Interaktioner"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "Netværk"
@@ -11243,9 +11282,6 @@
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Aktivér avanceret visningsinstrumentering (langsom)"
   },
-  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSSS": {
-    "message": "Tidslinjen kunne ikke gemmes: {PH1} ({PH2}, {PH3})"
-  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initialiserer profileringsværktøjet…"
   },
@@ -11288,9 +11324,6 @@
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "Vis hukommelsens tidslinje"
   },
-  "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "Vis netstatistikker"
-  },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} sek."
   },
@@ -11308,9 +11341,6 @@
   },
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
-  },
-  "panels/timeline/TimelinePanel.ts | webVitals": {
-    "message": "Vigtige statistikker"
   },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "Aktivitet"
@@ -11695,9 +11725,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installer timer"
-  },
-  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
-    "message": "Interaktionstype:{PH1} id:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Ugyldiggør layout"
@@ -12108,10 +12135,10 @@
     "message": "Brugstider"
   },
   "panels/timeline/TimelineUIUtils.ts | verify": {
-    "message": "Bekræft"
+    "message": "Verificer"
   },
   "panels/timeline/TimelineUIUtils.ts | verifyReply": {
-    "message": "Bekræft svar"
+    "message": "Verificer svar"
   },
   "panels/timeline/TimelineUIUtils.ts | waitingForNetwork": {
     "message": "Venter på netværk"
@@ -12140,6 +12167,12 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ja"
   },
+  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (egen {PH2})"
+  },
+  "panels/timeline/TimingsTrackAppender.ts | timings": {
+    "message": "Tider"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "Tegn ramme"
   },
@@ -12163,36 +12196,6 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "System"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | fcp": {
-    "message": "Første visning af indhold"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | firstContentfulPaint": {
-    "message": "Første visning af indhold"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | good": {
-    "message": "God"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | largestContentfulPaint": {
-    "message": "Største udfyldning af indhold"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | lcp": {
-    "message": "LCP"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTask": {
-    "message": "Lang opgave"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTasks": {
-    "message": "Lange opgaver"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | ls": {
-    "message": "LS"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | needsImprovement": {
-    "message": "Skal forbedres"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | poor": {
-    "message": "Dårlig"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Skjul chrome-rammen i visningen af Lag"
@@ -13100,6 +13103,9 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Ingen egenskaber"
   },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | revealInMemoryInpector": {
+    "message": "Vis i panelet Hukommelsesinspektør"
+  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Vis alle {PH1}"
   },
@@ -13299,7 +13305,7 @@
     "message": "Indlæser…"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | prettyPrint": {
-    "message": "Anvend pretty print"
+    "message": "Pretty print"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | source": {
     "message": "Kilde"

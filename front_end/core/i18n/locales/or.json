@@ -780,7 +780,7 @@
     "message": "କୌଣସି ଏମ୍ୟୁଲେସନ୍ ନାହିଁ"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
-    "message": "ବ୍ୟତିକ୍ରମ ଯୋଗୁଁ ବିରତ କରାଯାଇଛି"
+    "message": "ବ୍ୟତିକ୍ରମ ଯୋଗୁଁ ବିରତ କରନ୍ତୁ"
   },
   "core/sdk/sdk-meta.ts | preserveLogUponNavigation": {
     "message": "ନାଭିଗେସନରେ ଲଗ୍ ସଂରକ୍ଷିତ କରନ୍ତୁ"
@@ -1307,6 +1307,9 @@
   "generated/Deprecation.ts | InsecurePrivateNetworkSubresourceRequest": {
     "message": "ୱେବସାଇଟଟି, ଏହାର ଉପଯୋଗକର୍ତ୍ତାମାନଙ୍କର ବିଶେଷ ଅଧିକାରଯୁକ୍ତ ନେଟୱାର୍କ ସ୍ଥିତି ଯୋଗୁଁ, କେବଳ ଆକ୍ସେସ କରିପାରିବ ବୋଲି କୌଣସି ନେଟୱାର୍କରୁ ଏହା ଏକ ସବରିସୋର୍ସର ଅନୁରୋଧ କରିଛି। ଏହି ଅନୁରୋଧଗୁଡ଼ିକ ଅଣ-ସାର୍ବଜନୀନ ଡିଭାଇସ ଏବଂ ସର୍ଭରଗୁଡ଼ିକୁ ଇଣ୍ଟରନେଟରେ ପ୍ରକାଶ କରିଥାଏ, ଯାହା ଫଳରେ କ୍ରସ-ସାଇଟ ଅନୁରୋଧର ଜାଲିଆତି (CSRF) ଆକ୍ରମଣ ଏବଂ/କିମ୍ବା ସୂଚନାର ଲିକେଜର ରିସ୍କ ଅଧିକ ହୋଇଥାଏ। ଏହି ରିସ୍କଗୁଡ଼ିକୁ ହ୍ରାସ କରିବା ପାଇଁ, ଅଣ-ସୁରକ୍ଷିତ ପ୍ରସଙ୍ଗରୁ ଆରମ୍ଭ ହେବା ବେଳେ, ଅଣ-ସାର୍ବଜନୀନ ସବରିସୋର୍ସଗୁଡ଼ିକୁ କରାଯାଇଥିବା ଅନୁରୋଧଗୁଡ଼ିକୁ Chrome ଅସମର୍ଥିତ କରେ ଏବଂ ସେଗୁଡ଼ିକୁ ବ୍ଲକ କରିବା ଆରମ୍ଭ କରିବ।"
   },
+  "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
+    "message": "ଏହାର ଆଚରଣକୁ ଅଧିକ ସଠିକ ଭାବେ ପ୍ରତିଫଳିତ କରିବା ପାଇଁ joinAdInterestGroup()କୁ ପାସ କରାଯାଇଥିବା InterestGroupsର dailyUpdateUrl ଫିଲ୍ଡକୁ updateUrlରେ ରିନେମ କରାଯାଇଛି।"
+  },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "CSS, .css ଫାଇଲ ଏକ୍ସଟେନସନ ସହ ସମାପ୍ତ ନହେବା ପର୍ଯ୍ୟନ୍ତ file: URLଗୁଡ଼ିକରୁ ଏହାକୁ ଲୋଡ କରାଯାଇପାରିବ ନାହିଁ।"
   },
@@ -1320,7 +1323,7 @@
     "message": "MIDIOptionsରେ SysExକୁ ନିର୍ଦ୍ଦିଷ୍ଟ କରାଯାଇନଥିଲେ ମଧ୍ୟ ଏହାକୁ ବ୍ୟବହାର କରିବା ପାଇଁ Web MIDI ଅନୁମତି ମାଗିବ।"
   },
   "generated/Deprecation.ts | NonStandardDeclarativeShadowDOM": {
-    "message": "ପୁରୁଣା, ଅଣ-ଷ୍ଟାଣ୍ଡାର୍ଡାଇଜ୍ଡ shadowroot ଆଟ୍ରିବ୍ୟୁଟ ଅସମର୍ଥିତ ଅଟେ। ଦୟାକରି ଏହା ପରିବର୍ତ୍ତେ ନୂଆ, ଷ୍ଟାଣ୍ଡାର୍ଡାଇଜ୍ଡ shadowrootmode ଆଟ୍ରିବ୍ୟୁଟ ବ୍ୟବହାର କରନ୍ତୁ।"
+    "message": "ପୁରୁଣା, ଅଣ-ଷ୍ଟାଣ୍ଡାର୍ଡାଇଜ୍ଡ shadowroot ଆଟ୍ରିବ୍ୟୁଟ ଅସମର୍ଥିତ ଅଟେ ଏବଂ ଏହା M119ରେ *ଆଉ ଫଙ୍କସନ କରିବ ନାହିଁ*। ଦୟାକରି ଏହା ପରିବର୍ତ୍ତେ ନୂଆ, ଷ୍ଟାଣ୍ଡାର୍ଡାଇଜ୍ଡ shadowrootmode ଆଟ୍ରିବ୍ୟୁଟ ବ୍ୟବହାର କରନ୍ତୁ।"
   },
   "generated/Deprecation.ts | NotificationInsecureOrigin": {
     "message": "Notification APIକୁ ଆଉ ଅସୁରକ୍ଷିତ ଅରିଜିନରୁ ବ୍ୟବହାର କରାଯିବ ନାହିଁ। ଆପଣ ଆପଣଙ୍କ ଆପ୍ଲିକେସନକୁ HTTPS ପରି ଏକ ସୁରକ୍ଷିତ ଅରିଜିନକୁ ସ୍ୱିଚ କରିବା ପାଇଁ ବିଚାର କରିବା ଉଚିତ। ଅଧିକ ବିବରଣୀ ପାଇଁ https://goo.gle/chrome-insecure-origins ଦେଖନ୍ତୁ।"
@@ -1402,6 +1405,12 @@
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBufferକୁ ବ୍ୟବହାର କରିବା ଜାରି ରଖିବା ପାଇଁ, ଏକ୍ସଟେନସନଗୁଡ଼ିକୁ କ୍ରସ-ଅରିଜିନ ଆଇସୋଲେସନରେ ଅପ୍ଟ ଇନ କରିବା ଉଚିତ। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ ଦେଖନ୍ତୁ।"
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
+    "message": "ଅନୁମତି ଡେସ୍କ୍ରିପ୍ଟର window-placement ଅସମର୍ଥିତ ଅଟେ। ଏହା ପରିବର୍ତ୍ତେ window-managementକୁ ବ୍ୟବହାର କରନ୍ତୁ ଅଧିକ ସହାୟତା ପାଇଁ, https://bit.ly/window-placement-rename ଦେଖନ୍ତୁ।"
+  },
+  "generated/Deprecation.ts | WindowPlacementPermissionPolicyParsed": {
+    "message": "ଅନୁମତି ନୀତି window-placement ଅସମର୍ଥିତ ଅଟେ। ଏହା ପରିବର୍ତ୍ତେ window-managementକୁ ବ୍ୟବହାର କରନ୍ତୁ ଅଧିକ ସହାୟତା ପାଇଁ, https://bit.ly/window-placement-rename ଦେଖନ୍ତୁ।"
   },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequestରେ ଉତ୍ତର JSON ଦ୍ୱାରା UTF-16 ସମର୍ଥିତ ନୁହେଁ"
@@ -2664,7 +2673,7 @@
     "message": "ଟେବୁଲରେ ଦେଖାଯାଉଥିବା କୁକୀଗୁଡ଼ିକର ସଂଖ୍ୟା: {PH1}"
   },
   "panels/application/CookieItemsView.ts | onlyShowCookiesWhichHaveAn": {
-    "message": "ସମସ୍ୟା ସହ ସମ୍ବନ୍ଧିତ ଥିବା କୁକୀଗୁଡ଼ିକୁ କେବଳ ଦେଖାନ୍ତୁ"
+    "message": "କୌଣସି ସମସ୍ୟା ସହ ସମ୍ବନ୍ଧିତ ଥିବା କୁକୀଗୁଡ଼ିକୁ କେବଳ ଦେଖାନ୍ତୁ"
   },
   "panels/application/CookieItemsView.ts | onlyShowCookiesWithAnIssue": {
     "message": "କେବଳ ସମସ୍ୟା ଥିବା କୁକୀଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
@@ -2673,7 +2682,7 @@
     "message": "ଏକ କୁକୀର ମୂଲ୍ୟ ଦେଖିବା ପାଇଁ ଏହାକୁ ଚୟନ କରନ୍ତୁ"
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
-    "message": "URL ମାଧ୍ୟମରେ ଡିକୋଡ୍ କରାଯାଇଥିବା କୁକୀର ମୂଲ୍ୟ ଦେଖାନ୍ତୁ"
+    "message": "URL ମାଧ୍ୟମରେ-ଡିକୋଡ କରାଯାଇଥିବା କୁକୀର ମୂଲ୍ୟ ଦେଖାନ୍ତୁ"
   },
   "panels/application/DOMStorageItemsView.ts | domStorage": {
     "message": "DOM ଷ୍ଟୋରେଜ୍"
@@ -3177,7 +3186,7 @@
     "message": "ୱେବ୍ SQL"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "ବିଶ୍ୱସ୍ତ ଟୋକନ୍"
+    "message": "ପ୍ରାଇଭେଟ ଷ୍ଟେଟ ଟୋକନ"
   },
   "panels/application/application-meta.ts | application": {
     "message": "ଆପ୍ଲିକେସନ୍"
@@ -4083,19 +4092,43 @@
     "message": "{n,plural, =1{ଅଧିକ #ଟି ଫ୍ରେମ୍ ଦେଖାନ୍ତୁ}other{ଅଧିକ #ଟି ଫ୍ରେମ୍ ଦେଖାନ୍ତୁ}}"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "ଏହି ବ୍ରାଉଜର୍ ଇନଷ୍ଟାନ୍ସରେ ସମସ୍ତ ଷ୍ଟୋର୍ କରାଯାଇଥିବା ଟ୍ରଷ୍ଟ ଟୋକେନ୍ ଉପଲବ୍ଧ ଅଛି।"
+    "message": "ଏହି ବ୍ରାଉଜର ଇନଷ୍ଟାନ୍ସରେ ସମସ୍ତ ଷ୍ଟୋର କରାଯାଇଥିବା ପ୍ରାଇଭେଟ ଷ୍ଟେଟ ଟୋକେନ ଉପଲବ୍ଧ ଅଛି।"
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "{PH1} ଦ୍ୱାରା ଜାରି କରାଯାଇଥିବା ସମସ୍ତ ଟ୍ରଷ୍ଟ ଟୋକେନକୁ ଡିଲିଟ୍ କରନ୍ତୁ।"
+    "message": "{PH1} ଦ୍ୱାରା ଜାରି ହୋଇଥିବା ସମସ୍ତ ଷ୍ଟୋର କରାଯାଇଥିବା ପ୍ରାଇଭେଟ ଷ୍ଟେଟ ଟୋକନକୁ ଡିଲିଟ କରନ୍ତୁ।"
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "ପ୍ରଦାନକାରୀ"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "ବର୍ତ୍ତମାନ କୌଣସି ଟ୍ରଷ୍ଟ ଟୋକନ୍ ଷ୍ଟୋର୍ କରାଯାଇନାହିଁ।"
+    "message": "ବର୍ତ୍ତମାନ କୌଣସି ପ୍ରାଇଭେଟ ଷ୍ଟେଟ ଟୋକନ ଷ୍ଟୋର କରାଯାଇନାହିଁ।"
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "ଷ୍ଟୋର୍ କରାଯାଇଥିବା ଟୋକନ୍ ଗଣନା"
+  },
+  "panels/application/components/TrustTokensView.ts | trustTokens": {
+    "message": "ପ୍ରାଇଭେଟ ଷ୍ଟେଟ ଟୋକନ"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusFailure": {
+    "message": "ବିଫଳ"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusPending": {
+    "message": "ବାକି ଅଛି"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusReady": {
+    "message": "ପ୍ରସ୍ତୁତ"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusRunning": {
+    "message": "ଚାଲୁଛି"
+  },
+  "panels/application/preloading/PreloadingView.ts | statusSuccess": {
+    "message": "ସଫଳ"
+  },
+  "panels/application/preloading/PreloadingView.ts | validityInvalid": {
+    "message": "ଅବୈଧ"
+  },
+  "panels/application/preloading/PreloadingView.ts | validitySomeRulesInvalid": {
+    "message": "କିଛି ନିୟମ ଅବୈଧ ଅଟେ"
   },
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "ବୈଧ"
@@ -4112,11 +4145,38 @@
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ପ୍ରିରେଣ୍ଡରିଂକୁ ଅକ୍ଷମ କରାଯାଇଥିଲା, କିନ୍ତୁ ଏହାକୁ ବର୍ତ୍ତମାନ ବାଧ୍ୟତାମୂଳକ ଭାବରେ-ସକ୍ଷମ କରାଯାଇଛି"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
+    "message": "ପ୍ରିଲୋଡିଂ ବିଫଳ ହୋଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
+    "message": "ପ୍ରିଲୋଡିଂ ପ୍ରଚେଷ୍ଟା ଯୋଗ୍ୟ ଅଟେ କିନ୍ତୁ ଏହା ବାକି ଅଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
+    "message": "ପ୍ରିଲୋଡିଂ ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି ଏବଂ ପରବର୍ତ୍ତୀ ନାଭିଗେସନ ପାଇଁ ଫଳାଫଳ ପ୍ରସ୍ତୁତ ଅଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
+    "message": "ପ୍ରିଲୋଡିଂ ଚାଲୁଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
+    "message": "ପ୍ରିଲୋଡିଂ ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି ଏବଂ ଏହାକୁ ଏକ ନାଭିଗେସନ ପାଇଁ ବ୍ୟବହାର କରାଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
+    "message": "କାର୍ଯ୍ୟ"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
+    "message": "ସବିଶେଷ ସୂଚନା"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
+    "message": "ନିୟମର ସେଟ"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ସ୍ଥିତି"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ଅଧିକ ବିବରଣୀ ପାଇଁ ଏକ ଏଲିମେଣ୍ଟ ଚୟନ କରନ୍ତୁ"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | action": {
+    "message": "କାର୍ଯ୍ୟ"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ସ୍ଥିତି"
@@ -4124,17 +4184,32 @@
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "ସବିଶେଷ ସୂଚନା"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
+    "message": "ତ୍ରୁଟି"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "ସୋର୍ସ"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
     "message": "ବୈଧତା"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
+    "message": "ଅବୈଧ; ସୋର୍ସ ଏକ JSON ଅବଜେକ୍ଟ ନୁହେଁ"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
+    "message": "କିଛି ନିୟମ ଅବୈଧ ଅଟେ ଏବଂ ଏହାକୁ ଅଣଦେଖା କରାଯାଇଛି"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "ବୈଧ"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "ବୈଧତା"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
+    "message": "ଏହି ପୃଷ୍ଠା ପାଇଁ {PH1}ଟି ପ୍ରିଫେଚ କରାଯାଇଥିବା ରିସୋର୍ସକୁ ବ୍ୟବହାର କରାଯାଇଛି"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
+    "message": "ଏହି ପୃଷ୍ଠାକୁ ପ୍ରିରେଣ୍ଡର କରାଯାଇଛି"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ବ୍ରେକପଏଣ୍ଟ ହିଟ୍"
@@ -4370,6 +4445,9 @@
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "କନସୋଲ୍ ଖାଲି କରାଯାଇଛି"
   },
+  "panels/console/ConsoleView.ts | consolePasteBlocked": {
+    "message": "ଲୋକଙ୍କୁ ସ୍କାମ କରି ସେମାନଙ୍କ ଆକାଉଣ୍ଟକୁ ନିୟନ୍ତ୍ରଣ କରିବା ପାଇଁ DevToolsରେ ପେଷ୍ଟିଂ କୋଡ ପ୍ରାୟତଃ ବ୍ୟବହାର କରାଯାଏ। ଏହି ପୃଷ୍ଠାରେ ଏହାକୁ ବ୍ଲକ କରାଯାଇଛି।"
+  },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "କନସୋଲ୍ ସେଟିଂସ୍"
   },
@@ -4583,6 +4661,9 @@
   "panels/console/console-meta.ts | autocompleteFromHistory": {
     "message": "ଇତିହାସରୁ ଅଟୋକମ୍ପ୍ଲିଟ"
   },
+  "panels/console/console-meta.ts | autocompleteOnEnter": {
+    "message": "Enter ବିଷୟରେ ଅଟୋକମ୍ପ୍ଲିଟ ପରାମର୍ଶକୁ ଗ୍ରହଣ କରନ୍ତୁ"
+  },
   "panels/console/console-meta.ts | clearConsole": {
     "message": "କନସୋଲ୍ ଖାଲି କରନ୍ତୁ"
   },
@@ -4600,6 +4681,9 @@
   },
   "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
     "message": "ଇତିହାସରୁ ସ୍ୱତଃପୂରଣ କରନ୍ତୁ ନାହିଁ"
+  },
+  "panels/console/console-meta.ts | doNotAutocompleteOnEnter": {
+    "message": "Enter ବିଷୟରେ ଅଟୋକମ୍ପ୍ଲିଟ ପରାମର୍ଶ ଗ୍ରହଣ କରନ୍ତୁ ନାହିଁ"
   },
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
     "message": "କନସୋଲ୍ ପ୍ରମ୍ପ୍ଟ ଟେକ୍ସଟର କଠୋର ମୂଲ୍ୟାଙ୍କନ କରନ୍ତୁ ନାହିଁ"
@@ -4620,7 +4704,7 @@
     "message": "କନସୋଲ୍ ପ୍ରମ୍ପ୍ଟ ଟେକ୍ସଟର କଠୋର ମୂଲ୍ୟାଙ୍କନ କରନ୍ତୁ"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
-    "message": "ମୂଲ୍ୟାଙ୍କନ ୟୁଜର ସକ୍ରିୟକରଣକୁ ଟ୍ରିଗର କରେ"
+    "message": "କୋଡ ମୂଲ୍ୟାଙ୍କନକୁ ୟୁଜର ଆକ୍ସନ ଭାବେ ବ୍ୟବହାର କରନ୍ତୁ"
   },
   "panels/console/console-meta.ts | expandConsoleTraceMessagesByDefault": {
     "message": "console.trace() ମେସେଜକୁ ସ୍ୱତଃ ବିସ୍ତାର କରନ୍ତୁ"
@@ -4901,6 +4985,9 @@
   "panels/css_overview/CSSOverviewSidebarPanel.ts | clearOverview": {
     "message": "ଓଭରଭିଉ ଖାଲି କରନ୍ତୁ"
   },
+  "panels/css_overview/CSSOverviewSidebarPanel.ts | cssOverviewPanelSidebar": {
+    "message": "CSS ଓଭରଭିଉ ପେନେଲ ସାଇଡବାର"
+  },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "ସ୍ଥିର ଥିବା ଏକ ଉପାଦାନରେ Bottom ଲାଗୁ କରାଯାଇଛି"
   },
@@ -5002,6 +5089,9 @@
   },
   "panels/developer_resources/developer_resources-meta.ts | showDeveloperResources": {
     "message": "ଡେଭଲପର୍ ରିସୋର୍ସଗୁଡ଼ିକ ଦେଖାନ୍ତୁ"
+  },
+  "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
+    "message": "ଫଣ୍ଟ-ଫ୍ୟାମିଲି “{PH5}” ପାଇଁ, “{PH1}”ସେଟିଂ ନିମନ୍ତେ {PH2} ମୂଲ୍ୟ ସମର୍ଥିତ ରେଞ୍ଜ [{PH3}, {PH4}]ର ବାହାରେ ଅଟେ।"
   },
   "panels/elements/CSSRuleValidator.ts | ruleViolatedByParentElementRuleFix": {
     "message": "ମୂଳ ଉପାଦାନରେ {EXISTING_PARENT_ELEMENT_RULE} ପ୍ରପର୍ଟିକୁ {TARGET_PARENT_ELEMENT_RULE}ରେ ସେଟ କରିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ।"
@@ -5934,7 +6024,7 @@
     "message": "ଟ୍ରାନ୍ସଫର୍ କରନ୍ତୁ"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | trigger": {
-    "message": "ଟ୍ରିଗର"
+    "message": "ଟ୍ରିଗର୍"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "ଚେତାବନୀ"
@@ -5962,9 +6052,6 @@
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
     "message": "ଅବୈଧ ହେଡର ମୂଲ୍ୟ"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | maximumConcurrentRegistrations": {
-    "message": "ଏକ ସମୟରେ ସର୍ବାଧିକ ପଞ୍ଜିକରଣ"
   },
   "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
     "message": "{n,plural, =1{#ଟି ଉଲ୍ଲଙ୍ଘନ}other{#ଟି ଉଲ୍ଲଙ୍ଘନ}}"
@@ -7178,6 +7265,9 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି"
   },
+  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
+    "message": "ଅନୁରୋଧରେ ଓଭରରାଇଡ କରାଯାଇଥିବା ହେଡରଗୁଡ଼ିକ ଅଛି"
+  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "1ଟି ସ୍ତର"
   },
@@ -7323,10 +7413,10 @@
     "message": "ସମୟ"
   },
   "panels/network/NetworkItemView.ts | trustTokenOperationDetails": {
-    "message": "ଟ୍ରଷ୍ଟ ଟୋକନ୍ ଅପରେସନ୍ ବିବରଣୀ"
+    "message": "ପ୍ରାଇଭେଟ ଷ୍ଟେଟ ଟୋକନ ଅପରେସନର ବିବରଣୀ"
   },
   "panels/network/NetworkItemView.ts | trustTokens": {
-    "message": "ବିଶ୍ୱସ୍ତ ଟୋକନ୍"
+    "message": "ପ୍ରାଇଭେଟ ଷ୍ଟେଟ ଟୋକନ"
   },
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "WebSocket ମେସେଜଗୁଡ଼ିକ"
@@ -8256,7 +8346,7 @@
     "message": "ଏହି ଅପରେସନ୍ ପାଇଁ କୌଣସି ଇନପୁଟ୍ ଉପଲବ୍ଧ ନାହିଁ କିମ୍ବା ଆଉଟପୁଟ୍ ଅପରେସନ୍ କୋଟା ଅତିକ୍ରମ କରିଛି।"
   },
   "panels/network/components/RequestTrustTokensView.ts | failure": {
-    "message": "ବିଫଳ ହୋଇଛି"
+    "message": "ବିଫଳ"
   },
   "panels/network/components/RequestTrustTokensView.ts | issuer": {
     "message": "ପ୍ରଦାନକାରୀ"
@@ -9022,6 +9112,9 @@
   },
   "panels/profiler/ProfilesPanel.ts | deprecationWarnMsg": {
     "message": "ଆଗାମୀ ସଂସ୍କରଣରେ ଏହି ପେନେଲ ଅସମର୍ଥିତ ହେବ। JavaScript CPU ପ୍ରୋଫାଇଲଗୁଡ଼ିକୁ ରେକର୍ଡ କରିବା ପାଇଁ ପରଫରମାନ୍ସ ପେନେଲ ବ୍ୟବହାର କରନ୍ତୁ।"
+  },
+  "panels/profiler/ProfilesPanel.ts | enableThisPanelTemporarily": {
+    "message": "ଏହି ପେନେଲକୁ ଅସ୍ଥାୟୀ ଭାବେ ସକ୍ଷମ କରନ୍ତୁ"
   },
   "panels/profiler/ProfilesPanel.ts | feedback": {
     "message": "ମତାମତ ଦିଅନ୍ତୁ"
@@ -10250,15 +10343,6 @@
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "ଏଠାରେ କେବେ ବି ବିରତ କରନ୍ତୁ ନାହିଁ"
   },
-  "panels/sources/DebuggerPlugin.ts | prettyprint": {
-    "message": "ପ୍ରେଟି-ପ୍ରିଣ୍ଟ କରନ୍ତୁ"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintThisMinifiedFile": {
-    "message": "ଏହି ମିନିଫାଏଡ୍ ଫାଇଲକୁ ପ୍ରେଟି-ପ୍ରିଣ୍ଟ କରିବେ କି?"
-  },
-  "panels/sources/DebuggerPlugin.ts | prettyprintingWillFormatThisFile": {
-    "message": "ପ୍ରେଟି-ପ୍ରିଣ୍ଟ କରିବା ଫଳରେ ଏହି ଫାଇଲଟି ଏକ ନୂଆ ଟାବରେ ଫର୍ମାଟ୍ ହେବ ଯେଉଁଠି ଆପଣ ଡିବଗିଂ ଜାରି ରଖିପାରିବେ। ଆପଣ ନିମ୍ନ ଷ୍ଟାଟସ୍ ବାରରେ ଥିବା {PH1} ବଟନକୁ କ୍ଲିକ୍ କରି ମଧ୍ୟ ଏହି ଫାଇଲକୁ ପ୍ରେଟି-ପ୍ରିଣ୍ଟ କରିପାରିବେ।"
-  },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{ବ୍ରେକପଏଣ୍ଟକୁ କାଢ଼ି ଦିଅନ୍ତୁ}other{ଲାଇନରେ ଥିବା ସମସ୍ତ ବ୍ରେକପଏଣ୍ଟକୁ କାଢ଼ି ଦିଅନ୍ତୁ}}"
   },
@@ -10279,6 +10363,9 @@
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | noFilesFound": {
     "message": "କୌଣସି ଫାଇଲ୍ ମିଳିଲା ନାହିଁ"
+  },
+  "panels/sources/FilteredUISourceCodeListProvider.ts | sIgnoreListed": {
+    "message": "{PH1} (ଅଣଦେଖାର ତାଲିକା କରାଯାଇଛି)"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "ବର୍ତ୍ତମାନର ଲାଇନ୍: {PH1}। ନାଭିଗେଟ୍ କରିବାକୁ 1ରୁ {PH2} ମଧ୍ୟରେ ଏକ ଲାଇନ୍ ନମ୍ବର ଟାଇପ୍ କରନ୍ତୁ।"
@@ -10309,54 +10396,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "{PH1}କୁ ଫର୍ମାଟ୍ କରନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | activateBreakpoints": {
-    "message": "ବ୍ରେକପଏଣ୍ଟ ସକ୍ରିୟ କରନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | checked": {
-    "message": "ଯାଞ୍ଚ କରାଯାଇଛି"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | deactivateBreakpoints": {
-    "message": "ବ୍ରେକପଏଣ୍ଟଗୁଡ଼ିକୁ ନିଷ୍କ୍ରିୟ କରନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableAllBreakpoints": {
-    "message": "ସମସ୍ତ ବ୍ରେକପଏଣ୍ଟକୁ ଅକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | disableBreakpointsInFile": {
-    "message": "ଫାଇଲରେ ବ୍ରେକପଏଣ୍ଟଗୁଡ଼ିକୁ ଅକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableAllBreakpoints": {
-    "message": "ସମସ୍ତ ବ୍ରେକପଏଣ୍ଟ ସକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | enableBreakpointsInFile": {
-    "message": "ଫାଇଲରେ ଥିବା ବ୍ରେକପଏଣ୍ଟକୁ ସକ୍ଷମ କରନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | mixed": {
-    "message": "ମିକ୍ସଡ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "କୌଣସି ବ୍ରେକପଏଣ୍ଟ ନାହିଁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpoints": {
-    "message": "ସମସ୍ତ ବ୍ରେକପଏଣ୍ଟକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeAllBreakpointsInLine": {
-    "message": "ଲାଇନରେ ଥିବା ସମସ୍ତ ବ୍ରେକପଏଣ୍ଟକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeBreakpoint": {
-    "message": "ବ୍ରେକପଏଣ୍ଟ କାଢ଼ି ଦିଅନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | removeOtherBreakpoints": {
-    "message": "ଅନ୍ୟ ବ୍ରେକପଏଣ୍ଟଗୁଡ଼ିକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | revealLocation": {
-    "message": "ଲୋକେସନ ପ୍ରକାଶ କରନ୍ତୁ"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | sBreakpointHit": {
-    "message": "{PH1} ବ୍ରେକପଏଣ୍ଟ ହିଟ୍ ହୋଇଛି"
-  },
-  "panels/sources/JavaScriptBreakpointsSidebarPane.ts | unchecked": {
-    "message": "ଚେକ୍ କରାଯାଇନାହିଁ"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
     "message": "ଆପଣ ଏହି ଫୋଲ୍ଡରରେ ଥିବା ସମସ୍ତ ଓଭରରାଇଡକୁ ଡିଲିଟ୍ କରିବାକୁ ଚାହୁଁଥିବା ନିଶ୍ଚିତ କି?"
@@ -10467,13 +10506,7 @@
     "message": "ଫେରସ୍ତ ମୂଲ୍ୟ"
   },
   "panels/sources/ScopeChainSidebarPane.ts | revealInMemoryInspectorPanel": {
-    "message": "ମେମୋରୀ ଇନ୍ସପେକ୍ଟର୍ ପ୍ୟାନେଲରେ ପ୍ରକାଶ କରନ୍ତୁ"
-  },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrint": {
-    "message": "ପ୍ରେଟି ପ୍ରିଣ୍ଟ କରନ୍ତୁ"
-  },
-  "panels/sources/ScriptFormatterEditorAction.ts | prettyPrintS": {
-    "message": "{PH1}କୁ ପ୍ରେଟି ପ୍ରିଣ୍ଟ କରନ୍ତୁ"
+    "message": "ମେମୋରୀ ଇନ୍ସପେକ୍ଟର ପେନେଲରେ ପ୍ରକାଶ କରନ୍ତୁ"
   },
   "panels/sources/SnippetsPlugin.ts | ctrlenter": {
     "message": "Ctrl+Enter"
@@ -10544,9 +10577,6 @@
   "panels/sources/SourcesPanel.ts | debuggerShown": {
     "message": "ଡିବଗର ସାଇଡବାର ଦେଖାଯାଇଛି"
   },
-  "panels/sources/SourcesPanel.ts | dontPauseOnExceptions": {
-    "message": "ବ୍ୟତିକ୍ରମରେ ବିରତ କରନ୍ତୁ ନାହିଁ"
-  },
   "panels/sources/SourcesPanel.ts | dropWorkspaceFolderHere": {
     "message": "ୱାର୍କସ୍ପେସ୍ ଫୋଲ୍ଡରକୁ ଏଠାରେ ଡ୍ରପ୍ କରନ୍ତୁ"
   },
@@ -10579,9 +10609,6 @@
   },
   "panels/sources/SourcesPanel.ts | pauseOnCaughtExceptions": {
     "message": "ଯଦି କୌଣସି ବ୍ୟତିକ୍ରମ ମିଳେ ତେବେ ବିରତ କରନ୍ତୁ"
-  },
-  "panels/sources/SourcesPanel.ts | pauseOnExceptions": {
-    "message": "ବ୍ୟତିକ୍ରମ ଯୋଗୁଁ ବିରତ କରାଯାଇଛି"
   },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
     "message": "ସମସ୍ତ ବିରତିକୁ 500 ମିଲିସେକେଣ୍ଡ ପାଇଁ ବ୍ଲକ୍ କରି ପୁଣି ଆରମ୍ଭ କରନ୍ତୁ"
@@ -10674,7 +10701,7 @@
     "message": "ଫାଇଲରେ ଥିବା ସମସ୍ତ ବ୍ରେକପଏଣ୍ଟକୁ ସକ୍ଷମ କରନ୍ତୁ"
   },
   "panels/sources/components/BreakpointsView.ts | indeterminate": {
-    "message": "ମିକ୍ସଡ"
+    "message": "ମିକ୍ସଡ୍"
   },
   "panels/sources/components/BreakpointsView.ts | logpointCode": {
     "message": "ଲଗପଏଣ୍ଟ: {PH1}"
@@ -10698,7 +10725,7 @@
     "message": "ଅନ୍ୟ ବ୍ରେକପଏଣ୍ଟଗୁଡ଼ିକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
   },
   "panels/sources/components/BreakpointsView.ts | revealLocation": {
-    "message": "ଲୋକେସନ ପ୍ରକାଶ କରନ୍ତୁ"
+    "message": "ଲୋକେସନ୍ ପ୍ରକାଶ କରନ୍ତୁ"
   },
   "panels/sources/components/BreakpointsView.ts | unchecked": {
     "message": "ଚେକ୍ କରାଯାଇନାହିଁ"
@@ -10712,6 +10739,9 @@
   "panels/sources/components/HeadersView.ts | errorWhenParsing": {
     "message": "''{PH1}'' ପାର୍ସ କରିବା ସମୟରେ ତ୍ରୁଟି।"
   },
+  "panels/sources/components/HeadersView.ts | learnMore": {
+    "message": "ଅଧିକ ଜାଣନ୍ତୁ"
+  },
   "panels/sources/components/HeadersView.ts | parsingErrorExplainer": {
     "message": "ଏହା ସମ୍ଭବତଃ ''{PH1}''ରେ ଏକ ସିଣ୍ଟାକ୍ସ ତ୍ରୁଟି ଯୋଗୁଁ ହୋଇଥାଏ। ତ୍ରୁଟିର ସମାଧାନ କରିବା ପାଇଁ ଏହି ଫାଇଲକୁ ଏକ ଏକ୍ସଟର୍ନଲ ଏଡିଟରରେ ଖୋଲିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ କିମ୍ବା ଫାଇଲକୁ ଡିଲିଟ କରି ଓଭରରାଇଡକୁ ପୁଣି-ତିଆରି କରନ୍ତୁ।"
   },
@@ -10722,7 +10752,7 @@
     "message": "ଏହି ହେଡରକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
-    "message": "ବ୍ରେକପଏଣ୍ଟ ସକ୍ରିୟ କରନ୍ତୁ"
+    "message": "ବ୍ରେକପଏଣ୍ଟଗୁଡ଼ିକୁ ସକ୍ରିୟ କରନ୍ତୁ"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "ୱାର୍କସ୍ପେସରେ ଫୋଲ୍ଡର୍ ଯୋଗ କରନ୍ତୁ"
@@ -10790,6 +10820,9 @@
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "ଟାବ୍ ଦ୍ୱାରା ଫୋକସକୁ ମୁଭ୍ କରାଯିବାକୁ ଅକ୍ଷମ କରନ୍ତୁ"
   },
+  "panels/sources/sources-meta.ts | disableWasmAutoStepping": {
+    "message": "wasm ସ୍ୱତଃ-ଷ୍ଟେପିଂକୁ ଅକ୍ଷମ କରନ୍ତୁ"
+  },
   "panels/sources/sources-meta.ts | disallowScrollingPastEndOfFile": {
     "message": "ଫାଇଲର ଶେଷ ପର୍ଯ୍ୟନ୍ତ ସ୍କ୍ରୋଲ୍ କରିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ ନାହିଁ"
   },
@@ -10831,6 +10864,9 @@
   },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "ଟାବ୍ ଦ୍ୱାରା ଫୋକସକୁ ମୁଭ୍ କରିବା ସକ୍ଷମ କରନ୍ତୁ"
+  },
+  "panels/sources/sources-meta.ts | enableWasmAutoStepping": {
+    "message": "wasm ସ୍ୱତଃ-ଷ୍ଟେପିଂକୁ ସକ୍ଷମ କରନ୍ତୁ"
   },
   "panels/sources/sources-meta.ts | evaluateSelectedTextInConsole": {
     "message": "କନସୋଲରେ ଚୟନିତ ଟେକ୍ସଟର ମୂଲ୍ୟାଙ୍କନ କରନ୍ତୁ"
@@ -10991,6 +11027,9 @@
   "panels/sources/sources-meta.ts | trailing": {
     "message": "ଟ୍ରେଲିଂ"
   },
+  "panels/sources/sources-meta.ts | wasmAutoStepping": {
+    "message": "ଡିବଗ ସୂଚନା ସହ wasmକୁ ଡିବଗ କରିବା ସମୟରେ, ସମ୍ଭବ ହେଲେ wasm ବାଇଟକୋଡରେ ବିରତ କରନ୍ତୁ ନାହିଁ"
+  },
   "panels/sources/sources-meta.ts | watch": {
     "message": "ଦେଖନ୍ତୁ"
   },
@@ -11026,6 +11065,18 @@
   },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
     "message": "ଆରମ୍ଭ ସମୟ"
+  },
+  "panels/timeline/GPUTrackAppender.ts | gpu": {
+    "message": "GPU"
+  },
+  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (ନିଜେ {PH2})"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | interactions": {
+    "message": "ଇଣ୍ଟରାକ୍ସନ୍"
+  },
+  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (ନିଜେ {PH2})"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "ଏକ ଟାର୍ଗେଟ୍ ପାଇଁ CPU ପ୍ରୋଫାଇଲ୍ ଉପଲବ୍ଧ ନାହିଁ।"
@@ -11078,14 +11129,8 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
     "message": "ଆନିମେସନ୍"
   },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | console": {
-    "message": "କନସୋଲ୍"
-  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "ଡ୍ରପ୍ ହୋଇଥିବା ଫ୍ରେମ୍"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | experience": {
-    "message": "ଅନୁଭୂତି"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
     "message": "ଫ୍ରେମ୍"
@@ -11095,9 +11140,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "ଫ୍ରେମ୍"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | gpu": {
-    "message": "GPU"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "ନିଷ୍କ୍ରିୟ ଫ୍ରେମ୍"
@@ -11134,9 +11176,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "ଥ୍ରେଡ୍"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | userInteractions": {
-    "message": "ଇଣ୍ଟରାକ୍ସନ୍"
   },
   "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
     "message": "ନେଟୱାର୍କ"
@@ -11243,9 +11282,6 @@
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "ଉନ୍ନତ ପେଣ୍ଟ୍ ଇନଷ୍ଟ୍ରୁମେଣ୍ଟେସନ୍ ସକ୍ଷମ କରନ୍ତୁ (ସ୍ଲୋ)"
   },
-  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSSS": {
-    "message": "ଟାଇମଲାଇନରେ ସେଭ୍ କରିବା ବିଫଳ ହୋଇଛି: {PH1} ({PH2}, {PH3})"
-  },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "ପ୍ରୋଫାଇଲର୍ ଆରମ୍ଭ କରାଯାଉଛି…"
   },
@@ -11288,9 +11324,6 @@
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "ମେମୋରୀ ଟାଇମଲାଇନ୍ ଦେଖାନ୍ତୁ"
   },
-  "panels/timeline/TimelinePanel.ts | showWebVitals": {
-    "message": "ୱେବ ଭାଇଟାଲଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
-  },
   "panels/timeline/TimelinePanel.ts | ssec": {
     "message": "{PH1} ସେକେଣ୍ଡ"
   },
@@ -11308,9 +11341,6 @@
   },
   "panels/timeline/TimelinePanel.ts | wasd": {
     "message": "WASD"
-  },
-  "panels/timeline/TimelinePanel.ts | webVitals": {
-    "message": "ୱେବ୍ ଭାଇଟାଲ୍"
   },
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "କାର୍ଯ୍ୟକଳାପ"
@@ -11695,9 +11725,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ଟାଇମର୍ ଇନଷ୍ଟଲ୍ କରନ୍ତୁ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | interactionEvent": {
-    "message": "ଇଣ୍ଟରାକ୍ସନର ପ୍ରକାର:{PH1} ID:{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ଅବୈଧ ଲେଆଉଟ୍"
@@ -12140,6 +12167,12 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "ହଁ"
   },
+  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
+    "message": "{PH1} (ନିଜେ {PH2})"
+  },
+  "panels/timeline/TimingsTrackAppender.ts | timings": {
+    "message": "ଟାଇମିଂ"
+  },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
     "message": "ଫ୍ରେମ୍ ଡ୍ର କରନ୍ତୁ"
   },
@@ -12163,36 +12196,6 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "ସିଷ୍ଟମ୍"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | fcp": {
-    "message": "FCP"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | firstContentfulPaint": {
-    "message": "ପ୍ରଥମ କଣ୍ଟେଟଫୁଲ୍ ପେଣ୍ଟ୍"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | good": {
-    "message": "ଭଲ"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | largestContentfulPaint": {
-    "message": "ସବୁଠାରୁ ବଡ଼ କଣ୍ଟେଟଫୁଲ୍ ପେଣ୍ଟ୍"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | lcp": {
-    "message": "LCP"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTask": {
-    "message": "ଅଧିକ ସମୟର ଟାସ୍କ"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | longTasks": {
-    "message": "ଅଧିକ ସମୟର ଟାସ୍କ"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | ls": {
-    "message": "LS"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | needsImprovement": {
-    "message": "ଉନ୍ନତି ଆବଶ୍ୟକ"
-  },
-  "panels/timeline/components/WebVitalsTimeline.ts | poor": {
-    "message": "ଖରାପ"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "ଲେୟର୍ସ ଭ୍ୟୁରେ chrome ଫ୍ରେମଗୁଡ଼ିକୁ ଲୁଚାନ୍ତୁ"
@@ -13100,6 +13103,9 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "କୌଣସି ପ୍ରୋପର୍ଟି ନାହିଁ"
   },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | revealInMemoryInpector": {
+    "message": "ମେମୋରୀ ଇନ୍ସପେକ୍ଟର ପେନେଲରେ ପ୍ରକାଶ କରନ୍ତୁ"
+  },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "ସବୁ {PH1} ଦେଖାନ୍ତୁ"
   },
@@ -13299,7 +13305,7 @@
     "message": "ଲୋଡ୍ ହେଉଛି…"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | prettyPrint": {
-    "message": "ପ୍ରେଟି ପ୍ରିଣ୍ଟ କରନ୍ତୁ"
+    "message": "ସୁନ୍ଦର ପ୍ରିଣ୍ଟ"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | source": {
     "message": "ସୋର୍ସ୍"

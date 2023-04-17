@@ -207,6 +207,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       const metadata = await SDK.TraceSDKServices.getMetadataForFreshRecording();
       assert.deepEqual(metadata, {
         source: 'DevTools',
+        startTime: undefined,
         cpuThrottling: 2,
         networkThrottling: 'Slow 3G',
         hardwareConcurrency: 1,
@@ -228,6 +229,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       const metadata = await SDK.TraceSDKServices.getMetadataForFreshRecording();
       assert.deepEqual(metadata, {
         source: 'DevTools',
+        startTime: undefined,
         cpuThrottling: 2,
         networkThrottling: 'Slow 3G',
         hardwareConcurrency: 1,
@@ -249,6 +251,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       const metadata = await SDK.TraceSDKServices.getMetadataForFreshRecording();
       assert.deepEqual(metadata, {
         source: 'DevTools',
+        startTime: undefined,
         cpuThrottling: 2,
         networkThrottling: 'Slow 3G',
         hardwareConcurrency: undefined,

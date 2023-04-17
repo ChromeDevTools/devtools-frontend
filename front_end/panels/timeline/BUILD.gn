@@ -29,6 +29,7 @@ devtools_module("timeline") {
     "InteractionsTrackAppender.ts",
     "LayoutShiftsTrackAppender.ts",
     "PerformanceModel.ts",
+    "SaveFileFormatter.ts",
     "TimelineController.ts",
     "TimelineDetailsView.ts",
     "TimelineEventOverview.ts",

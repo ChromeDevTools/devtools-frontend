@@ -10,6 +10,7 @@ import * as GPUTrackAppender from './GPUTrackAppender.js';
 import * as InteractionsTrackAppender from './InteractionsTrackAppender.js';
 import * as LayoutShiftsTrackAppender from './LayoutShiftsTrackAppender.js';
 import * as PerformanceModel from './PerformanceModel.js';
+import * as SaveFileFormatter from './SaveFileFormatter.js';
 import * as TimelineController from './TimelineController.js';
 import * as TimelineDetailsView from './TimelineDetailsView.js';
 import * as TimelineEventOverview from './TimelineEventOverview.js';
@@ -37,6 +38,7 @@ export {
   InteractionsTrackAppender,
   LayoutShiftsTrackAppender,
   PerformanceModel,
+  SaveFileFormatter,
   TimelineController,
   TimelineDetailsView,
   TimelineEventOverview,

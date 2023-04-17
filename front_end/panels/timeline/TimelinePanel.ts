@@ -69,6 +69,7 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {traceJsonGenerator} from './SaveFileFormatter.js';
 
 const UIStrings = {
   /**
@@ -640,27 +641,28 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
-    const now = Platform.DateUtilities.toISO8601Compact(new Date());
-
-    let fileName: Platform.DevToolsPath.RawPathString;
-    if (isNode) {
-      fileName = `CPU-${now}.cpuprofile` as Platform.DevToolsPath.RawPathString;
-    } else {
-      fileName = `Trace-${now}.json` as Platform.DevToolsPath.RawPathString;
-    }
-
     const traceEvents = this.#traceEngineModel.traceEvents(this.#traceEngineActiveTraceIndex);
     const metadata = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex);
     if (!traceEvents) {
       return;
     }
 
+    const traceStart = Platform.DateUtilities.toISO8601Compact(new Date());
+    let fileName: Platform.DevToolsPath.RawPathString;
+    if (isNode) {
+      fileName = `CPU-${traceStart}.cpuprofile` as Platform.DevToolsPath.RawPathString;
+    } else {
+      fileName = `Trace-${traceStart}.json` as Platform.DevToolsPath.RawPathString;
+    }
+
     try {
-      const encoder = new TextEncoder();
-      const buffer = encoder.encode(JSON.stringify({traceEvents, metadata}));
       const handler = await window.showSaveFilePicker({
         suggestedName: fileName,
       });
+      const encoder = new TextEncoder();
+      const formattedTraceIter = traceJsonGenerator(traceEvents, metadata);
+      const traceAsString = Array.from(formattedTraceIter).join('');
+      const buffer = encoder.encode(traceAsString);
       const writable = await handler.createWritable();
       await writable.write(buffer);
       await writable.close();
@@ -1233,7 +1235,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // Run the new engine in parallel with the parsing done in the performanceModel
       await Promise.all([
         this.performanceModel.setTracingModel(tracingModel, recordingIsFresh),
-        this.#executeNewTraceEngine(tracingModel, recordingIsFresh),
+        this.#executeNewTraceEngine(tracingModel, recordingIsFresh, this.performanceModel.recordStartTime()),
       ]);
       const traceParsedData = this.#traceEngineModel.traceParsedData();
       this.setModel(this.performanceModel, exclusiveFilter, traceParsedData);
@@ -1268,9 +1270,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * impact the main thread, as we `void` it to ensure we don't want for the
    * parsing to complete.
    **/
-  async #executeNewTraceEngine(tracingModel: SDK.TracingModel.TracingModel, isFreshRecording: boolean): Promise<void> {
+  async #executeNewTraceEngine(
+      tracingModel: SDK.TracingModel.TracingModel, isFreshRecording: boolean, recordStartTime?: number): Promise<void> {
     const shouldGatherMetadata = isFreshRecording && !isNode;
-    const metadata = shouldGatherMetadata ? await SDK.TraceSDKServices.getMetadataForFreshRecording() : undefined;
+    const metadata =
+        shouldGatherMetadata ? await SDK.TraceSDKServices.getMetadataForFreshRecording(recordStartTime) : undefined;
 
     return this.#traceEngineModel.parse(
         // OPP's data layer uses `EventPayload` as the type to represent raw JSON from the trace.

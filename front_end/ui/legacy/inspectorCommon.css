@@ -1151,13 +1151,24 @@ span[is="dt-icon-label"] {
   background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.mediumicon-file-sync.purple-dot {
-  filter: hue-rotate(160deg);
+.green-dot::before {
+  content: url("Images/empty.svg");
+  -webkit-mask-image: url("Images/file-sync-badge.svg");
+  background-color: var(--color-tertiary-bright);
+  left: 6px;
+  position: absolute;
+  top: 2px;
+  z-index: 1;
 }
 
-.-theme-with-dark-background [is="ui-icon"].icon-invert.mediumicon-file-sync.purple-dot,
-:host-context(.-theme-with-dark-background) [is="ui-icon"].icon-invert.mediumicon-file-sync.purple-dot {
-  filter: invert(80%) hue-rotate(350deg);
+.purple-dot::before {
+  -webkit-mask-image: url("Images/file-sync-badge.svg");
+  background-color: var(--color-purple-bright);
+  content: url("Images/empty.svg");
+  left: 6px;
+  position: absolute;
+  top: 2px;
+  z-index: 1;
 }
 
 .expandable-inline-button {

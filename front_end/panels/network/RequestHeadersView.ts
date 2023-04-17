@@ -44,6 +44,7 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as ClientVariations from '../../third_party/chromium/client-variations/client-variations.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import objectPropertiesSectionStyles from '../../ui/legacy/components/object_ui/objectPropertiesSection.css.js';
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -550,8 +551,11 @@ export class RequestHeadersView extends UI.Widget.VBox {
     if (overrideable && this.#workspace.uiSourceCodeForURL(this.#getHeaderOverridesFileUrl())) {
       const overridesSetting: Common.Settings.Setting<boolean> =
           Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled');
-      const icon = overridesSetting.get() ? UI.Icon.Icon.create('mediumicon-file-sync', 'purple-dot') :
-                                            UI.Icon.Icon.create('mediumicon-file');
+      const icon = new IconButton.Icon.Icon();
+      icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '16px', height: '16px'};
+      if (overridesSetting.get()) {
+        icon.classList.add('purple-dot');
+      }
       const button = container.createChild('button', 'link devtools-link headers-link');
       button.appendChild(icon);
       button.addEventListener('click', this.#revealHeadersFile.bind(this));

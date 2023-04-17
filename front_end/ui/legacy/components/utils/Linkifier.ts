@@ -37,6 +37,7 @@ import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import type * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
 const UIStrings = {
@@ -810,7 +811,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
 }
 
 export interface LinkDecorator extends Common.EventTarget.EventTarget<LinkDecorator.EventTypes> {
-  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Icon.Icon|null;
+  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): IconButton.Icon.Icon|null;
 }
 
 export namespace LinkDecorator {
@@ -980,7 +981,7 @@ export class ContentProviderContextMenuProvider implements UI.ContextMenu.Provid
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface _LinkInfo {
-  icon: UI.Icon.Icon|null;
+  icon: IconButton.Icon.Icon|null;
   enableDecorator: boolean;
   uiLocation: Workspace.UISourceCode.UILocation|null;
   liveLocation: Bindings.LiveLocation.LiveLocation|null;

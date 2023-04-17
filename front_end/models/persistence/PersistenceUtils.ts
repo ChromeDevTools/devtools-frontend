@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -44,16 +45,19 @@ export class PersistenceUtils {
     return i18nString(UIStrings.linkedToS, {PH1: Platform.StringUtilities.trimMiddle(binding.network.url(), 150)});
   }
 
-  static iconForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Icon.Icon|null {
+  static iconForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): IconButton.Icon.Icon|null {
     const binding = PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
       if (!binding.fileSystem.url().startsWith('file://')) {
         return null;
       }
-      const icon = UI.Icon.Icon.create('mediumicon-file-sync');
+      const icon = new IconButton.Icon.Icon();
+      icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '16px', height: '16px'};
       UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(binding.network));
       if (NetworkPersistenceManager.instance().project() === binding.fileSystem.project()) {
         icon.classList.add('purple-dot');
+      } else {
+        icon.classList.add('green-dot');
       }
       return icon;
     }
@@ -64,11 +68,14 @@ export class PersistenceUtils {
 
     if (uiSourceCode.url().endsWith(HEADERS_FILENAME)) {
       if (NetworkPersistenceManager.instance().hasMatchingNetworkUISourceCodeForHeaderOverridesFile(uiSourceCode)) {
-        return UI.Icon.Icon.create('mediumicon-file-sync', 'purple-dot');
+        const icon = new IconButton.Icon.Icon();
+        icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '16px', height: '16px'};
+        icon.classList.add('purple-dot');
+        return icon;
       }
     }
-
-    const icon = UI.Icon.Icon.create('mediumicon-file');
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '16px', height: '16px'};
     UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(uiSourceCode));
     return icon;
   }
@@ -87,7 +94,7 @@ export class LinkDecorator extends Common.ObjectWrapper.ObjectWrapper<Components
     this.dispatchEventToListeners(Components.Linkifier.LinkDecorator.Events.LinkIconChanged, binding.network);
   }
 
-  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): UI.Icon.Icon|null {
+  linkIcon(uiSourceCode: Workspace.UISourceCode.UISourceCode): IconButton.Icon.Icon|null {
     return PersistenceUtils.iconForUISourceCode(uiSourceCode);
   }
 }

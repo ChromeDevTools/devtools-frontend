@@ -112,6 +112,11 @@
   --override-file-sync-badge-color: var(--color-purple-bright);
 }
 
+.navigator-file-tree-item.force-white-icons devtools-icon.sync::before,
+.navigator-file-tree-item.force-white-icons devtools-icon.sync.sync-purple::before {
+  --override-file-sync-badge-color: var(--icon-force-white);
+}
+
 .navigator-sm-stylesheet-tree-item .icons-container,
 .navigator-stylesheet-tree-item .icons-container {
   --override-file-tree-item-color: var(--icon-file-styles);

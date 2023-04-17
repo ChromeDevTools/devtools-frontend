@@ -6,8 +6,13 @@
 
 .watch-expression-delete-button {
   position: absolute;
-  top: 5px;
   opacity: 0%;
+  background-color: var(--icon-default);
+  cursor: pointer;
+}
+
+.watch-expression-delete-button:hover {
+  background-color: var(--icon-default-hover);
 }
 
 :host-context(.-theme-with-dark-background) .watch-expression-delete-button {

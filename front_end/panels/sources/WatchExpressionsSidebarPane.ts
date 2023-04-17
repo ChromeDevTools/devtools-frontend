@@ -460,7 +460,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private createWatchExpressionHeader(
       expressionValue?: SDK.RemoteObject.RemoteObject, exceptionDetails?: Protocol.Runtime.ExceptionDetails): Element {
     const headerElement = this.element.createChild('div', 'watch-expression-header');
-    const deleteButton = UI.Icon.Icon.create('smallicon-cross', 'watch-expression-delete-button');
+    const deleteButton = UI.Icon.Icon.create('cross', 'watch-expression-delete-button');
     this.resizeObserver = new ResizeObserver(entries => {
       entries.forEach(entry => {
         // 55 serves as a width threshold here (in px)

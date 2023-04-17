@@ -14,9 +14,9 @@ import {
   type HighlightedEntryInfo,
   type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
@@ -83,25 +83,11 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * appended.
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
-    const style: PerfUI.FlameChart.GroupStyle = {
-      padding: 4,
-      height: 17,
-      collapsible: false,
-      color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
-      backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
-      nestingLevel: 0,
-      shareHeaderLine: true,
-      useFirstLineForOverview: true,
-    };
-    const group = ({
-      startLevel: currentLevel,
-      name: i18nString(UIStrings.layoutShifts),
-      style: style,
-      selectable: true,
-      expanded,
-    } as PerfUI.FlameChart.Group);
+    const style = buildGroupStyle({collapsible: false});
+    const group = buildTrackHeader(
+        currentLevel, i18nString(UIStrings.layoutShifts), style,
+        /* selectable= */ true, expanded, this.#legacyTrack);
     this.#flameChartData.groups.push(group);
-    group.track = this.#legacyTrack;
   }
 
   /**

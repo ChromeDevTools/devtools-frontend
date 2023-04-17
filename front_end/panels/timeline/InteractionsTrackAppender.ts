@@ -17,7 +17,7 @@ import {
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Common from '../../core/common/common.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import {buildGroupStyle, buildTrackHeader} from './appenderUtils.js';
+import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
 
 const UIStrings = {
   /**

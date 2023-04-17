@@ -23,7 +23,7 @@ import {
 } from './TimelineUIUtils.js';
 import * as Common from '../../core/common/common.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import {buildGroupStyle, buildTrackHeader} from './appenderUtils.js';
+import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
 
 const UIStrings = {
   /**

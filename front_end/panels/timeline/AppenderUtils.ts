@@ -11,7 +11,7 @@ import type * as TimelineModel from '../../models/timeline_model/timeline_model.
  * @param extra the customized fields with value.
  * @returns the built GroupStyle
  */
-export function buildGroupStyle(extra: Object): PerfUI.FlameChart.GroupStyle {
+export function buildGroupStyle(extra?: Object): PerfUI.FlameChart.GroupStyle {
   const defaultGroupStyle = {
     padding: 4,
     height: 17,

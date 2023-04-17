@@ -17,7 +17,7 @@ import {
   InstantEventVisibleDurationMs,
   type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
-import {buildGroupStyle, buildTrackHeader} from './appenderUtils.js';
+import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
 
 const UIStrings = {
   /**

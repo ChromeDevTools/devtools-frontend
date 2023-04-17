@@ -891,7 +891,7 @@
     },
     {
       name: "animation-range-start",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "animation",
       style_builder_template_args: {
         attribute: "RangeStart",
@@ -904,7 +904,7 @@
     },
     {
       name: "animation-range-end",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "animation",
       style_builder_template_args: {
         attribute: "RangeEnd",
@@ -1534,6 +1534,7 @@
       // Setting zoom affects the _EffectiveZoom_, which in turns affects every px value
       // stored on ComputedStyle; see CSSToLengthConversionData::ZoomedComputedPixels.
       supports_incremental_style: false,
+      runtime_flag: "CSSZoom",
     },
     {
       name: "accent-color",
@@ -1820,6 +1821,7 @@
     },
     {
       name: "background-repeat-x",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
       style_builder_template: "background_layer",
       style_builder_template_args: {
         fill_type: "RepeatX",
@@ -1832,6 +1834,7 @@
     },
     {
       name: "background-repeat-y",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
       style_builder_template: "background_layer",
       style_builder_template_args: {
         fill_type: "RepeatY",
@@ -2299,6 +2302,7 @@
       keywords: ["auto"],
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthOrAuto",
       logical_property_group: {
         name: "inset",
@@ -3012,6 +3016,7 @@
       keywords: ["auto", "fit-content", "min-content", "max-content"],
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthSizing",
       logical_property_group: {
         name: "size",
@@ -3136,6 +3141,7 @@
       keywords: ["auto"],
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthOrAuto",
       logical_property_group: {
         name: "inset",
@@ -3404,6 +3410,7 @@
       field_group: "box",
       field_template: "<length>",
       default_value: "Length::None()",
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthMaxSizing",
       keywords: ["none"],
       typedom_types: ["Keyword", "Length", "Percentage"],
@@ -3421,6 +3428,7 @@
       field_group: "box",
       field_template: "<length>",
       default_value: "Length::None()",
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthMaxSizing",
       keywords: ["none"],
       typedom_types: ["Keyword", "Length", "Percentage"],
@@ -3438,6 +3446,7 @@
       field_group: "box",
       field_template: "<length>",
       default_value: "Length()",
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthSizing",
       typedom_types: ["Length", "Percentage"],
       logical_property_group: {
@@ -3454,6 +3463,7 @@
       field_group: "box",
       field_template: "<length>",
       default_value: "Length()",
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthSizing",
       typedom_types: ["Length", "Percentage"],
       logical_property_group: {
@@ -3606,7 +3616,6 @@
       field_template: "primitive",
       default_value: "0",
       type_name: "int",
-      computed_style_custom_functions: ["setter"],
       typedom_types: ["Number"],
     },
     {
@@ -4057,6 +4066,7 @@
       keywords: ["auto"],
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthOrAuto",
       logical_property_group: {
         name: "inset",
@@ -4396,6 +4406,17 @@
       computable: false,
     },
     {
+      name: "scroll-timeline-attachment",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
+      field_group: "*->timeline",
+      field_template: "external",
+      default_value: "Vector<TimelineAttachment>()",
+      type_name: "Vector<TimelineAttachment>",
+      converter: "ConvertViewTimelineAttachment",
+      separator: ",",
+      runtime_flag: "CSSScrollTimeline",
+    },
+    {
       name: "scroll-timeline-axis",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       field_group: "*->timeline",
@@ -4695,8 +4716,8 @@
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "box",
       field_template: "keyword",
-      default_value: "normal",
-      keywords: ["normal", "start", "end", "both"],
+      default_value: "none",
+      keywords: ["none", "start", "end", "both"],
       typedom_types: ["Keyword"],
       runtime_flag: "CSSTextBoxTrim",
     },
@@ -4990,6 +5011,7 @@
       keywords: ["auto"],
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthOrAuto",
       logical_property_group: {
         name: "inset",
@@ -4999,12 +5021,12 @@
       valid_for_position_fallback: true,
     },
     {
-      name: "top-layer",
+      name: "overlay",
       runtime_flag: "CSSTopLayerForTransitions",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "*",
       field_template: "keyword",
-      keywords: ["none", "browser"],
+      keywords: ["none", "auto"],
       default_value: "none",
       typedom_types: ["Keyword"],
     },
@@ -5155,6 +5177,17 @@
       valid_for_first_line: true,
     },
     {
+      name: "view-timeline-attachment",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
+      field_group: "*->timeline",
+      field_template: "external",
+      default_value: "Vector<TimelineAttachment>()",
+      type_name: "Vector<TimelineAttachment>",
+      converter: "ConvertViewTimelineAttachment",
+      separator: ",",
+      runtime_flag: "CSSViewTimeline",
+    },
+    {
       name: "view-timeline-axis",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       field_group: "*->timeline",
@@ -5170,7 +5203,7 @@
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       field_group: "*->timeline",
       field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/timeline_inset.h"],
+      include_paths: ["third_party/blink/renderer/core/animation/timeline_inset.h"],
       default_value: "Vector<TimelineInset>()",
       type_name: "Vector<TimelineInset>",
       converter: "ConvertViewTimelineInset",
@@ -5893,24 +5926,54 @@
       inherited: true,
       // This property is "keyword" but use "primitive" to use `EWhiteSpace` defined manually.
       field_template: "primitive",
-      field_size: 4,  // Ensure this is in sync with `kEWhiteSpaceBits`.
+      // The values are stored in `white-space-collapse` and `text-wrap` by
+      // `computed_style_custom_functions` even when `CSSWhiteSpaceShorthand`
+      // is off, but give 1 bit to it because `field_size` can't be zero.
+      field_size: 1,
       include_paths: ["third_party/blink/renderer/core/css/white_space.h"],
       keywords: [
         "normal", "pre", "pre-wrap", "pre-line", "nowrap", "break-spaces"
       ],
-      style_builder_custom_functions: ["initial", "inherit", "value"],
+      computed_style_custom_functions: ["getter", "setter", "resetter"],
       typedom_types: ["Keyword"],
       default_value: "EWhiteSpace::kNormal",
       valid_for_cue: true,
       valid_for_marker: true,
     },
     {
+      name: "-alternative-white-space",
+      alternative_of: "white-space",
+      longhands: [
+        "white-space-collapse", "text-wrap"
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSWhiteSpaceShorthand",
+    },
+    {
+      name: "white-space-collapse",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      inherited: true,
+      field_template: "primitive",
+      field_size: 2,  // Ensure this is in sync with `kWhiteSpaceCollapseBits`.
+      type_name: "WhiteSpaceCollapse",
+      keywords: ["collapse", "preserve", "preserve-breaks", "break-spaces"],
+      default_value: "WhiteSpaceCollapse::kCollapse",
+      include_paths: ["third_party/blink/renderer/core/css/white_space.h"],
+      typedom_types: ["Keyword"],
+      valid_for_cue: true,
+      valid_for_marker: true,
+      runtime_flag: "CSSWhiteSpaceShorthand",
+    },
+    {
       name: "text-wrap",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       inherited: true,
-      field_template: "keyword",
-      keywords: ["wrap", "balance"],
-      default_value: "wrap",
+      field_template: "primitive",
+      field_size: 2,  // Ensure this is in sync with `kTextWrapBits`.
+      keywords: ["wrap", "nowrap", "balance"],
+      type_name: "TextWrap",
+      default_value: "TextWrap::kWrap",
+      include_paths: ["third_party/blink/renderer/core/css/white_space.h"],
       typedom_types: ["Keyword"],
       valid_for_cue: true,
       valid_for_marker: true,
@@ -5938,6 +6001,7 @@
       keywords: ["auto", "fit-content", "min-content", "max-content"],
       default_value: "Length()",
       typedom_types: ["Keyword", "Length", "Percentage"],
+      computed_style_protected_functions: ["getter"],
       converter: "ConvertLengthSizing",
       logical_property_group: {
         name: "size",
@@ -6606,14 +6670,14 @@
     },
     {
       // Variant of the "animation" shorthand which includes the
-      // animation-timeline longhand.
+      // animation-timeline and animation-range-* longhands.
       name: "-alternative-animation-with-timeline",
       alternative_of: "animation",
       longhands: [
         "animation-duration", "animation-timing-function",
         "animation-delay", "animation-iteration-count", "animation-direction",
         "animation-fill-mode", "animation-play-state", "animation-name",
-        "animation-timeline"
+        "animation-timeline", "animation-range-start", "animation-range-end"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       valid_for_keyframe: false,
@@ -6629,7 +6693,7 @@
         "animation-delay-start", "animation-delay-end",
         "animation-iteration-count", "animation-direction",
         "animation-fill-mode", "animation-play-state", "animation-name",
-        "animation-timeline"
+        "animation-timeline", "animation-range-start", "animation-range-end"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       valid_for_keyframe: false,
@@ -7140,7 +7204,7 @@
     },
     {
       name: "scroll-timeline",
-      longhands: ["scroll-timeline-name", "scroll-timeline-axis"],
+      longhands: ["scroll-timeline-name", "scroll-timeline-axis", "scroll-timeline-attachment"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       runtime_flag: "CSSScrollTimeline",
     },
@@ -7166,7 +7230,7 @@
     },
     {
       name: "view-timeline",
-      longhands: ["view-timeline-name", "view-timeline-axis"],
+      longhands: ["view-timeline-name", "view-timeline-axis", "view-timeline-attachment"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       runtime_flag: "CSSViewTimeline",
     },

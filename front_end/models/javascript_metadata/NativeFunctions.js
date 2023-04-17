@@ -175,11 +175,6 @@ export const NativeFunctions = [
     receivers: ['PaymentInstruments']
   },
   {
-    name: 'set',
-    signatures: [['key','value','?options']],
-    receivers: ['SharedStorage']
-  },
-  {
     name: 'toLocaleString',
     signatures: [['?locales','?options']],
     receivers: ['Date','Number','BigInt']
@@ -989,11 +984,6 @@ export const NativeFunctions = [
     receivers: ['IdleDetector']
   },
   {
-    name: 'start',
-    signatures: [['remoteParameters','?role']],
-    receivers: ['RTCIceTransport']
-  },
-  {
     name: 'close',
     signatures: [['?returnValue']],
     receivers: ['HTMLDialogElement']
@@ -1318,7 +1308,7 @@ export const NativeFunctions = [
   {
     name: 'delete',
     signatures: [['key']],
-    receivers: ['Map','WeakMap','SharedStorage']
+    receivers: ['Map','WeakMap']
   },
   {
     name: 'delete',
@@ -1778,12 +1768,17 @@ export const NativeFunctions = [
   },
   {
     name: 'remove',
-    signatures: [['app_id']],
+    signatures: [['app_ids']],
     receivers: ['SubApps']
   },
   {
     name: 'replaceWith',
     signatures: [['...nodes']]
+  },
+  {
+    name: 'read',
+    signatures: [['?formats']],
+    receivers: ['Clipboard']
   },
   {
     name: 'read',
@@ -2466,11 +2461,6 @@ export const NativeFunctions = [
     name: 'append',
     signatures: [['property','...values']],
     receivers: ['StylePropertyMap']
-  },
-  {
-    name: 'append',
-    signatures: [['key','value']],
-    receivers: ['SharedStorage']
   },
   {
     name: 'getAll',
@@ -6075,7 +6065,7 @@ export const NativeFunctions = [
   },
   {
     name: 'hasRedemptionRecord',
-    signatures: [['issuer','type']]
+    signatures: [['issuer']]
   },
   {
     name: 'ariaNotify',
@@ -6608,6 +6598,10 @@ export const NativeFunctions = [
   {
     name: 'setWindowRect',
     signatures: [['x','y','width','height']]
+  },
+  {
+    name: 'setMenuListOptionsBoundsInAXTree',
+    signatures: [['options_bounds']]
   },
   {
     name: 'ScrollState',
@@ -7364,6 +7358,10 @@ export const NativeFunctions = [
     signatures: [['input','filter','?options']]
   },
   {
+    name: 'convTranspose2d',
+    signatures: [['input','filter','?options']]
+  },
+  {
     name: 'gemm',
     signatures: [['a','b','?options']]
   },
@@ -7376,12 +7374,20 @@ export const NativeFunctions = [
     signatures: [['?options'],['x','?options']]
   },
   {
+    name: 'pad',
+    signatures: [['input','beginningPadding','endingPadding','?options']]
+  },
+  {
     name: 'averagePool2d',
     signatures: [['input','?options']]
   },
   {
     name: 'maxPool2d',
     signatures: [['input','?options']]
+  },
+  {
+    name: 'prelu',
+    signatures: [['x','slope']]
   },
   {
     name: 'relu',
@@ -7534,14 +7540,6 @@ export const NativeFunctions = [
   {
     name: 'RTCIceCandidate',
     signatures: [['?candidateInitDict']]
-  },
-  {
-    name: 'gather',
-    signatures: [['options']]
-  },
-  {
-    name: 'addRemoteCandidate',
-    signatures: [['remoteCandidate']]
   },
   {
     name: 'stat',
@@ -7744,12 +7742,12 @@ export const NativeFunctions = [
     signatures: [['?faceDetectorOptions']]
   },
   {
-    name: 'selectURL',
-    signatures: [['name','urls','?options']]
+    name: 'sendHistogramReport',
+    signatures: [['contribution']]
   },
   {
-    name: 'run',
-    signatures: [['name','?options']]
+    name: 'enableDebugMode',
+    signatures: [['?options']]
   },
   {
     name: 'SmartCardError',
@@ -8088,10 +8086,6 @@ export const NativeFunctions = [
   {
     name: 'dispatchWorkgroupsIndirect',
     signatures: [['indirectBuffer','indirectOffset']]
-  },
-  {
-    name: 'experimentalImportTexture',
-    signatures: [['canvas','usage']]
   },
   {
     name: 'importExternalTexture',

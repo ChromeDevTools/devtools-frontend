@@ -95,3 +95,7 @@
 .tree-outline .error-field {
   color: var(--color-red);
 }
+
+.prompt-icon {
+  margin-top: 2px;
+}

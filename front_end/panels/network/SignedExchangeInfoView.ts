@@ -9,6 +9,7 @@ import signedExchangeInfoTreeStyles from './signedExchangeInfoTree.css.js';
 import signedExchangeInfoViewStyles from './signedExchangeInfoView.css.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -125,7 +126,10 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
       const errorMessagesCategory = new Category(root, i18nString(UIStrings.errors));
       for (const error of signedExchangeInfo.errors) {
         const fragment = document.createDocumentFragment();
-        fragment.appendChild(UI.Icon.Icon.create('smallicon-error', 'prompt-icon'));
+        const icon = new IconButton.Icon.Icon();
+        icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error-small)', width: '14px', height: '14px'};
+        icon.classList.add('prompt-icon');
+        fragment.appendChild(icon);
         fragment.createChild('div', 'error-log').textContent = error.message;
         errorMessagesCategory.createLeaf(fragment);
         if (error.errorField) {

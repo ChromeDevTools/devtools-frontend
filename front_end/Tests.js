@@ -339,7 +339,7 @@
   // Tests that debugger works correctly if pause event occurs when DevTools
   // frontend is being loaded.
   TestSuite.prototype.testPauseWhenLoadingDevTools = function() {
-    const debuggerModel = self.SDK.targetManager.rootTarget().model(SDK.DebuggerModel);
+    const debuggerModel = self.SDK.targetManager.primaryPageTarget().model(SDK.DebuggerModel);
     if (debuggerModel.debuggerPausedDetails) {
       return;
     }
@@ -579,12 +579,12 @@
 
   TestSuite.prototype.enableTouchEmulation = function() {
     const deviceModeModel = new Emulation.DeviceModeModel(function() {});
-    deviceModeModel._target = self.SDK.targetManager.rootTarget();
+    deviceModeModel._target = self.SDK.targetManager.primaryPageTarget();
     deviceModeModel._applyTouch(true, true);
   };
 
   TestSuite.prototype.waitForDebuggerPaused = function() {
-    const debuggerModel = self.SDK.targetManager.rootTarget().model(SDK.DebuggerModel);
+    const debuggerModel = self.SDK.targetManager.primaryPageTarget().model(SDK.DebuggerModel);
     if (debuggerModel.debuggerPausedDetails) {
       return;
     }
@@ -608,7 +608,7 @@
     const test = this;
 
     async function testOverrides(params, metrics, callback) {
-      await self.SDK.targetManager.rootTarget().emulationAgent().invoke_setDeviceMetricsOverride(params);
+      await self.SDK.targetManager.primaryPageTarget().emulationAgent().invoke_setDeviceMetricsOverride(params);
       test.evaluateInConsole_('(' + dumpPageMetrics.toString() + ')()', checkMetrics);
 
       function checkMetrics(consoleResult) {
@@ -655,16 +655,16 @@
     let receivedReady = false;
 
     function signalToShowAutofill() {
-      self.SDK.targetManager.rootTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.primaryPageTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'rawKeyDown', key: 'Down', windowsVirtualKeyCode: 40, nativeVirtualKeyCode: 40});
-      self.SDK.targetManager.rootTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.primaryPageTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'keyUp', key: 'Down', windowsVirtualKeyCode: 40, nativeVirtualKeyCode: 40});
     }
 
     function selectTopAutoFill() {
-      self.SDK.targetManager.rootTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.primaryPageTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'rawKeyDown', key: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13});
-      self.SDK.targetManager.rootTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.primaryPageTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'keyUp', key: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13});
 
       test.evaluateInConsole_('document.getElementById("name").value', onResultOfInput);
@@ -714,7 +714,7 @@
           Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, onKeyEventUnhandledKeyDown, this);
       Host.InspectorFrontendHost.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, onKeyEventUnhandledKeyUp, this);
-      self.SDK.targetManager.rootTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.primaryPageTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'keyUp', key: 'F8', code: 'F8', windowsVirtualKeyCode: 119, nativeVirtualKeyCode: 119});
     }
     function onKeyEventUnhandledKeyUp(event) {
@@ -728,7 +728,7 @@
     this.takeControl();
     Host.InspectorFrontendHost.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.KeyEventUnhandled, onKeyEventUnhandledKeyDown, this);
-    self.SDK.targetManager.rootTarget().inputAgent().invoke_dispatchKeyEvent(
+    self.SDK.targetManager.primaryPageTarget().inputAgent().invoke_dispatchKeyEvent(
         {type: 'rawKeyDown', key: 'F8', windowsVirtualKeyCode: 119, nativeVirtualKeyCode: 119});
   };
 
@@ -738,7 +738,7 @@
     this.takeControl();
 
     this.addSniffer(self.UI.shortcutRegistry, 'registerBindings', () => {
-      self.SDK.targetManager.rootTarget().inputAgent().invoke_dispatchKeyEvent(
+      self.SDK.targetManager.primaryPageTarget().inputAgent().invoke_dispatchKeyEvent(
           {type: 'rawKeyDown', key: 'F1', windowsVirtualKeyCode: 112, nativeVirtualKeyCode: 112});
     });
     this.addSniffer(self.UI.shortcutRegistry, 'handleKey', key => {
@@ -750,9 +750,9 @@
   };
 
   TestSuite.prototype.testDispatchKeyEventDoesNotCrash = function() {
-    self.SDK.targetManager.rootTarget().inputAgent().invoke_dispatchKeyEvent(
+    self.SDK.targetManager.primaryPageTarget().inputAgent().invoke_dispatchKeyEvent(
         {type: 'rawKeyDown', windowsVirtualKeyCode: 0x23, key: 'End'});
-    self.SDK.targetManager.rootTarget().inputAgent().invoke_dispatchKeyEvent(
+    self.SDK.targetManager.primaryPageTarget().inputAgent().invoke_dispatchKeyEvent(
         {type: 'keyUp', windowsVirtualKeyCode: 0x23, key: 'End'});
   };
 
@@ -1376,8 +1376,8 @@
     let parentFrameOutput;
     let childFrameOutput;
 
-    const inputAgent = self.SDK.targetManager.rootTarget().inputAgent();
-    const runtimeAgent = self.SDK.targetManager.rootTarget().runtimeAgent();
+    const inputAgent = self.SDK.targetManager.primaryPageTarget().inputAgent();
+    const runtimeAgent = self.SDK.targetManager.primaryPageTarget().runtimeAgent();
     await inputAgent.invoke_dispatchMouseEvent({type: 'mousePressed', button: 'left', clickCount: 1, x: 10, y: 10});
     await inputAgent.invoke_dispatchMouseEvent({type: 'mouseMoved', button: 'left', clickCount: 1, x: 10, y: 20});
     await inputAgent.invoke_dispatchMouseEvent({type: 'mouseReleased', button: 'left', clickCount: 1, x: 10, y: 20});
@@ -1440,14 +1440,14 @@
     await testCase(baseURL + 'echoheader?x-devtools-test', {'x-devtools-test': 'Foo'}, 200, ['cache-control'], 'Foo');
     await testCase(baseURL + 'set-header?pragma:%20no-cache', undefined, 200, ['pragma'], 'pragma: no-cache');
 
-    await self.SDK.targetManager.rootTarget().runtimeAgent().invoke_evaluate({
+    await self.SDK.targetManager.primaryPageTarget().runtimeAgent().invoke_evaluate({
       expression: `fetch("/set-cookie?devtools-test-cookie=Bar",
                          {credentials: 'include'})`,
       awaitPromise: true
     });
     await testCase(baseURL + 'echoheader?Cookie', undefined, 200, ['cache-control'], 'devtools-test-cookie=Bar');
 
-    await self.SDK.targetManager.rootTarget().runtimeAgent().invoke_evaluate({
+    await self.SDK.targetManager.primaryPageTarget().runtimeAgent().invoke_evaluate({
       expression: `fetch("/set-cookie?devtools-test-cookie=same-site-cookie;SameSite=Lax",
                          {credentials: 'include'})`,
       awaitPromise: true
@@ -1519,7 +1519,7 @@
 
   TestSuite.prototype.testSourceMapsFromExtension = function(extensionId) {
     this.takeControl();
-    const debuggerModel = self.SDK.targetManager.rootTarget().model(SDK.DebuggerModel);
+    const debuggerModel = self.SDK.targetManager.primaryPageTarget().model(SDK.DebuggerModel);
     debuggerModel.sourceMapManager().addEventListener(
         SDK.SourceMapManager.Events.SourceMapAttached, this.releaseControl.bind(this));
 
@@ -1529,7 +1529,7 @@
 
   TestSuite.prototype.testSourceMapsFromDevtools = function() {
     this.takeControl();
-    const debuggerModel = self.SDK.targetManager.rootTarget().model(SDK.DebuggerModel);
+    const debuggerModel = self.SDK.targetManager.primaryPageTarget().model(SDK.DebuggerModel);
     debuggerModel.sourceMapManager().addEventListener(
         SDK.SourceMapManager.Events.SourceMapWillAttach, this.releaseControl.bind(this));
 
@@ -1646,7 +1646,7 @@
   };
 
   TestSuite.prototype._waitForExecutionContexts = function(n, callback) {
-    const runtimeModel = self.SDK.targetManager.rootTarget().model(SDK.RuntimeModel);
+    const runtimeModel = self.SDK.targetManager.primaryPageTarget().model(SDK.RuntimeModel);
     checkForExecutionContexts.call(this);
 
     function checkForExecutionContexts() {

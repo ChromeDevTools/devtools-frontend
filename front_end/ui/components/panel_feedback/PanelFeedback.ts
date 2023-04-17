@@ -32,7 +32,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/components/panel_feedback/PanelFeedback.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const previewFeatureUrl = new URL('../../../Images/ic_preview_feature.svg', import.meta.url).toString();
+const previewFeatureUrl = new URL('../../../Images/experiment.svg', import.meta.url).toString();
 const videoThumbnailUrl = new URL('../../../Images/preview_feature_video_thumbnail.svg', import.meta.url).toString();
 
 export interface PanelFeedbackData {
@@ -71,9 +71,9 @@ export class PanelFeedback extends HTMLElement {
         <h2 class="flex">
           <${IconButton.Icon.Icon.litTagName} .data=${{
             iconPath: previewFeatureUrl,
-            width: '24px',
-            height: '24px',
-            color: 'var(--color-primary-old)',
+            width: '20px',
+            height: '20px',
+            color: 'var(--color-active)',
           } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}> ${i18nString(UIStrings.previewFeature)}
         </h2>
         <p>${i18nString(UIStrings.previewText)} <x-link href=${this.#props.feedbackUrl}>${i18nString(UIStrings.previewTextFeedbackLink)}</x-link></p>

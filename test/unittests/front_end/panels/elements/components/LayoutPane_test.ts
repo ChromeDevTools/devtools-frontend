@@ -267,8 +267,8 @@ describeWithLocale('LayoutPane', async () => {
     };
     renderElementIntoDOM(component);
     assertShadowRoot(component.shadowRoot);
-    const button = component.shadowRoot.querySelector('button.show-element');
-    assertElement(button, HTMLButtonElement);
+    const button = component.shadowRoot.querySelector('devtools-icon.show-element');
+    assertElement(button, HTMLElement);
     button.click();
     assert.strictEqual(called, 1);
   });

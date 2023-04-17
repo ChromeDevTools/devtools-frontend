@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -270,7 +271,12 @@ export class LayoutPane extends HTMLElement {
       <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} class="color-picker-label" style="background: ${element.color};">
         <input @change=${onColorChange} @input=${onColorChange} title=${i18nString(UIStrings.chooseElementOverlayColor)} tabindex="0" class="color-picker" type="color" value=${element.color} />
       </label>
-      <button tabindex="0" @click=${onElementClick} title=${i18nString(UIStrings.showElementInTheElementsPanel)} class="show-element"></button>
+      <${IconButton.Icon.Icon.litTagName} .data=${{
+        iconName: 'select-element',
+        color: 'var(--icon-show-element)',
+        width: '16px',
+      } as IconButton.Icon.IconData} tabindex="0", @click=${onElementClick} title=${i18nString(UIStrings.showElementInTheElementsPanel)} class="show-element">
+      </${IconButton.Icon.Icon.litTagName}>
     </div>`;
     // clang-format on
   }

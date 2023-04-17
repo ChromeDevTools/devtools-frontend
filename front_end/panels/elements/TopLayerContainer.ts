@@ -94,8 +94,7 @@ export class TopLayerContainer extends UI.TreeOutline.TreeElement {
     const adornerContent = document.createElement('span');
     adornerContent.classList.add('adorner-with-icon');
     const linkIcon = new IconButton.Icon.Icon();
-    linkIcon
-        .data = {iconName: 'ic_show_node_16x16', color: 'var(--color-text-disabled)', width: '12px', height: '12px'};
+    linkIcon.data = {iconName: 'select-element', color: 'var(--icon-default)', width: '14px', height: '14px'};
     const adornerText = document.createElement('span');
     adornerText.textContent = ` top-layer (${topLayerElementIndex}) `;
     adornerContent.append(linkIcon);

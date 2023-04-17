@@ -110,37 +110,20 @@
 
 .show-element {
   margin: 0 0 0 8px;
-  padding: 0;
-  background: none;
-  border: none;
-  -webkit-mask-image: var(--image-file-ic_show_node_16x16);
-  background-color: #333; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  width: 16px;
-  height: 16px;
-  display: block;
   cursor: pointer;
   flex: none;
+
+  --icon-show-element: var(--icon-default);
 }
 
 .show-element:focus,
 .show-element:hover {
-  background-color: #6e6e6e; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  --icon-show-element: var(--icon-default-hover);
 }
 
 .chrome-select {
   min-width: 0;
   max-width: 150px;
-}
-
-:host-context(.-theme-with-dark-background) .show-element {
-  background-color: rgb(204 204 204);
-}
-
-:host-context(.-theme-with-dark-background) .show-element:focus,
-:host-context(.-theme-with-dark-background) .show-element:hover {
-  background-color: #6e6e6e;
 }
 
 .color-picker {

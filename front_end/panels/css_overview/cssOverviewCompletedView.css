@@ -340,21 +340,16 @@
 
 .show-element {
   margin: 0 0 0 8px;
-  padding: 0;
-  background: none;
-  border: none;
-  -webkit-mask-image: var(--image-file-ic_show_node_16x16);
-  background-color: var(--color-text-secondary);
-  width: 16px;
-  height: 16px;
   display: none;
   cursor: pointer;
   flex: none;
+
+  --icon-show-element: var(--icon-default);
 }
 
 .show-element:focus,
 .show-element:hover {
-  background-color: var(--color-primary-old);
+  --icon-show-element: var(--icon-default-hover);
 }
 
 .nodeId-column:focus-within .show-element,

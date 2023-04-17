@@ -573,9 +573,9 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     const previewIcon = new IconButton.Icon.Icon();
     previewIcon.data = {
-      iconName: 'ic_preview_feature',
-      color: 'var(--icon-color)',
-      width: '14px',
+      iconName: 'experiment',
+      color: 'var(--icon-default)',
+      width: '16px',
     };
     menuSection.appendCheckboxItem(
         menuItem, toggleExperiment, Root.Runtime.experiments.isEnabled(experiment), false, previewIcon);

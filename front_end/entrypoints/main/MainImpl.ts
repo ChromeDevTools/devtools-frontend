@@ -995,7 +995,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
 
       if (viewExtension.isPreviewFeature()) {
         const previewIcon = new IconButton.Icon.Icon();
-        previewIcon.data = {iconName: 'ic_preview_feature', color: 'var(--icon-color)', width: '14px', height: '14px'};
+        previewIcon.data = {iconName: 'experiment', color: 'var(--icon-default)', width: '16px', height: '16px'};
         moreTools.defaultSection().appendItem(title, () => {
           void UI.ViewManager.ViewManager.instance().showView(id, true, false);
         }, /* disabled=*/ false, previewIcon);

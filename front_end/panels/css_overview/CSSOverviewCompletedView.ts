@@ -1083,12 +1083,13 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
         cell.textContent = '';
         (link as HTMLElement).dataset.backendNodeId = frontendNode.backendNodeId().toString();
         cell.appendChild(link);
-        const button = document.createElement('button');
-        button.classList.add('show-element');
-        UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.showElement));
-        button.tabIndex = 0;
-        button.onclick = (): Promise<void> => frontendNode.scrollIntoView();
-        cell.appendChild(button);
+        const showNodeIcon = new IconButton.Icon.Icon();
+        showNodeIcon.data = {iconName: 'select-element', color: 'var(--icon-show-element)', width: '16px'};
+        showNodeIcon.classList.add('show-element');
+        UI.Tooltip.Tooltip.install(showNodeIcon, i18nString(UIStrings.showElement));
+        showNodeIcon.tabIndex = 0;
+        showNodeIcon.onclick = (): Promise<void> => frontendNode.scrollIntoView();
+        cell.appendChild(showNodeIcon);
       });
       return cell;
     }

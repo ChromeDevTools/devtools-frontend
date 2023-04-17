@@ -1692,8 +1692,7 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     const name = config.name;
     const adornerContent = document.createElement('span');
     const linkIcon = new IconButton.Icon.Icon();
-    linkIcon
-        .data = {iconName: 'ic_show_node_16x16', color: 'var(--color-text-disabled)', width: '12px', height: '12px'};
+    linkIcon.data = {iconName: 'select-element', color: 'var(--icon-default)', width: '14px', height: '14px'};
     const slotText = document.createElement('span');
     slotText.textContent = name;
     adornerContent.append(linkIcon);

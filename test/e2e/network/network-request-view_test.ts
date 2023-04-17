@@ -238,8 +238,8 @@ describe('The Network Request view', async () => {
 
     const filterInput =
         await waitFor('[aria-label="Enter regex, for example: (web)?socket"][role=textbox]', messagesView);
-    filterInput.focus();
-    void typeText('ping');
+    await filterInput.focus();
+    await typeText('ping');
 
     messages = await waitForMessages(2);
     assert.deepEqual(messages, ['ping', 'ping']);

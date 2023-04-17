@@ -358,4 +358,24 @@ describeWithMockConnection('ResourceTreeModel', () => {
     dispatchEvent(prerenderTarget, 'Page.frameNavigated', frameNavigatedEvent());
     assert.strictEqual(primaryPageChangedEvents.length, 1);
   });
+
+  it('rebuilds the resource tree from scratch upon bfcache-navigation', async () => {
+    const target = createTarget();
+    const frameManager = SDK.FrameManager.FrameManager.instance();
+    const removedFromFrameManagerSpy = sinon.spy(frameManager, 'modelRemoved');
+    const addedToFrameManagerSpy = sinon.spy(frameManager, 'modelAdded');
+    const resourceTreeModel = getResourceTeeModel(target);
+    await resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
+    const cachedResourcesLoaded = resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
+    const processPendingEventsSpy = sinon.spy(resourceTreeModel, 'processPendingEvents');
+
+    dispatchEvent(
+        target, 'Page.frameNavigated',
+        {...frameNavigatedEvent(), type: Protocol.Page.NavigationType.BackForwardCacheRestore});
+
+    await cachedResourcesLoaded;
+    assert.isTrue(removedFromFrameManagerSpy.calledOnce);
+    assert.isTrue(addedToFrameManagerSpy.calledOnce);
+    assert.isTrue(processPendingEventsSpy.calledTwice);
+  });
 });

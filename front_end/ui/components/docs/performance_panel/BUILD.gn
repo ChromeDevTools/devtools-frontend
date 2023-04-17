@@ -9,6 +9,7 @@ ts_library("ts") {
   testonly = true
   sources = [
     "basic.ts",
+    "cpuprofile.ts",
     "track_example.ts",
   ]
   deps = [
@@ -28,6 +29,7 @@ copy_to_gen("performance_panel") {
   testonly = true
   sources = [
     "basic.html",
+    "cpuprofile.html",
     "track_example.html",
   ]
 

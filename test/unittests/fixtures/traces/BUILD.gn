@@ -29,6 +29,7 @@ copy_to_gen("traces") {
     "multiple-navigations.json.gz",
     "multiple-top-level-renderers.json.gz",
     "nested-interactions.json.gz",
+    "node-fibonacci-website.cpuprofile.gz",
     "recursive-blocking-js.json.gz",
     "recursive-counting-js.json.gz",
     "redirects-subresource-multiple.json.gz",

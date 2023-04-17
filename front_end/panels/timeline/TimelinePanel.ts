@@ -70,6 +70,7 @@ import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {traceJsonGenerator} from './SaveFileFormatter.js';
+import {timesForEventInMilliseconds} from './EventTypeHelpers.js';
 
 const UIStrings = {
   /**
@@ -1486,9 +1487,9 @@ export class TimelineSelection {
         TimelineSelection.Type.NetworkRequest, request.startTime, request.endTime || request.startTime, request);
   }
 
-  static fromTraceEvent(event: SDK.TracingModel.Event): TimelineSelection {
-    return new TimelineSelection(
-        TimelineSelection.Type.TraceEvent, event.startTime, event.endTime || (event.startTime + 1), event);
+  static fromTraceEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): TimelineSelection {
+    const {startTime, endTime} = timesForEventInMilliseconds(event);
+    return new TimelineSelection(TimelineSelection.Type.TraceEvent, startTime, endTime || (startTime + 1), event);
   }
 
   static fromRange(startTime: number, endTime: number): TimelineSelection {

@@ -1197,12 +1197,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let timelineSelection: TimelineSelection|null = null;
     const entry = this.entryData[entryIndex];
     if (entry && this.isEntryRegularEvent(entry)) {
-      const event =
-          entry instanceof SDK.TracingModel.Event ? entry : this.compatibilityTracksAppender?.getLegacyEvent(entry);
-      if (!event) {
-        return null;
-      }
-      timelineSelection = TimelineSelection.fromTraceEvent(event);
+      timelineSelection = TimelineSelection.fromTraceEvent(entry);
     } else if (entryType === EntryType.Frame) {
       timelineSelection =
           TimelineSelection.fromFrame((this.entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame));

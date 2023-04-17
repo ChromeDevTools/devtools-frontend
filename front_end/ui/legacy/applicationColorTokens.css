@@ -12,6 +12,7 @@
   --icon-contrast-issue: var(--color-error);
   --icon-default: var(--color-on-surface-variant);
   --icon-default-hover: var(--color-on-surface);
+  --icon-disabled: color-mix(in sRGB, var(--color-on-surface-variant) 55%, transparent);
   --icon-error: var(--color-error-bright);
   --icon-error-small: var(--color-error);
   --icon-file-authored: var(--color-orange-bright);

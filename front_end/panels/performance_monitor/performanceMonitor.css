@@ -89,11 +89,7 @@
 }
 
 .perfmon-indicator-swatch {
-  margin-right: 6px;
-}
-
-.perfmon-indicator:not(.active) .perfmon-indicator-swatch {
-  background-color: var(--color-background-elevation-2) !important; /* stylelint-disable-line declaration-no-important */
+  margin-right: 4px;
 }
 
 .perfmon-indicator-title {

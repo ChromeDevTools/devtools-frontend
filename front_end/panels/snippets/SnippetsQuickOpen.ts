@@ -85,7 +85,8 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
 
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '!',
-  iconName: 'ic_command_run_snippet',
+  iconName: 'exclamation',
+  iconWidth: '20px',
   provider: () => Promise.resolve(SnippetsQuickOpen.instance()),
   titlePrefix: i18nLazyString(UIStrings.run),
   titleSuggestion: i18nLazyString(UIStrings.snippet),

@@ -161,7 +161,7 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item-wrapper.selected devtools-icon {
-  --icon-color: var(--color-background);
+  --icon-color: var(--icon-force-white);
 }
 
 .filtered-list-widget-item.one-row {

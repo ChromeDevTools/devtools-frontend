@@ -629,6 +629,7 @@ export function getRegisteredProviders(): ProviderRegistration[] {
 export interface ProviderRegistration {
   prefix: string;
   iconName: string;
+  iconWidth: string;
   provider: () => Promise<Provider>;
   titlePrefix: (() => string);
   titleSuggestion?: (() => string);

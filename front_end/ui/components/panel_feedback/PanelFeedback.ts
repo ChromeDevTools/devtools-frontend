@@ -73,7 +73,7 @@ export class PanelFeedback extends HTMLElement {
             iconPath: previewFeatureUrl,
             width: '20px',
             height: '20px',
-            color: 'var(--color-active)',
+            color: 'var(--icon-primary)',
           } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}> ${i18nString(UIStrings.previewFeature)}
         </h2>
         <p>${i18nString(UIStrings.previewText)} <x-link href=${this.#props.feedbackUrl}>${i18nString(UIStrings.previewTextFeedbackLink)}</x-link></p>

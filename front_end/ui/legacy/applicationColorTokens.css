@@ -30,6 +30,7 @@
   --icon-info: var(--color-primary-bright);
   --icon-link: var(--color-primary-bright);
   --icon-no-request: var(--color-orange-bright);
+  --icon-primary: var(--color-primary-bright);
   --icon-record: var(--color-error-bright);
   --icon-request-response: var(--color-primary-bright);
   --icon-request: var(--color-on-surface-variant);

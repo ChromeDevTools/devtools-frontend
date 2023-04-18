@@ -88,6 +88,7 @@ devtools_svg_sources = [
   "cross-circle-filled.svg",
   "cross-circle.svg",
   "cross.svg",
+  "custom-typography.svg",
   "database.svg",
   "deployed.svg",
   "devices.svg",

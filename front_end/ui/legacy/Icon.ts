@@ -125,6 +125,7 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['credit-card', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['cross-circle', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['cross', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['custom-typography', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['database', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['devices', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['dock-bottom', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -217,7 +218,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['mediumicon-elements-panel', {position: 'f3', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-network-panel', {position: 'f2', spritesheet: 'mediumicons', isMask: true}],
 
-  ['largeicon-font-editor', {position: 'i7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-longclick-triangle', {position: 'b4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-file', {position: 'e4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-folder', {position: 'f8', spritesheet: 'largeicons', isMask: true}],
@@ -262,6 +262,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['credit-card', {position: 'a1', spritesheet: 'credit-card', isMask: true}],
   ['cross-circle', {position: 'a1', spritesheet: 'cross-circle', isMask: true}],
   ['cross', {position: 'a1', spritesheet: 'cross', isMask: true}],
+  ['custom-typography', {position: 'a1', spritesheet: 'custom-typography', isMask: true}],
   ['database', {position: 'a1', spritesheet: 'database', isMask: true}],
   ['devices', {position: 'a1', spritesheet: 'devices', isMask: true}],
   ['dock-bottom', {position: 'a1', spritesheet: 'dock-bottom', isMask: true}],

@@ -640,6 +640,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-cross);
 }
 
+.spritesheet-custom-typography.icon-mask {
+  -webkit-mask-image: var(--image-file-custom-typography);
+}
+
 .spritesheet-database.icon-mask {
   -webkit-mask-image: var(--image-file-database);
 }

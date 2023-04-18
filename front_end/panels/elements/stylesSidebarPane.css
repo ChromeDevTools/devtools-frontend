@@ -239,7 +239,7 @@
 .sidebar-pane-section-toolbar {
   position: absolute;
   right: 0;
-  bottom: -5px;
+  bottom: -1px;
   z-index: 0;
 }
 

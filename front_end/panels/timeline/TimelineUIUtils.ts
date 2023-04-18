@@ -2622,11 +2622,11 @@ export class TimelineUIUtils {
       link.tabIndex = 0;
       link.textContent = i18nString(UIStrings.reveal);
       link.addEventListener('click', () => {
-        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as SDK.TracingModel.Event)));
+        TimelinePanel.instance().select(TimelineSelection.fromSDKTraceEvent((initiator as SDK.TracingModel.Event)));
       });
       link.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
-          TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as SDK.TracingModel.Event)));
+          TimelinePanel.instance().select(TimelineSelection.fromSDKTraceEvent((initiator as SDK.TracingModel.Event)));
           event.consume(true);
         }
       });
@@ -2801,10 +2801,10 @@ export class TimelineUIUtils {
     UI.ARIAUtils.markAsLink(container);
     container.tabIndex = 0;
     container.addEventListener(
-        'click', () => TimelinePanel.instance().select(TimelineSelection.fromTraceEvent(event)), false);
+        'click', () => TimelinePanel.instance().select(TimelineSelection.fromSDKTraceEvent(event)), false);
     container.addEventListener('keydown', keyEvent => {
       if (keyEvent.key === 'Enter') {
-        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent(event));
+        TimelinePanel.instance().select(TimelineSelection.fromSDKTraceEvent(event));
         keyEvent.consume(true);
       }
     });

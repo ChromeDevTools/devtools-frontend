@@ -52,7 +52,7 @@ describeWithEnvironment('TimelineFlameChartView', () => {
     function assertSelectionName(name: string) {
       const selection = mockViewDelegate.selection;
       assert.isNotNull(selection);
-      assert.strictEqual(selection?.type(), 'TraceEvent');
+      assert.strictEqual(selection?.type(), 'SDKTraceEvent');
       const object = selection?.object?.();
       if (!object || !('name' in object)) {
         throw new Error('Trace event not found or did not have a name.');

@@ -2,21 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+
 import {timesForEventInMilliseconds} from './EventTypeHelpers.js';
 
 export const enum SelectionType {
   Frame = 'Frame',
   NetworkRequest = 'NetworkRequest',
-  TraceEvent = 'TraceEvent',
+  SDKTraceEvent = 'SDKTraceEvent',
   Range = 'Range',
 }
 
-type PermittedObjectTypes = TimelineModel.TimelineFrameModel.TimelineFrame|
-                            TimelineModel.TimelineModel.NetworkRequest|SDK.TracingModel.Event|
-                            TraceEngine.Types.TraceEvents.TraceEventData;
+type PermittedObjectTypes =
+    TimelineModel.TimelineFrameModel.TimelineFrame|TimelineModel.TimelineModel.NetworkRequest|SDK.TracingModel.Event;
 
 export class TimelineSelection {
   private readonly startTimeInternal: TraceEngine.Types.Timing.MilliSeconds;
@@ -44,7 +44,11 @@ export class TimelineSelection {
         TraceEngine.Types.Timing.MilliSeconds(request.endTime || request.startTime), request);
   }
 
-  static fromTraceEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): TimelineSelection {
+  static fromTraceEvent(event: SDK.TracingModel.Event): TimelineSelection {
+    // TODO(crbug.com/1434308) remove this method alias once the upstream layout test is updated.
+    return TimelineSelection.fromSDKTraceEvent(event);
+  }
+  static fromSDKTraceEvent(event: SDK.TracingModel.Event): TimelineSelection {
     const {startTime, endTime} = timesForEventInMilliseconds(event);
     return new TimelineSelection(startTime, TraceEngine.Types.Timing.MilliSeconds(endTime || (startTime + 1)), event);
   }
@@ -65,8 +69,13 @@ export class TimelineSelection {
       // TODO: when we migrate the Network track to the new engine, we will need to rework this.
       return SelectionType.NetworkRequest;
     }
-    // Only type left is TraceEvent.
-    return SelectionType.TraceEvent;
+
+    if (this.#obj instanceof SDK.TracingModel.Event) {
+      return SelectionType.SDKTraceEvent;
+    }
+
+    console.error(this.#obj);
+    throw new Error('Unsupported TimelineSelection object');
   }
 
   object(): PermittedObjectTypes|null {

@@ -1357,7 +1357,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         return selection.object() as TimelineModel.TimelineFrameModel.TimelineFrame;
       case SelectionType.Range:
         return null;
-      case SelectionType.TraceEvent:
+      case SelectionType.SDKTraceEvent:
         if (!this.performanceModel) {
           return null;
         }
@@ -1402,7 +1402,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         break;
       }
       if (this.performanceModel && this.performanceModel.isVisible(event) && endTime >= time) {
-        this.select(TimelineSelection.fromTraceEvent(event));
+        this.select(TimelineSelection.fromSDKTraceEvent(event));
         return;
       }
     }

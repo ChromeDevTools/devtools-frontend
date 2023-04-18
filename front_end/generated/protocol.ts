@@ -971,7 +971,6 @@ export namespace Audits {
     InvalidHeader = 'InvalidHeader',
     InvalidRegisterTriggerHeader = 'InvalidRegisterTriggerHeader',
     InvalidEligibleHeader = 'InvalidEligibleHeader',
-    TooManyConcurrentRequests = 'TooManyConcurrentRequests',
     SourceAndTriggerHeaders = 'SourceAndTriggerHeaders',
     SourceIgnored = 'SourceIgnored',
     TriggerIgnored = 'TriggerIgnored',
@@ -1054,6 +1053,17 @@ export namespace Audits {
     type: string;
   }
 
+  /**
+   * This issue warns about sites in the redirect chain of a finished navigation
+   * that may be flagged as trackers and have their state cleared if they don't
+   * receive a user interaction. Note that in this context 'site' means eTLD+1.
+   * For example, if the URL `https://example.test:80/bounce` was in the
+   * redirect chain, the site reported would be `example.test`.
+   */
+  export interface BounceTrackingIssueDetails {
+    trackingSites: string[];
+  }
+
   export const enum ClientHintIssueReason {
     MetaTagAllowListInvalidOrigin = 'MetaTagAllowListInvalidOrigin',
     MetaTagModifiedHTML = 'MetaTagModifiedHTML',
@@ -1131,6 +1141,7 @@ export namespace Audits {
     DeprecationIssue = 'DeprecationIssue',
     ClientHintIssue = 'ClientHintIssue',
     FederatedAuthRequestIssue = 'FederatedAuthRequestIssue',
+    BounceTrackingIssue = 'BounceTrackingIssue',
   }
 
   /**
@@ -1155,6 +1166,7 @@ export namespace Audits {
     deprecationIssueDetails?: DeprecationIssueDetails;
     clientHintIssueDetails?: ClientHintIssueDetails;
     federatedAuthRequestIssueDetails?: FederatedAuthRequestIssueDetails;
+    bounceTrackingIssueDetails?: BounceTrackingIssueDetails;
   }
 
   /**
@@ -1924,6 +1936,10 @@ export namespace CSS {
      * Column offset of the end of the stylesheet within the resource (zero based).
      */
     endColumn: number;
+    /**
+     * If the style sheet was loaded from a network resource, this indicates when the resource failed to load
+     */
+    loadingFailed?: boolean;
   }
 
   /**
@@ -12925,6 +12941,7 @@ export namespace Storage {
     Cache_storage = 'cache_storage',
     Interest_groups = 'interest_groups',
     Shared_storage = 'shared_storage',
+    Storage_buckets = 'storage_buckets',
     All = 'all',
     Other = 'other',
   }
@@ -13103,6 +13120,25 @@ export namespace Storage {
      * SharedStorageAccessType.workletSet.
      */
     ignoreIfPresent?: boolean;
+  }
+
+  export const enum StorageBucketsDurability {
+    Relaxed = 'relaxed',
+    Strict = 'strict',
+  }
+
+  export interface StorageBucketInfo {
+    storageKey: SerializedStorageKey;
+    id: string;
+    name: string;
+    isDefault: boolean;
+    expiration: Network.TimeSinceEpoch;
+    /**
+     * Storage quota (bytes).
+     */
+    quota: number;
+    persistent: boolean;
+    durability: StorageBucketsDurability;
   }
 
   export interface GetStorageKeyForFrameRequest {
@@ -13338,6 +13374,16 @@ export namespace Storage {
     enable: boolean;
   }
 
+  export interface SetStorageBucketTrackingRequest {
+    storageKey: string;
+    enable: boolean;
+  }
+
+  export interface DeleteStorageBucketRequest {
+    storageKey: string;
+    bucketName: string;
+  }
+
   /**
    * A cache's contents have been modified.
    */
@@ -13442,6 +13488,14 @@ export namespace Storage {
      * presence/absence depends on `type`.
      */
     params: SharedStorageAccessParams;
+  }
+
+  export interface StorageBucketCreatedOrUpdatedEvent {
+    bucket: StorageBucketInfo;
+  }
+
+  export interface StorageBucketDeletedEvent {
+    bucketId: string;
   }
 }
 
@@ -15576,11 +15630,18 @@ export namespace FedCm {
 
   export interface DismissDialogRequest {
     dialogId: string;
+    triggerCooldown?: boolean;
   }
 
   export interface DialogShownEvent {
     dialogId: string;
     accounts: Account[];
+    /**
+     * These exist primarily so that the caller can verify the
+     * RP context was used appropriately.
+     */
+    title: string;
+    subtitle?: string;
   }
 }
 

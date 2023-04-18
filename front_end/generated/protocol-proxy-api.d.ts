@@ -3019,6 +3019,16 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setSharedStorageTracking(params: Protocol.Storage.SetSharedStorageTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Set tracking for a storage key's buckets.
+     */
+    invoke_setStorageBucketTracking(params: Protocol.Storage.SetStorageBucketTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Deletes the Storage Bucket with the given storage key and bucket name.
+     */
+    invoke_deleteStorageBucket(params: Protocol.Storage.DeleteStorageBucketRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface StorageDispatcher {
     /**
@@ -3051,6 +3061,10 @@ declare namespace ProtocolProxyApi {
      * The following parameters are included in all events.
      */
     sharedStorageAccessed(params: Protocol.Storage.SharedStorageAccessedEvent): void;
+
+    storageBucketCreatedOrUpdated(params: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
+
+    storageBucketDeleted(params: Protocol.Storage.StorageBucketDeletedEvent): void;
 
   }
 
@@ -3653,6 +3667,12 @@ declare namespace ProtocolProxyApi {
     invoke_selectAccount(params: Protocol.FedCm.SelectAccountRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_dismissDialog(params: Protocol.FedCm.DismissDialogRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Resets the cooldown time, if any, to allow the next FedCM call to show
+     * a dialog even if one was recently dismissed by the user.
+     */
+    invoke_resetCooldown(): Promise<Protocol.ProtocolResponseWithError>;
 
   }
   export interface FedCmDispatcher {

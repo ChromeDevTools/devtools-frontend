@@ -76,6 +76,12 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<EventTypes>
 
   sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void {
   }
+
+  storageBucketCreatedOrUpdated(_event: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void {
+  }
+
+  storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(

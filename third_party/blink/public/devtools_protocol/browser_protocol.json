@@ -1454,7 +1454,6 @@
                         "InvalidHeader",
                         "InvalidRegisterTriggerHeader",
                         "InvalidEligibleHeader",
-                        "TooManyConcurrentRequests",
                         "SourceAndTriggerHeaders",
                         "SourceIgnored",
                         "TriggerIgnored",
@@ -1600,6 +1599,20 @@
                     ]
                 },
                 {
+                    "id": "BounceTrackingIssueDetails",
+                    "description": "This issue warns about sites in the redirect chain of a finished navigation\nthat may be flagged as trackers and have their state cleared if they don't\nreceive a user interaction. Note that in this context 'site' means eTLD+1.\nFor example, if the URL `https://example.test:80/bounce` was in the\nredirect chain, the site reported would be `example.test`.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "trackingSites",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "ClientHintIssueReason",
                     "type": "string",
                     "enum": [
@@ -1687,7 +1700,8 @@
                         "GenericIssue",
                         "DeprecationIssue",
                         "ClientHintIssue",
-                        "FederatedAuthRequestIssue"
+                        "FederatedAuthRequestIssue",
+                        "BounceTrackingIssue"
                     ]
                 },
                 {
@@ -1774,6 +1788,11 @@
                             "name": "federatedAuthRequestIssueDetails",
                             "optional": true,
                             "$ref": "FederatedAuthRequestIssueDetails"
+                        },
+                        {
+                            "name": "bounceTrackingIssueDetails",
+                            "optional": true,
+                            "$ref": "BounceTrackingIssueDetails"
                         }
                     ]
                 },
@@ -2881,6 +2900,13 @@
                             "name": "endColumn",
                             "description": "Column offset of the end of the stylesheet within the resource (zero based).",
                             "type": "number"
+                        },
+                        {
+                            "name": "loadingFailed",
+                            "description": "If the style sheet was loaded from a network resource, this indicates when the resource failed to load",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -19140,6 +19166,7 @@
                         "cache_storage",
                         "interest_groups",
                         "shared_storage",
+                        "storage_buckets",
                         "all",
                         "other"
                     ]
@@ -19416,6 +19443,53 @@
                             "description": "Whether or not to set an entry for a key if that key is already present.\nPresent only for SharedStorageAccessType.documentSet and\nSharedStorageAccessType.workletSet.",
                             "optional": true,
                             "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "id": "StorageBucketsDurability",
+                    "type": "string",
+                    "enum": [
+                        "relaxed",
+                        "strict"
+                    ]
+                },
+                {
+                    "id": "StorageBucketInfo",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "storageKey",
+                            "$ref": "SerializedStorageKey"
+                        },
+                        {
+                            "name": "id",
+                            "type": "string"
+                        },
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "isDefault",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "expiration",
+                            "$ref": "Network.TimeSinceEpoch"
+                        },
+                        {
+                            "name": "quota",
+                            "description": "Storage quota (bytes).",
+                            "type": "number"
+                        },
+                        {
+                            "name": "persistent",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "durability",
+                            "$ref": "StorageBucketsDurability"
                         }
                     ]
                 }
@@ -19838,6 +19912,36 @@
                             "type": "boolean"
                         }
                     ]
+                },
+                {
+                    "name": "setStorageBucketTracking",
+                    "description": "Set tracking for a storage key's buckets.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "storageKey",
+                            "type": "string"
+                        },
+                        {
+                            "name": "enable",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "deleteStorageBucket",
+                    "description": "Deletes the Storage Bucket with the given storage key and bucket name.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "storageKey",
+                            "type": "string"
+                        },
+                        {
+                            "name": "bucketName",
+                            "type": "string"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -19970,6 +20074,24 @@
                             "name": "params",
                             "description": "The sub-parameters warapped by `params` are all optional and their\npresence/absence depends on `type`.",
                             "$ref": "SharedStorageAccessParams"
+                        }
+                    ]
+                },
+                {
+                    "name": "storageBucketCreatedOrUpdated",
+                    "parameters": [
+                        {
+                            "name": "bucket",
+                            "$ref": "StorageBucketInfo"
+                        }
+                    ]
+                },
+                {
+                    "name": "storageBucketDeleted",
+                    "parameters": [
+                        {
+                            "name": "bucketId",
+                            "type": "string"
                         }
                     ]
                 }
@@ -23229,6 +23351,16 @@
                             "items": {
                                 "$ref": "Account"
                             }
+                        },
+                        {
+                            "name": "title",
+                            "description": "These exist primarily so that the caller can verify the\nRP context was used appropriately.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "subtitle",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 }
@@ -23267,8 +23399,17 @@
                         {
                             "name": "dialogId",
                             "type": "string"
+                        },
+                        {
+                            "name": "triggerCooldown",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
+                },
+                {
+                    "name": "resetCooldown",
+                    "description": "Resets the cooldown time, if any, to allow the next FedCM call to show\na dialog even if one was recently dismissed by the user."
                 }
             ]
         },

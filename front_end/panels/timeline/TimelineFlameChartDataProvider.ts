@@ -861,11 +861,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             }) :
             i18n.TimeUtilities.millisToString(totalTime, true);
       }
-      if (this.legacyPerformanceModel && this.legacyPerformanceModel.timelineModel().isMarkerEvent(event)) {
-        title = TimelineUIUtils.eventTitle(event);
-      } else {
-        title = this.entryTitle(entryIndex);
-      }
+      title = this.entryTitle(entryIndex);
       warning = TimelineUIUtils.eventWarning(event);
 
       // TODO: this can be removed.

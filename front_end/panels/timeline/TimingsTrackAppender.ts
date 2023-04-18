@@ -23,21 +23,13 @@ import {
 } from './TimelineUIUtils.js';
 import * as Common from '../../core/common/common.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   timings: 'Timings',
-  /**
-   * @description Text in the Performance panel to show how long was spent in a particular part of the code.
-   * The first placeholder is the total time taken for this node and all children, the second is the self time
-   * (time taken in this node, without children included).
-   *@example {10ms} PH1
-   *@example {10ms} PH2
-   */
-  sSelfS: '{PH1} (self {PH2})',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimingsTrackAppender.ts', UIStrings);
@@ -336,8 +328,6 @@ export class TimingsTrackAppender implements TrackAppender {
    */
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo {
     const title = this.titleForEvent(event);
-    const totalTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
-        (event.dur || 0) as TraceEngine.Types.Timing.MicroSeconds);
 
     // If an event is a marker event, rather than show a duration of 0, we can instead show the time that the event happened, which is much more useful. We do this currently for:
     // Page load events: DCL, FCP and LCP
@@ -352,22 +342,9 @@ export class TimingsTrackAppender implements TrackAppender {
           this.#traceParsedData.Meta.navigationsByNavigationId,
           this.#traceParsedData.Meta.navigationsByFrameId,
       );
-      const timeMS = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(timeOfEvent);
-      const formattedTime = i18n.TimeUtilities.millisToString(timeMS, true);
-      return {title, formattedTime};
+      return {title, formattedTime: getFormattedTime(timeOfEvent)};
     }
 
-    const selfTime = totalTime;
-    if (totalTime === TraceEngine.Types.Timing.MilliSeconds(0)) {
-      return {title, formattedTime: ''};
-    }
-    const minSelfTimeSignificance = 1e-6;
-    const time = Math.abs(totalTime - selfTime) > minSelfTimeSignificance && selfTime > minSelfTimeSignificance ?
-        i18nString(UIStrings.sSelfS, {
-          PH1: i18n.TimeUtilities.millisToString(totalTime, true),
-          PH2: i18n.TimeUtilities.millisToString(selfTime, true),
-        }) :
-        i18n.TimeUtilities.millisToString(totalTime, true);
-    return {title, formattedTime: time};
+    return {title, formattedTime: getFormattedTime(event.dur)};
   }
 }

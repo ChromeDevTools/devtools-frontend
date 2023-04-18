@@ -97,7 +97,7 @@ describeWithEnvironment('GPUTrackAppender', () => {
   });
 
   describe('highlightedEntryInfo', () => {
-    it('returns the info for a entries with no duration correctly', () => {
+    it('returns the info for a entry correctly', () => {
       const gpuEvents = traceParsedData.GPU.mainGPUThreadTasks;
       const highlightedEntryInfo = gpuTrackAppender.highlightedEntryInfo(gpuEvents[0]);
       // The i18n encondes spaces using the u00A0 unicode character.

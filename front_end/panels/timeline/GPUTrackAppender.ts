@@ -17,21 +17,13 @@ import {
   InstantEventVisibleDurationMs,
   type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
-import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   gpu: 'GPU',
-  /**
-   * @description Text in the Performance panel to show how long was spent in a particular part of the code.
-   * The first placeholder is the total time taken for this node and all children, the second is the self time
-   * (time taken in this node, without children included).
-   *@example {10ms} PH1
-   *@example {10ms} PH2
-   */
-  sSelfS: '{PH1} (self {PH2})',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/GPUTrackAppender.ts', UIStrings);
@@ -180,19 +172,6 @@ export class GPUTrackAppender implements TrackAppender {
    */
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo {
     const title = this.titleForEvent(event);
-    const totalTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
-        (event.dur || 0) as TraceEngine.Types.Timing.MicroSeconds);
-    const selfTime = totalTime;
-    if (totalTime === TraceEngine.Types.Timing.MilliSeconds(0)) {
-      return {title, formattedTime: ''};
-    }
-    const minSelfTimeSignificance = 1e-6;
-    const time = Math.abs(totalTime - selfTime) > minSelfTimeSignificance && selfTime > minSelfTimeSignificance ?
-        i18nString(UIStrings.sSelfS, {
-          PH1: i18n.TimeUtilities.millisToString(totalTime, true),
-          PH2: i18n.TimeUtilities.millisToString(selfTime, true),
-        }) :
-        i18n.TimeUtilities.millisToString(totalTime, true);
-    return {title, formattedTime: time};
+    return {title, formattedTime: getFormattedTime(event.dur)};
   }
 }

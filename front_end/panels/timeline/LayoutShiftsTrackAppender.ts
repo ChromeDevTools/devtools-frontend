@@ -16,7 +16,7 @@ import {
 } from './CompatibilityTracksAppender.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
@@ -170,8 +170,8 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * Returns the info shown when an event added by this appender
    * is hovered in the timeline.
    */
-  highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo {
+  highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventLayoutShift): HighlightedEntryInfo {
     const title = this.titleForEvent(event);
-    return {title, formattedTime: ''};
+    return {title, formattedTime: getFormattedTime(event.dur)};
   }
 }

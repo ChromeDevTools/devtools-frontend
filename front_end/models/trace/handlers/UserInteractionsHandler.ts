@@ -99,32 +99,101 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
 }
 
 /**
+ * See https://web.dev/better-responsiveness-metric/#interaction-types for the
+ * table that defines these sets.
+ **/
+const pointerEventTypes = new Set([
+  'pointerdown',
+  'touchstart',
+  'pointerup',
+  'touchend',
+  'mousedown',
+  'mouseup',
+  'click',
+]);
+
+const keyboardEventTypes = new Set([
+  'keydown',
+  'keypress',
+  'keyup',
+]);
+
+function categoryOfInteraction(interaction: Types.TraceEvents.SyntheticInteractionEvent): 'KEYBOARD'|'POINTER'|
+    'UNKNOWN' {
+  if (pointerEventTypes.has(interaction.type)) {
+    return 'POINTER';
+  }
+  if (keyboardEventTypes) {
+    return 'KEYBOARD';
+  }
+
+  console.error(`Unexpected interaction type: ${interaction.type}`);
+  return 'UNKNOWN';
+}
+
+/**
  * We define a set of interactions as nested where:
  * 1. Their end times align.
- * 2. The longest interaction's start time is earlier than all other interactions with the same end time.
+ * 2. The longest interaction's start time is earlier than all other
+ * interactions with the same end time.
+ * 3. The interactions are of the same category [each interaction is either
+ * categorised as keyboard, or pointer.]
  *
- * =============A=============
- *        ===========B========
- *        ===========C========
- *              =====D========
+ * =============A=[pointerup]=
+ *        ====B=[pointerdown]=
+ *        ===C=[pointerdown]==
+ *         ===D=[pointerup]===
  *
- * In this example, B, C and D are all nested and therefore should not be returned from this function.
+ * In this example, B, C and D are all nested and therefore should not be
+ * returned from this function.
+ *
+ * However, in this example we would only consider B nested (under A) and D
+ * nested (under C). A and C both stay because they are of different types.
+ * ========A=[keydown]====
+ *   =======B=[keyup]=====
+ *    ====C=[pointerdown]=
+ *         =D=[pointerup]=
  **/
 export function removeNestedInteractions(interactions: readonly Types.TraceEvents.SyntheticInteractionEvent[]):
     readonly Types.TraceEvents.SyntheticInteractionEvent[] {
-  const earliestEventForEndTime = new Map<Types.Timing.MicroSeconds, Types.TraceEvents.SyntheticInteractionEvent>();
-  for (const interaction of interactions) {
+  const earliestEventForEndTimePointerEvents =
+      new Map<Types.Timing.MicroSeconds, Types.TraceEvents.SyntheticInteractionEvent>();
+  const earliestEventForEndTimeKeyboardEvents =
+      new Map<Types.Timing.MicroSeconds, Types.TraceEvents.SyntheticInteractionEvent>();
+
+  function storeEventIfEarliestForCategoryAndEndTime(interaction: Types.TraceEvents.SyntheticInteractionEvent): void {
+    const category = categoryOfInteraction(interaction);
+    if (category === 'UNKNOWN') {
+      // This interaction has an unknown category, so just silently drop it.
+      return;
+    }
+    const mapToUse =
+        category === 'KEYBOARD' ? earliestEventForEndTimeKeyboardEvents : earliestEventForEndTimePointerEvents;
     const endTime = Types.Timing.MicroSeconds(interaction.ts + interaction.dur);
-    const earliestCurrentEvent = earliestEventForEndTime.get(endTime);
+
+    const earliestCurrentEvent = mapToUse.get(endTime);
     if (!earliestCurrentEvent) {
-      earliestEventForEndTime.set(endTime, interaction);
-      continue;
+      mapToUse.set(endTime, interaction);
+      return;
     }
     if (interaction.ts < earliestCurrentEvent.ts) {
-      earliestEventForEndTime.set(endTime, interaction);
+      mapToUse.set(endTime, interaction);
     }
   }
-  return Array.from(earliestEventForEndTime.values());
+
+  for (const interaction of interactions) {
+    storeEventIfEarliestForCategoryAndEndTime(interaction);
+  }
+
+  // Combine all the events back into an array and sort them by timestamp.
+  const keptEvents = [
+    ...earliestEventForEndTimeKeyboardEvents.values(),
+    ...earliestEventForEndTimePointerEvents.values(),
+  ];
+  keptEvents.sort((eventA, eventB) => {
+    return eventA.ts - eventB.ts;
+  });
+  return keptEvents;
 }
 
 export async function finalize(): Promise<void> {

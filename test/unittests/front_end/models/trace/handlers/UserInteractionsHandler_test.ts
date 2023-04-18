@@ -113,11 +113,11 @@ describe('UserInteractions', function() {
     });
 
     describe('collapsing nested interactions', () => {
-      function makeFakeInteraction(options: {startTime: number, endTime: number, interactionId: number}):
+      function makeFakeInteraction(type: string, options: {startTime: number, endTime: number, interactionId: number}):
           TraceModel.Types.TraceEvents.SyntheticInteractionEvent {
         const event = {
           name: 'EventTiming',
-          type: 'pointerdown',
+          type,
           ts: TraceModel.Types.Timing.MicroSeconds(options.startTime),
           dur: TraceModel.Types.Timing.MicroSeconds(options.endTime - options.startTime),
           interactionId: options.interactionId,
@@ -135,12 +135,31 @@ describe('UserInteractions', function() {
          *   ===========C========
          *         =====D========
          */
-        const eventA = makeFakeInteraction({startTime: 0, endTime: 10, interactionId: 1});
-        const eventB = makeFakeInteraction({startTime: 2, endTime: 10, interactionId: 2});
-        const eventC = makeFakeInteraction({startTime: 4, endTime: 10, interactionId: 3});
-        const eventD = makeFakeInteraction({startTime: 6, endTime: 10, interactionId: 4});
+        const eventA = makeFakeInteraction('pointerdown', {startTime: 0, endTime: 10, interactionId: 1});
+        const eventB = makeFakeInteraction('pointerdown', {startTime: 2, endTime: 10, interactionId: 2});
+        const eventC = makeFakeInteraction('pointerdown', {startTime: 4, endTime: 10, interactionId: 3});
+        const eventD = makeFakeInteraction('pointerdown', {startTime: 6, endTime: 10, interactionId: 4});
         const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
         assert.deepEqual(result, [eventA]);
+      });
+
+      it('only collapses events of the same type', () => {
+        /**
+         * Here we should collapse B, because A is bigger and of the same type.
+         * Similarly, we should collapse D, because C is bigger and of the same type.
+         * But C should remain visible, because it is a pointer event, not a key event,
+         * and therefore does not get collapsed into A.
+         * ========A=[keydown]====
+         *   =======B=[keyup]=====
+         *    ====C=[pointerdown]=
+         *         =D=[pointerup]=
+         */
+        const eventA = makeFakeInteraction('keydown', {startTime: 0, endTime: 10, interactionId: 1});
+        const eventB = makeFakeInteraction('keyup', {startTime: 2, endTime: 10, interactionId: 2});
+        const eventC = makeFakeInteraction('pointerdown', {startTime: 4, endTime: 10, interactionId: 3});
+        const eventD = makeFakeInteraction('pointerup', {startTime: 6, endTime: 10, interactionId: 4});
+        const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
+        assert.deepEqual(result, [eventA, eventC]);
       });
 
       it('does not remove interactions that overlap but have a different end time', () => {
@@ -150,10 +169,10 @@ describe('UserInteractions', function() {
          *   ===========C========
          *         =====D================
          */
-        const eventA = makeFakeInteraction({startTime: 0, endTime: 10, interactionId: 1});
-        const eventB = makeFakeInteraction({startTime: 2, endTime: 10, interactionId: 2});
-        const eventC = makeFakeInteraction({startTime: 4, endTime: 10, interactionId: 3});
-        const eventD = makeFakeInteraction({startTime: 6, endTime: 20, interactionId: 4});
+        const eventA = makeFakeInteraction('pointerdown', {startTime: 0, endTime: 10, interactionId: 1});
+        const eventB = makeFakeInteraction('pointerdown', {startTime: 2, endTime: 10, interactionId: 2});
+        const eventC = makeFakeInteraction('pointerdown', {startTime: 4, endTime: 10, interactionId: 3});
+        const eventD = makeFakeInteraction('pointerdown', {startTime: 6, endTime: 20, interactionId: 4});
         const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
         assert.deepEqual(result, [eventA, eventD]);
       });
@@ -168,10 +187,10 @@ describe('UserInteractions', function() {
          *   ===========B=============
          *   ======D======
          */
-        const eventA = makeFakeInteraction({startTime: 0, endTime: 5, interactionId: 1});
-        const eventB = makeFakeInteraction({startTime: 2, endTime: 20, interactionId: 2});
-        const eventC = makeFakeInteraction({startTime: 10, endTime: 20, interactionId: 3});
-        const eventD = makeFakeInteraction({startTime: 2, endTime: 5, interactionId: 3});
+        const eventA = makeFakeInteraction('pointerdown', {startTime: 0, endTime: 5, interactionId: 1});
+        const eventB = makeFakeInteraction('pointerdown', {startTime: 2, endTime: 20, interactionId: 2});
+        const eventC = makeFakeInteraction('pointerdown', {startTime: 10, endTime: 20, interactionId: 3});
+        const eventD = makeFakeInteraction('pointerdown', {startTime: 2, endTime: 5, interactionId: 3});
         const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
         assert.deepEqual(result, [eventA, eventB]);
       });
@@ -180,10 +199,10 @@ describe('UserInteractions', function() {
         /**
          * None of the events below overlap at all, this test makes sure that the order of events does not change.
          */
-        const eventA = makeFakeInteraction({startTime: 0, endTime: 5, interactionId: 1});
-        const eventB = makeFakeInteraction({startTime: 10, endTime: 20, interactionId: 2});
-        const eventC = makeFakeInteraction({startTime: 30, endTime: 40, interactionId: 3});
-        const eventD = makeFakeInteraction({startTime: 50, endTime: 60, interactionId: 4});
+        const eventA = makeFakeInteraction('pointerdown', {startTime: 0, endTime: 5, interactionId: 1});
+        const eventB = makeFakeInteraction('pointerdown', {startTime: 10, endTime: 20, interactionId: 2});
+        const eventC = makeFakeInteraction('pointerdown', {startTime: 30, endTime: 40, interactionId: 3});
+        const eventD = makeFakeInteraction('pointerdown', {startTime: 50, endTime: 60, interactionId: 4});
         const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
         assert.deepEqual(result, [eventA, eventB, eventC, eventD]);
       });

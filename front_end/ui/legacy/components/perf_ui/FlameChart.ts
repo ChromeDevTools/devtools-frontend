@@ -32,7 +32,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
-import type * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
+import * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
@@ -991,6 +991,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     for (const [color, {indexes}] of colorBuckets) {
       this.drawGenericEvents(context, timelineData, color, indexes);
       this.drawLongTaskRegions(context, timelineData, color, indexes);
+      this.drawLongInteractionsCandyStripes(context, timelineData, indexes);
     }
 
     this.drawMarkers(context, timelineData, markerIndices);
@@ -1063,6 +1064,66 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     context.fillStyle = color;
     context.fill();
+    context.restore();
+  }
+
+  /**
+   * Marks the portion of long tasks where the 50ms threshold was exceeded.
+   */
+  private drawLongInteractionsCandyStripes(
+      context: CanvasRenderingContext2D, timelineData: TimelineData, indexes: number[]): void {
+    const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
+
+    const levelsOfInteractionsTrack: number[] = [];
+    for (let i = 0; i < timelineData.groups.length; i++) {
+      const group = timelineData.groups[i];
+      // TODO(crbug.com/1434297): It is messy to reach in like this and find
+      // the group and then the interactions.
+      // The attached bug proposes a generic way to do this where we can avoid
+      // reaching into the data at the FlameChart level and provide information
+      // on decorations in TimelineData.
+      const isInteractions = group.track?.type === TimelineModel.TimelineModel.TrackType.UserInteractions;
+      if (!isInteractions) {
+        continue;
+      }
+
+      levelsOfInteractionsTrack.push(group.startLevel);
+      if (timelineData.groups[i + 1]) {
+        const nextGroupStart = timelineData.groups[i + 1].startLevel;
+        for (let j = group.startLevel + 1; j < nextGroupStart; j++) {
+          levelsOfInteractionsTrack.push(j);
+        }
+      }
+      if (!this.timelineLevels) {
+        return;
+      }
+    }
+
+    context.save();
+    context.beginPath();
+    for (let i = 0; i < indexes.length; ++i) {
+      const entryIndex = indexes[i];
+      const duration = entryTotalTimes[entryIndex];
+      const isInteraction = levelsOfInteractionsTrack.includes(entryLevels[entryIndex]);
+      if (!isInteraction || duration <= 200) {
+        // We only highlight the part of the interaction that is over 200ms, so if this event is not 200ms+ in length, nothing to highlight.
+        continue;
+      }
+      const entryStartTime = entryStartTimes[entryIndex];
+      const barX = this.timeToPositionClipped(entryStartTime + 200);
+      const barLevel = entryLevels[entryIndex];
+      const barHeight = this.levelHeight(barLevel);
+      const barY = this.levelToOffset(barLevel);
+      const barRight = this.timeToPositionClipped(entryStartTime + duration);
+      const barWidth = Math.max(barRight - barX, 1);
+      context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
+    }
+    const candyStripePattern = context.createPattern(this.candyStripeCanvas, 'repeat');
+    if (candyStripePattern) {
+      context.fillStyle = candyStripePattern;
+      context.fill();
+    }
+
     context.restore();
   }
 

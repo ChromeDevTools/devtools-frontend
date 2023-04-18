@@ -19,4 +19,14 @@ describe('Interactions track', () => {
     const flameChart = await waitFor('.flame-chart-main-pane');
     await assertElementScreenshotUnchanged(flameChart, 'performance/interactions_track.png', 3);
   });
+
+  itScreenshot('candy stripes events over 200ms', async () => {
+    await loadComponentDocExample(
+        // The start and end times come from the timestamps of the first and last
+        // interaction in the given trace file, and then subtracting/adding a
+        // small amount to make them appear on screen nicely for the screenshot.
+        'performance_panel/track_example.html?track=Interactions&fileName=one-second-interaction&windowStart=141251500&windowEnd=141253000');
+    const flameChart = await waitFor('.flame-chart-main-pane');
+    await assertElementScreenshotUnchanged(flameChart, 'performance/interactions_track_long_interactions.png', 3);
+  });
 });

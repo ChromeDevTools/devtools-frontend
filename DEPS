@@ -142,7 +142,7 @@ hooks = [
   {
     'name': 'node_mac',
     'pattern': '.',
-    'condition': 'host_os == "mac" and build_with_chromium == False',
+    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu != "arm64"',
     'action': [ 'python3',
                 'third_party/depot_tools/download_from_google_storage.py',
                 '--no_resume',
@@ -150,6 +150,19 @@ hooks = [
                 '--no_auth',
                 '--bucket', 'chromium-nodejs/16.13.0',
                 '-s', 'third_party/node/mac/node-darwin-x64.tar.gz.sha1',
+    ],
+  },
+    {
+    'name': 'node_mac',
+    'pattern': '.',
+    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu == "arm64"',
+    'action': [ 'python3',
+                'third_party/depot_tools/download_from_google_storage.py',
+                '--no_resume',
+                '--extract',
+                '--no_auth',
+                '--bucket', 'chromium-nodejs/16.13.0',
+                '-s', 'third_party/node/mac/node-darwin-arm64.tar.gz.sha1',
     ],
   },
   {

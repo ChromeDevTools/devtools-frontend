@@ -11,8 +11,8 @@ import {allModelsFromFile} from '../../helpers/TraceHelpers.js';
 const {assert} = chai;
 
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
-  selection: Timeline.TimelinePanel.TimelineSelection|null = null;
-  select(selection: Timeline.TimelinePanel.TimelineSelection|null): void {
+  selection: Timeline.TimelineSelection.TimelineSelection|null = null;
+  select(selection: Timeline.TimelineSelection.TimelineSelection|null): void {
     this.selection = selection;
   }
   selectEntryAtTime(_events: SDK.TracingModel.Event[]|null, _time: number): void {

@@ -50,7 +50,8 @@ import invalidationsTreeStyles from './invalidationsTree.css.js';
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 
 import {CLSRect} from './CLSLinkifier.js';
-import {TimelinePanel, TimelineSelection} from './TimelinePanel.js';
+import {TimelinePanel} from './TimelinePanel.js';
+import {TimelineSelection} from './TimelineSelection.js';
 
 const UIStrings = {
   /**

@@ -25,6 +25,7 @@ import * as TimelineLayersView from './TimelineLayersView.js';
 import * as TimelineLoader from './TimelineLoader.js';
 import * as TimelinePaintProfilerView from './TimelinePaintProfilerView.js';
 import * as TimelinePanel from './TimelinePanel.js';
+import * as TimelineSelection from './TimelineSelection.js';
 import * as TimelineTreeView from './TimelineTreeView.js';
 import * as TimelineUIUtils from './TimelineUIUtils.js';
 import * as TimingsTrackAppender from './TimingsTrackAppender.js';
@@ -55,6 +56,7 @@ export {
   TimelineLoader,
   TimelinePaintProfilerView,
   TimelinePanel,
+  TimelineSelection,
   TimelineTreeView,
   TimelineUIUtils,
   TimingsTrackAppender,

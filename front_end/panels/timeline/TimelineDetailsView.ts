@@ -16,7 +16,8 @@ import {Events, type PerformanceModel} from './PerformanceModel.js';
 import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
 
-import {TimelineSelection, type TimelineModeViewDelegate} from './TimelinePanel.js';
+import {type TimelineModeViewDelegate} from './TimelinePanel.js';
+import {SelectionType, TimelineSelection} from './TimelineSelection.js';
 
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
@@ -218,7 +219,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       return;
     }
     switch (this.selection.type()) {
-      case TimelineSelection.Type.TraceEvent: {
+      case SelectionType.TraceEvent: {
         const event = (this.selection.object() as SDK.TracingModel.Event);
         void TimelineUIUtils
             .buildTraceEventDetails(
@@ -226,7 +227,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
             .then(fragment => this.appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
         break;
       }
-      case TimelineSelection.Type.Frame: {
+      case SelectionType.Frame: {
         const frame = (this.selection.object() as TimelineModel.TimelineFrameModel.TimelineFrame);
         const filmStripFrame = this.model.filmStripModelFrame(frame);
         this.setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
@@ -239,13 +240,13 @@ export class TimelineDetailsView extends UI.Widget.VBox {
         }
         break;
       }
-      case TimelineSelection.Type.NetworkRequest: {
+      case SelectionType.NetworkRequest: {
         const request = (this.selection.object() as TimelineModel.TimelineModel.NetworkRequest);
         void TimelineUIUtils.buildNetworkRequestDetails(request, this.model.timelineModel(), this.detailsLinkifier)
             .then(this.setContent.bind(this));
         break;
       }
-      case TimelineSelection.Type.Range: {
+      case SelectionType.Range: {
         this.updateSelectedRangeStats(this.selection.startTime(), this.selection.endTime());
         break;
       }

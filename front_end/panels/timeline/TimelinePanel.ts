@@ -70,7 +70,7 @@ import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {traceJsonGenerator} from './SaveFileFormatter.js';
-import {timesForEventInMilliseconds} from './EventTypeHelpers.js';
+import {TimelineSelection, SelectionType} from './TimelineSelection.js';
 
 const UIStrings = {
   /**
@@ -1353,11 +1353,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private frameForSelection(selection: TimelineSelection): TimelineModel.TimelineFrameModel.TimelineFrame|null {
     switch (selection.type()) {
-      case TimelineSelection.Type.Frame:
+      case SelectionType.Frame:
         return selection.object() as TimelineModel.TimelineFrameModel.TimelineFrame;
-      case TimelineSelection.Type.Range:
+      case SelectionType.Range:
         return null;
-      case TimelineSelection.Type.TraceEvent:
+      case SelectionType.TraceEvent:
         if (!this.performanceModel) {
           return null;
         }
@@ -1464,65 +1464,6 @@ export enum State {
 export const rowHeight = 18;
 
 export const headerHeight = 20;
-
-export class TimelineSelection {
-  private readonly typeInternal: string;
-  private readonly startTimeInternal: number;
-  readonly endTimeInternal: number;
-  private readonly objectInternal: Object|null;
-
-  constructor(type: string, startTime: number, endTime: number, object?: Object) {
-    this.typeInternal = type;
-    this.startTimeInternal = startTime;
-    this.endTimeInternal = endTime;
-    this.objectInternal = object || null;
-  }
-
-  static fromFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): TimelineSelection {
-    return new TimelineSelection(TimelineSelection.Type.Frame, frame.startTime, frame.endTime, frame);
-  }
-
-  static fromNetworkRequest(request: TimelineModel.TimelineModel.NetworkRequest): TimelineSelection {
-    return new TimelineSelection(
-        TimelineSelection.Type.NetworkRequest, request.startTime, request.endTime || request.startTime, request);
-  }
-
-  static fromTraceEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): TimelineSelection {
-    const {startTime, endTime} = timesForEventInMilliseconds(event);
-    return new TimelineSelection(TimelineSelection.Type.TraceEvent, startTime, endTime || (startTime + 1), event);
-  }
-
-  static fromRange(startTime: number, endTime: number): TimelineSelection {
-    return new TimelineSelection(TimelineSelection.Type.Range, startTime, endTime);
-  }
-
-  type(): string {
-    return this.typeInternal;
-  }
-
-  object(): Object|null {
-    return this.objectInternal;
-  }
-
-  startTime(): number {
-    return this.startTimeInternal;
-  }
-
-  endTime(): number {
-    return this.endTimeInternal;
-  }
-}
-
-export namespace TimelineSelection {
-  // TODO(crbug.com/1167717): Make this a const enum again
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum Type {
-    Frame = 'Frame',
-    NetworkRequest = 'NetworkRequest',
-    TraceEvent = 'TraceEvent',
-    Range = 'Range',
-  }
-}
 export interface TimelineModeViewDelegate {
   select(selection: TimelineSelection|null): void;
   selectEntryAtTime(events: SDK.TracingModel.Event[]|null, time: number): void;

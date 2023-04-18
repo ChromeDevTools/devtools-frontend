@@ -160,7 +160,7 @@ Timeline.TimelinePanel.StatusPane = TimelineModule.TimelinePanel.StatusPane;
 Timeline.TimelinePanel.ActionDelegate = TimelineModule.TimelinePanel.ActionDelegate;
 
 /** @constructor */
-Timeline.TimelineSelection = TimelineModule.TimelinePanel.TimelineSelection;
+Timeline.TimelineSelection = TimelineModule.TimelineSelection.TimelineSelection;
 
 /** @interface */
 Timeline.TimelineModeViewDelegate = TimelineModule.TimelinePanel.TimelineModeViewDelegate;

@@ -47,7 +47,7 @@ import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js'
 import {type PerformanceModel} from './PerformanceModel.js';
 
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
-import {TimelineSelection} from './TimelinePanel.js';
+import {SelectionType, TimelineSelection} from './TimelineSelection.js';
 
 import {TimelineUIUtils, type TimelineCategory} from './TimelineUIUtils.js';
 
@@ -1217,7 +1217,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   entryIndexForSelection(selection: TimelineSelection|null): number {
-    if (!selection || selection.type() === TimelineSelection.Type.Range) {
+    if (!selection || selection.type() === SelectionType.Range) {
       return -1;
     }
 

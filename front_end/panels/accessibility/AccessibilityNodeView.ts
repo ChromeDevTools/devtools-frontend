@@ -261,8 +261,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   static createExclamationMark(tooltip: string): Element {
-    const exclamationElement = document.createElement('span', {is: 'dt-icon-label'}) as UI.UIUtils.DevToolsIconLabel;
-    exclamationElement.type = 'smallicon-warning';
+    const exclamationElement = UI.UIUtils.createIconLabel({iconName: 'warning-filled', color: 'var(--icon-warning)'});
     UI.Tooltip.Tooltip.install(exclamationElement, tooltip);
     return exclamationElement;
   }

@@ -500,11 +500,14 @@ export class RequestHeadersView extends UI.Widget.VBox {
       UI.Tooltip.Tooltip.install(statusCodeImage, this.request.statusCode + ' ' + this.request.statusText);
 
       if (this.request.statusCode < 300 || this.request.statusCode === 304) {
-        statusCodeImage.type = 'smallicon-green-ball';
+        statusCodeImage
+            .data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '14px', height: '14px'};
       } else if (this.request.statusCode < 400) {
-        statusCodeImage.type = 'smallicon-orange-ball';
+        statusCodeImage
+            .data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
       } else {
-        statusCodeImage.type = 'smallicon-red-ball';
+        statusCodeImage
+            .data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
       }
 
       requestMethodElement.title = this.formatHeader(i18nString(UIStrings.requestMethod), this.request.requestMethod);
@@ -608,8 +611,8 @@ export class RequestHeadersView extends UI.Widget.VBox {
       const cautionElement = document.createElement('div');
       cautionElement.classList.add('request-headers-caution');
       UI.Tooltip.Tooltip.install(cautionElement, cautionTitle);
-      (cautionElement.createChild('span', '', 'dt-icon-label') as UI.UIUtils.DevToolsIconLabel).type =
-          'smallicon-warning';
+      (cautionElement.createChild('span', '', 'dt-icon-label') as UI.UIUtils.DevToolsIconLabel)
+          .data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
       cautionElement.createChild('div', 'caution').textContent = cautionText;
       const cautionTreeElement = new UI.TreeOutline.TreeElement(cautionElement);
 

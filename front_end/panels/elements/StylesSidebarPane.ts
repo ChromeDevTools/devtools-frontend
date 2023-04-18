@@ -404,7 +404,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const exclamationElement = (document.createElement('span', {is: 'dt-icon-label'}) as UI.UIUtils.DevToolsIconLabel);
     exclamationElement.className = 'exclamation-mark';
     if (!StylesSidebarPane.ignoreErrorsForProperty(property)) {
-      exclamationElement.type = 'smallicon-warning';
+      exclamationElement
+          .data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
     }
     let invalidMessage: string|Common.UIString.LocalizedString;
     if (title) {

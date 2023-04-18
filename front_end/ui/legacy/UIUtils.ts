@@ -37,6 +37,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Dialog} from './Dialog.js';
@@ -1143,13 +1144,19 @@ export function createRadioLabel(name: string, title: string, checked?: boolean)
   return element;
 }
 
-export function createIconLabel(title: string, iconClass: string, iconColor?: string): HTMLElement {
+export function createIconLabel(
+    options: {title?: string, iconName: string, color?: string, width?: '14px'|'20px', height?: '14px'|'20px'}):
+    DevToolsIconLabel {
   const element = (document.createElement('span', {is: 'dt-icon-label'}) as DevToolsIconLabel);
-  element.createChild('span').textContent = title;
-  element.type = iconClass;
-  if (iconColor) {
-    element.color = iconColor;
+  if (options.title) {
+    element.createChild('span').textContent = options.title;
   }
+  element.data = {
+    iconName: options.iconName,
+    color: options.color ?? 'var(--icon-default)',
+    width: options.width ?? '14px',
+    height: options.height ?? '14px',
+  };
   return element;
 }
 
@@ -1224,7 +1231,7 @@ export class CheckboxLabel extends HTMLSpanElement {
 }
 
 export class DevToolsIconLabel extends HTMLSpanElement {
-  private readonly iconElement: Icon;
+  readonly #icon: IconButton.Icon.Icon;
 
   constructor() {
     super();
@@ -1232,18 +1239,21 @@ export class DevToolsIconLabel extends HTMLSpanElement {
       cssFile: undefined,
       delegatesFocus: undefined,
     });
-    this.iconElement = Icon.create();
-    this.iconElement.style.setProperty('margin-right', '4px');
-    root.appendChild(this.iconElement);
+    this.#icon = new IconButton.Icon.Icon();
+    this.#icon.style.setProperty('margin-right', '4px');
+    root.appendChild(this.#icon);
     root.createChild('slot');
   }
 
-  set type(type: string) {
-    this.iconElement.setIconType(type);
-  }
-
-  set color(color: string) {
-    this.iconElement.setIconColor(color);
+  set data(data: IconButton.Icon.IconData) {
+    this.#icon.data = data;
+    // TODO(crbug.com/1427397): Clean this up. This was necessary so `DevToolsIconLabel` can use Lit icon
+    //    while being backwards-compatible with the legacy Icon while working for both small and large icons.
+    if (data.height === '14px') {
+      this.#icon.style.setProperty('margin-bottom', '-2px');
+    } else if (data.height === '20px') {
+      this.#icon.style.setProperty('margin-bottom', '2px');
+    }
   }
 }
 

@@ -563,8 +563,12 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.errorsSection.clearContent();
     this.errorsSection.element.classList.toggle('hidden', !errors.length);
     for (const error of errors) {
-      this.errorsSection.appendRow().appendChild(
-          UI.UIUtils.createIconLabel(error.message, error.critical ? 'smallicon-error' : 'smallicon-warning'));
+      const icon = UI.UIUtils.createIconLabel({
+        title: error.message,
+        iconName: error.critical ? 'cross-circle-filled' : 'warning-filled',
+        color: error.critical ? 'var(--icon-error)' : 'var(--icon-warning)',
+      });
+      this.errorsSection.appendRow().appendChild(icon);
     }
 
     if (!data) {
@@ -796,15 +800,19 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
     const errorMessages = this.getInstallabilityErrorMessages(installabilityErrors);
     for (const error of errorMessages) {
-      this.installabilitySection.appendRow().appendChild(UI.UIUtils.createIconLabel(error, 'smallicon-warning'));
+      const icon = UI.UIUtils.createIconLabel({title: error, iconName: 'warning-filled', color: 'var(--icon-warning)'});
+      this.installabilitySection.appendRow().appendChild(icon);
     }
 
     this.errorsSection.element.classList.toggle('hidden', !errors.length && !imageErrors.length && !warnings.length);
     for (const warning of warnings) {
-      this.errorsSection.appendRow().appendChild(UI.UIUtils.createIconLabel(warning, 'smallicon-warning'));
+      const icon =
+          UI.UIUtils.createIconLabel({title: warning, iconName: 'warning-filled', color: 'var(--icon-warning)'});
+      this.errorsSection.appendRow().appendChild(icon);
     }
     for (const error of imageErrors) {
-      this.errorsSection.appendRow().appendChild(UI.UIUtils.createIconLabel(error, 'smallicon-warning'));
+      const icon = UI.UIUtils.createIconLabel({title: error, iconName: 'warning-filled', color: 'var(--icon-warning)'});
+      this.errorsSection.appendRow().appendChild(icon);
     }
 
     function stringProperty(name: string): string {

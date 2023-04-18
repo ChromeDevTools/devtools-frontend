@@ -287,8 +287,14 @@ export class IDBDataView extends UI.View.SimpleView {
       void this.clearButtonClicked();
     }, this);
 
-    this.needsRefresh = new UI.Toolbar.ToolbarItem(
-        UI.UIUtils.createIconLabel(i18nString(UIStrings.dataMayBeStale), 'warning', 'var(--icon-warning)'));
+    const refreshIcon = UI.UIUtils.createIconLabel({
+      title: i18nString(UIStrings.dataMayBeStale),
+      iconName: 'warning',
+      color: 'var(--icon-warning)',
+      width: '20px',
+      height: '20px',
+    });
+    this.needsRefresh = new UI.Toolbar.ToolbarItem(refreshIcon);
     this.needsRefresh.setVisible(false);
     this.needsRefresh.setTitle(i18nString(UIStrings.someEntriesMayHaveBeenModified));
     this.clearingObjectStore = false;

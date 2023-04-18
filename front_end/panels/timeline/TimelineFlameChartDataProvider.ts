@@ -103,11 +103,6 @@ const UIStrings = {
    */
   sSelfS: '{PH1} (self {PH2})',
   /**
-   *@description Tooltip text for the number of CLS occurences in Timeline
-   *@example {4} PH1
-   */
-  occurrencesS: 'Occurrences: {PH1}',
-  /**
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   idleFrame: 'Idle Frame',
@@ -674,27 +669,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         }
       }
 
-      if (this.legacyPerformanceModel && this.legacyPerformanceModel.timelineModel().isLayoutShiftEvent(e)) {
-        // TODO(crbug.com/1386091) this check should happen at the model level.
-        // Expand layout shift events to the size of the frame in which it is situated.
-        for (const frame of this.legacyPerformanceModel.frames()) {
-          // Locate the correct frame and expand the event accordingly.
-          if (typeof e.endTime === 'undefined') {
-            e.setEndTime(e.startTime);
-          }
-
-          const isAfterStartTime = e.startTime >= frame.startTime;
-          const isBeforeEndTime = e.endTime && e.endTime <= frame.endTime;
-          const eventIsInFrame = isAfterStartTime && isBeforeEndTime;
-
-          if (!eventIsInFrame) {
-            continue;
-          }
-
-          e.startTime = frame.startTime;
-          e.setEndTime(frame.endTime);
-        }
-      }
       if (!TraceEngine.Types.TraceEvents.isFlowPhase(e.phase)) {
         if (!e.endTime && e.phase !== TraceEngine.Types.TraceEvents.Phase.INSTANT) {
           continue;
@@ -863,13 +837,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
       title = this.entryTitle(entryIndex);
       warning = TimelineUIUtils.eventWarning(event);
-
-      // TODO: this can be removed.
-      if (this.legacyTimelineModel && this.legacyTimelineModel.isLayoutShiftEvent(event)) {
-        // TODO: Update this to be dynamic when the trace data supports it.
-        const occurrences = 1;
-        time = i18nString(UIStrings.occurrencesS, {PH1: occurrences});
-      }
 
       if (this.legacyTimelineModel && this.legacyTimelineModel.isParseHTMLEvent(event)) {
         const startLine = event.args['beginData']['startLine'];

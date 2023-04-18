@@ -361,12 +361,12 @@ export class DeviceModeToolbar {
 
   private fillModeToolbar(toolbar: UI.Toolbar.Toolbar): void {
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
-    this.modeButton = new UI.Toolbar.ToolbarButton('', 'largeicon-rotate-screen');
+    this.modeButton = new UI.Toolbar.ToolbarButton('', 'screen-rotation');
     this.modeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.modeMenuClicked, this);
     toolbar.appendToolbarItem(this.modeButton);
 
     if (this.experimentDualScreenSupport) {
-      this.spanButton = new UI.Toolbar.ToolbarButton('', 'largeicon-dual-screen');
+      this.spanButton = new UI.Toolbar.ToolbarButton('', 'device-fold');
       this.spanButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.spanClicked, this);
       toolbar.appendToolbarItem(this.spanButton);
 
@@ -380,7 +380,7 @@ export class DeviceModeToolbar {
     const title = (this.model.webPlatformExperimentalFeaturesEnabled()) ?
         i18nString(UIStrings.experimentalWebPlatformFeature) :
         i18nString(UIStrings.experimentalWebPlatformFeatureFlag);
-    this.experimentalButton = new UI.Toolbar.ToolbarToggle(title, 'largeicon-experimental-api');
+    this.experimentalButton = new UI.Toolbar.ToolbarToggle(title, 'experiment-check');
     this.experimentalButton.setToggled(this.model.webPlatformExperimentalFeaturesEnabled());
     this.experimentalButton.setEnabled(true);
     this.experimentalButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.experimentalClicked, this);

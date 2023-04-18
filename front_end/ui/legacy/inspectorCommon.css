@@ -648,6 +648,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-database);
 }
 
+.spritesheet-device-fold.icon-mask {
+  -webkit-mask-image: var(--image-file-device-fold);
+}
+
 .spritesheet-devices.icon-mask {
   -webkit-mask-image: var(--image-file-devices);
 }
@@ -682,6 +686,10 @@ span[is="dt-icon-label"] {
 
 .spritesheet-edit.icon-mask {
   -webkit-mask-image: var(--image-file-edit);
+}
+
+.spritesheet-experiment-check.icon-mask {
+  -webkit-mask-image: var(--image-file-experiment-check);
 }
 
 .spritesheet-eye.icon-mask {
@@ -802,6 +810,10 @@ span[is="dt-icon-label"] {
 
 .spritesheet-right-panel-open.icon-mask {
   -webkit-mask-image: var(--image-file-right-panel-open);
+}
+
+.spritesheet-screen-rotation.icon-mask {
+  -webkit-mask-image: var(--image-file-screen-rotation);
 }
 
 .spritesheet-search.icon-mask {

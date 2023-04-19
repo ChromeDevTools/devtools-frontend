@@ -180,7 +180,11 @@ export class CSSLinearEasingModel {
     return new CSSLinearEasingModel(points);
   }
 
-  toCSSText(): string {
+  points(): Point[] {
+    return this.#points;
+  }
+
+  asCSSText(): string {
     const args =
         this.#points.map(point => `${numberFormatter.format(point.output)} ${numberFormatter.format(point.input)}%`)
             .join(', ');

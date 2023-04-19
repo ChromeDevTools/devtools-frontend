@@ -10,7 +10,7 @@ const {assert} = chai;
 function testValidCase(input: string, output: string): void {
   const model = InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel.parse(input);
   assertNotNullOrUndefined(model);
-  assert.strictEqual(model.toCSSText(), output, `Parsing is invalid for case "${input}"`);
+  assert.strictEqual(model.asCSSText(), output, `Parsing is invalid for case "${input}"`);
 }
 
 function testInvalidCase(input: string): void {

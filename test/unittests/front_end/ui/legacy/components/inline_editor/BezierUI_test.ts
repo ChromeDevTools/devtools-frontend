@@ -15,13 +15,18 @@ describe('BezierUI', () => {
     const testMarginTop = 3;
     const testRadius = 4;
     const testLinearLine = true;
-    const bezierUI =
-        new InlineEditor.BezierUI.BezierUI(testWidth, testHeight, testMarginTop, testRadius, testLinearLine);
+    const bezierUI = new InlineEditor.BezierUI.BezierUI({
+      width: testWidth,
+      height: testHeight,
+      marginTop: testMarginTop,
+      controlPointRadius: testRadius,
+      shouldDrawLine: testLinearLine,
+    });
     assert.strictEqual(bezierUI.width, testWidth, 'width was not set or retrieved correctly');
     assert.strictEqual(bezierUI.height, testHeight, 'height was not set or retrieved correctly');
     assert.strictEqual(bezierUI.marginTop, testMarginTop, 'margin top was not set or retrieved correctly');
     assert.strictEqual(bezierUI.radius, testRadius, 'radius was not set or retrieved correctly');
-    assert.strictEqual(bezierUI.linearLine, testLinearLine, 'linear line value was not set or retrieved correctly');
+    assert.strictEqual(bezierUI.shouldDrawLine, testLinearLine, 'linear line value was not set or retrieved correctly');
   });
 
   it('can draw velocity chart correctly', () => {
@@ -35,17 +40,35 @@ describe('BezierUI', () => {
   });
 
   it('calculates curve width correctly', () => {
-    const bezierUI = new InlineEditor.BezierUI.BezierUI(10, 10, 1, 3, true);
+    const bezierUI = new InlineEditor.BezierUI.BezierUI({
+      width: 10,
+      height: 10,
+      marginTop: 1,
+      controlPointRadius: 3,
+      shouldDrawLine: true,
+    });
     assert.strictEqual(bezierUI.curveWidth(), 4, 'curve width was not calculated correctly');
   });
 
   it('calculates curve height correctly', () => {
-    const bezierUI = new InlineEditor.BezierUI.BezierUI(10, 10, 1, 3, true);
+    const bezierUI = new InlineEditor.BezierUI.BezierUI({
+      width: 10,
+      height: 10,
+      marginTop: 1,
+      controlPointRadius: 3,
+      shouldDrawLine: true,
+    });
     assert.strictEqual(bezierUI.curveHeight(), 2, 'curve height was not calculated correctly');
   });
 
   it('draws a curve correctly', () => {
-    const bezierUI = new InlineEditor.BezierUI.BezierUI(10, 10, 1, 3, true);
+    const bezierUI = new InlineEditor.BezierUI.BezierUI({
+      width: 10,
+      height: 10,
+      marginTop: 1,
+      controlPointRadius: 3,
+      shouldDrawLine: true,
+    });
     const bezier = new UI.Geometry.CubicBezier(new UI.Geometry.Point(1, 1), new UI.Geometry.Point(3, 4));
     const svg = document.createElement('svg');
     bezierUI.drawCurve(bezier, svg);

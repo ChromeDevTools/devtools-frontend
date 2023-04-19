@@ -3,14 +3,17 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 
+import {AnimationTimingModel} from './AnimationTimingModel.js';
+import {AnimationTimingUI} from './AnimationTimingUI.js';
 import bezierEditorStyles from './bezierEditor.css.js';
 import {BezierUI} from './BezierUI.js';
 
+const PREVIEW_ANIMATION_DEBOUNCE_DELAY = 300;
+
 export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
-  private bezierInternal: UI.Geometry.CubicBezier;
+  private model: AnimationTimingModel;
   private previewElement: HTMLElement;
   private readonly previewOnion: HTMLElement;
   private readonly outerContainer: HTMLElement;
@@ -18,18 +21,16 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private readonly presetsContainer: HTMLElement;
   private readonly presetUI: BezierUI;
   private readonly presetCategories: PresetCategory[];
-  private readonly curveUI: BezierUI;
-  private readonly curve: Element;
+  private animationTimingUI?: AnimationTimingUI;
   private readonly header: HTMLElement;
   private label: HTMLElement;
-  private mouseDownPosition?: UI.Geometry.Point;
-  private controlPosition?: UI.Geometry.Point;
-  private selectedPoint?: number;
   private previewAnimation?: Animation;
+  private debouncedStartPreviewAnimation: () => void;
 
-  constructor(bezier: UI.Geometry.CubicBezier) {
+  constructor(model: AnimationTimingModel) {
     super(true);
-    this.bezierInternal = bezier;
+
+    this.model = model;
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 
@@ -45,7 +46,14 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     // Presets UI
     this.selectedCategory = null;
     this.presetsContainer = this.outerContainer.createChild('div', 'bezier-presets');
-    this.presetUI = new BezierUI(40, 40, 0, 2, false);
+    this.presetUI = new BezierUI({
+      width: 40,
+      height: 40,
+      marginTop: 0,
+      controlPointRadius: 2,
+      shouldDrawLine: false,
+    });
+
     this.presetCategories = [];
     for (let i = 0; i < Presets.length; i++) {
       this.presetCategories[i] = this.createCategory(Presets[i]);
@@ -53,10 +61,18 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     }
 
     // Curve UI
-    this.curveUI = new BezierUI(150, 250, 50, 7, true);
-    this.curve = UI.UIUtils.createSVGChild(this.outerContainer, 'svg', 'bezier-curve');
-    UI.UIUtils.installDragHandle(
-        this.curve, this.dragStart.bind(this), this.dragMove.bind(this), this.dragEnd.bind(this), 'default');
+    this.debouncedStartPreviewAnimation =
+        Common.Debouncer.debounce(this.startPreviewAnimation.bind(this), PREVIEW_ANIMATION_DEBOUNCE_DELAY);
+    this.animationTimingUI = new AnimationTimingUI({
+      model: this.model,
+      onChange: (model: AnimationTimingModel): void => {
+        this.setModel(model);
+        this.onchange();
+        this.unselectPresets();
+        this.debouncedStartPreviewAnimation();
+      },
+    });
+    this.outerContainer.appendChild(this.animationTimingUI.element());
 
     this.header = this.contentElement.createChild('div', 'bezier-header');
     const minus = this.createPresetModifyIcon(this.header, 'bezier-preset-minus', 'M 12 6 L 8 10 L 12 14');
@@ -66,16 +82,10 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.label = this.header.createChild('span', 'source-code bezier-display-value');
   }
 
-  setBezier(bezier: UI.Geometry.CubicBezier): void {
-    if (!bezier) {
-      return;
-    }
-    this.bezierInternal = bezier;
+  setModel(model: AnimationTimingModel): void {
+    this.model = model;
+    this.animationTimingUI?.setModel(this.model);
     this.updateUI();
-  }
-
-  bezier(): UI.Geometry.CubicBezier {
-    return this.bezierInternal;
   }
 
   override wasShown(): void {
@@ -84,7 +94,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     // Check if bezier matches a preset
     for (const category of this.presetCategories) {
       for (let i = 0; i < category.presets.length; i++) {
-        if (this.bezierInternal.asCSSText() === category.presets[i].value) {
+        if (this.model.asCSSText() === category.presets[i].value) {
           category.presetIndex = i;
           this.presetCategorySelected(category);
         }
@@ -97,57 +107,14 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
   private onchange(): void {
     this.updateUI();
-    this.dispatchEventToListeners(Events.BezierChanged, this.bezierInternal.asCSSText());
+    this.dispatchEventToListeners(Events.BezierChanged, this.model.asCSSText());
   }
 
   private updateUI(): void {
     const labelText = this.selectedCategory ? this.selectedCategory.presets[this.selectedCategory.presetIndex].name :
-                                              this.bezierInternal.asCSSText().replace(/\s(-\d\.\d)/g, '$1');
+                                              this.model.asCSSText().replace(/\s(-\d\.\d)/g, '$1');
     this.label.textContent = labelText;
-    this.curveUI.drawCurve(this.bezierInternal, this.curve);
-    this.previewOnion.removeChildren();
-  }
-
-  private dragStart(event: MouseEvent): boolean {
-    this.mouseDownPosition = new UI.Geometry.Point(event.x, event.y);
-    const ui = this.curveUI;
-    this.controlPosition = new UI.Geometry.Point(
-        Platform.NumberUtilities.clamp((event.offsetX - ui.radius) / ui.curveWidth(), 0, 1),
-        (ui.curveHeight() + ui.marginTop + ui.radius - event.offsetY) / ui.curveHeight());
-
-    const firstControlPointIsCloser = this.controlPosition.distanceTo(this.bezierInternal.controlPoints[0]) <
-        this.controlPosition.distanceTo(this.bezierInternal.controlPoints[1]);
-    this.selectedPoint = firstControlPointIsCloser ? 0 : 1;
-
-    this.bezierInternal.controlPoints[this.selectedPoint] = this.controlPosition;
-    this.unselectPresets();
-    this.onchange();
-
-    event.consume(true);
-    return true;
-  }
-
-  private updateControlPosition(mouseX: number, mouseY: number): void {
-    if (this.mouseDownPosition === undefined || this.controlPosition === undefined ||
-        this.selectedPoint === undefined) {
-      return;
-    }
-    const deltaX = (mouseX - this.mouseDownPosition.x) / this.curveUI.curveWidth();
-    const deltaY = (mouseY - this.mouseDownPosition.y) / this.curveUI.curveHeight();
-    const newPosition = new UI.Geometry.Point(
-        Platform.NumberUtilities.clamp(this.controlPosition.x + deltaX, 0, 1), this.controlPosition.y - deltaY);
-    this.bezierInternal.controlPoints[this.selectedPoint] = newPosition;
-  }
-
-  private dragMove(event: MouseEvent): void {
-    this.updateControlPosition(event.x, event.y);
-    this.onchange();
-  }
-
-  private dragEnd(event: MouseEvent): void {
-    this.updateControlPosition(event.x, event.y);
-    this.onchange();
-    this.startPreviewAnimation();
+    this.animationTimingUI?.draw();
   }
 
   private createCategory(presetGroup: {
@@ -188,9 +155,9 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.header.classList.add('bezier-header-active');
     this.selectedCategory = category;
     this.selectedCategory.icon.classList.add('bezier-preset-selected');
-    const newBezier = UI.Geometry.CubicBezier.parse(category.presets[category.presetIndex].value);
-    if (newBezier) {
-      this.setBezier(newBezier);
+    const newModel = AnimationTimingModel.parse(category.presets[category.presetIndex].value);
+    if (newModel) {
+      this.setModel(newModel);
       this.onchange();
       this.startPreviewAnimation();
     }
@@ -206,16 +173,18 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
     const length = this.selectedCategory.presets.length;
     this.selectedCategory.presetIndex = (this.selectedCategory.presetIndex + (intensify ? 1 : -1) + length) % length;
-    const newBezier =
-        UI.Geometry.CubicBezier.parse(this.selectedCategory.presets[this.selectedCategory.presetIndex].value);
-    if (newBezier) {
-      this.setBezier(newBezier);
+    const selectedPreset = this.selectedCategory.presets[this.selectedCategory.presetIndex].value;
+    const newModel = AnimationTimingModel.parse(selectedPreset);
+    if (newModel) {
+      this.setModel(newModel);
       this.onchange();
       this.startPreviewAnimation();
     }
   }
 
   private startPreviewAnimation(): void {
+    this.previewOnion.removeChildren();
+
     if (this.previewAnimation) {
       this.previewAnimation.cancel();
     }
@@ -224,7 +193,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     const numberOnionSlices = 20;
 
     const keyframes = [
-      {offset: 0, transform: 'translateX(0px)', easing: this.bezierInternal.asCSSText(), opacity: 1},
+      {offset: 0, transform: 'translateX(0px)', easing: this.model.asCSSText(), opacity: 1},
       {offset: 0.9, transform: 'translateX(218px)', opacity: 1},
       {offset: 1, transform: 'translateX(218px)', opacity: 0},
     ];
@@ -233,7 +202,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     for (let i = 0; i <= numberOnionSlices; i++) {
       const slice = this.previewOnion.createChild('div', 'bezier-preview-animation');
       const player = slice.animate(
-          [{transform: 'translateX(0px)', easing: this.bezierInternal.asCSSText()}, {transform: 'translateX(218px)'}],
+          [{transform: 'translateX(0px)', easing: this.model.asCSSText()}, {transform: 'translateX(218px)'}],
           {duration: animationDuration, fill: 'forwards'});
       player.pause();
       player.currentTime = animationDuration * i / numberOnionSlices;

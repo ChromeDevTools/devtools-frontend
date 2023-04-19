@@ -4,19 +4,27 @@
 
 import * as UI from '../../legacy.js';
 
+interface Params {
+  width: number;
+  height: number;
+  marginTop: number;
+  controlPointRadius: number;
+  shouldDrawLine: boolean;
+}
+
 export class BezierUI {
   width: number;
   height: number;
   marginTop: number;
   radius: number;
-  linearLine: boolean;
+  shouldDrawLine: boolean;
 
-  constructor(width: number, height: number, marginTop: number, controlPointRadius: number, linearLine: boolean) {
+  constructor({width, height, marginTop, controlPointRadius, shouldDrawLine}: Params) {
     this.width = width;
     this.height = height;
     this.marginTop = marginTop;
     this.radius = controlPointRadius;
-    this.linearLine = linearLine;
+    this.shouldDrawLine = shouldDrawLine;
   }
 
   static drawVelocityChart(bezier: UI.Geometry.CubicBezier, path: Element, width: number): void {
@@ -73,7 +81,7 @@ export class BezierUI {
     svg.removeChildren();
     const group = UI.UIUtils.createSVGChild(svg, 'g');
 
-    if (this.linearLine) {
+    if (this.shouldDrawLine) {
       this.drawLine(group, 'linear-line', 0, height, width, 0);
     }
 

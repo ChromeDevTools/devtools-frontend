@@ -145,6 +145,8 @@ export class CubicBezier {
   ]);
 }
 
+export const LINEAR_BEZIER = new CubicBezier(new Point(0, 0), new Point(1, 1));
+
 export class EulerAngles {
   alpha: number;
   beta: number;

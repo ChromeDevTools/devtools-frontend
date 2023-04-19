@@ -518,13 +518,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private processBezier(text: string): Node {
-    if (!this.editable() || !UI.Geometry.CubicBezier.parse(text)) {
+    if (!this.editable() || !InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(text)) {
       return document.createTextNode(text);
     }
     const swatchPopoverHelper = this.parentPaneInternal.swatchPopoverHelper();
     const swatch = InlineEditor.Swatches.BezierSwatch.create();
     swatch.setBezierText(text);
-    new BezierPopoverIcon(this, swatchPopoverHelper, swatch);
+    new BezierPopoverIcon({treeElement: this, swatchPopoverHelper, swatch});
     return swatch;
   }
 

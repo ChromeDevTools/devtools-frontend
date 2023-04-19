@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as AnimationTimingModel from './AnimationTimingModel.js';
 import * as BezierEditor from './BezierEditor.js';
 import * as BezierUI from './BezierUI.js';
 import * as ColorMixModel from './ColorMixModel.js';
@@ -24,6 +25,7 @@ import * as Swatches from './Swatches.js';
 import * as SwatchPopoverHelper from './SwatchPopoverHelper.js';
 
 export {
+  AnimationTimingModel,
   BezierEditor,
   BezierUI,
   ColorMixModel,

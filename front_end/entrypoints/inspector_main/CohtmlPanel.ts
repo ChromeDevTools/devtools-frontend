@@ -40,7 +40,8 @@ import * as Protocol from '../../generated/protocol.js';
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import { Size } from '../../ui/legacy/Geometry.js';
-import { clamp } from '../../core/platform/number-utilities';
+
+const clamp = (num:number, min:number, max:number) => Math.min(Math.max(num, min), max);
 
 const UIStrings = {
 

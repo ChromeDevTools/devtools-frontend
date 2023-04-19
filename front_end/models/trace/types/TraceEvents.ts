@@ -769,6 +769,11 @@ export interface SyntheticInteractionEvent extends TraceEventSyntheticNestableAs
   };
 }
 
+export function isSyntheticInteractionEvent(event: TraceEventData): event is SyntheticInteractionEvent {
+  return Boolean(
+      'interactionId' in event && event.args?.data && 'beginEvent' in event.args.data && 'endEvent' in event.args.data);
+}
+
 class ProfileIdTag {
   readonly #profileIdTag: (symbol|undefined);
 }

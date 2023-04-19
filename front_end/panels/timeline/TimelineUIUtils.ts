@@ -1024,6 +1024,16 @@ const UIStrings = {
    */
   forcedReflow: 'Forced reflow',
   /**
+   *@description Text used to highlight a long interaction and link to web.dev/inp
+   */
+  longInteractionINP: 'Long interaction',
+  /**
+   *@description Text in Timeline UIUtils of the Performance panel when the
+   *             user clicks on a long interaction.
+   *@example {Long interaction} PH1
+   */
+  sIsLikelyPoorPageResponsiveness: '{PH1} is indicating poor page responsiveness.',
+  /**
    *@description Text in Timeline UIUtils of the Performance panel
    *@example {Forced reflow} PH1
    */
@@ -1425,9 +1435,12 @@ export class TimelineUIUtils {
       return TimelineUIUtils.frameDisplayName(eventData);
     }
 
-    if (event.name === 'EventTiming' && event.args.data && event.args.data.interactionId) {
-      // This is an interaction event because it has an ID, so just show the type of interaction.
-      return event.args.data.type;
+    if (event.name === 'EventTiming' && event instanceof SDK.TracingModel.PayloadEvent) {
+      const syntheticInteraction = event.rawPayload();
+      if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(syntheticInteraction)) {
+        // For interaction events, show the type of the interaction as its title
+        return syntheticInteraction.type;
+      }
     }
     const title = TimelineUIUtils.eventStyle(event).title;
     if (eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
@@ -1920,6 +1933,21 @@ export class TimelineUIUtils {
     }
     if (event.name === recordTypes.JSFrame && eventData['deoptReason']) {
       contentHelper.appendWarningRow(event, TimelineModel.TimelineModel.TimelineModelImpl.WarningType.V8Deopt);
+    }
+
+    // TODO(crbug.com/1434594): it is messy that we have this check for the
+    // duration in the UIUtils. We need to come up with a solution so we canset
+    // this information in the handlers, and read it here.
+    if (event.name === recordTypes.EventTiming && duration > TraceEngine.Types.Timing.MilliSeconds(200)) {
+      // This ensures we do not have a ConstructedEvent which are not ever going to be Interaction events.
+      const eventHasPayload = eventIsFromNewEngine(event) || SDK.TracingModel.eventHasPayload(event);
+      if (eventHasPayload) {
+        const payload = eventIsFromNewEngine(event) ? event : event.rawPayload();
+        if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(payload)) {
+          contentHelper.appendWarningRow(
+              event, TimelineModel.TimelineModel.TimelineModelImpl.WarningType.LongInteraction);
+        }
+      }
     }
 
     if (detailed && !Number.isNaN(duration || 0)) {
@@ -3165,6 +3193,14 @@ export class TimelineUIUtils {
       case warnings.LongHandler: {
         span.textContent =
             i18nString(UIStrings.handlerTookS, {PH1: i18n.TimeUtilities.millisToString((duration || 0), true)});
+        break;
+      }
+
+      case warnings.LongInteraction: {
+        const longInteractionINPLink =
+            UI.XLink.XLink.create('https://web.dev/inp', i18nString(UIStrings.longInteractionINP));
+        span.appendChild(i18n.i18n.getFormatLocalizedString(
+            str_, UIStrings.sIsLikelyPoorPageResponsiveness, {PH1: longInteractionINPLink}));
         break;
       }
 

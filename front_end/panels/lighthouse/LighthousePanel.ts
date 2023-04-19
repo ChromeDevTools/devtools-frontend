@@ -350,6 +350,15 @@ export class LighthousePanel extends UI.Panel.Panel {
     this.buildReportUI(data as ReportJSON);
   }
 
+  override elementsToRestoreScrollPositionsFor(): Element[] {
+    const els = super.elementsToRestoreScrollPositionsFor();
+    const lhContainerEl = this.auditResultsElement.querySelector('.lh-container');
+    if (lhContainerEl) {
+      els.push(lhContainerEl);
+    }
+    return els;
+  }
+
   override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([lighthousePanelStyles]);

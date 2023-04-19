@@ -29,25 +29,17 @@
 }
 
 .settings-toolbar-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 0;
   width: 20px;
   height: 20px;
   border: none;
+  outline: none;
   background-color: transparent;
   cursor: pointer;
 }
 
-.settings-toolbar-button devtools-icon {
-  height: 14px;
-  width: 14px;
-  min-height: 14px;
-  min-width: 14px;
-}
-
 .settings-toolbar-button.active devtools-icon {
-  --icon-color: var(--color-primary-old);
+  --icon-color: var(--icon-toggled);
 }
 
 .divider {

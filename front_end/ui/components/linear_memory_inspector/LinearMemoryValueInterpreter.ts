@@ -96,7 +96,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           ${this.#renderEndiannessSetting()}
           <button data-settings="true" class="settings-toolbar-button ${this.#showSettings ? 'active' : ''}" title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.#onSettingsToggle}>
             <${IconButton.Icon.Icon.litTagName}
-              .data=${{ iconName: 'settings_14x14_icon', color: 'var(--color-text-secondary)', width: '14px' } as IconButton.Icon.IconWithName}>
+              .data=${{ iconName: 'gear', color: 'var(--icon-default)', width: '20px' } as IconButton.Icon.IconWithName}>
             </${IconButton.Icon.Icon.litTagName}>
           </button>
         </div>

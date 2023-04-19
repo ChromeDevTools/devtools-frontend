@@ -599,6 +599,18 @@ export class CSSModel extends SDKModel<EventTypes> {
 
   styleSheetAdded(header: Protocol.CSS.CSSStyleSheetHeader): void {
     console.assert(!this.#styleSheetIdToHeader.get(header.styleSheetId));
+    if (header.loadingFailed) {
+      // When the stylesheet fails to load, treat it as a constructed stylesheet. Failed sheets can still be modified
+      // from JS, in which case CSS.styleSheetChanged events are sent. So as to not confuse CSSModel clients we don't
+      // just discard the failed sheet here. Treating the failed sheet as a constructed stylesheet lets us keep track
+      // of it cleanly.
+      header.hasSourceURL = false;
+      header.isConstructed = true;
+      header.isInline = false;
+      header.isMutable = false;
+      header.sourceURL = '';
+      header.sourceMapURL = undefined;
+    }
     const styleSheetHeader = new CSSStyleSheetHeader(this, header);
     this.#styleSheetIdToHeader.set(header.styleSheetId, styleSheetHeader);
     const url = styleSheetHeader.resourceURL();

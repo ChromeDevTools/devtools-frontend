@@ -47,6 +47,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   contentLength: number;
   ownerNode: DeferredDOMNode|undefined;
   sourceMapURL: Platform.DevToolsPath.UrlString|undefined;
+  readonly loadingFailed: boolean;
   #originalContentProviderInternal: TextUtils.StaticContentProvider.StaticContentProvider|null;
 
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSStyleSheetHeader) {
@@ -70,6 +71,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
       this.ownerNode = new DeferredDOMNode(cssModel.target(), payload.ownerNode);
     }
     this.sourceMapURL = payload.sourceMapURL as Platform.DevToolsPath.UrlString;
+    this.loadingFailed = payload.loadingFailed ?? false;
     this.#originalContentProviderInternal = null;
   }
 

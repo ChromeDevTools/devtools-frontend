@@ -556,6 +556,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-3d-rotate);
 }
 
+.spritesheet-arrow-up-down-circle.icon-mask {
+  -webkit-mask-image: var(--image-file-arrow-up-down-circle);
+}
+
 .spritesheet-arrow-up-down.icon-mask {
   -webkit-mask-image: var(--image-file-arrow-up-down);
 }
@@ -610,6 +614,10 @@ span[is="dt-icon-label"] {
 
 .spritesheet-cloud.icon-mask {
   -webkit-mask-image: var(--image-file-cloud);
+}
+
+.spritesheet-code-circle.icon-mask {
+  -webkit-mask-image: var(--image-file-code-circle);
 }
 
 .spritesheet-color-picker-filled.icon-mask {

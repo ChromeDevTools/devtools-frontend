@@ -29,7 +29,7 @@ export class PreloadingTreeElement extends ApplicationPanelTreeElement {
   constructor(resourcesPanel: ResourcesPanel) {
     super(resourcesPanel, i18nString(UIStrings.prefetchingAndPrerendering), false);
 
-    const icon = UI.Icon.Icon.create('mediumicon-fetch', 'resource-tree-item');
+    const icon = UI.Icon.Icon.create('arrow-up-down', 'resource-tree-item');
     this.setLeadingIcons([icon]);
     this.#selectedInternal = false;
 

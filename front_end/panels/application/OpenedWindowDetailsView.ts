@@ -126,7 +126,7 @@ async function maybeCreateLinkToElementsPanel(opener: Protocol.Page.FrameId|SDK.
     return null;
   }
   const linkElement = linkifyIcon(
-      'mediumicon-elements-panel', i18nString(UIStrings.clickToRevealInElementsPanel),
+      'code-circle', i18nString(UIStrings.clickToRevealInElementsPanel),
       () => Common.Revealer.reveal(linkTargetDOMNode));
   const label = document.createElement('span');
   label.textContent = `<${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>`;

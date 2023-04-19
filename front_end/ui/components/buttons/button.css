@@ -202,7 +202,7 @@ button.round devtools-icon {
   width: 24px;
   height: 24px;
 
-  --icon-color: var(--color-text-secondary);
+  --icon-color: var(--icon-default);
 }
 
 button.primary devtools-icon {
@@ -210,7 +210,7 @@ button.primary devtools-icon {
 }
 
 button.secondary devtools-icon {
-  --icon-color: var(--color-primary-old);
+  --icon-color: var(--icon-primary);
 }
 
 button.small devtools-icon {
@@ -242,24 +242,24 @@ button.round.explicit-size devtools-icon {
 
 button.toolbar.active devtools-icon,
 button.toolbar:active devtools-icon {
-  --icon-color: var(--color-primary-old);
+  --icon-color: var(--icon-toggled);
 }
 
 button.toolbar:hover devtools-icon {
-  --icon-color: var(--color-text-primary);
+  --icon-color: var(--icon-default-hover);
 }
 
 button.toolbar:disabled devtools-icon,
 button.round:disabled devtools-icon {
-  --icon-color: var(--color-text-disabled);
+  --icon-color: var(--icon-disabled);
 }
 
 button.primary:disabled devtools-icon {
-  --icon-color: var(--color-text-disabled);
+  --icon-color: var(--icon-disabled);
 }
 
 button.secondary:disabled devtools-icon {
-  --icon-color: var(--color-text-disabled);
+  --icon-color: var(--icon-disabled);
 }
 
 .spinner-component.secondary {

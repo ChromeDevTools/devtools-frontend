@@ -358,7 +358,14 @@ export class RequestHeadersView extends UI.Widget.VBox {
         callToActionBody.appendChild(link);
       } else if (header.details.link) {
         const link = UI.XLink.XLink.create(header.details.link.url, i18nString(UIStrings.learnMore), 'link');
-        link.prepend(UI.Icon.Icon.create('largeicon-link'));
+        const icon = new IconButton.Icon.Icon();
+        icon.data = {
+          iconName: 'open-externally',
+          color: 'var(--icon-default)',
+          width: '20px',
+          height: '20px',
+        };
+        link.prepend(icon);
         callToActionBody.appendChild(link);
       }
     }

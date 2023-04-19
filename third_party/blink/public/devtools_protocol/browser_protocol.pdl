@@ -9713,7 +9713,7 @@ domain CohtmlDebug
 
   type RenoirCache extends object
     properties
-      strign type
+      string type
       number capacityCount
       number capacityBytes
 

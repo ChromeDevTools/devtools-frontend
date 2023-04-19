@@ -13970,7 +13970,7 @@ declare namespace Protocol {
     }
 
     export interface RenoirCache {
-      type: strign;
+      type: string;
       capacityCount: number;
       capacityBytes: number;
     }

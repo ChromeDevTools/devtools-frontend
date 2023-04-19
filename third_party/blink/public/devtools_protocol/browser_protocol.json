@@ -20816,7 +20816,7 @@
                     "properties": [
                         {
                             "name": "type",
-                            "$ref": "strign"
+                            "type": "string"
                         },
                         {
                             "name": "capacityCount",

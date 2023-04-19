@@ -32,16 +32,15 @@
 
 .cohtml-panel-base {
   overflow: scroll;
-  display: block;
   flex-direction: row !important;
-  height: auto;
 }
 
 .controls-panel {
   width: 35%;
   display: flex;
   flex-direction: column;
-  border-right: 2px solid lightgray
+  border-right: 2px solid lightgray;
+  height: fit-content;
 }
 
 .controls-panel span{
@@ -51,6 +50,7 @@
 .content-panel {
   width: 50%;
   padding-left: 10px;
+  height: fit-content;
 }
 
 .image-list {

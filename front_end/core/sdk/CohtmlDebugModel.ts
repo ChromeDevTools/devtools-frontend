@@ -111,7 +111,7 @@ export class CohtmlDebugModel extends SDKModel<void> implements ProtocolProxyApi
     return response.stats;
   }
 
-  setRenoirCacheState(stateToSet: Protocol.CohtmlDebug.RenoirCache) {
+  setRenoirCacheState(stateToSet: Protocol.CohtmlDebug.RenoirCache): void {
     const param: Protocol.CohtmlDebug.SetRenoirCachesStateRequest = {
       state : stateToSet
     };

@@ -40,6 +40,7 @@ import * as Protocol from '../../generated/protocol.js';
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import { Size } from '../../ui/legacy/Geometry.js';
+import { clamp } from '../../core/platform/number-utilities';
 
 const UIStrings = {
 
@@ -309,7 +310,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
       // input field where the user enters the desired cache size
       let entryInput = firstRow.createChild('input');
-      entryInput.setAttribute('type', 'text');
+      entryInput.setAttribute('type', 'number');
 
       // unit for the enered number (label + select element)
       let unit = firstRow.createChild('span', 'info-span');
@@ -325,6 +326,11 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
         let inputElement = (entryInput as HTMLInputElement);
         let newSize = Number(inputElement.value);
         if (!isNaN(newSize)) {
+
+          // JSON specifies only 32-bit integers so we can't send a bigger
+          // number than 2^32 bytes (~ 2147 MBs; this should be enough for all caches)
+          const MAX_32BIT_INTEGER = 2147483647;
+          newSize = clamp(newSize, 0, MAX_32BIT_INTEGER);
 
           switch (unitSelect.value) {
             case "Count": break;

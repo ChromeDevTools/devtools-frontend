@@ -133,9 +133,9 @@ export class LinearMemoryNavigator extends HTMLElement {
     const result = html`
       <div class="navigator">
         <div class="navigator-item">
-          ${this.#createButton({icon: 'ic_undo_16x16_icon', title: i18nString(UIStrings.goBackInAddressHistory),
+          ${this.#createButton({icon: 'undo', title: i18nString(UIStrings.goBackInAddressHistory),
               event: new HistoryNavigationEvent(Navigation.Backward), enabled: this.#canGoBackInHistory})}
-          ${this.#createButton({icon: 'ic_redo_16x16_icon', title: i18nString(UIStrings.goForwardInAddressHistory),
+          ${this.#createButton({icon: 'redo', title: i18nString(UIStrings.goForwardInAddressHistory),
               event: new HistoryNavigationEvent(Navigation.Forward), enabled: this.#canGoForwardInHistory})}
         </div>
         <div class="navigator-item">

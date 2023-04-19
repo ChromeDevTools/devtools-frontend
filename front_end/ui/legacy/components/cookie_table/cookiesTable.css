@@ -15,13 +15,17 @@
   --override-flagged-row-background-color-even: rgb(121 103 0);
 }
 
-.cookies-table .cookie-warning-icon {
+.cookies-table devtools-icon {
   margin-right: 4px;
   margin-bottom: -2px;
 }
 
-.cookies-table td.flagged-cookie-attribute-cell .cookie-warning-icon {
+.cookies-table td.flagged-cookie-attribute-cell devtools-icon {
   filter: grayscale();
+}
+
+.cookies-table:focus-within tr.flagged-cookie-attribute-row.selected devtools-icon {
+  filter: brightness(0) invert(1);
 }
 
 .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
@@ -29,5 +33,5 @@
 }
 
 .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(even) {
-  background-color: var(--override-flagged-row-background-color-odd);
+  background-color: var(--override-flagged-row-background-color-even);
 }

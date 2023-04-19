@@ -780,7 +780,6 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
     if (blockedReasonString) {
       const infoElement = new IconButton.Icon.Icon();
       infoElement.data = {iconName: 'info', color: 'var(--icon-info)', width: '14px', height: '14px'};
-      infoElement.classList.add('cookie-warning-icon');
       UI.Tooltip.Tooltip.install(infoElement, blockedReasonString);
       cell.insertBefore(infoElement, cell.firstChild);
       cell.classList.add('flagged-cookie-attribute-cell');

@@ -8,36 +8,6 @@ import * as TextUtils from '../../../../../front_end/models/text_utils/text_util
 
 describe('TextUtils', () => {
   describe('Utils', () => {
-    describe('isStopChar', () => {
-      it('returns the correct result for various inputs', () => {
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('\0'), false, 'null was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar(' '), false, 'space was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('!'), true, '! was not a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('/'), true, '/ was not a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('0'), false, '0 was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('9'), false, '9 was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('@'), true, '@ was not a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('A'), false, 'A was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('B'), false, 'B was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('Z'), false, 'Z was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('['), true, '[ was not a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('_'), false, '_ was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('`'), true, '` was not a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('a'), false, 'a was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('b'), false, 'b was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('z'), false, 'z was a stop char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isStopChar('{'), true, '{ was not a stop char');
-      });
-    });
-    describe('isWordChar', () => {
-      it('returns the correct result for various inputs', () => {
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWordChar(' '), false, 'space was a word char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWordChar('\t'), false, 'tab was a word char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWordChar('a'), true, 'a was not a word char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWordChar('A'), true, 'A was not a word char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWordChar('_'), true, '_ was not a word char');
-      });
-    });
     describe('isSpaceChar', () => {
       it('returns the correct result for various inputs', () => {
         assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar(' '), true, 'space was not a space char');
@@ -52,90 +22,12 @@ describe('TextUtils', () => {
         assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar('A'), false, 'A was a space char');
       });
     });
-    describe('isWord', () => {
-      it('returns the correct result for various inputs', () => {
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWord(''), true, 'empty string was not a word');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWord('_'), true, '_ string was not a word');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWord('a'), true, 'a string was not a word');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWord('abc'), true, 'abc string was not a word');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWord('a{'), false, 'a{ string was a word');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWord('a`'), false, 'a` string was a word');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isWord(' '), false, 'space string was a word');
-      });
-    });
-    describe('isOpeningBraceChar', () => {
-      it('returns the correct result for various inputs', () => {
-        assert.strictEqual(TextUtils.TextUtils.Utils.isOpeningBraceChar('{'), true, '{ was not an opening brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isOpeningBraceChar('('), true, '( was not an opening brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isOpeningBraceChar('['), false, '[ was an opening brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isOpeningBraceChar('<'), false, '< was an opening brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isOpeningBraceChar('}'), false, '} was an opening brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isOpeningBraceChar(')'), false, ') was an opening brace');
-      });
-    });
-    describe('isClosingBraceChar', () => {
-      it('returns the correct result for various inputs', () => {
-        assert.strictEqual(TextUtils.TextUtils.Utils.isClosingBraceChar('}'), true, '} was not a closing brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isClosingBraceChar(')'), true, ') was not a closing brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isClosingBraceChar(']'), false, '] was a closing brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isClosingBraceChar('>'), false, '> was a closing brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isClosingBraceChar('{'), false, '{} was a closing brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isClosingBraceChar('('), false, '() was a closing brace');
-      });
-    });
-    describe('isBraceChar', () => {
-      it('returns the correct result for various inputs', () => {
-        assert.strictEqual(TextUtils.TextUtils.Utils.isBraceChar('{'), true, '{ was not a brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isBraceChar('('), true, '( was not a brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isBraceChar('}'), true, '} was not a brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isBraceChar(')'), true, ') was not a brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isBraceChar('['), false, '[ was a brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isBraceChar('<'), false, '< was a brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isBraceChar(']'), false, '] was a brace');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isBraceChar('>'), false, '> was a brace');
-      });
-    });
-    describe('textToWords', () => {
-      it('returns the correct result for various inputs', () => {
-        const isWordChar = TextUtils.TextUtils.Utils.isWordChar;
-        const words: string[] = [];
-        const callback = (word: string) => {
-          words.push(word);
-        };
-        TextUtils.TextUtils.Utils.textToWords('', isWordChar, callback);
-        assert.strictEqual(words.length, 0, 'words was not empty');
-        TextUtils.TextUtils.Utils.textToWords(' a', isWordChar, callback);
-        assert.strictEqual(words.length, 1, 'words had wrong length');
-        assert.strictEqual(words[0], 'a');
-        TextUtils.TextUtils.Utils.textToWords(' a _', isWordChar, callback);
-        assert.strictEqual(words.length, 3, 'words had wrong length');
-        assert.strictEqual(words[1], 'a');
-        assert.strictEqual(words[2], '_');
-      });
-    });
+
     describe('lineIndent', () => {
       it('returns the correct result for various inputs', () => {
         assert.strictEqual(TextUtils.TextUtils.Utils.lineIndent(''), '', 'indent was not empty');
         assert.strictEqual(TextUtils.TextUtils.Utils.lineIndent('\tabc'), '\t', 'indent should have one tab');
         assert.strictEqual(TextUtils.TextUtils.Utils.lineIndent(' \t abc'), ' \t ', 'indent was wrong');
-      });
-    });
-    describe('isUpperCase', () => {
-      it('returns the correct result for various inputs', () => {
-        assert.strictEqual(TextUtils.TextUtils.Utils.isUpperCase('a'), false, 'a was upper case');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isUpperCase('A'), true, 'A was not upper case');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isUpperCase('_'), true, '_ was not upper case');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isUpperCase('!'), true, '! was not upper case');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isUpperCase('@'), true, '@ was not upper case');
-      });
-    });
-    describe('isLowerCase', () => {
-      it('returns the correct result for various inputs', () => {
-        assert.strictEqual(TextUtils.TextUtils.Utils.isLowerCase('a'), true, 'a was lower case');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isLowerCase('A'), false, 'A was not lower case');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isLowerCase('_'), true, '_ was not lower case');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isLowerCase('!'), true, '! was not lower case');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isLowerCase('@'), true, '@ was not lower case');
       });
     });
     describe('splitStringByRegexes', () => {

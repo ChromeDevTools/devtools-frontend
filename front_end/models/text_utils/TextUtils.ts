@@ -54,66 +54,10 @@ export const Utils = {
   get _SpaceCharRegex(): RegExp {
     return /\s/;
   },
-  /**
-   * @enum {string}
-   */
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  get Indent(): {TwoSpaces: '  ', FourSpaces: '    ', EightSpaces: '        ', TabCharacter: '\t'} {
-    return {TwoSpaces: '  ', FourSpaces: '    ', EightSpaces: '        ', TabCharacter: '\t'};
-  },
-
-  isStopChar: function(char: string): boolean {
-    return (char > ' ' && char < '0') || (char > '9' && char < 'A') || (char > 'Z' && char < '_') ||
-        (char > '_' && char < 'a') || (char > 'z' && char <= '~');
-  },
-
-  isWordChar: function(char: string): boolean {
-    return !Utils.isStopChar(char) && !Utils.isSpaceChar(char);
-  },
 
   isSpaceChar: function(char: string): boolean {
     return Utils._SpaceCharRegex.test(char);
   },
-
-  isWord: function(word: string): boolean {
-    for (let i = 0; i < word.length; ++i) {
-      if (!Utils.isWordChar(word.charAt(i))) {
-        return false;
-      }
-    }
-    return true;
-  },
-
-  isOpeningBraceChar: function(char: string): boolean {
-    return char === '(' || char === '{';
-  },
-
-  isClosingBraceChar: function(char: string): boolean {
-    return char === ')' || char === '}';
-  },
-
-  isBraceChar: function(char: string): boolean {
-    return Utils.isOpeningBraceChar(char) || Utils.isClosingBraceChar(char);
-  },
-
-  textToWords: function(text: string, isWordChar: (arg0: string) => boolean, wordCallback: (arg0: string) => void):
-      void {
-        let startWord = -1;
-        for (let i = 0; i < text.length; ++i) {
-          if (!isWordChar(text.charAt(i))) {
-            if (startWord !== -1) {
-              wordCallback(text.substring(startWord, i));
-            }
-            startWord = -1;
-          } else if (startWord === -1) {
-            startWord = i;
-          }
-        }
-        if (startWord !== -1) {
-          wordCallback(text.substring(startWord));
-        }
-      },
 
   lineIndent: function(line: string): string {
     let indentation = 0;
@@ -121,14 +65,6 @@ export const Utils = {
       ++indentation;
     }
     return line.substr(0, indentation);
-  },
-
-  isUpperCase: function(text: string): boolean {
-    return text === text.toUpperCase();
-  },
-
-  isLowerCase: function(text: string): boolean {
-    return text === text.toLowerCase();
   },
 
   splitStringByRegexes(text: string, regexes: RegExp[]): {

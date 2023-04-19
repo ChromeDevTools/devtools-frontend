@@ -21,6 +21,7 @@ import {SelectionType, TimelineSelection} from './TimelineSelection.js';
 
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
+import {eventIsFromNewEngine} from './EventTypeHelpers.js';
 
 const UIStrings = {
   /**
@@ -220,7 +221,8 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
     switch (this.selection.type()) {
       case SelectionType.SDKTraceEvent: {
-        const event = (this.selection.object() as SDK.TracingModel.Event);
+        const event =
+            (this.selection.object() as SDK.TracingModel.Event | TraceEngine.Types.TraceEvents.TraceEventData);
         void TimelineUIUtils
             .buildTraceEventDetails(
                 event, this.model.timelineModel(), this.detailsLinkifier, true, this.#traceEngineData)
@@ -289,8 +291,14 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.tabbedPane.selectTab(Tab.PaintProfiler, true);
   }
 
-  private appendDetailsTabsForTraceEventAndShowDetails(event: SDK.TracingModel.Event, content: Node): void {
+  private appendDetailsTabsForTraceEventAndShowDetails(
+      event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData, content: Node): void {
     this.setContent(content);
+    if (eventIsFromNewEngine(event)) {
+      // TODO(crbug.com/1386091): Add support for this use case in the
+      // new engine.
+      return;
+    }
     if (event.name === TimelineModel.TimelineModel.RecordType.Paint ||
         event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       this.showEventInPaintProfiler(event);

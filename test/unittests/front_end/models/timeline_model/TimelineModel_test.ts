@@ -1864,7 +1864,7 @@ describeWithEnvironment('TimelineData', () => {
 
     assert.strictEqual(
         TimelineModel.TimelineModel.TimelineData.forEvent(lcpSDKEvent).backendNodeIds,
-        TimelineModel.TimelineModel.TimelineData.forTraceEventData(lcpNewEngineEvent).backendNodeIds,
+        TimelineModel.TimelineModel.TimelineData.forEvent(lcpNewEngineEvent).backendNodeIds,
     );
   });
 

@@ -233,7 +233,7 @@ export class TimelineModelImpl {
    * every LCP Candidate event as a potential marker event. The logic to pick the
    * right candidate to use is implemeneted in the TimelineFlameChartDataProvider.
    **/
-  isMarkerEvent(event: SDK.TracingModel.Event): boolean {
+  isMarkerEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
     switch (event.name) {
       case RecordType.TimeStamp:
         return true;
@@ -292,7 +292,7 @@ export class TimelineModelImpl {
     return event.name === RecordType.ParseHTML;
   }
 
-  static isJsFrameEvent(event: SDK.TracingModel.Event): boolean {
+  static isJsFrameEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
     return event.name === RecordType.JSFrame || event.name === RecordType.JSIdleFrame ||
         event.name === RecordType.JSSystemFrame;
   }
@@ -326,9 +326,19 @@ export class TimelineModelImpl {
     return {time: this.totalBlockingTimeInternal, estimated: false};
   }
 
-  targetByEvent(event: SDK.TracingModel.Event): SDK.Target.Target|null {
+  targetByEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): SDK.Target.Target|null {
+    let thread;
+    if (event instanceof SDK.TracingModel.Event) {
+      thread = event.thread;
+    } else {
+      const process = this.tracingModelInternal?.getProcessById(event.pid);
+      thread = process?.threadById(event.tid);
+    }
+    if (!thread) {
+      return null;
+    }
     // FIXME: Consider returning null for loaded traces.
-    const workerId = this.workerIdByThread.get(event.thread);
+    const workerId = this.workerIdByThread.get(thread);
     const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     return workerId ? SDK.TargetManager.TargetManager.instance().targetById(workerId) : primaryPageTarget;
   }
@@ -2365,7 +2375,8 @@ export class InvalidationTracker {
     this.invalidationsByNodeId = {};
   }
 
-  static invalidationEventsFor(event: SDK.TracingModel.Event): InvalidationTrackingEvent[]|null {
+  static invalidationEventsFor(event: SDK.TracingModel.Event|
+                               TraceEngine.Types.TraceEvents.TraceEventData): InvalidationTrackingEvent[]|null {
     return eventToInvalidation.get(event) || null;
   }
 
@@ -2695,9 +2706,12 @@ export class TimelineData {
     return this.stackTrace || (this.initiatorInternal && TimelineData.forEvent(this.initiatorInternal).stackTrace);
   }
 
-  static forEvent(event: SDK.TracingModel.Event): TimelineData {
+  static forEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): TimelineData {
     if (event instanceof SDK.TracingModel.PayloadEvent) {
       return TimelineData.forTraceEventData(event.rawPayload());
+    }
+    if (!(event instanceof SDK.TracingModel.Event)) {
+      return TimelineData.forTraceEventData(event);
     }
     return getOrCreateEventData(event);
   }

@@ -228,7 +228,7 @@ describeWithMockConnection('TimelineUIUtils', () => {
       assert.strictEqual(unAdjustedTime, String(190.79));
 
       const adjustedTime = Timeline.TimelineUIUtils.timeStampForEventAdjustedForClosestNavigationIfPossible(
-          dclSDKEvent, data.timelineModel, data.traceParsedData);
+          dclSDKEvent.rawPayload(), data.timelineModel, data.traceParsedData);
       assert.strictEqual(adjustedTime.toFixed(2), String(178.92));
     });
 

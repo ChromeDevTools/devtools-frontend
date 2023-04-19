@@ -251,21 +251,16 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (!target) {
       return;
     }
-    const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
-    let backendNodeIds = timelineData.backendNodeIds;
+    let backendNodeIds;
 
-    // When we process events and store their data in the TimelineData class,
-    // we key them by their raw payload. However because of crbug.com/1431161,
-    // LayoutShift payloads cannot be matched as the LayoutShift handler
-    // returns new objects that represent the events. So as a work around, we
-    // detect here if the event we want to highlight is a LayoutShift, and read
-    // the impacted nodes directly from the args object.
-    if (event instanceof SDK.TracingModel.PayloadEvent) {
-      const payload = event.rawPayload();
-      if (TraceEngine.Types.TraceEvents.isTraceEventLayoutShift(payload)) {
-        const impactedNodes = payload.args.data?.impacted_nodes ?? [];
-        backendNodeIds = impactedNodes.map(node => node.node_id);
-      }
+    // Events for tracks that are migrated to the new engine won't use
+    // TimelineModel.TimelineData.
+    if (event instanceof SDK.TracingModel.Event) {
+      const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
+      backendNodeIds = timelineData.backendNodeIds;
+    } else if (TraceEngine.Types.TraceEvents.isTraceEventLayoutShift(event)) {
+      const impactedNodes = event.args.data?.impacted_nodes ?? [];
+      backendNodeIds = impactedNodes.map(node => node.node_id);
     }
 
     if (!backendNodeIds) {

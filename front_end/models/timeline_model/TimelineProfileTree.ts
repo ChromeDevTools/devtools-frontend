@@ -5,6 +5,7 @@
 import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 import {RecordType, TimelineData, TimelineModelImpl} from './TimelineModel.js';
@@ -513,7 +514,8 @@ export function eventURL(event: SDK.TracingModel.Event): Platform.DevToolsPath.U
   return null;
 }
 
-export function eventStackFrame(event: SDK.TracingModel.Event): Protocol.Runtime.CallFrame|null {
+export function eventStackFrame(event: SDK.TracingModel.Event|
+                                TraceEngine.Types.TraceEvents.TraceEventData): Protocol.Runtime.CallFrame|null {
   if (TimelineModelImpl.isJsFrameEvent(event)) {
     return event.args['data'] || null as Protocol.Runtime.CallFrame | null;
   }

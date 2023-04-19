@@ -18,8 +18,7 @@ const UIStrings = {
   /**
    *@description Explanation for user that Ligthhouse can only audit HTTP/HTTPS pages
    */
-  canOnlyAuditHttphttpsPagesAnd:
-      'Can only audit HTTP/HTTPS pages and `Chrome` extensions. Navigate to a different page to start an audit.',
+  canOnlyAuditHttphttpsPages: 'Can only audit pages on HTTP or HTTPS. Navigate to a different page.',
   /**
    *@description Text when stored data in one location may affect Lighthouse run
    *@example {IndexedDB} PH1
@@ -302,8 +301,36 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
 
     const mainTarget = this.manager.target();
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
-    if (inspectedURL && !/^(http|chrome-extension)/.test(inspectedURL)) {
-      return i18nString(UIStrings.canOnlyAuditHttphttpsPagesAnd);
+    /*
+     * The full history of Lighthouse panel + extensions et al:
+     *
+     * Running Lighthouse against extensions caused crashes (crbug.com/734532), so we disabled it in Aug 2017
+     * Unfortunately, the CAN_DOCK heuristic used also disabled auditing any page while remote-debugging.
+     * FYI: The CAN_DOCK signal is what determines if the device-mode functionality (viewport emulation) should be shown in the UI.
+     *
+     * In Sept 2017 we allow-listed http* and chrome-extension URLs formally: crrev.com/c/639032
+     * This added support for chrome-extension:// pages (not overlays/popups) as they satisfy CAN_DOCK.
+     *
+     * We wanted remote-debugging support restored, and the crashes were fixed,
+     * so we renabled auditing in all CAN_DOCK cases in Feb 2019 (crbug.com/931849). This included all chrome extensions views.
+     *
+     * Auditing overlay windows/popups cause problems with viewport emulation (eg crbug.com/1116347)
+     * And even full-page extension tabs (like OneTab) have NO_NAVSTART problems and others (crbug.com/1065323)
+     * So in in April 2023 we blocked all chrome-extension cases.
+     */
+    // Only http*, thus disallow: chrome-extension://*, about:*, chrome://dino, file://*, devtools://*, etc.
+    if (!inspectedURL?.startsWith('http')) {
+      return i18nString(UIStrings.canOnlyAuditHttphttpsPages);
+    }
+
+    // Catch .pdf. TODO: handle other MimeHandler extensions. crbug.com/1168245
+    try {
+      const isPdf = new URL(inspectedURL).pathname.endsWith('.pdf');
+      if (isPdf) {
+        return i18nString(UIStrings.canOnlyAuditHttphttpsPages);
+      }
+    } catch (e) {
+      return i18nString(UIStrings.canOnlyAuditHttphttpsPages);
     }
 
     return null;

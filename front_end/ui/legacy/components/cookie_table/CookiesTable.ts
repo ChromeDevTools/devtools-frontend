@@ -40,6 +40,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as IssuesManager from '../../../../models/issues_manager/issues_manager.js';
 import * as NetworkForward from '../../../../panels/network/forward/forward.js';
+import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 
@@ -777,7 +778,9 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
     }
 
     if (blockedReasonString) {
-      const infoElement = UI.Icon.Icon.create('smallicon-info', 'cookie-warning-icon');
+      const infoElement = new IconButton.Icon.Icon();
+      infoElement.data = {iconName: 'info', color: 'var(--icon-info)', width: '14px', height: '14px'};
+      infoElement.classList.add('cookie-warning-icon');
       UI.Tooltip.Tooltip.install(infoElement, blockedReasonString);
       cell.insertBefore(infoElement, cell.firstChild);
       cell.classList.add('flagged-cookie-attribute-cell');

@@ -150,7 +150,6 @@ devtools_svg_sources = [
   "iframe-crossed.svg",
   "iframe.svg",
   "import.svg",
-  "info-icon.svg",
   "info.svg",
   "issue-cross-filled.svg",
   "issue-exclamation-filled.svg",

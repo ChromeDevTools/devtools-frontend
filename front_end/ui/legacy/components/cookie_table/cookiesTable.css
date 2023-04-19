@@ -17,6 +17,7 @@
 
 .cookies-table .cookie-warning-icon {
   margin-right: 4px;
+  margin-bottom: -2px;
 }
 
 .cookies-table td.flagged-cookie-attribute-cell .cookie-warning-icon {

@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -505,8 +506,10 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
             {PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString()}));
 
     if (!response.overrideActive && response.quota < 125829120) {  // 120 MB
+      const icon = new IconButton.Icon.Icon();
+      icon.data = {iconName: 'info', color: 'var(--icon-info)', width: '14px', height: '14px'};
       UI.Tooltip.Tooltip.install(this.quotaRow, i18nString(UIStrings.storageQuotaIsLimitedIn));
-      this.quotaRow.appendChild(UI.Icon.Icon.create('smallicon-info'));
+      this.quotaRow.appendChild(icon);
     }
 
     if (this.quotaUsage === null || this.quotaUsage !== response.usage) {

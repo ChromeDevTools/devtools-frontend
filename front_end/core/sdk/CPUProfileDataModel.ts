@@ -10,10 +10,10 @@ import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
 import {type Target} from './Target.js';
 
 export class CPUProfileNode extends ProfileNode {
-  id: number;
-  self: number;
+  override id: number;
+  override self: number;
   positionTicks: Protocol.Profiler.PositionTickInfo[]|undefined;
-  deoptReason: string|null;
+  override deoptReason: string|null;
 
   constructor(node: Protocol.Profiler.ProfileNode, sampleTime: number, target: Target|null) {
     const callFrame = node.callFrame || ({

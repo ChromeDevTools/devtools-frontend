@@ -68,7 +68,7 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
     noDataDiv.textContent = i18nString(UIStrings.noDataAvailable);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     const sbw = this.sidebarWidget();
     if (sbw) {

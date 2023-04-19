@@ -47,7 +47,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
   readonly iconElement: HTMLDivElement;
   readonly titlesElement: HTMLDivElement;
   titleContainer: HTMLElement;
-  titleElement: HTMLElement;
+  override titleElement: HTMLElement;
   subtitleElement: HTMLElement;
   readonly className: string;
   small: boolean;
@@ -101,7 +101,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  ondblclick(event: Event): boolean {
+  override ondblclick(event: Event): boolean {
     if (!this.editing) {
       this.startEditing((event.target as Element));
     }
@@ -131,17 +131,17 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.profile.removeEventListener(ProfileHeaderEvents.ProfileReceived, this.onProfileReceived, this);
   }
 
-  onselect(): boolean {
+  override onselect(): boolean {
     this.dataDisplayDelegate.showProfile(this.profile);
     return true;
   }
 
-  ondelete(): boolean {
+  override ondelete(): boolean {
     this.profile.profileType().removeProfile(this.profile);
     return true;
   }
 
-  onattach(): void {
+  override onattach(): void {
     if (this.className) {
       this.listItemElement.classList.add(this.className);
     }

@@ -17,11 +17,11 @@ class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
     super(array);
   }
 
-  arrayBufferByteLength() {
+  override arrayBufferByteLength() {
     return this.value.byteLength;
   }
 
-  get subtype(): string|undefined {
+  override get subtype(): string|undefined {
     return 'arraybuffer';
   }
 }

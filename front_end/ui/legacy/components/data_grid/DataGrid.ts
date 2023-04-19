@@ -2412,7 +2412,7 @@ export class DataGridNode<T> {
 }
 
 export class CreationDataGridNode<T> extends DataGridNode<T> {
-  isCreationNode: boolean;
+  override isCreationNode: boolean;
   constructor(
       data?: {
         [x: string]: any,
@@ -2436,20 +2436,20 @@ export class DataGridWidget<T> extends UI.Widget.VBox {
     this.setDefaultFocusedElement(dataGrid.element);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.registerCSSFiles([dataGridStyles]);
     this.dataGrid.wasShown();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.dataGrid.willHide();
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.dataGrid.onResize();
   }
 
-  elementsToRestoreScrollPositionsFor(): Element[] {
+  override elementsToRestoreScrollPositionsFor(): Element[] {
     return [this.dataGrid.scrollContainer];
   }
 }

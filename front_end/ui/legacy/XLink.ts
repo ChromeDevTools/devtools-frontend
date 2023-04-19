@@ -68,7 +68,7 @@ export class XLink extends XElement {
     };
   }
 
-  static get observedAttributes(): string[] {
+  static override get observedAttributes(): string[] {
     // TODO(dgozman): should be super.observedAttributes, but it does not compile.
     return XElement.observedAttributes.concat(['href', 'no-click']);
   }
@@ -77,7 +77,7 @@ export class XLink extends XElement {
     return this.hrefInternal;
   }
 
-  attributeChangedCallback(attr: string, oldValue: string|null, newValue: string|null): void {
+  override attributeChangedCallback(attr: string, oldValue: string|null, newValue: string|null): void {
     if (attr === 'no-click') {
       this.clickable = !newValue;
       this.updateClick();

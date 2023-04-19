@@ -244,11 +244,11 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     inspectorViewInstance = null;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.element.ownerDocument.addEventListener('keydown', this.keyDownBound, false);
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.element.ownerDocument.removeEventListener('keydown', this.keyDownBound, false);
   }
 
@@ -404,7 +404,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     }
   }
 
-  onResize(): void {
+  override onResize(): void {
     GlassPane.containerMoved(this.element);
   }
 

@@ -172,7 +172,7 @@ describe('IdleCallbackManager', () => {
   it('schedules callbacks in order', async () => {
     // Override the default timeout with a very short one
     class QuickIdleCallbackManager extends Elements.StylesSidebarPane.IdleCallbackManager {
-      protected scheduleIdleCallback(_: number): void {
+      protected override scheduleIdleCallback(_: number): void {
         super.scheduleIdleCallback(1);
       }
     }

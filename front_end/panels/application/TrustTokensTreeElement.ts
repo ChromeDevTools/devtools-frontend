@@ -34,11 +34,11 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): Platform.DevToolsPath.UrlString {
+  override get itemURL(): Platform.DevToolsPath.UrlString {
     return 'trustTokens://' as Platform.DevToolsPath.UrlString;
   }
 
-  onselect(selectedByUser?: boolean): boolean {
+  override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
       this.view = new TrustTokensViewWidgetWrapper(new ApplicationComponents.TrustTokensView.TrustTokensView());
@@ -59,7 +59,7 @@ export class TrustTokensViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWi
     this.update();
   }
 
-  protected async doUpdate(): Promise<void> {
+  protected override async doUpdate(): Promise<void> {
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
       return;

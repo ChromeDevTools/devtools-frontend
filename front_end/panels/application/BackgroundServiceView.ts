@@ -509,7 +509,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     await stream.write(JSON.stringify(events, undefined, 2));
     void stream.close();
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([emptyWidgetStyles, backgroundServiceViewStyles]);
   }

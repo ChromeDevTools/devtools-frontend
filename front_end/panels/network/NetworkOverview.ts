@@ -104,15 +104,15 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     this.scheduleUpdate();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.onResize();
   }
 
-  calculator(): PerfUI.TimelineOverviewPane.TimelineOverviewCalculator {
+  override calculator(): PerfUI.TimelineOverviewPane.TimelineOverviewCalculator {
     return super.calculator() as PerfUI.TimelineOverviewPane.TimelineOverviewCalculator;
   }
 
-  onResize(): void {
+  override onResize(): void {
     const width = this.element.offsetWidth;
     const height = this.element.offsetHeight;
     this.calculator().setDisplayWidth(width);
@@ -122,7 +122,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     this.scheduleUpdate();
   }
 
-  reset(): void {
+  override reset(): void {
     this.filmStripModel = null;
 
     this.span = 1;
@@ -145,7 +145,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     void coordinator.write(this.update.bind(this));
   }
 
-  update(): void {
+  override update(): void {
     const calculator = this.calculator();
 
     const newBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());

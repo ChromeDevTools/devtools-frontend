@@ -70,12 +70,12 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([consolePinPaneStyles, objectValueStyles]);
   }
 
-  willHide(): void {
+  override willHide(): void {
     for (const pin of this.pins) {
       pin.setHovered(false);
     }
@@ -149,7 +149,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     return null;
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     if (!this.pins.size || !this.isShowing()) {
       return;
     }

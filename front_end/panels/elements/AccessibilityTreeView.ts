@@ -65,7 +65,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
     });
   }
 
-  async wasShown(): Promise<void> {
+  override async wasShown(): Promise<void> {
     await this.refreshAccessibilityTree();
     if (this.inspectedDOMNode) {
       await this.loadSubTreeIntoAccessibilityModel(this.inspectedDOMNode);

@@ -81,7 +81,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
     void this.#targetAgent.invoke_setRemoteLocations({locations});
   }
 
-  dispose(): void {
+  override dispose(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this.#devicesDiscoveryConfigChanged, this);
 

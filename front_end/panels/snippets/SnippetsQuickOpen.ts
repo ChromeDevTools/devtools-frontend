@@ -44,39 +44,39 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     return snippetsQuickOpenInstance;
   }
 
-  selectItem(itemIndex: number|null, _promptValue: string): void {
+  override selectItem(itemIndex: number|null, _promptValue: string): void {
     if (itemIndex === null) {
       return;
     }
     void evaluateScriptSnippet(this.snippets[itemIndex]);
   }
 
-  notFoundText(_query: string): string {
+  override notFoundText(_query: string): string {
     return i18nString(UIStrings.noSnippetsFound);
   }
 
-  attach(): void {
+  override attach(): void {
     this.snippets = [...findSnippetsProject().uiSourceCodes()];
   }
 
-  detach(): void {
+  override detach(): void {
     this.snippets = [];
   }
 
-  itemScoreAt(itemIndex: number, query: string): number {
+  override itemScoreAt(itemIndex: number, query: string): number {
     // Prefer short matches over long matches
     return query.length / this.snippets[itemIndex].name().length;
   }
 
-  itemCount(): number {
+  override itemCount(): number {
     return this.snippets.length;
   }
 
-  itemKeyAt(itemIndex: number): string {
+  override itemKeyAt(itemIndex: number): string {
     return this.snippets[itemIndex].name();
   }
 
-  renderItem(itemIndex: number, query: string, titleElement: Element, _subtitleElement: Element): void {
+  override renderItem(itemIndex: number, query: string, titleElement: Element, _subtitleElement: Element): void {
     titleElement.textContent = this.snippets[itemIndex].name();
     titleElement.classList.add('monospace');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query, true);

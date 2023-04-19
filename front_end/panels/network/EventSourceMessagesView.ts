@@ -73,7 +73,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.dataGrid.asWidget().show(this.element);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.dataGrid.rootNode().removeChildren();
     this.registerCSSFiles([eventSourceMessagesViewStyles]);
     const messages = this.request.eventSourceMessages();
@@ -84,7 +84,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.request.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this.messageAdded, this);
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.request.removeEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this.messageAdded, this);
   }
 

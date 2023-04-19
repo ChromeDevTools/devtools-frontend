@@ -59,15 +59,15 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     return Array.from(this.#childTargetsBySessionId.values());
   }
 
-  async suspendModel(): Promise<void> {
+  override async suspendModel(): Promise<void> {
     await this.#targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: false, flatten: true});
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
     await this.#targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
   }
 
-  dispose(): void {
+  override dispose(): void {
     for (const sessionId of this.#childTargetsBySessionId.keys()) {
       this.detachedFromTarget({sessionId, targetId: undefined});
     }

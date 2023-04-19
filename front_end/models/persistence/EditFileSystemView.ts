@@ -209,7 +209,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
     }
     return prefix + (prefix[prefix.length - 1] === '/' ? '' : '/');
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.excludedFoldersList.registerCSSFiles([editFileSystemViewStyles]);
     this.registerCSSFiles([editFileSystemViewStyles]);

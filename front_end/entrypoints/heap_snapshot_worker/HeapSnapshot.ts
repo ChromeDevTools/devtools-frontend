@@ -2321,7 +2321,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
     pageObject:
         number,  // The idea is to track separately the objects owned by the page and the objects owned by debugger.
   };
-  lazyStringCache: {};
+  override lazyStringCache: {};
   private flags!: Uint32Array;
   #statistics?: HeapSnapshotModel.HeapSnapshotModel.Statistics;
   constructor(profile: Profile, progress: HeapSnapshotProgress) {
@@ -2349,11 +2349,11 @@ export class JSHeapSnapshot extends HeapSnapshot {
     return new JSHeapSnapshotRetainerEdge(this, retainerIndex);
   }
 
-  containmentEdgesFilter(): (arg0: HeapSnapshotEdge) => boolean {
+  override containmentEdgesFilter(): (arg0: HeapSnapshotEdge) => boolean {
     return (edge: HeapSnapshotEdge): boolean => !edge.isInvisible();
   }
 
-  retainingEdgesFilter(): (arg0: HeapSnapshotEdge) => boolean {
+  override retainingEdgesFilter(): (arg0: HeapSnapshotEdge) => boolean {
     const containmentEdgesFilter = this.containmentEdgesFilter();
     function filter(edge: HeapSnapshotEdge): boolean {
       return containmentEdgesFilter(edge) && !edge.node().isRoot() && !edge.isWeak();
@@ -2361,14 +2361,14 @@ export class JSHeapSnapshot extends HeapSnapshot {
     return filter;
   }
 
-  calculateFlags(): void {
+  override calculateFlags(): void {
     this.flags = new Uint32Array(this.nodeCount);
     this.markDetachedDOMTreeNodes();
     this.markQueriableHeapObjects();
     this.markPageOwnedNodes();
   }
 
-  calculateDistances(): void {
+  override calculateDistances(): void {
     function filter(node: HeapSnapshotNode, edge: HeapSnapshotEdge): boolean {
       if (node.isHidden()) {
         return edge.name() !== 'sloppy_function_map' || node.rawName() !== 'system / NativeContext';
@@ -2398,11 +2398,11 @@ export class JSHeapSnapshot extends HeapSnapshot {
     super.calculateDistances(filter);
   }
 
-  isUserRoot(node: HeapSnapshotNode): boolean {
+  override isUserRoot(node: HeapSnapshotNode): boolean {
     return node.isUserRoot() || node.isDocumentDOMTreesRoot();
   }
 
-  userObjectsMapAndFlag(): {map: Uint32Array, flag: number}|null {
+  override userObjectsMapAndFlag(): {map: Uint32Array, flag: number}|null {
     return {map: this.flags, flag: this.nodeFlags.pageObject};
   }
 
@@ -2539,7 +2539,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
     }
   }
 
-  calculateStatistics(): void {
+  override calculateStatistics(): void {
     const nodeFieldCount = this.nodeFieldCount;
     const nodes = this.nodes;
     const nodesLength = nodes.length;
@@ -2631,11 +2631,11 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
     return Boolean(flags & snapshot.nodeFlags.canBeQueried);
   }
 
-  rawName(): string {
+  override rawName(): string {
     return super.name();
   }
 
-  name(): string {
+  override name(): string {
     const snapshot = this.snapshot;
     if (this.rawType() === snapshot.nodeConsStringType) {
       let string: string = snapshot.lazyStringCache[this.nodeIndex];
@@ -2696,7 +2696,7 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
     return name;
   }
 
-  className(): string {
+  override className(): string {
     const type = this.type();
     switch (type) {
       case 'hidden':
@@ -2711,7 +2711,7 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
     }
   }
 
-  classIndex(): number {
+  override classIndex(): number {
     const snapshot = this.snapshot;
     const nodes = snapshot.nodes;
     const type = nodes[this.nodeIndex + snapshot.nodeTypeOffset];
@@ -2721,16 +2721,16 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
     return -1 - type;
   }
 
-  id(): number {
+  override id(): number {
     const snapshot = this.snapshot;
     return snapshot.nodes[this.nodeIndex + snapshot.nodeIdOffset];
   }
 
-  isHidden(): boolean {
+  override isHidden(): boolean {
     return this.rawType() === this.snapshot.nodeHiddenType;
   }
 
-  isArray(): boolean {
+  override isArray(): boolean {
     return this.rawType() === this.snapshot.nodeArrayType;
   }
 
@@ -2738,15 +2738,15 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
     return this.rawType() === this.snapshot.nodeSyntheticType;
   }
 
-  isUserRoot(): boolean {
+  override isUserRoot(): boolean {
     return !this.isSynthetic();
   }
 
-  isDocumentDOMTreesRoot(): boolean {
+  override isDocumentDOMTreesRoot(): boolean {
     return this.isSynthetic() && this.name() === '(Document DOM trees)';
   }
 
-  serialize(): HeapSnapshotModel.HeapSnapshotModel.Node {
+  override serialize(): HeapSnapshotModel.HeapSnapshotModel.Node {
     const result = super.serialize();
     const snapshot = (this.snapshot as JSHeapSnapshot);
     const flags = snapshot.flagsOfNode(this);
@@ -2765,12 +2765,12 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     super(snapshot, edgeIndex);
   }
 
-  clone(): JSHeapSnapshotEdge {
+  override clone(): JSHeapSnapshotEdge {
     const snapshot = (this.snapshot as JSHeapSnapshot);
     return new JSHeapSnapshotEdge(snapshot, this.edgeIndex);
   }
 
-  hasStringName(): boolean {
+  override hasStringName(): boolean {
     if (!this.isShortcut()) {
       return this.hasStringNameInternal();
     }
@@ -2786,7 +2786,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     return this.rawType() === this.snapshot.edgeHiddenType;
   }
 
-  isWeak(): boolean {
+  override isWeak(): boolean {
     return this.rawType() === this.snapshot.edgeWeakType;
   }
 
@@ -2794,7 +2794,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     return this.rawType() === this.snapshot.edgeInternalType;
   }
 
-  isInvisible(): boolean {
+  override isInvisible(): boolean {
     return this.rawType() === this.snapshot.edgeInvisibleType;
   }
 
@@ -2802,7 +2802,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     return this.rawType() === this.snapshot.edgeShortcutType;
   }
 
-  name(): string {
+  override name(): string {
     const name = this.nameInternal();
     if (!this.isShortcut()) {
       return String(name);
@@ -2812,7 +2812,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     return String(isNaN(numName) ? name : numName);
   }
 
-  toString(): string {
+  override toString(): string {
     const name = this.name();
     switch (this.type()) {
       case 'context':
@@ -2850,7 +2850,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     return this.edges[this.edgeIndex + this.snapshot.edgeNameOffset];
   }
 
-  rawType(): number {
+  override rawType(): number {
     return this.edges[this.edgeIndex + this.snapshot.edgeTypeOffset];
   }
 }
@@ -2860,7 +2860,7 @@ export class JSHeapSnapshotRetainerEdge extends HeapSnapshotRetainerEdge {
     super(snapshot, retainerIndex);
   }
 
-  clone(): JSHeapSnapshotRetainerEdge {
+  override clone(): JSHeapSnapshotRetainerEdge {
     const snapshot = (this.snapshot as JSHeapSnapshot);
     return new JSHeapSnapshotRetainerEdge(snapshot, this.retainerIndex());
   }

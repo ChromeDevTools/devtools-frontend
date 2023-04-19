@@ -39,7 +39,7 @@ export class ResolverTestImpl extends Common.ResolverBase.ResolverBase<string, T
     assert.isFalse(this.currentlyListening, 'Expected to be listening');
   }
 
-  onResolve(id: string, obj: TestClass) {
+  override onResolve(id: string, obj: TestClass) {
     super.onResolve(id, obj);
   }
 }

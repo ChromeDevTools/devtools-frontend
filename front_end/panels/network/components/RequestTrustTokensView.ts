@@ -98,13 +98,13 @@ export class RequestTrustTokensView extends UI.Widget.VBox {
     this.contentElement.appendChild(this.#reportView);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.#request.addEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.#refreshReportView, this);
 
     this.#refreshReportView();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.#request.removeEventListener(SDK.NetworkRequest.Events.TrustTokenResultAdded, this.#refreshReportView, this);
   }
 

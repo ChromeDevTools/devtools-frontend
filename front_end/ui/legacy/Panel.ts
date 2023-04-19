@@ -62,7 +62,7 @@ export class Panel extends VBox {
     return null;
   }
 
-  elementsToRestoreScrollPositionsFor(): Element[] {
+  override elementsToRestoreScrollPositionsFor(): Element[] {
     return [];
   }
 }

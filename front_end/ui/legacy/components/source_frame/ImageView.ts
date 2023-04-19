@@ -124,7 +124,7 @@ export class ImageView extends UI.View.SimpleView {
     this.imagePreviewElement.addEventListener('contextmenu', this.contextMenu.bind(this), true);
   }
 
-  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     await this.updateContentIfNeeded();
     return [
       this.sizeLabel,
@@ -137,11 +137,11 @@ export class ImageView extends UI.View.SimpleView {
     ];
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     void this.updateContentIfNeeded();
   }
 
-  disposeView(): void {
+  override disposeView(): void {
     if (this.uiSourceCode) {
       this.uiSourceCode.removeEventListener(
           Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);

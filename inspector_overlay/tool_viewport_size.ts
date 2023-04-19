@@ -12,7 +12,7 @@ function formatNumber(n: number): string {
 }
 
 export class ViewportSizeOverlay extends Overlay {
-  install() {
+  override install() {
     this.document.body.classList.add('fill');
     const canvas = this.document.createElement('canvas');
     canvas.id = 'canvas';
@@ -22,7 +22,7 @@ export class ViewportSizeOverlay extends Overlay {
     super.install();
   }
 
-  uninstall() {
+  override uninstall() {
     this.document.body.classList.remove('fill');
     this.document.body.innerHTML = '';
     super.uninstall();

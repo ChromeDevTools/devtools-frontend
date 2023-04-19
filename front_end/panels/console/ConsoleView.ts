@@ -709,18 +709,18 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.prompt.clearAutocomplete();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.hidePromptSuggestBox();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.updateIssuesToolbarItem();
     this.viewport.refresh();
     this.registerCSSFiles([consoleViewStyles, objectValueStyles, CodeHighlighter.Style.default]);
   }
 
-  focus(): void {
+  override focus(): void {
     if (this.viewport.hasVirtualSelection()) {
       (this.viewport.contentElement() as HTMLElement).focus();
     } else {
@@ -738,7 +738,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
   }
 
-  restoreScrollPositions(): void {
+  override restoreScrollPositions(): void {
     if (this.viewport.stickToBottom()) {
       this.immediatelyScrollToBottom();
     } else {
@@ -746,7 +746,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.scheduleViewportRefresh();
     this.hidePromptSuggestBox();
     if (this.viewport.stickToBottom()) {
@@ -1375,7 +1375,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.printResult(data.result, data.commandMessage, data.exceptionDetails);
   }
 
-  elementsToRestoreScrollPositionsFor(): Element[] {
+  override elementsToRestoreScrollPositionsFor(): Element[] {
     return [this.messagesElement];
   }
 

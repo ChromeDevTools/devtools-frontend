@@ -227,7 +227,7 @@ function isOpeningTag(context: TagTypeContext): context is OpeningTagContext {
 
 export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   nodeInternal: SDK.DOMModel.DOMNode;
-  treeOutline: ElementsTreeOutline|null;
+  override treeOutline: ElementsTreeOutline|null;
   private gutterContainer: HTMLElement;
   private readonly decorationsElement: HTMLElement;
   private searchQuery: string|null;
@@ -510,13 +510,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  onbind(): void {
+  override onbind(): void {
     if (this.treeOutline && !this.isClosingTag()) {
       this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
     }
   }
 
-  onunbind(): void {
+  override onunbind(): void {
     if (this.editing) {
       this.editing.cancel();
     }
@@ -525,7 +525,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  onattach(): void {
+  override onattach(): void {
     if (this.hoveredInternal) {
       this.createSelection();
       this.listItemElement.classList.add('hovered');
@@ -535,18 +535,18 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.draggable = true;
   }
 
-  async onpopulate(): Promise<void> {
+  override async onpopulate(): Promise<void> {
     if (this.treeOutline) {
       return this.treeOutline.populateTreeElement(this);
     }
   }
 
-  async expandRecursively(): Promise<void> {
+  override async expandRecursively(): Promise<void> {
     await this.nodeInternal.getSubtree(-1, true);
     await super.expandRecursively(Number.MAX_VALUE);
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     if (this.isClosingTag()) {
       return;
     }
@@ -554,7 +554,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.updateTitle();
   }
 
-  oncollapse(): void {
+  override oncollapse(): void {
     if (this.isClosingTag()) {
       return;
     }
@@ -562,14 +562,14 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.updateTitle();
   }
 
-  select(omitFocus?: boolean, selectedByUser?: boolean): boolean {
+  override select(omitFocus?: boolean, selectedByUser?: boolean): boolean {
     if (this.editing) {
       return false;
     }
     return super.select(omitFocus, selectedByUser);
   }
 
-  onselect(selectedByUser?: boolean): boolean {
+  override onselect(selectedByUser?: boolean): boolean {
     if (!this.treeOutline) {
       return false;
     }
@@ -585,7 +585,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return true;
   }
 
-  ondelete(): boolean {
+  override ondelete(): boolean {
     if (!this.treeOutline) {
       return false;
     }
@@ -594,7 +594,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return true;
   }
 
-  onenter(): boolean {
+  override onenter(): boolean {
     // On Enter or Return start editing the first attribute
     // or create a new attribute on the selected element.
     if (this.editing) {
@@ -607,7 +607,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return true;
   }
 
-  selectOnMouseDown(event: MouseEvent): void {
+  override selectOnMouseDown(event: MouseEvent): void {
     super.selectOnMouseDown(event);
 
     if (this.editing) {
@@ -620,7 +620,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  ondblclick(event: Event): boolean {
+  override ondblclick(event: Event): boolean {
     if (this.editing || this.isClosingTag()) {
       return false;
     }

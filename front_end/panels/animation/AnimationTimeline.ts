@@ -173,14 +173,14 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     return this.#groupBuffer;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel, {scoped: true})) {
       this.addEventListeners(animationModel);
     }
     this.registerCSSFiles([animationTimelineStyles]);
   }
 
-  willHide(): void {
+  override willHide(): void {
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel, {scoped: true})) {
       this.removeEventListeners(animationModel);
     }
@@ -743,7 +743,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.#cachedTimelineWidth = Math.max(0, this.#animationsContainer.offsetWidth - this.#timelineControlsWidth) || 0;
     this.#cachedTimelineHeight = this.#animationsContainer.offsetHeight;
     this.scheduleRedraw();

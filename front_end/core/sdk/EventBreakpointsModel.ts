@@ -88,7 +88,7 @@ class EventListenerBreakpoint extends CategorizedBreakpoint {
     this.instrumentationName = instrumentationName;
   }
 
-  setEnabled(enabled: boolean): void {
+  override setEnabled(enabled: boolean): void {
     if (this.enabled() === enabled) {
       return;
     }

@@ -171,14 +171,14 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     return dataGrid;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     void this.poll();
     this.registerCSSFiles([liveHeapProfileStyles]);
     this.setting.addChangeListener(this.settingChanged, this);
   }
 
-  willHide(): void {
+  override willHide(): void {
     ++this.currentPollId;
     this.setting.removeChangeListener(this.settingChanged, this);
   }
@@ -372,7 +372,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<unk
     this.refresh();
   }
 
-  createCell(columnId: string): HTMLElement {
+  override createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     switch (columnId) {
       case 'url':

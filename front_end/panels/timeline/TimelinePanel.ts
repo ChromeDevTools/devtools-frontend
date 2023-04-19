@@ -431,11 +431,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return timelinePanelInstance;
   }
 
-  searchableView(): UI.SearchableView.SearchableView|null {
+  override searchableView(): UI.SearchableView.SearchableView|null {
     return this.searchableViewInternal;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().setFlavor(TimelinePanel, this);
     this.registerCSSFiles([timelinePanelStyles]);
@@ -443,7 +443,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     Host.userMetrics.panelLoaded('timeline', 'DevTools.Launch.Timeline');
   }
 
-  willHide(): void {
+  override willHide(): void {
     UI.Context.Context.instance().setFlavor(TimelinePanel, null);
     this.historyManager.cancelIfShowing();
   }
@@ -1588,7 +1588,7 @@ export class StatusPane extends UI.Widget.VBox {
     this.element.classList.toggle('small-dialog', isSmallDialog);
     this.contentElement.classList.toggle('small-dialog', isSmallDialog);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([timelineStatusDialogStyles]);
   }

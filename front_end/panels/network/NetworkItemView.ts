@@ -214,7 +214,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     this.setAutoSelectFirstItemOnShow(false);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.requestInternal.addEventListener(
         SDK.NetworkRequest.Events.RequestHeadersChanged, this.requestHeadersChanged, this);
@@ -235,7 +235,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     }
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.requestInternal.removeEventListener(
         SDK.NetworkRequest.Events.RequestHeadersChanged, this.requestHeadersChanged, this);
     this.requestInternal.removeEventListener(

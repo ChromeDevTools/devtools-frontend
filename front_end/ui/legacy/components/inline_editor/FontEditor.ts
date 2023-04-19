@@ -175,7 +175,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         /** hasUnits= */ true);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.registerCSSFiles([fontEditorStyles]);
   }
 

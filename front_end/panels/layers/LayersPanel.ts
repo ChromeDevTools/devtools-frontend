@@ -105,18 +105,18 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     return layersPanelInstance;
   }
 
-  focus(): void {
+  override focus(): void {
     this.layerTreeOutline.focus();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     if (this.model) {
       this.model.enable();
     }
   }
 
-  willHide(): void {
+  override willHide(): void {
     if (this.model) {
       void this.model.disable();
     }

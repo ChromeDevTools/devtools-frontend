@@ -25,7 +25,7 @@ export class ScreenshotOverlay extends Overlay {
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
-  install() {
+  override install() {
     const root = this.document.documentElement;
     root.addEventListener('mousedown', this.onMouseDown, true);
     root.addEventListener('mouseup', this.onMouseUp, true);
@@ -41,7 +41,7 @@ export class ScreenshotOverlay extends Overlay {
     super.install();
   }
 
-  uninstall() {
+  override uninstall() {
     this.document.body.innerHTML = '';
     const root = this.document.documentElement;
     root.removeEventListener('mousedown', this.onMouseDown, true);

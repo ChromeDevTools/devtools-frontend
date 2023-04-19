@@ -46,7 +46,7 @@ export class TimespanView extends UI.Dialog.Dialog {
     this.render();
   }
 
-  show(dialogRenderElement: Element): void {
+  override show(dialogRenderElement: Element): void {
     this.reset();
     super.show(dialogRenderElement);
   }

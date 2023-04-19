@@ -158,11 +158,11 @@ class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
     super(credential);
   }
 
-  nodeSelfHeight(): number {
+  override nodeSelfHeight(): number {
     return 24;
   }
 
-  createCell(columnId: string): HTMLElement {
+  override createCell(columnId: string): HTMLElement {
     const cell = super.createCell(columnId);
     UI.Tooltip.Tooltip.install(cell, cell.textContent || '');
 
@@ -195,7 +195,7 @@ class WebauthnDataGrid extends Common.ObjectWrapper.eventMixin<EventTypes, typeo
     WebauthnDataGridBase) {}
 
 class EmptyDataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
-  createCells(element: Element): void {
+  override createCells(element: Element): void {
     element.removeChildren();
     const td = (this.createTDWithClass(DataGrid.DataGrid.Align.Center) as HTMLTableCellElement);
     if (this.dataGrid) {
@@ -317,7 +317,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     }
   }
 
-  async ownerViewDisposed(): Promise<void> {
+  override async ownerViewDisposed(): Promise<void> {
     if (this.#enableCheckbox) {
       this.#enableCheckbox.setChecked(false);
     }
@@ -879,7 +879,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#activeAuthId = null;
     this.#updateActiveButtons();
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([webauthnPaneStyles]);
   }

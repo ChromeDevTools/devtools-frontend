@@ -139,12 +139,12 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
     void this.agent.invoke_releaseAnimations({animations});
   }
 
-  async suspendModel(): Promise<void> {
+  override async suspendModel(): Promise<void> {
     this.reset();
     await this.agent.invoke_disable();
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
     if (!this.#enabled) {
       return;
     }

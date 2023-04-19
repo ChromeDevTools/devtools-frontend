@@ -65,14 +65,14 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
         .then(this.#eventListenersView.addObjects.bind(this.#eventListenersView));
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
     this.#refreshButton.setEnabled(true);
     this.update();
   }
 
-  willHide(): void {
+  override willHide(): void {
     super.willHide();
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, this.update, this);
     this.#refreshButton.setEnabled(false);

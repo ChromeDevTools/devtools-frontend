@@ -202,7 +202,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   #overviewCompleted(): void {
     this.#renderOverviewCompletedView();
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([cssOverviewStyles]);
   }

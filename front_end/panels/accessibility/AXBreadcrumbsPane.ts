@@ -102,7 +102,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     this.rootElement.addEventListener('focusout', this.onFocusOut.bind(this), false);
   }
 
-  focus(): void {
+  override focus(): void {
     if (this.inspectedNodeBreadcrumb) {
       this.inspectedNodeBreadcrumb.nodeElement().focus();
     } else {
@@ -110,7 +110,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
   }
 
-  setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
+  override setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
     if (this.#legacyTreeDisabled) {
       return;
     }
@@ -181,7 +181,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     this.collapsingBreadcrumbId = -1;
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.setPreselectedBreadcrumb(null);
   }
 
@@ -421,7 +421,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
     }
     void contextMenu.show();
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([axBreadcrumbsStyles]);
   }

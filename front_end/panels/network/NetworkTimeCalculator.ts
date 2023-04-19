@@ -315,15 +315,15 @@ export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
     super(false);
   }
 
-  formatValue(value: number, precision?: number): string {
+  override formatValue(value: number, precision?: number): string {
     return i18n.TimeUtilities.secondsToString(value - this.zeroTime(), Boolean(precision));
   }
 
-  lowerBound(request: SDK.NetworkRequest.NetworkRequest): number {
+  override lowerBound(request: SDK.NetworkRequest.NetworkRequest): number {
     return request.issueTime();
   }
 
-  upperBound(request: SDK.NetworkRequest.NetworkRequest): number {
+  override upperBound(request: SDK.NetworkRequest.NetworkRequest): number {
     return request.endTime;
   }
 }
@@ -333,11 +333,11 @@ export class NetworkTransferDurationCalculator extends NetworkTimeCalculator {
     super(true);
   }
 
-  formatValue(value: number, precision?: number): string {
+  override formatValue(value: number, precision?: number): string {
     return i18n.TimeUtilities.secondsToString(value, Boolean(precision));
   }
 
-  upperBound(request: SDK.NetworkRequest.NetworkRequest): number {
+  override upperBound(request: SDK.NetworkRequest.NetworkRequest): number {
     return request.duration;
   }
 }

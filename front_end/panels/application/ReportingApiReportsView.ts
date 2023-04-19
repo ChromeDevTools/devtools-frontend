@@ -48,7 +48,7 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
         SDK.NetworkManager.Events.ReportingApiReportUpdated, event => this.onReportUpdated(event.data), this);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     const sbw = this.sidebarWidget();
     if (sbw) {

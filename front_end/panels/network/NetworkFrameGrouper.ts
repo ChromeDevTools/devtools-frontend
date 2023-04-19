@@ -46,11 +46,11 @@ export class FrameGroupNode extends NetworkGroupNode {
     this.frame = frame;
   }
 
-  displayName(): string {
+  override displayName(): string {
     return new Common.ParsedURL.ParsedURL(this.frame.url).domain() || this.frame.name || '<iframe>';
   }
 
-  renderCell(cell: HTMLElement, columnId: string): void {
+  override renderCell(cell: HTMLElement, columnId: string): void {
     super.renderCell(cell, columnId);
     const columnIndex = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {

@@ -154,7 +154,7 @@ export class Button extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  set title(title: string) {
+  override set title(title: string) {
     this.#props.title = title;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -179,7 +179,7 @@ export class Button extends HTMLElement {
     this.toggleAttribute('disabled', disabled);
   }
 
-  focus(): void {
+  override focus(): void {
     this.#shadow.querySelector('button')?.focus();
   }
 

@@ -55,7 +55,7 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
     });
   }
 
-  onattach(): void {
+  override onattach(): void {
     super.onattach();
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
   }
@@ -148,12 +148,12 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): Platform.DevToolsPath.UrlString {
+  override get itemURL(): Platform.DevToolsPath.UrlString {
     // I don't think this will work at all.
     return 'cache://' + this.cache.cacheId as Platform.DevToolsPath.UrlString;
   }
 
-  onattach(): void {
+  override onattach(): void {
     super.onattach();
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
   }
@@ -175,7 +175,7 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
     }
   }
 
-  onselect(selectedByUser: boolean|undefined): boolean {
+  override onselect(selectedByUser: boolean|undefined): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
       this.view = new ServiceWorkerCacheView(this.model, this.cache);

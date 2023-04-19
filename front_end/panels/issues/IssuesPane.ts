@@ -153,7 +153,7 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
     }
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.#appendHeader();
   }
 
@@ -232,7 +232,7 @@ export class IssuesPane extends UI.Widget.VBox {
     return issuesPaneInstance;
   }
 
-  elementsToRestoreScrollPositionsFor(): Element[] {
+  override elementsToRestoreScrollPositionsFor(): Element[] {
     return [this.#issuesTree.element];
   }
 
@@ -464,7 +464,7 @@ export class IssuesPane extends UI.Widget.VBox {
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.#issuesTree.registerCSSFiles([issuesTreeStyles]);
     this.registerCSSFiles([issuesPaneStyles]);

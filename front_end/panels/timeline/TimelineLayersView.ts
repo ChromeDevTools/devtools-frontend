@@ -56,7 +56,7 @@ export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     if (this.updateWhenVisible) {
       this.updateWhenVisible = false;
       this.update();

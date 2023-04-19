@@ -49,7 +49,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     this.lastLoadedSnapshot = null;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     if (this.needsUpdateWhenVisible) {
       this.needsUpdateWhenVisible = false;
@@ -168,7 +168,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
         LayerViewer.TransformController.Events.TransformChanged, this.updateImagePosition, this);
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (this.imageElement.src) {
       this.updateImagePosition();
     }
@@ -223,7 +223,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
     this.maskRectangle = maskRectangle;
     this.maskElement.classList.toggle('hidden', !maskRectangle);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([timelinePaintProfilerStyles]);
   }

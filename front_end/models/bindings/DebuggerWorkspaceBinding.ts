@@ -641,17 +641,17 @@ export class Location extends LiveLocationWithPool {
     this.#binding = binding;
   }
 
-  async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
+  override async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
     const debuggerModelLocation = this.rawLocation;
     return this.#binding.rawLocationToUILocation(debuggerModelLocation);
   }
 
-  dispose(): void {
+  override dispose(): void {
     super.dispose();
     this.#binding.removeLiveLocation(this);
   }
 
-  async isIgnoreListed(): Promise<boolean> {
+  override async isIgnoreListed(): Promise<boolean> {
     const uiLocation = await this.uiLocation();
     if (!uiLocation) {
       return false;
@@ -683,15 +683,15 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
     return location;
   }
 
-  async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
+  override async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
     return this.#current ? this.#current.uiLocation() : null;
   }
 
-  async isIgnoreListed(): Promise<boolean> {
+  override async isIgnoreListed(): Promise<boolean> {
     return this.#current ? this.#current.isIgnoreListed() : false;
   }
 
-  dispose(): void {
+  override dispose(): void {
     super.dispose();
     if (this.#locations) {
       for (const location of this.#locations) {

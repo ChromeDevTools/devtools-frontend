@@ -23,11 +23,11 @@ export class SharedStorageTreeElement extends ApplicationPanelTreeElement {
     return treeElement;
   }
 
-  get itemURL(): Platform.DevToolsPath.UrlString {
+  override get itemURL(): Platform.DevToolsPath.UrlString {
     return 'shared-storage://' as Platform.DevToolsPath.UrlString;
   }
 
-  onselect(selectedByUser: boolean|undefined): boolean {
+  override onselect(selectedByUser: boolean|undefined): boolean {
     super.onselect(selectedByUser);
     this.resourcesPanel.showView(this.view);
     return false;

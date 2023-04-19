@@ -200,11 +200,11 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this.pathForStyle.set(this.hoverDetailsStyle, new Path2D());
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.popoverHelper.hidePopover();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.update();
     this.registerCSSFiles([networkWaterfallColumnStyles]);
   }
@@ -362,7 +362,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this.canvas.style.height = this.offsetHeight + 'px';
   }
 
-  onResize(): void {
+  override onResize(): void {
     super.onResize();
     this.updateRowHeight();
     this.calculateCanvasSize();

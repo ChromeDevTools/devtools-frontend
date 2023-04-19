@@ -115,7 +115,7 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
     this.#enabled = false;
   }
 
-  dispose(): void {
+  override dispose(): void {
     this.disable();
   }
 

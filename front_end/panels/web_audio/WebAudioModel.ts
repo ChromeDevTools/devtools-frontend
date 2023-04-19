@@ -33,12 +33,12 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel<EventTypes> implements 
     this.dispatchEventToListeners(Events.ModelReset);
   }
 
-  async suspendModel(): Promise<void> {
+  override async suspendModel(): Promise<void> {
     this.dispatchEventToListeners(Events.ModelSuspend);
     await this.agent.invoke_disable();
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
     if (!this.enabled) {
       return Promise.resolve();
     }

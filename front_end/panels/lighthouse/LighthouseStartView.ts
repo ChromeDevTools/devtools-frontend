@@ -275,7 +275,7 @@ export class StartView extends UI.Widget.Widget {
     this.onResize();
   }
 
-  onResize(): void {
+  override onResize(): void {
     const useNarrowLayout = this.contentElement.offsetWidth < 500;
     const useWideLayout = this.contentElement.offsetWidth > 800;
     const headerEl = this.contentElement.querySelector('.lighthouse-start-view header');
@@ -317,7 +317,7 @@ export class StartView extends UI.Widget.Widget {
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.controller.recomputePageAuditability();
     this.registerCSSFiles([lighthouseStartViewStyles]);

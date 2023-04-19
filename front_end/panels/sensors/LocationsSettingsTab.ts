@@ -153,7 +153,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     return locationsSettingsTabInstance;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([locationsSettingsTabStyles]);
     this.list.registerCSSFiles([locationsSettingsTabStyles]);

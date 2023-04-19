@@ -41,12 +41,12 @@ export class RequestHTMLView extends UI.Widget.VBox {
     this.contentElement.classList.add('html', 'request-view');
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.createIFrame();
     this.registerCSSFiles([requestHTMLViewStyles]);
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.contentElement.removeChildren();
   }
 

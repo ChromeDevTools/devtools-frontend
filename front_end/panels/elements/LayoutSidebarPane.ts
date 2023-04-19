@@ -208,7 +208,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     return settings;
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     this.layoutPane.data = {
       gridElements: gridNodesToElements(await this.fetchGridNodes()),
       flexContainerElements: flexContainerNodesToElements(await this.fetchFlexContainerNodes()),
@@ -222,7 +222,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     Common.Settings.Settings.instance().moduleSetting(event.data.setting).set(event.data.value);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     for (const setting of this.settings) {
       Common.Settings.Settings.instance().moduleSetting(setting).addChangeListener(this.update, this);
     }
@@ -237,7 +237,7 @@ export class LayoutSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  willHide(): void {
+  override willHide(): void {
     for (const setting of this.settings) {
       Common.Settings.Settings.instance().moduleSetting(setting).removeChangeListener(this.update, this);
     }

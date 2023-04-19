@@ -87,7 +87,7 @@ export class DeprecationIssue extends Issue {
     });
   }
 
-  sources(): Iterable<Protocol.Audits.SourceCodeLocation> {
+  override sources(): Iterable<Protocol.Audits.SourceCodeLocation> {
     if (this.#issueDetails.sourceCodeLocation) {
       return [this.#issueDetails.sourceCodeLocation];
     }

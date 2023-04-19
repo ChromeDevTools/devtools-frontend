@@ -248,7 +248,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     // TODO(tmathmeyer) show a message count number next to the player name.
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([playerListViewStyles]);
   }

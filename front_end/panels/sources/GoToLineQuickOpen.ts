@@ -59,7 +59,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   #goToLineStrings: string[] = [];
 
-  selectItem(_itemIndex: number|null, promptValue: string): void {
+  override selectItem(_itemIndex: number|null, promptValue: string): void {
     const sourceFrame = this.currentSourceFrame();
     if (!sourceFrame) {
       return;
@@ -71,20 +71,20 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     sourceFrame.revealPosition({lineNumber: position.line - 1, columnNumber: position.column - 1});
   }
 
-  itemCount(): number {
+  override itemCount(): number {
     return this.#goToLineStrings.length;
   }
 
-  renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void {
+  override renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void {
     UI.UIUtils.createTextChild(titleElement, this.#goToLineStrings[itemIndex]);
   }
 
-  rewriteQuery(_query: string): string {
+  override rewriteQuery(_query: string): string {
     // For Go to Line Quick Open, we don't need to filter any item, set query to empty string, so the filter regex matching will be skipped
     return '';
   }
 
-  queryChanged(query: string): void {
+  override queryChanged(query: string): void {
     this.#goToLineStrings = [];
     const position = this.parsePosition(query);
     const sourceFrame = this.currentSourceFrame();
@@ -129,7 +129,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     this.#goToLineStrings.push(i18nString(UIStrings.goToLineS, {PH1: position.line}));
   }
 
-  notFoundText(_query: string): string {
+  override notFoundText(_query: string): string {
     if (!this.currentSourceFrame()) {
       return i18nString(UIStrings.noFileSelected);
     }

@@ -1536,15 +1536,15 @@ export class DOMModel extends SDKModel<EventTypes> {
     return object.isNode() && object.objectId ? this.pushNodeToFrontend(object.objectId) : Promise.resolve(null);
   }
 
-  suspendModel(): Promise<void> {
+  override suspendModel(): Promise<void> {
     return this.agent.invoke_disable().then(() => this.setDocument(null));
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
     await this.agent.invoke_enable({});
   }
 
-  dispose(): void {
+  override dispose(): void {
     DOMModelUndoStack.instance().dispose(this);
   }
 

@@ -233,11 +233,11 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
     this.#frameIdToAXNode.clear();
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
     await this.agent.invoke_enable();
   }
 
-  async suspendModel(): Promise<void> {
+  override async suspendModel(): Promise<void> {
     await this.agent.invoke_disable();
   }
 

@@ -254,15 +254,15 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
     }
     return fragment;
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([signedExchangeInfoViewStyles]);
   }
 }
 
 export class Category extends UI.TreeOutline.TreeElement {
-  toggleOnClick: boolean;
-  expanded: boolean;
+  override toggleOnClick: boolean;
+  override expanded: boolean;
 
   constructor(root: UI.TreeOutline.TreeOutline, title?: string|Node) {
     super(title, true);

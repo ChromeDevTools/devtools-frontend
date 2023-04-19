@@ -111,7 +111,7 @@ export class UISourceCodeFrame extends
     return this.uiSourceCodeInternal.requestContent();
   }
 
-  protected editorConfiguration(doc: string): CodeMirror.Extension {
+  protected override editorConfiguration(doc: string): CodeMirror.Extension {
     return [
       super.editorConfiguration(doc),
       rowMessages(this.allMessages()),
@@ -120,12 +120,12 @@ export class UISourceCodeFrame extends
     ];
   }
 
-  protected onFocus(): void {
+  protected override onFocus(): void {
     super.onFocus();
     UI.Context.Context.instance().setFlavor(UISourceCodeFrame, this);
   }
 
-  protected onBlur(): void {
+  protected override onBlur(): void {
     super.onBlur();
     UI.Context.Context.instance().setFlavor(UISourceCodeFrame, null);
   }
@@ -207,12 +207,12 @@ export class UISourceCodeFrame extends
     this.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.setEditable(this.canEditSourceInternal());
   }
 
-  willHide(): void {
+  override willHide(): void {
     for (const plugin of this.plugins) {
       plugin.willHide();
     }
@@ -221,7 +221,7 @@ export class UISourceCodeFrame extends
     this.uiSourceCodeInternal.removeWorkingCopyGetter();
   }
 
-  protected getContentType(): string {
+  protected override getContentType(): string {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal);
     return binding ? binding.network.mimeType() : this.uiSourceCodeInternal.mimeType();
   }
@@ -270,7 +270,7 @@ export class UISourceCodeFrame extends
     this.muteSourceCodeEvents = false;
   }
 
-  async setContent(content: string): Promise<void> {
+  override async setContent(content: string): Promise<void> {
     this.disposePlugins();
     this.loadPlugins();
     await super.setContent(content);
@@ -292,7 +292,7 @@ export class UISourceCodeFrame extends
     return origins.map(origin => this.createMessage(origin));
   }
 
-  onTextChanged(): void {
+  override onTextChanged(): void {
     const wasPretty = this.pretty;
     super.onTextChanged();
     this.errorPopoverHelper.hidePopover();
@@ -387,7 +387,7 @@ export class UISourceCodeFrame extends
     }
   }
 
-  protected populateTextAreaContextMenu(
+  protected override populateTextAreaContextMenu(
       contextMenu: UI.ContextMenu.ContextMenu, lineNumber: number, columnNumber: number): void {
     super.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
     contextMenu.appendApplicableItems(this.uiSourceCodeInternal);
@@ -399,7 +399,7 @@ export class UISourceCodeFrame extends
     }
   }
 
-  protected populateLineGutterContextMenu(contextMenu: UI.ContextMenu.ContextMenu, lineNumber: number): void {
+  protected override populateLineGutterContextMenu(contextMenu: UI.ContextMenu.ContextMenu, lineNumber: number): void {
     super.populateLineGutterContextMenu(contextMenu, lineNumber);
     for (const plugin of this.plugins) {
       plugin.populateLineGutterContextMenu(contextMenu, lineNumber);
@@ -439,7 +439,7 @@ export class UISourceCodeFrame extends
     }
   }
 
-  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     const leftToolbarItems = await super.toolbarItems();
     const rightToolbarItems = [];
     for (const plugin of this.plugins) {
@@ -669,7 +669,7 @@ class MessageWidget extends CodeMirror.WidgetType {
     super();
   }
 
-  eq(other: MessageWidget): boolean {
+  override eq(other: MessageWidget): boolean {
     return other.messages === this.messages;
   }
 

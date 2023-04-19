@@ -29,12 +29,12 @@ export class AnimationScreenshotPopover extends UI.Widget.VBox {
     this.#progressBar = this.contentElement.createChild('div', 'animation-progress');
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.#rafId = this.contentElement.window().requestAnimationFrame(this.changeFrame.bind(this));
     this.registerCSSFiles([animationScreenshotPopoverStyles]);
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.contentElement.window().cancelAnimationFrame(this.#rafId);
     this.#endDelay = undefined;
   }

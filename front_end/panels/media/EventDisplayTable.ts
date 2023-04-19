@@ -53,7 +53,7 @@ export class EventNode extends DataGrid.DataGrid.DataGridNode<EventNode> {
     this.expandableElement = null;
   }
 
-  createCell(columnId: string): HTMLElement {
+  override createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     const cellData = this.data[columnId] as string;
     if (columnId === MediaEventColumnKeys.Value) {
@@ -163,7 +163,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
       sort: DataGrid.DataGrid.Order.Ascending,
     } as DataGrid.DataGrid.ColumnDescriptor;
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([eventDisplayTableStyles]);
   }

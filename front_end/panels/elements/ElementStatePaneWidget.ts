@@ -97,7 +97,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([elementStatePaneWidgetStyles]);
     this.update();

@@ -50,7 +50,7 @@ export class TextPrompt extends HTMLElement {
     };
   }
 
-  focus(): void {
+  override focus(): void {
     this.#input().focus();
   }
 

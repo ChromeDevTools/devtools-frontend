@@ -125,7 +125,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     this.#deselectAllItems();
     target.classList.add(CSSOverviewSidebarPanel.SELECTED);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([cssOverviewSidebarPanelStyles]);
   }

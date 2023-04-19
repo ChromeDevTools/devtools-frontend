@@ -663,7 +663,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
   private readonly propertiesMode: ObjectPropertiesMode;
   private readonly extraProperties: SDK.RemoteObject.RemoteObjectProperty[];
   private readonly targetObject: SDK.RemoteObject.RemoteObject|undefined;
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
   constructor(
       object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null,
       propertiesMode: ObjectPropertiesMode = ObjectPropertiesMode.OwnAndInternalAndInherited,
@@ -686,19 +686,19 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     if (this.treeOutline) {
       this.treeOutline.element.classList.add('expanded');
     }
   }
 
-  oncollapse(): void {
+  override oncollapse(): void {
     if (this.treeOutline) {
       this.treeOutline.element.classList.remove('expanded');
     }
   }
 
-  ondblclick(_e: Event): boolean {
+  override ondblclick(_e: Event): boolean {
     return true;
   }
 
@@ -722,7 +722,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     void contextMenu.show();
   }
 
-  async onpopulate(): Promise<void> {
+  override async onpopulate(): Promise<void> {
     const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
     const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
     return ObjectPropertyTreeElement.populate(
@@ -737,7 +737,7 @@ export const InitialVisibleChildrenLimit = 200;
 
 export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   property: SDK.RemoteObject.RemoteObjectProperty;
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
   private highlightChanges: UI.UIUtils.HighlightChange[];
   private linkifier: Components.Linkifier.Linkifier|undefined;
   private readonly maxNumPropertiesToShow: number;
@@ -1006,7 +1006,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.highlightChanges = [];
   }
 
-  async onpopulate(): Promise<void> {
+  override async onpopulate(): Promise<void> {
     const propertyValue = (this.property.value as SDK.RemoteObject.RemoteObject);
     console.assert(typeof propertyValue !== 'undefined');
     const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
@@ -1021,7 +1021,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  ondblclick(event: Event): boolean {
+  override ondblclick(event: Event): boolean {
     const target = (event.target as HTMLElement);
     const inEditableElement = target.isSelfOrDescendant(this.valueElement) ||
         (this.expandedValueElement && target.isSelfOrDescendant(this.expandedValueElement));
@@ -1032,7 +1032,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     return false;
   }
 
-  onenter(): boolean {
+  override onenter(): boolean {
     if (this.property.value && !this.property.value.customPreview() &&
         (this.property.writable || this.property.setter)) {
       this.startEditing();
@@ -1041,16 +1041,16 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     return false;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.update();
     this.updateExpandable();
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     this.showExpandedValueElement(true);
   }
 
-  oncollapse(): void {
+  override oncollapse(): void {
     this.showExpandedValueElement(false);
   }
 
@@ -1394,7 +1394,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
 }
 
 export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
   private readonly fromIndex: number;
   private readonly toIndex: number;
   private readonly object: SDK.RemoteObject.RemoteObject;
@@ -1628,7 +1628,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
         treeNode, properties, internalProperties, false, false, object, linkifier);
   }
 
-  async onpopulate(): Promise<void> {
+  override async onpopulate(): Promise<void> {
     if (this.propertyCount >= ArrayGroupingTreeElement.bucketThreshold) {
       await ArrayGroupingTreeElement.populateRanges(
           this, this.object, this.fromIndex, this.toIndex, false, this.linkifier);
@@ -1639,7 +1639,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     await ArrayGroupingTreeElement.populateAsFragment(this, this.object, this.fromIndex, this.toIndex, this.linkifier);
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.listItemElement.classList.add('object-properties-section-name');
   }
 
@@ -1831,7 +1831,7 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     UI.ARIAUtils.markAsButton(copyButton);
   }
 
-  appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, _object: Object): void {
+  override appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, _object: Object): void {
     if (this.text.length < this.maxDisplayableTextLength && this.expandElement) {
       contextMenu.clipboardSection().appendItem(this.expandElementText || '', this.expandText.bind(this));
     }

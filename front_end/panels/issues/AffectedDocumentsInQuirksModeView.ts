@@ -33,7 +33,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedDocumentsInQuirksModeView extends AffectedElementsView {
   #runningUpdatePromise: Promise<void> = Promise.resolve();
 
-  update(): void {
+  override update(): void {
     // Ensure that doUpdate is invoked atomically by serializing the update calls
     // because it's not re-entrace safe.
     this.#runningUpdatePromise = this.#runningUpdatePromise.then(this.#doUpdate.bind(this));

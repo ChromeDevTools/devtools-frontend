@@ -265,7 +265,7 @@ export class FormattedPropertyRenderer extends PropertyRenderer {
     this.formatfunction = formatfunction;
   }
 
-  updateDataInternal(propname: string, propvalue: string|null): void {
+  override updateDataInternal(propname: string, propvalue: string|null): void {
     if (propvalue === null) {
       this.changeContents(null);
     } else {
@@ -298,7 +298,7 @@ export class DimensionPropertyRenderer extends PropertyRenderer {
     this.height = 0;
   }
 
-  updateDataInternal(propname: string, propvalue: string|null): void {
+  override updateDataInternal(propname: string, propvalue: string|null): void {
     let needsUpdate = false;
     if (propname === 'width' && Number(propvalue) !== this.width) {
       this.width = Number(propvalue);
@@ -665,7 +665,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     const textTrackManager = new TextTrackManager(this);
     this.attributeMap.set(PlayerPropertyKeys.TextTracks, textTrackManager);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([playerPropertiesViewStyles]);
   }

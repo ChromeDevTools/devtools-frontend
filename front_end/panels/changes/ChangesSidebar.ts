@@ -101,7 +101,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
       treeElement.select(true);
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.treeoutline.registerCSSFiles([changesSidebarStyles]);
   }

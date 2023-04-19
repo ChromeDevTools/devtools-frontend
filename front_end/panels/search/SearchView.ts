@@ -217,7 +217,7 @@ export class SearchView extends UI.Widget.VBox {
     this.searchScope = this.createScope();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     if (this.focusOnShow) {
       this.focus();
       this.focusOnShow = false;
@@ -414,12 +414,12 @@ export class SearchView extends UI.Widget.VBox {
         finished ? i18nString(UIStrings.searchFinished) : i18nString(UIStrings.searchInterrupted);
   }
 
-  focus(): void {
+  override focus(): void {
     this.search.focus();
     this.search.select();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.stopSearch();
   }
 

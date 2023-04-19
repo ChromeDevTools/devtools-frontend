@@ -176,7 +176,7 @@ export class CPUProfileFlameChart extends
     this.searchResults = [];
   }
 
-  focus(): void {
+  override focus(): void {
     this.mainPane.focus();
   }
 
@@ -363,7 +363,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
     return this.dataProvider.timelineData();
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.scheduleUpdate();
   }
 

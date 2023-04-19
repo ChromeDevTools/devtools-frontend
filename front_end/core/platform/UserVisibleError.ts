@@ -11,7 +11,7 @@ import {type LocalizedString} from './UIString.js';
  * localized on the way in.
  */
 export class UserVisibleError extends Error {
-  readonly message: LocalizedString;
+  override readonly message: LocalizedString;
 
   constructor(message: LocalizedString) {
     super(message);

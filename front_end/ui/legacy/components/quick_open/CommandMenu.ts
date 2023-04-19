@@ -253,7 +253,7 @@ export class CommandMenuProvider extends Provider {
     this.commands = commandsForTest;
   }
 
-  attach(): void {
+  override attach(): void {
     const allCommands = CommandMenu.instance().commands();
 
     // Populate allowlisted actions.
@@ -282,19 +282,19 @@ export class CommandMenuProvider extends Provider {
     }
   }
 
-  detach(): void {
+  override detach(): void {
     this.commands = [];
   }
 
-  itemCount(): number {
+  override itemCount(): number {
     return this.commands.length;
   }
 
-  itemKeyAt(itemIndex: number): string {
+  override itemKeyAt(itemIndex: number): string {
     return this.commands[itemIndex].key;
   }
 
-  itemScoreAt(itemIndex: number, query: string): number {
+  override itemScoreAt(itemIndex: number, query: string): number {
     const command = this.commands[itemIndex];
     let score = Diff.Diff.DiffWrapper.characterScore(query.toLowerCase(), command.title.toLowerCase());
 
@@ -308,7 +308,7 @@ export class CommandMenuProvider extends Provider {
     return score;
   }
 
-  renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
+  override renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
     const command = this.commands[itemIndex];
 
     titleElement.removeChildren();
@@ -335,7 +335,7 @@ export class CommandMenuProvider extends Provider {
     tagElement.textContent = command.category;
   }
 
-  selectItem(itemIndex: number|null, _promptValue: string): void {
+  override selectItem(itemIndex: number|null, _promptValue: string): void {
     if (itemIndex === null) {
       return;
     }
@@ -343,7 +343,7 @@ export class CommandMenuProvider extends Provider {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelectCommandFromCommandMenu);
   }
 
-  notFoundText(): string {
+  override notFoundText(): string {
     return i18nString(UIStrings.noCommandsFound);
   }
 }

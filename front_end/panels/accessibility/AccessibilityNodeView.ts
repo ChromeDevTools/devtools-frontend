@@ -113,7 +113,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {
-  axNode: SDK.AccessibilityModel.AccessibilityNode|null;
+  override axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   private readonly noNodeInfo: Element;
   private readonly ignoredInfo: Element;
   private readonly treeOutline: UI.TreeOutline.TreeOutline;
@@ -136,7 +136,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this.treeOutline.setFocusable(true);
   }
 
-  setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
+  override setAXNode(axNode: SDK.AccessibilityModel.AccessibilityNode|null): void {
     if (this.axNode === axNode) {
       return;
     }
@@ -213,11 +213,11 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     }
   }
 
-  setNode(node: SDK.DOMModel.DOMNode|null): void {
+  override setNode(node: SDK.DOMModel.DOMNode|null): void {
     super.setNode(node);
     this.axNode = null;
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([accessibilityNodeStyles]);
   }
@@ -362,7 +362,7 @@ export const StringProperties = new Set<Protocol.Accessibility.AXValueType>([
 
 export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement {
   private readonly property: SDK.AccessibilityModel.CoreOrProtocolAxProperty;
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
   constructor(
       property: SDK.AccessibilityModel.CoreOrProtocolAxProperty, axNode: SDK.AccessibilityModel.AccessibilityNode) {
     super(axNode);
@@ -373,7 +373,7 @@ export class AXNodePropertyTreePropertyElement extends AXNodePropertyTreeElement
     this.listItemElement.classList.add('property');
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.update();
   }
 
@@ -395,7 +395,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
     this.source = source;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.update();
   }
 
@@ -441,7 +441,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
     }
   }
 
-  appendRelatedNodeListValueElement(value: Protocol.Accessibility.AXValue): void {
+  override appendRelatedNodeListValueElement(value: Protocol.Accessibility.AXValue): void {
     const relatedNodes = value.relatedNodes;
     const numNodes = relatedNodes ? relatedNodes.length : 0;
 
@@ -546,7 +546,7 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
     this.selectable = true;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.listItemElement.appendChild(this.axRelatedNodeElement.render());
     if (!this.value) {
       return;
@@ -558,7 +558,7 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  onenter(): boolean {
+  override onenter(): boolean {
     this.axRelatedNodeElement.revealNode();
     return true;
   }
@@ -611,7 +611,7 @@ export class AXRelatedNodeElement {
 
 export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
   private property: Protocol.Accessibility.AXProperty;
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
   private reasonElement?: Element|null;
 
   constructor(property: Protocol.Accessibility.AXProperty, axNode: SDK.AccessibilityModel.AccessibilityNode) {
@@ -690,7 +690,7 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
     return reasonElement;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.listItemElement.removeChildren();
 
     this.reasonElement = AXNodeIgnoredReasonTreeElement.createReasonElement(this.property.name, this.axNode);

@@ -124,7 +124,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     return this.#typeInternal;
   }
 
-  markAsNodeJSForTest(): void {
+  override markAsNodeJSForTest(): void {
     super.markAsNodeJSForTest();
     this.#typeInternal = Type.Node;
   }
@@ -161,7 +161,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     return lastTarget;
   }
 
-  dispose(reason: string): void {
+  override dispose(reason: string): void {
     super.dispose(reason);
     this.#targetManagerInternal.removeTarget(this);
     for (const model of this.#modelByConstructor.values()) {

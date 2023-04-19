@@ -563,49 +563,49 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
     this.object = scope.object();
   }
 
-  customPreview(): Protocol.Runtime.CustomPreview|null {
+  override customPreview(): Protocol.Runtime.CustomPreview|null {
     return this.object.customPreview();
   }
 
-  get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
+  override get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
     return this.object.objectId;
   }
 
-  get type(): string {
+  override get type(): string {
     return this.object.type;
   }
 
-  get subtype(): string|undefined {
+  override get subtype(): string|undefined {
     return this.object.subtype;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get value(): any {
+  override get value(): any {
     return this.object.value;
   }
 
-  get description(): string|undefined {
+  override get description(): string|undefined {
     return this.object.description;
   }
 
-  get hasChildren(): boolean {
+  override get hasChildren(): boolean {
     return this.object.hasChildren;
   }
 
-  get preview(): Protocol.Runtime.ObjectPreview|undefined {
+  override get preview(): Protocol.Runtime.ObjectPreview|undefined {
     return this.object.preview;
   }
 
-  arrayLength(): number {
+  override arrayLength(): number {
     return this.object.arrayLength();
   }
 
-  getOwnProperties(generatePreview: boolean): Promise<SDK.RemoteObject.GetPropertiesResult> {
+  override getOwnProperties(generatePreview: boolean): Promise<SDK.RemoteObject.GetPropertiesResult> {
     return this.object.getOwnProperties(generatePreview);
   }
 
-  async getAllProperties(accessorPropertiesOnly: boolean, generatePreview: boolean):
+  override async getAllProperties(accessorPropertiesOnly: boolean, generatePreview: boolean):
       Promise<SDK.RemoteObject.GetPropertiesResult> {
     const allProperties = await this.object.getAllProperties(accessorPropertiesOnly, generatePreview);
     const {variableMapping} = await resolveScope(this.scope);
@@ -628,7 +628,7 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
     return {properties: newProperties, internalProperties: internalProperties};
   }
 
-  async setPropertyValue(argumentName: string|Protocol.Runtime.CallArgument, value: string): Promise<string|undefined> {
+  override async setPropertyValue(argumentName: string|Protocol.Runtime.CallArgument, value: string): Promise<string|undefined> {
     const {variableMapping} = await resolveScope(this.scope);
 
     let name;
@@ -648,34 +648,34 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
     return this.object.setPropertyValue(actualName, value);
   }
 
-  async deleteProperty(name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
+  override async deleteProperty(name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
     return this.object.deleteProperty(name);
   }
 
-  callFunction<T>(functionDeclaration: (this: Object, ...arg1: unknown[]) => T, args?: Protocol.Runtime.CallArgument[]):
+  override callFunction<T>(functionDeclaration: (this: Object, ...arg1: unknown[]) => T, args?: Protocol.Runtime.CallArgument[]):
       Promise<SDK.RemoteObject.CallFunctionResult> {
     return this.object.callFunction(functionDeclaration, args);
   }
 
-  callFunctionJSON<T>(
+  override callFunctionJSON<T>(
       functionDeclaration: (this: Object, ...arg1: unknown[]) => T,
       args?: Protocol.Runtime.CallArgument[]): Promise<T> {
     return this.object.callFunctionJSON(functionDeclaration, args);
   }
 
-  release(): void {
+  override release(): void {
     this.object.release();
   }
 
-  debuggerModel(): SDK.DebuggerModel.DebuggerModel {
+  override debuggerModel(): SDK.DebuggerModel.DebuggerModel {
     return this.object.debuggerModel();
   }
 
-  runtimeModel(): SDK.RuntimeModel.RuntimeModel {
+  override runtimeModel(): SDK.RuntimeModel.RuntimeModel {
     return this.object.runtimeModel();
   }
 
-  isNode(): boolean {
+  override isNode(): boolean {
     return this.object.isNode();
   }
 }

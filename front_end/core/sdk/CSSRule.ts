@@ -190,7 +190,7 @@ export class CSSStyleRule extends CSSRule {
     return styleSheetHeader.columnNumberInSource(selector.range.startLine, selector.range.startColumn);
   }
 
-  rebase(edit: Edit): void {
+  override rebase(edit: Edit): void {
     if (this.styleSheetId !== edit.styleSheetId) {
       return;
     }
@@ -243,7 +243,7 @@ export class CSSKeyframeRule extends CSSRule {
     this.#keyText = new CSSValue(payload);
   }
 
-  rebase(edit: Edit): void {
+  override rebase(edit: Edit): void {
     if (this.styleSheetId !== edit.styleSheetId || !this.#keyText.range) {
       return;
     }

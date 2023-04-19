@@ -197,16 +197,16 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     });
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.resizeCanvas();
     this.update();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.textureManager.suspend();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.textureManager.resume();
     this.registerCSSFiles([layers3DViewStyles]);
     if (!this.needsUpdate) {

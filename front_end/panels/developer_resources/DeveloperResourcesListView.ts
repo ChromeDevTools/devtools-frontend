@@ -196,7 +196,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
       this.dataGrid.sortNodes(sortFunction, !this.dataGrid.isSortOrderAscending());
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([developerResourcesListViewStyles]);
   }
@@ -224,7 +224,7 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
     return true;
   }
 
-  createCell(columnId: string): HTMLElement {
+  override createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId) as HTMLElement;
     switch (columnId) {
       case 'url': {

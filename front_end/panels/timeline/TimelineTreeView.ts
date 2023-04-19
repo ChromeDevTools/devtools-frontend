@@ -575,7 +575,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     this.linkElement = null;
   }
 
-  createCell(columnId: string): HTMLElement {
+  override createCell(columnId: string): HTMLElement {
     if (columnId === 'activity') {
       return this.createNameCell(columnId);
     }
@@ -680,7 +680,7 @@ export class TreeGridNode extends GridNode {
     profileNodeToTreeGridNode.set(profileNode, this);
   }
 
-  populate(): void {
+  override populate(): void {
     if (this.populated) {
       return;
     }
@@ -714,7 +714,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.stackView.addEventListener(TimelineStackView.Events.SelectionChanged, this.onStackViewSelectionChanged, this);
   }
 
-  setModel(
+  override setModel(
       model: PerformanceModel|null,
       track: TimelineModel.TimelineModel.Track|null,
       traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
@@ -722,7 +722,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     super.setModel(model, track, traceParseData);
   }
 
-  updateContents(selection: TimelineSelection): void {
+  override updateContents(selection: TimelineSelection): void {
     this.updateExtensionResolver();
     super.updateContents(selection);
     const rootNode = this.dataGrid.rootNode();
@@ -809,7 +809,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     return {name: id || unattributed, color: color, icon: undefined};
   }
 
-  populateToolbar(toolbar: UI.Toolbar.Toolbar): void {
+  override populateToolbar(toolbar: UI.Toolbar.Toolbar): void {
     super.populateToolbar(toolbar);
     const groupBy = AggregatedTimelineTreeView.GroupBy;
     const options = [
@@ -847,7 +847,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     return result;
   }
 
-  exposePercentages(): boolean {
+  override exposePercentages(): boolean {
     return true;
   }
 
@@ -858,7 +858,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  showDetailsForNode(node: TimelineModel.TimelineProfileTree.Node): boolean {
+  override showDetailsForNode(node: TimelineModel.TimelineProfileTree.Node): boolean {
     const stack = this.buildHeaviestStack(node);
     this.stackView.setStack(stack, node);
     this.stackView.show(this.detailsView.element);
@@ -917,7 +917,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     return domainMatch && domainMatch[0] || '';
   }
 
-  appendContextMenuItems(contextMenu: UI.ContextMenu.ContextMenu, node: TimelineModel.TimelineProfileTree.Node): void {
+  override appendContextMenuItems(contextMenu: UI.ContextMenu.ContextMenu, node: TimelineModel.TimelineProfileTree.Node): void {
     if (this.groupBySetting.get() !== AggregatedTimelineTreeView.GroupBy.Frame) {
       return;
     }
@@ -967,11 +967,11 @@ export class CallTreeTimelineTreeView extends AggregatedTimelineTreeView {
     this.dataGrid.markColumnAsSortedBy('total', DataGrid.DataGrid.Order.Descending);
   }
 
-  getToolbarInputAccessiblePlaceHolder(): string {
+  override getToolbarInputAccessiblePlaceHolder(): string {
     return i18nString(UIStrings.filterCallTree);
   }
 
-  buildTree(): TimelineModel.TimelineProfileTree.Node {
+  override buildTree(): TimelineModel.TimelineProfileTree.Node {
     const grouping = this.groupBySetting.get();
     return this.buildTopDownTree(false, this.groupingFunction(grouping));
   }
@@ -983,11 +983,11 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
     this.dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
   }
 
-  getToolbarInputAccessiblePlaceHolder(): string {
+  override getToolbarInputAccessiblePlaceHolder(): string {
     return i18nString(UIStrings.filterBottomup);
   }
 
-  buildTree(): TimelineModel.TimelineProfileTree.Node {
+  override buildTree(): TimelineModel.TimelineProfileTree.Node {
     return new TimelineModel.TimelineProfileTree.BottomUpRootNode(
         this.modelEvents(), this.textFilter(), this.filtersWithoutTextFilter(), this.startTime, this.endTime,
         this.groupingFunction(this.groupBySetting.get()));

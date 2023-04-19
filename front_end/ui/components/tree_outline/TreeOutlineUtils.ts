@@ -42,7 +42,7 @@ class TrackDOMNodeToTreeNode extends LitHtml.Directive.Directive {
     }
   }
 
-  update(part: LitHtml.Directive.ElementPart, [weakMap, treeNode]: LitHtml.Directive.DirectiveParameters<this>): void {
+  override update(part: LitHtml.Directive.ElementPart, [weakMap, treeNode]: LitHtml.Directive.DirectiveParameters<this>): void {
     const elem = part.element;
     if (!(elem instanceof HTMLLIElement)) {
       throw new Error('trackTreeNodeToDOMNode must be used on <li> elements.');

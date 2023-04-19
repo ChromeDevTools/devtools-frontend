@@ -1750,11 +1750,11 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.style.setProperty('--indent', indent + 'px');
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.setLeftIndentOverlay();
   }
 
-  onselect(selectedByUser?: boolean): boolean {
+  override onselect(selectedByUser?: boolean): boolean {
     if (!selectedByUser) {
       return true;
     }

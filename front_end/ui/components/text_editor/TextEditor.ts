@@ -194,7 +194,7 @@ export class TextEditor extends HTMLElement {
     }
   }
 
-  focus(): void {
+  override focus(): void {
     if (this.#activeEditor) {
       this.#activeEditor.focus();
     }

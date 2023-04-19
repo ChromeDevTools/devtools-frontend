@@ -70,7 +70,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     return this.#breakpoints;
   }
 
-  focus(): void {
+  override focus(): void {
     this.#categoriesTreeOutline.forceSelect();
   }
 
@@ -226,7 +226,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
       UI.ARIAUtils.setChecked(category.element.listItemElement, hasEnabled);
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.#categoriesTreeOutline.registerCSSFiles([categorizedBreakpointsSidebarPaneStyles]);
   }

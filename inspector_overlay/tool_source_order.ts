@@ -46,12 +46,12 @@ interface SourceOrderHighlight {
 export class SourceOrderOverlay extends Overlay {
   private sourceOrderContainer!: HTMLElement;
 
-  reset(resetData: ResetData) {
+  override reset(resetData: ResetData) {
     super.reset(resetData);
     this.sourceOrderContainer.textContent = '';
   }
 
-  install() {
+  override install() {
     this.document.body.classList.add('fill');
 
     const canvas = this.document.createElement('canvas');
@@ -69,7 +69,7 @@ export class SourceOrderOverlay extends Overlay {
     super.install();
   }
 
-  uninstall() {
+  override uninstall() {
     this.document.body.classList.remove('fill');
     this.document.body.innerHTML = '';
     super.uninstall();

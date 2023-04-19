@@ -221,7 +221,7 @@ class AffectedMixedContentView extends AffectedResourcesView {
 export class IssueView extends UI.TreeOutline.TreeElement {
   #issue: AggregatedIssue;
   #description: IssuesManager.MarkdownIssueDescription.IssueDescription;
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
   affectedResources: UI.TreeOutline.TreeElement;
   readonly #affectedResourceViews: AffectedResourcesView[];
   #aggregatedIssuesCount: HTMLElement|null;
@@ -295,7 +295,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     return this.#description.title;
   }
 
-  onattach(): void {
+  override onattach(): void {
     if (!this.#contentCreated) {
       this.createContent();
       return;
@@ -347,7 +347,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
     this.listItemElement.appendChild(header);
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     Host.userMetrics.issuesPanelIssueExpanded(this.#issue.getCategory());
 
     if (this.#needsUpdateOnExpand) {

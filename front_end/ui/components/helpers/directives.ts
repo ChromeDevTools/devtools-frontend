@@ -21,7 +21,7 @@ class NodeRenderedCallback extends LitHtml.Directive.Directive {
     }
   }
 
-  update(part: LitHtml.Directive.ElementPart, [callback]: LitHtml.Directive.DirectiveParameters<this>): void {
+  override update(part: LitHtml.Directive.ElementPart, [callback]: LitHtml.Directive.DirectiveParameters<this>): void {
     callback(part.element);
   }
 

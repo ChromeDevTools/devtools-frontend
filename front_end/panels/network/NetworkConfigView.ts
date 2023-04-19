@@ -349,7 +349,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
       customAcceptedEncodingSetting.set(encodings.join(','));
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([networkConfigViewStyles]);
 

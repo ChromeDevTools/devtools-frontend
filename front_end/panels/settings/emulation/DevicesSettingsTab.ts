@@ -117,7 +117,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     return devicesSettingsTabInstance;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.devicesUpdated();
     this.registerCSSFiles([devicesSettingsTabStyles]);

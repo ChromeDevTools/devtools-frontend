@@ -50,7 +50,7 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     if (this.updateWhenVisible) {
       this.update();

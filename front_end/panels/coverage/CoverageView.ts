@@ -519,7 +519,7 @@ export class CoverageView extends UI.Widget.VBox {
   }
 
   static readonly EXTENSION_BINDINGS_URL_PREFIX = 'extensions::';
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([coverageViewStyles]);
   }

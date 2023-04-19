@@ -157,9 +157,9 @@ export class StylePropertyEditor extends HTMLElement {
 }
 
 export class FlexboxEditor extends StylePropertyEditor {
-  protected readonly editableProperties: EditableProperty[] = FlexboxEditableProperties;
+  protected override readonly editableProperties: EditableProperty[] = FlexboxEditableProperties;
 
-  protected findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {
+  protected override findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {
     return findFlexContainerIcon(query, computedProperties);
   }
 }
@@ -174,9 +174,9 @@ declare global {
 }
 
 export class GridEditor extends StylePropertyEditor {
-  protected readonly editableProperties: EditableProperty[] = GridEditableProperties;
+  protected override readonly editableProperties: EditableProperty[] = GridEditableProperties;
 
-  protected findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {
+  protected override findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {
     return findGridContainerIcon(query, computedProperties);
   }
 }

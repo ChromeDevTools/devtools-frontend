@@ -52,7 +52,7 @@ export class ClientHintIssue extends Issue {
     return resolveLazyDescription(description);
   }
 
-  sources(): Iterable<Protocol.Audits.SourceCodeLocation> {
+  override sources(): Iterable<Protocol.Audits.SourceCodeLocation> {
     return [this.issueDetails.sourceCodeLocation];
   }
 

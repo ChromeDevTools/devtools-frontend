@@ -127,7 +127,7 @@ export class HighlightOverlay extends Overlay {
   private persistentOverlay?: PersistentOverlay;
   private gridLabelState = {gridLayerCounter: 0};
 
-  reset(resetData: ResetData) {
+  override reset(resetData: ResetData) {
     super.reset(resetData);
     this.tooltip.innerHTML = '';
     this.gridLabelState.gridLayerCounter = 0;
@@ -136,7 +136,7 @@ export class HighlightOverlay extends Overlay {
     }
   }
 
-  install() {
+  override install() {
     this.document.body.classList.add('fill');
 
     const canvas = this.document.createElement('canvas');
@@ -158,7 +158,7 @@ export class HighlightOverlay extends Overlay {
     super.install();
   }
 
-  uninstall() {
+  override uninstall() {
     this.document.body.classList.remove('fill');
     this.document.body.innerHTML = '';
 

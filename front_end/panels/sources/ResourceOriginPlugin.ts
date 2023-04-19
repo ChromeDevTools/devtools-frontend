@@ -26,12 +26,12 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/ResourceOriginPlugin.ts
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ResourceOriginPlugin extends Plugin {
-  static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+  static override accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     const contentType = uiSourceCode.contentType();
     return contentType.hasScripts() || contentType.isFromSourceMap();
   }
 
-  rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
+  override rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
 
     // Handle source mapped scripts and stylesheets.

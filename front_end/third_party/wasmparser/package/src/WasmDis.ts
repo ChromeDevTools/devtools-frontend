@@ -1738,37 +1738,37 @@ class NameSectionNameResolver extends DefaultNameResolver {
     this._fieldNames = fieldNames;
   }
 
-  public getTypeName(index: number, isRef: boolean): string {
+  public override getTypeName(index: number, isRef: boolean): string {
     const name = this._typeNames[index];
     if (!name) return super.getTypeName(index, isRef);
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 
-  public getTableName(index: number, isRef: boolean): string {
+  public override getTableName(index: number, isRef: boolean): string {
     const name = this._tableNames[index];
     if (!name) return super.getTableName(index, isRef);
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 
-  public getMemoryName(index: number, isRef: boolean): string {
+  public override getMemoryName(index: number, isRef: boolean): string {
     const name = this._memoryNames[index];
     if (!name) return super.getMemoryName(index, isRef);
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 
-  public getGlobalName(index: number, isRef: boolean): string {
+  public override getGlobalName(index: number, isRef: boolean): string {
     const name = this._globalNames[index];
     if (!name) return super.getGlobalName(index, isRef);
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 
-  public getEventName(index: number, isRef: boolean): string {
+  public override getEventName(index: number, isRef: boolean): string {
     const name = this._eventNames[index];
     if (!name) return super.getEventName(index, isRef);
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 
-  public getFunctionName(
+  public override getFunctionName(
     index: number,
     isImport: boolean,
     isRef: boolean
@@ -1778,7 +1778,7 @@ class NameSectionNameResolver extends DefaultNameResolver {
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 
-  public getVariableName(
+  public override getVariableName(
     funcIndex: number,
     index: number,
     isRef: boolean
@@ -1789,7 +1789,7 @@ class NameSectionNameResolver extends DefaultNameResolver {
     return isRef ? `$${name}` : `$${name} (;${index};)`;
   }
 
-  public getFieldName(
+  public override getFieldName(
     typeIndex: number,
     index: number,
     isRef: boolean
@@ -2000,7 +2000,7 @@ export class DevToolsNameResolver extends NameSectionNameResolver {
     );
   }
 
-  public getFunctionName(
+  public override getFunctionName(
     index: number,
     isImport: boolean,
     isRef: boolean

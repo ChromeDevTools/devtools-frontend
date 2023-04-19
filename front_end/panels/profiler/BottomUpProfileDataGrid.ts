@@ -138,7 +138,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
     }
   }
 
-  restore(): void {
+  override restore(): void {
     super.restore();
 
     if (!this.children.length) {
@@ -146,12 +146,12 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
     }
   }
 
-  merge(child: ProfileDataGridNode, shouldAbsorb: boolean): void {
+  override merge(child: ProfileDataGridNode, shouldAbsorb: boolean): void {
     this.self -= child.self;
     super.merge(child, shouldAbsorb);
   }
 
-  populateChildren(): void {
+  override populateChildren(): void {
     BottomUpProfileDataGridNode.sharedPopulate(this);
   }
 
@@ -163,7 +163,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
 }
 
 export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
-  deepSearch: boolean;
+  override deepSearch: boolean;
   remainingNodeInfos: NodeInfo[]|undefined;
 
   constructor(
@@ -240,7 +240,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
   /**
    * When focusing, we keep the entire callstack up to this ancestor.
    */
-  focus(profileDataGridNode: ProfileDataGridNode): void {
+  override focus(profileDataGridNode: ProfileDataGridNode): void {
     if (!profileDataGridNode) {
       return;
     }
@@ -265,7 +265,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
     this.total = profileDataGridNode.total;
   }
 
-  exclude(profileDataGridNode: ProfileDataGridNode): void {
+  override exclude(profileDataGridNode: ProfileDataGridNode): void {
     if (!profileDataGridNode) {
       return;
     }
@@ -293,7 +293,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
     }
   }
 
-  populateChildren(): void {
+  override populateChildren(): void {
     BottomUpProfileDataGridNode.sharedPopulate(this);
   }
 }

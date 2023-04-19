@@ -259,7 +259,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     return true;
   }
 
-  rename(
+  override rename(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: Platform.DevToolsPath.RawPathString,
       callback:
           (arg0: boolean, arg1?: string|undefined, arg2?: Platform.DevToolsPath.UrlString|undefined,
@@ -321,7 +321,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     return result;
   }
 
-  indexContent(progress: Common.Progress.Progress): void {
+  override indexContent(progress: Common.Progress.Progress): void {
     this.fileSystemInternal.indexContent(progress);
   }
 
@@ -341,7 +341,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     }
   }
 
-  excludeFolder(url: Platform.DevToolsPath.UrlString): void {
+  override excludeFolder(url: Platform.DevToolsPath.UrlString): void {
     let relativeFolder = Common.ParsedURL.ParsedURL.sliceUrlToEncodedPathString(url, this.fileSystemBaseURL.length);
     if (!relativeFolder.startsWith('/')) {
       relativeFolder = Common.ParsedURL.ParsedURL.prepend('/', relativeFolder);
@@ -381,7 +381,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     return uiSourceCode;
   }
 
-  deleteFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+  override deleteFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const relativePath = this.filePathForUISourceCode(uiSourceCode);
     void this.fileSystemInternal.deleteFile(relativePath).then(success => {
       if (success) {
@@ -390,7 +390,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     });
   }
 
-  remove(): void {
+  override remove(): void {
     this.fileSystemWorkspaceBinding.isolatedFileSystemManager.removeFileSystem(this.fileSystemInternal);
   }
 

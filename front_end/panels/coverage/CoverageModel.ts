@@ -176,7 +176,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
    * Stops polling as preparation for suspension. This function is idempotent
    * due because it changes the state to suspending.
    */
-  async preSuspendModel(reason?: string): Promise<void> {
+  override async preSuspendModel(reason?: string): Promise<void> {
     if (this.suspensionState !== SuspensionState.Active) {
       return;
     }
@@ -192,18 +192,18 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
   }
 
-  async suspendModel(_reason?: string): Promise<void> {
+  override async suspendModel(_reason?: string): Promise<void> {
     this.suspensionState = SuspensionState.Suspended;
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
   }
 
   /**
    * Restarts polling after suspension. Note that the function is idempotent
    * because starting polling is idempotent.
    */
-  async postResumeModel(): Promise<void> {
+  override async postResumeModel(): Promise<void> {
     this.suspensionState = SuspensionState.Active;
     this.performanceTraceRecording = false;
     if (this.shouldResumePollingOnResume) {

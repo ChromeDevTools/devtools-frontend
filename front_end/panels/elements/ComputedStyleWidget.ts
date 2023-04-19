@@ -293,17 +293,17 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     Common.Settings.Settings.instance().moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
   }
 
-  onResize(): void {
+  override onResize(): void {
     const isNarrow = this.contentElement.offsetWidth < 260;
     this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([computedStyleSidebarPaneStyles]);
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     const [nodeStyles, matchedStyles] =
         await Promise.all([this.computedStyleModel.fetchComputedStyle(), this.fetchMatchedCascade()]);
     if (!nodeStyles || !matchedStyles) {

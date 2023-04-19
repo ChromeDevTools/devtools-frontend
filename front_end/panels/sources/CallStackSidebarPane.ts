@@ -542,7 +542,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text.join('\n'));
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([callStackSidebarPaneStyles]);
   }

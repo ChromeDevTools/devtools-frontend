@@ -30,7 +30,7 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
     return inspectedPagePlaceholderInstance;
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (this.updateId) {
       this.element.window().cancelAnimationFrame(this.updateId);
     }

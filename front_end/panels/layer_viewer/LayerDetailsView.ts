@@ -203,7 +203,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   setLayerTree(_layerTree: SDK.LayerTreeBase.LayerTreeBase|null): void {
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([layerDetailsViewStyles]);
     this.update();

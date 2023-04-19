@@ -119,7 +119,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this.contentElement.appendChild(this.#requestHeadersComponent);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.#request.addEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this.#refreshHeadersView, this);
     this.#request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.#refreshHeadersView, this);
     this.#request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.#refreshHeadersView, this);
@@ -128,7 +128,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this.#refreshHeadersView();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.#request.removeEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this.#refreshHeadersView, this);
     this.#request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.#refreshHeadersView, this);
     this.#request.removeEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.#refreshHeadersView, this);

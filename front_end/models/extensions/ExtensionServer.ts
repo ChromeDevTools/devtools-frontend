@@ -1246,11 +1246,11 @@ class ExtensionServerPanelView extends UI.View.SimpleView {
     this.panel = panel;
   }
 
-  viewId(): string {
+  override viewId(): string {
     return this.name;
   }
 
-  widget(): Promise<UI.Widget.Widget> {
+  override widget(): Promise<UI.Widget.Widget> {
     return Promise.resolve(this.panel) as Promise<UI.Widget.Widget>;
   }
 }

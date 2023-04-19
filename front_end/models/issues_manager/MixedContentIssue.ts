@@ -26,7 +26,7 @@ export class MixedContentIssue extends Issue {
     this.#issueDetails = issueDetails;
   }
 
-  requests(): Iterable<Protocol.Audits.AffectedRequest> {
+  override requests(): Iterable<Protocol.Audits.AffectedRequest> {
     if (this.#issueDetails.request) {
       return [this.#issueDetails.request];
     }

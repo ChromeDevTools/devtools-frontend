@@ -966,7 +966,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     UI.ARIAUtils.setHidden(this.summaryToolbarInternal.element, value);
   }
 
-  elementsToRestoreScrollPositionsFor(): Element[] {
+  override elementsToRestoreScrollPositionsFor(): Element[] {
     if (!this.dataGrid)  // Not initialized yet.
     {
       return [];
@@ -1244,17 +1244,17 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.refreshIfNeeded();
     this.registerCSSFiles([networkLogViewStyles]);
     this.columnsInternal.wasShown();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.columnsInternal.willHide();
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.rowHeightInternal = this.computeRowHeight();
   }
 

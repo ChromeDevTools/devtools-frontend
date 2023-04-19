@@ -35,7 +35,7 @@ export class SearchSourcesView extends Search.SearchView.SearchView {
     return widget;
   }
 
-  createScope(): Search.SearchConfig.SearchScope {
+  override createScope(): Search.SearchConfig.SearchScope {
     return new SourcesSearchScope();
   }
 }

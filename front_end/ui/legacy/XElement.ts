@@ -53,11 +53,11 @@ class _XBox extends XElement {
     this.style.setProperty('justify-content', 'flex-start');
   }
 
-  static get observedAttributes(): string[] {
+  static override get observedAttributes(): string[] {
     return super.observedAttributes.concat(['x-start', 'x-center', 'x-stretch', 'x-baseline', 'justify-content']);
   }
 
-  attributeChangedCallback(attr: string, oldValue: string|null, newValue: string|null): void {
+  override attributeChangedCallback(attr: string, oldValue: string|null, newValue: string|null): void {
     if (attr === 'x-start' || attr === 'x-center' || attr === 'x-stretch' || attr === 'x-baseline') {
       if (newValue === null) {
         this.style.removeProperty('align-items');

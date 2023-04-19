@@ -115,7 +115,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     void this.update();
   }
 
-  focus(): void {
+  override focus(): void {
     if (this.hasFocus()) {
       return;
     }
@@ -292,7 +292,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
   private sidebarPaneUpdatedForTest(): void {
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.treeOutline.registerCSSFiles([scopeChainSidebarPaneStyles]);
     this.registerCSSFiles([scopeChainSidebarPaneStyles]);

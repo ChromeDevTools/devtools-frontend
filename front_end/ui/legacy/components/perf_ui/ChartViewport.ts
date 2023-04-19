@@ -106,7 +106,7 @@ export class ChartViewport extends UI.Widget.VBox {
     return this.isDraggingInternal;
   }
 
-  elementsToRestoreScrollPositionsFor(): Element[] {
+  override elementsToRestoreScrollPositionsFor(): Element[] {
     return [this.vScrollElement];
   }
 
@@ -119,7 +119,7 @@ export class ChartViewport extends UI.Widget.VBox {
     this.updateContentElementSize();
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.updateScrollBar();
     this.updateContentElementSize();
     this.scheduleUpdate();

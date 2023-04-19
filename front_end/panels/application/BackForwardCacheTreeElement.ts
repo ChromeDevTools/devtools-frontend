@@ -29,11 +29,11 @@ export class BackForwardCacheTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  get itemURL(): Platform.DevToolsPath.UrlString {
+  override get itemURL(): Platform.DevToolsPath.UrlString {
     return 'bfcache://' as Platform.DevToolsPath.UrlString;
   }
 
-  onselect(selectedByUser?: boolean): boolean {
+  override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
       this.view = new ApplicationComponents.BackForwardCacheView.BackForwardCacheViewWrapper(

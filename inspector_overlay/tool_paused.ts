@@ -22,7 +22,7 @@ export class PausedOverlay extends Overlay {
     }
   }
 
-  install() {
+  override install() {
     const controlsLine = this.document.createElement('div');
     controlsLine.classList.add('controls-line');
 
@@ -62,7 +62,7 @@ export class PausedOverlay extends Overlay {
     super.install();
   }
 
-  uninstall() {
+  override uninstall() {
     this.document.body.innerHTML = '';
     this.document.removeEventListener('keydown', this.onKeyDown);
     super.uninstall();

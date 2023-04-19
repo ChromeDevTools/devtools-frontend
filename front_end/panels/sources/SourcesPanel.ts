@@ -394,7 +394,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     return this.pausedInternal || false;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     UI.Context.Context.instance().setFlavor(SourcesPanel, this);
     this.registerCSSFiles([sourcesPanelStyles]);
     super.wasShown();
@@ -406,7 +406,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.editorView.setMainWidget(this.sourcesViewInternal);
   }
 
-  willHide(): void {
+  override willHide(): void {
     super.willHide();
     UI.Context.Context.instance().setFlavor(SourcesPanel, null);
     if (WrapperView.isShowing()) {
@@ -435,13 +435,13 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     return true;
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (Common.Settings.Settings.instance().moduleSetting('sidebarPosition').get() === 'auto') {
       this.element.window().requestAnimationFrame(this.updateSidebarPosition.bind(this));
     }  // Do not force layout.
   }
 
-  searchableView(): UI.SearchableView.SearchableView {
+  override searchableView(): UI.SearchableView.SearchableView {
     return this.sourcesViewInternal.searchableView();
   }
 
@@ -1424,7 +1424,7 @@ export class WrapperView extends UI.Widget.VBox {
     return Boolean(wrapperViewInstance) && wrapperViewInstance.isShowing();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     if (!SourcesPanel.instance().isShowing()) {
       this.showViewInWrapper();
     } else {
@@ -1433,7 +1433,7 @@ export class WrapperView extends UI.Widget.VBox {
     SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());
   }
 
-  willHide(): void {
+  override willHide(): void {
     UI.InspectorView.InspectorView.instance().setDrawerMinimized(false);
     queueMicrotask(() => {
       SourcesPanel.updateResizerAndSidebarButtons(SourcesPanel.instance());

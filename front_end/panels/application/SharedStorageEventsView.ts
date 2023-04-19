@@ -76,7 +76,7 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
     return this.#getMainFrame()?.id || this.#defaultId;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     const sidebar = this.sidebarWidget();
     if (sidebar) {

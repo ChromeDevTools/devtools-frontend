@@ -57,7 +57,7 @@ export class LayersWidget extends UI.Widget.Widget {
     }
   }
 
-  async wasShown(): Promise<void> {
+  override async wasShown(): Promise<void> {
     super.wasShown();
     this.registerCSSFiles([layersWidgetStyles]);
     return this.update();

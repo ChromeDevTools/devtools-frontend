@@ -144,7 +144,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     this.requestPayloadCategory = new Category(root, 'requestPayload', i18nString(UIStrings.requestPayload));
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.registerCSSFiles([requestPayloadViewStyles]);
     this.request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshFormData, this);
 
@@ -153,7 +153,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     // this._root.select(/* omitFocus */ true, /* selectedByUser */ false);
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.request.removeEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshFormData, this);
   }
 
@@ -501,9 +501,9 @@ export class RequestPayloadView extends UI.Widget.VBox {
 const viewSourceForItems = new WeakSet<Category|UI.TreeOutline.TreeElement>();
 
 export class Category extends UI.TreeOutline.TreeElement {
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
   private readonly expandedSetting: Common.Settings.Setting<boolean>;
-  expanded: boolean;
+  override expanded: boolean;
 
   constructor(root: UI.TreeOutline.TreeOutline, name: string, title?: string) {
     super(title || '', true);
@@ -521,11 +521,11 @@ export class Category extends UI.TreeOutline.TreeElement {
     return leaf;
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     this.expandedSetting.set(true);
   }
 
-  oncollapse(): void {
+  override oncollapse(): void {
     this.expandedSetting.set(false);
   }
 }

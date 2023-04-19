@@ -46,7 +46,7 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
     this.element.appendChild(treeOutline.element);
     return treeOutline;
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([accessibilityPropertiesStyles]);
   }

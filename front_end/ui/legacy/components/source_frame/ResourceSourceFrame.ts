@@ -64,7 +64,7 @@ export class ResourceSourceFrame extends SourceFrameImpl {
     return new SearchableContainer(resource, contentType, autoPrettyPrint);
   }
 
-  protected getContentType(): string {
+  protected override getContentType(): string {
     return this.givenContentType;
   }
 
@@ -72,7 +72,7 @@ export class ResourceSourceFrame extends SourceFrameImpl {
     return this.resourceInternal;
   }
 
-  protected populateTextAreaContextMenu(
+  protected override populateTextAreaContextMenu(
       contextMenu: UI.ContextMenu.ContextMenu, lineNumber: number, columnNumber: number): void {
     super.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
     contextMenu.appendApplicableItems(this.resourceInternal);

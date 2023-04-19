@@ -299,7 +299,7 @@ export class LiveLocation extends LiveLocationWithPool {
     this.headerInternal = header;
   }
 
-  async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
+  override async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
     if (!this.headerInternal) {
       return null;
     }
@@ -307,12 +307,12 @@ export class LiveLocation extends LiveLocationWithPool {
     return CSSWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
   }
 
-  dispose(): void {
+  override dispose(): void {
     super.dispose();
     this.#info.disposeLocation(this);
   }
 
-  async isIgnoreListed(): Promise<boolean> {
+  override async isIgnoreListed(): Promise<boolean> {
     return false;
   }
 }

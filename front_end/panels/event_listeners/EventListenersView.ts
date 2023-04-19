@@ -74,7 +74,7 @@ export class EventListenersView extends UI.Widget.VBox {
     this.treeItemMap = new Map();
   }
 
-  focus(): void {
+  override focus(): void {
     if (!this.enableDefaultTreeFocus) {
       return;
     }
@@ -235,14 +235,14 @@ export class EventListenersView extends UI.Widget.VBox {
 
   private eventListenersArrivedForTest(): void {
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.treeOutline.registerCSSFiles([eventListenersViewStyles, objectValueStyles]);
   }
 }
 
 export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
   private readonly linkifier: Components.Linkifier.Linkifier;
   private readonly changeCallback: () => void;
   constructor(type: string, linkifier: Components.Linkifier.Linkifier, changeCallback: () => void) {
@@ -282,7 +282,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     this.changeCallback = changeCallback;
   }
 
-  async onpopulate(): Promise<void> {
+  override async onpopulate(): Promise<void> {
     const properties = [];
     const eventListener = this.eventListenerInternal;
     const runtimeModel = eventListener.domDebuggerModel().runtimeModel();
@@ -381,7 +381,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     return this.eventListenerInternal;
   }
 
-  onenter(): boolean {
+  override onenter(): boolean {
     if (this.valueTitle) {
       (this.valueTitle as HTMLElement).click();
       return true;
@@ -390,7 +390,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     return false;
   }
 
-  ondelete(): boolean {
+  override ondelete(): boolean {
     if (this.eventListenerInternal.canRemove()) {
       this.removeListener();
       return true;

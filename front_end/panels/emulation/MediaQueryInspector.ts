@@ -266,7 +266,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
     return UI.ZoomManager.ZoomManager.instance().zoomFactor() / this.scale;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.scheduleMediaQueriesUpdate();
   }

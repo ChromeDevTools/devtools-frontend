@@ -55,11 +55,11 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
     return `${this.code()}-(${this.#issueDetails.request.requestId})`;
   }
 
-  getBlockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails> {
+  override getBlockedByResponseDetails(): Iterable<Protocol.Audits.BlockedByResponseIssueDetails> {
     return [this.#issueDetails];
   }
 
-  requests(): Iterable<Protocol.Audits.AffectedRequest> {
+  override requests(): Iterable<Protocol.Audits.AffectedRequest> {
     return [this.#issueDetails.request];
   }
 

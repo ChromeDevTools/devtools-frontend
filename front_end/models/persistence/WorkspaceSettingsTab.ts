@@ -95,7 +95,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     return workspaceSettingsTabInstance;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([workspaceSettingsTabStyles]);
   }

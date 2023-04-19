@@ -224,12 +224,12 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     await this.overlayAgent.invoke_setShowViewportSizeOnResize({show: this.#showViewportSizeOnResize});
   }
 
-  async suspendModel(): Promise<void> {
+  override async suspendModel(): Promise<void> {
     Common.EventTarget.removeEventListeners(this.#registeredListeners);
     await this.overlayAgent.invoke_disable();
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
     await Promise.all([this.overlayAgent.invoke_enable(), this.wireAgentToSettings()]);
   }
 

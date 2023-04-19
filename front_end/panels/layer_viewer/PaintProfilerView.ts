@@ -200,7 +200,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     return result;
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.update();
   }
 
@@ -412,7 +412,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     this.selectionWindowInternal.reset();
     this.selectionWindowInternal.setEnabled(false);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([paintProfilerStyles]);
   }
@@ -469,7 +469,7 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
     this.update();
   }
 
-  doUpdate(): Promise<void> {
+  override doUpdate(): Promise<void> {
     if (!this.selectionWindow || !this.log.length) {
       this.treeOutline.removeChildren();
       return Promise.resolve();
@@ -508,11 +508,11 @@ export class LogTreeElement extends UI.TreeOutline.TreeElement {
     this.filled = false;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.update();
   }
 
-  async onpopulate(): Promise<void> {
+  override async onpopulate(): Promise<void> {
     for (const param in this.logItem.params) {
       LogPropertyTreeElement.appendLogPropertyItem(this, param, this.logItem.params[param]);
     }
@@ -576,7 +576,7 @@ export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  onattach(): void {
+  override onattach(): void {
     const title = document.createDocumentFragment();
     const nameElement = title.createChild('span', 'name');
     nameElement.textContent = this.property.name;

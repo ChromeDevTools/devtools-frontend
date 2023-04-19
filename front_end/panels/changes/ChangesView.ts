@@ -212,7 +212,7 @@ export class ChangesView extends UI.Widget.VBox {
     void this.refreshDiff();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     void this.refreshDiff();
     this.registerCSSFiles([changesViewStyles]);
   }

@@ -61,7 +61,7 @@ export class LayerSelection extends Selection {
     super(Type.Layer, layer);
   }
 
-  isEqual(other: Selection): boolean {
+  override isEqual(other: Selection): boolean {
     return other.typeInternal === Type.Layer && other.layer().id() === this.layer().id();
   }
 }
@@ -73,7 +73,7 @@ export class ScrollRectSelection extends Selection {
     this.scrollRectIndex = scrollRectIndex;
   }
 
-  isEqual(other: Selection): boolean {
+  override isEqual(other: Selection): boolean {
     return other.typeInternal === Type.ScrollRect && this.layer().id() === other.layer().id() &&
         this.scrollRectIndex === (other as ScrollRectSelection).scrollRectIndex;
   }
@@ -86,7 +86,7 @@ export class SnapshotSelection extends Selection {
     this.snapshotInternal = snapshot;
   }
 
-  isEqual(other: Selection): boolean {
+  override isEqual(other: Selection): boolean {
     return other.typeInternal === Type.Snapshot && this.layer().id() === other.layer().id() &&
         this.snapshotInternal === (other as SnapshotSelection).snapshotInternal;
   }

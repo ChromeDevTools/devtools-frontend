@@ -629,7 +629,7 @@ export class ObjectSnapshot extends PayloadEvent {
     this.#objectPromiseInternal = null;
   }
 
-  static fromPayload(payload: EventPayload, thread: Thread): ObjectSnapshot {
+  static override fromPayload(payload: EventPayload, thread: Thread): ObjectSnapshot {
     const snapshot = new ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread, payload);
     const id = TracingModel.extractId(payload);
     if (typeof id !== 'undefined') {
@@ -678,7 +678,7 @@ export class ObjectSnapshot extends PayloadEvent {
     return this.#objectPromiseInternal;
   }
 
-  setBackingStorage(backingStorage: (() => Promise<string|null>)|null): void {
+  override setBackingStorage(backingStorage: (() => Promise<string|null>)|null): void {
     if (!backingStorage) {
       return;
     }
@@ -884,7 +884,7 @@ export class Thread extends NamedObject {
     this.#asyncEventsInternal.push(asyncEvent);
   }
 
-  setName(name: string): void {
+  override setName(name: string): void {
     super.setName(name);
     this.#processInternal.setThreadByName(name, this);
   }

@@ -162,7 +162,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (this.mode === Modes.FrameBased) {
       return;
     }

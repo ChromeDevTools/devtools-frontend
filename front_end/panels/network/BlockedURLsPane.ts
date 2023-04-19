@@ -283,7 +283,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
       void this.updateThrottler.schedule(this.update.bind(this));
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.list.registerCSSFiles([blockedURLsPaneStyles]);
     this.registerCSSFiles([blockedURLsPaneStyles]);

@@ -1043,11 +1043,11 @@ describeWithMockConnection('BreakpointManager', () => {
           super('InstrumentationBreakpoints');
         }
 
-        handleScript(_: SDK.Script.Script) {
+        override handleScript(_: SDK.Script.Script) {
           return true;
         }
 
-        async sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
+        override async sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
             Promise<Chrome.DevTools.RawLocationRange[]> {
           const {rawModuleId, columnNumber, lineNumber, sourceFileURL} = sourceLocation;
           if (lineNumber === 0 && columnNumber === 0 && sourceFileURL === 'test.cc') {
@@ -1056,7 +1056,7 @@ describeWithMockConnection('BreakpointManager', () => {
           return [];
         }
 
-        async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation):
+        override async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation):
             Promise<Chrome.DevTools.SourceLocation[]> {
           let sourceLocations: Chrome.DevTools.SourceLocation[] = [];
           if (rawLocation.codeOffset === 0) {
@@ -1066,7 +1066,7 @@ describeWithMockConnection('BreakpointManager', () => {
           return sourceLocations;
         }
 
-        async addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
+        override async addRawModule(_rawModuleId: string, _symbolsURL: string, _rawModule: Chrome.DevTools.RawModule):
             Promise<string[]> {
           return ['test.cc'];  // need to return something to get the script associated with the plugin.
         }

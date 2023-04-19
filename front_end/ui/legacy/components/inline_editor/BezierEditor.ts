@@ -78,7 +78,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     return this.bezierInternal;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.registerCSSFiles([bezierEditorStyles]);
     this.unselectPresets();
     // Check if bezier matches a preset

@@ -388,10 +388,10 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 }
 
 export class TreeOutlineInShadow extends TreeOutline {
-  element: HTMLElement;
+  override element: HTMLElement;
   shadowRoot: ShadowRoot;
   private readonly disclosureElement: Element;
-  renderSelection: boolean;
+  override renderSelection: boolean;
   constructor() {
     super();
     this.contentElement.classList.add('tree-outline');
@@ -419,7 +419,7 @@ export class TreeOutlineInShadow extends TreeOutline {
     this.contentElement.classList.add('tree-outline-dense');
   }
 
-  onStartedEditingTitle(treeElement: TreeElement): void {
+  override onStartedEditingTitle(treeElement: TreeElement): void {
     const selection = this.shadowRoot.getSelection();
     if (selection) {
       selection.selectAllChildren(treeElement.titleElement);

@@ -352,7 +352,7 @@ class FormattedValueNode extends ValueNode {
     this.#evalOptions = evalOptions;
   }
 
-  get sourceType(): SourceType {
+  override get sourceType(): SourceType {
     return this.#sourceType;
   }
 
@@ -375,7 +375,7 @@ class FormattedValueNode extends ValueNode {
   /**
    * Hook into RemoteObject creation for properties to check whether a property is a marker.
    */
-  async createRemoteObject(newObject: Protocol.Runtime.RemoteObject):
+  override async createRemoteObject(newObject: Protocol.Runtime.RemoteObject):
       Promise<FormattedValueNode|StaticallyTypedValueNode> {
     // Check if the property RemoteObject is a marker
     const base = await this.getEvalBaseFromObject(newObject);
@@ -506,11 +506,11 @@ class StaticallyTypedValueNode extends ValueNode {
     this.#evalOptions = evalOptions;
   }
 
-  get type(): string {
+  override get type(): string {
     return this.#variableType;
   }
 
-  get sourceType(): SourceType {
+  override get sourceType(): SourceType {
     return this.#sourceType;
   }
 
@@ -568,7 +568,7 @@ class StaticallyTypedValueNode extends ValueNode {
     return address;
   }
 
-  async doGetProperties(_ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
+  override async doGetProperties(_ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
       Promise<SDK.RemoteObject.GetPropertiesResult> {
     const {typeInfo} = this.#sourceType;
     if (accessorPropertiesOnly || !typeInfo.canExpand) {
@@ -616,11 +616,11 @@ class NamespaceObject extends SDK.RemoteObject.LocalJSONObject {
     super(value);
   }
 
-  get description(): string {
+  override get description(): string {
     return this.type;
   }
 
-  get type(): string {
+  override get type(): string {
     return 'namespace';
   }
 }
@@ -639,7 +639,7 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
     this.stopId = stopId;
   }
 
-  async doGetProperties(ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
+  override async doGetProperties(ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
       Promise<SDK.RemoteObject.GetPropertiesResult> {
     if (accessorPropertiesOnly) {
       return {properties: [], internalProperties: []} as SDK.RemoteObject.GetPropertiesResult;
@@ -804,65 +804,65 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
     return this.extensionObject.linearMemorySize;
   }
 
-  get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
+  override get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
     return this.extensionObject.objectId as Protocol.Runtime.RemoteObjectId;
   }
 
-  get type(): string {
+  override get type(): string {
     if (this.extensionObject.type === 'array' || this.extensionObject.type === 'null') {
       return 'object';
     }
     return this.extensionObject.type;
   }
 
-  get subtype(): string|undefined {
+  override get subtype(): string|undefined {
     if (this.extensionObject.type === 'array' || this.extensionObject.type === 'null') {
       return this.extensionObject.type;
     }
     return undefined;
   }
 
-  get value(): unknown {
+  override get value(): unknown {
     return this.extensionObject.value;
   }
 
-  unserializableValue(): string|undefined {
+  override unserializableValue(): string|undefined {
     return undefined;
   }
 
-  get description(): string|undefined {
+  override get description(): string|undefined {
     return this.extensionObject.description;
   }
 
-  set description(description: string|undefined) {
+  override set description(description: string|undefined) {
   }
 
-  get hasChildren(): boolean {
+  override get hasChildren(): boolean {
     return this.extensionObject.hasChildren;
   }
 
-  get preview(): Protocol.Runtime.ObjectPreview|undefined {
+  override get preview(): Protocol.Runtime.ObjectPreview|undefined {
     return undefined;
   }
 
-  get className(): string|null {
+  override get className(): string|null {
     return this.extensionObject.className ?? null;
   }
 
-  arrayLength(): number {
+  override arrayLength(): number {
     return 0;
   }
 
-  arrayBufferByteLength(): number {
+  override arrayBufferByteLength(): number {
     return 0;
   }
 
-  getOwnProperties(_generatePreview: boolean, _nonIndexedPropertiesOnly?: boolean):
+  override getOwnProperties(_generatePreview: boolean, _nonIndexedPropertiesOnly?: boolean):
       Promise<SDK.RemoteObject.GetPropertiesResult> {
     return this.getAllProperties(false, _generatePreview, _nonIndexedPropertiesOnly);
   }
 
-  async getAllProperties(
+  override async getAllProperties(
       _accessorPropertiesOnly: boolean, _generatePreview: boolean,
       _nonIndexedPropertiesOnly?: boolean): Promise<SDK.RemoteObject.GetPropertiesResult> {
     const {objectId} = this.extensionObject;
@@ -878,7 +878,7 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
     return {properties: null, internalProperties: null};
   }
 
-  release(): void {
+  override release(): void {
     const {objectId} = this.extensionObject;
     if (objectId) {
       assertNotNullOrUndefined(this.plugin.releaseObject);
@@ -886,11 +886,11 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
     }
   }
 
-  debuggerModel(): SDK.DebuggerModel.DebuggerModel {
+  override debuggerModel(): SDK.DebuggerModel.DebuggerModel {
     return this.callFrame.debuggerModel;
   }
 
-  runtimeModel(): SDK.RuntimeModel.RuntimeModel {
+  override runtimeModel(): SDK.RuntimeModel.RuntimeModel {
     return this.callFrame.debuggerModel.runtimeModel();
   }
 }

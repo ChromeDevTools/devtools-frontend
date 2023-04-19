@@ -166,7 +166,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     if (this.lastRequestedNode) {
       this.lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(OBJECT_GROUP_NAME);
       delete this.lastRequestedNode;
@@ -207,7 +207,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([propertiesWidgetStyles]);
   }

@@ -101,7 +101,7 @@ export class StorageItemsView extends UI.Widget.VBox {
     return Boolean(this.filterRegex);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.refreshItems();
   }
 

@@ -67,7 +67,7 @@ export class ExtensionPanel extends UI.Panel.Panel implements UI.SearchableView.
     this.searchableViewInternal.updateSearchMatchesCount(0);
   }
 
-  searchableView(): UI.SearchableView.SearchableView {
+  override searchableView(): UI.SearchableView.SearchableView {
     return this.searchableViewInternal;
   }
 

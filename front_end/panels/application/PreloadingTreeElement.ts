@@ -36,7 +36,7 @@ export class PreloadingTreeElement extends ApplicationPanelTreeElement {
     // TODO(https://crbug.com/1384419): Set link
   }
 
-  get itemURL(): Platform.DevToolsPath.UrlString {
+  override get itemURL(): Platform.DevToolsPath.UrlString {
     return 'preloading://' as Platform.DevToolsPath.UrlString;
   }
 
@@ -49,7 +49,7 @@ export class PreloadingTreeElement extends ApplicationPanelTreeElement {
     }
   }
 
-  onselect(selectedByUser?: boolean): boolean {
+  override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     this.#selectedInternal = true;
 

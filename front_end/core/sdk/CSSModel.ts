@@ -727,14 +727,14 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.#fontFaces.clear();
   }
 
-  async suspendModel(): Promise<void> {
+  override async suspendModel(): Promise<void> {
     this.#isEnabled = false;
     await this.agent.invoke_disable();
     this.resetStyleSheets();
     this.resetFontFaces();
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
     return this.enable();
   }
 
@@ -813,7 +813,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
-  dispose(): void {
+  override dispose(): void {
     this.disableCSSPropertyTracker();
     super.dispose();
     this.#sourceMapManager.dispose();

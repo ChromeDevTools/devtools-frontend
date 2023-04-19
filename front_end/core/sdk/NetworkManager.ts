@@ -272,7 +272,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: enabled});
   }
 
-  dispose(): void {
+  override dispose(): void {
     Common.Settings.Settings.instance()
         .moduleSetting('cacheDisabled')
         .removeChangeListener(this.cacheDisabledSettingChanged, this);

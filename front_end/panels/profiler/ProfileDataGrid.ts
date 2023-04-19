@@ -183,7 +183,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
     }
   }
 
-  createCell(columnId: string): HTMLElement {
+  override createCell(columnId: string): HTMLElement {
     switch (columnId) {
       case 'self': {
         const cell = this.createValueCell(this.self, this.selfPercent, columnId);
@@ -248,18 +248,18 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
     return ProfileDataGridNode.sort([[this]], sortComparator, force);
   }
 
-  insertChild(child: DataGrid.DataGrid.DataGridNode<unknown>, index: number): void {
+  override insertChild(child: DataGrid.DataGrid.DataGridNode<unknown>, index: number): void {
     const profileDataGridNode = (child as ProfileDataGridNode);
     super.insertChild(profileDataGridNode, index);
     this.childrenByCallUID.set(profileDataGridNode.callUID, (profileDataGridNode as ProfileDataGridNode));
   }
 
-  removeChild(profileDataGridNode: DataGrid.DataGrid.DataGridNode<unknown>): void {
+  override removeChild(profileDataGridNode: DataGrid.DataGrid.DataGridNode<unknown>): void {
     super.removeChild(profileDataGridNode);
     this.childrenByCallUID.delete((profileDataGridNode as ProfileDataGridNode).callUID);
   }
 
-  removeChildren(): void {
+  override removeChildren(): void {
     super.removeChildren();
 
     this.childrenByCallUID.clear();
@@ -280,7 +280,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
     return this.total / this.tree.total * 100.0;
   }
 
-  populate(): void {
+  override populate(): void {
     ProfileDataGridNode.populate(this);
   }
 

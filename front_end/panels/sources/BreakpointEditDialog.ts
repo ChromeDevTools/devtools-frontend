@@ -251,7 +251,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.onFinish({committed, condition: condition as Bindings.BreakpointManager.UserCondition, isLogpoint});
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([breakpointEditDialogStyles]);
   }

@@ -398,7 +398,7 @@ export class ContainerWidget extends VBox {
     return this.materializePromise;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     void this.materialize().then(() => {
       const widget = widgetForView.get(this.view);
       if (widget) {
@@ -444,7 +444,7 @@ class ExpandableContainerWidget extends VBox {
     expandableContainerForView.set(view, this);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     if (this.widget && this.materializePromise) {
       void this.materializePromise.then(() => {
         if (this.titleElement.classList.contains('expanded') && this.widget) {
@@ -628,7 +628,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.closeableTabSetting.set(newClosable);
   }
 
-  widget(): Widget {
+  override widget(): Widget {
     return this.tabbedPaneInternal;
   }
 
@@ -756,7 +756,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     this.persistTabOrder();
   }
 
-  async showView(
+  override async showView(
       view: View, insertBefore?: View|null, userGesture?: boolean, omitFocus?: boolean,
       shouldSelectTab: boolean|undefined = true): Promise<void> {
     this.appendView(view, insertBefore);
@@ -770,7 +770,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     await widget.materialize();
   }
 
-  removeView(view: View): void {
+  override removeView(view: View): void {
     if (!this.tabbedPaneInternal.hasTab(view.viewId())) {
       return;
     }
@@ -869,7 +869,7 @@ class StackLocation extends Location implements ViewLocation {
     }
   }
 
-  async showView(view: View, insertBefore?: View|null): Promise<void> {
+  override async showView(view: View, insertBefore?: View|null): Promise<void> {
     this.appendView(view, insertBefore);
     const container = this.expandableContainers.get(view.viewId());
     if (container) {
@@ -877,7 +877,7 @@ class StackLocation extends Location implements ViewLocation {
     }
   }
 
-  removeView(view: View): void {
+  override removeView(view: View): void {
     const container = this.expandableContainers.get(view.viewId());
     if (!container) {
       return;

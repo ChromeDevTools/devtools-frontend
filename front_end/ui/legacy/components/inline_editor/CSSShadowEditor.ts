@@ -118,7 +118,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     return slider as HTMLInputElement;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.registerCSSFiles([cssShadowEditorStyles]);
     this.updateUI();
   }

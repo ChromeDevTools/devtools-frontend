@@ -18,7 +18,7 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.tabIndex = -1;
   }
 
-  deselect(): void {
+  override deselect(): void {
     super.deselect();
     this.listItemElement.tabIndex = -1;
   }
@@ -27,7 +27,7 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     throw new Error('Unimplemented Method');
   }
 
-  onselect(selectedByUser: boolean|undefined): boolean {
+  override onselect(selectedByUser: boolean|undefined): boolean {
     if (!selectedByUser) {
       return false;
     }
@@ -63,7 +63,7 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     this.categoryLink = null;
   }
 
-  get itemURL(): Platform.DevToolsPath.UrlString {
+  override get itemURL(): Platform.DevToolsPath.UrlString {
     return 'category://' + this.categoryName as Platform.DevToolsPath.UrlString;
   }
 
@@ -71,24 +71,24 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     this.categoryLink = link;
   }
 
-  onselect(selectedByUser: boolean|undefined): boolean {
+  override onselect(selectedByUser: boolean|undefined): boolean {
     super.onselect(selectedByUser);
     this.resourcesPanel.showCategoryView(this.categoryName, this.categoryLink);
     return false;
   }
 
-  onattach(): void {
+  override onattach(): void {
     super.onattach();
     if (this.expandedSetting.get()) {
       this.expand();
     }
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     this.expandedSetting.set(true);
   }
 
-  oncollapse(): void {
+  override oncollapse(): void {
     this.expandedSetting.set(false);
   }
 }

@@ -115,7 +115,7 @@ export class NetworkNavigatorView extends NavigatorView {
     Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.registerCSSFiles([sourcesNavigatorStyles]);
     super.wasShown();
   }
@@ -131,7 +131,7 @@ export class NetworkNavigatorView extends NavigatorView {
     return networkNavigatorViewInstance;
   }
 
-  acceptProject(project: Workspace.Workspace.Project): boolean {
+  override acceptProject(project: Workspace.Workspace.Project): boolean {
     return project.type() === Workspace.Workspace.projectTypes.Network;
   }
 
@@ -151,7 +151,7 @@ export class NetworkNavigatorView extends NavigatorView {
     }
   }
 
-  uiSourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+  override uiSourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
     const inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (!inspectedURL) {
@@ -192,13 +192,13 @@ export class FilesNavigatorView extends NavigatorView {
     return filesNavigatorViewInstance;
   }
 
-  acceptProject(project: Workspace.Workspace.Project): boolean {
+  override acceptProject(project: Workspace.Workspace.Project): boolean {
     return project.type() === Workspace.Workspace.projectTypes.FileSystem &&
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides' &&
         !Snippets.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
 
-  handleContextMenu(event: Event): void {
+  override handleContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
     void contextMenu.show();
@@ -293,7 +293,7 @@ export class OverridesNavigatorView extends NavigatorView {
     Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(true);
   }
 
-  acceptProject(project: Workspace.Workspace.Project): boolean {
+  override acceptProject(project: Workspace.Workspace.Project): boolean {
     return project === Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
   }
 }
@@ -322,7 +322,7 @@ export class ContentScriptsNavigatorView extends NavigatorView {
     return contentScriptsNavigatorViewInstance;
   }
 
-  acceptProject(project: Workspace.Workspace.Project): boolean {
+  override acceptProject(project: Workspace.Workspace.Project): boolean {
     return project.type() === Workspace.Workspace.projectTypes.ContentScripts;
   }
 }
@@ -359,11 +359,11 @@ export class SnippetsNavigatorView extends NavigatorView {
     return snippetsNavigatorViewInstance;
   }
 
-  acceptProject(project: Workspace.Workspace.Project): boolean {
+  override acceptProject(project: Workspace.Workspace.Project): boolean {
     return Snippets.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
 
-  handleContextMenu(event: Event): void {
+  override handleContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(
         i18nString(UIStrings.createNewSnippet),
@@ -372,7 +372,7 @@ export class SnippetsNavigatorView extends NavigatorView {
     void contextMenu.show();
   }
 
-  handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void {
+  override handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void {
     const uiSourceCode = node.uiSourceCode();
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(

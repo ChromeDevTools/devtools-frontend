@@ -36,7 +36,7 @@ export class InterestGroupTreeElement extends ApplicationPanelTreeElement {
     this.view = new InterestGroupStorageView(this);
   }
 
-  get itemURL(): Platform.DevToolsPath.UrlString {
+  override get itemURL(): Platform.DevToolsPath.UrlString {
     return 'interest-groups://' as Platform.DevToolsPath.UrlString;
   }
 
@@ -50,7 +50,7 @@ export class InterestGroupTreeElement extends ApplicationPanelTreeElement {
     return response.details;
   }
 
-  onselect(selectedByUser?: boolean): boolean {
+  override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     this.showView(this.view);
     Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.interest_groups]);

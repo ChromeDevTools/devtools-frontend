@@ -118,7 +118,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     return throttlingSettingsTabInstance;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.list.registerCSSFiles([throttlingSettingsTabStyles]);
     this.registerCSSFiles([throttlingSettingsTabStyles]);

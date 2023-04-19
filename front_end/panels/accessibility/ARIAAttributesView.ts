@@ -32,7 +32,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
     this.treeOutline = this.createTreeOutline();
   }
 
-  setNode(node: SDK.DOMModel.DOMNode|null): void {
+  override setNode(node: SDK.DOMModel.DOMNode|null): void {
     super.setNode(node);
     this.treeOutline.removeChildren();
     if (!node) {
@@ -83,7 +83,7 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
     return valueElement;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.populateListItem();
     this.listItemElement.addEventListener('click', this.mouseClick.bind(this));
   }

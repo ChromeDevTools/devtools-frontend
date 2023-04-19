@@ -91,7 +91,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     }
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     const node = this.node();
     this.axNodeSubPane.setNode(node);
     this.ariaSubPane.setNode(node);
@@ -115,7 +115,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
     this.accessibilityNodeCallback(accessibilityModel.axNodeForDOMNode(node));
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
 
     // Pull down the latest date for this node.
@@ -131,7 +131,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this, {scoped: true});
   }
 
-  willHide(): void {
+  override willHide(): void {
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(

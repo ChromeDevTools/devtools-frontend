@@ -75,7 +75,7 @@ export class TopDownProfileDataGridNode extends ProfileDataGridNode {
     }
   }
 
-  populateChildren(): void {
+  override populateChildren(): void {
     TopDownProfileDataGridNode.sharedPopulate(this);
   }
 }
@@ -91,7 +91,7 @@ export class TopDownProfileDataGridTree extends ProfileDataGridTree {
     ProfileDataGridNode.populate(this);
   }
 
-  focus(profileDataGridNode: ProfileDataGridNode): void {
+  override focus(profileDataGridNode: ProfileDataGridNode): void {
     if (!profileDataGridNode) {
       return;
     }
@@ -103,7 +103,7 @@ export class TopDownProfileDataGridTree extends ProfileDataGridTree {
     this.total = profileDataGridNode.total;
   }
 
-  exclude(profileDataGridNode: ProfileDataGridNode): void {
+  override exclude(profileDataGridNode: ProfileDataGridNode): void {
     if (!profileDataGridNode) {
       return;
     }
@@ -117,7 +117,7 @@ export class TopDownProfileDataGridTree extends ProfileDataGridTree {
     }
   }
 
-  restore(): void {
+  override restore(): void {
     if (!this.savedChildren) {
       return;
     }
@@ -127,7 +127,7 @@ export class TopDownProfileDataGridTree extends ProfileDataGridTree {
     super.restore();
   }
 
-  populateChildren(): void {
+  override populateChildren(): void {
     TopDownProfileDataGridNode.sharedPopulate(this);
   }
 }

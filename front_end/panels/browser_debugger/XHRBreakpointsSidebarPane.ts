@@ -381,7 +381,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
       this.setBreakpoint(url);
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([xhrBreakpointsSidebarPaneStyles]);
   }

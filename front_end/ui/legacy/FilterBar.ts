@@ -128,7 +128,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
     this.dispatchEventToListeners(FilterBarEvents.Changed);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.updateFilterBar();
   }
@@ -146,7 +146,7 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
     }
   }
 
-  focus(): void {
+  override focus(): void {
     for (let i = 0; i < this.filters.length; ++i) {
       if (this.filters[i] instanceof TextFilterUI) {
         const textFilterUI = (this.filters[i] as TextFilterUI);

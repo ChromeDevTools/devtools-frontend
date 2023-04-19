@@ -177,7 +177,7 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this.update();
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     this.reportView.setTitle(this.buildTitle());
     this.URLFieldValue.textContent = this.targetInfo.url;
     this.hasDOMAccessValue.textContent = booleanToYesNo(this.targetInfo.canAccessOpener);
@@ -210,7 +210,7 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
   setTargetInfo(targetInfo: Protocol.Target.TargetInfo): void {
     this.targetInfo = targetInfo;
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.reportView.registerCSSFiles([frameDetailsReportViewStyles]);
     this.registerCSSFiles([frameDetailsReportViewStyles]);
@@ -303,10 +303,10 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     await this.updateCoopCoepStatus();
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.reportView.registerCSSFiles([frameDetailsReportViewStyles]);
     this.registerCSSFiles([frameDetailsReportViewStyles]);

@@ -287,7 +287,7 @@ export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     const adScriptId = await this.#frame?.parentFrame()?.getAdScriptId(this.#frame?.id);
     const debuggerModel = adScriptId?.debuggerId ?
         await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(adScriptId?.debuggerId) :

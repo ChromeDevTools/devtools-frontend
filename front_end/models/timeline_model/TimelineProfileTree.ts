@@ -63,7 +63,7 @@ export class TopDownNode extends Node {
   root: TopDownRootNode|null;
   private hasChildrenInternal: boolean;
   childrenInternal: ChildrenCache|null;
-  parent: TopDownNode|null;
+  override parent: TopDownNode|null;
 
   constructor(id: string|symbol, event: SDK.TracingModel.Event|null, parent: TopDownNode|null) {
     super(id, event);
@@ -73,15 +73,15 @@ export class TopDownNode extends Node {
     this.parent = parent;
   }
 
-  hasChildren(): boolean {
+  override hasChildren(): boolean {
     return this.hasChildrenInternal;
   }
 
-  setHasChildren(value: boolean): void {
+  override setHasChildren(value: boolean): void {
     this.hasChildrenInternal = value;
   }
 
-  children(): ChildrenCache {
+  override children(): ChildrenCache {
     return this.childrenInternal || this.buildChildren();
   }
 
@@ -214,8 +214,8 @@ export class TopDownRootNode extends TopDownNode {
   readonly endTime: number;
   eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null|undefined;
   readonly doNotAggregate: boolean|undefined;
-  totalTime: number;
-  selfTime: number;
+  override totalTime: number;
+  override selfTime: number;
 
   constructor(
       events: SDK.TracingModel.Event[], filters: TimelineModelFilter[], startTime: number, endTime: number,
@@ -232,7 +232,7 @@ export class TopDownRootNode extends TopDownNode {
     this.selfTime = this.totalTime;
   }
 
-  children(): ChildrenCache {
+  override children(): ChildrenCache {
     return this.childrenInternal || this.grouppedTopNodes();
   }
 
@@ -271,7 +271,7 @@ export class BottomUpRootNode extends Node {
   readonly startTime: number;
   readonly endTime: number;
   private eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null;
-  totalTime: number;
+  override totalTime: number;
 
   constructor(
       events: SDK.TracingModel.Event[], textFilter: TimelineModelFilter, filters: TimelineModelFilter[],
@@ -287,7 +287,7 @@ export class BottomUpRootNode extends Node {
     this.totalTime = endTime - startTime;
   }
 
-  hasChildren(): boolean {
+  override hasChildren(): boolean {
     return true;
   }
 
@@ -300,7 +300,7 @@ export class BottomUpRootNode extends Node {
     return children;
   }
 
-  children(): ChildrenCache {
+  override children(): ChildrenCache {
     if (!this.childrenInternal) {
       this.childrenInternal = this.filterChildren(this.grouppedTopNodes());
     }
@@ -377,7 +377,7 @@ export class BottomUpRootNode extends Node {
 
 export class GroupNode extends Node {
   private readonly childrenInternal: ChildrenCache;
-  isGroupNodeInternal: boolean;
+  override isGroupNodeInternal: boolean;
 
   constructor(id: string, parent: BottomUpRootNode|TopDownRootNode, event: SDK.TracingModel.Event) {
     super(id, event);
@@ -393,19 +393,19 @@ export class GroupNode extends Node {
     child.parent = this;
   }
 
-  hasChildren(): boolean {
+  override hasChildren(): boolean {
     return true;
   }
 
-  children(): ChildrenCache {
+  override children(): ChildrenCache {
     return this.childrenInternal;
   }
 }
 
 export class BottomUpNode extends Node {
-  parent: Node;
+  override parent: Node;
   private root: BottomUpRootNode;
-  depth: number;
+  override depth: number;
   private cachedChildren: ChildrenCache|null;
   private hasChildrenInternal: boolean;
 
@@ -418,15 +418,15 @@ export class BottomUpNode extends Node {
     this.hasChildrenInternal = hasChildren;
   }
 
-  hasChildren(): boolean {
+  override hasChildren(): boolean {
     return this.hasChildrenInternal;
   }
 
-  setHasChildren(value: boolean): void {
+  override setHasChildren(value: boolean): void {
     this.hasChildrenInternal = value;
   }
 
-  children(): ChildrenCache {
+  override children(): ChildrenCache {
     if (this.cachedChildren) {
       return this.cachedChildren;
     }
@@ -486,7 +486,7 @@ export class BottomUpNode extends Node {
     return this.cachedChildren;
   }
 
-  searchTree(matchFunction: (arg0: SDK.TracingModel.Event) => boolean, results?: Node[]): Node[] {
+  override searchTree(matchFunction: (arg0: SDK.TracingModel.Event) => boolean, results?: Node[]): Node[] {
     results = results || [];
     if (this.event && matchFunction(this.event)) {
       results.push(this);

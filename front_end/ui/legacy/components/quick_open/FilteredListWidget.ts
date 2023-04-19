@@ -214,12 +214,12 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     return this.query.substring(this.prefix.length).trim();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.registerCSSFiles([filteredListWidgetStyles]);
     this.attachProvider();
   }
 
-  willHide(): void {
+  override willHide(): void {
     if (this.provider) {
       this.provider.detach();
     }

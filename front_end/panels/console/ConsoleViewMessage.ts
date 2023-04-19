@@ -1722,7 +1722,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
     return this.collapsedInternal;
   }
 
-  maybeHandleOnKeyDown(event: KeyboardEvent): boolean {
+  override maybeHandleOnKeyDown(event: KeyboardEvent): boolean {
     const focusedChildIndex = this.focusedChildIndex();
     if (focusedChildIndex === -1) {
       if ((event.key === 'ArrowLeft' && !this.collapsedInternal) ||
@@ -1734,7 +1734,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
     return super.maybeHandleOnKeyDown(event);
   }
 
-  toMessageElement(): HTMLElement {
+  override toMessageElement(): HTMLElement {
     let element: HTMLElement|null = this.elementInternal || null;
     if (!element) {
       element = super.toMessageElement();
@@ -1752,7 +1752,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
     return element;
   }
 
-  showRepeatCountElement(): void {
+  override showRepeatCountElement(): void {
     super.showRepeatCountElement();
     if (this.repeatCountElement && this.expandGroupIcon) {
       this.repeatCountElement.insertBefore(this.expandGroupIcon, this.repeatCountElement.firstChild);
@@ -1793,7 +1793,7 @@ export class ConsoleCommand extends ConsoleViewMessage {
     this.formattedCommand = null;
   }
 
-  contentElement(): HTMLElement {
+  override contentElement(): HTMLElement {
     const contentElement = this.getContentElement();
     if (contentElement) {
       return contentElement;
@@ -1829,7 +1829,7 @@ export class ConsoleCommand extends ConsoleViewMessage {
 }
 
 export class ConsoleCommandResult extends ConsoleViewMessage {
-  contentElement(): HTMLElement {
+  override contentElement(): HTMLElement {
     const element = super.contentElement();
     if (!element.classList.contains('console-user-command-result')) {
       element.classList.add('console-user-command-result');
@@ -1856,14 +1856,14 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
     this.dataGrid = null;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     if (this.dataGrid) {
       this.dataGrid.updateWidths();
     }
     super.wasShown();
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (!this.isVisible()) {
       return;
     }
@@ -1872,7 +1872,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
     }
   }
 
-  contentElement(): HTMLElement {
+  override contentElement(): HTMLElement {
     const contentElement = this.getContentElement();
     if (contentElement) {
       return contentElement;
@@ -1981,7 +1981,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
     return formattedMessage;
   }
 
-  approximateFastHeight(): number {
+  override approximateFastHeight(): number {
     const table = this.message.parameters && this.message.parameters[0];
     if (table && typeof table !== 'string' && table.preview) {
       return defaultConsoleRowHeight * table.preview.properties.length;

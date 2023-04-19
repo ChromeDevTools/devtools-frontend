@@ -373,7 +373,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     return protocolMonitorImplInstance;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     if (this.started) {
       return;
     }

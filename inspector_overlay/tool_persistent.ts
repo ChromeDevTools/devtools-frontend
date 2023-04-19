@@ -98,7 +98,7 @@ export class PersistentOverlay extends Overlay {
   }> = new Map();
   private dragHandler?: DragResizeHandler;
 
-  reset(data: ResetData) {
+  override reset(data: ResetData) {
     super.reset(data);
     this.gridLabelState.gridLayerCounter = 0;
     this.gridLabels.innerHTML = '';
@@ -111,7 +111,7 @@ export class PersistentOverlay extends Overlay {
     this.gridLabels = gridLabels;
   }
 
-  install() {
+  override install() {
     this.document.body.classList.add('fill');
 
     const canvas = this.document.createElement('canvas');
@@ -127,7 +127,7 @@ export class PersistentOverlay extends Overlay {
     this.dragHandler?.install();
   }
 
-  uninstall() {
+  override uninstall() {
     this.document.body.classList.remove('fill');
     this.document.body.innerHTML = '';
     this.draggableBorders = new Map();

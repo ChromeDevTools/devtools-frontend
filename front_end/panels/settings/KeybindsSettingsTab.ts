@@ -282,12 +282,12 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     }
   }
 
-  willHide(): void {
+  override willHide(): void {
     if (this.editingItem) {
       this.stopEditing(this.editingItem);
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([keybindsSettingsTabStyles]);
   }

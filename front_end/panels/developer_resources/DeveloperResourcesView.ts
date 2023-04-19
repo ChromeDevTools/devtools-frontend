@@ -80,7 +80,7 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
     this.loader.addEventListener(SDK.PageResourceLoader.Events.Update, this.update, this);
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     this.listView.reset();
     this.listView.update(this.loader.getResourcesLoaded().values());
     this.updateStats();
@@ -112,7 +112,7 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
     this.updateStats();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([developerResourcesViewStyles]);
   }

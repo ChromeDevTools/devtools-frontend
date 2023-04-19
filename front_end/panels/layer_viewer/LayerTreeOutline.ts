@@ -64,7 +64,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
   private layerViewHost: LayerViewHost;
   private treeOutline: UI.TreeOutline.TreeOutlineInShadow;
   private lastHoveredNode: LayerTreeElement|null;
-  element: HTMLElement;
+  override element: HTMLElement;
   private layerTree?: SDK.LayerTreeBase.LayerTreeBase|null;
   private layerSnapshotMap?: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
 
@@ -85,7 +85,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
     this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
   }
 
-  focus(): void {
+  override focus(): void {
     this.treeOutline.focus();
   }
 
@@ -268,7 +268,7 @@ export class LayerTreeElement extends UI.TreeOutline.TreeElement {
     this.title = title;
   }
 
-  onselect(): boolean {
+  override onselect(): boolean {
     this.treeOutlineInternal.selectedNodeChanged(this);
     return false;
   }

@@ -358,19 +358,19 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
     this.xmlView.innerPerformSearch(false, false);
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.listItemElement.classList.toggle('shadow-xml-view-close-tag', this.closeTag);
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     this.updateTitle();
   }
 
-  oncollapse(): void {
+  override oncollapse(): void {
     this.updateTitle();
   }
 
-  async onpopulate(): Promise<void> {
+  override async onpopulate(): Promise<void> {
     XMLViewNode.populate(this, this.node, this.xmlView);
     this.appendChild(new XMLViewNode(this.node, true, this.xmlView));
   }

@@ -135,7 +135,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     root.expand();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     if (this.hasShown) {
       return;
     }

@@ -373,7 +373,7 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('allocationStack', nodeIndex);
   }
 
-  dispose(): void {
+  override dispose(): void {
     throw new Error('Should never be called');
   }
 

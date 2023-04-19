@@ -36,11 +36,11 @@ class MemoryMarker extends CodeMirror.GutterMarker {
     super();
   }
 
-  eq(other: MemoryMarker): boolean {
+  override eq(other: MemoryMarker): boolean {
     return this.value === other.value;
   }
 
-  toDOM(): HTMLElement {
+  override toDOM(): HTMLElement {
     const element = document.createElement('div');
     element.className = 'cm-profileMarker';
     let value = this.value;
@@ -70,11 +70,11 @@ class PerformanceMarker extends CodeMirror.GutterMarker {
     super();
   }
 
-  eq(other: MemoryMarker): boolean {
+  override eq(other: MemoryMarker): boolean {
     return this.value === other.value;
   }
 
-  toDOM(): HTMLElement {
+  override toDOM(): HTMLElement {
     const element = document.createElement('div');
     element.className = 'cm-profileMarker';
     const intensity = Platform.NumberUtilities.clamp(Math.log10(1 + 10 * this.value) / 5, 0.02, 1);
@@ -129,7 +129,7 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
     });
   }
 
-  static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+  static override accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     return uiSourceCode.contentType().hasScripts();
   }
 
@@ -137,13 +137,13 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
     return this.uiSourceCode.getDecorationData(type);
   }
 
-  editorExtension(): CodeMirror.Extension {
+  override editorExtension(): CodeMirror.Extension {
     const map = this.getLineMap();
     return this.compartment.of(
         !map ? [] : [this.field.init(state => markersFromProfileData(map, state, type)), this.gutter, theme]);
   }
 
-  decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor): void {
+  override decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor): void {
     const installed = Boolean(editor.state.field(this.field, false));
     const map = this.getLineMap();
     if (!map) {

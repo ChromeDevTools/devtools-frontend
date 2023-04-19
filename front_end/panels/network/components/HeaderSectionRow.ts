@@ -261,7 +261,7 @@ export class HeaderSectionRow extends HTMLElement {
     // clang-format on
   }
 
-  focus(): void {
+  override focus(): void {
     requestAnimationFrame(() => {
       const editableName = this.#shadow.querySelector<HTMLElement>('.header-name devtools-editable-span');
       editableName?.focus();

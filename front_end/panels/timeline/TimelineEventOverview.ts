@@ -92,7 +92,7 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
     super('network', i18nString(UIStrings.net));
   }
 
-  update(): void {
+  override update(): void {
     super.update();
     if (!this.model) {
       return;
@@ -140,13 +140,13 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     this.backgroundCanvas = (this.element.createChild('canvas', 'fill background') as HTMLCanvasElement);
   }
 
-  resetCanvas(): void {
+  override resetCanvas(): void {
     super.resetCanvas();
     this.backgroundCanvas.width = this.element.clientWidth * window.devicePixelRatio;
     this.backgroundCanvas.height = this.element.clientHeight * window.devicePixelRatio;
   }
 
-  update(): void {
+  override update(): void {
     super.update();
     if (!this.model) {
       return;
@@ -252,7 +252,7 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
     super('responsiveness', null);
   }
 
-  update(): void {
+  override update(): void {
     super.update();
     if (!this.model) {
       return;
@@ -319,7 +319,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     this.reset();
   }
 
-  update(): void {
+  override update(): void {
     super.update();
     const frames = this.model ? this.model.filmStripModel().frames() : [];
     if (!frames.length) {
@@ -391,7 +391,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     }
   }
 
-  async overviewInfoPromise(x: number): Promise<Element|null> {
+  override async overviewInfoPromise(x: number): Promise<Element|null> {
     if (!this.model || !this.model.filmStripModel().frames().length) {
       return null;
     }
@@ -417,7 +417,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     return element;
   }
 
-  reset(): void {
+  override reset(): void {
     this.lastFrame = null;
     this.lastElement = null;
     this.frameToImagePromise = new Map();
@@ -440,7 +440,7 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     this.heapSizeLabel.textContent = '';
   }
 
-  update(): void {
+  override update(): void {
     super.update();
     const ratio = window.devicePixelRatio;
 

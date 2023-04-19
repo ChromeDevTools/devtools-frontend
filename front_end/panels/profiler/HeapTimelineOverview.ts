@@ -189,7 +189,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     }
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.updateOverviewCanvas = true;
     this.scheduleUpdate();
   }

@@ -77,7 +77,7 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
     this.contentElement.tabIndex = 0;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.headersUpdated();
     this.list.registerCSSFiles([networkManageCustomHeadersViewStyles]);
     this.registerCSSFiles([networkManageCustomHeadersViewStyles]);

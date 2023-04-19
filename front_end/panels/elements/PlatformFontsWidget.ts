@@ -80,7 +80,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  doUpdate(): Promise<any> {
+  override doUpdate(): Promise<any> {
     const cssModel = this.sharedModel.cssModel();
     const node = this.sharedModel.node();
     if (!node || !cssModel) {
@@ -125,7 +125,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
       fontUsageElement.textContent = i18nString(UIStrings.dGlyphs, {n: usage});
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([platformFontsWidgetStyles]);
   }

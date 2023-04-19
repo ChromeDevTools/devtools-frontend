@@ -121,7 +121,7 @@ export class AlignContentValidator extends CSSRuleValidator {
     super(['align-content']);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.AlignContent;
   }
 
@@ -157,7 +157,7 @@ export class FlexItemValidator extends CSSRuleValidator {
     super(['flex', 'flex-basis', 'flex-grow', 'flex-shrink']);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.FlexItem;
   }
 
@@ -190,7 +190,7 @@ export class FlexContainerValidator extends CSSRuleValidator {
     super(['flex-direction', 'flex-flow', 'flex-wrap']);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.FlexContainer;
   }
 
@@ -232,7 +232,7 @@ export class GridContainerValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.GridContainer;
   }
 
@@ -273,7 +273,7 @@ export class GridItemValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.GridItem;
   }
 
@@ -311,7 +311,7 @@ export class FlexOrGridItemValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.FlexOrGridItem;
   }
 
@@ -351,7 +351,7 @@ export class FlexGridValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.FlexGrid;
   }
 
@@ -393,7 +393,7 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.MulticolFlexGrid;
   }
 
@@ -433,7 +433,7 @@ export class PaddingValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.Padding;
   }
 
@@ -480,7 +480,7 @@ export class PositionValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.Position;
   }
 
@@ -516,7 +516,7 @@ export class ZIndexValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.ZIndex;
   }
 
@@ -560,7 +560,7 @@ export class SizingValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.Sizing;
   }
 
@@ -604,7 +604,7 @@ export class FontVariationSettingsValidator extends CSSRuleValidator {
     ]);
   }
 
-  getMetricType(): Host.UserMetrics.CSSHintType {
+  override getMetricType(): Host.UserMetrics.CSSHintType {
     return Host.UserMetrics.CSSHintType.FontVariationSettings;
   }
 

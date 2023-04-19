@@ -1542,7 +1542,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     return !this.normal;
   }
 
-  editingSelectorCommitted(
+  override editingSelectorCommitted(
       element: Element, newContent: string, oldContent: string, context: Context|undefined,
       moveDirection: string): void {
     if (!this.isBlank) {
@@ -1593,7 +1593,7 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     }
   }
 
-  editingSelectorCancelled(): void {
+  override editingSelectorCancelled(): void {
     this.parentPane.setUserOperation(false);
     if (!this.isBlank) {
       super.editingSelectorCancelled();
@@ -1620,14 +1620,14 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
     this.selectorElement.className = 'keyframe-key';
   }
 
-  headerText(): string {
+  override headerText(): string {
     if (this.styleInternal.parentRule instanceof SDK.CSSRule.CSSKeyframeRule) {
       return this.styleInternal.parentRule.key().text;
     }
     return '';
   }
 
-  setHeaderText(rule: SDK.CSSRule.CSSRule, newContent: string): Promise<void> {
+  override setHeaderText(rule: SDK.CSSRule.CSSRule, newContent: string): Promise<void> {
     function updateSourceRanges(this: KeyframePropertiesSection, success: boolean): void {
       if (!success) {
         return;
@@ -1645,24 +1645,24 @@ export class KeyframePropertiesSection extends StylePropertiesSection {
     return rule.setKeyText(newContent).then(updateSourceRanges.bind(this));
   }
 
-  isPropertyInherited(_propertyName: string): boolean {
+  override isPropertyInherited(_propertyName: string): boolean {
     return false;
   }
 
-  isPropertyOverloaded(_property: SDK.CSSProperty.CSSProperty): boolean {
+  override isPropertyOverloaded(_property: SDK.CSSProperty.CSSProperty): boolean {
     return false;
   }
 
-  markSelectorHighlights(): void {
+  override markSelectorHighlights(): void {
   }
 
-  markSelectorMatches(): void {
+  override markSelectorMatches(): void {
     if (this.styleInternal.parentRule instanceof SDK.CSSRule.CSSKeyframeRule) {
       this.selectorElement.textContent = this.styleInternal.parentRule.key().text;
     }
   }
 
-  highlight(): void {
+  override highlight(): void {
   }
 }
 
@@ -1677,13 +1677,13 @@ export class TryRuleSection extends StylePropertiesSection {
     this.selectorElement.addEventListener('click', ev => ev.stopPropagation(), true);
   }
 
-  headerText(): string {
+  override headerText(): string {
     return '@try';
   }
 }
 
 export class HighlightPseudoStylePropertiesSection extends StylePropertiesSection {
-  isPropertyInherited(_propertyName: string): boolean {
+  override isPropertyInherited(_propertyName: string): boolean {
     // For highlight pseudos, all valid properties are treated as inherited.
     // Note that the meaning is reversed in this context; the result of
     // returning false here is that properties of inherited pseudos will never

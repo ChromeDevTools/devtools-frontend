@@ -160,7 +160,7 @@ export class HeapSnapshotSortableDataGrid extends
     Common.ObjectWrapper.eventMixin<EventTypes, typeof HeapSnapshotSortableDataGridBase>(
         HeapSnapshotSortableDataGridBase) {
   snapshot: HeapSnapshotProxy|null;
-  selectedNode: HeapSnapshotGridNode|null;
+  override selectedNode: HeapSnapshotGridNode|null;
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;
   readonly dataDisplayDelegateInternal: DataDisplayDelegate;
   recursiveSortingDepth: number;
@@ -238,7 +238,7 @@ export class HeapSnapshotSortableDataGrid extends
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     if (this.nameFilter) {
       this.nameFilter.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onNameFilterChanged, this);
       this.updateVisibleNodes(true);
@@ -254,7 +254,7 @@ export class HeapSnapshotSortableDataGrid extends
     this.dispatchEventToListeners(HeapSnapshotSortableDataGridEvents.ContentShown, this);
   }
 
-  willHide(): void {
+  override willHide(): void {
     if (this.nameFilter) {
       this.nameFilter.removeEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onNameFilterChanged, this);
     }
@@ -426,7 +426,7 @@ export type EventTypes = {
 export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
   topPaddingHeight: number;
   bottomPaddingHeight: number;
-  selectedNode: HeapSnapshotGridNode|null;
+  override selectedNode: HeapSnapshotGridNode|null;
   scrollToResolveCallback?: (() => void)|null;
 
   constructor(
@@ -439,15 +439,15 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     this.selectedNode = null;
   }
 
-  topLevelNodes(): HeapSnapshotGridNode[] {
+  override topLevelNodes(): HeapSnapshotGridNode[] {
     return this.allChildren(this.rootNode());
   }
 
-  appendChildAfterSorting(_child: HeapSnapshotGridNode): void {
+  override appendChildAfterSorting(_child: HeapSnapshotGridNode): void {
     // Do nothing here, it will be added in updateVisibleNodes.
   }
 
-  updateVisibleNodes(force: boolean): void {
+  override updateVisibleNodes(force: boolean): void {
     // Guard zone is used to ensure there are always some extra items
     // above and below the viewport to support keyboard navigation.
     const guardZoneHeight = 40;
@@ -596,7 +596,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     return height - (pathToReveal[pathToReveal.length - 1] as HeapSnapshotGridNode).nodeSelfHeight();
   }
 
-  allChildren(parent: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>): HeapSnapshotGridNode[] {
+  override allChildren(parent: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>): HeapSnapshotGridNode[] {
     const children = adjacencyMap.get(parent) || [];
     if (!adjacencyMap.has(parent)) {
       adjacencyMap.set(parent, children);
@@ -608,15 +608,15 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     this.allChildren(parent).push(node);
   }
 
-  insertChild(parent: HeapSnapshotGridNode, node: HeapSnapshotGridNode, index: number): void {
+  override insertChild(parent: HeapSnapshotGridNode, node: HeapSnapshotGridNode, index: number): void {
     this.allChildren(parent).splice(index, 0, (node as HeapSnapshotGridNode));
   }
 
-  removeChildByIndex(parent: HeapSnapshotGridNode, index: number): void {
+  override removeChildByIndex(parent: HeapSnapshotGridNode, index: number): void {
     this.allChildren(parent).splice(index, 1);
   }
 
-  removeAllChildren(parent: HeapSnapshotGridNode): void {
+  override removeAllChildren(parent: HeapSnapshotGridNode): void {
     adjacencyMap.delete(parent);
   }
 
@@ -634,7 +634,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     return elemBottom <= viewportBottom && elemTop >= viewportTop;
   }
 
-  onResize(): void {
+  override onResize(): void {
     super.onResize();
     this.updateVisibleNodes(false);
   }
@@ -677,7 +677,7 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
     super(heapProfilerModel, dataDisplayDelegate, dataGridParameters);
   }
 
-  async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
     this.snapshot = snapshot;
     const node =
         new HeapSnapshotModel.HeapSnapshotModel.Node(-1, 'root', 0, nodeIndex || snapshot.rootNodeIndex, 0, 0, '');
@@ -690,7 +690,7 @@ export class HeapSnapshotContainmentDataGrid extends HeapSnapshotSortableDataGri
     return new HeapSnapshotObjectNode(this, snapshot, fakeEdge, null);
   }
 
-  sortingChanged(): void {
+  override sortingChanged(): void {
     const rootNode = this.rootNode();
     if (rootNode.hasChildren()) {
       void (rootNode as HeapSnapshotGridNode).sort();
@@ -717,13 +717,13 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     super(heapProfilerModel, dataDisplayDelegate, i18nString(UIStrings.heapSnapshotRetainment), columns);
   }
 
-  createRootNode(snapshot: HeapSnapshotProxy, node: HeapSnapshotModel.HeapSnapshotModel.Node):
+  override createRootNode(snapshot: HeapSnapshotProxy, node: HeapSnapshotModel.HeapSnapshotModel.Node):
       HeapSnapshotRetainingObjectNode {
     const fakeEdge = new HeapSnapshotModel.HeapSnapshotModel.Edge('', node, '', -1);
     return new HeapSnapshotRetainingObjectNode(this, snapshot, fakeEdge, null);
   }
 
-  sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
+  override sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     switch (sortColumn) {
       case 'object':
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', sortAscending, 'count', false);
@@ -745,7 +745,7 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
     this.resetSortingCache();
   }
 
-  async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotProxy, nodeIndex: number): Promise<void> {
     await super.setDataSource(snapshot, nodeIndex);
     this.rootNode().expand();
   }
@@ -791,7 +791,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     this.nextRequestedFilter = null;
   }
 
-  sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
+  override sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     switch (sortColumn) {
       case 'object':
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', sortAscending, 'retainedSize', false);
@@ -807,7 +807,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     }
   }
 
-  async revealObjectByHeapSnapshotId(id: string): Promise<HeapSnapshotGridNode|null> {
+  override async revealObjectByHeapSnapshotId(id: string): Promise<HeapSnapshotGridNode|null> {
     if (!this.snapshot) {
       this.objectIdToSelect = id;
       return null;
@@ -833,7 +833,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     this.removeTopLevelNodes();
   }
 
-  async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
     this.snapshot = snapshot;
     if (this.profileIndex === -1) {
       void this.populateChildren();
@@ -934,11 +934,11 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
         ({displayName: i18nString(UIStrings.heapSnapshotDiff).toString(), columns} as DataGrid.DataGrid.Parameters));
   }
 
-  defaultPopulateCount(): number {
+  override defaultPopulateCount(): number {
     return 50;
   }
 
-  sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
+  override sortFields(sortColumn: string, sortAscending: boolean): HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig {
     switch (sortColumn) {
       case 'object':
         return new HeapSnapshotModel.HeapSnapshotModel.ComparatorConfig('name', sortAscending, 'count', false);
@@ -959,7 +959,7 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     }
   }
 
-  async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
     this.snapshot = snapshot;
   }
 
@@ -1027,7 +1027,7 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
     this.linkifierInternal.reset();
   }
 
-  async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
+  override async setDataSource(snapshot: HeapSnapshotProxy, _nodeIndex: number): Promise<void> {
     this.snapshot = snapshot;
     this.topNodes = await this.snapshot.allocationTracesTops();
     this.populateChildren();
@@ -1043,7 +1043,7 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
     this.updateVisibleNodes(true);
   }
 
-  sortingChanged(): void {
+  override sortingChanged(): void {
     if (this.topNodes !== undefined) {
       this.topNodes.sort(this.createComparator());
       this.rootNode().removeChildren();

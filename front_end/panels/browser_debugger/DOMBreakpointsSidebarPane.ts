@@ -373,7 +373,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     }
     void UI.ViewManager.ViewManager.instance().showView('sources.domBreakpoints');
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([domBreakpointsSidebarPaneStyles]);
   }

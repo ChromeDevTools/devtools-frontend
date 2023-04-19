@@ -111,7 +111,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     return performanceMonitorImplInstance;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     if (!this.model) {
       return;
     }
@@ -130,7 +130,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     this.suspendStateChanged();
   }
 
-  willHide(): void {
+  override willHide(): void {
     if (!this.model) {
       return;
     }
@@ -419,7 +419,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     }
   }
 
-  onResize(): void {
+  override onResize(): void {
     super.onResize();
     this.width = this.canvas.offsetWidth;
     this.canvas.width = Math.round(this.width * window.devicePixelRatio);

@@ -1317,7 +1317,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.innerSetColor(color, undefined, undefined /* colorName */, colorFormat, ChangeSource.Input);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.registerCSSFiles([spectrumStyles]);
     this.hueAlphaWidth = this.hueElement.offsetWidth;
     this.slideHelperWidth = this.hueSlider.offsetWidth / 2;
@@ -1342,7 +1342,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
   }
 
-  willHide(): void {
+  override willHide(): void {
     void this.toggleColorPicker(false);
     if (this.contrastDetails && this.contrastDetailsBackgroundColorPickedToggledBound) {
       this.contrastDetails.removeEventListener(

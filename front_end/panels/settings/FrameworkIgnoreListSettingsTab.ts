@@ -167,7 +167,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     return frameworkIgnoreListSettingsTabInstance;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.list.registerCSSFiles([frameworkIgnoreListSettingsTabStyles]);
     this.registerCSSFiles([frameworkIgnoreListSettingsTabStyles]);

@@ -144,7 +144,7 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
     return eventListenersWidgetInstance;
   }
 
-  doUpdate(): Promise<void> {
+  override doUpdate(): Promise<void> {
     if (this.lastRequestedNode) {
       this.lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(objectGroupName);
       delete this.lastRequestedNode;

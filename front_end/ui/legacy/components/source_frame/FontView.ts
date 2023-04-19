@@ -70,7 +70,7 @@ export class FontView extends UI.View.SimpleView {
     this.mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
   }
 
-  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     return [this.mimeTypeLabel];
   }
 
@@ -125,13 +125,13 @@ export class FontView extends UI.View.SimpleView {
     this.element.appendChild(this.fontPreviewElement);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.createContentIfNeeded();
 
     this.updateFontPreviewSize();
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (this.inResize) {
       return;
     }

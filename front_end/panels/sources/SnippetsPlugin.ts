@@ -26,18 +26,18 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/SnippetsPlugin.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SnippetsPlugin extends Plugin {
-  static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+  static override accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     return Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode);
   }
 
-  rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
+  override rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
     const runSnippet = UI.Toolbar.Toolbar.createActionButtonForId('debugger.run-snippet');
     runSnippet.setText(Host.Platform.isMac() ? i18nString(UIStrings.enter) : i18nString(UIStrings.ctrlenter));
 
     return [runSnippet];
   }
 
-  editorExtension(): CodeMirror.Extension {
+  override editorExtension(): CodeMirror.Extension {
     return TextEditor.JavaScript.completion();
   }
 }

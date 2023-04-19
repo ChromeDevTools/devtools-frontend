@@ -243,7 +243,7 @@ export class SensorsView extends UI.Widget.VBox {
     return _instanceObject;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([sensorsStyles]);
   }

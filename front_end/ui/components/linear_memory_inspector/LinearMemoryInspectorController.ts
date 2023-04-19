@@ -404,7 +404,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     return highlightInfo;
   }
 
-  modelRemoved(model: SDK.RuntimeModel.RuntimeModel): void {
+  override modelRemoved(model: SDK.RuntimeModel.RuntimeModel): void {
     for (const [bufferId, remoteObject] of this.#bufferIdToRemoteObject) {
       if (model === remoteObject.runtimeModel()) {
         this.#bufferIdToRemoteObject.delete(bufferId);

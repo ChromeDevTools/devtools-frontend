@@ -199,7 +199,7 @@ export class SharedStorageItemsView extends StorageItemsView {
     await this.refreshItems();
   }
 
-  async refreshItems(): Promise<void> {
+  override async refreshItems(): Promise<void> {
     if (!this.isShowing()) {
       return;
     }
@@ -208,7 +208,7 @@ export class SharedStorageItemsView extends StorageItemsView {
     this.sharedStorageItemsDispatcher.dispatchEventToListeners(SharedStorageItemsDispatcher.Events.ItemsRefreshed);
   }
 
-  async deleteSelectedItem(): Promise<void> {
+  override async deleteSelectedItem(): Promise<void> {
     if (!this.dataGrid.selectedNode) {
       return;
     }
@@ -216,7 +216,7 @@ export class SharedStorageItemsView extends StorageItemsView {
     await this.#deleteCallback(this.dataGrid.selectedNode);
   }
 
-  async deleteAllItems(): Promise<void> {
+  override async deleteAllItems(): Promise<void> {
     if (!this.hasFilter()) {
       await this.#sharedStorage.clear();
       await this.refreshItems();

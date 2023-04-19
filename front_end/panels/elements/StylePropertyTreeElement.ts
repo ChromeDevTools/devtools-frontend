@@ -763,7 +763,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return this.#propertyTextFromSource !== property.propertyText || this.parentPane().isPropertyChanged(property);
   }
 
-  async onpopulate(): Promise<void> {
+  override async onpopulate(): Promise<void> {
     // Only populate once and if this property is a shorthand.
     if (this.childCount() || !this.isShorthand) {
       return;
@@ -797,7 +797,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.updateTitle();
 
     this.listItemElement.addEventListener('mousedown', event => {
@@ -821,11 +821,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.addEventListener('contextmenu', this.handleCopyContextMenuEvent.bind(this));
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     this.updateExpandElement();
   }
 
-  oncollapse(): void {
+  override oncollapse(): void {
     this.updateExpandElement();
   }
 
@@ -1798,11 +1798,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.styleTextAppliedForTest();
   }
 
-  ondblclick(): boolean {
+  override ondblclick(): boolean {
     return true;  // handled
   }
 
-  isEventWithinDisclosureTriangle(event: Event): boolean {
+  override isEventWithinDisclosureTriangle(event: Event): boolean {
     return event.target === this.expandElement;
   }
 }

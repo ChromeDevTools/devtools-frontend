@@ -150,14 +150,14 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     dataGridWidget.setMinimumSize(0, 250);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.model.addEventListener(
         SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this.cacheContentUpdated, this);
     this.registerCSSFiles([serviceWorkerCacheViewsStyles]);
     void this.updateData(true);
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.model.removeEventListener(
         SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this.cacheContentUpdated, this);
   }
@@ -452,7 +452,7 @@ export class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
     this.varyHeader = request.responseHeaders.find(header => header.name.toLowerCase() === 'vary')?.value || '';
   }
 
-  createCell(columnId: string): HTMLElement {
+  override createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     let value;
     let tooltip = this.request.url() as string;
@@ -509,7 +509,7 @@ export class RequestView extends UI.Widget.VBox {
     this.tabbedPane.show(this.element);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.selectTab();
   }

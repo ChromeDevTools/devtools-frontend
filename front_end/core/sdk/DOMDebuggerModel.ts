@@ -261,11 +261,11 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
     return this.#runtimeModelInternal;
   }
 
-  async suspendModel(): Promise<void> {
+  override async suspendModel(): Promise<void> {
     this.suspended = true;
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
     this.suspended = false;
   }
 
@@ -720,7 +720,7 @@ export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
     this.eventTargetNames = eventTargetNames;
   }
 
-  setEnabled(enabled: boolean): void {
+  override setEnabled(enabled: boolean): void {
     if (this.enabled() === enabled) {
       return;
     }

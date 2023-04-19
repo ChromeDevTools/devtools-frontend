@@ -132,7 +132,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.dispatchEventToListeners(Events.FilterSelected);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.tree.registerCSSFiles([consoleSidebarStyles]);
   }
@@ -227,7 +227,7 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
     return this.filterInternal.name;
   }
 
-  onselect(selectedByUser?: boolean): boolean {
+  override onselect(selectedByUser?: boolean): boolean {
     this.selectedFilterSetting.set(this.filterInternal.name);
     return super.onselect(selectedByUser);
   }

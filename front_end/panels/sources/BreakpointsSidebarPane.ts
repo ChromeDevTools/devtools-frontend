@@ -81,7 +81,7 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
     this.update();
   }
 
-  doUpdate(): Promise<void> {
+  override doUpdate(): Promise<void> {
     return this.#controller.update();
   }
 

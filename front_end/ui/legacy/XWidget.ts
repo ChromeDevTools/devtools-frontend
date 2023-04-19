@@ -98,7 +98,7 @@ export class XWidget extends XElement {
     this.defaultFocusedElement = element;
   }
 
-  focus(): void {
+  override focus(): void {
     if (!this.visible) {
       return;
     }

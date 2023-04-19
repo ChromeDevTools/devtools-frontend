@@ -33,7 +33,7 @@ export class StubIssue extends Issue {
     return `${this.code()}-(${this.cookieNames.join(';')})-(${this.requestIds.join(';')})`;
   }
 
-  requests() {
+  override requests() {
     return this.requestIds.map(id => {
       return {requestId: id as Protocol.Network.RequestId, url: ''};
     });
@@ -43,7 +43,7 @@ export class StubIssue extends Issue {
     return IssueCategory.Other;
   }
 
-  sources() {
+  override sources() {
     return this.locations;
   }
 
@@ -51,13 +51,13 @@ export class StubIssue extends Issue {
     return this.issueKind;
   }
 
-  cookies() {
+  override cookies() {
     return this.cookieNames.map(name => {
       return {name, domain: '', path: ''};
     });
   }
 
-  getIssueId() {
+  override getIssueId() {
     return this.mockIssueId;
   }
 
@@ -94,7 +94,7 @@ export class ThirdPartyStubIssue extends StubIssue {
     this.isThirdParty = isThirdParty;
   }
 
-  isCausedByThirdParty() {
+  override isCausedByThirdParty() {
     return this.isThirdParty;
   }
 }

@@ -230,7 +230,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     return this.sidebarElementInternal;
   }
 
-  childWasDetached(widget: Widget): void {
+  override childWasDetached(widget: Widget): void {
     if (this.detaching) {
       return;
     }
@@ -657,24 +657,24 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     return Math.max(0, totalSize - minMainSize);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.forceUpdateLayout();
     ZoomManager.instance().addEventListener(ZoomManagerEvents.ZoomChanged, this.onZoomChanged, this);
   }
 
-  willHide(): void {
+  override willHide(): void {
     ZoomManager.instance().removeEventListener(ZoomManagerEvents.ZoomChanged, this.onZoomChanged, this);
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.updateLayout();
   }
 
-  onLayout(): void {
+  override onLayout(): void {
     this.updateLayout();
   }
 
-  calculateConstraints(): Constraints {
+  override calculateConstraints(): Constraints {
     if (this.showModeInternal === ShowMode.OnlyMain) {
       return this.mainWidgetInternal ? this.mainWidgetInternal.constraints() : new Constraints();
     }

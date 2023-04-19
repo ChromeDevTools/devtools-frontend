@@ -431,18 +431,18 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (this.isShowing()) {
       this.contentAreaResized();
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.measureHandles();
     this.toolbar.restore();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.model.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
   }
 
@@ -588,7 +588,7 @@ export class Ruler extends UI.Widget.VBox {
     void this.throttler.schedule(this.update.bind(this));
   }
 
-  onResize(): void {
+  override onResize(): void {
     void this.throttler.schedule(this.update.bind(this));
   }
 

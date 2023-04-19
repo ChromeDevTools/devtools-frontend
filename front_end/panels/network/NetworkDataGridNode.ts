@@ -357,7 +357,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     return '';
   }
 
-  createCell(columnId: string): HTMLElement {
+  override createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     this.renderCell(cell, columnId);
     return cell;
@@ -410,18 +410,18 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     this.parentViewInternal.stylesChanged();
   }
 
-  setStriped(isStriped: boolean): void {
+  override setStriped(isStriped: boolean): void {
     super.setStriped(isStriped);
     this.updateBackgroundColor();
   }
 
-  select(supressSelectedEvent?: boolean): void {
+  override select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
     this.updateBackgroundColor();
     this.parentViewInternal.updateNodeSelectedClass(/* isSelected */ true);
   }
 
-  deselect(supressSelectedEvent?: boolean): void {
+  override deselect(supressSelectedEvent?: boolean): void {
     super.deselect(supressSelectedEvent);
     this.updateBackgroundColor();
     this.parentViewInternal.updateNodeSelectedClass(/* isSelected */ false);
@@ -439,7 +439,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     return this.showingInitiatorChainInternal;
   }
 
-  nodeSelfHeight(): number {
+  override nodeSelfHeight(): number {
     return this.parentViewInternal.rowHeight();
   }
 
@@ -480,7 +480,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     return false;
   }
 
-  clearFlatNodes(): void {
+  override clearFlatNodes(): void {
     super.clearFlatNodes();
     this.requestOrFirstKnownChildRequestInternal = null;
   }
@@ -528,7 +528,7 @@ export class NetworkRequestNode extends NetworkNode {
   private initiatorCell: Element|null;
   private requestInternal: SDK.NetworkRequest.NetworkRequest;
   private readonly isNavigationRequestInternal: boolean;
-  selectable: boolean;
+  override selectable: boolean;
   private isOnInitiatorPathInternal: boolean;
   private isOnInitiatedPathInternal: boolean;
   private linkifiedInitiatorAnchor?: HTMLElement;
@@ -779,7 +779,7 @@ export class NetworkRequestNode extends NetworkNode {
     return aValue > bValue ? 1 : -1;
   }
 
-  showingInitiatorChainChanged(): void {
+  override showingInitiatorChainChanged(): void {
     const showInitiatorChain = this.showingInitiatorChain();
 
     const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.requestInternal);
@@ -813,7 +813,7 @@ export class NetworkRequestNode extends NetworkNode {
     this.updateBackgroundColor();
   }
 
-  isOnInitiatorPath(): boolean {
+  override isOnInitiatorPath(): boolean {
     return this.isOnInitiatorPathInternal;
   }
 
@@ -825,11 +825,11 @@ export class NetworkRequestNode extends NetworkNode {
     this.updateBackgroundColor();
   }
 
-  isOnInitiatedPath(): boolean {
+  override isOnInitiatedPath(): boolean {
     return this.isOnInitiatedPathInternal;
   }
 
-  displayType(): string {
+  override displayType(): string {
     const mimeType = this.requestInternal.mimeType || this.requestInternal.requestContentType() || '';
     const resourceType = this.requestInternal.resourceType();
     let simpleType = resourceType.name();
@@ -846,24 +846,24 @@ export class NetworkRequestNode extends NetworkNode {
     return simpleType;
   }
 
-  displayName(): string {
+  override displayName(): string {
     return this.requestInternal.name();
   }
 
-  request(): SDK.NetworkRequest.NetworkRequest {
+  override request(): SDK.NetworkRequest.NetworkRequest {
     return this.requestInternal;
   }
 
-  isNavigationRequest(): boolean {
+  override isNavigationRequest(): boolean {
     const pageLoad = SDK.PageLoad.PageLoad.forRequest(this.requestInternal);
     return pageLoad ? pageLoad.mainRequest === this.requestInternal : false;
   }
 
-  nodeSelfHeight(): number {
+  override nodeSelfHeight(): number {
     return this.parentView().rowHeight();
   }
 
-  createCells(element: Element): void {
+  override createCells(element: Element): void {
     this.nameCell = null;
     this.initiatorCell = null;
 
@@ -887,7 +887,7 @@ export class NetworkRequestNode extends NetworkNode {
     UI.Tooltip.Tooltip.install(element, titleText);
   }
 
-  renderCell(c: Element, columnId: string): void {
+  override renderCell(c: Element, columnId: string): void {
     const cell = (c as HTMLElement);
     switch (columnId) {
       case 'name': {
@@ -996,7 +996,7 @@ export class NetworkRequestNode extends NetworkNode {
     return array ? String(array.length) : '';
   }
 
-  select(supressSelectedEvent?: boolean): void {
+  override select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
     this.parentView().dispatchEventToListeners(Events.RequestSelected, this.requestInternal);
     const selectedElement = (this.dataGrid?.selectedNode?.elementInternal?.firstElementChild as HTMLElement);
@@ -1005,7 +1005,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  deselect(suppressSelectedEvent?: boolean): void {
+  override deselect(suppressSelectedEvent?: boolean): void {
     super.deselect(suppressSelectedEvent);
     const deselectedElement = (this.elementInternal?.firstElementChild as HTMLElement);
     if (deselectedElement) {
@@ -1031,7 +1031,7 @@ export class NetworkRequestNode extends NetworkNode {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
   }
 
-  isFailed(): boolean {
+  override isFailed(): boolean {
     if (this.requestInternal.failed && !this.requestInternal.statusCode) {
       return true;
     }
@@ -1441,7 +1441,7 @@ export class NetworkRequestNode extends NetworkNode {
 }
 
 export class NetworkGroupNode extends NetworkNode {
-  createCells(element: Element): void {
+  override createCells(element: Element): void {
     super.createCells(element);
     const primaryColumn = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).visibleColumnsArray[0];
     const localizedTitle = `${primaryColumn.title}`;
@@ -1450,7 +1450,7 @@ export class NetworkGroupNode extends NetworkNode {
         `${localizedLevel} ${localizedTitle}: ${this.cellAccessibleTextMap.get(primaryColumn.id)}`;
   }
 
-  renderCell(c: Element, columnId: string): void {
+  override renderCell(c: Element, columnId: string): void {
     const columnIndex = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {
       const cell = (c as HTMLElement);
@@ -1461,7 +1461,7 @@ export class NetworkGroupNode extends NetworkNode {
     }
   }
 
-  select(supressSelectedEvent?: boolean): void {
+  override select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
     const firstChildNode = (this.traverseNextNode(false, undefined, true) as NetworkNode);
     const request = firstChildNode?.request();

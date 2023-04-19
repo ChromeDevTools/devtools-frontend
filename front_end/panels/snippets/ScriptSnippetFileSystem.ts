@@ -46,12 +46,12 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     this.snippetsSetting = Common.Settings.Settings.instance().createSetting('scriptSnippets', []);
   }
 
-  initialFilePaths(): Platform.DevToolsPath.EncodedPathString[] {
+  override initialFilePaths(): Platform.DevToolsPath.EncodedPathString[] {
     const savedSnippets: Snippet[] = this.snippetsSetting.get();
     return savedSnippets.map(snippet => escapeSnippetName(snippet.name));
   }
 
-  async createFile(_path: Platform.DevToolsPath.EncodedPathString, _name: Platform.DevToolsPath.RawPathString|null):
+  override async createFile(_path: Platform.DevToolsPath.EncodedPathString, _name: Platform.DevToolsPath.RawPathString|null):
       Promise<Platform.DevToolsPath.EncodedPathString|null> {
     const nextId = this.lastSnippetIdentifierSetting.get() + 1;
     this.lastSnippetIdentifierSetting.set(nextId);
@@ -65,7 +65,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return escapeSnippetName(snippetName);
   }
 
-  async deleteFile(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
+  override async deleteFile(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
     const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
     const allSnippets: Snippet[] = this.snippetsSetting.get();
     const snippets = allSnippets.filter(snippet => snippet.name !== name);
@@ -76,7 +76,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return false;
   }
 
-  async requestFileContent(path: Platform.DevToolsPath.EncodedPathString):
+  override async requestFileContent(path: Platform.DevToolsPath.EncodedPathString):
       Promise<TextUtils.ContentProvider.DeferredContent> {
     const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
     const snippets: Snippet[] = this.snippetsSetting.get();
@@ -87,7 +87,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return {content: null, isEncoded: false, error: `A snippet with name '${name}' was not found`};
   }
 
-  async setFileContent(path: Platform.DevToolsPath.EncodedPathString, content: string, _isBase64: boolean):
+  override async setFileContent(path: Platform.DevToolsPath.EncodedPathString, content: string, _isBase64: boolean):
       Promise<boolean> {
     const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
     const snippets: Snippet[] = this.snippetsSetting.get();
@@ -100,7 +100,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return false;
   }
 
-  renameFile(
+  override renameFile(
       path: Platform.DevToolsPath.EncodedPathString, newName: Platform.DevToolsPath.RawPathString,
       callback: (arg0: boolean, arg1?: string|undefined) => void): void {
     const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
@@ -116,28 +116,28 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     callback(true, newName);
   }
 
-  async searchInPath(query: string, _progress: Common.Progress.Progress): Promise<string[]> {
+  override async searchInPath(query: string, _progress: Common.Progress.Progress): Promise<string[]> {
     const re = new RegExp(Platform.StringUtilities.escapeForRegExp(query), 'i');
     const allSnippets: Snippet[] = this.snippetsSetting.get();
     const matchedSnippets = allSnippets.filter(snippet => snippet.content.match(re));
     return matchedSnippets.map(snippet => `snippet:///${escapeSnippetName(snippet.name)}`);
   }
 
-  mimeFromPath(_path: Platform.DevToolsPath.UrlString): string {
+  override mimeFromPath(_path: Platform.DevToolsPath.UrlString): string {
     return 'text/javascript';
   }
 
-  contentType(_path: string): Common.ResourceType.ResourceType {
+  override contentType(_path: string): Common.ResourceType.ResourceType {
     return Common.ResourceType.resourceTypes.Script;
   }
 
-  tooltipForURL(url: Platform.DevToolsPath.UrlString): string {
+  override tooltipForURL(url: Platform.DevToolsPath.UrlString): string {
     return i18nString(
         UIStrings.linkedTo,
         {PH1: unescapeSnippetName(Common.ParsedURL.ParsedURL.sliceUrlToEncodedPathString(url, this.path().length))});
   }
 
-  supportsAutomapping(): boolean {
+  override supportsAutomapping(): boolean {
     return true;
   }
 }

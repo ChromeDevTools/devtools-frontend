@@ -462,7 +462,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
   private updateListVisibility(): void {
     this.contentElement.classList.toggle('service-worker-list-empty', this.sections.size === 0);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([
       serviceWorkersViewStyles,

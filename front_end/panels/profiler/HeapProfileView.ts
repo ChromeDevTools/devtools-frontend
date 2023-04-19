@@ -122,9 +122,9 @@ function convertToSamplingHeapProfile(profileHeader: SamplingHeapProfileHeader):
 }
 
 export class HeapProfileView extends ProfileView implements UI.SearchableView.Searchable {
-  profileHeader: SamplingHeapProfileHeader;
+  override profileHeader: SamplingHeapProfileHeader;
   readonly profileType: SamplingHeapProfileTypeBase;
-  adjustedTotal: number;
+  override adjustedTotal: number;
   readonly selectedSizeText: UI.Toolbar.ToolbarText;
   timestamps: number[];
   sizes: number[];
@@ -168,7 +168,7 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
     }
   }
 
-  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     return [...await super.toolbarItems(), this.selectedSizeText];
   }
 
@@ -227,7 +227,7 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
     this.timelineOverview.setSamples(samples);
   }
 
-  columnHeader(columnId: string): Common.UIString.LocalizedString {
+  override columnHeader(columnId: string): Common.UIString.LocalizedString {
     switch (columnId) {
       case 'self':
         return i18nString(UIStrings.selfSizeBytes);
@@ -237,7 +237,7 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
     return Common.UIString.LocalizedEmptyString;
   }
 
-  createFlameChartDataProvider(): ProfileFlameChartDataProvider {
+  override createFlameChartDataProvider(): ProfileFlameChartDataProvider {
     return new HeapFlameChartDataProvider(
         (this.profile() as SamplingHeapProfileModel), this.profileHeader.heapProfilerModel());
   }
@@ -254,23 +254,23 @@ export class SamplingHeapProfileTypeBase extends
     this.clearedDuringRecording = false;
   }
 
-  profileBeingRecorded(): SamplingHeapProfileHeader|null {
+  override profileBeingRecorded(): SamplingHeapProfileHeader|null {
     return super.profileBeingRecorded() as SamplingHeapProfileHeader | null;
   }
 
-  typeName(): string {
+  override typeName(): string {
     return 'Heap';
   }
 
-  fileExtension(): string {
+  override fileExtension(): string {
     return '.heapprofile';
   }
 
-  get buttonTooltip(): Common.UIString.LocalizedString {
+  override get buttonTooltip(): Common.UIString.LocalizedString {
     return this.recording ? i18nString(UIStrings.stopHeapProfiling) : i18nString(UIStrings.startHeapProfiling);
   }
 
-  buttonClicked(): boolean {
+  override buttonClicked(): boolean {
     if (this.recording) {
       void this.stopRecordingProfile();
     } else {
@@ -328,11 +328,11 @@ export class SamplingHeapProfileTypeBase extends
     this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
   }
 
-  createProfileLoadedFromFile(title: string): ProfileHeader {
+  override createProfileLoadedFromFile(title: string): ProfileHeader {
     return new SamplingHeapProfileHeader(null, this, title);
   }
 
-  profileBeingRecordedRemoved(): void {
+  override profileBeingRecordedRemoved(): void {
     this.clearedDuringRecording = true;
     void this.stopRecordingProfile();
   }
@@ -365,11 +365,11 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
     return samplingHeapProfileTypeInstance;
   }
 
-  get treeItemTitle(): Common.UIString.LocalizedString {
+  override get treeItemTitle(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.samplingProfiles);
   }
 
-  get description(): string {
+  override get description(): string {
     // TODO(l10n): Do not concatenate localized strings.
     const formattedDescription = [
       i18nString(UIStrings.recordMemoryAllocations),
@@ -379,11 +379,11 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
     return formattedDescription.join('\n');
   }
 
-  hasTemporaryView(): boolean {
+  override hasTemporaryView(): boolean {
     return Root.Runtime.experiments.isEnabled('samplingHeapProfilerTimeline');
   }
 
-  startSampling(): void {
+  override startSampling(): void {
     const heapProfilerModel = this.obtainRecordingProfile();
     if (!heapProfilerModel) {
       return;
@@ -406,7 +406,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
     return null;
   }
 
-  async stopSampling(): Promise<Protocol.HeapProfiler.SamplingHeapProfile> {
+  override async stopSampling(): Promise<Protocol.HeapProfiler.SamplingHeapProfile> {
     window.clearTimeout(this.updateTimer);
     this.updateTimer = 0;
     this.dispatchEventToListeners(SamplingHeapProfileType.Events.RecordingStopped);
@@ -456,7 +456,7 @@ export namespace SamplingHeapProfileType {
 
 export class SamplingHeapProfileHeader extends WritableProfileHeader {
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;
-  protocolProfileInternal: {
+  override protocolProfileInternal: {
     head: {
       callFrame: {
         functionName: string,
@@ -501,7 +501,7 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
     };
   }
 
-  createView(): HeapProfileView {
+  override createView(): HeapProfileView {
     return new HeapProfileView(this);
   }
 
@@ -519,7 +519,7 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
 }
 
 export class SamplingHeapProfileNode extends SDK.ProfileTreeModel.ProfileNode {
-  self: number;
+  override self: number;
   constructor(node: Protocol.HeapProfiler.SamplingHeapProfileNode, target: SDK.Target.Target|null) {
     const callFrame = node.callFrame || ({
                         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -640,23 +640,23 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     this.heapProfilerModel = heapProfilerModel;
   }
 
-  minimumBoundary(): number {
+  override minimumBoundary(): number {
     return 0;
   }
 
-  totalTime(): number {
+  override totalTime(): number {
     return this.profile.root.total;
   }
 
-  entryHasDeoptReason(_entryIndex: number): boolean {
+  override entryHasDeoptReason(_entryIndex: number): boolean {
     return false;
   }
 
-  formatValue(value: number, _precision?: number): string {
+  override formatValue(value: number, _precision?: number): string {
     return i18nString(UIStrings.skb, {PH1: Platform.NumberUtilities.withThousandsSeparator(value / 1e3)});
   }
 
-  calculateTimelineData(): PerfUI.FlameChart.TimelineData {
+  override calculateTimelineData(): PerfUI.FlameChart.TimelineData {
     function nodesCount(node: SDK.ProfileTreeModel.ProfileNode): number {
       return node.children.reduce((count, node) => count + nodesCount(node), 1);
     }
@@ -692,7 +692,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     return this.timelineDataInternal;
   }
 
-  prepareHighlightedEntryInfo(entryIndex: number): Element|null {
+  override prepareHighlightedEntryInfo(entryIndex: number): Element|null {
     const node = this.entryNodes[entryIndex];
     if (!node) {
       return null;

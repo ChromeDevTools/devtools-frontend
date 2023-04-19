@@ -88,7 +88,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     // Overridden by subclasses
   }
 
-  itemCount(): number {
+  override itemCount(): number {
     return this.uiSourceCodes.length;
   }
 
@@ -96,7 +96,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     return this.uiSourceCodes[itemIndex].contentType();
   }
 
-  itemKeyAt(itemIndex: number): string {
+  override itemKeyAt(itemIndex: number): string {
     return this.uiSourceCodes[itemIndex].url();
   }
 
@@ -104,7 +104,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     this.defaultScores = defaultScores;
   }
 
-  itemScoreAt(itemIndex: number, query: string): number {
+  override itemScoreAt(itemIndex: number, query: string): number {
     const uiSourceCode = this.uiSourceCodes[itemIndex];
     const score = this.defaultScores ? (this.defaultScores.get(uiSourceCode) || 0) : 0;
     if (!query || query.length < 2) {
@@ -139,7 +139,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     return score + multiplier * (contentTypeBonus + this.scorer.calculateScore(fullDisplayName, null));
   }
 
-  renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
+  override renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
     query = this.rewriteQuery(query);
     const uiSourceCode = this.uiSourceCodes[itemIndex];
     const fullDisplayName = uiSourceCode.fullDisplayName();
@@ -188,7 +188,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     UI.Tooltip.Tooltip.install((element as HTMLElement), text);
   }
 
-  selectItem(itemIndex: number|null, promptValue: string): void {
+  override selectItem(itemIndex: number|null, promptValue: string): void {
     const parsedExpression = promptValue.trim().match(/^([^:]*)(:\d+)?(:\d+)?$/);
     if (!parsedExpression) {
       return;
@@ -206,7 +206,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     this.uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber);
   }
 
-  rewriteQuery(query: string): string {
+  override rewriteQuery(query: string): string {
     query = query ? query.trim() : '';
     if (!query || query === ':') {
       return '';
@@ -226,11 +226,11 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     this.refresh();
   }
 
-  notFoundText(): string {
+  override notFoundText(): string {
     return i18nString(UIStrings.noFilesFound);
   }
 
-  attach(): void {
+  override attach(): void {
     Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
     Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
@@ -238,7 +238,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
     this.populate();
   }
 
-  detach(): void {
+  override detach(): void {
     Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
     Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(

@@ -288,7 +288,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#data = null;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.#mainContainer.registerCSSFiles([cssOverviewCompletedViewStyles]);
     this.registerCSSFiles([cssOverviewCompletedViewStyles]);
@@ -1068,7 +1068,7 @@ export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     this.#cssModel = cssModel;
   }
 
-  createCell(columnId: string): HTMLElement {
+  override createCell(columnId: string): HTMLElement {
     // Nodes.
     const frontendNode = this.#frontendNode;
     if (columnId === 'nodeId') {

@@ -142,7 +142,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     return [this.addButton, this.refreshButton];
   }
 
-  focus(): void {
+  override focus(): void {
     if (this.hasFocus()) {
       return;
     }
@@ -173,7 +173,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.createWatchExpression(null).startEditing();
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     this.linkifier.reset();
     this.contentElement.removeChildren();
     this.treeOutline.removeChildren();
@@ -286,7 +286,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
 
     contextMenu.debugSection().appendAction('sources.add-to-watch');
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.treeOutline.registerCSSFiles([watchExpressionsSidebarPaneStyles]);
     this.registerCSSFiles([watchExpressionsSidebarPaneStyles, objectValueStyles]);

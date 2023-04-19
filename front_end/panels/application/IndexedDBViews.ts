@@ -229,7 +229,7 @@ export class IDBDatabaseView extends UI.Widget.VBox {
       void this.model.deleteDatabase(this.database.databaseId);
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.reportView.registerCSSFiles([indexedDBViewsStyles]);
     this.registerCSSFiles([indexedDBViewsStyles]);
@@ -630,14 +630,14 @@ export class IDBDataView extends UI.View.SimpleView {
     const empty = !this.dataGrid || this.dataGrid.rootNode().children.length === 0;
     this.deleteSelectedButton.setEnabled(!empty && this.dataGrid.selectedNode !== null);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([indexedDBViewsStyles]);
   }
 }
 
 export class IDBDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown> {
-  selectable: boolean;
+  override selectable: boolean;
   valueObjectPresentation: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection|null;
   constructor(data: {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -649,7 +649,7 @@ export class IDBDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown> {
     this.valueObjectPresentation = null;
   }
 
-  createCell(columnIdentifier: string): HTMLElement {
+  override createCell(columnIdentifier: string): HTMLElement {
     const cell = super.createCell(columnIdentifier);
     const value = (this.data[columnIdentifier] as SDK.RemoteObject.RemoteObject);
 

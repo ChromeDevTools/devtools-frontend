@@ -375,7 +375,7 @@ class CompletionHint extends CM.WidgetType {
     super();
   }
 
-  eq(other: CompletionHint): boolean {
+  override eq(other: CompletionHint): boolean {
     return this.text === other.text;
   }
 

@@ -242,7 +242,7 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  editorExtension(): CodeMirror.Extension {
+  override editorExtension(): CodeMirror.Extension {
     // Kludge to hook editor keyboard events into the ShortcutRegistry
     // system.
     const handlers = this.shortcutHandlers();
@@ -318,7 +318,7 @@ export class DebuggerPlugin extends Plugin {
     });
   }
 
-  editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
+  override editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
     // Start asynchronous actions that require access to the editor
     // instance
     this.editor = editor;
@@ -348,7 +348,7 @@ export class DebuggerPlugin extends Plugin {
     this.popoverHelper.setHasPadding(true);
   }
 
-  static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+  static override accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     return uiSourceCode.contentType().hasScripts();
   }
 
@@ -418,7 +418,7 @@ export class DebuggerPlugin extends Plugin {
     this.ignoreListInfobar = null;
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.popoverHelper?.hidePopover();
   }
 
@@ -431,7 +431,7 @@ export class DebuggerPlugin extends Plugin {
     this.editBreakpointCondition(line, breakpoint, null, breakpoint.isLogpoint());
   }
 
-  populateLineGutterContextMenu(contextMenu: UI.ContextMenu.ContextMenu, editorLineNumber: number): void {
+  override populateLineGutterContextMenu(contextMenu: UI.ContextMenu.ContextMenu, editorLineNumber: number): void {
     const uiLocation = new Workspace.UISourceCode.UILocation(this.uiSourceCode, editorLineNumber, 0);
     this.scriptsPanel.appendUILocationItems(contextMenu, uiLocation);
     if (this.muted || !this.editor) {
@@ -494,7 +494,7 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  populateTextAreaContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
+  override populateTextAreaContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     function addSourceMapURL(scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile): void {
       const dialog =
           AddDebugInfoURLDialog.createAddSourceMapURLDialog(addSourceMapURLDialogCallback.bind(null, scriptFile));
@@ -1506,7 +1506,7 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  dispose(): void {
+  override dispose(): void {
     this.hideIgnoreListInfobar();
     if (this.sourceMapInfobar) {
       this.sourceMapInfobar.dispose();
@@ -1686,7 +1686,7 @@ class BreakpointInlineMarker extends CodeMirror.WidgetType {
     }
   }
 
-  eq(other: BreakpointInlineMarker): boolean {
+  override eq(other: BreakpointInlineMarker): boolean {
     return other.class === this.class && other.breakpoint === this.breakpoint;
   }
 
@@ -1704,17 +1704,17 @@ class BreakpointInlineMarker extends CodeMirror.WidgetType {
     return span;
   }
 
-  ignoreEvent(): boolean {
+  override ignoreEvent(): boolean {
     return true;
   }
 }
 
 class BreakpointGutterMarker extends CodeMirror.GutterMarker {
-  constructor(readonly elementClass: string) {
+  constructor(override readonly elementClass: string) {
     super();
   }
 
-  eq(other: BreakpointGutterMarker): boolean {
+  override eq(other: BreakpointGutterMarker): boolean {
     return other.elementClass === this.elementClass;
   }
 }
@@ -1785,7 +1785,7 @@ class ValueDecoration extends CodeMirror.WidgetType {
     super();
   }
 
-  eq(other: ValueDecoration): boolean {
+  override eq(other: ValueDecoration): boolean {
     return this.pairs.length === other.pairs.length &&
         this.pairs.every((p, i) => p[0] === other.pairs[i][0] && p[1] === other.pairs[i][1]);
   }

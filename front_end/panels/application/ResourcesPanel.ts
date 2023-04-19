@@ -87,7 +87,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     return ResourcesPanel.instance().sidebar;
   }
 
-  focus(): void {
+  override focus(): void {
     this.sidebar.focus();
   }
 
@@ -186,7 +186,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
       }
     });
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([resourcesPanelStyles]);
   }

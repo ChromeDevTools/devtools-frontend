@@ -538,7 +538,7 @@ export class RegExpSetting extends Setting<any> {
     this.#regexFlags = regexFlags;
   }
 
-  get(): string {
+  override get(): string {
     const result = [];
     const items = this.getAsArray();
     for (let i = 0; i < items.length; ++i) {
@@ -554,7 +554,7 @@ export class RegExpSetting extends Setting<any> {
     return super.get();
   }
 
-  set(value: string): void {
+  override set(value: string): void {
     this.setAsArray([{pattern: value, disabled: false}]);
   }
 

@@ -580,7 +580,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
   }
 
-  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     const result: UI.Toolbar.ToolbarItem[] = [this.perspectiveSelect, this.classNameFilter];
     if (this.profile.profileType() !== instance.trackingHeapSnapshotProfileType) {
       result.push(this.baseSelect, this.filterSelect);
@@ -589,7 +589,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     return result;
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.currentSearchResultIndex = -1;
     this.popoverHelper.hidePopover();
   }
@@ -1060,7 +1060,7 @@ export class SummaryPerspective extends Perspective {
     super(i18nString(UIStrings.summary));
   }
 
-  activate(heapSnapshotView: HeapSnapshotView): void {
+  override activate(heapSnapshotView: HeapSnapshotView): void {
     heapSnapshotView.splitWidget.setMainWidget(heapSnapshotView.constructorsWidget);
     heapSnapshotView.splitWidget.setSidebarWidget(heapSnapshotView.objectDetailsView);
     heapSnapshotView.splitWidget.show(heapSnapshotView.searchableViewInternal.element);
@@ -1075,11 +1075,11 @@ export class SummaryPerspective extends Perspective {
     heapSnapshotView.trackingOverviewGrid.updateGrid();
   }
 
-  masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid {
+  override masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid {
     return heapSnapshotView.constructorsDataGrid;
   }
 
-  supportsSearch(): boolean {
+  override supportsSearch(): boolean {
     return true;
   }
 }
@@ -1089,7 +1089,7 @@ export class ComparisonPerspective extends Perspective {
     super(i18nString(UIStrings.comparison));
   }
 
-  activate(heapSnapshotView: HeapSnapshotView): void {
+  override activate(heapSnapshotView: HeapSnapshotView): void {
     heapSnapshotView.splitWidget.setMainWidget(heapSnapshotView.diffWidget);
     heapSnapshotView.splitWidget.setSidebarWidget(heapSnapshotView.objectDetailsView);
     heapSnapshotView.splitWidget.show(heapSnapshotView.searchableViewInternal.element);
@@ -1097,11 +1097,11 @@ export class ComparisonPerspective extends Perspective {
     heapSnapshotView.classNameFilter.setVisible(true);
   }
 
-  masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid {
+  override masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid {
     return heapSnapshotView.diffDataGrid;
   }
 
-  supportsSearch(): boolean {
+  override supportsSearch(): boolean {
     return true;
   }
 }
@@ -1111,13 +1111,13 @@ export class ContainmentPerspective extends Perspective {
     super(i18nString(UIStrings.containment));
   }
 
-  activate(heapSnapshotView: HeapSnapshotView): void {
+  override activate(heapSnapshotView: HeapSnapshotView): void {
     heapSnapshotView.splitWidget.setMainWidget(heapSnapshotView.containmentWidget);
     heapSnapshotView.splitWidget.setSidebarWidget(heapSnapshotView.objectDetailsView);
     heapSnapshotView.splitWidget.show(heapSnapshotView.searchableViewInternal.element);
   }
 
-  masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid {
+  override masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid {
     return heapSnapshotView.containmentDataGrid;
   }
 }
@@ -1131,7 +1131,7 @@ export class AllocationPerspective extends Perspective {
     this.allocationSplitWidget.setSidebarWidget(new UI.Widget.VBox());
   }
 
-  activate(heapSnapshotView: HeapSnapshotView): void {
+  override activate(heapSnapshotView: HeapSnapshotView): void {
     if (heapSnapshotView.allocationWidget) {
       this.allocationSplitWidget.setMainWidget(heapSnapshotView.allocationWidget);
     }
@@ -1161,12 +1161,12 @@ export class AllocationPerspective extends Perspective {
     }
   }
 
-  deactivate(heapSnapshotView: HeapSnapshotView): void {
+  override deactivate(heapSnapshotView: HeapSnapshotView): void {
     this.allocationSplitWidget.detach();
     super.deactivate(heapSnapshotView);
   }
 
-  masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid|null {
+  override masterGrid(heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid|null {
     return heapSnapshotView.allocationDataGrid;
   }
 }
@@ -1176,11 +1176,11 @@ export class StatisticsPerspective extends Perspective {
     super(i18nString(UIStrings.statistics));
   }
 
-  activate(heapSnapshotView: HeapSnapshotView): void {
+  override activate(heapSnapshotView: HeapSnapshotView): void {
     heapSnapshotView.statisticsView.show(heapSnapshotView.searchableViewInternal.element);
   }
 
-  masterGrid(_heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid|null {
+  override masterGrid(_heapSnapshotView: HeapSnapshotView): HeapSnapshotSortableDataGrid|null {
     return null;
   }
 }
@@ -1214,37 +1214,37 @@ export class HeapSnapshotProfileType extends
   modelRemoved(_heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
   }
 
-  getProfiles(): HeapProfileHeader[] {
+  override getProfiles(): HeapProfileHeader[] {
     return super.getProfiles() as HeapProfileHeader[];
   }
 
-  fileExtension(): string {
+  override fileExtension(): string {
     return '.heapsnapshot';
   }
 
-  get buttonTooltip(): Common.UIString.LocalizedString {
+  override get buttonTooltip(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.takeHeapSnapshot);
   }
 
-  isInstantProfile(): boolean {
+  override isInstantProfile(): boolean {
     return true;
   }
 
-  buttonClicked(): boolean {
+  override buttonClicked(): boolean {
     void this.takeHeapSnapshot();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesHeapProfileTaken);
     return false;
   }
 
-  get treeItemTitle(): Common.UIString.LocalizedString {
+  override get treeItemTitle(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.heapSnapshots);
   }
 
-  get description(): Common.UIString.LocalizedString {
+  override get description(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.heapSnapshotProfilesShowMemory);
   }
 
-  customContent(): Element|null {
+  override customContent(): Element|null {
     const optionsContainer = document.createElement('div');
     const showOptionToExposeInternalsInHeapSnapshot =
         Root.Runtime.experiments.isEnabled('showOptionToExposeInternalsInHeapSnapshot');
@@ -1261,7 +1261,7 @@ export class HeapSnapshotProfileType extends
     return optionsContainer;
   }
 
-  setCustomContentEnabled(enable: boolean): void {
+  override setCustomContentEnabled(enable: boolean): void {
     if (this.customContentInternal) {
       this.customContentInternal.querySelectorAll('[is=dt-checkbox]').forEach(label => {
         (label as UI.UIUtils.CheckboxLabel).checkboxElement.disabled = !enable;
@@ -1269,7 +1269,7 @@ export class HeapSnapshotProfileType extends
     }
   }
 
-  createProfileLoadedFromFile(title: string): ProfileHeader {
+  override createProfileLoadedFromFile(title: string): ProfileHeader {
     return new HeapProfileHeader(null, this, title);
   }
 
@@ -1358,7 +1358,7 @@ export class TrackingHeapSnapshotProfileType extends
     Common.ObjectWrapper.eventMixin<TrackingHeapSnapshotProfileTypeEventTypes, typeof HeapSnapshotProfileType>(
         HeapSnapshotProfileType) {
   readonly recordAllocationStacksSettingInternal: Common.Settings.Setting<boolean>;
-  customContentInternal: UI.UIUtils.CheckboxLabel|null;
+  override customContentInternal: UI.UIUtils.CheckboxLabel|null;
   recording: boolean;
   profileSamples?: Samples|null;
 
@@ -1370,13 +1370,13 @@ export class TrackingHeapSnapshotProfileType extends
     this.recording = false;
   }
 
-  modelAdded(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
+  override modelAdded(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
     super.modelAdded(heapProfilerModel);
     heapProfilerModel.addEventListener(SDK.HeapProfilerModel.Events.HeapStatsUpdate, this.heapStatsUpdate, this);
     heapProfilerModel.addEventListener(SDK.HeapProfilerModel.Events.LastSeenObjectId, this.lastSeenObjectId, this);
   }
 
-  modelRemoved(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
+  override modelRemoved(heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel): void {
     super.modelRemoved(heapProfilerModel);
     heapProfilerModel.removeEventListener(SDK.HeapProfilerModel.Events.HeapStatsUpdate, this.heapStatsUpdate, this);
     heapProfilerModel.removeEventListener(SDK.HeapProfilerModel.Events.LastSeenObjectId, this.lastSeenObjectId, this);
@@ -1423,20 +1423,20 @@ export class TrackingHeapSnapshotProfileType extends
     }
   }
 
-  hasTemporaryView(): boolean {
+  override hasTemporaryView(): boolean {
     return true;
   }
 
-  get buttonTooltip(): Common.UIString.LocalizedString {
+  override get buttonTooltip(): Common.UIString.LocalizedString {
     return this.recording ? i18nString(UIStrings.stopRecordingHeapProfile) :
                             i18nString(UIStrings.startRecordingHeapProfile);
   }
 
-  isInstantProfile(): boolean {
+  override isInstantProfile(): boolean {
     return false;
   }
 
-  buttonClicked(): boolean {
+  override buttonClicked(): boolean {
     return this.toggleRecording();
   }
 
@@ -1451,14 +1451,14 @@ export class TrackingHeapSnapshotProfileType extends
     void heapProfilerModel.startTrackingHeapObjects(this.recordAllocationStacksSettingInternal.get());
   }
 
-  customContent(): Element|null {
+  override customContent(): Element|null {
     const checkboxSetting = UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal, true);
     this.customContentInternal = (checkboxSetting as UI.UIUtils.CheckboxLabel);
     return checkboxSetting;
   }
 
-  setCustomContentEnabled(enable: boolean): void {
+  override setCustomContentEnabled(enable: boolean): void {
     if (this.customContentInternal) {
       this.customContentInternal.checkboxElement.disabled = !enable;
     }
@@ -1512,19 +1512,19 @@ export class TrackingHeapSnapshotProfileType extends
     return this.recording;
   }
 
-  fileExtension(): string {
+  override fileExtension(): string {
     return '.heaptimeline';
   }
 
-  get treeItemTitle(): Common.UIString.LocalizedString {
+  override get treeItemTitle(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.allocationTimelines);
   }
 
-  get description(): Common.UIString.LocalizedString {
+  override get description(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.AllocationTimelinesShowInstrumented);
   }
 
-  resetProfiles(event: Common.EventTarget.EventTargetEvent<SDK.HeapProfilerModel.HeapProfilerModel>): void {
+  override resetProfiles(event: Common.EventTarget.EventTargetEvent<SDK.HeapProfilerModel.HeapProfilerModel>): void {
     const wasRecording = this.recording;
     // Clear current profile to avoid stopping backend.
     this.setProfileBeingRecorded(null);
@@ -1535,13 +1535,13 @@ export class TrackingHeapSnapshotProfileType extends
     }
   }
 
-  profileBeingRecordedRemoved(): void {
+  override profileBeingRecordedRemoved(): void {
     void this.stopRecordingProfile();
     this.profileSamples = null;
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly TypeId = 'HEAP-RECORD';
+  static override readonly TypeId = 'HEAP-RECORD';
   // TODO(crbug.com/1228674): Remove event strings once they are no longer used in web tests.
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static readonly HeapStatsUpdate = 'HeapStatsUpdate';
@@ -1605,11 +1605,11 @@ export class HeapProfileHeader extends ProfileHeader {
     return this.snapshotProxy.getLocation(nodeIndex);
   }
 
-  createSidebarTreeElement(dataDisplayDelegate: DataDisplayDelegate): ProfileSidebarTreeElement {
+  override createSidebarTreeElement(dataDisplayDelegate: DataDisplayDelegate): ProfileSidebarTreeElement {
     return new ProfileSidebarTreeElement(dataDisplayDelegate, this, 'heap-snapshot-sidebar-tree-item');
   }
 
-  createView(dataDisplayDelegate: DataDisplayDelegate): HeapSnapshotView {
+  override createView(dataDisplayDelegate: DataDisplayDelegate): HeapSnapshotView {
     return new HeapSnapshotView(dataDisplayDelegate, this);
   }
 
@@ -1674,7 +1674,7 @@ export class HeapProfileHeader extends ProfileHeader {
     this.updateStatus(moduleI18nString(messageObject.string, messageObject.values));
   }
 
-  dispose(): void {
+  override dispose(): void {
     if (this.workerProxy) {
       this.workerProxy.dispose();
     }
@@ -1725,11 +1725,11 @@ export class HeapProfileHeader extends ProfileHeader {
     }
   }
 
-  canSaveToFile(): boolean {
+  override canSaveToFile(): boolean {
     return !this.fromFile() && Boolean(this.snapshotProxy);
   }
 
-  saveToFile(): void {
+  override saveToFile(): void {
     const fileOutputStream = new Bindings.FileUtils.FileOutputStream();
     this.fileName = this.fileName ||
         'Heap-' + Platform.DateUtilities.toISO8601Compact(new Date()) + this.profileType().fileExtension() as
@@ -1771,7 +1771,7 @@ export class HeapProfileHeader extends ProfileHeader {
     this.updateStatus(i18nString(UIStrings.savingD, {PH1: percentValue}));
   }
 
-  async loadFromFile(file: File): Promise<DOMError|null> {
+  override async loadFromFile(file: File): Promise<DOMError|null> {
     this.updateStatus(i18nString(UIStrings.loading), true);
     this.setupWorker();
     const reader = new Bindings.FileUtils.ChunkedFileReader(file, 10000000);

@@ -169,14 +169,14 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     this.detailPanels.get(playerID)?.show(this.mainElement());
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel, {scoped: true})) {
       this.addEventListeners(model);
     }
   }
 
-  willHide(): void {
+  override willHide(): void {
     for (const model of SDK.TargetManager.TargetManager.instance().models(MediaModel, {scoped: true})) {
       this.removeEventListeners(model);
     }

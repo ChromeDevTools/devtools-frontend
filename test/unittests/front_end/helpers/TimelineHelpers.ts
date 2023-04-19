@@ -9,17 +9,17 @@ import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import {loadTraceEventsLegacyEventPayload} from './TraceHelpers.js';
 
 export class FakeStorage extends SDK.TracingModel.BackingStorage {
-  appendString() {
+  override appendString() {
   }
 
   appendAccessibleString(x: string): () => Promise<string|null> {
     return () => Promise.resolve(x);
   }
 
-  finishWriting() {
+  override finishWriting() {
   }
 
-  reset() {
+  override reset() {
   }
 }
 

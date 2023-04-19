@@ -99,7 +99,7 @@ export class RequestResponseView extends UI.Widget.VBox {
     return sourceView;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     void this.doShowPreview();
   }
 

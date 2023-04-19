@@ -645,7 +645,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.request.addEventListener(SDK.NetworkRequest.Events.TimingChanged, this.refresh, this);
     this.request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refresh, this);
     this.calculator.addEventListener(Events.BoundariesChanged, this.boundaryChanged, this);
@@ -653,7 +653,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     this.refresh();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.request.removeEventListener(SDK.NetworkRequest.Events.TimingChanged, this.refresh, this);
     this.request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this.refresh, this);
     this.calculator.removeEventListener(Events.BoundariesChanged, this.boundaryChanged, this);

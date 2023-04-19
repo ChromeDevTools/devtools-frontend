@@ -175,7 +175,7 @@ export class ListWidget<T> extends VBox {
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.stopEditing();
   }

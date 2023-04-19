@@ -56,7 +56,7 @@ export class RequestPreviewView extends RequestResponseView {
     super(request);
   }
 
-  async showPreview(): Promise<UI.Widget.Widget> {
+  override async showPreview(): Promise<UI.Widget.Widget> {
     const view = await super.showPreview();
     if (!(view instanceof UI.View.SimpleView)) {
       return view;
@@ -92,7 +92,7 @@ export class RequestPreviewView extends RequestResponseView {
     return dataURL ? new RequestHTMLView(dataURL) : null;
   }
 
-  async createPreview(): Promise<UI.Widget.Widget> {
+  override async createPreview(): Promise<UI.Widget.Widget> {
     if (this.request.signedExchangeInfo()) {
       return new SignedExchangeInfoView(this.request);
     }

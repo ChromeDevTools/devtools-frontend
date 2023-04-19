@@ -83,18 +83,18 @@ export class HeapProfilerPanel extends ProfilesPanel implements UI.ContextMenu.P
     return true;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().setFlavor(HeapProfilerPanel, this);
     // Record the memory tool load time.
     Host.userMetrics.panelLoaded('heap_profiler', 'DevTools.Launch.HeapProfiler');
   }
 
-  willHide(): void {
+  override willHide(): void {
     UI.Context.Context.instance().setFlavor(HeapProfilerPanel, null);
   }
 
-  showObject(snapshotObjectId: string, perspectiveName: string): void {
+  override showObject(snapshotObjectId: string, perspectiveName: string): void {
     const registry = instance;
     const heapProfiles = registry.heapSnapshotProfileType.getProfiles();
     for (let i = 0; i < heapProfiles.length; i++) {

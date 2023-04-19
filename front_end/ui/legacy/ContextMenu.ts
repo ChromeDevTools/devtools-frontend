@@ -279,7 +279,7 @@ export class SubMenu extends Item {
     return this.section('footer');
   }
 
-  buildDescriptor(): SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor {
+  override buildDescriptor(): SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor {
     const result: Host.InspectorFrontendHostAPI.ContextMenuDescriptor|SoftContextMenuDescriptor = {
       type: 'subMenu',
       label: this.label,
@@ -354,7 +354,7 @@ export interface ContextMenuOptions {
 }
 
 export class ContextMenu extends SubMenu {
-  protected contextMenu: this;
+  protected override contextMenu: this;
   private readonly defaultSectionInternal: Section;
   private pendingPromises: Promise<Provider[]>[];
   private pendingTargets: Object[];
@@ -364,7 +364,7 @@ export class ContextMenu extends SubMenu {
   private y: number;
   private onSoftMenuClosed?: () => void;
   private readonly handlers: Map<number, () => void>;
-  idInternal: number;
+  override idInternal: number;
   private softMenu?: SoftContextMenu;
   private contextMenuLabel?: string;
 

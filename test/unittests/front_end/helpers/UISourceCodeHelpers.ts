@@ -72,10 +72,10 @@ class TestPlatformFileSystem extends Persistence.PlatformFileSystem.PlatformFile
     this.#mimeType = mimeType;
     this.#autoMapping = autoMapping;
   }
-  supportsAutomapping(): boolean {
+  override supportsAutomapping(): boolean {
     return this.#autoMapping;
   }
-  mimeFromPath(_path: Platform.DevToolsPath.UrlString): string {
+  override mimeFromPath(_path: Platform.DevToolsPath.UrlString): string {
     return this.#mimeType;
   }
 }
@@ -96,12 +96,12 @@ class TestFileSystem extends Persistence.FileSystemWorkspaceBinding.FileSystem {
     this.#metadata = options.metadata;
   }
 
-  requestFileContent(_uiSourceCode: Workspace.UISourceCode.UISourceCode):
+  override requestFileContent(_uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Promise<TextUtils.ContentProvider.DeferredContent> {
     return Promise.resolve({content: this.#content, isEncoded: false});
   }
 
-  requestMetadata(_uiSourceCode: Workspace.UISourceCode.UISourceCode):
+  override requestMetadata(_uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Promise<Workspace.UISourceCode.UISourceCodeMetadata|null> {
     return Promise.resolve(this.#metadata);
   }

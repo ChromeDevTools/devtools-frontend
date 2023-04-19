@@ -358,7 +358,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
-  focus(): void {
+  override focus(): void {
     this.scriptsTree.focus();
   }
 
@@ -1148,7 +1148,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       targetNode.setTitle(target.name());
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.scriptsTree.registerCSSFiles([navigatorTreeStyles]);
     this.registerCSSFiles([navigatorViewStyles]);
@@ -1195,11 +1195,11 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     this.setLeadingIcons([icon]);
   }
 
-  async onpopulate(): Promise<void> {
+  override async onpopulate(): Promise<void> {
     this.node.populate();
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.collapse();
     this.node.onattach();
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
@@ -1331,7 +1331,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     return this.uiSourceCodeInternal;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.listItemElement.draggable = true;
     this.listItemElement.addEventListener('click', this.onclick.bind(this), false);
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
@@ -1349,7 +1349,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     return isSelected && this.treeOutline.element.hasFocus() && !UI.UIUtils.isBeingEdited(this.treeOutline.element);
   }
 
-  selectOnMouseDown(event: MouseEvent): void {
+  override selectOnMouseDown(event: MouseEvent): void {
     if (event.which !== 1 || !this.shouldRenameOnMouseDown()) {
       super.selectOnMouseDown(event);
       return;
@@ -1371,7 +1371,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     event.dataTransfer.effectAllowed = 'copy';
   }
 
-  onspace(): boolean {
+  override onspace(): boolean {
     this.navigatorView.sourceSelected(this.uiSourceCode, true);
     return true;
   }
@@ -1380,18 +1380,18 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     this.navigatorView.sourceSelected(this.uiSourceCode, false);
   }
 
-  ondblclick(event: Event): boolean {
+  override ondblclick(event: Event): boolean {
     const middleClick = (event as MouseEvent).button === 1;
     this.navigatorView.sourceSelected(this.uiSourceCode, !middleClick);
     return false;
   }
 
-  onenter(): boolean {
+  override onenter(): boolean {
     this.navigatorView.sourceSelected(this.uiSourceCode, true);
     return true;
   }
 
-  ondelete(): boolean {
+  override ondelete(): boolean {
     return true;
   }
 
@@ -1524,11 +1524,11 @@ export class NavigatorRootTreeNode extends NavigatorTreeNode {
     super(navigatorView, '', Types.Root);
   }
 
-  isRoot(): boolean {
+  override isRoot(): boolean {
     return true;
   }
 
-  treeNode(): UI.TreeOutline.TreeElement {
+  override treeNode(): UI.TreeOutline.TreeElement {
     return this.navigatorView.scriptsTree.rootElement();
   }
 }
@@ -1556,7 +1556,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     return this.uiSourceCodeInternal;
   }
 
-  treeNode(): UI.TreeOutline.TreeElement {
+  override treeNode(): UI.TreeOutline.TreeElement {
     if (this.treeElement) {
       return this.treeElement;
     }
@@ -1573,7 +1573,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     return this.treeElement;
   }
 
-  updateTitle(ignoreIsDirty?: boolean): void {
+  override updateTitle(ignoreIsDirty?: boolean): void {
     if (!this.treeElement) {
       return;
     }
@@ -1607,11 +1607,11 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     this.parent?.childrenInternal.set(this.id, this);
   }
 
-  hasChildren(): boolean {
+  override hasChildren(): boolean {
     return false;
   }
 
-  dispose(): void {
+  override dispose(): void {
     Common.EventTarget.removeEventListeners(this.eventListeners);
   }
 
@@ -1693,7 +1693,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   project: Workspace.Workspace.Project|null;
   readonly folderPath: Platform.DevToolsPath.EncodedPathString;
   readonly origin: Platform.DevToolsPath.UrlString;
-  title: string;
+  override title: string;
   treeElement!: NavigatorFolderTreeElement|null;
   constructor(
       navigatorView: NavigatorView, project: Workspace.Workspace.Project|null, id: string, type: string,
@@ -1705,7 +1705,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     this.origin = origin;
   }
 
-  treeNode(): UI.TreeOutline.TreeElement {
+  override treeNode(): UI.TreeOutline.TreeElement {
     if (this.treeElement) {
       return this.treeElement;
     }
@@ -1714,7 +1714,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     return this.treeElement;
   }
 
-  updateTitle(): void {
+  override updateTitle(): void {
     if (!this.treeElement) {
       return;
     }
@@ -1742,7 +1742,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     return treeElement;
   }
 
-  wasPopulated(): void {
+  override wasPopulated(): void {
     // @ts-ignore These types are invalid, but removing this check causes wrong behavior
     if (!this.treeElement || this.treeElement.node !== this) {
       return;
@@ -1765,7 +1765,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     return this.type !== Types.Domain && node instanceof NavigatorFolderTreeNode;
   }
 
-  didAddChild(node: NavigatorTreeNode): void {
+  override didAddChild(node: NavigatorTreeNode): void {
     if (!this.treeElement) {
       return;
     }
@@ -1843,7 +1843,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     }
   }
 
-  willRemoveChild(node: NavigatorTreeNode): void {
+  override willRemoveChild(node: NavigatorTreeNode): void {
     const actualNode = (node as NavigatorFolderTreeNode);
     if (actualNode.isMerged || !this.isPopulated() || !this.treeElement || !actualNode.treeElement) {
       return;
@@ -1854,7 +1854,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
 
 export class NavigatorGroupTreeNode extends NavigatorTreeNode {
   private readonly project: Workspace.Workspace.Project|null;
-  title: string;
+  override title: string;
   private hoverCallback?: ((arg0: boolean) => void);
   private treeElement?: NavigatorFolderTreeElement;
   constructor(
@@ -1870,7 +1870,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     this.hoverCallback = hoverCallback;
   }
 
-  treeNode(): UI.TreeOutline.TreeElement {
+  override treeNode(): UI.TreeOutline.TreeElement {
     if (this.treeElement) {
       return this.treeElement;
     }
@@ -1879,11 +1879,11 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     return this.treeElement;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.updateTitle();
   }
 
-  updateTitle(): void {
+  override updateTitle(): void {
     if (!this.treeElement || !this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }
@@ -1905,7 +1905,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     }
   }
 
-  setTitle(title: string): void {
+  override setTitle(title: string): void {
     this.title = title;
     if (this.treeElement) {
       this.treeElement.title = this.title;

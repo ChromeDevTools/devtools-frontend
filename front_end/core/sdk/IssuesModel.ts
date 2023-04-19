@@ -38,7 +38,7 @@ export class IssuesModel extends SDKModel<EventTypes> implements ProtocolProxyAp
     this.dispatchEventToListeners(Events.IssueAdded, {issuesModel: this, inspectorIssue: issueAddedEvent.issue});
   }
 
-  dispose(): void {
+  override dispose(): void {
     super.dispose();
     this.#disposed = true;
   }

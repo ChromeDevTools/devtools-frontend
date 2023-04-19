@@ -132,7 +132,7 @@ export class IssueKindView extends UI.TreeOutline.TreeElement {
     this.listItemElement.appendChild(header);
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.#appendHeader();
     this.expand();
   }

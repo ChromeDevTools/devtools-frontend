@@ -65,7 +65,7 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
   showNext: HTMLButtonElement;
   showAll: HTMLButtonElement;
   showLast: HTMLButtonElement;
-  selectable: boolean;
+  override selectable: boolean;
   private hasCells?: boolean;
 
   constructor(callback: ShowMoreDataGridNodeCallback, startPosition: number, endPosition: number, chunkSize: number) {
@@ -120,12 +120,12 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
     this.showAll.textContent = i18nString(UIStrings.showAllD, {PH1: totalSize});
   }
 
-  createCells(element: Element): void {
+  override createCells(element: Element): void {
     this.hasCells = false;
     super.createCells(element);
   }
 
-  createCell(columnIdentifier: string): HTMLElement {
+  override createCell(columnIdentifier: string): HTMLElement {
     const cell = this.createTD(columnIdentifier);
     cell.classList.add('show-more');
     if (!this.hasCells) {
@@ -150,7 +150,7 @@ export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
     this.updateLabels();
   }
 
-  nodeSelfHeight(): number {
+  override nodeSelfHeight(): number {
     return 40;
   }
 

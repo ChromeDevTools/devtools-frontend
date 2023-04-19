@@ -257,7 +257,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this.requestHeadersCategory = new Category(root, 'requestHeaders', '');
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.clearHighlight();
     this.registerCSSFiles([requestHeadersViewStyles]);
     this.request.addEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this.refreshRemoteAddress, this);
@@ -278,7 +278,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
     this.root.select(/* omitFocus */ true, /* selectedByUser */ false);
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.request.removeEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this.refreshRemoteAddress, this);
     this.request.removeEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.refreshRequestHeaders, this);
     this.request.removeEventListener(
@@ -774,9 +774,9 @@ export class RequestHeadersView extends UI.Widget.VBox {
 const headerNames = new WeakMap<UI.TreeOutline.TreeElement, string>();
 
 export class Category extends UI.TreeOutline.TreeElement {
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
   private readonly expandedSetting: Common.Settings.Setting<boolean>;
-  expanded: boolean;
+  override expanded: boolean;
 
   constructor(root: UI.TreeOutline.TreeOutline, name: string, title?: string) {
     super(title || '', true);
@@ -794,11 +794,11 @@ export class Category extends UI.TreeOutline.TreeElement {
     return leaf;
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     this.expandedSetting.set(true);
   }
 
-  oncollapse(): void {
+  override oncollapse(): void {
     this.expandedSetting.set(false);
   }
 }

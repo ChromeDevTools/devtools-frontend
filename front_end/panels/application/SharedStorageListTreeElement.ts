@@ -35,28 +35,28 @@ export class SharedStorageListTreeElement extends ApplicationPanelTreeElement {
     this.view = new SharedStorageEventsView();
   }
 
-  get itemURL(): Platform.DevToolsPath.UrlString {
+  override get itemURL(): Platform.DevToolsPath.UrlString {
     return 'shared-storage://' as Platform.DevToolsPath.UrlString;
   }
 
-  onselect(selectedByUser: boolean|undefined): boolean {
+  override onselect(selectedByUser: boolean|undefined): boolean {
     super.onselect(selectedByUser);
     this.resourcesPanel.showView(this.view);
     return false;
   }
 
-  onattach(): void {
+  override onattach(): void {
     super.onattach();
     if (this.#expandedSetting.get()) {
       this.expand();
     }
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     this.#expandedSetting.set(true);
   }
 
-  oncollapse(): void {
+  override oncollapse(): void {
     this.#expandedSetting.set(false);
   }
 

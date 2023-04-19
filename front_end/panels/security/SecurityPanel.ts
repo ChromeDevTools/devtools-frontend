@@ -604,14 +604,14 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     this.setVisibleView(originState.originView);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     if (!this.visibleView) {
       this.selectAndSwitchToMainView();
     }
   }
 
-  focus(): void {
+  override focus(): void {
     this.sidebarTree.focus();
   }
 
@@ -976,7 +976,7 @@ export class SecurityPanelSidebarTreeElement extends UI.TreeOutline.TreeElement 
     return this.securityStateInternal;
   }
 
-  onselect(): boolean {
+  override onselect(): boolean {
     this.selectCallback();
     return true;
   }
@@ -1430,7 +1430,7 @@ export class SecurityMainView extends UI.Widget.VBox {
     void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters(
         [{filterType: NetworkForward.UIFilter.FilterType.MixedContent, filterValue: filterKey}]));
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([lockIconStyles, mainViewStyles]);
   }
@@ -1700,7 +1700,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
 
     this.originLockIcon.classList.add('security-property-' + newSecurityState);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([originViewStyles, lockIconStyles]);
   }

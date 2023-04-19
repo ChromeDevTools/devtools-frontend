@@ -231,7 +231,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
       this.keybindsTab.onEscapeKeyPressed(event);
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([settingsScreenStyles]);
   }

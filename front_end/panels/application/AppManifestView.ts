@@ -1079,7 +1079,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     field.appendChild(wrapper);
     return {imageResourceErrors, squareSizedIconAvailable};
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.reportView.registerCSSFiles([appManifestViewStyles]);
     this.registerCSSFiles([appManifestViewStyles]);

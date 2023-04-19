@@ -281,7 +281,7 @@ export class PreloadingView extends UI.Widget.VBox {
     return vsplit;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
 
     this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);

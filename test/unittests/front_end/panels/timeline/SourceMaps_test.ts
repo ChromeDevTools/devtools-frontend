@@ -176,11 +176,11 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
         super('InstrumentationBreakpoints');
       }
 
-      getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation):
+      override getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation):
           Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles?: string[]|undefined}> {
         return Promise.resolve({frames: [{name: PLUGIN_FUNCTION_NAME}]});
       }
-      handleScript(_: SDK.Script.Script) {
+      override handleScript(_: SDK.Script.Script) {
         return true;
       }
     }

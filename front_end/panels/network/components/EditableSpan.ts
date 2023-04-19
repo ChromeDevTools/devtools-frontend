@@ -97,7 +97,7 @@ export class EditableSpan extends HTMLElement {
     // clang-format on
   }
 
-  focus(): void {
+  override focus(): void {
     requestAnimationFrame(() => {
       const span = this.#shadow.querySelector<HTMLElement>('.editable');
       span?.focus();

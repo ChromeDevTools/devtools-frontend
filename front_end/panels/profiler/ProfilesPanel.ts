@@ -216,7 +216,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     }
   }
 
-  searchableView(): UI.SearchableView.SearchableView|null {
+  override searchableView(): UI.SearchableView.SearchableView|null {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const visibleView = (this.visibleView as any);
@@ -484,10 +484,10 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     delete this.visibleView;
   }
 
-  focus(): void {
+  override focus(): void {
     this.sidebarTree.focus();
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([objectValueStyles, profilesPanelStyles, heapProfilerStyles]);
     this.sidebarTree.registerCSSFiles([profilesSidebarTreeStyles]);
@@ -624,7 +624,7 @@ export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
     return -1;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.listItemElement.classList.add('profiles-tree-section');
   }
 }
@@ -641,7 +641,7 @@ export class ProfileGroup {
 export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
   readonly dataDisplayDelegate: DataDisplayDelegate;
   profileTitle: string;
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
 
   constructor(dataDisplayDelegate: DataDisplayDelegate, title: string) {
     super('', true);
@@ -652,7 +652,7 @@ export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.toggleOnClick = true;
   }
 
-  onselect(): boolean {
+  override onselect(): boolean {
     const hasChildren = this.childCount() > 0;
     if (hasChildren) {
       const lastChild = this.lastChild();
@@ -663,7 +663,7 @@ export class ProfileGroupSidebarTreeElement extends UI.TreeOutline.TreeElement {
     return hasChildren;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.listItemElement.classList.add('profile-group-sidebar-tree-item');
     this.listItemElement.createChild('div', 'icon');
     this.listItemElement.createChild('div', 'titles no-subtitle')
@@ -682,12 +682,12 @@ export class ProfilesSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.panel = panel;
   }
 
-  onselect(): boolean {
+  override onselect(): boolean {
     this.panel.showLauncherView();
     return true;
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.listItemElement.classList.add('profile-launcher-view-tree-item');
     this.listItemElement.createChild('div', 'icon');
     this.listItemElement.createChild('div', 'titles no-subtitle')
@@ -804,12 +804,12 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().setFlavor(JSProfilerPanel, this);
   }
 
-  willHide(): void {
+  override willHide(): void {
     UI.Context.Context.instance().setFlavor(JSProfilerPanel, null);
   }
 

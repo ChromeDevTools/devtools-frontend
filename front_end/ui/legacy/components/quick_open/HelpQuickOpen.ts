@@ -33,19 +33,19 @@ export class HelpQuickOpen extends Provider {
     }
   }
 
-  itemCount(): number {
+  override itemCount(): number {
     return this.providers.length;
   }
 
-  itemKeyAt(itemIndex: number): string {
+  override itemKeyAt(itemIndex: number): string {
     return this.providers[itemIndex].prefix;
   }
 
-  itemScoreAt(itemIndex: number, _query: string): number {
+  override itemScoreAt(itemIndex: number, _query: string): number {
     return -this.providers[itemIndex].prefix.length;
   }
 
-  renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void {
+  override renderItem(itemIndex: number, _query: string, titleElement: Element, _subtitleElement: Element): void {
     const provider = this.providers[itemIndex];
 
     const iconElement = new IconButton.Icon.Icon();
@@ -59,13 +59,13 @@ export class HelpQuickOpen extends Provider {
     UI.UIUtils.createTextChild(titleElement, provider.title);
   }
 
-  selectItem(itemIndex: number|null, _promptValue: string): void {
+  override selectItem(itemIndex: number|null, _promptValue: string): void {
     if (itemIndex !== null) {
       QuickOpenImpl.show(this.providers[itemIndex].prefix);
     }
   }
 
-  renderAsTwoRows(): boolean {
+  override renderAsTwoRows(): boolean {
     return false;
   }
 }

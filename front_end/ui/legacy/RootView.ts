@@ -25,7 +25,7 @@ export class RootView extends VBox {
     this.show((document.body as Element));
   }
 
-  doResize(): void {
+  override doResize(): void {
     if (this.window) {
       const size = this.constraints().minimum;
       const zoom = ZoomManager.instance().zoomFactor();

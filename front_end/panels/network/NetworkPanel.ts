@@ -598,11 +598,11 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  elementsToRestoreScrollPositionsFor(): Element[] {
+  override elementsToRestoreScrollPositionsFor(): Element[] {
     return this.networkLogView.elementsToRestoreScrollPositionsFor();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     UI.Context.Context.instance().setFlavor(NetworkPanel, this);
     this.registerCSSFiles([networkPanelStyles]);
 
@@ -610,7 +610,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     Host.userMetrics.panelLoaded('network', 'DevTools.Launch.Network');
   }
 
-  willHide(): void {
+  override willHide(): void {
     UI.Context.Context.instance().setFlavor(NetworkPanel, null);
   }
 
@@ -1064,7 +1064,7 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
     return searchView;
   }
 
-  createScope(): Search.SearchConfig.SearchScope {
+  override createScope(): Search.SearchConfig.SearchScope {
     return new NetworkSearchScope();
   }
 }

@@ -158,7 +158,7 @@ export class BackForwardCacheViewWrapper extends UI.ThrottledWidget.ThrottledWid
     this.update();
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     this.#bfcacheView.data = {frame: this.#getMainFrame()};
   }
 

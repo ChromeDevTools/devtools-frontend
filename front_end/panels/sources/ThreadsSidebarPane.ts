@@ -158,7 +158,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
       this.focus();
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([threadsSidebarPaneStyles]);
   }

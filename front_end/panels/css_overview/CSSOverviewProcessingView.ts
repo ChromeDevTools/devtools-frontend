@@ -43,7 +43,7 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
     this.contentElement.appendChild(this.fragment.element());
     this.contentElement.style.overflow = 'auto';
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([cssOverviewProcessingViewStyles]);
   }

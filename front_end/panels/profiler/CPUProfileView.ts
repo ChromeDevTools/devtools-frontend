@@ -110,8 +110,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/CPUProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CPUProfileView extends ProfileView implements UI.SearchableView.Searchable {
-  profileHeader: CPUProfileHeader;
-  adjustedTotal: number;
+  override profileHeader: CPUProfileHeader;
+  override adjustedTotal: number;
   constructor(profileHeader: CPUProfileHeader) {
     super();
     this.profileHeader = profileHeader;
@@ -122,13 +122,13 @@ export class CPUProfileView extends ProfileView implements UI.SearchableView.Sea
     this.setProfile(profile);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     PerfUI.LineLevelProfile.Performance.instance().reset();
     PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(this.profileHeader.profileModel());
   }
 
-  columnHeader(columnId: string): Common.UIString.LocalizedString {
+  override columnHeader(columnId: string): Common.UIString.LocalizedString {
     switch (columnId) {
       case 'self':
         return i18nString(UIStrings.selfTime);
@@ -138,7 +138,7 @@ export class CPUProfileView extends ProfileView implements UI.SearchableView.Sea
     return Common.UIString.LocalizedEmptyString;
   }
 
-  createFlameChartDataProvider(): ProfileFlameChartDataProvider {
+  override createFlameChartDataProvider(): ProfileFlameChartDataProvider {
     return new CPUFlameChartDataProvider(this.profileHeader.profileModel(), this.profileHeader.cpuProfilerModel);
   }
 }
@@ -162,23 +162,23 @@ export class CPUProfileType extends ProfileType {
         event => this.consoleProfileFinished(event.data), this);
   }
 
-  profileBeingRecorded(): ProfileHeader|null {
+  override profileBeingRecorded(): ProfileHeader|null {
     return super.profileBeingRecorded() as ProfileHeader | null;
   }
 
-  typeName(): string {
+  override typeName(): string {
     return 'CPU';
   }
 
-  fileExtension(): string {
+  override fileExtension(): string {
     return '.cpuprofile';
   }
 
-  get buttonTooltip(): Common.UIString.LocalizedString {
+  override get buttonTooltip(): Common.UIString.LocalizedString {
     return this.recording ? i18nString(UIStrings.stopCpuProfiling) : i18nString(UIStrings.startCpuProfiling);
   }
 
-  buttonClicked(): boolean {
+  override buttonClicked(): boolean {
     if (this.recording) {
       void this.stopRecordingProfile();
       return false;
@@ -187,11 +187,11 @@ export class CPUProfileType extends ProfileType {
     return true;
   }
 
-  get treeItemTitle(): Common.UIString.LocalizedString {
+  override get treeItemTitle(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.cpuProfiles);
   }
 
-  get description(): Common.UIString.LocalizedString {
+  override get description(): Common.UIString.LocalizedString {
     return i18nString(UIStrings.cpuProfilesShow);
   }
 
@@ -238,11 +238,11 @@ export class CPUProfileType extends ProfileType {
     this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
   }
 
-  createProfileLoadedFromFile(title: string): ProfileHeader {
+  override createProfileLoadedFromFile(title: string): ProfileHeader {
     return new CPUProfileHeader(null, this, title);
   }
 
-  profileBeingRecordedRemoved(): void {
+  override profileBeingRecordedRemoved(): void {
     void this.stopRecordingProfile();
   }
 
@@ -259,7 +259,7 @@ export class CPUProfileHeader extends WritableProfileHeader {
     this.cpuProfilerModel = cpuProfilerModel;
   }
 
-  createView(): ProfileView {
+  override createView(): ProfileView {
     return new CPUProfileView(this);
   }
 
@@ -277,7 +277,7 @@ export class CPUProfileHeader extends WritableProfileHeader {
     return this.profileModelInternal;
   }
 
-  setProfile(profile: Protocol.Profiler.Profile): void {
+  override setProfile(profile: Protocol.Profiler.Profile): void {
     const target = this.cpuProfilerModel && this.cpuProfilerModel.target() || null;
     this.profileModelInternal = new SDK.CPUProfileDataModel.CPUProfileDataModel(profile, target);
   }
@@ -328,20 +328,20 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     this.cpuProfilerModel = cpuProfilerModel;
   }
 
-  minimumBoundary(): number {
+  override minimumBoundary(): number {
     return this.cpuProfile.profileStartTime;
   }
 
-  totalTime(): number {
+  override totalTime(): number {
     return this.cpuProfile.profileHead.total;
   }
 
-  entryHasDeoptReason(entryIndex: number): boolean {
+  override entryHasDeoptReason(entryIndex: number): boolean {
     const node = (this.entryNodes[entryIndex] as SDK.CPUProfileDataModel.CPUProfileNode);
     return Boolean(node.deoptReason);
   }
 
-  calculateTimelineData(): PerfUI.FlameChart.TimelineData {
+  override calculateTimelineData(): PerfUI.FlameChart.TimelineData {
     const entries: (CPUFlameChartDataProvider.ChartEntry|null)[] = [];
     const stack: number[] = [];
     let maxDepth = 5;
@@ -388,7 +388,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     return this.timelineData_;
   }
 
-  prepareHighlightedEntryInfo(entryIndex: number): Element|null {
+  override prepareHighlightedEntryInfo(entryIndex: number): Element|null {
     const timelineData = this.timelineData_;
     const node = this.entryNodes[entryIndex];
     if (!node) {

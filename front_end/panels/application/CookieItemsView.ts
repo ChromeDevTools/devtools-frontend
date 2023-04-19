@@ -289,7 +289,7 @@ export class CookieItemsView extends StorageItemsView {
     }
   }
 
-  filter<T>(items: T[], keyFunction: (arg0: T) => string): T[] {
+  override filter<T>(items: T[], keyFunction: (arg0: T) => string): T[] {
     const predicate = (object: T|null): boolean => {
       if (!this.onlyIssuesFilterUI.checked()) {
         return true;
@@ -305,12 +305,12 @@ export class CookieItemsView extends StorageItemsView {
   /**
    * This will only delete the currently visible cookies.
    */
-  deleteAllItems(): void {
+  override deleteAllItems(): void {
     this.showPreview(null);
     void this.model.deleteCookies(this.shownCookies).then(() => this.refreshItems());
   }
 
-  deleteSelectedItem(): void {
+  override deleteSelectedItem(): void {
     const selectedCookie = this.cookiesTable.selectedCookie();
     if (selectedCookie) {
       this.showPreview(null);
@@ -318,7 +318,7 @@ export class CookieItemsView extends StorageItemsView {
     }
   }
 
-  refreshItems(): void {
+  override refreshItems(): void {
     void this.model.getCookiesForDomain(this.cookieDomain).then(this.updateWithCookies.bind(this));
   }
 
@@ -333,7 +333,7 @@ export class CookieItemsView extends StorageItemsView {
   private onLoadingFinished(): void {
     this.refreshItemsThrottled();
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([cookieItemsViewStyles]);
   }

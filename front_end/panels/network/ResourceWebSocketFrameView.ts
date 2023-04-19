@@ -268,13 +268,13 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     return i18nString(UIStrings.sOpcodeS, {PH1: localizedDescription(), PH2: opCode});
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.refresh();
     this.registerCSSFiles([webSocketFrameViewStyles]);
     this.request.addEventListener(SDK.NetworkRequest.Events.WebsocketFrameAdded, this.frameAdded, this);
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.request.removeEventListener(SDK.NetworkRequest.Events.WebsocketFrameAdded, this.frameAdded, this);
   }
 
@@ -432,7 +432,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
     this.binaryViewInternal = null;
   }
 
-  createCells(element: Element): void {
+  override createCells(element: Element): void {
     element.classList.toggle(
         'websocket-frame-view-row-error', this.frame.type === SDK.NetworkRequest.WebSocketFrameType.Error);
     element.classList.toggle(
@@ -442,7 +442,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
     super.createCells(element);
   }
 
-  nodeSelfHeight(): number {
+  override nodeSelfHeight(): number {
     return 21;
   }
 

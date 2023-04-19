@@ -70,7 +70,7 @@ export class CoveragePlugin extends Plugin {
     this.updateStats();
   }
 
-  dispose(): void {
+  override dispose(): void {
     if (this.coverage) {
       this.coverage.removeEventListener(
           Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged, this.handleCoverageSizesChanged, this);
@@ -80,7 +80,7 @@ export class CoveragePlugin extends Plugin {
     }
   }
 
-  static accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+  static override accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     return uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet();
   }
 
@@ -108,11 +108,11 @@ export class CoveragePlugin extends Plugin {
     }
   }
 
-  rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
+  override rightToolbarItems(): UI.Toolbar.ToolbarItem[] {
     return [this.infoInToolbar];
   }
 
-  editorExtension(): CodeMirror.Extension {
+  override editorExtension(): CodeMirror.Extension {
     return coverageCompartment.of([]);
   }
 
@@ -120,13 +120,13 @@ export class CoveragePlugin extends Plugin {
     return this.uiSourceCode.getDecorationData(SourceFrame.SourceFrame.DecoratorType.COVERAGE);
   }
 
-  editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
+  override editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
     if (this.getCoverageManager()) {
       this.startDecoUpdate(editor);
     }
   }
 
-  decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor): void {
+  override decorationChanged(type: SourceFrame.SourceFrame.DecoratorType, editor: TextEditor.TextEditor.TextEditor): void {
     if (type === SourceFrame.SourceFrame.DecoratorType.COVERAGE) {
       this.startDecoUpdate(editor);
     }
@@ -156,11 +156,11 @@ export class CoveragePlugin extends Plugin {
 }
 
 const coveredMarker = new (class extends CodeMirror.GutterMarker {
-  elementClass = 'cm-coverageUsed';
+  override elementClass = 'cm-coverageUsed';
 })();
 
 const notCoveredMarker = new (class extends CodeMirror.GutterMarker {
-  elementClass = 'cm-coverageUnused';
+  override elementClass = 'cm-coverageUnused';
 })();
 
 function markersFromCoverageData(

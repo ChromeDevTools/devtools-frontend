@@ -396,7 +396,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
     container.appendChild(this.errorToDiv(error));
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([playerMessagesViewStyles]);
   }

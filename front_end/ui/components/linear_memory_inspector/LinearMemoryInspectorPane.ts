@@ -50,7 +50,7 @@ export class Wrapper extends UI.Widget.VBox {
     return wrapperInstance;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.view.show(this.contentElement);
   }
 }
@@ -167,7 +167,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.firstTimeOpen = true;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.refreshData();
   }
 

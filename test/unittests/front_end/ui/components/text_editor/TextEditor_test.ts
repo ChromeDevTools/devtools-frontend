@@ -288,7 +288,7 @@ describeWithMockConnection('TextEditor autocompletion', () => {
         super('TextEditorTestPlugin');
       }
 
-      handleScript(script: SDK.Script.Script) {
+      override handleScript(script: SDK.Script.Script) {
         return script === testScript;
       }
     }());

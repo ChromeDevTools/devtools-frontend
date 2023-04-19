@@ -117,7 +117,7 @@ export class CSPViolationsListView extends UI.Widget.VBox {
     }
     return 'unknown';
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([cspViolationsListViewStyles]);
   }

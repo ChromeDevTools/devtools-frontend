@@ -161,21 +161,21 @@ export class CookieIssue extends Issue {
     return [Protocol.Audits.InspectorIssueCode.CookieIssue, reason, operation].join('::');
   }
 
-  cookies(): Iterable<Protocol.Audits.AffectedCookie> {
+  override cookies(): Iterable<Protocol.Audits.AffectedCookie> {
     if (this.#issueDetails.cookie) {
       return [this.#issueDetails.cookie];
     }
     return [];
   }
 
-  rawCookieLines(): Iterable<string> {
+  override rawCookieLines(): Iterable<string> {
     if (this.#issueDetails.rawCookieLine) {
       return [this.#issueDetails.rawCookieLine];
     }
     return [];
   }
 
-  requests(): Iterable<Protocol.Audits.AffectedRequest> {
+  override requests(): Iterable<Protocol.Audits.AffectedRequest> {
     if (this.#issueDetails.request) {
       return [this.#issueDetails.request];
     }
@@ -194,7 +194,7 @@ export class CookieIssue extends Issue {
     return resolveLazyDescription(description);
   }
 
-  isCausedByThirdParty(): boolean {
+  override isCausedByThirdParty(): boolean {
     const outermostFrame = SDK.FrameManager.FrameManager.instance().getOutermostFrame();
     return isCausedByThirdParty(outermostFrame, this.#issueDetails.cookieUrl);
   }

@@ -41,7 +41,7 @@ export class MediaModel extends SDK.SDKModel.SDKModel<EventTypes> implements Pro
     target.registerMediaDispatcher(this);
   }
 
-  async resumeModel(): Promise<void> {
+  override async resumeModel(): Promise<void> {
     if (!this.enabled) {
       return Promise.resolve();
     }

@@ -188,12 +188,12 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.updateGlasspane();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.startCasting();
     this.registerCSSFiles([screencastViewStyles]);
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.stopCasting();
   }
 
@@ -376,7 +376,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     };
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (this.deferredCasting) {
       clearTimeout(this.deferredCasting);
       delete this.deferredCasting;

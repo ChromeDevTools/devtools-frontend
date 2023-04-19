@@ -111,15 +111,15 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.overviewInfo.hide();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.update();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.overviewInfo.hide();
   }
 
-  onResize(): void {
+  override onResize(): void {
     const width = this.element.offsetWidth;
     if (width === this.lastWidth) {
       return;

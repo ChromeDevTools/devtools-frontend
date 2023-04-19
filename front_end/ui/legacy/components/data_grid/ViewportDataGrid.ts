@@ -49,7 +49,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     this.setRootNode(new ViewportDataGridNode());
   }
 
-  setStriped(striped: boolean): void {
+  override setStriped(striped: boolean): void {
     this.isStriped = striped;
     let startsWithOdd = true;
     if (this.visibleNodes.length) {
@@ -70,7 +70,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     this.scrollContainer.addEventListener('scroll', this.onScrollBound, true);
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (this.stickToBottom) {
       this.scrollContainer.scrollTop = this.scrollContainer.scrollHeight - this.scrollContainer.clientHeight;
     }
@@ -108,7 +108,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     this.update();
   }
 
-  renderInline(): void {
+  override renderInline(): void {
     this.inline = true;
     super.renderInline();
     this.update();
@@ -275,7 +275,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     this.isStripedInternal = false;
   }
 
-  element(): Element {
+  override element(): Element {
     const existingElement = this.existingElement();
     const element = existingElement || this.createElement();
     if (!existingElement || this.stale) {
@@ -328,7 +328,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     return flatNodes;
   }
 
-  insertChild(child: DataGridNode<ViewportDataGridNode<T>>, index: number): void {
+  override insertChild(child: DataGridNode<ViewportDataGridNode<T>>, index: number): void {
     this.clearFlatNodes();
     if (child.parent === this) {
       const currentIndex = this.children.indexOf(child);
@@ -355,7 +355,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     }
   }
 
-  removeChild(child: DataGridNode<ViewportDataGridNode<T>>): void {
+  override removeChild(child: DataGridNode<ViewportDataGridNode<T>>): void {
     this.clearFlatNodes();
     if (this.dataGrid) {
       this.dataGrid.updateSelectionBeforeRemoval(child, false);
@@ -381,7 +381,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     }
   }
 
-  removeChildren(): void {
+  override removeChildren(): void {
     this.clearFlatNodes();
     if (this.dataGrid) {
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
@@ -404,7 +404,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     this.resetNode();
   }
 
-  collapse(): void {
+  override collapse(): void {
     if (!this.expanded) {
       return;
     }
@@ -420,7 +420,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     (this.dataGrid as ViewportDataGrid<T>).scheduleUpdateStructure();
   }
 
-  expand(): void {
+  override expand(): void {
     if (this.expanded) {
       return;
     }
@@ -435,7 +435,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     return Boolean(this.dataGrid && existingElement && existingElement.parentElement);
   }
 
-  refresh(): void {
+  override refresh(): void {
     if (this.attached()) {
       this.stale = true;
       (this.dataGrid as ViewportDataGrid<T>).scheduleUpdate();
@@ -444,11 +444,11 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     }
   }
 
-  reveal(): void {
+  override reveal(): void {
     (this.dataGrid as ViewportDataGrid<T>).revealViewportNode(this);
   }
 
-  recalculateSiblings(index: number): void {
+  override recalculateSiblings(index: number): void {
     this.clearFlatNodes();
     super.recalculateSiblings(index);
   }

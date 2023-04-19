@@ -98,11 +98,11 @@ export class DatabaseTableView extends UI.View.SimpleView {
     this.dataGrid = null;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.update();
   }
 
-  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     return [this.refreshButton, this.visibleColumnsInput];
   }
 

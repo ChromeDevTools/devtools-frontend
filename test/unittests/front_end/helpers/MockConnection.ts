@@ -100,11 +100,11 @@ async function enable({reset = true} = {}) {
 
 class MockConnection extends ProtocolClient.InspectorBackend.Connection {
   messageCallback?: MessageCallback;
-  setOnMessage(callback: MessageCallback) {
+  override setOnMessage(callback: MessageCallback) {
     this.messageCallback = callback;
   }
 
-  sendRawMessage(message: string) {
+  override sendRawMessage(message: string) {
     void (async () => {
       const outgoingMessage = JSON.parse(message) as Message;
 

@@ -194,7 +194,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         .addChangeListener(this.#textEditorIndentChanged, this);
   }
 
-  disposeView(): void {
+  override disposeView(): void {
     Common.Settings.Settings.instance()
         .moduleSetting('textEditorIndent')
         .removeChangeListener(this.#textEditorIndentChanged, this);
@@ -413,18 +413,18 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     return this.loadError;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     void this.ensureContentLoaded();
     this.wasShownOrLoaded();
   }
 
-  willHide(): void {
+  override willHide(): void {
     super.willHide();
 
     this.clearPositionToReveal();
   }
 
-  async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
+  override async toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]> {
     return [this.prettyToggle, this.sourcePosition, this.progressToolbarItem];
   }
 
@@ -971,7 +971,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   protected populateLineGutterContextMenu(_menu: UI.ContextMenu.ContextMenu, _lineNumber: number): void {
   }
 
-  focus(): void {
+  override focus(): void {
     this.textEditor.focus();
   }
 }
@@ -1109,7 +1109,7 @@ const searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
 }, {decorations: (value): CodeMirror.DecorationSet => value.decorations});
 
 const nonBreakableLineMark = new (class extends CodeMirror.GutterMarker {
-  elementClass = 'cm-nonBreakableLine';
+  override elementClass = 'cm-nonBreakableLine';
 })();
 
 // Effect to add lines (by position) to the set of non-breakable lines.

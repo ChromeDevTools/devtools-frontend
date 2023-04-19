@@ -32,7 +32,7 @@ export class RecorderExtensionEndpoint extends ExtensionEndpoint {
     return this.mediaType;
   }
 
-  protected handleEvent({event}: {event: string}): void {
+  protected override handleEvent({event}: {event: string}): void {
     switch (event) {
       case PrivateAPI.RecorderExtensionPluginEvents.UnregisteredRecorderExtensionPlugin: {
         this.disconnect();

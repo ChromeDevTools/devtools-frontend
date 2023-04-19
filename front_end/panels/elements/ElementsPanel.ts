@@ -425,7 +425,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  focus(): void {
+  override focus(): void {
     if (this.treeOutlines.size) {
       this.treeOutlines.values().next().value.focus();
     } else {
@@ -433,11 +433,11 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  searchableView(): UI.SearchableView.SearchableView {
+  override searchableView(): UI.SearchableView.SearchableView {
     return this.searchableViewInternal;
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().setFlavor(ElementsPanel, this);
     this.registerCSSFiles([elementsPanelStyles]);
@@ -471,7 +471,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  willHide(): void {
+  override willHide(): void {
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     for (const treeOutline of this.treeOutlines) {
       treeOutline.setVisible(false);
@@ -482,7 +482,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     UI.Context.Context.instance().setFlavor(ElementsPanel, null);
   }
 
-  onResize(): void {
+  override onResize(): void {
     this.element.window().requestAnimationFrame(this.updateSidebarPosition.bind(this));  // Do not force layout.
     this.updateTreeOutlineVisibleWidth();
   }

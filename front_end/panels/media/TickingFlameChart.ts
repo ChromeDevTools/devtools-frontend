@@ -283,14 +283,14 @@ export class TickingFlameChart extends UI.Widget.VBox {
     this.updateRender();
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.isShown = false;
     if (this.ticking) {
       this.stop();
     }
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.isShown = true;
     if (this.canTickInternal && !this.ticking) {
       this.start();

@@ -60,7 +60,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.boxElements = [];
   }
 
-  doUpdate(): Promise<void> {
+  override doUpdate(): Promise<void> {
     // "style" attribute might have changed. Update metrics unless they are being edited
     // (if a CSS property is added, a StyleSheetChanged event is dispatched).
     if (this.isEditingMetrics) {
@@ -510,7 +510,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     this.editingEnded(element, context);
     this.applyUserInput(element, userInput, previousContent, context, true);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([metricsSidebarPaneStyles]);
   }

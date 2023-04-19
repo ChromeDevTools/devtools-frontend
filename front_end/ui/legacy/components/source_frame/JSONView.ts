@@ -151,7 +151,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
     return {start: start, end: end, length: length};
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     this.initialize();
   }
 

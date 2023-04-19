@@ -699,7 +699,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.nodeStylesUpdatedForTest(node, false);
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     this.#updateAbortController?.abort();
     this.#updateAbortController = new AbortController();
     await this.#innerDoUpdate(this.#updateAbortController.signal);
@@ -777,7 +777,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     return await node.domModel().cssModel().getComputedStyle(nodeId);
   }
 
-  onResize(): void {
+  override onResize(): void {
     void this.resizeThrottler.schedule(this.innerResize.bind(this));
   }
 
@@ -1284,7 +1284,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.visibleSections = visibleSections;
   }
 
-  willHide(): void {
+  override willHide(): void {
     this.hideAllPopovers();
     super.willHide();
   }
@@ -1824,7 +1824,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     }
   }
 
-  onKeyDown(event: Event): void {
+  override onKeyDown(event: Event): void {
     const keyboardEvent = (event as KeyboardEvent);
     switch (keyboardEvent.key) {
       case 'ArrowUp':
@@ -1857,7 +1857,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     super.onKeyDown(keyboardEvent);
   }
 
-  onMouseWheel(event: Event): void {
+  override onMouseWheel(event: Event): void {
     if (this.handleNameOrValueUpDown(event)) {
       event.consume(true);
       return;
@@ -1865,7 +1865,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     super.onMouseWheel(event);
   }
 
-  tabKeyPressed(): boolean {
+  override tabKeyPressed(): boolean {
     this.acceptAutoComplete();
 
     // Always tab to the next field.

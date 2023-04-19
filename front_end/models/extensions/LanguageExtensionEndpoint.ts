@@ -15,7 +15,7 @@ class LanguageExtensionEndpointImpl extends ExtensionEndpoint {
     super(port);
     this.plugin = plugin;
   }
-  protected handleEvent({event}: {event: string}): void {
+  protected override handleEvent({event}: {event: string}): void {
     switch (event) {
       case PrivateAPI.LanguageExtensionPluginEvents.UnregisteredLanguageExtensionPlugin: {
         this.disconnect();

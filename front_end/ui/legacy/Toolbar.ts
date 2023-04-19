@@ -717,7 +717,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     this.updateEmptyStyles();
   }
 
-  applyEnabledState(enabled: boolean): void {
+  override applyEnabledState(enabled: boolean): void {
     this.prompt.setEnabled(enabled);
   }
 
@@ -824,7 +824,7 @@ export class ToolbarMenuButton extends ToolbarButton {
     ARIAUtils.markAsMenuButton(this.element);
   }
 
-  mouseDown(event: MouseEvent): void {
+  override mouseDown(event: MouseEvent): void {
     if (event.buttons !== 1) {
       super.mouseDown(event);
       return;
@@ -853,7 +853,7 @@ export class ToolbarMenuButton extends ToolbarButton {
     this.lastTriggerTime = Date.now();
   }
 
-  clicked(event: Event): void {
+  override clicked(event: Event): void {
     if (this.triggerTimeout) {
       clearTimeout(this.triggerTimeout);
     }
@@ -888,7 +888,7 @@ export class ToolbarSettingToggle extends ToolbarToggle {
     this.setTitle(this.defaultTitle);
   }
 
-  clicked(event: Event): void {
+  override clicked(event: Event): void {
     this.willAnnounceState = true;
     this.setting.set(!this.toggled());
     super.clicked(event);
@@ -956,7 +956,7 @@ export class ToolbarComboBox extends ToolbarItem<void> {
     return option;
   }
 
-  applyEnabledState(enabled: boolean): void {
+  override applyEnabledState(enabled: boolean): void {
     super.applyEnabledState(enabled);
     this.selectElementInternal.disabled = !enabled;
   }
@@ -1082,7 +1082,7 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
     this.inputElement.checked = value;
   }
 
-  applyEnabledState(enabled: boolean): void {
+  override applyEnabledState(enabled: boolean): void {
     super.applyEnabledState(enabled);
     this.inputElement.disabled = !enabled;
   }

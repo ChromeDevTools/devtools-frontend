@@ -224,7 +224,7 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
     this.updateControls();
     this.selectedProfileTypeSetting.set(profileType.id);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([profileLauncherViewStyles]);
   }

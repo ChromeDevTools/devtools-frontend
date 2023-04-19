@@ -85,7 +85,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
     this.matchesExpandedCount += searchResult.matchesCount();
     this.treeElements.push(treeElement);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.treeOutline.registerCSSFiles([searchResultsPaneStyles]);
   }
@@ -98,7 +98,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
   private searchConfig: SearchConfig;
   private searchResult: SearchResult;
   private initialized: boolean;
-  toggleOnClick: boolean;
+  override toggleOnClick: boolean;
 
   constructor(searchConfig: SearchConfig, searchResult: SearchResult) {
     super('', true);
@@ -108,7 +108,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     this.toggleOnClick = true;
   }
 
-  onexpand(): void {
+  override onexpand(): void {
     if (this.initialized) {
       return;
     }
@@ -133,7 +133,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  onattach(): void {
+  override onattach(): void {
     this.updateSearchMatches();
   }
 

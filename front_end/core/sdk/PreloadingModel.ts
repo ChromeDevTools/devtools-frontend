@@ -51,7 +51,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
         ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
   }
 
-  dispose(): void {
+  override dispose(): void {
     super.dispose();
 
     TargetManager.instance().removeModelListener(

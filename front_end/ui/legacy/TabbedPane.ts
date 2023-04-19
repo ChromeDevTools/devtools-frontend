@@ -191,7 +191,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.closeableTabs = closeableTabs;
   }
 
-  focus(): void {
+  override focus(): void {
     if (this.visibleView) {
       this.visibleView.focus();
     } else {
@@ -462,7 +462,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.resumeInvalidations();
   }
 
-  onResize(): void {
+  override onResize(): void {
     if (this.currentDevicePixelRatio !== window.devicePixelRatio) {
       // Force recalculation of all tab widths on a DPI change
       this.clearMeasuredWidths();
@@ -475,7 +475,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateTabElements();
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     const effectiveTab = this.currentTab || this.tabsHistory[0];
     if (effectiveTab && this.autoSelectFirstItemOnShow) {
       this.selectTab(effectiveTab.id);
@@ -494,7 +494,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.tabSlider.classList.toggle('enabled', enable);
   }
 
-  calculateConstraints(): Constraints {
+  override calculateConstraints(): Constraints {
     let constraints = super.calculateConstraints();
     const minContentConstraints = new Constraints(new Size(0, 0), new Size(50, 50));
     constraints = constraints.widthToMax(minContentConstraints).heightToMax(minContentConstraints);
@@ -873,7 +873,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     tab.view.detach();
   }
 
-  elementsToRestoreScrollPositionsFor(): Element[] {
+  override elementsToRestoreScrollPositionsFor(): Element[] {
     return [this.contentElementInternal];
   }
 

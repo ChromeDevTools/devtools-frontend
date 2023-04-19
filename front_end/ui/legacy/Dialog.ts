@@ -74,7 +74,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     return Boolean(Dialog.instance);
   }
 
-  show(where?: Document | Element): void {
+  override show(where?: Document | Element): void {
     const document = (where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument as Document);
     this.targetDocument = document;
     this.targetDocument.addEventListener('keydown', this.targetDocumentKeyDownHandler, true);
@@ -88,7 +88,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     this.focusRestorer = new WidgetFocusRestorer(this.widget());
   }
 
-  hide(): void {
+  override hide(): void {
     if (this.focusRestorer) {
       this.focusRestorer.restore();
     }

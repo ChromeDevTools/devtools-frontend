@@ -12,12 +12,12 @@ import {FilteredUISourceCodeListProvider} from './FilteredUISourceCodeListProvid
 import {SourcesView} from './SourcesView.js';
 
 export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
-  attach(): void {
+  override attach(): void {
     this.setDefaultScores(SourcesView.defaultUISourceCodeScores());
     super.attach();
   }
 
-  uiSourceCodeSelected(
+  override uiSourceCodeSelected(
       uiSourceCode: Workspace.UISourceCode.UISourceCode|null, lineNumber?: number, columnNumber?: number): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelectFileFromFilePicker);
 
@@ -31,11 +31,11 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
     }
   }
 
-  filterProject(project: Workspace.Workspace.Project): boolean {
+  override filterProject(project: Workspace.Workspace.Project): boolean {
     return !project.isServiceProject();
   }
 
-  renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
+  override renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
     super.renderItem(itemIndex, query, titleElement, subtitleElement);
 
     const iconElement = new IconButton.Icon.Icon();
@@ -48,7 +48,7 @@ export class OpenFileQuickOpen extends FilteredUISourceCodeListProvider {
     titleElement.parentElement?.parentElement?.insertBefore(iconElement, titleElement.parentElement);
   }
 
-  renderAsTwoRows(): boolean {
+  override renderAsTwoRows(): boolean {
     return true;
   }
 }

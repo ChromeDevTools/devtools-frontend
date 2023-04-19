@@ -82,7 +82,7 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
     this.#config = config;
     this.#networkDiscoveryView.discoveryConfigChanged(this.#config.networkDiscoveryConfig);
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([nodeConnectionsPanelStyles]);
   }
@@ -202,7 +202,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
       };
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.#list.registerCSSFiles([nodeConnectionsPanelStyles]);
   }

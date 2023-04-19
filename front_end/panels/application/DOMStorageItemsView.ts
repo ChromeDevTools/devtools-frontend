@@ -251,7 +251,7 @@ export class DOMStorageItemsView extends StorageItemsView {
     UI.ARIAUtils.alert(i18nString(UIStrings.domStorageNumberEntries, {PH1: filteredList.length}));
   }
 
-  deleteSelectedItem(): void {
+  override deleteSelectedItem(): void {
     if (!this.dataGrid || !this.dataGrid.selectedNode) {
       return;
     }
@@ -259,11 +259,11 @@ export class DOMStorageItemsView extends StorageItemsView {
     this.deleteCallback(this.dataGrid.selectedNode);
   }
 
-  refreshItems(): void {
+  override refreshItems(): void {
     void this.domStorage.getItems().then(items => items && this.showDOMStorageItems(items));
   }
 
-  deleteAllItems(): void {
+  override deleteAllItems(): void {
     this.domStorage.clear();
     // explicitly clear the view because the event won't be fired when it has no items
     this.domStorageItemsCleared();

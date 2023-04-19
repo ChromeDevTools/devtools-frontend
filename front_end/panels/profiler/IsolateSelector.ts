@@ -95,13 +95,13 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
         SDK.TargetManager.Events.InspectedURLChanged, this.targetChanged, this);
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     SDK.IsolateManager.IsolateManager.instance().addEventListener(
         SDK.IsolateManager.Events.MemoryChanged, this.heapStatsChanged, this);
   }
 
-  willHide(): void {
+  override willHide(): void {
     SDK.IsolateManager.IsolateManager.instance().removeEventListener(
         SDK.IsolateManager.Events.MemoryChanged, this.heapStatsChanged, this);
   }

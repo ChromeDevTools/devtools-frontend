@@ -33,7 +33,7 @@ export class ThrottledWidget extends VBox {
     });
   }
 
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     if (this.updateWhenVisible) {
       this.update();

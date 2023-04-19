@@ -316,7 +316,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
       this.contentElement.appendChild(control);
     }
   }
-  wasShown(): void {
+  override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([renderingOptionsStyles]);
   }

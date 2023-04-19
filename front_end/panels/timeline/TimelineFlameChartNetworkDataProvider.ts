@@ -182,9 +182,6 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     if (!request.timing) {
       return false;
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const timing = (request.timing as any);
 
     const beginTime = request.beginTime();
     const timeToPixel = (time: number): number => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
@@ -206,36 +203,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     context.fillRect(barX, barY - 0.5, sendStart - barX, barHeight);
     context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
 
-    // If the request is from cache, pushStart refers to the original request, and hence cannot be used.
-    if (!request.cached() && timing.pushStart) {
-      const pushStart = timeToPixel(timing.pushStart * 1000);
-      const pushEnd = timing.pushEnd ? timeToPixel(timing.pushEnd * 1000) : start;
-      const dentSize = Platform.NumberUtilities.clamp(pushEnd - pushStart - 2, 0, 4);
-      const padding = 1;
-      context.save();
-      context.beginPath();
-      context.moveTo(pushStart + dentSize, barY + barHeight / 2);
-      context.lineTo(pushStart, barY + padding);
-      context.lineTo(pushEnd - dentSize, barY + padding);
-      context.lineTo(pushEnd, barY + barHeight / 2);
-      context.lineTo(pushEnd - dentSize, barY + barHeight - padding);
-      context.lineTo(pushStart, barY + barHeight - padding);
-      context.closePath();
-      if (timing.pushEnd) {
-        context.fillStyle = this.entryColor(index);
-      } else {
-        // Use a gradient to indicate that `pushEnd` is not known here to work
-        // around BUG(chromium:998411).
-        const gradient = context.createLinearGradient(pushStart, 0, pushEnd, 0);
-        gradient.addColorStop(0, this.entryColor(index));
-        gradient.addColorStop(1, 'white');
-        context.fillStyle = gradient;
-      }
-      context.globalAlpha = 0.3;
-      context.fill();
-      context.restore();
-    }
-
+    // Draws left and right whiskers
     function drawTick(begin: number, end: number, y: number): void {
       const /** @const */ tickHeightPx = 6;
       context.moveTo(begin, y - tickHeightPx / 2);
@@ -262,6 +230,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       }
     }
 
+    // Draw request URL as text
     const textStart = Math.max(sendStart, 0);
     const textWidth = finish - textStart;
     const /** @const */ minTextWidthPx = 20;

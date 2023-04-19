@@ -44,12 +44,29 @@ describeWithEnvironment('TimelineSelection', () => {
     if (!firstLCPEvent) {
       throw new Error('Could not find LCP event');
     }
-    const selection = Timeline.TimelineSelection.TimelineSelection.fromSDKTraceEvent(firstLCPEvent);
-    assert.strictEqual(selection.type(), Timeline.TimelineSelection.SelectionType.SDKTraceEvent);
+    const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(firstLCPEvent);
+    assert.strictEqual(selection.type(), Timeline.TimelineSelection.SelectionType.TraceEvent);
     assert.strictEqual(selection.object(), firstLCPEvent);
     assert.strictEqual(selection.startTime(), firstLCPEvent.startTime);
     // No end time, so the end time gets set to the start time.
     assert.strictEqual(selection.endTime(), firstLCPEvent.startTime);
+  });
+
+  it('can be created with a TraceEngine event', async () => {
+    const data = await allModelsFromFile('web-dev.json.gz');
+    const firstLCPEvent = data.traceParsedData.PageLoadMetrics.allMarkerEvents.find(event => {
+      return event.name === 'largestContentfulPaint::Candidate';
+    });
+    if (!firstLCPEvent) {
+      throw new Error('Could not find LCP event');
+    }
+    const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(firstLCPEvent);
+    assert.strictEqual(selection.type(), Timeline.TimelineSelection.SelectionType.TraceEvent);
+    assert.strictEqual(selection.object(), firstLCPEvent);
+    assert.strictEqual(
+        selection.startTime(), Timeline.EventTypeHelpers.timesForEventInMilliseconds(firstLCPEvent).startTime);
+    assert.strictEqual(
+        selection.endTime(), Timeline.EventTypeHelpers.timesForEventInMilliseconds(firstLCPEvent).endTime);
   });
 
   it('can be created with a range', async () => {

@@ -220,7 +220,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       return;
     }
     switch (this.selection.type()) {
-      case SelectionType.SDKTraceEvent: {
+      case SelectionType.TraceEvent: {
         const event =
             (this.selection.object() as SDK.TracingModel.Event | TraceEngine.Types.TraceEvents.TraceEventData);
         void TimelineUIUtils

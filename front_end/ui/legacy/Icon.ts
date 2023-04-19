@@ -194,7 +194,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['smallicon-checkmark', {position: 'b5', spritesheet: 'smallicons'}],
   ['smallicon-checkmark-square', {position: 'b6', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-checkmark-behind', {position: 'd6', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-cross', {position: 'b4', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-error', {position: 'c4', spritesheet: 'smallicons'}],
   ['smallicon-expand-less', {position: 'f5', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-expand-more', {position: 'e6', spritesheet: 'smallicons', isMask: true}],
@@ -211,10 +210,6 @@ const initialDescriptors = new Map<string, Descriptor>([
 
   ['mediumicon-file-sync', {position: 'd3', spritesheet: 'mediumicons', invert: true}],
   ['mediumicon-file', {position: 'a2', spritesheet: 'mediumicons', invert: true}],
-  ['mediumicon-gray-cross-active', {position: 'b2', spritesheet: 'mediumicons'}],
-  ['mediumicon-gray-cross-hover', {position: 'c2', spritesheet: 'mediumicons'}],
-  ['mediumicon-red-cross-active', {position: 'd2', spritesheet: 'mediumicons'}],
-  ['mediumicon-red-cross-hover', {position: 'a1', spritesheet: 'mediumicons'}],
   ['mediumicon-replace', {position: 'c5', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-fetch', {position: 'b5', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-elements-panel', {position: 'f3', spritesheet: 'mediumicons', isMask: true}],

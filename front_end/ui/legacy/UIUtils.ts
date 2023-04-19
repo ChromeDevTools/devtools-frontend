@@ -1332,8 +1332,6 @@ Utils.registerCustomElement('span', 'dt-small-bubble', DevToolsSmallBubble);
 
 export class DevToolsCloseButton extends HTMLDivElement {
   private buttonElement: HTMLElement;
-  private readonly hoverIcon: Icon;
-  private readonly activeIcon: Icon;
 
   constructor() {
     super();
@@ -1342,22 +1340,8 @@ export class DevToolsCloseButton extends HTMLDivElement {
     Tooltip.install(this.buttonElement, i18nString(UIStrings.close));
     ARIAUtils.setAccessibleName(this.buttonElement, i18nString(UIStrings.close));
     ARIAUtils.markAsButton(this.buttonElement);
-    const regularIcon = Icon.create('smallicon-cross', 'default-icon');
-    this.hoverIcon = Icon.create('mediumicon-red-cross-hover', 'hover-icon');
-    this.activeIcon = Icon.create('mediumicon-red-cross-active', 'active-icon');
+    const regularIcon = Icon.create('cross', 'default-icon');
     this.buttonElement.appendChild(regularIcon);
-    this.buttonElement.appendChild(this.hoverIcon);
-    this.buttonElement.appendChild(this.activeIcon);
-  }
-
-  set gray(gray: boolean) {
-    if (gray) {
-      this.hoverIcon.setIconType('mediumicon-gray-cross-hover');
-      this.activeIcon.setIconType('mediumicon-gray-cross-active');
-    } else {
-      this.hoverIcon.setIconType('mediumicon-red-cross-hover');
-      this.activeIcon.setIconType('mediumicon-red-cross-active');
-    }
   }
 
   setAccessibleName(name: string): void {

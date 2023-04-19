@@ -5,42 +5,20 @@
  */
 
 .close-button {
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.hover-icon,
-.active-icon {
-  display: none;
+.close-button:hover .cross,
+.close-button:focus-visible .cross {
+  background-color: var(--icon-default-hover);
 }
 
-.close-button:hover .default-icon,
-.close-button:active .default-icon {
-  display: none;
-}
-
-.close-button:hover .hover-icon {
-  display: block;
-}
-
-.close-button:active .default-icon,
-.close-button:focus-visible .default-icon {
-  display: none;
-}
-
-.close-button:active .hover-icon {
-  display: none !important; /* stylelint-disable-line declaration-no-important */
-}
-
-.close-button:focus-visible .hover-icon {
-  display: block;
-}
-
-.close-button:active .active-icon {
-  display: block;
+.close-button:active .cross {
+  background-color: var(--icon-default);
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {

@@ -94,30 +94,36 @@ export class GPUTrackAppender implements TrackAppender {
   /**
    * Adds into the flame chart data the trace events corresponding to
    * user GPU Tasks. These are taken straight from the GPU handler.
-   * @param currentLevel the flame chart level from which user timings will
+   * @param trackStartLevel the flame chart level from which GPU events will
    * be appended.
    * @returns the next level after the last occupied by the appended
-   * timings (the first available level to append more data).
+   * GPU tasks (the first available level to append next track).
    */
-  #appendGPUsAtLevel(currentLevel: number): number {
+  #appendGPUsAtLevel(trackStartLevel: number): number {
     const gpuEvents = this.#traceParsedData.GPU.mainGPUThreadTasks;
-    const lastUsedTimeByLevel: number[] = [];
+
+    const openEvents = [];
+    let maxStackDepth = 0;
     for (let i = 0; i < gpuEvents.length; ++i) {
       const event = gpuEvents[i];
-      const startTime = event.ts;
-      let level;
-      // look vertically for the first level where this event fits,
-      // that is, where it wouldn't overlap with other events.
-      for (level = 0; level < lastUsedTimeByLevel.length && lastUsedTimeByLevel[level] > startTime; ++level) {
+      while (openEvents.length) {
+        const lastOpenEvent = openEvents[openEvents.length - 1];
+        const lastOpenEventEndTime = lastOpenEvent.ts + (lastOpenEvent.dur || 0);
+        if (lastOpenEventEndTime <= event.ts) {
+          openEvents.pop();
+        }
       }
-      this.#appendEventAtLevel(event, currentLevel + level);
-      const endTime = event.ts + (event.dur || 0);
-      lastUsedTimeByLevel[level] = endTime;
+
+      const level = trackStartLevel + openEvents.length;
+      this.#appendEventAtLevel(event, level);
+
+      maxStackDepth = Math.max(maxStackDepth, openEvents.length + 1);
+      openEvents.push(event);
     }
-    this.#legacyEntryTypeByLevel.length = currentLevel + lastUsedTimeByLevel.length;
-    // Set the entry type to TrackAppender for all the levels occupied by the appended timings.
-    this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, currentLevel);
-    return currentLevel + lastUsedTimeByLevel.length;
+
+    this.#legacyEntryTypeByLevel.length = trackStartLevel + maxStackDepth;
+    this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, trackStartLevel);
+    return trackStartLevel + maxStackDepth;
   }
 
   /**

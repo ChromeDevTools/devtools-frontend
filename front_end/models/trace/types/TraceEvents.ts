@@ -502,27 +502,55 @@ export type TraceImpactedNode = {
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
+type LayoutShiftData = TraceEventArgsData&{
+  // These keys come from the trace data, so we have to use underscores.
+  /* eslint-disable @typescript-eslint/naming-convention */
+  cumulative_score: number,
+  frame_max_distance: number,
+  had_recent_input: boolean,
+  impacted_nodes: TraceImpactedNode[] | undefined,
+  is_main_frame: boolean,
+  overall_max_distance: number,
+  region_rects: TraceRect[],
+  score: number,
+  weighted_score_delta: number,
+  /* eslint-enable @typescript-eslint/naming-convention */
+};
 // These keys come from the trace data, so we have to use underscores.
 export interface TraceEventLayoutShift extends TraceEventInstant {
   name: 'LayoutShift';
   normalized?: boolean;
   args: TraceEventArgs&{
     frame: string,
-    data?: TraceEventArgsData&{
-      // These keys come from the trace data, so we have to use underscores.
-      /* eslint-disable @typescript-eslint/naming-convention */
-      cumulative_score: number,
-      frame_max_distance: number,
-      had_recent_input: boolean,
-      impacted_nodes: TraceImpactedNode[]|undefined,
-      is_main_frame: boolean,
-      overall_max_distance: number,
-      region_rects: TraceRect[],
-      score: number,
-      weighted_score_delta: number,
-      /* eslint-enable @typescript-eslint/naming-convention */
+    data?: LayoutShiftData,
+  };
+}
+
+interface LayoutShiftSessionWindowData {
+  // The sum of the weighted score of all the shifts
+  // that belong to a session window.
+  cumulativeWindowScore: number;
+  // A consecutive generated in the frontend to
+  // to identify a session window.
+  id: number;
+}
+export interface LayoutShiftParsedData {
+  screenshotSource?: string;
+  timeFromNavigation?: MicroSeconds;
+  // The sum of the weighted scores of the shifts that
+  // belong to a session window up until this shift
+  // (inclusive).
+  cumulativeWeightedScoreInWindow: number;
+  sessionWindowData: LayoutShiftSessionWindowData;
+}
+export interface SyntheticLayoutShift extends TraceEventLayoutShift {
+  args: TraceEventArgs&{
+    frame: string,
+    data?: LayoutShiftData&{
+      rawEvent: TraceEventLayoutShift,
     },
   };
+  parsedData: LayoutShiftParsedData;
 }
 
 export type Priorty = 'Low'|'High'|'VeryHigh'|'Highest';
@@ -1056,4 +1084,11 @@ export function isTraceEventAsyncPhase(traceEventData: TraceEventData): boolean 
     Phase.ASYNC_STEP_PAST,
   ]);
   return asyncPhases.has(traceEventData.ph);
+}
+
+export function isSyntheticLayoutShift(traceEventData: TraceEventData): traceEventData is SyntheticLayoutShift {
+  if (!isTraceEventLayoutShift(traceEventData) || !traceEventData.args.data) {
+    return false;
+  }
+  return 'rawEvent' in traceEventData.args.data;
 }

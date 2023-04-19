@@ -16,6 +16,7 @@ import * as Bindings from '../../../../../front_end/models/bindings/bindings.js'
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {allModelsFromFile, getAllTracingModelPayloadEvents} from '../../helpers/TraceHelpers.js';
+import * as Common from '../../../../../front_end/core/common/common.js';
 
 const {assert} = chai;
 
@@ -272,6 +273,13 @@ describeWithMockConnection('TimelineUIUtils', () => {
   });
 
   describe('traceEventDetails', () => {
+    function getRowDataForDetailsElement(details: DocumentFragment) {
+      return Array.from(details.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
+        const title = row.querySelector<HTMLDivElement>('.timeline-details-view-row-title')?.innerText;
+        const value = row.querySelector<HTMLDivElement>('.timeline-details-view-row-value')?.innerText;
+        return {title, value};
+      });
+    }
     it('shows the interaction ID for EventTiming events that have an interaction ID', async () => {
       const data = await allModelsFromFile('slow-interaction-button-click.json.gz');
       const interactionEvent = data.traceParsedData.UserInteractions.interactionEventsWithNoNesting[0];
@@ -282,15 +290,53 @@ describeWithMockConnection('TimelineUIUtils', () => {
           false,
           data.traceParsedData,
       );
-      const rowData = Array.from(details.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
-        const title = row.querySelector<HTMLDivElement>('.timeline-details-view-row-title')?.innerText;
-        const value = row.querySelector<HTMLDivElement>('.timeline-details-view-row-value')?.innerText;
-        return {title, value};
-      });
+      const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [{
                          title: 'ID',
                          value: '1540',
                        }]);
+    });
+
+    it('renders the details for a layout shift properly', async () => {
+      Common.Linkifier.registerLinkifier({
+        contextTypes() {
+          return [Timeline.CLSLinkifier.CLSRect];
+        },
+        async loadLinkifier() {
+          return Timeline.CLSLinkifier.Linkifier.instance();
+        },
+      });
+
+      const data = await allModelsFromFile('cls-single-frame.json.gz');
+      const layoutShift = data.traceParsedData.LayoutShifts.clusters[0].events[0];
+      if (!layoutShift) {
+        throw new Error('Could not find LayoutShift event.');
+      }
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          layoutShift,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          false,
+          data.traceParsedData,
+      );
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(
+          rowData,
+          [
+            {
+              title: 'Warning',
+              value: 'Cumulative Layout Shifts can result in poor user experiences. It has recently evolved.',
+            },
+            {title: 'Score', value: '0.04218'},
+            {title: 'Cumulative Score', value: '0.04218'},
+            {title: 'Current Cluster ID', value: '1'},
+            {title: 'Current Cluster Score', value: '0.2952'},
+            {title: 'Had recent input', value: 'No'},
+            {title: 'Moved from', value: 'Location: [120,670], Size: [900x900]'},
+            {title: 'Moved to', value: 'Location: [120,1270], Size: [900x478]'},
+          ],
+      );
     });
   });
 });

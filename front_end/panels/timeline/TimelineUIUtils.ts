@@ -2290,6 +2290,12 @@ export class TimelineUIUtils {
       }
 
       case recordTypes.LayoutShift: {
+        if (!eventIsFromNewEngine(event) || !TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(event)) {
+          console.error('Unexpected type for LayoutShift event');
+          break;
+        }
+        const layoutShift = event as TraceEngine.Types.TraceEvents.SyntheticLayoutShift;
+        const layoutShiftEventData = layoutShift.args.data;
         const warning = document.createElement('span');
         const clsLink = UI.XLink.XLink.create('https://web.dev/cls/', i18nString(UIStrings.cumulativeLayoutShifts));
         const evolvedClsLink =
@@ -2298,17 +2304,17 @@ export class TimelineUIUtils {
         warning.appendChild(
             i18n.i18n.getFormatLocalizedString(str_, UIStrings.sCLSInformation, {PH1: clsLink, PH2: evolvedClsLink}));
         contentHelper.appendElementRow(i18nString(UIStrings.warning), warning, true);
-
-        contentHelper.appendTextRow(i18nString(UIStrings.score), eventData['score'].toPrecision(4));
+        if (!layoutShiftEventData) {
+          break;
+        }
+        contentHelper.appendTextRow(i18nString(UIStrings.score), layoutShiftEventData['score'].toPrecision(4));
         contentHelper.appendTextRow(
-            i18nString(UIStrings.cumulativeScore), eventData['cumulative_score'].toPrecision(4));
-        if ('_current_cluster_id' in eventData) {
-          contentHelper.appendTextRow(i18nString(UIStrings.currentClusterId), eventData['_current_cluster_id']);
-        }
-        if ('_current_cluster_score' in eventData) {
-          contentHelper.appendTextRow(
-              i18nString(UIStrings.currentClusterScore), eventData['_current_cluster_score'].toPrecision(4));
-        }
+            i18nString(UIStrings.cumulativeScore), layoutShiftEventData['cumulative_score'].toPrecision(4));
+        contentHelper.appendTextRow(
+            i18nString(UIStrings.currentClusterId), layoutShift.parsedData.sessionWindowData.id);
+        contentHelper.appendTextRow(
+            i18nString(UIStrings.currentClusterScore),
+            layoutShift.parsedData.sessionWindowData.cumulativeWindowScore.toPrecision(4));
         contentHelper.appendTextRow(
             i18nString(UIStrings.hadRecentInput),
             eventData['had_recent_input'] ? i18nString(UIStrings.yes) : i18nString(UIStrings.no));

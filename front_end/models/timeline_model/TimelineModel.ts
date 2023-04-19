@@ -170,6 +170,28 @@ export class TimelineModelImpl {
     this.tracingModelInternal = null;
   }
 
+  /**
+   * Iterates events in a tree hierarchically, from top to bottom,
+   * calling back on every event's start and end in the order
+   * dictated by the corresponding timestamp.
+   *
+   * Events are assumed to be in ascendent order by timestamp.
+   *
+   * For example, given this tree, the following callbacks
+   * are expected to be made in the following order
+   * |---------------A---------------|
+   *  |------B------||-------D------|
+   *    |---C---|
+   *
+   * 1. Start A
+   * 3. Start B
+   * 4. Start C
+   * 5. End C
+   * 6. End B
+   * 7. Start D
+   * 8. End D
+   * 9. End A
+   */
   static forEachEvent(
       events: SDK.TracingModel.Event[], onStartEvent: (arg0: SDK.TracingModel.Event) => void,
       onEndEvent: (arg0: SDK.TracingModel.Event) => void,
@@ -770,6 +792,17 @@ export class TimelineModelImpl {
     }
   }
 
+  private buildLoadingEvents(tracingModel: SDK.TracingModel.TracingModel, layoutShiftEvents: SDK.TracingModel.Event[]):
+      void {
+    const thread = tracingModel.getThreadByName('Renderer', 'CrRendererMain');
+    if (!thread) {
+      return;
+    }
+    const track = this.ensureNamedTrack(TrackType.Experience);
+    track.thread = thread;
+    track.events = layoutShiftEvents;
+  }
+
   private processAsyncBrowserEvents(tracingModel: SDK.TracingModel.TracingModel): void {
     const browserMain = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
     if (browserMain) {
@@ -790,34 +823,6 @@ export class TimelineModelImpl {
     track.events = Root.Runtime.experiments.isEnabled('timelineShowAllEvents') ?
         thread.events() :
         thread.events().filter(event => event.name === gpuEventName);
-  }
-
-  private buildLoadingEvents(tracingModel: SDK.TracingModel.TracingModel, layoutShiftEvents: SDK.TracingModel.Event[]):
-      void {
-    const thread = tracingModel.getThreadByName('Renderer', 'CrRendererMain');
-    if (!thread) {
-      return;
-    }
-    const experienceCategory = 'experience';
-    const track = this.ensureNamedTrack(TrackType.Experience);
-    track.thread = thread;
-    track.events = layoutShiftEvents;
-
-    // Even though the event comes from 'loading', in order to color it differently we
-    // rename its category.
-    for (const trackEvent of track.events) {
-      trackEvent.categoriesString = experienceCategory;
-      if (trackEvent.name === RecordType.LayoutShift) {
-        const eventData = trackEvent.args['data'] || trackEvent.args['beginData'] || {};
-        const timelineData = TimelineData.forEvent(trackEvent);
-        if (eventData['impacted_nodes']) {
-          for (let i = 0; i < eventData['impacted_nodes'].length; ++i) {
-            timelineData.backendNodeIds.push(eventData['impacted_nodes'][i]['node_id']);
-          }
-        }
-      }
-    }
-    assignLayoutShiftsToClusters(layoutShiftEvents);
   }
 
   private resetProcessingState(): void {
@@ -1666,51 +1671,6 @@ export class TimelineModelImpl {
   }
 }
 
-// TODO(crbug.com/1386091) This helper can be removed once the Experience track uses the data of the
-// new engine.
-export function assignLayoutShiftsToClusters(layoutShifts: readonly SDK.TracingModel.Event[]): void {
-  const gapTimeInMs = 1000;
-  const limitTimeInMs = 5000;
-  let firstTimestamp = Number.NEGATIVE_INFINITY;
-  let previousTimestamp = Number.NEGATIVE_INFINITY;
-  let currentClusterId = 0;
-  let currentClusterScore = 0;
-  let currentCluster = new Set<SDK.TracingModel.Event>();
-
-  for (const event of layoutShifts) {
-    if (event.args['data']['had_recent_input'] || event.args['data']['weighted_score_delta'] === undefined) {
-      continue;
-    }
-
-    if (event.startTime - firstTimestamp > limitTimeInMs || event.startTime - previousTimestamp > gapTimeInMs) {
-      // This means the event does not fit into the current session/cluster, so we need to start a new cluster.
-      firstTimestamp = event.startTime;
-
-      // Update all the layout shifts we found in this cluster to associate them with the cluster.
-      for (const layoutShift of currentCluster) {
-        layoutShift.args['data']['_current_cluster_score'] = currentClusterScore;
-        layoutShift.args['data']['_current_cluster_id'] = currentClusterId;
-      }
-
-      // Increment the cluster ID and reset the data.
-      currentClusterId += 1;
-      currentClusterScore = 0;
-      currentCluster = new Set();
-    }
-
-    // Store the timestamp of the previous layout shift.
-    previousTimestamp = event.startTime;
-    // Update the score of the current cluster and store this event in that cluster
-    currentClusterScore += event.args['data']['weighted_score_delta'];
-    currentCluster.add(event);
-  }
-
-  // The last cluster we find may not get closed out - so if not, update all the shifts that we associate with it.
-  for (const layoutShift of currentCluster) {
-    layoutShift.args['data']['_current_cluster_score'] = currentClusterScore;
-    layoutShift.args['data']['_current_cluster_id'] = currentClusterId;
-  }
-}
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum RecordType {
@@ -1951,7 +1911,7 @@ export class Track {
    */
   asyncEvents: SDK.TracingModel.AsyncEvent[];
   tasks: SDK.TracingModel.Event[];
-  private syncLikeEventsInternal: SDK.TracingModel.Event[]|null;
+  private eventsForTreeViewInternal: SDK.TracingModel.Event[]|null;
   thread: SDK.TracingModel.Thread|null;
   constructor() {
     this.name = '';
@@ -1963,7 +1923,7 @@ export class Track {
     this.events = [];
     this.asyncEvents = [];
     this.tasks = [];
-    this.syncLikeEventsInternal = null;
+    this.eventsForTreeViewInternal = null;
     this.thread = null;
   }
 
@@ -1993,8 +1953,8 @@ export class Track {
    *    created from the async events when the condition above is met.
    */
   eventsForTreeView(): SDK.TracingModel.Event[] {
-    if (this.syncLikeEventsInternal) {
-      return this.syncLikeEventsInternal;
+    if (this.eventsForTreeViewInternal) {
+      return this.eventsForTreeViewInternal;
     }
 
     const stack: SDK.TracingModel.Event[] = [];
@@ -2010,7 +1970,7 @@ export class Track {
       throw new Error('End time does not exist on event.');
     }
 
-    this.syncLikeEventsInternal = [...this.events];
+    this.eventsForTreeViewInternal = [...this.events];
     // Attempt to build a tree from async events, as if they where
     // sync.
     for (const event of this.asyncEvents) {
@@ -2029,17 +1989,17 @@ export class Track {
         // event's end time (they cannot be nested), then a tree cannot
         // be made from this track's async events. Return the sync
         // events.
-        this.syncLikeEventsInternal = [...this.events];
+        this.eventsForTreeViewInternal = [...this.events];
         break;
       }
       const fakeSyncEvent = new SDK.TracingModel.ConstructedEvent(
           event.categoriesString, event.name, TraceEngine.Types.TraceEvents.Phase.COMPLETE, startTime, event.thread);
       fakeSyncEvent.setEndTime(endTime);
       fakeSyncEvent.addArgs(event.args);
-      this.syncLikeEventsInternal.push(fakeSyncEvent);
+      this.eventsForTreeViewInternal.push(fakeSyncEvent);
       stack.push(fakeSyncEvent);
     }
-    return this.syncLikeEventsInternal;
+    return this.eventsForTreeViewInternal;
   }
 }
 

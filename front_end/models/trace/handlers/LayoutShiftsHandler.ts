@@ -274,16 +274,28 @@ async function buildLayoutShiftsClusters(): Promise<void> {
         undefined;
 
     currentCluster.clusterCumulativeScore += event.args.data ? event.args.data.weighted_score_delta : 0;
-    const shift: LayoutShift = {
+    if (!event.args.data) {
+      continue;
+    }
+    const shift: Types.TraceEvents.SyntheticLayoutShift = {
       ...event,
-      screenshotSource: findNextScreenshotSource(event.ts),
-      timeFromNavigation,
-      cumulativeWeightedScoreInWindow: currentCluster.clusterCumulativeScore,
-      // The score of the session window is temporarily set to 0 just
-      // to initialize it. Since we need to get the score of all shifts
-      // in the session window to determine its value, its definite
-      // value is set when stepping through the built clusters.
-      sessionWindowData: {cumulativeWindowScore: 0, id: clusters.length},
+      args: {
+        frame: event.args.frame,
+        data: {
+          ...event.args.data,
+          rawEvent: event,
+        },
+      },
+      parsedData: {
+        screenshotSource: findNextScreenshotSource(event.ts),
+        timeFromNavigation,
+        cumulativeWeightedScoreInWindow: currentCluster.clusterCumulativeScore,
+        // The score of the session window is temporarily set to 0 just
+        // to initialize it. Since we need to get the score of all shifts
+        // in the session window to determine its value, its definite
+        // value is set when stepping through the built clusters.
+        sessionWindowData: {cumulativeWindowScore: 0, id: clusters.length},
+      },
     };
     currentCluster.events.push(shift);
     updateTraceWindowMax(currentCluster.clusterWindow, event.ts);
@@ -313,37 +325,38 @@ async function buildLayoutShiftsClusters(): Promise<void> {
     }
     for (const shift of cluster.events) {
       weightedScore += shift.args.data ? shift.args.data.weighted_score_delta : 0;
-      windowID = shift.sessionWindowData.id;
+      windowID = shift.parsedData.sessionWindowData.id;
+      const ts = shift.ts;
       // Update the the CLS score of this shift's session window now that
       // we have it.
-      shift.sessionWindowData.cumulativeWindowScore = cluster.clusterCumulativeScore;
+      shift.parsedData.sessionWindowData.cumulativeWindowScore = cluster.clusterCumulativeScore;
       if (weightedScore < LayoutShiftsThreshold.NEEDS_IMPROVEMENT) {
         // Expand the Good window.
-        updateTraceWindowMax(cluster.scoreWindows.good, shift.ts);
+        updateTraceWindowMax(cluster.scoreWindows.good, ts);
       } else if (
           weightedScore >= LayoutShiftsThreshold.NEEDS_IMPROVEMENT && weightedScore < LayoutShiftsThreshold.BAD) {
         if (!cluster.scoreWindows.needsImprovement) {
-          // Close the Good window, and open the NI window.
-          updateTraceWindowMax(cluster.scoreWindows.good, Types.Timing.MicroSeconds(shift.ts - 1));
-          cluster.scoreWindows.needsImprovement = traceWindowFromTime(shift.ts);
+          // Close the Good window, and open the needs improvement window.
+          updateTraceWindowMax(cluster.scoreWindows.good, Types.Timing.MicroSeconds(ts - 1));
+          cluster.scoreWindows.needsImprovement = traceWindowFromTime(ts);
         }
 
-        // Expand the NI window.
-        updateTraceWindowMax(cluster.scoreWindows.needsImprovement, shift.ts);
+        // Expand the needs improvement window.
+        updateTraceWindowMax(cluster.scoreWindows.needsImprovement, ts);
       } else if (weightedScore >= LayoutShiftsThreshold.BAD) {
         if (!cluster.scoreWindows.bad) {
           // We may jump from Good to Bad here, so update whichever window is open.
           if (cluster.scoreWindows.needsImprovement) {
-            updateTraceWindowMax(cluster.scoreWindows.needsImprovement, Types.Timing.MicroSeconds(shift.ts - 1));
+            updateTraceWindowMax(cluster.scoreWindows.needsImprovement, Types.Timing.MicroSeconds(ts - 1));
           } else {
-            updateTraceWindowMax(cluster.scoreWindows.good, Types.Timing.MicroSeconds(shift.ts - 1));
+            updateTraceWindowMax(cluster.scoreWindows.good, Types.Timing.MicroSeconds(ts - 1));
           }
 
           cluster.scoreWindows.bad = traceWindowFromTime(shift.ts);
         }
 
         // Expand the Bad window.
-        updateTraceWindowMax(cluster.scoreWindows.bad, shift.ts);
+        updateTraceWindowMax(cluster.scoreWindows.bad, ts);
       }
 
       // At this point the windows are set by the timestamps of the events, but the
@@ -399,29 +412,10 @@ export function stateForLayoutShiftScore(score: number): ScoreClassification {
   return state;
 }
 
-interface LayoutShiftSessionWindowData {
-  // The sum of the weighted score of all the shifts
-  // that belong to a session window.
-  cumulativeWindowScore: number;
-  // A consecutive generated in the frontend to
-  // to identify a session window.
-  id: number;
-}
-interface LayoutShiftData {
-  screenshotSource?: string;
-  timeFromNavigation?: Types.Timing.MicroSeconds;
-  // The sum of the weighted scores of the shifts that
-  // belong to a session window up until this shift
-  // (inclusive).
-  cumulativeWeightedScoreInWindow: number;
-  sessionWindowData: LayoutShiftSessionWindowData;
-}
-export type LayoutShift = Types.TraceEvents.TraceEventLayoutShift&LayoutShiftData;
-
 export interface LayoutShiftCluster {
   clusterWindow: Types.Timing.TraceWindow;
   clusterCumulativeScore: number;
-  events: LayoutShift[];
+  events: Types.TraceEvents.SyntheticLayoutShift[];
   // For convenience we split apart the cluster into good, NI, and bad windows.
   // Since a cluster may remain in the good window, we mark NI and bad as being
   // possibly null.

@@ -71,4 +71,11 @@ describe('TraceEvent types', () => {
     const otherEvent = traceParsedData.Renderer.allRendererEvents[0];
     assert.isFalse(TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestDetailsEvent(otherEvent));
   });
+
+  it('is able to determine that an event is a synthetic layout shift event', async () => {
+    const traceParsedData = await loadModelDataFromTraceFile('cls-single-frame.json.gz');
+    const syntheticLayoutShift = traceParsedData.LayoutShifts.clusters[0].events[0];
+    assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(syntheticLayoutShift));
+  });
+
 });

@@ -202,11 +202,11 @@ describe('LayoutShiftsHandler', function() {
       for (const shift of cluster.events) {
         clusterCumulativeScore += shift.args.data?.weighted_score_delta || 0;
         // Test the cumulative score until this shift.
-        assert.strictEqual(shift.cumulativeWeightedScoreInWindow, clusterCumulativeScore);
+        assert.strictEqual(shift.parsedData.cumulativeWeightedScoreInWindow, clusterCumulativeScore);
         // Test the score of this shift's session window.
-        assert.strictEqual(shift.sessionWindowData.cumulativeWindowScore, cluster.clusterCumulativeScore);
+        assert.strictEqual(shift.parsedData.sessionWindowData.cumulativeWindowScore, cluster.clusterCumulativeScore);
         // Test the id of this shift's session window.
-        assert.strictEqual(shift.sessionWindowData.id, clusterCount);
+        assert.strictEqual(shift.parsedData.sessionWindowData.id, clusterCount);
       }
       clusterCount++;
       // Test the accumulated
@@ -233,7 +233,7 @@ describe('LayoutShiftsHandler', function() {
         if (screenshotIndex === null) {
           continue;
         }
-        assert.isDefined(shift.screenshotSource);
+        assert.isDefined(shift.parsedData.screenshotSource);
         // Make sure the screenshot came after the shift.
         assert.isAtLeast(screenshots[screenshotIndex].ts, shift.ts);
         if (screenshotIndex > 0) {

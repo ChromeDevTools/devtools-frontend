@@ -191,25 +191,15 @@ const spriteSheets = new Map<string, SpriteSheet>([
 
 const initialDescriptors = new Map<string, Descriptor>([
   ['smallicon-bezier', {position: 'a5', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-checkmark', {position: 'b5', spritesheet: 'smallicons'}],
   ['smallicon-checkmark-square', {position: 'b6', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-checkmark-behind', {position: 'd6', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-error', {position: 'c4', spritesheet: 'smallicons'}],
   ['smallicon-expand-less', {position: 'f5', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-expand-more', {position: 'e6', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-green-ball', {position: 'b3', spritesheet: 'smallicons'}],
-  ['smallicon-info', {position: 'c3', spritesheet: 'smallicons'}],
   ['smallicon-no', {position: 'c6', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-orange-ball', {position: 'd3', spritesheet: 'smallicons'}],
-  ['smallicon-red-ball', {position: 'a2', spritesheet: 'smallicons'}],
   ['smallicon-shadow', {position: 'b2', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-triangle-down', {position: 'e2', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-triangle-right', {position: 'a1', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-clear-info', {position: 'f2', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-clear-error', {position: 'f3', spritesheet: 'smallicons', isMask: true}],
 
-  ['mediumicon-file-sync', {position: 'd3', spritesheet: 'mediumicons', invert: true}],
-  ['mediumicon-file', {position: 'a2', spritesheet: 'mediumicons', invert: true}],
   ['mediumicon-replace', {position: 'c5', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-fetch', {position: 'b5', spritesheet: 'mediumicons', isMask: true}],
   ['mediumicon-elements-panel', {position: 'f3', spritesheet: 'mediumicons', isMask: true}],
@@ -217,7 +207,6 @@ const initialDescriptors = new Map<string, Descriptor>([
 
   ['largeicon-longclick-triangle', {position: 'b4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-file', {position: 'e4', spritesheet: 'largeicons', isMask: true}],
-  ['largeicon-navigator-folder', {position: 'f8', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-frame', {position: 'f7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-snippet', {position: 'f6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-pause-animation', {position: 'b3', spritesheet: 'largeicons', isMask: true}],

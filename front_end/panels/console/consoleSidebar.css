@@ -27,14 +27,6 @@ li {
   height: 24px;
 }
 
-li .largeicon-navigator-file {
-  margin: 0;
-}
-
-li .largeicon-navigator-folder {
-  margin: -3px -3px 0 -5px;
-}
-
 .tree-element-title {
   flex-shrink: 100;
   flex-grow: 1;

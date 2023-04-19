@@ -37,8 +37,4 @@ button.soft-dropdown:hover:not(:active) > .title {
   button.soft-dropdown[disabled] {
     opacity: 100%;
   }
-
-  button.soft-dropdown:disabled > .smallicon-triangle-down {
-    background-color: GrayText;
-  }
 }

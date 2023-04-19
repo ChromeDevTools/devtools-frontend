@@ -2276,8 +2276,15 @@ export class TimelineUIUtils {
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
-        if (eventData.interactionId) {
-          contentHelper.appendTextRow(i18nString(UIStrings.interactionID), eventData.interactionId);
+        let payload: TraceEngine.Types.TraceEvents.TraceEventData|null = null;
+        if (eventIsFromNewEngine(event)) {
+          payload = event;
+        } else if (SDK.TracingModel.eventHasPayload(event)) {
+          payload = event.rawPayload();
+        }
+
+        if (payload && TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(payload)) {
+          contentHelper.appendTextRow(i18nString(UIStrings.interactionID), payload.interactionId);
         }
         break;
       }

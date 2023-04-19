@@ -274,14 +274,7 @@ describeWithMockConnection('TimelineUIUtils', () => {
   describe('traceEventDetails', () => {
     it('shows the interaction ID for EventTiming events that have an interaction ID', async () => {
       const data = await allModelsFromFile('slow-interaction-button-click.json.gz');
-      const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
-      const interactionEvent = allSDKEvents.find(event => {
-        return event.name === 'EventTiming' && event.args?.data?.interactionId === 1540;
-      });
-      if (!interactionEvent) {
-        throw new Error('Could not find interaction event.');
-      }
-
+      const interactionEvent = data.traceParsedData.UserInteractions.interactionEventsWithNoNesting[0];
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
           interactionEvent,
           data.timelineModel,

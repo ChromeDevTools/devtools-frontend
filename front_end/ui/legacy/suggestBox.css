@@ -75,12 +75,6 @@
   text-overflow: ellipsis;
 }
 
-.suggestion-icon {
-  user-select: none;
-  align-self: center;
-  flex-shrink: 0;
-}
-
 .suggest-box-content-item devtools-icon {
   --icon-color: #000;
 

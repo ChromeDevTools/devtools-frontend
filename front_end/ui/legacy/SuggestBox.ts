@@ -36,7 +36,6 @@ import * as Utils from './utils/utils.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {Size} from './Geometry.js';
 import {AnchorBehavior, GlassPane} from './GlassPane.js';
-import {Icon} from './Icon.js';
 
 import {ListControl, ListMode, type ListDelegate} from './ListControl.js';
 import {ListModel} from './ListModel.js';
@@ -211,10 +210,6 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     const element = document.createElement('div');
     element.classList.add('suggest-box-content-item');
     element.classList.add('source-code');
-    if (item.iconType) {
-      const icon = Icon.create(item.iconType, 'suggestion-icon');
-      element.appendChild(icon);
-    }
     if (item.isSecondary) {
       element.classList.add('secondary');
     }
@@ -361,7 +356,6 @@ export interface Suggestion {
   text: string;
   title?: string;
   subtitle?: string;
-  iconType?: string;
   priority?: number;
   isSecondary?: boolean;
   subtitleRenderer?: (() => Element);

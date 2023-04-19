@@ -212,7 +212,6 @@ export class ARIAAttributePrompt extends UI.TextPrompt.TextPrompt {
         text: c,
         title: undefined,
         subtitle: undefined,
-        iconType: undefined,
         priority: undefined,
         isSecondary: undefined,
         subtitleRenderer: undefined,

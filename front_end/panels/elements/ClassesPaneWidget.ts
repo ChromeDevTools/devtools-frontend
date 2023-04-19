@@ -360,7 +360,6 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
         text: completion,
         title: undefined,
         subtitle: undefined,
-        iconType: undefined,
         priority: undefined,
         isSecondary: undefined,
         subtitleRenderer: undefined,

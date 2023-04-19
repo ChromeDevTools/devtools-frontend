@@ -643,7 +643,8 @@ export class RequestHeadersView extends UI.Widget.VBox {
       if (headerId === 'set-cookie') {
         const matchingBlockedReasons = blockedCookieLineToReasons.get(header.value);
         if (matchingBlockedReasons) {
-          const icon = UI.Icon.Icon.create('smallicon-warning', '');
+          const icon = new IconButton.Icon.Icon();
+          icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
           headerTreeElement.listItemElement.appendChild(icon);
 
           let titleText = '';

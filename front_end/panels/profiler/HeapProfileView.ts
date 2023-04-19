@@ -7,17 +7,18 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as Protocol from '../../generated/protocol.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 
-import {Events, HeapTimelineOverview, type Samples, type IdsRangeChangedEvent} from './HeapTimelineOverview.js';
+import {Events, HeapTimelineOverview, type IdsRangeChangedEvent, type Samples} from './HeapTimelineOverview.js';
 import {type Formatter, type ProfileDataGridNode} from './ProfileDataGrid.js';
 
-import {ProfileType, ProfileEvents, type ProfileHeader} from './ProfileHeader.js';
+import {ProfileEvents, ProfileType, type ProfileHeader} from './ProfileHeader.js';
 import {ProfileView, WritableProfileHeader} from './ProfileView.js';
 
 const UIStrings = {
@@ -288,7 +289,8 @@ export class SamplingHeapProfileTypeBase extends
     this.addProfile(profileHeader);
     profileHeader.updateStatus(i18nString(UIStrings.recording));
 
-    const icon = UI.Icon.Icon.create('smallicon-warning');
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
     UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.heapProfilerIsRecording));
     UI.InspectorView.InspectorView.instance().setPanelIcon('heap_profiler', icon);
 

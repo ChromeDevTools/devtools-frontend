@@ -14,7 +14,6 @@ export const enum IssueCode {
   InsecureContext = 'AttributionReportingIssue::InsecureContext',
   InvalidRegisterSourceHeader = 'AttributionReportingIssue::InvalidRegisterSourceHeader',
   InvalidRegisterTriggerHeader = 'AttributionReportingIssue::InvalidRegisterTriggerHeader',
-  InvalidEligibleHeader = 'AttributionReportingIssue::InvalidEligibleHeader',
   SourceAndTriggerHeaders = 'AttributionReportingIssue::SourceAndTriggerHeaders',
   SourceIgnored = 'AttributionReportingIssue::SourceIgnored',
   TriggerIgnored = 'AttributionReportingIssue::TriggerIgnored',
@@ -38,8 +37,6 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.InvalidRegisterSourceHeader;
     case Protocol.Audits.AttributionReportingIssueType.InvalidRegisterTriggerHeader:
       return IssueCode.InvalidRegisterTriggerHeader;
-    case Protocol.Audits.AttributionReportingIssueType.InvalidEligibleHeader:
-      return IssueCode.InvalidEligibleHeader;
     case Protocol.Audits.AttributionReportingIssueType.SourceAndTriggerHeaders:
       return IssueCode.SourceAndTriggerHeaders;
     case Protocol.Audits.AttributionReportingIssueType.SourceIgnored:
@@ -130,14 +127,6 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           file: 'arInvalidRegisterOsTriggerHeader.md',
           links: [this.getHeaderValidatorLink('os-trigger')],
         };
-      case IssueCode.InvalidEligibleHeader:
-        return {
-          file: 'arInvalidEligibleHeader.md',
-          links: [
-            this.getHeaderValidatorLink('eligible'),
-            structuredHeaderLink,
-          ],
-        };
       case IssueCode.SourceAndTriggerHeaders:
         return {
           file: 'arSourceAndTriggerHeaders.md',
@@ -186,7 +175,6 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.InvalidRegisterTriggerHeader:
       case IssueCode.InvalidRegisterOsSourceHeader:
       case IssueCode.InvalidRegisterOsTriggerHeader:
-      case IssueCode.InvalidEligibleHeader:
       case IssueCode.SourceAndTriggerHeaders:
       case IssueCode.WebAndOsHeaders:
       case IssueCode.SourceIgnored:

@@ -59,7 +59,6 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterTriggerHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterOsSourceHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterOsTriggerHeader:
-      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidEligibleHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.OsSourceIgnored:
       case IssuesManager.AttributionReportingIssue.IssueCode.OsTriggerIgnored:
       case IssuesManager.AttributionReportingIssue.IssueCode.SourceIgnored:
@@ -103,7 +102,6 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     switch (issueCode) {
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterSourceHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.InvalidRegisterTriggerHeader:
-      case IssuesManager.AttributionReportingIssue.IssueCode.InvalidEligibleHeader:
       case IssuesManager.AttributionReportingIssue.IssueCode.SourceIgnored:
       case IssuesManager.AttributionReportingIssue.IssueCode.TriggerIgnored:
         this.#appendRequestOrEmptyCell(element, details.request);

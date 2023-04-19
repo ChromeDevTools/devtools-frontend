@@ -219,6 +219,8 @@ export class SoftContextMenu {
     const checkMarkElement = new IconButton.Icon.Icon();
     checkMarkElement.data = {iconName: 'checkmark', color: 'var(--icon-default)', width: '14px', height: '14px'};
     checkMarkElement.classList.add('checkmark');
+    checkMarkElement.style.minWidth =
+        '14px';  // <devtools-icon> collapses to 0 width otherwise, throwing off alignment.
     menuItemElement.appendChild(checkMarkElement);
     if (!item.checked) {
       checkMarkElement.style.opacity = '0';
@@ -301,6 +303,8 @@ export class SoftContextMenu {
     checkMarkElement.data = {iconName: 'checkmark', color: 'var(--icon-default)', width: '14px', height: '14px'};
     checkMarkElement.classList.add('checkmark', 'soft-context-menu-item-checkmark');
     menuItemElement.appendChild(checkMarkElement);
+    checkMarkElement.style.minWidth =
+        '14px';  // <devtools-icon> collapses to 0 width otherwise, throwing off alignment.
     checkMarkElement.style.opacity = '0';
 
     createTextChild(menuItemElement, item.label || '');

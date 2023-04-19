@@ -88,7 +88,7 @@ describe('MarkdownView', async () => {
 
     it('renders icon with valid key', () => {
       MarkdownView.MarkdownImagesMap.markdownImages.set('testExampleImage', {
-        src: 'largeicon-phone',
+        src: 'devices',
         isIcon: true,
       });
       const renderResult =

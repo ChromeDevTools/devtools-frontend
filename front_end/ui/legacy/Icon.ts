@@ -210,7 +210,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['largeicon-navigator-frame', {position: 'f7', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-snippet', {position: 'f6', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-pause-animation', {position: 'b3', spritesheet: 'largeicons', isMask: true}],
-  ['largeicon-phone', {position: 'e3', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-play-animation', {position: 'f3', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-replay-animation', {position: 'e2', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-breaking-change', {position: 'h3', spritesheet: 'largeicons'}],

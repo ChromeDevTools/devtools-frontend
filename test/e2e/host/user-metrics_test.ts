@@ -78,9 +78,15 @@ function retrieveRecordedPerformanceHistogramEvents(frontend: puppeteer.Page): P
 
 async function assertHistogramEventsInclude(expected: EnumHistogramEvent[]) {
   const {frontend} = getBrowserAndPages();
-  const events = await retrieveRecordedHistogramEvents(frontend);
-
-  assert.includeDeepMembers(events, expected);
+  await waitForFunction(async () => {
+    const events = await retrieveRecordedHistogramEvents(frontend);
+    try {
+      assert.includeDeepMembers(events, expected);
+      return true;
+    } catch {
+      return false;
+    }
+  });
 }
 
 async function waitForHistogramEvent(expected: EnumHistogramEventWithOptionalCode) {

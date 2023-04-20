@@ -847,6 +847,7 @@ export class TimelineModelImpl {
     let target: (SDK.Target.Target|null)|null = null;
 
     // Check for legacy CpuProfile event format first.
+    // 'CpuProfile' is currently used by https://webpack.js.org/plugins/profiling-plugin/ and our createFakeTraceFromCpuProfile
     let cpuProfileEvent: (SDK.TracingModel.Event|undefined)|SDK.TracingModel.Event = events[events.length - 1];
     if (cpuProfileEvent && cpuProfileEvent.name === RecordType.CpuProfile) {
       const eventData = cpuProfileEvent.args['data'];

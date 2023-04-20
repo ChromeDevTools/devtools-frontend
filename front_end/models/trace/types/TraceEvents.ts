@@ -131,7 +131,8 @@ export interface TraceEventProfileChunk extends TraceEventSample {
   name: 'ProfileChunk';
   id: ProfileID;
   args: TraceEventArgs&{
-    data: TraceEventArgsData & {
+    // `data` is only missing in "fake" traces
+    data?: TraceEventArgsData & {
       cpuProfile?: TraceEventPartialProfile,
       timeDeltas?: MicroSeconds[],
     },
@@ -427,8 +428,8 @@ export interface TraceEventTracingStartedInBrowser extends TraceEventInstant {
   args: TraceEventArgs&{
     data?: TraceEventArgsData & {
       frameTreeNodeId: number,
-      frames: TraceFrame[],
-      persistentIds: boolean,
+      // Frames can only missing in "fake" traces
+      frames?: TraceFrame[], persistentIds: boolean,
     },
   };
 }

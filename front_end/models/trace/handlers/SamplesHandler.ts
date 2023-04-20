@@ -309,7 +309,7 @@ export function collectStackTraces(
   const tree = makeEmptyProfileTree();
 
   for (const chunk of chunks) {
-    const cpuProfile = chunk.args.data.cpuProfile;
+    const cpuProfile = chunk.args.data?.cpuProfile;
     if (!cpuProfile) {
       continue;
     }
@@ -380,7 +380,7 @@ export function collectSamples(
   const samples: ProfileSample[] = [];
 
   for (const chunk of chunks) {
-    const {timeDeltas, cpuProfile} = chunk.args.data;
+    const {timeDeltas, cpuProfile} = chunk.args.data ?? {};
     if (!timeDeltas || !cpuProfile) {
       continue;
     }

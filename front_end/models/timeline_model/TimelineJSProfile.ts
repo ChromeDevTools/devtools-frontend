@@ -286,7 +286,7 @@ export class TimelineJSProfileProcessor {
     // Append a root to show the start time of the profile (which is earlier than first sample), so the Performance
     // panel won't truncate this time period.
     appendEvent(RecordType.JSRoot, {}, profile.startTime, profile.endTime - profile.startTime, 'X', 'toplevel');
-
+    // TODO: create a `Profile` event instead, as `cpuProfile` is legacy
     appendEvent('CpuProfile', {data: {'cpuProfile': profile}}, profile.endTime, 0, 'I');
     return events;
 

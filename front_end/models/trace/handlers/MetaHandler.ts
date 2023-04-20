@@ -170,7 +170,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
       throw new Error('No frames found in trace data');
     }
 
-    for (const frame of event.args.data.frames) {
+    for (const frame of (event.args.data.frames ?? [])) {
       updateRendererProcessByFrame(event, frame);
 
       if (frame.parent) {

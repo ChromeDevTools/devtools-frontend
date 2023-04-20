@@ -179,6 +179,7 @@ devtools_svg_sources = [
   "record-stop.svg",
   "redo.svg",
   "refresh.svg",
+  "replace.svg",
   "resizeDiagonal.svg",
   "resizeHorizontal.svg",
   "resizeVertical.svg",

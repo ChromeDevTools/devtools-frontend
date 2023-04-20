@@ -139,7 +139,7 @@ export class SearchableView extends VBox {
     this.footerElement = this.footerElementContainer.createChild('div', 'toolbar-search');
 
     const replaceToggleToolbar = new Toolbar('replace-toggle-toolbar', this.footerElement);
-    this.replaceToggleButton = new ToolbarToggle(i18nString(UIStrings.replace), 'mediumicon-replace');
+    this.replaceToggleButton = new ToolbarToggle(i18nString(UIStrings.replace), 'replace');
     this.replaceToggleButton.addEventListener(ToolbarButton.Events.Click, this.toggleReplace, this);
     replaceToggleToolbar.appendToolbarItem(this.replaceToggleButton);
 

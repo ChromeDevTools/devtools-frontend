@@ -167,6 +167,7 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['record-start', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['record-stop', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['refresh', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['replace', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['resume', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['right-panel-close', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['right-panel-open', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -201,8 +202,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['smallicon-shadow', {position: 'b2', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-clear-info', {position: 'f2', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-clear-error', {position: 'f3', spritesheet: 'smallicons', isMask: true}],
-
-  ['mediumicon-replace', {position: 'c5', spritesheet: 'mediumicons', isMask: true}],
 
   ['largeicon-longclick-triangle', {position: 'b4', spritesheet: 'largeicons', isMask: true}],
   ['largeicon-navigator-frame', {position: 'f7', spritesheet: 'largeicons', isMask: true}],
@@ -282,6 +281,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['record-start', {position: 'a1', spritesheet: 'record-start', isMask: true}],
   ['record-stop', {position: 'a1', spritesheet: 'record-stop', isMask: true}],
   ['refresh', {position: 'a1', spritesheet: 'refresh', isMask: true}],
+  ['replace', {position: 'a1', spritesheet: 'replace', isMask: true}],
   ['resume', {position: 'a1', spritesheet: 'resume', isMask: true}],
   ['right-panel-close', {position: 'a1', spritesheet: 'right-panel-close', isMask: true}],
   ['right-panel-open', {position: 'a1', spritesheet: 'right-panel-open', isMask: true}],

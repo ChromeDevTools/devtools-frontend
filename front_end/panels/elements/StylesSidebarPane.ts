@@ -2363,7 +2363,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   private constructor() {
     this.button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newStyleRule), 'plus');
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
-    const longclickTriangle = UI.Icon.Icon.create('largeicon-longclick-triangle', 'long-click-glyph');
+    const longclickTriangle = UI.Icon.Icon.create('triangle-bottom-right', 'long-click-glyph');
     this.button.element.appendChild(longclickTriangle);
 
     new UI.UIUtils.LongClickController(this.button.element, this.longClicked.bind(this));

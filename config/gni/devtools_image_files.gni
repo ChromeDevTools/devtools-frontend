@@ -208,6 +208,7 @@ devtools_svg_sources = [
   "top-panel-close.svg",
   "top-panel-open.svg",
   "treeoutlineTriangles.svg",
+  "triangle-bottom-right.svg",
   "triangle-down.svg",
   "triangle-left.svg",
   "triangle-right.svg",

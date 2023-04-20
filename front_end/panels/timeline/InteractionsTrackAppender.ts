@@ -93,7 +93,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#traceParsedData.UserInteractions.interactionEvents.length > 0;
-    const style = buildGroupStyle({useFirstLineForOverview: true, collapsible: trackIsCollapsible});
+    const style = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
     const group = buildTrackHeader(
         currentLevel, i18nString(UIStrings.interactions), style, /* selectable= */ true, expanded, this.#legacyTrack);
     this.#flameChartData.groups.push(group);

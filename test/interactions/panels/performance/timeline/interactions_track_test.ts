@@ -20,6 +20,13 @@ describe('Interactions track', () => {
     await assertElementScreenshotUnchanged(flameChart, 'performance/interactions_track.png', 3);
   });
 
+  itScreenshot('renders the interactions track collapsed correctly', async () => {
+    await loadComponentDocExample(
+        'performance_panel/track_example.html?track=Interactions&fileName=slow-interaction-button-click&windowStart=337944700&windowEnd=337945100&expanded=false');
+    const flameChart = await waitFor('.flame-chart-main-pane');
+    await assertElementScreenshotUnchanged(flameChart, 'performance/interactions_track_collapsed.png', 3);
+  });
+
   itScreenshot('candy stripes events over 200ms', async () => {
     await loadComponentDocExample(
         // The start and end times come from the timestamps of the first and last

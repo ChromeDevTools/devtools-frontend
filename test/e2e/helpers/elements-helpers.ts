@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import {assert} from 'chai';
-import {performance} from 'perf_hooks';
 import type * as puppeteer from 'puppeteer';
+import {AsyncScope} from '../../shared/async-scope.js';
 
 import {
   $,
@@ -146,23 +146,11 @@ export const getContentOfSelectedNode = async () => {
   return await selectedNode.evaluate(node => node.textContent as string);
 };
 
-export const waitForSelectedNodeChange = async (initialValue: string, maxTotalTimeout = 1000) => {
-  if (maxTotalTimeout === 0) {
-    maxTotalTimeout = Number.POSITIVE_INFINITY;
-  }
-
-  const start = performance.now();
-  do {
+export const waitForSelectedNodeChange = async(initialValue: string, asyncScope = new AsyncScope()): Promise<void> => {
+  await waitForFunction(async () => {
     const currentContent = await getContentOfSelectedNode();
-    if (currentContent !== initialValue) {
-      return currentContent;
-    }
-
-    await timeout(30);
-
-  } while (performance.now() - start < maxTotalTimeout);
-
-  throw new Error(`Selected element did not change in ${maxTotalTimeout}`);
+    return currentContent !== initialValue;
+  }, asyncScope);
 };
 
 export const assertSelectedElementsNodeTextIncludes = async (expectedTextContent: string) => {

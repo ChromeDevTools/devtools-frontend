@@ -452,7 +452,8 @@ export function textContentWithoutStyles(node) {
   let buffer = '';
   let currentNode = node;
   while (currentNode.traverseNextNode(node)) {
-    currentNode = currentNode.traverseNextNode(node, currentNode.tagName === 'DEVTOOLS-CSS-LENGTH');
+    currentNode = currentNode.traverseNextNode(
+        node, currentNode.tagName === 'DEVTOOLS-CSS-LENGTH' || currentNode.tagName === 'DEVTOOLS-ICON');
     if (currentNode.nodeType === Node.TEXT_NODE) {
       buffer += currentNode.nodeValue;
     } else if (currentNode.nodeName === 'STYLE') {

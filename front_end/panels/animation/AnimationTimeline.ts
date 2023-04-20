@@ -270,8 +270,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#currentTime = (controls.createChild('div', 'animation-timeline-current-time monospace') as HTMLElement);
 
     const toolbar = new UI.Toolbar.Toolbar('animation-controls-toolbar', controls);
-    this.#controlButton =
-        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.replayTimeline), 'largeicon-replay-animation');
+    this.#controlButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.replayTimeline), 'replay');
     this.#controlState = ControlState.Replay;
     this.#controlButton.setToggled(true);
     this.#controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.controlButtonToggle.bind(this));
@@ -418,19 +417,19 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       this.#controlState = ControlState.Play;
       this.#controlButton.setToggled(true);
       this.#controlButton.setTitle(i18nString(UIStrings.playTimeline));
-      this.#controlButton.setGlyph('largeicon-play-animation');
+      this.#controlButton.setGlyph('play');
     } else if (
         !this.#scrubberPlayer || !this.#scrubberPlayer.currentTime ||
         this.#scrubberPlayer.currentTime >= this.duration()) {
       this.#controlState = ControlState.Replay;
       this.#controlButton.setToggled(true);
       this.#controlButton.setTitle(i18nString(UIStrings.replayTimeline));
-      this.#controlButton.setGlyph('largeicon-replay-animation');
+      this.#controlButton.setGlyph('replay');
     } else {
       this.#controlState = ControlState.Pause;
       this.#controlButton.setToggled(false);
       this.#controlButton.setTitle(i18nString(UIStrings.pauseTimeline));
-      this.#controlButton.setGlyph('largeicon-pause-animation');
+      this.#controlButton.setGlyph('pause');
     }
   }
 

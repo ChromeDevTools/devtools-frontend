@@ -876,6 +876,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-top-panel-open);
 }
 
+.spritesheet-replay.icon-mask {
+  -webkit-mask-image: var(--image-file-replay);
+}
+
 .spritesheet-triangle-bottom-right.icon-mask {
   -webkit-mask-image: var(--image-file-triangle-bottom-right);
 }

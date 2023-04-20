@@ -240,6 +240,10 @@
   --override-icon-mask-background-color: var(--network-grid-selected-color);
 }
 
+.data-grid-data-grid-node [is="ui-icon"].arrow-up-down-circle {
+  transform: scale(0.8);
+}
+
 .network-log-grid.data-grid .network-error-row.data-grid-data-grid-node img.icon,
 .network-log-grid.data-grid .network-error-row.data-grid-data-grid-node.selected img.icon {
   /* This is generated with https://codepen.io/sosuke/pen/Pjoqqp to target var(--color-red) */

@@ -181,6 +181,7 @@ devtools_svg_sources = [
   "redo.svg",
   "refresh.svg",
   "replace.svg",
+  "replay.svg",
   "resizeDiagonal.svg",
   "resizeHorizontal.svg",
   "resizeVertical.svg",

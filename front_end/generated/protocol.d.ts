@@ -13970,17 +13970,14 @@ declare namespace Protocol {
     }
 
     export interface RenoirCache {
-      type: string;
-      capacityCount: number;
-      capacityBytes: number;
+      type: integer;
+      title?: string;
+      capacityCount?: number;
+      capacityBytes?: number;
     }
 
     export interface RenoirCachesState {
-      textures: RenoirCache;
-      scratchLayers: RenoirCache;
-      scratchTextures: RenoirCache;
-      commandBuffers: RenoirCache;
-      commandProcessors: RenoirCache;
+      caches: RenoirCache[];
     }
 
     export interface SetDrawMetaDataEmitRequest {
@@ -13993,6 +13990,10 @@ declare namespace Protocol {
 
     export interface GetSystemCacheStatsResponse extends ProtocolResponseWithError {
       stats: SystemCacheStats;
+    }
+
+    export interface GetAvailableRenoirCachesResponse extends ProtocolResponseWithError {
+      caches: RenoirCache[];
     }
 
     export interface GetRenoirCachesStateResponse extends ProtocolResponseWithError {

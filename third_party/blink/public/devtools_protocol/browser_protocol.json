@@ -20816,14 +20816,21 @@
                     "properties": [
                         {
                             "name": "type",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "title",
+                            "optional": true,
                             "type": "string"
                         },
                         {
                             "name": "capacityCount",
+                            "optional": true,
                             "type": "number"
                         },
                         {
                             "name": "capacityBytes",
+                            "optional": true,
                             "type": "number"
                         }
                     ]
@@ -20833,24 +20840,11 @@
                     "type": "object",
                     "properties": [
                         {
-                            "name": "textures",
-                            "$ref": "RenoirCache"
-                        },
-                        {
-                            "name": "scratchLayers",
-                            "$ref": "RenoirCache"
-                        },
-                        {
-                            "name": "scratchTextures",
-                            "$ref": "RenoirCache"
-                        },
-                        {
-                            "name": "commandBuffers",
-                            "$ref": "RenoirCache"
-                        },
-                        {
-                            "name": "commandProcessors",
-                            "$ref": "RenoirCache"
+                            "name": "caches",
+                            "type": "array",
+                            "items": {
+                                "$ref": "RenoirCache"
+                            }
                         }
                     ]
                 }
@@ -20907,6 +20901,18 @@
                         {
                             "name": "stats",
                             "$ref": "SystemCacheStats"
+                        }
+                    ]
+                },
+                {
+                    "name": "getAvailableRenoirCaches",
+                    "returns": [
+                        {
+                            "name": "caches",
+                            "type": "array",
+                            "items": {
+                                "$ref": "RenoirCache"
+                            }
                         }
                     ]
                 },

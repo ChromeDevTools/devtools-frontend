@@ -9713,17 +9713,14 @@ domain CohtmlDebug
 
   type RenoirCache extends object
     properties
-      string type
-      number capacityCount
-      number capacityBytes
+      integer type
+      optional string title
+      optional number capacityCount
+      optional number capacityBytes
 
   type RenoirCachesState extends object
     properties
-      RenoirCache textures
-      RenoirCache scratchLayers
-      RenoirCache scratchTextures
-      RenoirCache commandBuffers
-      RenoirCache commandProcessors
+      array of RenoirCache caches
 
   command setDrawMetaDataEmit
     parameters
@@ -9754,6 +9751,10 @@ domain CohtmlDebug
   command getSystemCacheStats
     returns
       SystemCacheStats stats
+
+  command getAvailableRenoirCaches
+    returns
+      array of RenoirCache caches
 
   command getRenoirCachesState
     returns

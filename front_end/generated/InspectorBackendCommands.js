@@ -837,6 +837,7 @@ inspectorBackend.registerCommand("CohtmlDebug.enable", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.disable", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.clearCachedUnusedImages", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.getSystemCacheStats", [], ["stats"]);
+inspectorBackend.registerCommand("CohtmlDebug.getAvailableRenoirCaches", [], ["caches"]);
 inspectorBackend.registerCommand("CohtmlDebug.getRenoirCachesState", [], ["stats"]);
 inspectorBackend.registerCommand("CohtmlDebug.setRenoirCachesState", [{"name": "state", "type": "object", "optional": false}], []);
 

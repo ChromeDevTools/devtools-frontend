@@ -55,7 +55,7 @@ export class FrameGroupNode extends NetworkGroupNode {
     const columnIndex = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).indexOfVisibleColumn(columnId);
     if (columnIndex === 0) {
       const name = this.displayName();
-      cell.appendChild(UI.Icon.Icon.create('largeicon-navigator-frame', 'network-frame-group-icon'));
+      cell.appendChild(UI.Icon.Icon.create('frame', 'network-frame-group-icon'));
       UI.UIUtils.createTextChild(cell, name);
       UI.Tooltip.Tooltip.install(cell, name);
       this.setCellAccessibleName(cell.textContent || '', cell, columnId);

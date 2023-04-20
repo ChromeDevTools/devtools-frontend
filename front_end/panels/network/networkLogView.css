@@ -178,6 +178,10 @@
   color: var(--legacy-selection-fg-color);
 }
 
+.network-log-grid.data-grid:focus-within tr.selected [is="ui-icon"] {
+  background-color: var(--icon-force-white);
+}
+
 .network-header-subtitle {
   color: var(--color-text-secondary);
 }
@@ -378,7 +382,7 @@
 
 .network-frame-group-icon {
   display: inline-block;
-  margin: -8px -2px;
+  margin: -7px 1px;
 }
 
 .network-frame-group-badge {

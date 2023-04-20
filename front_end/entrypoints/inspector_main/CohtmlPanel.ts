@@ -38,34 +38,37 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import { Size } from '../../ui/legacy/Geometry.js';
-
-const clamp = (num:number, min:number, max:number) => Math.min(Math.max(num, min), max);
+const clamp = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);
 
 const UIStrings = {
 
   paintFlashing: 'Paint flashing',
 
   highlightsAreasOfThePageGreen:
-      'Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.',
+    'Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.',
 
   redrawFlashing: 'Redraw flashing',
 
   highlightsAreasOfThePageRed:
-      'Highlights elements of the page (red) that need to be repainted. This highlights every element that is repainted during the frame.',
+    'Highlights elements of the page (red) that need to be repainted. This highlights every element that is repainted during the frame.',
 
   dumpDomTitle: 'Dump DOM Tree',
 
-  dumpDomDesc: 'Serialize the dom tree to a text file (debug_dom_tree.log)',
+  dumpDomDesc: 'Serialize the dom tree to a text file',
+
+  dumpDomSubDesc: '(debug_dom_tree.log)',
 
   dumpStackingContextTitle: 'Dump Stacking Context tree',
 
-  dumpStackingContextDesc: 'Serialize the stacking context tree to a text file (debug_stacking_contexts.json)',
+  dumpStackingContextDesc: 'Serialize the stacking context tree to a text file',
+
+  dumpStackingContextSubDesc: '(debug_stacking_contexts.json)',
 
   dumpUsedImagesTitle: 'Dump Used Images',
 
-  dumpUsedImagesDesc: 'Serialize the used images in the view to a text file (UsedImages.txt)',
+  dumpUsedImagesDesc: 'Serialize the used images in the view to a text file',
+
+  dumpUsedImagesSubDesc: '(UsedImages.txt)',
 
   toggleMetaDataTitle: 'Emit Rendering Metadata',
 
@@ -77,49 +80,53 @@ const UIStrings = {
 
   captureBackendTitle: 'Capture Backend Buffer',
 
-  captureBackendDesc: 'Seriazlie the generated backend commands for a single frame to a binary file (CohtmlBackendBuffer.buff)',
+  captureBackendDesc: 'Seriazlie the generated backend commands for a single frame to a binary file',
+
+  captureBackendSubDesc: '(CohtmlBackendBuffer.buff)',
 
   captureRendTitle: 'Capture Rend File',
 
-  captureRendDesc: 'Seriazlie the generated rendering commands for a signel frame to a binary file (CohtmlRendCapture.rend)',
+  captureRendDesc: 'Seriazlie the generated rendering commands for a signel frame to a binary file',
+
+  captureRendSubDesc: '(CohtmlRendCapture.rend)',
 
   capturePageTitle: 'Capture Full Page',
 
-  capturePageDesc: 'Serialize the state of the whole view to a binary file (PageCapture.pcap)',
+  capturePageDesc: 'Serialize the state of the whole view to a binary file',
+
+  capturePageSubDesc: '(PageCapture.pcap)',
 
   clearCachedUnusedImagesTitle: 'Clear Cached Unused Images',
 
-  clearCachedUnusedImagesDesc: 'Removes all unused images (raster and svg) from internal caches.',
+  clearCachedUnusedImagesDesc: 'Remove all unused images (raster and svg) from internal caches.',
 
   getSystemCacheTitle: 'Get System Cache Stats',
 
   getSystemCacheDesc: 'Get statistics for the system-wide caches',
 
-  currentCapacityCountStr : 'Current Capacity Count: ',
+  currentCapacityCountStr: 'Current Capacity Count: ',
 
-  currentCapacityBytesStr : 'Current Capacity Memory: ',
+  currentCapacityBytesStr: 'Current Capacity Memory: ',
 
-  updateCacheStr : 'Update Cache',
+  updateCacheStr: 'Update Cache',
 
-  capacityStr : 'Capacity',
+  capacityStr: 'Capacity:',
 
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/CohtmlPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-function SizeString(sizeinBytes : number) : string
-{
-  if (isNaN(sizeinBytes))
-  {
+function SizeString(sizeinBytes: number): string {
+  if (isNaN(sizeinBytes)) {
     return "";
   }
 
   if (sizeinBytes < 1024) {
     return sizeinBytes + ' Bytes';
-  } else if (sizeinBytes < 1024*1024) {
-    return (sizeinBytes/1024).toFixed(2) + ' KBs';
+  } else if (sizeinBytes < 1024 * 1024) {
+    return (sizeinBytes / 1024).toFixed(2) + ' KBs';
   } else {
-    return (sizeinBytes/(1024*1024)).toFixed(2) + ' MBs';
+    return (sizeinBytes / (1024 * 1024)).toFixed(2) + ' MBs';
   }
 }
 
@@ -127,8 +134,8 @@ let cohtmlPanelViewInstance: CohtmlPanelView;
 
 
 class RenoirCacheUIEntry {
-  currentCountSpanElement : HTMLElement|null;
-  currentBytesSpanElement : HTMLElement|null;
+  currentCountSpanElement: HTMLElement | null;
+  currentBytesSpanElement: HTMLElement | null;
 
   constructor() {
     this.currentBytesSpanElement = null;
@@ -143,25 +150,39 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
   private continuousRepaintSetting: Common.Settings.Setting<any>;
 
-  private cohtmlDebugModel?: SDK.CohtmlDebugModel.CohtmlDebugModel|null;
+  private cohtmlDebugModel?: SDK.CohtmlDebugModel.CohtmlDebugModel | null;
+
+  private controlsPanel: HTMLElement;
 
   private contentPanel: HTMLElement;
 
-  private renoirCachesWrapper: HTMLElement;
+  private renoirCachesWrapper!: HTMLElement;
 
   // The "frontend" state of the renior renoir caches. In the entries we keep the two HTML element which display the current capacity
   // count and bytes. The map maps from a cache type (scratchTextures, scratchLayers) to the entry with HTML elements (RenoirCacheUIEntry).
-  private renoirCachesUIState : Map<number, RenoirCacheUIEntry>;
+  private renoirCachesUIState: Map<number, RenoirCacheUIEntry>;
+
+  private sidebar: HTMLElement;
+
+  private x: number;
+
+  private y: number;
+
+  private leftWidth: number;
+
+  private currentControlsWidth: number;
 
   private constructor() {
     super(true);
+    this.currentControlsWidth = 50;
+    this.x = this.y = 0;
+    this.leftWidth = 0;
     this.registerRequiredCSS('entrypoints/inspector_main/renderingOptions.css');
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.CohtmlDebugModel.CohtmlDebugModel, this);
 
     let mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
-    if (mainTarget)
-    {
+    if (mainTarget) {
       this.cohtmlDebugModel = mainTarget.model(SDK.CohtmlDebugModel.CohtmlDebugModel);
     }
 
@@ -171,78 +192,23 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     this.continuousRepaintSetting = Common.Settings.Settings.instance().moduleSetting('continuousRepaint');
 
     this.contentElement.classList.add('cohtml-panel-base');
+    this.controlsPanel = this.contentElement.createChild('div');
+    this.controlsPanel.classList.add('cohtml-panel', 'controls-panel');
+    this.controlsPanel.style.width = `${this.currentControlsWidth}%`;
 
-    const controlsPanel = this.contentElement.createChild('div');
-    controlsPanel.classList.add('controls-panel');
+    this.sidebar = this.contentElement.createChild('div');
+    this.sidebar.classList.add('cohtml-sider');
+    this.addSidebarEvents();
 
     this.contentPanel = this.contentElement.createChild('div');
-    this.contentPanel.classList.add('content-panel');
+    this.contentPanel.classList.add('cohtml-panel', 'content-panel');
 
-    controlsPanel.createChild('h4').innerText = 'Toggle settings';
-
-    this.appendCheckbox(
-      i18nString(UIStrings.paintFlashing), i18nString(UIStrings.highlightsAreasOfThePageGreen),
-      Common.Settings.Settings.instance().moduleSetting('showPaintRects'),
-      controlsPanel
-    );
-
-    this.appendCheckbox(
-      i18nString(UIStrings.redrawFlashing), i18nString(UIStrings.highlightsAreasOfThePageRed),
-      Common.Settings.Settings.instance().moduleSetting('showRedrawRects'),
-      controlsPanel
-    );
-
-    controlsPanel.createChild('div').classList.add('panel-section-separator');
-
-    this.appendCheckbox(
-      UIStrings.toggleMetaDataTitle, UIStrings.toggleMetaDataDesc,
-      Common.Settings.Settings.instance().moduleSetting('drawMetaData'),
-      controlsPanel
-    );
-
-    this.appendCheckbox(
-      UIStrings.toggleContinuousRepaintTitle, UIStrings.toggleContinuousRepaintDesc,
-      Common.Settings.Settings.instance().moduleSetting('continuousRepaint'),
-      controlsPanel
-    );
-
-    controlsPanel.createChild('div').classList.add('panel-section-separator');
-
-    controlsPanel.createChild('h4').innerText = 'Actions'
-
-    this.createSimpleButton(UIStrings.dumpDomTitle, UIStrings.dumpDomDesc, 'dumpDOM', controlsPanel);
-    this.createSimpleButton(UIStrings.dumpStackingContextTitle, UIStrings.dumpStackingContextDesc, 'dumpStackingContext', controlsPanel);
-    this.createSimpleButton(UIStrings.dumpUsedImagesTitle, UIStrings.dumpUsedImagesDesc, 'dumpUsedImages', controlsPanel);
-    this.createSimpleButton(UIStrings.captureBackendTitle, UIStrings.captureBackendDesc, 'captureBackend', controlsPanel);
-    this.createSimpleButton(UIStrings.captureRendTitle, UIStrings.captureRendDesc, 'captureRend', controlsPanel);
-    this.createSimpleButton(UIStrings.capturePageTitle, UIStrings.capturePageDesc, 'capturePage', controlsPanel);
-
-    controlsPanel.createChild('div').classList.add('panel-section-separator');
-
-    controlsPanel.createChild('h4').innerText = 'Cache controls'
-
-    this.createSimpleButton(UIStrings.clearCachedUnusedImagesTitle, UIStrings.clearCachedUnusedImagesDesc, 'clearCachedUnusedImages', controlsPanel);
-
-    this.createButton(UIStrings.getSystemCacheTitle, UIStrings.getSystemCacheDesc, controlsPanel, () => {
-      if (this.cohtmlDebugModel)
-      {
-        const cacheStats = this.cohtmlDebugModel.getSystemCacheStats();
-        cacheStats?.then((obj) => {
-          if (obj)
-          {
-            this.displayImagesInContentPanel(obj);
-          }
-        });
-      }
-    });
-
-    controlsPanel.createChild('div').classList.add('panel-section-separator');
-
-    // The panel which controls the renoir caches. We will create an entry for each cache type.
-    controlsPanel.createChild('h4').innerText = 'Rendering Caches';
-    this.renoirCachesWrapper = controlsPanel.createChild('div');
-
-    controlsPanel.createChild('div').classList.add('panel-section-separator');
+    this.createToggleSettingsSection();
+    this.createActionsSection();
+    this.createCacheControlsSection();
+    this.createRenderingCachesSection();
+    this.resizingPanels = this.resizingPanels.bind(this);
+    this.stopResizingPanels = this.stopResizingPanels.bind(this);
   }
 
   private onModelUpdated() {
@@ -266,7 +232,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     });
   }
 
-  private updateCacheUI(state: Protocol.CohtmlDebug.RenoirCache|undefined) {
+  private updateCacheUI(state: Protocol.CohtmlDebug.RenoirCache | undefined) {
     if (!state) {
       return;
     }
@@ -277,8 +243,8 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     let uiCacheState = this.renoirCachesUIState.get(state.type);
     if (!uiCacheState
-       || uiCacheState.currentBytesSpanElement == null
-       || uiCacheState.currentCountSpanElement == null) {
+      || uiCacheState.currentBytesSpanElement == null
+      || uiCacheState.currentCountSpanElement == null) {
       return;
     }
 
@@ -286,7 +252,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     uiCacheState.currentCountSpanElement.innerText = UIStrings.currentCapacityCountStr + state.capacityCount;
   }
 
-  private updateReniorCachesUI(cachesState: Protocol.CohtmlDebug.RenoirCachesState|null) {
+  private updateReniorCachesUI(cachesState: Protocol.CohtmlDebug.RenoirCachesState | null) {
     cachesState?.caches.forEach(cache => {
       this.updateCacheUI(cache);
     });
@@ -300,24 +266,28 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     let newCacheUIEntry = new RenoirCacheUIEntry();
 
-    let firstRow = cachePanel.createChild('div', '');
+    let firstRow = cachePanel.createChild('div', 'cache-wrapper');
     {
-      let entryName = firstRow.createChild('span', 'info-span');
+      const capacityWrapper = firstRow.createChild('div', 'cache-option');
+      let entryName = capacityWrapper.createChild('span', 'label');
       entryName.innerText = UIStrings.capacityStr;
 
       // input field where the user enters the desired cache size
-      let entryInput = firstRow.createChild('input');
+      let entryInput = capacityWrapper.createChild('input');
       entryInput.setAttribute('type', 'number');
 
+      const unitsWrapper = firstRow.createChild('div', 'cache-option');
       // unit for the enered number (label + select element)
-      let unit = firstRow.createChild('span', 'info-span');
+      let unit = unitsWrapper.createChild('span', 'label');
       unit.innerText = 'Unit:';
-      let types:string[] = ["Count", "Bytes", "KBs", "MBs"];
-      let unitSelect = this.appendSelect("Type", types, firstRow);
+      let types: string[] = ["Count", "Bytes", "KBs", "MBs"];
+      let unitSelect = this.appendSelect("Type", types, unitsWrapper);
 
+      const buttonWrapper = firstRow.createChild('div', 'cache-option');
       // button for updating the corresponding cache.
-      let entryButton = firstRow.createChild('span', 'button-link');
-      entryButton.innerText = UIStrings.updateCacheStr;
+      const entryButton = UI.UIUtils.createTextButton(i18nString(UIStrings.updateCacheStr), void 0, 'cohtml-button margin-top-0');
+      UI.ARIAUtils.markAsLink(entryButton);
+      buttonWrapper.appendChild(entryButton);
 
       entryButton.onclick = () => {
         let inputElement = (entryInput as HTMLInputElement);
@@ -336,7 +306,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
             case "Count": break;
             case "Bytes": break;
             case "KBs": newSize *= 1024; break;
-            case "MBs": newSize *= 1024*1024; break;
+            case "MBs": newSize *= 1024 * 1024; break;
           }
 
           let setCount = unitSelect.value == "Count";
@@ -364,12 +334,12 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     // create a couple of span elements to display the currenet capacity bytes and count
     // of the cache
-    let secondRow = cachePanel.createChild('div', '');
+    let secondRow = cachePanel.createChild('div', 'cache-wrapper');
     {
-      let currentCapacityCount = secondRow.createChild('span', 'info-span');
+      let currentCapacityCount = secondRow.createChild('div', 'cache-option');
       currentCapacityCount.innerText = UIStrings.currentCapacityCountStr;
 
-      let currentCapacityBytes = secondRow.createChild('span', 'info-span');
+      let currentCapacityBytes = secondRow.createChild('div', 'cache-option');
       currentCapacityBytes.innerText = UIStrings.currentCapacityBytesStr;
 
       // save the span elements for later so that we can update them when we have to
@@ -379,12 +349,13 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     // create the entry in the frontend map for the caches state
     this.renoirCachesUIState.set(id, newCacheUIEntry);
+    parent.createChild('div').classList.add('panel-section-separator');
   }
 
   static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): CohtmlPanelView {
-    const {forceNew} = opts;
+    forceNew: boolean | null,
+  } = { forceNew: null }): CohtmlPanelView {
+    const { forceNew } = opts;
     if (!cohtmlPanelViewInstance || forceNew) {
       cohtmlPanelViewInstance = new CohtmlPanelView();
     }
@@ -392,40 +363,151 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     return cohtmlPanelViewInstance;
   }
 
+  private addSidebarEvents() {
+    this.sidebar.addEventListener('mousedown', this.startResizingPanels.bind(this));
+  }
+
+  private startResizingPanels(event: MouseEvent) {
+    this.x = event.clientX;
+    this.y = event.clientY;
+    this.leftWidth = this.sidebar.previousElementSibling?.getBoundingClientRect().width || 0;
+    document.addEventListener('mousemove', this.resizingPanels);
+    document.addEventListener('mouseup', this.stopResizingPanels);
+  }
+
+  private stopResizingPanels() {
+    document.removeEventListener('mousemove', this.resizingPanels);
+    document.removeEventListener('mouseup', this.stopResizingPanels);
+  }
+
+  private resizingPanels(event: MouseEvent) {
+    const dx = event.clientX - this.x;
+    const dy = event.clientY - this.y;
+
+    const newLeftWidth = ((this.leftWidth + dx) * 100) / this.contentElement.getBoundingClientRect().width;
+    if (newLeftWidth < 15 || newLeftWidth > 85) return;
+    this.controlsPanel.style.width = `${newLeftWidth}%`;
+    this.currentControlsWidth = newLeftWidth;
+  }
+
+  private createToggleSettingsSection() {
+    this.createSectionHeader(this.controlsPanel, 'Toggle settings');
+
+    this.appendCheckbox(
+      i18nString(UIStrings.paintFlashing), i18nString(UIStrings.highlightsAreasOfThePageGreen),
+      Common.Settings.Settings.instance().moduleSetting('showPaintRects'),
+      this.controlsPanel
+    );
+
+    this.appendCheckbox(
+      i18nString(UIStrings.redrawFlashing), i18nString(UIStrings.highlightsAreasOfThePageRed),
+      Common.Settings.Settings.instance().moduleSetting('showRedrawRects'),
+      this.controlsPanel
+    );
+
+    this.appendCheckbox(
+      UIStrings.toggleMetaDataTitle, UIStrings.toggleMetaDataDesc,
+      Common.Settings.Settings.instance().moduleSetting('drawMetaData'),
+      this.controlsPanel
+    );
+
+    this.appendCheckbox(
+      UIStrings.toggleContinuousRepaintTitle, UIStrings.toggleContinuousRepaintDesc,
+      Common.Settings.Settings.instance().moduleSetting('continuousRepaint'),
+      this.controlsPanel
+    );
+
+    this.controlsPanel.createChild('div').classList.add('panel-section-separator');
+  }
+
+  private createActionsSection() {
+    this.createSectionHeader(this.controlsPanel, 'Actions');
+
+    this.createSimpleButton(UIStrings.dumpDomTitle, UIStrings.dumpDomDesc, 'dumpDOM', this.controlsPanel, UIStrings.dumpDomSubDesc);
+    this.createSimpleButton(UIStrings.dumpStackingContextTitle, UIStrings.dumpStackingContextDesc, 'dumpStackingContext', this.controlsPanel, UIStrings.dumpStackingContextSubDesc);
+    this.createSimpleButton(UIStrings.dumpUsedImagesTitle, UIStrings.dumpUsedImagesDesc, 'dumpUsedImages', this.controlsPanel, UIStrings.dumpUsedImagesSubDesc);
+    this.createSimpleButton(UIStrings.captureBackendTitle, UIStrings.captureBackendDesc, 'captureBackend', this.controlsPanel, UIStrings.captureBackendSubDesc);
+    this.createSimpleButton(UIStrings.captureRendTitle, UIStrings.captureRendDesc, 'captureRend', this.controlsPanel, UIStrings.captureRendSubDesc);
+    this.createSimpleButton(UIStrings.capturePageTitle, UIStrings.capturePageDesc, 'capturePage', this.controlsPanel, UIStrings.capturePageSubDesc);
+    this.controlsPanel.createChild('div').classList.add('panel-section-separator');
+  }
+
+  private createRenderingCachesSection() {
+    // The panel which controls the renoir caches. We will create an entry for each cache type.
+    this.createSectionHeader(this.controlsPanel, 'Rendering Caches');
+
+    this.renoirCachesWrapper = this.controlsPanel.createChild('div');
+
+    this.controlsPanel.createChild('div').classList.add('panel-section-separator');
+  }
+
+  private createCacheControlsSection() {
+    this.createSectionHeader(this.controlsPanel, 'Cache controls');
+
+    this.createSimpleButton(UIStrings.clearCachedUnusedImagesTitle, UIStrings.clearCachedUnusedImagesDesc, 'clearCachedUnusedImages', this.controlsPanel);
+
+    this.createButton(UIStrings.getSystemCacheTitle, UIStrings.getSystemCacheDesc, this.controlsPanel, () => {
+      if (this.cohtmlDebugModel) {
+        const cacheStats = this.cohtmlDebugModel.getSystemCacheStats();
+        cacheStats?.then((obj) => {
+          if (obj) {
+            this.displayImagesInContentPanel(obj);
+          }
+        });
+      }
+    });
+
+    this.controlsPanel.createChild('div').classList.add('panel-section-separator');
+  }
+
+  private createSectionHeader(parentElement: HTMLElement, title: string) {
+    const header = parentElement.createChild('div');
+    header.classList.add('cohtml-section-header');
+    header.innerText = title;
+  }
+
+  private createSubSectionHeader(parentElement: HTMLElement, title: string) {
+    const header = parentElement.createChild('div');
+    header.classList.add('cohtml-sub-section-header');
+    header.innerText = title;
+  }
+
   private displayImagesInContentPanel(imagesList: Protocol.CohtmlDebug.GetSystemCacheStatsResponse) {
     this.contentPanel.innerHTML = '';
-    this.contentPanel.createChild('h4').innerText = 'Used images';
+    this.createSectionHeader(this.contentPanel, 'Used images');
 
-    this.contentPanel.createChild('span', 'info-span').innerText = 'Alive Images Count: ' + imagesList.stats.aliveImagesCount;
-    this.contentPanel.createChild('br');
-    this.contentPanel.createChild('span', 'info-span').innerText = 'Alive Images Total Memory: ' + SizeString(imagesList.stats.aliveTotalBytesUsed);
-    this.contentPanel.createChild('br');
-    this.contentPanel.createChild('span', 'info-span').innerText = 'Orphaned Images Count: ' + imagesList.stats.orphanedImagesCount;
-    this.contentPanel.createChild('br');
-    this.contentPanel.createChild('span', 'info-span').innerText = 'Orphaned Images Total Memory: ' + SizeString(imagesList.stats.orphanedBytesUsed);
+    this.contentPanel.createChild('div', 'info-span').innerText = 'Alive Images Count: ' + imagesList.stats.aliveImagesCount;
+    this.contentPanel.createChild('div', 'info-span').innerText = 'Alive Images Total Memory: ' + SizeString(imagesList.stats.aliveTotalBytesUsed);
+    this.contentPanel.createChild('div', 'info-span').innerText = 'Orphaned Images Count: ' + imagesList.stats.orphanedImagesCount;
+    this.contentPanel.createChild('div', 'info-span').innerText = 'Orphaned Images Total Memory: ' + SizeString(imagesList.stats.orphanedBytesUsed);
 
-    function displayImagesAsUl(images: Protocol.CohtmlDebug.ImageData[], parent:HTMLElement) {
+    function displayImagesAsUl(images: Protocol.CohtmlDebug.ImageData[], parent: HTMLElement) {
       const imagesListElement = parent.createChild('ul', 'image-list');
       images.forEach((img) => {
         const li = imagesListElement.createChild('li');
-        li.createChild('span', 'image-name').innerText = img.name;
-        li.createChild('br');
+        li.title = img.name;
+        li.createChild('div', 'selection fill');
+        const elementWrapper = li.createChild('div', 'coh-img-element-wrapper');
+        elementWrapper.createChild('span', 'coh-image-icon');
+        elementWrapper.createChild('span', 'image-name').innerText = img.name;
         li.createChild('span', 'image-size').innerText = '[ ' + SizeString(img.sizeBytes) + ']';
       });
     }
 
-    this.contentPanel.createChild('h3').innerText = 'Alive Images List';
+    this.contentPanel.createChild('div').classList.add('panel-section-separator');
+    this.createSectionHeader(this.contentPanel, 'Alive Images List');
     displayImagesAsUl(imagesList.stats.aliveImages, this.contentPanel);
-    this.contentPanel.createChild('h3').innerText = 'Orphen Images List';
+    this.contentPanel.createChild('div').classList.add('panel-section-separator');
+    this.createSectionHeader(this.contentPanel, 'Orphen Images List');
     displayImagesAsUl(imagesList.stats.orphanedImages, this.contentPanel);
   }
 
-  private createSimpleButton(title: string, description: string, method: any, parent: HTMLElement ) {
+  private createSimpleButton(title: string, description: string, method: any, parent: HTMLElement, subDescription?: string) {
     this.createButton(title, description, parent, () => {
       if (this.cohtmlDebugModel && this.cohtmlDebugModel[method]) {
         this.cohtmlDebugModel[method]();
       }
-    });
+    }, subDescription);
   }
 
   private appendSelect(name: string, options: string[], element: HTMLElement): HTMLSelectElement {
@@ -437,34 +519,39 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
       option.textContent = options[index];
     }
     return select as HTMLSelectElement;
-}
+  }
 
-  private createButton(label: string, desc: string, parent: HTMLElement , click : () => void) {
+  private createButton(label: string, desc: string, parent: HTMLElement, click: () => void, subDescription?: string) {
     const newButtonBlock = parent.createChild('div');
     newButtonBlock.classList.add('button-block');
 
-    const buttonItem = newButtonBlock.createChild('span');
-    buttonItem.classList.add('button-link');
-    buttonItem.innerText = label;
-    buttonItem.onclick = click;
+    const buttonItem = UI.UIUtils.createTextButton(i18nString(label), click, 'cohtml-button');
+    UI.ARIAUtils.markAsLink(buttonItem);
 
-    const descItem = newButtonBlock.createChild('span');
+    const descItem = newButtonBlock.createChild('div');
     descItem.classList.add('button-desc');
     descItem.innerText = desc;
+    newButtonBlock.appendChild(descItem);
+
+    if (subDescription) {
+      const subDescItem = newButtonBlock.createChild('div');
+      subDescItem.classList.add('button-sub-desc');
+      subDescItem.innerText = subDescription;
+      newButtonBlock.appendChild(subDescItem);
+    }
 
     newButtonBlock.appendChild(buttonItem);
-    newButtonBlock.appendChild(descItem);
   }
 
   private createCheckbox(label: string, subtitle: string, setting: Common.Settings.Setting<boolean>):
-      UI.UIUtils.CheckboxLabel {
+    UI.UIUtils.CheckboxLabel {
     const checkboxLabel = UI.UIUtils.CheckboxLabel.create(label, false, subtitle);
     UI.SettingsUI.bindCheckbox(checkboxLabel.checkboxElement, setting);
     return checkboxLabel;
   }
 
   private appendCheckbox(label: string, subtitle: string, setting: Common.Settings.Setting<boolean>, parent: HTMLElement):
-      UI.UIUtils.CheckboxLabel {
+    UI.UIUtils.CheckboxLabel {
     const checkbox = this.createCheckbox(label, subtitle, setting);
     parent.appendChild(checkbox);
     return checkbox;

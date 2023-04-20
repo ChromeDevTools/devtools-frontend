@@ -812,7 +812,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
         i18nString(UIStrings.clipboard), ['copy', 'cut', 'paste', 'beforecopy', 'beforecut', 'beforepaste'], ['*']);
     this.createEventListenerBreakpoints(
         i18nString(UIStrings.control),
-        ['resize', 'scroll', 'zoom', 'focus', 'blur', 'select', 'change', 'submit', 'reset'], ['*']);
+        ['resize', 'scroll', 'scrollend', 'zoom', 'focus', 'blur', 'select', 'change', 'submit', 'reset'], ['*']);
     this.createEventListenerBreakpoints(i18nString(UIStrings.device), ['deviceorientation', 'devicemotion'], ['*']);
     this.createEventListenerBreakpoints(
         i18nString(UIStrings.domMutation),

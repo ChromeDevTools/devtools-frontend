@@ -17,7 +17,8 @@ import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
 
 import {type TimelineModeViewDelegate} from './TimelinePanel.js';
-import {SelectionType, TimelineSelection} from './TimelineSelection.js';
+
+import {TimelineSelection} from './TimelineSelection.js';
 
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
@@ -219,39 +220,29 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       this.updateContentsFromWindow();
       return;
     }
-    switch (this.selection.type()) {
-      case SelectionType.TraceEvent: {
-        const event =
-            (this.selection.object() as SDK.TracingModel.Event | TraceEngine.Types.TraceEvents.TraceEventData);
-        void TimelineUIUtils
-            .buildTraceEventDetails(
-                event, this.model.timelineModel(), this.detailsLinkifier, true, this.#traceEngineData)
-            .then(fragment => this.appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
-        break;
-      }
-      case SelectionType.Frame: {
-        const frame = (this.selection.object() as TimelineModel.TimelineFrameModel.TimelineFrame);
-        const filmStripFrame = this.model.filmStripModelFrame(frame);
-        this.setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
-        if (frame.layerTree) {
-          const layersView = this.layersView();
-          layersView.showLayerTree(frame.layerTree);
-          if (!this.tabbedPane.hasTab(Tab.LayerViewer)) {
-            this.appendTab(Tab.LayerViewer, i18nString(UIStrings.layers), layersView);
-          }
+    const selectionObject = this.selection.object;
+    if (TimelineSelection.isTraceEventSelection(selectionObject)) {
+      const event = selectionObject;
+      void TimelineUIUtils
+          .buildTraceEventDetails(event, this.model.timelineModel(), this.detailsLinkifier, true, this.#traceEngineData)
+          .then(fragment => this.appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
+    } else if (TimelineSelection.isFrameObject(selectionObject)) {
+      const frame = selectionObject;
+      const filmStripFrame = this.model.filmStripModelFrame(frame);
+      this.setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
+      if (frame.layerTree) {
+        const layersView = this.layersView();
+        layersView.showLayerTree(frame.layerTree);
+        if (!this.tabbedPane.hasTab(Tab.LayerViewer)) {
+          this.appendTab(Tab.LayerViewer, i18nString(UIStrings.layers), layersView);
         }
-        break;
       }
-      case SelectionType.NetworkRequest: {
-        const request = (this.selection.object() as TimelineModel.TimelineModel.NetworkRequest);
-        void TimelineUIUtils.buildNetworkRequestDetails(request, this.model.timelineModel(), this.detailsLinkifier)
-            .then(this.setContent.bind(this));
-        break;
-      }
-      case SelectionType.Range: {
-        this.updateSelectedRangeStats(this.selection.startTime(), this.selection.endTime());
-        break;
-      }
+    } else if (TimelineSelection.isNetworkRequestSelection(selectionObject)) {
+      const request = selectionObject;
+      void TimelineUIUtils.buildNetworkRequestDetails(request, this.model.timelineModel(), this.detailsLinkifier)
+          .then(this.setContent.bind(this));
+    } else if (TimelineSelection.isRangeSelection(selectionObject)) {
+      this.updateSelectedRangeStats(this.selection.startTime, this.selection.endTime);
     }
 
     this.updateContents();

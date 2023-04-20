@@ -48,7 +48,8 @@ import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js'
 import {type PerformanceModel} from './PerformanceModel.js';
 
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
-import {SelectionType, TimelineSelection} from './TimelineSelection.js';
+
+import {TimelineSelection} from './TimelineSelection.js';
 
 import {TimelineUIUtils, type TimelineCategory} from './TimelineUIUtils.js';
 
@@ -1181,15 +1182,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   entryIndexForSelection(selection: TimelineSelection|null): number {
-    if (!selection || selection.type() === SelectionType.Range) {
+    if (!selection || TimelineSelection.isRangeSelection(selection.object) ||
+        TimelineSelection.isNetworkRequestSelection(selection.object)) {
       return -1;
     }
 
-    if (this.lastSelection && this.lastSelection.timelineSelection.object() === selection.object()) {
+    if (this.lastSelection && this.lastSelection.timelineSelection.object === selection.object) {
       return this.lastSelection.entryIndex;
     }
-    const index = this.entryData.indexOf(
-        (selection.object() as SDK.TracingModel.Event | TimelineModel.TimelineFrameModel.TimelineFrame));
+    const index = this.entryData.indexOf(selection.object);
     if (index !== -1) {
       this.lastSelection = new Selection(selection, index);
     }

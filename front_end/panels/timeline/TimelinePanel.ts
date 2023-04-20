@@ -70,7 +70,8 @@ import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {traceJsonGenerator} from './SaveFileFormatter.js';
-import {TimelineSelection, SelectionType} from './TimelineSelection.js';
+
+import {TimelineSelection} from './TimelineSelection.js';
 
 const UIStrings = {
   /**
@@ -1352,21 +1353,21 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private frameForSelection(selection: TimelineSelection): TimelineModel.TimelineFrameModel.TimelineFrame|null {
-    switch (selection.type()) {
-      case SelectionType.Frame:
-        return selection.object() as TimelineModel.TimelineFrameModel.TimelineFrame;
-      case SelectionType.Range:
-        return null;
-      case SelectionType.TraceEvent:
-        if (!this.performanceModel) {
-          return null;
-        }
-        return this.performanceModel.frameModel().getFramesWithinWindow(
-            selection.endTimeInternal, selection.endTimeInternal)[0];
-      default:
-        console.assert(false, 'Should never be reached');
-        return null;
+    if (TimelineSelection.isFrameObject(selection.object)) {
+      return selection.object;
     }
+    if (TimelineSelection.isRangeSelection(selection.object) ||
+        TimelineSelection.isNetworkRequestSelection(selection.object)) {
+      return null;
+    }
+    if (TimelineSelection.isTraceEventSelection(selection.object)) {
+      if (!this.performanceModel) {
+        return null;
+      }
+      return this.performanceModel.frameModel().getFramesWithinWindow(selection.endTime, selection.endTime)[0];
+    }
+    console.assert(false, 'Should never be reached');
+    return null;
   }
 
   jumpToFrame(offset: number): true|undefined {

@@ -15,6 +15,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {type PerformanceModel} from './PerformanceModel.js';
 import {TimelineRegExp} from './TimelineFilters.js';
+
 import {type TimelineSelection} from './TimelineSelection.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
@@ -270,7 +271,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   updateContents(selection: TimelineSelection): void {
-    this.setRange(selection.startTime(), selection.endTime());
+    this.setRange(selection.startTime, selection.endTime);
   }
 
   setRange(startTime: number, endTime: number): void {
@@ -917,7 +918,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     return domainMatch && domainMatch[0] || '';
   }
 
-  override appendContextMenuItems(contextMenu: UI.ContextMenu.ContextMenu, node: TimelineModel.TimelineProfileTree.Node): void {
+  override appendContextMenuItems(
+      contextMenu: UI.ContextMenu.ContextMenu, node: TimelineModel.TimelineProfileTree.Node): void {
     if (this.groupBySetting.get() !== AggregatedTimelineTreeView.GroupBy.Frame) {
       return;
     }

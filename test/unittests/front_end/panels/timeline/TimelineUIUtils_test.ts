@@ -339,4 +339,12 @@ describeWithMockConnection('TimelineUIUtils', () => {
       );
     });
   });
+  describe('eventTitle', () => {
+    it('renders the correct title for an EventTiming event', async () => {
+      const data = await allModelsFromFile('slow-interaction-button-click.json.gz');
+      const interactionEvent = data.traceParsedData.UserInteractions.interactionEventsWithNoNesting[0];
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.eventTitle(interactionEvent);
+      assert.deepEqual(details, 'pointerdown');
+    });
+  });
 });

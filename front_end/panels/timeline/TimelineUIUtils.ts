@@ -1435,11 +1435,17 @@ export class TimelineUIUtils {
       return TimelineUIUtils.frameDisplayName(eventData);
     }
 
-    if (event.name === 'EventTiming' && event instanceof SDK.TracingModel.PayloadEvent) {
-      const syntheticInteraction = event.rawPayload();
-      if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(syntheticInteraction)) {
+    if (event.name === 'EventTiming') {
+      let payload: TraceEngine.Types.TraceEvents.TraceEventData|null = null;
+      if (event instanceof SDK.TracingModel.PayloadEvent) {
+        payload = event.rawPayload();
+      } else if (eventIsFromNewEngine(event)) {
+        payload = event;
+      }
+
+      if (payload && TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(payload)) {
         // For interaction events, show the type of the interaction as its title
-        return syntheticInteraction.type;
+        return payload.type;
       }
     }
     const title = TimelineUIUtils.eventStyle(event).title;

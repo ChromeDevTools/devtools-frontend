@@ -13,10 +13,10 @@ describeWithEnvironment('TimelineSelection', () => {
   it('can be created with a frame', () => {
     const frame = new TimelineModel.TimelineFrameModel.TimelineFrame(1, 0);
     const selection = Timeline.TimelineSelection.TimelineSelection.fromFrame(frame);
-    assert.strictEqual(selection.type(), Timeline.TimelineSelection.SelectionType.Frame);
-    assert.strictEqual(selection.object(), frame);
-    assert.strictEqual(selection.startTime(), frame.startTime);
-    assert.strictEqual(selection.endTime(), frame.endTime);
+    assert.strictEqual(selection.object, frame);
+    assert.strictEqual(selection.startTime, frame.startTime);
+    assert.strictEqual(selection.endTime, frame.endTime);
+    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isFrameObject(selection.object));
   });
 
   it('can be created with a network request', async () => {
@@ -30,10 +30,10 @@ describeWithEnvironment('TimelineSelection', () => {
     }
     const request = new TimelineModel.TimelineModel.NetworkRequest(firstNetworkEvent);
     const selection = Timeline.TimelineSelection.TimelineSelection.fromNetworkRequest(request);
-    assert.strictEqual(selection.type(), Timeline.TimelineSelection.SelectionType.NetworkRequest);
-    assert.strictEqual(selection.object(), request);
-    assert.strictEqual(selection.startTime(), request.startTime);
-    assert.strictEqual(selection.endTime(), request.endTime);
+    assert.strictEqual(selection.object, request);
+    assert.strictEqual(selection.startTime, request.startTime);
+    assert.strictEqual(selection.endTime, request.endTime);
+    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isNetworkRequestSelection(selection.object));
   });
 
   it('can be created with an SDK trace event', async () => {
@@ -45,11 +45,11 @@ describeWithEnvironment('TimelineSelection', () => {
       throw new Error('Could not find LCP event');
     }
     const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(firstLCPEvent);
-    assert.strictEqual(selection.type(), Timeline.TimelineSelection.SelectionType.TraceEvent);
-    assert.strictEqual(selection.object(), firstLCPEvent);
-    assert.strictEqual(selection.startTime(), firstLCPEvent.startTime);
+    assert.strictEqual(selection.object, firstLCPEvent);
+    assert.strictEqual(selection.startTime, firstLCPEvent.startTime);
     // No end time, so the end time gets set to the start time.
-    assert.strictEqual(selection.endTime(), firstLCPEvent.startTime);
+    assert.strictEqual(selection.endTime, firstLCPEvent.startTime);
+    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isTraceEventSelection(selection.object));
   });
 
   it('can be created with a TraceEngine event', async () => {
@@ -61,19 +61,17 @@ describeWithEnvironment('TimelineSelection', () => {
       throw new Error('Could not find LCP event');
     }
     const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(firstLCPEvent);
-    assert.strictEqual(selection.type(), Timeline.TimelineSelection.SelectionType.TraceEvent);
-    assert.strictEqual(selection.object(), firstLCPEvent);
+    assert.strictEqual(selection.object, firstLCPEvent);
     assert.strictEqual(
-        selection.startTime(), Timeline.EventTypeHelpers.timesForEventInMilliseconds(firstLCPEvent).startTime);
-    assert.strictEqual(
-        selection.endTime(), Timeline.EventTypeHelpers.timesForEventInMilliseconds(firstLCPEvent).endTime);
+        selection.startTime, Timeline.EventTypeHelpers.timesForEventInMilliseconds(firstLCPEvent).startTime);
+    assert.strictEqual(selection.endTime, Timeline.EventTypeHelpers.timesForEventInMilliseconds(firstLCPEvent).endTime);
+    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isTraceEventSelection(selection.object));
   });
 
   it('can be created with a range', async () => {
     const selection = Timeline.TimelineSelection.TimelineSelection.fromRange(0, 10);
-    assert.strictEqual(selection.type(), Timeline.TimelineSelection.SelectionType.Range);
-    assert.isNull(selection.object());
-    assert.strictEqual(selection.startTime(), 0);
-    assert.strictEqual(selection.endTime(), 10);
+    assert.strictEqual(selection.startTime, 0);
+    assert.strictEqual(selection.endTime, 10);
+    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isRangeSelection(selection.object));
   });
 });

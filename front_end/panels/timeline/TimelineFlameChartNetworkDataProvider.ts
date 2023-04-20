@@ -16,7 +16,8 @@ import * as Protocol from '../../generated/protocol.js';
 
 import {type PerformanceModel} from './PerformanceModel.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
-import {SelectionType, TimelineSelection} from './TimelineSelection.js';
+
+import {TimelineSelection} from './TimelineSelection.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
@@ -140,17 +141,16 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       return -1;
     }
 
-    if (this.lastSelection && this.lastSelection.timelineSelection.object() === selection.object()) {
+    if (this.lastSelection && this.lastSelection.timelineSelection.object === selection.object) {
       return this.lastSelection.entryIndex;
     }
 
-    if (selection.type() !== SelectionType.NetworkRequest) {
+    if (!TimelineSelection.isNetworkRequestSelection(selection.object)) {
       return -1;
     }
-    const request = (selection.object() as TimelineModel.TimelineModel.NetworkRequest);
-    const index = this.requests.indexOf(request);
+    const index = this.requests.indexOf(selection.object);
     if (index !== -1) {
-      this.lastSelection = new Selection(TimelineSelection.fromNetworkRequest(request), index);
+      this.lastSelection = new Selection(TimelineSelection.fromNetworkRequest(selection.object), index);
     }
     return index;
   }

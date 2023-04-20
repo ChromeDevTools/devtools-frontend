@@ -147,12 +147,11 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
   private contentPanel: HTMLElement;
 
-  // The "raw" data for the renoir caches. We get this from the backend through CohtmlDebugModel.getRenoirCahcesState
-  private renoirCacheState : Protocol.CohtmlDebug.RenoirCachesState|null;
+  private renoirCachesWrapper: HTMLElement;
 
   // The "frontend" state of the renior renoir caches. In the entries we keep the two HTML element which display the current capacity
   // count and bytes. The map maps from a cache type (scratchTextures, scratchLayers) to the entry with HTML elements (RenoirCacheUIEntry).
-  private renoirCacehUIState : Map<string, RenoirCacheUIEntry>;
+  private renoirCachesUIState : Map<number, RenoirCacheUIEntry>;
 
   private constructor() {
     super(true);
@@ -160,15 +159,13 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.CohtmlDebugModel.CohtmlDebugModel, this);
 
-    this.renoirCacheState = null;
-
     let mainTarget = SDK.TargetManager.TargetManager.instance().mainTarget();
     if (mainTarget)
     {
       this.cohtmlDebugModel = mainTarget.model(SDK.CohtmlDebugModel.CohtmlDebugModel);
     }
 
-    this.renoirCacehUIState = new Map<string, RenoirCacheUIEntry>();
+    this.renoirCachesUIState = new Map<number, RenoirCacheUIEntry>();
 
     this.drawMetaDataSetting = Common.Settings.Settings.instance().moduleSetting('drawMetaData');
     this.continuousRepaintSetting = Common.Settings.Settings.instance().moduleSetting('continuousRepaint');
@@ -243,18 +240,22 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     // The panel which controls the renoir caches. We will create an entry for each cache type.
     controlsPanel.createChild('h4').innerText = 'Rendering Caches';
-    this.createCacheEntryForRenoirCache('scratchTextures', 'Scratch Textures', controlsPanel);
-    this.createCacheEntryForRenoirCache('scratchLayers', 'Scratch Layers', controlsPanel);
-    this.createCacheEntryForRenoirCache('textures', 'Textures', controlsPanel);
-    this.createCacheEntryForRenoirCache('commandBuffers', 'Command Buffers', controlsPanel);
-    this.createCacheEntryForRenoirCache('commandProcessors', 'Command Processors', controlsPanel);
+    this.renoirCachesWrapper = controlsPanel.createChild('div');
 
     controlsPanel.createChild('div').classList.add('panel-section-separator');
   }
 
   private onModelUpdated() {
     // once we have a valid cohtml model, we'll query the renoir caches states
-    this.fetchCacheStates();
+
+    let cachesResult = this.cohtmlDebugModel?.getAvailableRenoirCahces();
+    cachesResult?.then(caches => {
+      this.renoirCachesWrapper.removeChildren();
+      caches?.forEach(cache => {
+        this.createCacheEntryForRenoirCache(cache.type, cache.title ? cache.title : '<unknown>', this.renoirCachesWrapper);
+      });
+      this.fetchCacheStates();
+    });
   }
 
   private fetchCacheStates() {
@@ -270,33 +271,28 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
       return;
     }
 
-    if (!this.renoirCacehUIState.has(state.type)) {
+    if (!this.renoirCachesUIState.has(state.type)) {
       return;
     }
 
-    let uiCacheState = this.renoirCacehUIState.get(state.type);
+    let uiCacheState = this.renoirCachesUIState.get(state.type);
     if (!uiCacheState
        || uiCacheState.currentBytesSpanElement == null
        || uiCacheState.currentCountSpanElement == null) {
       return;
     }
 
-    uiCacheState.currentBytesSpanElement.innerText = UIStrings.currentCapacityBytesStr + SizeString(state.capacityBytes);
+    uiCacheState.currentBytesSpanElement.innerText = UIStrings.currentCapacityBytesStr + SizeString(state.capacityBytes ? state.capacityBytes : 0);
     uiCacheState.currentCountSpanElement.innerText = UIStrings.currentCapacityCountStr + state.capacityCount;
   }
 
-  private updateReniorCachesUI(cachesState: Protocol.CohtmlDebug.RenoirCachesState|null)
-  {
-    this.renoirCacheState = cachesState;
-    // iterating over an object is not trivial in typescript so we'll do it manually
-    this.updateCacheUI(this.renoirCacheState?.textures);
-    this.updateCacheUI(this.renoirCacheState?.scratchLayers);
-    this.updateCacheUI(this.renoirCacheState?.scratchTextures);
-    this.updateCacheUI(this.renoirCacheState?.commandBuffers);
-    this.updateCacheUI(this.renoirCacheState?.commandProcessors);
+  private updateReniorCachesUI(cachesState: Protocol.CohtmlDebug.RenoirCachesState|null) {
+    cachesState?.caches.forEach(cache => {
+      this.updateCacheUI(cache);
+    });
   }
 
-  private createCacheEntryForRenoirCache(cache:string, title: string, parent: HTMLElement) {
+  private createCacheEntryForRenoirCache(id: number, title: string, parent: HTMLElement) {
     let cachePanel = parent.createChild('div', 'cache-entry');
 
     let cacheName = cachePanel.createChild('span', 'cache-title');
@@ -325,6 +321,9 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
       entryButton.onclick = () => {
         let inputElement = (entryInput as HTMLInputElement);
+        if (inputElement.value.length == 0) {
+          return;
+        }
         let newSize = Number(inputElement.value);
         if (!isNaN(newSize)) {
 
@@ -344,7 +343,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
           // create the object that will be send to the backend
           let state: Protocol.CohtmlDebug.RenoirCache = {
-            type: cache,
+            type: id,
             capacityBytes: !setCount ? newSize : -1,
             capacityCount: setCount ? newSize : -1
           };
@@ -356,7 +355,9 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
           // next frame. Hence we can't request the new cache state immediatly but
           // have to "wait a little bit". 100ms is plenty of time but still keeps the
           // updating feeling interactive
-          setTimeout(this.fetchCacheStates.bind(this), 100);
+          setTimeout(() => {
+            this.fetchCacheStates();
+          }, 100);
         }
       };
     }
@@ -377,7 +378,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     }
 
     // create the entry in the frontend map for the caches state
-    this.renoirCacehUIState.set(cache, newCacheUIEntry);
+    this.renoirCachesUIState.set(id, newCacheUIEntry);
   }
 
   static instance(opts: {

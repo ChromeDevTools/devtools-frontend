@@ -95,6 +95,15 @@ export class CohtmlDebugModel extends SDKModel<void> implements ProtocolProxyApi
     this.cohtmlDebugAgent.invoke_clearCachedUnusedImages();
   }
 
+  async getAvailableRenoirCahces() : Promise<Protocol.CohtmlDebug.RenoirCache[]|null> {
+    const response = await this.cohtmlDebugAgent.invoke_getAvailableRenoirCaches();
+    if (response.getError()) {
+      return null;
+    }
+    return response.caches;
+  }
+
+
   async getSystemCacheStats(): Promise<Protocol.CohtmlDebug.GetSystemCacheStatsResponse|null> {
     const response = await this.cohtmlDebugAgent.invoke_getSystemCacheStats();
     if (response.getError()) {

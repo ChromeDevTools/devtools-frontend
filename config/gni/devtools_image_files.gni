@@ -192,6 +192,7 @@ devtools_svg_sources = [
   "securityIcons.svg",
   "select-element.svg",
   "settings_14x14_icon.svg",
+  "shadow.svg",
   "smallIcons.svg",
   "snippet.svg",
   "star_outline.svg",

@@ -69,7 +69,7 @@ export class CSSShadowSwatch extends HTMLSpanElement {
       cssFile: [cssShadowSwatchStyles],
       delegatesFocus: undefined,
     });
-    this.iconElementInternal = UI.Icon.Icon.create('smallicon-shadow', 'shadow-swatch-icon');
+    this.iconElementInternal = UI.Icon.Icon.create('shadow', 'shadow-swatch-icon');
     root.appendChild(this.iconElementInternal);
     root.createChild('slot');
     this.contentElement = this.createChild('span');

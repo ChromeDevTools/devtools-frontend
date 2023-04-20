@@ -174,6 +174,7 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['screen-rotation', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['search', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['select-element', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['shadow', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['step-into', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['step-out', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['step-over', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -200,7 +201,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['smallicon-expand-less', {position: 'f5', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-expand-more', {position: 'e6', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-no', {position: 'c6', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-shadow', {position: 'b2', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-clear-info', {position: 'f2', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-clear-error', {position: 'f3', spritesheet: 'smallicons', isMask: true}],
 
@@ -289,6 +289,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['screen-rotation', {position: 'a1', spritesheet: 'screen-rotation', isMask: true}],
   ['search', {position: 'a1', spritesheet: 'search', isMask: true}],
   ['select-element', {position: 'a1', spritesheet: 'select-element', isMask: true}],
+  ['shadow', {position: 'a1', spritesheet: 'shadow', isMask: true}],
   ['step-into', {position: 'a1', spritesheet: 'step-into', isMask: true}],
   ['step-out', {position: 'a1', spritesheet: 'step-out', isMask: true}],
   ['step-over', {position: 'a1', spritesheet: 'step-over', isMask: true}],

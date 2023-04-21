@@ -1516,16 +1516,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const autoDarkModeSetting = Common.Settings.Settings.instance().moduleSetting('emulateAutoDarkMode');
     const decorateStatus = (condition: boolean, title: string): string => `${condition ? '✓ ' : ''}${title}`;
 
-    const icon = new IconButton.Icon.Icon();
-    icon.data = {
-      iconName: 'ic_rendering',
-      color: 'var(--color-text-secondary)',
-      width: '18px',
-      height: '18px',
-    };
-    const button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleRenderingEmulations), icon);
-    button.setToggleWithDot(true);
-
+    const button =
+        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleRenderingEmulations), 'brush', 'brush-filled');
     button.element.addEventListener('click', event => {
       const boundingRect = button.element.getBoundingClientRect();
       const menu = new UI.ContextMenu.ContextMenu(event, {

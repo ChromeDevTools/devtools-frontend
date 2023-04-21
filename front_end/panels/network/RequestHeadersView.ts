@@ -354,7 +354,14 @@ export class RequestHeadersView extends UI.Widget.VBox {
         text.classList.add('devtools-link');
         text.textContent = i18nString(UIStrings.learnMoreInTheIssuesTab);
         link.appendChild(text);
-        link.prepend(UI.Icon.Icon.create('largeicon-breaking-change', 'icon'));
+        const issueIcon = new IconButton.Icon.Icon();
+        issueIcon.data = {
+          iconName: 'issue-exclamation-filled',
+          color: 'var(--icon-warning)',
+          width: '20px',
+          height: '20px',
+        };
+        link.prepend(issueIcon);
         callToActionBody.appendChild(link);
       } else if (header.details.link) {
         const link = UI.XLink.XLink.create(header.details.link.url, i18nString(UIStrings.learnMore), 'link');

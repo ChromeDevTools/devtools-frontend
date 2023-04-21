@@ -207,8 +207,6 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['smallicon-expand-more', {position: 'e6', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-no', {position: 'c6', spritesheet: 'smallicons', isMask: true}],
 
-  ['largeicon-breaking-change', {position: 'h3', spritesheet: 'largeicons'}],
-
   ['mediumicon-arrow-top', {position: 'a4', spritesheet: 'arrowicons'}],
   ['mediumicon-arrow-bottom', {position: 'a3', spritesheet: 'arrowicons'}],
   ['mediumicon-arrow-left', {position: 'a2', spritesheet: 'arrowicons'}],

@@ -36,7 +36,7 @@ export class Infobar {
   private readonly mainRow: HTMLElement;
   private readonly detailsRows: HTMLElement;
   private hasDetails: boolean;
-  private detailsMessage: string;
+  private detailsMessage: string|Element;
   private readonly infoContainer: HTMLElement;
   private readonly infoMessage: HTMLElement;
   private infoText: HTMLElement;
@@ -205,7 +205,8 @@ export class Infobar {
     this.detailsRows.classList.remove('hidden');
     this.toggleElement.remove();
     this.onResize();
-    ARIAUtils.alert(this.detailsMessage);
+    ARIAUtils.alert(
+        typeof this.detailsMessage === 'string' ? this.detailsMessage : this.detailsMessage.textContent || '');
     if (this.#firstFocusableElement) {
       this.#firstFocusableElement.focus();
     } else {
@@ -213,13 +214,17 @@ export class Infobar {
     }
   }
 
-  createDetailsRowMessage(message?: string): Element {
+  createDetailsRowMessage(message: Element|string): Element {
     this.hasDetails = true;
-    this.detailsMessage = message || '';
+    this.detailsMessage = message;
     this.toggleElement.classList.remove('hidden');
     const infobarDetailsRow = this.detailsRows.createChild('div', 'infobar-details-row');
     const detailsRowMessage = infobarDetailsRow.createChild('span', 'infobar-row-message');
-    detailsRowMessage.textContent = this.detailsMessage;
+    if (typeof message === 'string') {
+      detailsRowMessage.textContent = message;
+    } else {
+      detailsRowMessage.appendChild(message);
+    }
     return detailsRowMessage;
   }
 }

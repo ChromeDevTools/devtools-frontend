@@ -119,3 +119,10 @@
   height: 20px;
   flex-shrink: 0;
 }
+
+.devtools-link.text-button:hover,
+.devtools-link.text-button:focus,
+.devtools-link.text-button:active {
+  background-color: transparent;
+  box-shadow: none;
+}

@@ -8,6 +8,7 @@ ts_library("legacy") {
   testonly = true
   sources = [
     "DockController_test.ts",
+    "Infobar_test.ts",
     "SuggestBox_test.ts",
     "Toolbar_test.ts",
     "UIUtils_test.ts",

@@ -7,6 +7,7 @@ import {type BrowserAndPages} from '../../conductor/puppeteer-state.js';
 
 import {
   click,
+  disableExperiment,
   getBrowserAndPages,
   pressKey,
   step,
@@ -52,6 +53,9 @@ describe('The Network Tab', async function() {
   };
 
   beforeEach(async () => {
+    // Automatic pretty printing doesn't play well with the assertions.
+    await disableExperiment('sourcesPrettyPrint');
+
     await navigateToNetworkTab('empty.html');
     await setCacheDisabled(true);
     await setPersistLog(false);

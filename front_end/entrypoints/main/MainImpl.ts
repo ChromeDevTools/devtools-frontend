@@ -276,7 +276,7 @@ export class MainImpl {
   #initializeExperiments(): void {
     Root.Runtime.experiments.register('applyCustomStylesheet', 'Allow extensions to load custom stylesheets');
     Root.Runtime.experiments.register('captureNodeCreationStacks', 'Capture node creation stacks');
-    Root.Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');
+    Root.Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print minified sources');
     Root.Runtime.experiments.register(
         'ignoreListJSFramesOnTimeline', 'Ignore List for JavaScript frames on Timeline', true);
     Root.Runtime.experiments.register('liveHeapProfile', 'Live heap profile', true);

@@ -31,6 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -94,7 +95,9 @@ export class RequestResponseView extends UI.Widget.VBox {
 
     const mediaType = request.resourceType().canonicalMimeType() || request.mimeType;
     Host.userMetrics.networkPanelResponsePreviewOpened(mediaType);
-    sourceView = SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mediaType);
+    const autoPrettyPrint = Root.Runtime.experiments.isEnabled('sourcesPrettyPrint');
+    sourceView =
+        SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mediaType, autoPrettyPrint);
     requestToSourceView.set(request, sourceView);
     return sourceView;
   }

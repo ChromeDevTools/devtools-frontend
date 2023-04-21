@@ -51,6 +51,7 @@ devtools_svg_sources = [
   "arrow-up-down.svg",
   "arrow-up.svg",
   "bell.svg",
+  "bezier-curve-filled.svg",
   "bin.svg",
   "bottom-panel-close.svg",
   "bottom-panel-open.svg",

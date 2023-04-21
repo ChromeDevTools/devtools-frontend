@@ -107,6 +107,7 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['arrow-up-down-circle', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['arrow-up-down', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['bell', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['bezier-curve-filled', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['bin', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['bottom-panel-close', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['bottom-panel-open', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -200,7 +201,6 @@ const spriteSheets = new Map<string, SpriteSheet>([
 ]);
 
 const initialDescriptors = new Map<string, Descriptor>([
-  ['smallicon-bezier', {position: 'a5', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-checkmark-square', {position: 'b6', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-checkmark-behind', {position: 'd6', spritesheet: 'smallicons', isMask: true}],
   ['smallicon-expand-less', {position: 'f5', spritesheet: 'smallicons', isMask: true}],
@@ -220,6 +220,7 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['arrow-up-down', {position: 'a1', spritesheet: 'arrow-up-down', isMask: true}],
   ['arrow-up-down-circle', {position: 'a1', spritesheet: 'arrow-up-down-circle', isMask: true}],
   ['bell', {position: 'a1', spritesheet: 'bell', isMask: true}],
+  ['bezier-curve-filled', {position: 'a1', spritesheet: 'bezier-curve-filled', isMask: true}],
   ['bin', {position: 'a1', spritesheet: 'bin', isMask: true}],
   ['bottom-panel-close', {position: 'a1', spritesheet: 'bottom-panel-close', isMask: true}],
   ['bottom-panel-open', {position: 'a1', spritesheet: 'bottom-panel-open', isMask: true}],

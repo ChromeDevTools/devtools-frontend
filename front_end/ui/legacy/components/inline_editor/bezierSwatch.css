@@ -6,22 +6,17 @@
 
 :host {
   white-space: nowrap;
-
-  --override-bezier-icon-purple: #9c27b0;
-  --override-bezier-icon-purple-hover: #800080;
 }
 
 [is="ui-icon"].icon-mask.bezier-swatch-icon {
   position: relative;
-  margin-left: 1px;
-  margin-right: 2px;
-  top: 1px;
+  transform: scale(0.7);
+  margin: -5px -2px -5px -4px;
   user-select: none;
-  line-height: 10px;
-  background-color: var(--override-bezier-icon-purple);
+  background-color: var(--icon-css);
   cursor: default;
 }
 
 [is="ui-icon"].icon-mask.bezier-swatch-icon:hover {
-  background-color: var(--override-bezier-icon-purple-hover);
+  background-color: var(--icon-css-hover);
 }

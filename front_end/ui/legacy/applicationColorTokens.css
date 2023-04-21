@@ -35,8 +35,8 @@
   --icon-request-response: var(--color-primary-bright);
   --icon-request: var(--color-on-surface-variant);
   --icon-security-lock: var(--color-tertiary-bright);
-  --icon-shadow: var(--color-purple-bright);
-  --icon-shadow-hover: var(--color-purple);
+  --icon-css: var(--color-purple-bright);
+  --icon-css-hover: var(--color-purple);
   --icon-status-code-ok: var(--color-tertiary-bright);
   --icon-stop: var(--color-error-bright);
   --icon-toggled: var(--color-primary-bright);

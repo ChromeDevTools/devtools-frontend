@@ -22,7 +22,7 @@ export class BezierSwatch extends HTMLSpanElement {
       cssFile: [bezierSwatchStyles],
       delegatesFocus: undefined,
     });
-    this.iconElementInternal = UI.Icon.Icon.create('smallicon-bezier', 'bezier-swatch-icon');
+    this.iconElementInternal = UI.Icon.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
     root.appendChild(this.iconElementInternal);
     this.textElement = this.createChild('span');
     root.createChild('slot');

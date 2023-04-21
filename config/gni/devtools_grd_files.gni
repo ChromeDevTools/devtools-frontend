@@ -135,6 +135,7 @@ grd_files_release_sources = [
   "front_end/Images/iframe-crossed.svg",
   "front_end/Images/iframe.svg",
   "front_end/Images/import.svg",
+  "front_end/Images/info-filled.svg",
   "front_end/Images/info.svg",
   "front_end/Images/issue-cross-filled.svg",
   "front_end/Images/issue-exclamation-filled.svg",

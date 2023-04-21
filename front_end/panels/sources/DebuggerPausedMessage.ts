@@ -6,12 +6,13 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
 
+import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -143,7 +144,14 @@ export class DebuggerPausedMessage {
     }
 
     const mainElement = messageWrapper.createChild('div', 'status-main');
-    mainElement.appendChild(UI.Icon.Icon.create('smallicon-clear-info', 'status-icon'));
+    const mainIcon = new IconButton.Icon.Icon();
+    mainIcon.data = {
+      iconName: 'info-filled',
+      color: 'var(--icon-default)',
+      width: '14px',
+      height: '14px',
+    };
+    mainElement.appendChild(mainIcon);
     const breakpointType = BreakpointTypeNouns.get(data.type);
     mainElement.appendChild(document.createTextNode(
         i18nString(UIStrings.pausedOnS, {PH1: breakpointType ? breakpointType() : String(null)})));
@@ -257,8 +265,14 @@ export class DebuggerPausedMessage {
     function buildWrapper(mainText: string, subText?: string, title?: string): Element {
       const messageWrapper = document.createElement('span');
       const mainElement = messageWrapper.createChild('div', 'status-main');
-      const icon = UI.Icon.Icon.create(errorLike ? 'smallicon-clear-error' : 'smallicon-clear-info', 'status-icon');
-      mainElement.appendChild(icon);
+      const mainIcon = new IconButton.Icon.Icon();
+      mainIcon.data = {
+        iconName: errorLike ? 'cross-circle-filled' : 'info-filled',
+        color: errorLike ? 'var(--icon-error)' : 'var(--icon-default)',
+        width: '14px',
+        height: '14px',
+      };
+      mainElement.appendChild(mainIcon);
       mainElement.appendChild(document.createTextNode(mainText));
       if (subText) {
         const subElement = messageWrapper.createChild('div', 'status-sub monospace');

@@ -55,17 +55,8 @@
   user-select: text;
 }
 
-.status-icon {
+devtools-icon {
   position: absolute;
-  left: 0;
-  top: calc(50% - 5px);
-}
-
-[is="ui-icon"].icon-mask.status-icon,
-:host-context(.-theme-with-dark-background) [is="ui-icon"].icon-mask.status-icon {
-  --override-icon-mask-background-color: var(--color-button-primary-background-hovering);
-}
-
-.paused-status.error-reason .status-icon {
-  filter: none;
+  left: -1px;
+  top: -1px;
 }

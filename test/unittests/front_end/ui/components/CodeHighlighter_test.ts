@@ -98,7 +98,12 @@ it('can highlight JavaScript compatible with CodeMirror 5', testHighlight(`
 [meta <!DOCTYPE html>]
 <[tag button] [attribute style]=[property color]:[atom green]]>Don't click me</[tag button]>`, 'text/html'));
 
-it('can highlight Angular Templates', testHighlight(`
+  it('can highlight SVG', testHighlight(`
+<[tag svg] [attribute viewBox]=[attribute-value "0 0 10 10"]>
+  <[tag circle] />
+</[tag svg]>`, 'image/svg+xml'));
+
+  it('can highlight Angular Templates', testHighlight(`
 <[tag div] [attribute class]=[attribute-value "title"]>{{[variable obj].[property title]}}</[tag div]>
 <[tag app-button] ([attribute clicked])=[variable onClick]()></[tag app-button]>
 `, 'text/x.angular'));

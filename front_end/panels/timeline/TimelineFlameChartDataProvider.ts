@@ -41,7 +41,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
-import {eventIsFromNewEngine} from './EventTypeHelpers.js';
 
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 
@@ -1203,7 +1202,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     this.lastInitiatorEntry = entryIndex;
     let event = this.eventByIndex(entryIndex);
-    if (eventIsFromNewEngine(event)) {
+    if (SDK.TracingModel.eventIsFromNewEngine(event)) {
       // TODO(crbug.com/1434596): Add support for this use case in the
       // new engine.
       return false;

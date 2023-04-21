@@ -22,7 +22,6 @@ import {TimelineSelection} from './TimelineSelection.js';
 
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
-import {eventIsFromNewEngine} from './EventTypeHelpers.js';
 
 const UIStrings = {
   /**
@@ -285,7 +284,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private appendDetailsTabsForTraceEventAndShowDetails(
       event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData, content: Node): void {
     this.setContent(content);
-    if (eventIsFromNewEngine(event)) {
+    if (SDK.TracingModel.eventIsFromNewEngine(event)) {
       // TODO(crbug.com/1386091): Add support for this use case in the
       // new engine.
       return;

@@ -6,8 +6,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
-import {eventIsFromNewEngine, timesForEventInMilliseconds} from './EventTypeHelpers.js';
-
 type PermittedObjectTypes = TimelineModel.TimelineFrameModel.TimelineFrame|
                             TimelineModel.TimelineModel.NetworkRequest|SDK.TracingModel.Event|
                             TraceEngine.Types.TraceEvents.TraceEventData|SelectionRange;
@@ -58,11 +56,11 @@ export class TimelineSelection {
         TimelineSelection.isNetworkRequestSelection(object)) {
       return false;
     }
-    return eventIsFromNewEngine(object);
+    return SDK.TracingModel.eventIsFromNewEngine(object);
   }
 
   static fromTraceEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): TimelineSelection {
-    const {startTime, endTime} = timesForEventInMilliseconds(event);
+    const {startTime, endTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
     return new TimelineSelection(startTime, TraceEngine.Types.Timing.MilliSeconds(endTime || (startTime + 1)), event);
   }
 

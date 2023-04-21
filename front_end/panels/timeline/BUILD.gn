@@ -25,7 +25,6 @@ devtools_module("timeline") {
     "CLSLinkifier.ts",
     "CompatibilityTracksAppender.ts",
     "CountersGraph.ts",
-    "EventTypeHelpers.ts",
     "EventsTimelineTreeView.ts",
     "GPUTrackAppender.ts",
     "InteractionsTrackAppender.ts",

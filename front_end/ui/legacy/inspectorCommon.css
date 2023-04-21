@@ -772,6 +772,14 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-keyboard-pen);
 }
 
+.spritesheet-layers-filled.icon-mask {
+  -webkit-mask-image: var(--image-file-layers-filled);
+}
+
+.spritesheet-layers.icon-mask {
+  -webkit-mask-image: var(--image-file-layers);
+}
+
 .spritesheet-left-panel-close.icon-mask {
   -webkit-mask-image: var(--image-file-left-panel-close);
 }

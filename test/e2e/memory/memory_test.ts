@@ -50,7 +50,8 @@ describe.skipOnParallel('The Memory Panel', async function() {
     await navigateToMemoryTab();
   });
 
-  it('Can take several heap snapshots ', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1435436] Can take several heap snapshots ', async () => {
     await goToResource('memory/default.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();

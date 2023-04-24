@@ -34,6 +34,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   #affectedLocations = new Map<string, Protocol.Audits.SourceCodeLocation>();
   #heavyAdIssues = new Set<IssuesManager.HeavyAdIssue.HeavyAdIssue>();
   #blockedByResponseDetails = new Map<string, Protocol.Audits.BlockedByResponseIssueDetails>();
+  #bounceTrackingSites = new Set<string>();
   #corsIssues = new Set<IssuesManager.CorsIssue.CorsIssue>();
   #cspIssues = new Set<IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue>();
   #deprecationIssues = new Set<IssuesManager.DeprecationIssue.DeprecationIssue>();
@@ -76,6 +77,10 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
   override sources(): Iterable<Protocol.Audits.SourceCodeLocation> {
     return this.#affectedLocations.values();
+  }
+
+  getBounceTrackingSites(): Iterable<string> {
+    return this.#bounceTrackingSites.values();
   }
 
   cookiesWithRequestIndicator(): Iterable<{
@@ -182,6 +187,11 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     for (const rawCookieLine of issue.rawCookieLines()) {
       if (!this.#affectedRawCookieLines.has(rawCookieLine)) {
         this.#affectedRawCookieLines.set(rawCookieLine, {rawCookieLine, hasRequest});
+      }
+    }
+    for (const site of issue.trackingSites()) {
+      if (!this.#bounceTrackingSites.has(site)) {
+        this.#bounceTrackingSites.add(site);
       }
     }
     for (const location of issue.sources()) {

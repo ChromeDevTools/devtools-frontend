@@ -27,6 +27,7 @@ import {AffectedHeavyAdView} from './AffectedHeavyAdView.js';
 import {AffectedItem, AffectedResourcesView, extractShortPath} from './AffectedResourcesView.js';
 import {AffectedSharedArrayBufferIssueDetailsView} from './AffectedSharedArrayBufferIssueDetailsView.js';
 import {AffectedSourcesView} from './AffectedSourcesView.js';
+import {AffectedTrackingSitesView} from './AffectedTrackingSitesView.js';
 import {AffectedTrustedWebActivityIssueDetailsView} from './AffectedTrustedWebActivityIssueDetailsView.js';
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import {GenericIssueDetailsView} from './GenericIssueDetailsView.js';
@@ -261,6 +262,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedDocumentsInQuirksModeView(this, this.#issue),
       new AttributionReportingIssueDetailsView(this, this.#issue),
       new AffectedRawCookieLinesView(this, this.#issue),
+      new AffectedTrackingSitesView(this, this.#issue),
     ];
     this.#hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();
     this.#aggregatedIssuesCount = null;

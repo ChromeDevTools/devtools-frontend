@@ -10,6 +10,7 @@ import("../visibility.gni")
 devtools_module("issues_manager") {
   sources = [
     "AttributionReportingIssue.ts",
+    "BounceTrackingIssue.ts",
     "ClientHintIssue.ts",
     "ContentSecurityPolicyIssue.ts",
     "ContrastCheckTrigger.ts",
@@ -67,6 +68,7 @@ devtools_issue_description_files = [
   "arTriggerIgnored.md",
   "arUntrustworthyReportingOrigin.md",
   "arWebAndOsHeaders.md",
+  "bounceTrackingMitigations.md",
   "clientHintMetaTagAllowListInvalidOrigin.md",
   "clientHintMetaTagModifiedHTML.md",
   "CoepCoopSandboxedIframeCannotNavigateToCoopPage.md",

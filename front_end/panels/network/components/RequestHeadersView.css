@@ -143,13 +143,22 @@ div.raw-headers-row {
   color: var(--color-text-primary);
 }
 
+x-link { /* stylelint-disable-line selector-type-no-unknown */
+  position: relative;
+}
+
 x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
   padding-right: 3px;
 }
 
-.purple-dot {
-  filter: hue-rotate(160deg);
-  padding-top: 2px;
+.purple-dot::before {
+  -webkit-mask-image: url("Images/file-sync-badge.svg");
+  background-color: var(--color-purple-bright);
+  content: url("Images/empty.svg");
+  left: -3px;
+  position: absolute;
+  top: -3px;
+  z-index: 1;
 }
 
 .-theme-with-dark-background .purple-dot,

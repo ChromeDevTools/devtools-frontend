@@ -270,16 +270,17 @@ export class RequestHeadersComponent extends HTMLElement {
     // clang-format off
     const fileIcon = overridesSetting.get() ? html`
       <${IconButton.Icon.Icon.litTagName} class="inline-icon purple-dot" .data=${{
-          iconName: 'file-sync_icon',
-          width: '11px',
-          height: '13px',
+          iconName: 'document',
+          color: 'var(--icon-default)',
+          width: '16px',
+          height: '16px',
         } as IconButton.Icon.IconData}>
       </${IconButton.Icon.Icon.litTagName}>` : html`
       <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
           iconName: 'document',
           color: 'var(--icon-default)',
-          width: '12px',
-          height: '12px',
+          width: '16px',
+          height: '16px',
         } as IconButton.Icon.IconData}>
       </${IconButton.Icon.Icon.litTagName}>`;
     // clang-format on

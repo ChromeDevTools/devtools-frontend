@@ -116,7 +116,6 @@ devtools_svg_sources = [
   "file-snippet.svg",
   "file-stylesheet.svg",
   "file-sync-badge.svg",
-  "file-sync_icon.svg",
   "filter-clear.svg",
   "filter-filled.svg",
   "filter.svg",

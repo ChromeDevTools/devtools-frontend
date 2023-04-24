@@ -28,14 +28,9 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _Target_browserContext, _Target_session, _Target_targetInfo, _Target_sessionFactory, _Target_ignoreHTTPSErrors, _Target_defaultViewport, _Target_pagePromise, _Target_workerPromise, _Target_screenshotTaskQueue, _Target_targetManager;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Target = void 0;
-const Page_js_1 = require("./Page.js");
 const WebWorker_js_1 = require("./WebWorker.js");
+const Page_js_1 = require("./Page.js");
 /**
- * Target represents a
- * {@link https://chromedevtools.github.io/devtools-protocol/tot/Target/ | CDP target}.
- * In CDP a target is something that can be debugged such a frame, a page or a
- * worker.
- *
  * @public
  */
 class Target {

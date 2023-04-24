@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
+import { Protocol } from 'devtools-protocol';
 /**
  * Dialog instances are dispatched by the {@link Page} via the `dialog` event.
  *
@@ -23,7 +23,7 @@ import { CDPSession } from './Connection.js';
  * @example
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -46,28 +46,27 @@ export declare class Dialog {
      */
     constructor(client: CDPSession, type: Protocol.Page.DialogType, message: string, defaultValue?: string);
     /**
-     * The type of the dialog.
+     * @returns The type of the dialog.
      */
     type(): Protocol.Page.DialogType;
     /**
-     * The message displayed in the dialog.
+     * @returns The message displayed in the dialog.
      */
     message(): string;
     /**
-     * The default value of the prompt, or an empty string if the dialog
+     * @returns The default value of the prompt, or an empty string if the dialog
      * is not a `prompt`.
      */
     defaultValue(): string;
     /**
-     * A promise that resolves when the dialog has been accepted.
-     *
      * @param promptText - optional text that will be entered in the dialog
      * prompt. Has no effect if the dialog's type is not `prompt`.
      *
+     * @returns A promise that resolves when the dialog has been accepted.
      */
     accept(promptText?: string): Promise<void>;
     /**
-     * A promise which will resolve once the dialog has been dismissed
+     * @returns A promise which will resolve once the dialog has been dismissed
      */
     dismiss(): Promise<void>;
 }

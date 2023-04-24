@@ -16,12 +16,22 @@
 /**
  * @internal
  */
-export const xpathQuerySelectorAll = function* (root, selector) {
+export const xpathQuerySelector = (root, selector) => {
+    const doc = root.ownerDocument || document;
+    const result = doc.evaluate(selector, root, null, XPathResult.FIRST_ORDERED_NODE_TYPE);
+    return result.singleNodeValue;
+};
+/**
+ * @internal
+ */
+export const xpathQuerySelectorAll = (root, selector) => {
     const doc = root.ownerDocument || document;
     const iterator = doc.evaluate(selector, root, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE);
+    const array = [];
     let item;
     while ((item = iterator.iterateNext())) {
-        yield item;
+        array.push(item);
     }
+    return array;
 };
 //# sourceMappingURL=XPathQuerySelector.js.map

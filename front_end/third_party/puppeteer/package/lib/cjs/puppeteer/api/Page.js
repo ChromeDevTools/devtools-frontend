@@ -23,9 +23,6 @@ var _Page_handlerMap;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.unitToPixels = exports.supportedMetrics = exports.Page = void 0;
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
-const PDFOptions_js_1 = require("../common/PDFOptions.js");
-const util_js_1 = require("../common/util.js");
-const assert_js_1 = require("../util/assert.js");
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page}
@@ -41,7 +38,7 @@ const assert_js_1 = require("../util/assert.js");
  * This example creates a page, navigates it to a URL, and then saves a screenshot:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -84,13 +81,13 @@ class Page extends EventEmitter_js_1.EventEmitter {
         _Page_handlerMap.set(this, new WeakMap());
     }
     /**
-     * `true` if drag events are being intercepted, `false` otherwise.
+     * @returns `true` if drag events are being intercepted, `false` otherwise.
      */
     isDragInterceptionEnabled() {
         throw new Error('Not implemented');
     }
     /**
-     * `true` if the page has JavaScript enabled, `false` otherwise.
+     * @returns `true` if the page has JavaScript enabled, `false` otherwise.
      */
     isJavaScriptEnabled() {
         throw new Error('Not implemented');
@@ -137,7 +134,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * A target this page was created from.
+     * @returns A target this page was created from.
      */
     target() {
         throw new Error('Not implemented');
@@ -155,7 +152,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * The page's main frame.
+     * @returns The page's main frame.
      *
      * @remarks
      * Page is guaranteed to have a main frame which persists during navigations.
@@ -163,44 +160,29 @@ class Page extends EventEmitter_js_1.EventEmitter {
     mainFrame() {
         throw new Error('Not implemented');
     }
-    /**
-     * {@inheritDoc Keyboard}
-     */
     get keyboard() {
         throw new Error('Not implemented');
     }
-    /**
-     * {@inheritDoc Touchscreen}
-     */
     get touchscreen() {
         throw new Error('Not implemented');
     }
-    /**
-     * {@inheritDoc Coverage}
-     */
     get coverage() {
         throw new Error('Not implemented');
     }
-    /**
-     * {@inheritDoc Tracing}
-     */
     get tracing() {
         throw new Error('Not implemented');
     }
-    /**
-     * {@inheritDoc Accessibility}
-     */
     get accessibility() {
         throw new Error('Not implemented');
     }
     /**
-     * An array of all frames attached to the page.
+     * @returns An array of all frames attached to the page.
      */
     frames() {
         throw new Error('Not implemented');
     }
     /**
-     * All of the dedicated {@link
+     * @returns all of the dedicated {@link
      * https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
      * WebWorkers} associated with the page.
      *
@@ -229,7 +211,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * Maximum time in milliseconds.
+     * @returns Maximum time in milliseconds.
      */
     getDefaultTimeout() {
         throw new Error('Not implemented');
@@ -283,9 +265,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * Object containing metrics as key/value pairs.
-     *
-     * @returns
+     * @returns Object containing metrics as key/value pairs.
      *
      * - `Timestamp` : The timestamp when the metrics sample was taken.
      *
@@ -322,16 +302,14 @@ class Page extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * The page's URL.
+     *
+     * @returns
      * @remarks Shortcut for
      * {@link Frame.url | page.mainFrame().url()}.
      */
     url() {
         throw new Error('Not implemented');
     }
-    /**
-     * The full HTML contents of the page, including the DOCTYPE.
-     */
     async content() {
         throw new Error('Not implemented');
     }
@@ -435,15 +413,13 @@ class Page extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * Current page viewport settings.
-     *
      * @returns
      *
      * - `width`: page's width in pixels
      *
      * - `height`: page's height in pixels
      *
-     * - `deviceScaleFactor`: Specify device scale factor (can be though of as
+     * - `deviceScalarFactor`: Specify device scale factor (can be though of as
      *   dpr). Defaults to `1`.
      *
      * - `isMobile`: Whether the meta viewport tag is taken into account. Defaults
@@ -467,63 +443,8 @@ class Page extends EventEmitter_js_1.EventEmitter {
     async setCacheEnabled() {
         throw new Error('Not implemented');
     }
-    /**
-     * @internal
-     */
-    async _maybeWriteBufferToFile(path, buffer) {
-        if (!path) {
-            return;
-        }
-        const fs = await (0, util_js_1.importFSPromises)();
-        await fs.writeFile(path, buffer);
-    }
     async screenshot() {
         throw new Error('Not implemented');
-    }
-    /**
-     * @internal
-     */
-    _getPDFOptions(options = {}, lengthUnit = 'in') {
-        var _a, _b, _c, _d, _e, _f;
-        const defaults = {
-            scale: 1,
-            displayHeaderFooter: false,
-            headerTemplate: '',
-            footerTemplate: '',
-            printBackground: false,
-            landscape: false,
-            pageRanges: '',
-            preferCSSPageSize: false,
-            omitBackground: false,
-            timeout: 30000,
-        };
-        let width = 8.5;
-        let height = 11;
-        if (options.format) {
-            const format = PDFOptions_js_1.paperFormats[options.format.toLowerCase()];
-            (0, assert_js_1.assert)(format, 'Unknown paper format: ' + options.format);
-            width = format.width;
-            height = format.height;
-        }
-        else {
-            width = (_a = convertPrintParameterToInches(options.width, lengthUnit)) !== null && _a !== void 0 ? _a : width;
-            height =
-                (_b = convertPrintParameterToInches(options.height, lengthUnit)) !== null && _b !== void 0 ? _b : height;
-        }
-        const margin = {
-            top: convertPrintParameterToInches((_c = options.margin) === null || _c === void 0 ? void 0 : _c.top, lengthUnit) || 0,
-            left: convertPrintParameterToInches((_d = options.margin) === null || _d === void 0 ? void 0 : _d.left, lengthUnit) || 0,
-            bottom: convertPrintParameterToInches((_e = options.margin) === null || _e === void 0 ? void 0 : _e.bottom, lengthUnit) || 0,
-            right: convertPrintParameterToInches((_f = options.margin) === null || _f === void 0 ? void 0 : _f.right, lengthUnit) || 0,
-        };
-        const output = {
-            ...defaults,
-            ...options,
-            width,
-            height,
-            margin,
-        };
-        return output;
     }
     async createPDFStream() {
         throw new Error('Not implemented');
@@ -532,8 +453,7 @@ class Page extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * The page's title
-     *
+     * @returns The page's title
      * @remarks
      * Shortcut for {@link Frame.title | page.mainFrame().title()}.
      */
@@ -550,9 +470,6 @@ class Page extends EventEmitter_js_1.EventEmitter {
     isClosed() {
         throw new Error('Not implemented');
     }
-    /**
-     * {@inheritDoc Mouse}
-     */
     get mouse() {
         throw new Error('Not implemented');
     }
@@ -586,9 +503,6 @@ class Page extends EventEmitter_js_1.EventEmitter {
     waitForFunction() {
         throw new Error('Not implemented');
     }
-    waitForDevicePrompt() {
-        throw new Error('Not implemented');
-    }
 }
 exports.Page = Page;
 _Page_handlerMap = new WeakMap();
@@ -619,35 +533,4 @@ exports.unitToPixels = {
     cm: 37.8,
     mm: 3.78,
 };
-function convertPrintParameterToInches(parameter, lengthUnit = 'in') {
-    if (typeof parameter === 'undefined') {
-        return undefined;
-    }
-    let pixels;
-    if ((0, util_js_1.isNumber)(parameter)) {
-        // Treat numbers as pixel values to be aligned with phantom's paperSize.
-        pixels = parameter;
-    }
-    else if ((0, util_js_1.isString)(parameter)) {
-        const text = parameter;
-        let unit = text.substring(text.length - 2).toLowerCase();
-        let valueText = '';
-        if (unit in exports.unitToPixels) {
-            valueText = text.substring(0, text.length - 2);
-        }
-        else {
-            // In case of unknown unit try to parse the whole parameter as number of pixels.
-            // This is consistent with phantom's paperSize behavior.
-            unit = 'px';
-            valueText = text;
-        }
-        const value = Number(valueText);
-        (0, assert_js_1.assert)(!isNaN(value), 'Failed to parse parameter value: ' + text);
-        pixels = value * exports.unitToPixels[unit];
-    }
-    else {
-        throw new Error('page.pdf() Cannot handle parameter type: ' + typeof parameter);
-    }
-    return pixels / exports.unitToPixels[lengthUnit];
-}
 //# sourceMappingURL=Page.js.map

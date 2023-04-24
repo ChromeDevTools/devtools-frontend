@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var _a;
 import { assert } from '../util/assert.js';
-import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
-import { QueryHandler } from './QueryHandler.js';
-const queryAXTree = async (client, element, accessibleName, role) => {
+import { ElementHandle } from './ElementHandle.js';
+import { Frame } from './Frame.js';
+import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorld.js';
+async function queryAXTree(client, element, accessibleName, role) {
     const { nodes } = await client.send('Accessibility.queryAXTree', {
-        objectId: element.id,
+        objectId: element.remoteObject().objectId,
         accessibleName,
         role,
     });
-    return nodes.filter((node) => {
+    const filteredNodes = nodes.filter((node) => {
         return !node.role || node.role.value !== 'StaticText';
     });
-};
-const KNOWN_ATTRIBUTES = Object.freeze(['name', 'role']);
-const isKnownAttribute = (attribute) => {
-    return KNOWN_ATTRIBUTES.includes(attribute);
-};
+    return filteredNodes;
+}
 const normalizeValue = (value) => {
     return value.replace(/ +/g, ' ').trim();
 };
+const knownAttributes = new Set(['name', 'role']);
+const attributeRegexp = /\[\s*(?<attribute>\w+)\s*=\s*(?<quote>"|')(?<value>\\.|.*?(?=\k<quote>))\k<quote>\s*\]/g;
+function isKnownAttribute(attribute) {
+    return knownAttributes.has(attribute);
+}
 /**
  * The selectors consist of an accessible name to query for and optionally
  * further aria attributes on the form `[<attribute>=<value>]`.
@@ -45,10 +47,9 @@ const normalizeValue = (value) => {
  * - 'label' queries for elements with name 'label' and any role.
  * - '[name=""][role="button"]' queries for elements with no name and role 'button'.
  */
-const ATTRIBUTE_REGEXP = /\[\s*(?<attribute>\w+)\s*=\s*(?<quote>"|')(?<value>\\.|.*?(?=\k<quote>))\k<quote>\s*\]/g;
-const parseARIASelector = (selector) => {
+function parseAriaSelector(selector) {
     const queryOptions = {};
-    const defaultName = selector.replace(ATTRIBUTE_REGEXP, (_, attribute, __, value) => {
+    const defaultName = selector.replace(attributeRegexp, (_, attribute, _quote, value) => {
         attribute = attribute.trim();
         assert(isKnownAttribute(attribute), `Unknown aria attribute "${attribute}" in selector`);
         queryOptions[attribute] = normalizeValue(value);
@@ -58,27 +59,66 @@ const parseARIASelector = (selector) => {
         queryOptions.name = normalizeValue(defaultName);
     }
     return queryOptions;
+}
+const queryOneId = async (element, selector) => {
+    const { name, role } = parseAriaSelector(selector);
+    const res = await queryAXTree(element.client, element, name, role);
+    if (!res[0] || !res[0].backendDOMNodeId) {
+        return null;
+    }
+    return res[0].backendDOMNodeId;
+};
+const queryOne = async (element, selector) => {
+    const id = await queryOneId(element, selector);
+    if (!id) {
+        return null;
+    }
+    return (await element.frame.worlds[MAIN_WORLD].adoptBackendNode(id));
+};
+const waitFor = async (elementOrFrame, selector, options) => {
+    let frame;
+    let element;
+    if (elementOrFrame instanceof Frame) {
+        frame = elementOrFrame;
+    }
+    else {
+        frame = elementOrFrame.frame;
+        element = await frame.worlds[PUPPETEER_WORLD].adoptHandle(elementOrFrame);
+    }
+    const ariaQuerySelector = async (selector) => {
+        const id = await queryOneId(element || (await frame.worlds[PUPPETEER_WORLD].document()), selector);
+        if (!id) {
+            return null;
+        }
+        return (await frame.worlds[PUPPETEER_WORLD].adoptBackendNode(id));
+    };
+    const result = await frame.worlds[PUPPETEER_WORLD]._waitForSelectorInPage((_, selector) => {
+        return globalThis.ariaQuerySelector(selector);
+    }, element, selector, options, new Map([['ariaQuerySelector', ariaQuerySelector]]));
+    if (element) {
+        await element.dispose();
+    }
+    if (!(result instanceof ElementHandle)) {
+        await (result === null || result === void 0 ? void 0 : result.dispose());
+        return null;
+    }
+    return result.frame.worlds[MAIN_WORLD].transferHandle(result);
+};
+const queryAll = async (element, selector) => {
+    const exeCtx = element.executionContext();
+    const { name, role } = parseAriaSelector(selector);
+    const res = await queryAXTree(exeCtx._client, element, name, role);
+    const world = exeCtx._world;
+    return Promise.all(res.map(axNode => {
+        return world.adoptBackendNode(axNode.backendDOMNodeId);
+    }));
 };
 /**
  * @internal
  */
-export class ARIAQueryHandler extends QueryHandler {
-    static async *queryAll(element, selector) {
-        const context = element.executionContext();
-        const { name, role } = parseARIASelector(selector);
-        const results = await queryAXTree(context._client, element, name, role);
-        const world = context._world;
-        yield* AsyncIterableUtil.map(results, node => {
-            return world.adoptBackendNode(node.backendDOMNodeId);
-        });
-    }
-}
-_a = ARIAQueryHandler;
-ARIAQueryHandler.querySelector = async (node, selector, { ariaQuerySelector }) => {
-    return ariaQuerySelector(node, selector);
-};
-ARIAQueryHandler.queryOne = async (element, selector) => {
-    var _b;
-    return ((_b = (await AsyncIterableUtil.first(_a.queryAll(element, selector)))) !== null && _b !== void 0 ? _b : null);
+export const ariaHandler = {
+    queryOne,
+    waitFor,
+    queryAll,
 };
 //# sourceMappingURL=AriaQueryHandler.js.map

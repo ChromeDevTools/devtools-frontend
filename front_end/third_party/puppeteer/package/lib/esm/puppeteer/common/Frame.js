@@ -27,12 +27,10 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _Frame_url, _Frame_detached, _Frame_client;
 import { assert } from '../util/assert.js';
 import { isErrorLike } from '../util/ErrorLike.js';
-import { getQueryHandlerAndSelector } from './GetQueryHandler.js';
-import { IsolatedWorld, } from './IsolatedWorld.js';
-import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
-import { LazyArg } from './LazyArg.js';
+import { IsolatedWorld, MAIN_WORLD, PUPPETEER_WORLD, } from './IsolatedWorld.js';
 import { LifecycleWatcher } from './LifecycleWatcher.js';
-import { importFSPromises } from './util.js';
+import { getQueryHandlerAndSelector } from './QueryHandler.js';
+import { importFS } from './util.js';
 /**
  * Represents a DOM frame.
  *
@@ -49,7 +47,7 @@ import { importFSPromises } from './util.js';
  * An example of dumping frame tree:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -125,13 +123,13 @@ export class Frame {
         };
     }
     /**
-     * The page associated with the frame.
+     * @returns The page associated with the frame.
      */
     page() {
         return this._frameManager.page();
     }
     /**
-     * Is `true` if the frame is an out-of-process (OOP) frame. Otherwise,
+     * @returns `true` if the frame is an out-of-process (OOP) frame. Otherwise,
      * `false`.
      */
     isOOPFrame() {
@@ -175,11 +173,11 @@ export class Frame {
      * calling {@link HTTPResponse.status}.
      */
     async goto(url, options = {}) {
-        const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
+        const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
         let ensureNewDocumentNavigation = false;
         const watcher = new LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
         let error = await Promise.race([
-            navigate(__classPrivateFieldGet(this, _Frame_client, "f"), url, referer, referrerPolicy, this._id),
+            navigate(__classPrivateFieldGet(this, _Frame_client, "f"), url, referer, this._id),
             watcher.timeoutOrTerminationPromise(),
         ]);
         if (!error) {
@@ -199,18 +197,14 @@ export class Frame {
         finally {
             watcher.dispose();
         }
-        async function navigate(client, url, referrer, referrerPolicy, frameId) {
+        async function navigate(client, url, referrer, frameId) {
             try {
                 const response = await client.send('Page.navigate', {
                     url,
                     referrer,
                     frameId,
-                    referrerPolicy,
                 });
                 ensureNewDocumentNavigation = !!response.loaderId;
-                if (response.errorText === 'net::ERR_HTTP_RESPONSE_CODE_FAILURE') {
-                    return null;
-                }
                 return response.errorText
                     ? new Error(`${response.errorText} at ${url}`)
                     : null;
@@ -381,7 +375,7 @@ export class Frame {
      * @example
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -409,8 +403,9 @@ export class Frame {
      * @throws Throws if an element matching the given selector doesn't appear.
      */
     async waitForSelector(selector, options = {}) {
-        const { updatedSelector, QueryHandler } = getQueryHandlerAndSelector(selector);
-        return (await QueryHandler.waitFor(this, updatedSelector, options));
+        const { updatedSelector, queryHandler } = getQueryHandlerAndSelector(selector);
+        assert(queryHandler.waitFor, 'Query handler does not support waiting');
+        return (await queryHandler.waitFor(this, updatedSelector, options));
     }
     /**
      * @deprecated Use {@link Frame.waitForSelector} with the `xpath` prefix.
@@ -431,7 +426,7 @@ export class Frame {
      * an XPath.
      *
      * @param xpath - the XPath expression to wait for.
-     * @param options - options to configure the visibility of the element and how
+     * @param options - options to configure the visiblity of the element and how
      * long to wait before timing out.
      */
     async waitForXPath(xpath, options = {}) {
@@ -445,7 +440,7 @@ export class Frame {
      * The `waitForFunction` can be used to observe viewport size change:
      *
      * ```ts
-     * import puppeteer from 'puppeteer';
+     * const puppeteer = require('puppeteer');
      *
      * (async () => {
      * .  const browser = await puppeteer.launch();
@@ -477,7 +472,7 @@ export class Frame {
         return this.worlds[MAIN_WORLD].waitForFunction(pageFunction, options, ...args);
     }
     /**
-     * The full HTML contents of the frame, including the DOCTYPE.
+     * @returns The full HTML contents of the frame, including the DOCTYPE.
      */
     async content() {
         return this.worlds[PUPPETEER_WORLD].content();
@@ -493,7 +488,7 @@ export class Frame {
         return this.worlds[PUPPETEER_WORLD].setContent(html, options);
     }
     /**
-     * The frame's `name` attribute as specified in the tag.
+     * @returns The frame's `name` attribute as specified in the tag.
      *
      * @remarks
      * If the name is empty, it returns the `id` attribute instead.
@@ -506,25 +501,25 @@ export class Frame {
         return this._name || '';
     }
     /**
-     * The frame's URL.
+     * @returns The frame's URL.
      */
     url() {
         return __classPrivateFieldGet(this, _Frame_url, "f");
     }
     /**
-     * The parent frame, if any. Detached and main frames return `null`.
+     * @returns The parent frame, if any. Detached and main frames return `null`.
      */
     parentFrame() {
         return this._frameManager._frameTree.parentFrame(this._id) || null;
     }
     /**
-     * An array of child frames.
+     * @returns An array of child frames.
      */
     childFrames() {
         return this._frameManager._frameTree.childFrames(this._id);
     }
     /**
-     * Is`true` if the frame has been detached. Otherwise, `false`.
+     * @returns `true` if the frame has been detached. Otherwise, `false`.
      */
     isDetached() {
         return __classPrivateFieldGet(this, _Frame_detached, "f");
@@ -543,7 +538,16 @@ export class Frame {
             throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
         }
         if (path) {
-            const fs = await importFSPromises();
+            let fs;
+            try {
+                fs = (await import('fs')).promises;
+            }
+            catch (error) {
+                if (error instanceof TypeError) {
+                    throw new Error('Can only pass a file path in a Node-like environment.');
+                }
+                throw error;
+            }
             content = await fs.readFile(path, 'utf8');
             content += `//# sourceURL=${path.replace(/\n/g, '')}`;
         }
@@ -572,9 +576,7 @@ export class Frame {
             document.head.appendChild(script);
             await promise;
             return script;
-        }, LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }), { ...options, type, content }));
+        }, await this.worlds[PUPPETEER_WORLD].puppeteerUtil, { ...options, type, content }));
     }
     async addStyleTag(options) {
         let { content = '' } = options;
@@ -583,7 +585,16 @@ export class Frame {
             throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
         }
         if (path) {
-            const fs = await importFSPromises();
+            let fs;
+            try {
+                fs = (await importFS()).promises;
+            }
+            catch (error) {
+                if (error instanceof TypeError) {
+                    throw new Error('Can only pass a file path in a Node-like environment.');
+                }
+                throw error;
+            }
             content = await fs.readFile(path, 'utf8');
             content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
             options.content = content;
@@ -611,9 +622,7 @@ export class Frame {
             document.head.appendChild(element);
             await promise;
             return element;
-        }, LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }), options));
+        }, await this.worlds[PUPPETEER_WORLD].puppeteerUtil, options));
     }
     /**
      * Clicks the first element found that matches `selector`.
@@ -735,47 +744,10 @@ export class Frame {
         });
     }
     /**
-     * The frame's title.
+     * @returns the frame's title.
      */
     async title() {
         return this.worlds[PUPPETEER_WORLD].title();
-    }
-    /**
-     * @internal
-     */
-    _deviceRequestPromptManager() {
-        if (this.isOOPFrame()) {
-            return this._frameManager._deviceRequestPromptManager(__classPrivateFieldGet(this, _Frame_client, "f"));
-        }
-        const parentFrame = this.parentFrame();
-        assert(parentFrame !== null);
-        return parentFrame._deviceRequestPromptManager();
-    }
-    /**
-     * This method is typically coupled with an action that triggers a device
-     * request from an api such as WebBluetooth.
-     *
-     * :::caution
-     *
-     * This must be called before the device request is made. It will not return a
-     * currently active device prompt.
-     *
-     * :::
-     *
-     * @example
-     *
-     * ```ts
-     * const [devicePrompt] = Promise.all([
-     *   frame.waitForDevicePrompt(),
-     *   frame.click('#connect-bluetooth'),
-     * ]);
-     * await devicePrompt.select(
-     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
-     * );
-     * ```
-     */
-    waitForDevicePrompt(options = {}) {
-        return this._deviceRequestPromptManager().waitForDevicePrompt(options);
     }
     /**
      * @internal

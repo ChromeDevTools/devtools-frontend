@@ -122,8 +122,8 @@ export class QueryContainer extends HTMLElement {
       <span class="queried-size-details">
         (${this.#queriedSizeDetails.queryAxis}<${IconButton.Icon.Icon.litTagName}
           class=${axisIconClasses} .data=${{
-            iconName: 'ic_dimension_single',
-            color: 'var(--color-text-primary)',
+            iconName: 'width',
+            color: 'var(--icon-default)',
           } as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>)
         ${areBothAxesQueried && this.#queriedSizeDetails.width ? 'width:' : LitHtml.nothing}
         ${this.#queriedSizeDetails.width || LitHtml.nothing}

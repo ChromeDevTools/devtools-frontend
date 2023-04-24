@@ -132,9 +132,6 @@ devtools_svg_sources = [
   "heap-snapshot.svg",
   "heap-snapshots.svg",
   "help.svg",
-  "ic_dimension_single.svg",
-  "ic_redo_16x16_icon.svg",
-  "ic_undo_16x16_icon.svg",
   "iframe-crossed.svg",
   "iframe.svg",
   "import.svg",
@@ -219,6 +216,7 @@ devtools_svg_sources = [
   "warning.svg",
   "warning_icon.svg",
   "watch.svg",
+  "width.svg",
 ]
 
 devtools_src_svg_files = []

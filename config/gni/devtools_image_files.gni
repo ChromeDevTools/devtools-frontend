@@ -209,7 +209,6 @@ devtools_svg_sources = [
   "step.svg",
   "stop.svg",
   "survey_feedback_icon.svg",
-  "switcherIcon.svg",
   "symbol.svg",
   "sync.svg",
   "table.svg",

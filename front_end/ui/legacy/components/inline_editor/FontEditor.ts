@@ -735,7 +735,7 @@ class FontPropertyInputs {
   private createTypeToggle(field: Element): void {
     const displaySwitcher = field.createChild('div', 'spectrum-switcher') as HTMLDivElement;
     const icon = new IconButton.Icon.Icon();
-    icon.data = {iconName: 'switcherIcon', color: 'var(--color-text-primary)', width: '16px', height: '16px'};
+    icon.data = {iconName: 'fold-more', color: 'var(--icon-default)', width: '16px', height: '16px'};
     displaySwitcher.appendChild(icon);
     UI.UIUtils.setTitle(displaySwitcher, i18nString(UIStrings.sToggleInputType, {PH1: this.propertyName}));
     displaySwitcher.tabIndex = 0;

@@ -48,8 +48,8 @@ describeWithEnvironment('TimelineSelection', () => {
     const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(firstLCPEvent);
     assert.strictEqual(selection.object, firstLCPEvent);
     assert.strictEqual(selection.startTime, firstLCPEvent.startTime);
-    // No end time, so the end time gets set to the start time.
-    assert.strictEqual(selection.endTime, firstLCPEvent.startTime);
+    // No end time, so the end time gets set to the start time + 1.
+    assert.strictEqual(selection.endTime, firstLCPEvent.startTime + 1);
     assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isTraceEventSelection(selection.object));
   });
 

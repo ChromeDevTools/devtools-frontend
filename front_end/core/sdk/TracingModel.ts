@@ -922,7 +922,7 @@ export class Thread extends NamedObject {
 
 export interface TimesForEventMs {
   startTime: TraceEngine.Types.Timing.MilliSeconds;
-  endTime: TraceEngine.Types.Timing.MilliSeconds;
+  endTime?: TraceEngine.Types.Timing.MilliSeconds;
   selfTime: TraceEngine.Types.Timing.MilliSeconds;
   duration: TraceEngine.Types.Timing.MilliSeconds;
 }
@@ -932,7 +932,7 @@ export function timesForEventInMilliseconds(event: Event|
   if (event instanceof Event) {
     return {
       startTime: TraceEngine.Types.Timing.MilliSeconds(event.startTime),
-      endTime: TraceEngine.Types.Timing.MilliSeconds(event.endTime || event.startTime),
+      endTime: event.endTime ? TraceEngine.Types.Timing.MilliSeconds(event.endTime) : undefined,
       duration: TraceEngine.Types.Timing.MilliSeconds(event.duration || 0),
       selfTime: TraceEngine.Types.Timing.MilliSeconds(event.selfTime),
     };

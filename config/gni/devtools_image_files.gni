@@ -136,7 +136,6 @@ devtools_svg_sources = [
   "ic_dimension_single.svg",
   "ic_redo_16x16_icon.svg",
   "ic_undo_16x16_icon.svg",
-  "ic_warning_black_18dp.svg",
   "iframe-crossed.svg",
   "iframe.svg",
   "import.svg",

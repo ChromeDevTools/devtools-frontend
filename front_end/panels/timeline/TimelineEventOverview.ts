@@ -30,11 +30,13 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Protocol from '../../generated/protocol.js';
+
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 import {type PerformanceModel} from './PerformanceModel.js';
 
@@ -205,9 +207,10 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         x += quantSizePx;
       }
 
-      function onEventStart(e: SDK.TracingModel.Event): void {
+      function onEventStart(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+        const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
         const index = categoryIndexStack.length ? categoryIndexStack[categoryIndexStack.length - 1] : idleIndex;
-        quantizer.appendInterval(e.startTime, (index as number));
+        quantizer.appendInterval(startTime, (index as number));
         const categoryIndex = categoryToIndex.get(TimelineUIUtils.eventStyle(e).category);
         if (categoryIndex === idleIndex) {
           // Idle event won't show in CPU activity, so just skip them.
@@ -216,10 +219,11 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         categoryIndexStack.push(categoryIndex !== undefined ? categoryIndex : otherIndex);
       }
 
-      function onEventEnd(e: SDK.TracingModel.Event): void {
+      function onEventEnd(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+        const {endTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
         const lastCategoryIndex = categoryIndexStack.pop();
-        if (e.endTime !== undefined && lastCategoryIndex) {
-          quantizer.appendInterval(e.endTime, lastCategoryIndex);
+        if (endTime !== undefined && lastCategoryIndex) {
+          quantizer.appendInterval(endTime, lastCategoryIndex);
         }
       }
 

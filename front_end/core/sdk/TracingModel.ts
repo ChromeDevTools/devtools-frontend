@@ -48,10 +48,10 @@ export class TracingModel {
     this.#mainFrameNavStartTimes = new Map();
   }
 
-  static isTopLevelEvent(event: Event): boolean {
-    return event.hasCategory(DevToolsTimelineEventCategory) && event.name === 'RunTask' ||
-        event.hasCategory(LegacyTopLevelEventCategory) ||
-        event.hasCategory(DevToolsMetadataEventCategory) &&
+  static isTopLevelEvent(event: Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+    return eventHasCategory(event, DevToolsTimelineEventCategory) && event.name === 'RunTask' ||
+        eventHasCategory(event, LegacyTopLevelEventCategory) ||
+        eventHasCategory(event, DevToolsMetadataEventCategory) &&
         event.name === 'Program';  // Older timelines may have this instead of toplevel.
   }
 

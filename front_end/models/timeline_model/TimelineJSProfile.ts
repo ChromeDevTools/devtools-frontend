@@ -119,7 +119,11 @@ export class TimelineJSProfileProcessor {
      * We expect they'll either be trace events happening within JS (eg forced layout),
      * or, in the fakeJSInvocation case, the JS finished and we're seeing the subsequent event.
      */
-    function onStartEvent(e: SDK.TracingModel.Event): void {
+    function onStartEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+      if (SDK.TracingModel.eventIsFromNewEngine(e)) {
+        // TODO(crbug.com/1431175) support CPU profiles in new engine.
+        return;
+      }
       if (fakeJSInvocation) {
         truncateJSStack((lockedJsStackDepth.pop() as number), e.startTime);
         fakeJSInvocation = false;
@@ -130,7 +134,13 @@ export class TimelineJSProfileProcessor {
       lockedJsStackDepth.push(jsFramesStack.length);
     }
 
-    function onInstantEvent(e: SDK.TracingModel.Event, parent: SDK.TracingModel.Event|null): void {
+    function onInstantEvent(
+        e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData,
+        parent: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null): void {
+      if (SDK.TracingModel.eventIsFromNewEngine(e) || SDK.TracingModel.eventIsFromNewEngine(parent)) {
+        // TODO(crbug.com/1431175) support CPU profiles in new engine.
+        return;
+      }
       e.ordinal = ++ordinal;
       if ((parent && isJSInvocationEvent(parent)) || fakeJSInvocation) {
         extractStackTrace(e);
@@ -148,7 +158,11 @@ export class TimelineJSProfileProcessor {
       }
     }
 
-    function onEndEvent(e: SDK.TracingModel.Event): void {
+    function onEndEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+      if (SDK.TracingModel.eventIsFromNewEngine(e)) {
+        // TODO(crbug.com/1431175) support CPU profiles in new engine.
+        return;
+      }
       truncateJSStack((lockedJsStackDepth.pop() as number), (e.endTime as number));
     }
 

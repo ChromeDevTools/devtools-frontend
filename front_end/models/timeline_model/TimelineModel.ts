@@ -193,35 +193,46 @@ export class TimelineModelImpl {
    * 9. End A
    */
   static forEachEvent(
-      events: SDK.TracingModel.Event[], onStartEvent: (arg0: SDK.TracingModel.Event) => void,
-      onEndEvent: (arg0: SDK.TracingModel.Event) => void,
-      onInstantEvent?: ((arg0: SDK.TracingModel.Event, arg1: SDK.TracingModel.Event|null) => void), startTime?: number,
-      endTime?: number, filter?: ((arg0: SDK.TracingModel.Event) => boolean)): void {
+      events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[],
+      onStartEvent: (arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => void,
+      onEndEvent: (arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => void,
+      onInstantEvent?:
+          ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData,
+            arg1: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null) => void),
+      startTime?: number, endTime?: number,
+      filter?: ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean)): void {
     startTime = startTime || 0;
     endTime = endTime || Infinity;
-    const stack: SDK.TracingModel.Event[] = [];
+    const stack: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[] = [];
     const startEvent = TimelineModelImpl.topLevelEventEndingAfter(events, startTime);
     for (let i = startEvent; i < events.length; ++i) {
       const e = events[i];
-      if ((e.endTime || e.startTime) < startTime) {
+      const {endTime: eventEndTime, startTime: eventStartTime, duration: eventDuration} =
+          SDK.TracingModel.timesForEventInMilliseconds(e);
+      const eventPhase = SDK.TracingModel.phaseForEvent(e);
+      if ((eventEndTime || eventStartTime) < startTime) {
         continue;
       }
-      if (e.startTime >= endTime) {
+      if (eventStartTime >= endTime) {
         break;
       }
-      if (TraceEngine.Types.TraceEvents.isAsyncPhase(e.phase) || TraceEngine.Types.TraceEvents.isFlowPhase(e.phase)) {
+      if (TraceEngine.Types.TraceEvents.isAsyncPhase(eventPhase) ||
+          TraceEngine.Types.TraceEvents.isFlowPhase(eventPhase)) {
         continue;
       }
-      let last: SDK.TracingModel.Event = stack[stack.length - 1];
-      while (last && last.endTime !== undefined && last.endTime <= e.startTime) {
+      let last = stack[stack.length - 1];
+      let lastEventEndTime = last && SDK.TracingModel.timesForEventInMilliseconds(last).endTime;
+      while (last && lastEventEndTime !== undefined && lastEventEndTime <= eventStartTime) {
         stack.pop();
         onEndEvent(last);
         last = stack[stack.length - 1];
+        lastEventEndTime = last && SDK.TracingModel.timesForEventInMilliseconds(last).endTime;
       }
+
       if (filter && !filter(e)) {
         continue;
       }
-      if (e.duration) {
+      if (eventDuration) {
         onStartEvent(e);
         stack.push(e);
       } else {
@@ -236,8 +247,12 @@ export class TimelineModelImpl {
     }
   }
 
-  private static topLevelEventEndingAfter(events: SDK.TracingModel.Event[], time: number): number {
-    let index = Platform.ArrayUtilities.upperBound(events, time, (time, event) => time - event.startTime) - 1;
+  private static topLevelEventEndingAfter(
+      events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[], time: number): number {
+    let index =
+        Platform.ArrayUtilities.upperBound(
+            events, time, (time, event) => time - SDK.TracingModel.timesForEventInMilliseconds(event).startTime) -
+        1;
     while (index > 0 && !SDK.TracingModel.TracingModel.isTopLevelEvent(events[index])) {
       index--;
     }

@@ -2453,9 +2453,10 @@ export class TimelineUIUtils {
       TimelineModel.TimelineModel.TimelineModelImpl.forEachEvent(
           events, onStartEvent, onEndEvent, undefined, undefined, undefined, filterForStats());
 
-      function filterForStats(): (arg0: SDK.TracingModel.Event) => boolean {
+      function filterForStats(): (arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) =>
+          boolean {
         const visibleEventsFilter = TimelineUIUtils.visibleEventsFilter();
-        return (event: SDK.TracingModel.Event): boolean =>
+        return (event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean =>
                    visibleEventsFilter.accept(event) || SDK.TracingModel.TracingModel.isTopLevelEvent(event);
       }
 
@@ -2486,20 +2487,22 @@ export class TimelineUIUtils {
         }
       }
 
-      function onStartEvent(e: SDK.TracingModel.Event): void {
+      function onStartEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+        const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
         const category = TimelineUIUtils.eventStyle(e).category.name;
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
-          categoryChange(parentCategory || null, category, e.startTime);
+          categoryChange(parentCategory || null, category, startTime);
         }
         categoryStack.push(category);
       }
 
-      function onEndEvent(e: SDK.TracingModel.Event): void {
+      function onEndEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+        const {endTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
         const category = categoryStack.pop();
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
-          categoryChange(category || null, parentCategory || null, e.endTime || 0);
+          categoryChange(category || null, parentCategory || null, endTime || 0);
         }
       }
 

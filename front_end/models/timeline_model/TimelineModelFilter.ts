@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import type * as SDK from '../../core/sdk/sdk.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
 export abstract class TimelineModelFilter {
-  abstract accept(_event: SDK.TracingModel.Event): boolean;
+  abstract accept(_event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean;
 }
 
 export class TimelineVisibleEventsFilter extends TimelineModelFilter {

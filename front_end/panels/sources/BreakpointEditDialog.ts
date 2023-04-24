@@ -193,13 +193,10 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     linkWrapper.appendChild(link);
 
     this.updateTooltip();
+  }
 
-    this.element.addEventListener('blur', event => {
-      if (!event.relatedTarget ||
-          (event.relatedTarget && !(event.relatedTarget as Node).isSelfOrDescendant(this.element))) {
-        this.finishEditing(true, this.editor.state.doc.toString());
-      }
-    }, true);
+  saveAndFinish(): void {
+    this.finishEditing(true, this.editor.state.doc.toString());
   }
 
   focusEditor(): void {

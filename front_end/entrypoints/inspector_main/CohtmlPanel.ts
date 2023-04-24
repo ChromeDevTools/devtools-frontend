@@ -39,6 +39,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import { Size } from '../../ui/legacy/Geometry.js';
+
+const clamp = (num:number, min:number, max:number) => Math.min(Math.max(num, min), max);
 
 const UIStrings = {
 
@@ -92,6 +95,14 @@ const UIStrings = {
 
   getSystemCacheDesc: 'Get statistics for the system-wide caches',
 
+  currentCapacityCountStr : 'Current Capacity Count: ',
+
+  currentCapacityBytesStr : 'Current Capacity Memory: ',
+
+  updateCacheStr : 'Update Cache',
+
+  capacityStr : 'Capacity',
+
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/CohtmlPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -114,6 +125,18 @@ function SizeString(sizeinBytes : number) : string
 
 let cohtmlPanelViewInstance: CohtmlPanelView;
 
+
+class RenoirCacheUIEntry {
+  currentCountSpanElement : HTMLElement|null;
+  currentBytesSpanElement : HTMLElement|null;
+
+  constructor() {
+    this.currentBytesSpanElement = null;
+    this.currentCountSpanElement = null;
+  }
+
+};
+
 export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<SDK.CohtmlDebugModel.CohtmlDebugModel>{
 
   private drawMetaDataSetting: Common.Settings.Setting<any>;
@@ -123,6 +146,12 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
   private cohtmlDebugModel?: SDK.CohtmlDebugModel.CohtmlDebugModel|null;
 
   private contentPanel: HTMLElement;
+
+  private renoirCachesWrapper: HTMLElement;
+
+  // The "frontend" state of the renior renoir caches. In the entries we keep the two HTML element which display the current capacity
+  // count and bytes. The map maps from a cache type (scratchTextures, scratchLayers) to the entry with HTML elements (RenoirCacheUIEntry).
+  private renoirCachesUIState : Map<number, RenoirCacheUIEntry>;
 
   private constructor() {
     super(true);
@@ -135,6 +164,8 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     {
       this.cohtmlDebugModel = mainTarget.model(SDK.CohtmlDebugModel.CohtmlDebugModel);
     }
+
+    this.renoirCachesUIState = new Map<number, RenoirCacheUIEntry>();
 
     this.drawMetaDataSetting = Common.Settings.Settings.instance().moduleSetting('drawMetaData');
     this.continuousRepaintSetting = Common.Settings.Settings.instance().moduleSetting('continuousRepaint');
@@ -204,6 +235,150 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
         });
       }
     });
+
+    controlsPanel.createChild('div').classList.add('panel-section-separator');
+
+    // The panel which controls the renoir caches. We will create an entry for each cache type.
+    controlsPanel.createChild('h4').innerText = 'Rendering Caches';
+    this.renoirCachesWrapper = controlsPanel.createChild('div');
+
+    controlsPanel.createChild('div').classList.add('panel-section-separator');
+  }
+
+  private onModelUpdated() {
+    // once we have a valid cohtml model, we'll query the renoir caches states
+
+    let cachesResult = this.cohtmlDebugModel?.getAvailableRenoirCahces();
+    cachesResult?.then(caches => {
+      this.renoirCachesWrapper.removeChildren();
+      caches?.forEach(cache => {
+        this.createCacheEntryForRenoirCache(cache.type, cache.title ? cache.title : '<unknown>', this.renoirCachesWrapper);
+      });
+      this.fetchCacheStates();
+    });
+  }
+
+  private fetchCacheStates() {
+    const cacheStats = this.cohtmlDebugModel?.getRenoirCahcesState();
+    cacheStats?.then((stats) => {
+      // update the HTML elements displaying the currenet capacity count and bytes
+      this.updateReniorCachesUI(stats);
+    });
+  }
+
+  private updateCacheUI(state: Protocol.CohtmlDebug.RenoirCache|undefined) {
+    if (!state) {
+      return;
+    }
+
+    if (!this.renoirCachesUIState.has(state.type)) {
+      return;
+    }
+
+    let uiCacheState = this.renoirCachesUIState.get(state.type);
+    if (!uiCacheState
+       || uiCacheState.currentBytesSpanElement == null
+       || uiCacheState.currentCountSpanElement == null) {
+      return;
+    }
+
+    uiCacheState.currentBytesSpanElement.innerText = UIStrings.currentCapacityBytesStr + SizeString(state.capacityBytes ? state.capacityBytes : 0);
+    uiCacheState.currentCountSpanElement.innerText = UIStrings.currentCapacityCountStr + state.capacityCount;
+  }
+
+  private updateReniorCachesUI(cachesState: Protocol.CohtmlDebug.RenoirCachesState|null) {
+    cachesState?.caches.forEach(cache => {
+      this.updateCacheUI(cache);
+    });
+  }
+
+  private createCacheEntryForRenoirCache(id: number, title: string, parent: HTMLElement) {
+    let cachePanel = parent.createChild('div', 'cache-entry');
+
+    let cacheName = cachePanel.createChild('span', 'cache-title');
+    cacheName.innerHTML = title;
+
+    let newCacheUIEntry = new RenoirCacheUIEntry();
+
+    let firstRow = cachePanel.createChild('div', '');
+    {
+      let entryName = firstRow.createChild('span', 'info-span');
+      entryName.innerText = UIStrings.capacityStr;
+
+      // input field where the user enters the desired cache size
+      let entryInput = firstRow.createChild('input');
+      entryInput.setAttribute('type', 'number');
+
+      // unit for the enered number (label + select element)
+      let unit = firstRow.createChild('span', 'info-span');
+      unit.innerText = 'Unit:';
+      let types:string[] = ["Count", "Bytes", "KBs", "MBs"];
+      let unitSelect = this.appendSelect("Type", types, firstRow);
+
+      // button for updating the corresponding cache.
+      let entryButton = firstRow.createChild('span', 'button-link');
+      entryButton.innerText = UIStrings.updateCacheStr;
+
+      entryButton.onclick = () => {
+        let inputElement = (entryInput as HTMLInputElement);
+        if (inputElement.value.length == 0) {
+          return;
+        }
+        let newSize = Number(inputElement.value);
+        if (!isNaN(newSize)) {
+
+          // JSON specifies only 32-bit integers so we can't send a bigger
+          // number than 2^32 bytes (~ 2147 MBs; this should be enough for all caches)
+          const MAX_32BIT_INTEGER = 2147483647;
+          newSize = clamp(newSize, 0, MAX_32BIT_INTEGER);
+
+          switch (unitSelect.value) {
+            case "Count": break;
+            case "Bytes": break;
+            case "KBs": newSize *= 1024; break;
+            case "MBs": newSize *= 1024*1024; break;
+          }
+
+          let setCount = unitSelect.value == "Count";
+
+          // create the object that will be send to the backend
+          let state: Protocol.CohtmlDebug.RenoirCache = {
+            type: id,
+            capacityBytes: !setCount ? newSize : -1,
+            capacityCount: setCount ? newSize : -1
+          };
+
+          // send the data to the backend (the C++ code)
+          this.cohtmlDebugModel?.setRenoirCacheState(state);
+
+          // Cohtml does not update the caches immediatly but rather on the
+          // next frame. Hence we can't request the new cache state immediatly but
+          // have to "wait a little bit". 100ms is plenty of time but still keeps the
+          // updating feeling interactive
+          setTimeout(() => {
+            this.fetchCacheStates();
+          }, 100);
+        }
+      };
+    }
+
+    // create a couple of span elements to display the currenet capacity bytes and count
+    // of the cache
+    let secondRow = cachePanel.createChild('div', '');
+    {
+      let currentCapacityCount = secondRow.createChild('span', 'info-span');
+      currentCapacityCount.innerText = UIStrings.currentCapacityCountStr;
+
+      let currentCapacityBytes = secondRow.createChild('span', 'info-span');
+      currentCapacityBytes.innerText = UIStrings.currentCapacityBytesStr;
+
+      // save the span elements for later so that we can update them when we have to
+      newCacheUIEntry.currentBytesSpanElement = currentCapacityBytes;
+      newCacheUIEntry.currentCountSpanElement = currentCapacityCount;
+    }
+
+    // create the entry in the frontend map for the caches state
+    this.renoirCachesUIState.set(id, newCacheUIEntry);
   }
 
   static instance(opts: {
@@ -253,6 +428,17 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     });
   }
 
+  private appendSelect(name: string, options: string[], element: HTMLElement): HTMLSelectElement {
+    const select = element.createChild('select');
+    select.classList.add('chrome-select');
+    for (let index = 0; index < options.length; ++index) {
+      const option = (select.createChild('option') as HTMLOptionElement);
+      option.value = options[index];
+      option.textContent = options[index];
+    }
+    return select as HTMLSelectElement;
+}
+
   private createButton(label: string, desc: string, parent: HTMLElement , click : () => void) {
     const newButtonBlock = parent.createChild('div');
     newButtonBlock.classList.add('button-block');
@@ -284,17 +470,9 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     return checkbox;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private appendSelect(label: string, setting: Common.Settings.Setting<any>, ): void {
-    const control = UI.SettingsUI.createControlForSetting(setting, label);
-    if (control) {
-      this.contentElement.appendChild(control);
-    }
-  }
-
   modelAdded(cohtmlModel: SDK.CohtmlDebugModel.CohtmlDebugModel): void {
     this.cohtmlDebugModel = cohtmlModel;
+    this.onModelUpdated();
   }
 
   modelRemoved(cohtmlModel: SDK.CohtmlDebugModel.CohtmlDebugModel): void {

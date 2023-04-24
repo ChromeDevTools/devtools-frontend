@@ -837,6 +837,9 @@ inspectorBackend.registerCommand("CohtmlDebug.enable", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.disable", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.clearCachedUnusedImages", [], []);
 inspectorBackend.registerCommand("CohtmlDebug.getSystemCacheStats", [], ["stats"]);
+inspectorBackend.registerCommand("CohtmlDebug.getAvailableRenoirCaches", [], ["caches"]);
+inspectorBackend.registerCommand("CohtmlDebug.getRenoirCachesState", [], ["stats"]);
+inspectorBackend.registerCommand("CohtmlDebug.setRenoirCachesState", [{"name": "state", "type": "object", "optional": false}], []);
 
 // Debugger.
 inspectorBackend.registerEnum("Debugger.ScopeType", {Global: "global", Local: "local", With: "with", Closure: "closure", Catch: "catch", Block: "block", Script: "script", Eval: "eval", Module: "module", WasmExpressionStack: "wasm-expression-stack"});

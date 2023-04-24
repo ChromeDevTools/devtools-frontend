@@ -9711,6 +9711,17 @@ domain CohtmlDebug
       integer orphanedBytesUsed
       array of ImageData orphanedImages
 
+  type RenoirCache extends object
+    properties
+      integer type
+      optional string title
+      optional number capacityCount
+      optional number capacityBytes
+
+  type RenoirCachesState extends object
+    properties
+      array of RenoirCache caches
+
   command setDrawMetaDataEmit
     parameters
       boolean result
@@ -9740,5 +9751,17 @@ domain CohtmlDebug
   command getSystemCacheStats
     returns
       SystemCacheStats stats
+
+  command getAvailableRenoirCaches
+    returns
+      array of RenoirCache caches
+
+  command getRenoirCachesState
+    returns
+      RenoirCachesState stats
+
+  command setRenoirCachesState
+    parameters
+      RenoirCache state
 
 # COHERENT_END

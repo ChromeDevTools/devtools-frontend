@@ -3390,6 +3390,12 @@ declare namespace ProtocolProxyApi {
 
     invoke_getSystemCacheStats(): Promise<Protocol.CohtmlDebug.GetSystemCacheStatsResponse>;
 
+    invoke_getAvailableRenoirCaches(): Promise<Protocol.CohtmlDebug.GetAvailableRenoirCachesResponse>;
+
+    invoke_getRenoirCachesState(): Promise<Protocol.CohtmlDebug.GetRenoirCachesStateResponse>;
+
+    invoke_setRenoirCachesState(params: Protocol.CohtmlDebug.SetRenoirCachesStateRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface CohtmlDebugDispatcher {
   }

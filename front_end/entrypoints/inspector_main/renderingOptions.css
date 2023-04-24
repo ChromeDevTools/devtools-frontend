@@ -31,9 +31,7 @@
 /* COHERENT_BEGIN */
 
 .cohtml-panel-base {
-  min-height: 1000px;
   overflow: scroll;
-  display: flex;
   flex-direction: row !important;
 }
 
@@ -41,7 +39,8 @@
   width: 35%;
   display: flex;
   flex-direction: column;
-  border-right: 2px solid lightgray
+  border-right: 2px solid lightgray;
+  height: fit-content;
 }
 
 .controls-panel span{
@@ -51,6 +50,7 @@
 .content-panel {
   width: 50%;
   padding-left: 10px;
+  height: fit-content;
 }
 
 .image-list {
@@ -93,4 +93,40 @@
   color: lightslategrey;
   margin-top: p5gox;
 }
+
+.cache-entry {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.cache-entry input {
+  padding: 3px 3px;
+  box-sizing: border-box;
+  border: 1px solid gray;
+  border-radius: 3px;
+}
+.cache-entry input:focus {
+  border: 1px solid #0275d8;
+}
+
+.cache-entry div {
+  display: flex;
+  flex-direction: row;
+}
+
+.cache-entry div > * {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.cache-entry div:first-child span {
+  font-weight: bold;
+}
+
+.cache-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
 /* COHERENT_END */

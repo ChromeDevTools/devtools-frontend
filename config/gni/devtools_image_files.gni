@@ -16,8 +16,6 @@ devtools_image_files = [
   "navigationControls.png",
   "nodeIcon.avif",
   "popoverArrows.png",
-  "searchNext.png",
-  "searchPrev.png",
   "toolbarResizerVertical.png",
   "touchCursor_2x.png",
   "touchCursor.png",

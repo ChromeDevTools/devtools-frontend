@@ -143,7 +143,6 @@ export class StylePropertiesSection {
   private readonly elementToSelectorIndex: WeakMap<Element, number>;
   navigable: boolean|null|undefined;
   protected readonly selectorRefElement: HTMLElement;
-  private readonly selectorContainer: HTMLDivElement;
   private hoverableSelectorsMode: boolean;
   private isHiddenInternal: boolean;
 
@@ -195,6 +194,7 @@ export class StylePropertiesSection {
     this.innerElement.appendChild(this.showAllButton);
 
     const selectorContainer = document.createElement('div');
+    selectorContainer.classList.add('selector-container');
     this.selectorElement = document.createElement('span');
     UI.ARIAUtils.setAccessibleName(this.selectorElement, i18nString(UIStrings.cssSelector));
     this.selectorElement.classList.add('selector');
@@ -205,8 +205,6 @@ export class StylePropertiesSection {
 
     const openBrace = selectorContainer.createChild('span', 'sidebar-pane-open-brace');
     openBrace.textContent = ' {';
-    selectorContainer.addEventListener('mousedown', this.handleEmptySpaceMouseDown.bind(this), false);
-    selectorContainer.addEventListener('click', this.handleSelectorContainerClick.bind(this), false);
 
     const closeBrace = this.innerElement.createChild('div', 'sidebar-pane-closing-brace');
     closeBrace.textContent = '}';
@@ -275,7 +273,6 @@ export class StylePropertiesSection {
     this.updateQueryList();
     this.updateRuleOrigin();
     this.titleElement.appendChild(selectorContainer);
-    this.selectorContainer = selectorContainer;
 
     if (this.navigable) {
       this.element.classList.add('navigable');
@@ -1107,22 +1104,6 @@ export class StylePropertiesSection {
     }
   }
 
-  private checkWillCancelEditing(): boolean {
-    const willCauseCancelEditing = this.willCauseCancelEditing;
-    this.willCauseCancelEditing = false;
-    return willCauseCancelEditing;
-  }
-
-  private handleSelectorContainerClick(event: Event): void {
-    if (this.checkWillCancelEditing() || !this.editable) {
-      return;
-    }
-    if (event.target === this.selectorContainer) {
-      this.addNewBlankProperty(0).startEditing();
-      event.consume(true);
-    }
-  }
-
   addNewBlankProperty(index: number|undefined = this.propertiesTreeOutline.rootElement().childCount()):
       StylePropertyTreeElement {
     const property = this.styleInternal.newBlankProperty(index);
@@ -1137,7 +1118,19 @@ export class StylePropertiesSection {
   }
 
   private handleEmptySpaceClick(event: Event): void {
-    if (!this.editable || this.element.hasSelection() || this.checkWillCancelEditing() || this.selectedSinceMouseDown) {
+    // `this.willCauseCancelEditing` is a hacky way to understand whether we should
+    // create a new property or not on empty space click.
+    // For empty space clicks, the order of events are:
+    // when there isn't an edit operation going on:
+    //     * empty space mousedown -> empty space click
+    // when there is an edit operation going on:
+    //     * empty space mousedown -> text prompt blur -> empty space click
+    // text prompt blur sets the `isEditingStyle` to be `false` in parent pane.
+    // If we check `isEditingStyle` inside empty space click handler, it will
+    // always say `false` and will always cause a new blank property to be added.
+    // Because of this, we're checking and saving whether there is an ongoing
+    // edit operation inside empty space mousedown handler.
+    if (!this.editable || this.element.hasSelection() || this.willCauseCancelEditing || this.selectedSinceMouseDown) {
       return;
     }
 
@@ -1152,6 +1145,9 @@ export class StylePropertiesSection {
     const treeElement = deepTarget && UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(deepTarget);
     if (treeElement && treeElement instanceof StylePropertyTreeElement) {
       this.addNewBlankProperty(treeElement.property.index + 1).startEditing();
+    } else if (
+        target.classList.contains('selector-container') || target.classList.contains('styles-section-subtitle')) {
+      this.addNewBlankProperty(0).startEditing();
     } else {
       this.addNewBlankProperty().startEditing();
     }

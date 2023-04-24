@@ -51,7 +51,6 @@
 .tree-outline {
   --override-folder-tree-item-color: var(--icon-default);
   --override-file-tree-item-color: var(--icon-default);
-  --override-file-sync-badge-color: var(--color-tertiary-bright);
 }
 
 .navigator-fs-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection),
@@ -100,21 +99,20 @@
   --override-file-tree-item-color: var(--icon-file-script);
 }
 
-.navigator-file-tree-item devtools-icon.sync::before {
-  content: url("Images/empty.svg");
-  -webkit-mask-image: url("Images/file-sync-badge.svg");
-  background-color: var(--override-file-sync-badge-color);
-  position: absolute;
-  z-index: 1;
+.navigator-file-tree-item devtools-icon.dot::before {
+  width: 7px;
+  height: 7px;
+  top: 12px;
+  left: 11px;
 }
 
-.navigator-file-tree-item devtools-icon.sync.sync-purple::before {
-  --override-file-sync-badge-color: var(--color-purple-bright);
+.navigator-file-tree-item.selected:not(.force-white-icons) devtools-icon.dot::before {
+  outline-color: var(--icon-gap-inactive);
 }
 
-.navigator-file-tree-item.force-white-icons devtools-icon.sync::before,
-.navigator-file-tree-item.force-white-icons devtools-icon.sync.sync-purple::before {
-  --override-file-sync-badge-color: var(--icon-force-white);
+.navigator-file-tree-item.selected.force-white-icons devtools-icon.dot::before {
+  background-color: var(--icon-force-white);
+  outline-color: var(--icon-gap-force-white);
 }
 
 .navigator-sm-stylesheet-tree-item .icons-container,

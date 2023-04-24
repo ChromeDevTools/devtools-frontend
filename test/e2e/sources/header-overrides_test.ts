@@ -68,7 +68,7 @@ async function openHeadersTab() {
 
 async function editorTabHasPurpleDot(): Promise<boolean> {
   const tabHeaderIcon = await waitFor('.tabbed-pane-header-tab-icon .spritesheet-mediumicons');
-  return await tabHeaderIcon?.evaluate(node => node.classList.contains('purple-dot'));
+  return await tabHeaderIcon?.evaluate(node => node.classList.contains('dot') && node.classList.contains('purple'));
 }
 
 async function fileTreeEntryIsSelectedAndHasPurpleDot(): Promise<boolean> {
@@ -76,7 +76,7 @@ async function fileTreeEntryIsSelectedAndHasPurpleDot(): Promise<boolean> {
   const title = await element.evaluate(e => e.getAttribute('title')) || '';
   assert.match(title, /\/test\/e2e\/resources\/network\/\.headers$/);
   const fileTreeIcon = await waitFor('.navigator-file-tree-item devtools-icon', element);
-  return await fileTreeIcon?.evaluate(node => node.classList.contains('sync-purple'));
+  return await fileTreeIcon?.evaluate(node => node.classList.contains('dot') && node.classList.contains('purple'));
 }
 
 async function editHeaderItem(newValue: string, previousValue: string): Promise<void> {

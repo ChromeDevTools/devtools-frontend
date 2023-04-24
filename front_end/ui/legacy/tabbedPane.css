@@ -132,6 +132,14 @@
   padding-right: 5px;
 }
 
+.tabbed-pane-header-tab devtools-icon.dot::before {
+  outline-color: var(--icon-gap-toolbar);
+}
+
+.tabbed-pane-header-tab:hover devtools-icon.dot::before {
+  outline-color: var(--icon-gap-toolbar-hover);
+}
+
 .tabbed-pane-header-tab:hover,
 .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
   color: var(--color-text-primary);

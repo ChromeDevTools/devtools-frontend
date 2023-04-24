@@ -33,14 +33,15 @@
 .icon {
   position: absolute;
   display: inline-block;
-  -webkit-mask-image: var(--image-file-chevrons);
-  -webkit-mask-position: -12px 4px;
-  -webkit-mask-size: 19px 6px;
+  -webkit-mask-image: var(--image-file-chevron-down);
   -webkit-mask-repeat: no-repeat;
-  background-color: var(--color-text-primary);
+  background-color: var(--icon-default);
+  transform: scale(0.7);
+  margin-left: -7px;
+  margin-top: -3px;
   content: "";
-  height: 1em;
-  width: 1em;
+  height: 2em;
+  width: 2em;
 }
 
 :host(:not(:last-child)) {

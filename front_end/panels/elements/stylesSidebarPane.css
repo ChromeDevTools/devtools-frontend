@@ -79,6 +79,10 @@
   user-select: none;
 }
 
+.styles-section .styles-section-subtitle devtools-icon {
+  margin-bottom: -4px;
+}
+
 .styles-section .styles-section-subtitle .devtools-link {
   color: var(--color-text-primary);
   text-decoration-color: hsl(0deg 0% 60%);

@@ -151,19 +151,17 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
   padding-right: 3px;
 }
 
-.purple-dot::before {
-  -webkit-mask-image: url("Images/file-sync-badge.svg");
+.purple.dot::before {
   background-color: var(--color-purple-bright);
   content: url("Images/empty.svg");
-  left: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  outline: 1px solid var(--icon-gap-toolbar);
+  left: 9px;
   position: absolute;
-  top: -3px;
+  top: 11px;
   z-index: 1;
-}
-
-.-theme-with-dark-background .purple-dot,
-:host-context(.-theme-with-dark-background) .purple-dot {
-  filter: invert(80%) hue-rotate(350deg);
 }
 
 summary label {

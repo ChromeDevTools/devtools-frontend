@@ -571,7 +571,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
       const icon = new IconButton.Icon.Icon();
       icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '16px', height: '16px'};
       if (overridesSetting.get()) {
-        icon.classList.add('purple-dot');
+        icon.classList.add('dot', 'purple');
       }
       const button = container.createChild('button', 'link devtools-link headers-link');
       button.appendChild(icon);

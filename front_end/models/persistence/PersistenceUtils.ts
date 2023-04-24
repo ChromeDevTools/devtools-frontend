@@ -55,9 +55,9 @@ export class PersistenceUtils {
       icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '16px', height: '16px'};
       UI.Tooltip.Tooltip.install(icon, PersistenceUtils.tooltipForUISourceCode(binding.network));
       if (NetworkPersistenceManager.instance().project() === binding.fileSystem.project()) {
-        icon.classList.add('purple-dot');
+        icon.classList.add('dot', 'purple');
       } else {
-        icon.classList.add('green-dot');
+        icon.classList.add('dot', 'green');
       }
       return icon;
     }
@@ -70,7 +70,7 @@ export class PersistenceUtils {
       if (NetworkPersistenceManager.instance().hasMatchingNetworkUISourceCodeForHeaderOverridesFile(uiSourceCode)) {
         const icon = new IconButton.Icon.Icon();
         icon.data = {iconName: 'document', color: 'var(--icon-default)', width: '16px', height: '16px'};
-        icon.classList.add('purple-dot');
+        icon.classList.add('dot', 'purple');
         return icon;
       }
     }

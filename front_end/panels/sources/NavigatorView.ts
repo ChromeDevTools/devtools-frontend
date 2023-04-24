@@ -1298,12 +1298,12 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
       }
       const badgeIsPurple = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().project() ===
           binding.fileSystem.project();
-      iconStyles = badgeIsPurple ? ['sync', 'sync-purple'] : ['sync'];
+      iconStyles = badgeIsPurple ? ['dot', 'purple'] : ['dot', 'green'];
     } else if (
         this.uiSourceCodeInternal.url().endsWith(Persistence.NetworkPersistenceManager.HEADERS_FILENAME) &&
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance()
             .hasMatchingNetworkUISourceCodeForHeaderOverridesFile(this.uiSourceCodeInternal)) {
-      iconStyles = ['sync', 'sync-purple'];
+      iconStyles = ['dot', 'purple'];
     } else {
       if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCodeInternal)) {
         iconType = 'snippet';

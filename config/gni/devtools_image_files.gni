@@ -200,7 +200,7 @@ devtools_svg_sources = [
   "shadow.svg",
   "smallIcons.svg",
   "snippet.svg",
-  "star_outline.svg",
+  "star.svg",
   "step-into.svg",
   "step-out.svg",
   "step-over.svg",

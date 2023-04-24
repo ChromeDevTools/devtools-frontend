@@ -268,6 +268,10 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return this.dispatcher.requestForId(id);
   }
 
+  requestForLoaderId(loaderId: Protocol.Network.LoaderId): NetworkRequest|null {
+    return this.dispatcher.requestForLoaderId(loaderId);
+  }
+
   private cacheDisabledSettingChanged({data: enabled}: Common.EventTarget.EventTargetEvent<boolean>): void {
     void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: enabled});
   }
@@ -419,12 +423,14 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   readonly #manager: NetworkManager;
   #requestsById: Map<string, NetworkRequest>;
   #requestsByURL: Map<Platform.DevToolsPath.UrlString, NetworkRequest>;
+  #requestsByLoaderId: Map<Protocol.Network.LoaderId, NetworkRequest>;
   #requestIdToExtraInfoBuilder: Map<string, ExtraInfoBuilder>;
   readonly #requestIdToTrustTokenEvent: Map<string, Protocol.Network.TrustTokenOperationDoneEvent>;
   constructor(manager: NetworkManager) {
     this.#manager = manager;
     this.#requestsById = new Map();
     this.#requestsByURL = new Map();
+    this.#requestsByLoaderId = new Map();
     this.#requestIdToExtraInfoBuilder = new Map();
     /**
      * In case of an early abort or a cache hit, the Trust Token done event is
@@ -551,6 +557,10 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     return this.#requestsByURL.get(url) || null;
   }
 
+  requestForLoaderId(loaderId: Protocol.Network.LoaderId): NetworkRequest|null {
+    return this.#requestsByLoaderId.get(loaderId) || null;
+  }
+
   resourceChangedPriority({requestId, newPriority}: Protocol.Network.ResourceChangedPriorityEvent): void {
     const networkRequest = this.#requestsById.get(requestId);
     if (networkRequest) {
@@ -589,9 +599,19 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
         Events.ResponseReceived, {request: networkRequest, response: info.outerResponse});
   }
 
-  requestWillBeSent(
-      {requestId, loaderId, documentURL, request, timestamp, wallTime, initiator, redirectResponse, type, frameId}:
-          Protocol.Network.RequestWillBeSentEvent): void {
+  requestWillBeSent({
+    requestId,
+    loaderId,
+    documentURL,
+    request,
+    timestamp,
+    wallTime,
+    initiator,
+    redirectResponse,
+    type,
+    frameId,
+    hasUserGesture,
+  }: Protocol.Network.RequestWillBeSentEvent): void {
     let networkRequest = this.#requestsById.get(requestId);
     if (networkRequest) {
       // FIXME: move this check to the backend.
@@ -618,7 +638,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     } else {
       networkRequest = NetworkRequest.create(
           requestId, request.url as Platform.DevToolsPath.UrlString, documentURL as Platform.DevToolsPath.UrlString,
-          frameId ?? null, loaderId, initiator);
+          frameId ?? null, loaderId, initiator, hasUserGesture);
       requestToManagerMap.set(networkRequest, this.#manager);
     }
     networkRequest.hasNetworkData = true;
@@ -921,7 +941,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.finishNetworkRequest(originalNetworkRequest, time, -1);
     const newNetworkRequest = NetworkRequest.create(
         requestId, redirectURL, originalNetworkRequest.documentURL, originalNetworkRequest.frameId,
-        originalNetworkRequest.loaderId, originalNetworkRequest.initiator());
+        originalNetworkRequest.loaderId, originalNetworkRequest.initiator(),
+        originalNetworkRequest.hasUserGesture() ?? undefined);
     requestToManagerMap.set(newNetworkRequest, this.#manager);
     newNetworkRequest.setRedirectSource(originalNetworkRequest);
     originalNetworkRequest.setRedirectDestination(newNetworkRequest);
@@ -936,10 +957,17 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     const oldDispatcher = (NetworkManager.forRequest(request) as NetworkManager).dispatcher;
     oldDispatcher.#requestsById.delete(requestId);
     oldDispatcher.#requestsByURL.delete(request.url());
+    const loaderId = request.loaderId;
+    if (loaderId) {
+      oldDispatcher.#requestsByLoaderId.delete(loaderId);
+    }
     const builder = oldDispatcher.#requestIdToExtraInfoBuilder.get(requestId);
     oldDispatcher.#requestIdToExtraInfoBuilder.delete(requestId);
     this.#requestsById.set(requestId, request);
     this.#requestsByURL.set(request.url(), request);
+    if (loaderId) {
+      this.#requestsByLoaderId.set(loaderId, request);
+    }
     if (builder) {
       this.#requestIdToExtraInfoBuilder.set(requestId, builder);
     }
@@ -950,6 +978,10 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   private startNetworkRequest(networkRequest: NetworkRequest, originalRequest: Protocol.Network.Request|null): void {
     this.#requestsById.set(networkRequest.requestId(), networkRequest);
     this.#requestsByURL.set(networkRequest.url(), networkRequest);
+    const loaderId = networkRequest.loaderId;
+    if (loaderId) {
+      this.#requestsByLoaderId.set(loaderId, networkRequest);
+    }
     // The following relies on the fact that loaderIds and requestIds are
     // globally unique and that the main request has them equal.
     if (networkRequest.loaderId === networkRequest.requestId()) {
@@ -1016,6 +1048,11 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     for (const [requestURL, request] of this.#requestsByURL) {
       if (request.finished) {
         this.#requestsByURL.delete(requestURL);
+      }
+    }
+    for (const [requestLoaderId, request] of this.#requestsByLoaderId) {
+      if (request.finished) {
+        this.#requestsByLoaderId.delete(requestLoaderId);
       }
     }
     for (const [requestId, builder] of this.#requestIdToExtraInfoBuilder) {

@@ -244,6 +244,14 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       if (issue.isAssociatedWithRequestId(frame.loaderId)) {
         keptIssues.set(key, issue);
       }
+      // Keep BounceTrackingIssues alive for non-user-initiated navigations.
+      if (issue.code() === Protocol.Audits.InspectorIssueCode.BounceTrackingIssue) {
+        const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
+        if (networkManager?.requestForLoaderId(frame.loaderId as Protocol.Network.LoaderId)?.hasUserGesture() ===
+            false) {
+          keptIssues.set(key, issue);
+        }
+      }
     }
     this.#allIssues = keptIssues;
     this.#hasSeenPrimaryPageChanged = true;

@@ -11,6 +11,7 @@ import {createFakeSetting, createTarget} from '../../helpers/EnvironmentHelpers.
 import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConnection.js';
 import {mkInspectorCspIssue, StubIssue, ThirdPartyStubIssue} from './StubIssue.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 describeWithMockConnection('IssuesManager', () => {
   let target: SDK.Target.Target;
@@ -320,4 +321,50 @@ describeWithMockConnection('IssuesManager', () => {
     await updateRequired;
   });
 
+  it('clears BounceTrackingIssue only on user-initiated navigation', () => {
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
+    const issue = {
+      code: Protocol.Audits.InspectorIssueCode.BounceTrackingIssue,
+      details: {
+        bounceTrackingIssueDetails: {
+          trackingSites: ['example_1.test'],
+        },
+      },
+    };
+
+    model.dispatchEventToListeners(SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: issue});
+    assert.strictEqual(issuesManager.numberOfIssues(), 1);
+
+    dispatchEvent(target, 'Network.requestWillBeSent', {
+      requestId: 'requestId1',
+      loaderId: 'loaderId1',
+      request: {url: 'http://example.com'},
+      hasUserGesture: false,
+    } as unknown as Protocol.Network.RequestWillBeSentEvent);
+    const frame1 = {
+      id: 'main',
+      loaderId: 'loaderId1',
+      url: 'http://example.com',
+      securityOrigin: 'http://example.com',
+      mimeType: 'text/html',
+    };
+    dispatchEvent(target, 'Page.frameNavigated', {frame: frame1});
+    assert.strictEqual(issuesManager.numberOfIssues(), 1);
+
+    dispatchEvent(target, 'Network.requestWillBeSent', {
+      requestId: 'requestId2',
+      loaderId: 'loaderId2',
+      request: {url: 'http://example.com/page'},
+      hasUserGesture: true,
+    } as unknown as Protocol.Network.RequestWillBeSentEvent);
+    const frame2 = {
+      id: 'main',
+      loaderId: 'loaderId2',
+      url: 'http://example.com/page',
+      securityOrigin: 'http://example.com',
+      mimeType: 'text/html',
+    };
+    dispatchEvent(target, 'Page.frameNavigated', {frame: frame2});
+    assert.strictEqual(issuesManager.numberOfIssues(), 0);
+  });
 });

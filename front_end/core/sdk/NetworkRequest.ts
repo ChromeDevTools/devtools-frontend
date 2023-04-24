@@ -207,6 +207,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   readonly #frameIdInternal: Protocol.Page.FrameId|null;
   readonly #loaderIdInternal: Protocol.Network.LoaderId|null;
   readonly #initiatorInternal: Protocol.Network.Initiator|null|undefined;
+  readonly #hasUserGesture: boolean|undefined;
   #redirectSourceInternal: NetworkRequest|null;
   #preflightRequestInternal: NetworkRequest|null;
   #preflightInitiatorRequestInternal: NetworkRequest|null;
@@ -306,7 +307,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   private constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: Platform.DevToolsPath.UrlString,
       documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId|null,
-      loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null) {
+      loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null, hasUserGesture?: boolean) {
     super();
 
     this.#requestIdInternal = requestId;
@@ -316,6 +317,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#frameIdInternal = frameId;
     this.#loaderIdInternal = loaderId;
     this.#initiatorInternal = initiator;
+    this.#hasUserGesture = hasUserGesture;
     this.#redirectSourceInternal = null;
     this.#preflightRequestInternal = null;
     this.#preflightInitiatorRequestInternal = null;
@@ -388,8 +390,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   static create(
       backendRequestId: Protocol.Network.RequestId, url: Platform.DevToolsPath.UrlString,
       documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId|null,
-      loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null): NetworkRequest {
-    return new NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator);
+      loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null,
+      hasUserGesture?: boolean): NetworkRequest {
+    return new NetworkRequest(
+        backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture);
   }
 
   static createForWebSocket(
@@ -1366,6 +1370,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   initiator(): Protocol.Network.Initiator|null {
     return this.#initiatorInternal || null;
+  }
+
+  hasUserGesture(): boolean|null {
+    return this.#hasUserGesture ?? null;
   }
 
   frames(): WebSocketFrame[] {

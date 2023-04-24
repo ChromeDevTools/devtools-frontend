@@ -424,6 +424,11 @@ select.toolbar-item:focus-visible > * {
   background-color: var(--color-background-elevation-2);
 }
 
+.toolbar-button [is="ui-icon"].chevron-down,
+.toolbar-button [is="ui-icon"].chevron-up {
+  transform: scale(0.8);
+}
+
 .toolbar-shadow.floating {
   flex-direction: column;
   height: auto;

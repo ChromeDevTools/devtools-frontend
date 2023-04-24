@@ -608,12 +608,24 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-bug);
 }
 
+.spritesheet-check-double.icon-mask {
+  -webkit-mask-image: var(--image-file-check-double);
+}
+
 .spritesheet-checkmark.icon-mask {
   -webkit-mask-image: var(--image-file-checkmark);
 }
 
 .spritesheet-chevron-double-right.icon-mask {
   -webkit-mask-image: var(--image-file-chevron-double-right);
+}
+
+.spritesheet-chevron-down.icon-mask {
+  -webkit-mask-image: var(--image-file-chevron-down);
+}
+
+.spritesheet-chevron-up.icon-mask {
+  -webkit-mask-image: var(--image-file-chevron-up);
 }
 
 .spritesheet-clear-list.icon-mask {

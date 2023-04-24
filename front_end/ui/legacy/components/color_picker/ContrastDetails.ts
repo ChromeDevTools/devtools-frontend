@@ -130,18 +130,16 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
     this.contrastValue = this.contrastValueBubble.createChild('span');
     this.contrastValueBubbleIcons = [];
-    this.contrastValueBubbleIcons.push(
-        this.contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-checkmark-square')));
-    this.contrastValueBubbleIcons.push(
-        this.contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-checkmark-behind')));
-    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(UI.Icon.Icon.create('smallicon-no')));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(UI.Icon.Icon.create('checkmark')));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(UI.Icon.Icon.create('check-double')));
+    this.contrastValueBubbleIcons.push(this.contrastValueBubble.appendChild(UI.Icon.Icon.create('clear')));
     this.contrastValueBubbleIcons.forEach(button => button.addEventListener('click', (event: Event) => {
       ContrastDetails.showHelp();
       event.consume(false);
     }));
 
     const expandToolbar = new UI.Toolbar.Toolbar('expand', contrastValueRowContents);
-    this.expandButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showMore), 'smallicon-expand-more');
+    this.expandButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showMore), 'chevron-down');
     this.expandButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.expandButtonClicked.bind(this));
     UI.ARIAUtils.setExpanded(this.expandButton.element, false);
     expandToolbar.appendToolbarItem(this.expandButton);
@@ -412,14 +410,14 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.elementInternal.classList.toggle('collapsed', !this.expandedInternal);
     if (this.expandedInternal) {
       this.toggleMainColorPicker(false);
-      this.expandButton.setGlyph('smallicon-expand-less');
+      this.expandButton.setGlyph('chevron-up');
       this.expandButton.setTitle(i18nString(UIStrings.showLess));
       if (this.contrastUnknown) {
         this.toggleBackgroundColorPickerInternal(true);
       }
     } else {
       this.toggleBackgroundColorPickerInternal(false);
-      this.expandButton.setGlyph('smallicon-expand-more');
+      this.expandButton.setGlyph('chevron-down');
       this.expandButton.setTitle(i18nString(UIStrings.showMore));
     }
     this.expandedChangedCallback();

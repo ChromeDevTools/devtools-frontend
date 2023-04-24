@@ -534,7 +534,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
 
     function appendSwitcherIcon(parentElement: Element): void {
       const switcherIcon = new IconButton.Icon.Icon();
-      switcherIcon.data = {iconName: 'switcherIcon', color: 'var(--color-text-primary)', width: '16px', height: '16px'};
+      switcherIcon.data = {iconName: 'fold-more', color: 'var(--icon-default)', width: '16px', height: '16px'};
       parentElement.appendChild(switcherIcon);
     }
   }

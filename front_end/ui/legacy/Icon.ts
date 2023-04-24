@@ -117,8 +117,11 @@ const spriteSheets = new Map<string, SpriteSheet>([
   ['brush-filled', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['brush', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['bug', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['check-double', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['checkmark', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['chevron-double-right', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['chevron-down', {cellWidth: 20, cellHeight: 20, padding: 0}],
+  ['chevron-up', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['clear-list', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['clear', {cellWidth: 20, cellHeight: 20, padding: 0}],
   ['cloud', {cellWidth: 20, cellHeight: 20, padding: 0}],
@@ -201,12 +204,6 @@ const spriteSheets = new Map<string, SpriteSheet>([
 ]);
 
 const initialDescriptors = new Map<string, Descriptor>([
-  ['smallicon-checkmark-square', {position: 'b6', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-checkmark-behind', {position: 'd6', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-expand-less', {position: 'f5', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-expand-more', {position: 'e6', spritesheet: 'smallicons', isMask: true}],
-  ['smallicon-no', {position: 'c6', spritesheet: 'smallicons', isMask: true}],
-
   ['mediumicon-arrow-top', {position: 'a4', spritesheet: 'arrowicons'}],
   ['mediumicon-arrow-bottom', {position: 'a3', spritesheet: 'arrowicons'}],
   ['mediumicon-arrow-left', {position: 'a2', spritesheet: 'arrowicons'}],
@@ -228,8 +225,11 @@ const initialDescriptors = new Map<string, Descriptor>([
   ['brush-filled', {position: 'a1', spritesheet: 'brush-filled', isMask: true}],
   ['brush', {position: 'a1', spritesheet: 'brush', isMask: true}],
   ['bug', {position: 'a1', spritesheet: 'bug', isMask: true}],
+  ['check-double', {position: 'a1', spritesheet: 'check-double', isMask: true}],
   ['checkmark', {position: 'a1', spritesheet: 'checkmark', isMask: true}],
   ['chevron-double-right', {position: 'a1', spritesheet: 'chevron-double-right', isMask: true}],
+  ['chevron-down', {position: 'a1', spritesheet: 'chevron-down', isMask: true}],
+  ['chevron-up', {position: 'a1', spritesheet: 'chevron-up', isMask: true}],
   ['clear-list', {position: 'a1', spritesheet: 'clear-list', isMask: true}],
   ['clear', {position: 'a1', spritesheet: 'clear', isMask: true}],
   ['cloud', {position: 'a1', spritesheet: 'cloud', isMask: true}],

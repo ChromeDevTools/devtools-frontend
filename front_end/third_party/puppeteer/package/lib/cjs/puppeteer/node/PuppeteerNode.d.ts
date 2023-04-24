@@ -15,9 +15,9 @@
  */
 import { Browser } from '../api/Browser.js';
 import { BrowserConnectOptions } from '../common/BrowserConnector.js';
+import { Configuration } from '../common/Configuration.js';
 import { Product } from '../common/Product.js';
 import { CommonPuppeteerSettings, ConnectOptions, Puppeteer } from '../common/Puppeteer.js';
-import { Configuration } from '../common/Configuration.js';
 import { BrowserFetcher, BrowserFetcherOptions } from './BrowserFetcher.js';
 import { BrowserLaunchArgumentOptions, ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
 /**
@@ -45,7 +45,7 @@ export interface PuppeteerLaunchOptions extends LaunchOptions, BrowserLaunchArgu
  * The following is a typical example of using Puppeteer to drive automation:
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -83,8 +83,6 @@ export declare class PuppeteerNode extends Puppeteer {
      *
      * @param options - Set of configurable options to set on the browser.
      * @returns Promise which resolves to browser instance.
-     *
-     * @public
      */
     connect(options: ConnectOptions): Promise<Browser>;
     /**
@@ -92,11 +90,11 @@ export declare class PuppeteerNode extends Puppeteer {
      * specified.
      *
      * When using with `puppeteer-core`,
-     * {@link LaunchOptions.executablePath | options.executablePath} or
-     * {@link LaunchOptions.channel | options.channel} must be provided.
+     * {@link LaunchOptions | options.executablePath} or
+     * {@link LaunchOptions | options.channel} must be provided.
      *
      * @example
-     * You can use {@link LaunchOptions.ignoreDefaultArgs | options.ignoreDefaultArgs}
+     * You can use {@link LaunchOptions | options.ignoreDefaultArgs}
      * to filter out `--mute-audio` from default arguments:
      *
      * ```ts
@@ -120,14 +118,10 @@ export declare class PuppeteerNode extends Puppeteer {
      * describes some differences for Linux users.
      *
      * @param options - Options to configure launching behavior.
-     *
-     * @public
      */
     launch(options?: PuppeteerLaunchOptions): Promise<Browser>;
     /**
-     * @returns The default executable path.
-     *
-     * @public
+     * The default executable path.
      */
     executablePath(channel?: ChromeReleaseChannel): string;
     /**
@@ -135,24 +129,20 @@ export declare class PuppeteerNode extends Puppeteer {
      */
     get browserRevision(): string;
     /**
-     * @returns The default download path for puppeteer. For puppeteer-core, this
+     * The default download path for puppeteer. For puppeteer-core, this
      * code should never be called as it is never defined.
      *
      * @internal
      */
     get defaultDownloadPath(): string | undefined;
     /**
-     * @returns The name of the browser that was last launched.
-     *
-     * @public
+     * The name of the browser that was last launched.
      */
     get lastLaunchedProduct(): Product;
     /**
-     * @returns The name of the browser that will be launched by default. For
+     * The name of the browser that will be launched by default. For
      * `puppeteer`, this is influenced by your configuration. Otherwise, it's
      * `chrome`.
-     *
-     * @public
      */
     get defaultProduct(): Product;
     /**
@@ -162,27 +152,24 @@ export declare class PuppeteerNode extends Puppeteer {
      * {@link PuppeteerNode.lastLaunchedProduct | lastLaunchedProduct}.
      *
      * @returns The name of the browser that is under automation.
-     *
-     * @public
      */
     get product(): string;
     /**
      * @param options - Set of configurable options to set on the browser.
      *
      * @returns The default flags that Chromium will be launched with.
-     *
-     * @public
      */
     defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
     /**
-     * @deprecated If you are using `puppeteer-core`, do not use this method. Just
-     * construct {@link BrowserFetcher} manually.
-     *
      * @param options - Set of configurable options to specify the settings of the
      * BrowserFetcher.
      *
+     * @remarks
+     * If you are using `puppeteer-core`, do not use this method. Just
+     * construct {@link BrowserFetcher} manually.
+     *
      * @returns A new BrowserFetcher instance.
      */
-    createBrowserFetcher(options: Partial<BrowserFetcherOptions>): BrowserFetcher;
+    createBrowserFetcher(options?: Partial<BrowserFetcherOptions>): BrowserFetcher;
 }
 //# sourceMappingURL=PuppeteerNode.d.ts.map

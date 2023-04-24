@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import { EventEmitter } from '../common/EventEmitter.js';
-import { Page } from './Page.js';
 import { Target } from '../common/Target.js';
 import type { Permission, Browser } from './Browser.js';
+import { Page } from './Page.js';
 /**
  * BrowserContexts provide a way to operate multiple independent browser
  * sessions. When a browser is launched, it has a single BrowserContext used by
@@ -74,7 +74,7 @@ export declare class BrowserContext extends EventEmitter {
      * ```
      *
      * @param predicate - A function to be run for every target
-     * @param options - An object of options. Accepts a timout,
+     * @param options - An object of options. Accepts a timeout,
      * which is the maximum wait time in milliseconds.
      * Pass `0` to disable the timeout. Defaults to 30 seconds.
      * @returns Promise which resolves to the first target found

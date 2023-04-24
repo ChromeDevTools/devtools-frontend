@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 /// <reference types="node" />
+import { ChildProcess } from 'child_process';
 import { Browser as BrowserBase, BrowserCloseCallback, BrowserContextOptions } from '../../api/Browser.js';
 import { BrowserContext as BrowserContextBase } from '../../api/BrowserContext.js';
 import { Connection } from './Connection.js';
-import { ChildProcess } from 'child_process';
 /**
  * @internal
  */
 export declare class Browser extends BrowserBase {
     #private;
-    /**
-     * @internal
-     */
     static create(opts: Options): Promise<Browser>;
-    /**
-     * @internal
-     */
     constructor(opts: Options);
     close(): Promise<void>;
     isConnected(): boolean;

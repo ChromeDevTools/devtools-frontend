@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PuppeteerEventListener } from './util.js';
 import { Protocol } from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
+import { PuppeteerEventListener } from './util.js';
 /**
  * @internal
  */
@@ -86,7 +86,7 @@ export interface CSSCoverageOptions {
     resetOnNavigation?: boolean;
 }
 /**
- * The Coverage class provides methods to gathers information about parts of
+ * The Coverage class provides methods to gather information about parts of
  * JavaScript and CSS that were used by the page.
  *
  * @remarks
@@ -140,7 +140,7 @@ export declare class Coverage {
      */
     startJSCoverage(options?: JSCoverageOptions): Promise<void>;
     /**
-     * @returns Promise that resolves to the array of coverage reports for
+     * Promise that resolves to the array of coverage reports for
      * all scripts.
      *
      * @remarks
@@ -155,8 +155,9 @@ export declare class Coverage {
      */
     startCSSCoverage(options?: CSSCoverageOptions): Promise<void>;
     /**
-     * @returns Promise that resolves to the array of coverage reports
+     * Promise that resolves to the array of coverage reports
      * for all stylesheets.
+     *
      * @remarks
      * CSS Coverage doesn't include dynamically injected style tags
      * without sourceURLs.

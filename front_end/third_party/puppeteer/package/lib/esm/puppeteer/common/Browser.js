@@ -13,31 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
 var _CDPBrowser_instances, _CDPBrowser_ignoreHTTPSErrors, _CDPBrowser_defaultViewport, _CDPBrowser_process, _CDPBrowser_connection, _CDPBrowser_closeCallback, _CDPBrowser_targetFilterCallback, _CDPBrowser_isPageTargetCallback, _CDPBrowser_defaultContext, _CDPBrowser_contexts, _CDPBrowser_screenshotTaskQueue, _CDPBrowser_targetManager, _CDPBrowser_emitDisconnected, _CDPBrowser_setIsPageTargetCallback, _CDPBrowser_createTarget, _CDPBrowser_onAttachedToTarget, _CDPBrowser_onDetachedFromTarget, _CDPBrowser_onTargetChanged, _CDPBrowser_onTargetDiscovered, _CDPBrowser_getVersion, _CDPBrowserContext_connection, _CDPBrowserContext_browser, _CDPBrowserContext_id;
-import { assert } from '../util/assert.js';
-import { ConnectionEmittedEvents } from './Connection.js';
-import { waitWithTimeout } from './util.js';
-import { Target } from './Target.js';
-import { TaskQueue } from './TaskQueue.js';
-import { ChromeTargetManager } from './ChromeTargetManager.js';
-import { FirefoxTargetManager } from './FirefoxTargetManager.js';
 import { Browser as BrowserBase, WEB_PERMISSION_TO_PROTOCOL_PERMISSION, } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
+import { assert } from '../util/assert.js';
+import { createDeferredPromise } from '../util/DeferredPromise.js';
+import { ChromeTargetManager } from './ChromeTargetManager.js';
+import { ConnectionEmittedEvents } from './Connection.js';
+import { FirefoxTargetManager } from './FirefoxTargetManager.js';
+import { Target } from './Target.js';
+import { TaskQueue } from './TaskQueue.js';
+import { waitWithTimeout } from './util.js';
 /**
  * @internal
  */
 export class CDPBrowser extends BrowserBase {
+    /**
+     * @internal
+     */
+    static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback) {
+        const browser = new CDPBrowser(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback);
+        await browser._attach();
+        return browser;
+    }
+    /**
+     * @internal
+     */
+    get _targets() {
+        return __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").getAvailableTargets();
+    }
     /**
      * @internal
      */
@@ -126,20 +141,6 @@ export class CDPBrowser extends BrowserBase {
         for (const contextId of contextIds) {
             __classPrivateFieldGet(this, _CDPBrowser_contexts, "f").set(contextId, new CDPBrowserContext(__classPrivateFieldGet(this, _CDPBrowser_connection, "f"), this, contextId));
         }
-    }
-    /**
-     * @internal
-     */
-    static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback) {
-        const browser = new CDPBrowser(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback);
-        await browser._attach();
-        return browser;
-    }
-    /**
-     * @internal
-     */
-    get _targets() {
-        return __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").getAvailableTargets();
     }
     /**
      * @internal
@@ -324,11 +325,7 @@ export class CDPBrowser extends BrowserBase {
      */
     async waitForTarget(predicate, options = {}) {
         const { timeout = 30000 } = options;
-        let resolve;
-        let isResolved = false;
-        const targetPromise = new Promise(x => {
-            return (resolve = x);
-        });
+        const targetPromise = createDeferredPromise();
         this.on("targetcreated" /* BrowserEmittedEvents.TargetCreated */, check);
         this.on("targetchanged" /* BrowserEmittedEvents.TargetChanged */, check);
         try {
@@ -343,9 +340,8 @@ export class CDPBrowser extends BrowserBase {
             this.off("targetchanged" /* BrowserEmittedEvents.TargetChanged */, check);
         }
         async function check(target) {
-            if ((await predicate(target)) && !isResolved) {
-                isResolved = true;
-                resolve(target);
+            if ((await predicate(target)) && !targetPromise.resolved()) {
+                targetPromise.resolve(target);
             }
         }
     }
@@ -406,6 +402,7 @@ export class CDPBrowser extends BrowserBase {
     disconnect() {
         __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").dispose();
         __classPrivateFieldGet(this, _CDPBrowser_connection, "f").dispose();
+        this._detach();
     }
     /**
      * Indicates that the browser is connected.
@@ -465,7 +462,7 @@ export class CDPBrowserContext extends BrowserContext {
      * ```
      *
      * @param predicate - A function to be run for every target
-     * @param options - An object of options. Accepts a timout,
+     * @param options - An object of options. Accepts a timeout,
      * which is the maximum wait time in milliseconds.
      * Pass `0` to disable the timeout. Defaults to 30 seconds.
      * @returns Promise which resolves to the first target found

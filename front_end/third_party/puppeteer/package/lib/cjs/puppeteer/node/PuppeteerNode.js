@@ -52,7 +52,7 @@ const FirefoxLauncher_js_1 = require("./FirefoxLauncher.js");
  * The following is a typical example of using Puppeteer to drive automation:
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -106,8 +106,6 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      *
      * @param options - Set of configurable options to set on the browser.
      * @returns Promise which resolves to browser instance.
-     *
-     * @public
      */
     connect(options) {
         return super.connect(options);
@@ -117,11 +115,11 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * specified.
      *
      * When using with `puppeteer-core`,
-     * {@link LaunchOptions.executablePath | options.executablePath} or
-     * {@link LaunchOptions.channel | options.channel} must be provided.
+     * {@link LaunchOptions | options.executablePath} or
+     * {@link LaunchOptions | options.channel} must be provided.
      *
      * @example
-     * You can use {@link LaunchOptions.ignoreDefaultArgs | options.ignoreDefaultArgs}
+     * You can use {@link LaunchOptions | options.ignoreDefaultArgs}
      * to filter out `--mute-audio` from default arguments:
      *
      * ```ts
@@ -145,8 +143,6 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * describes some differences for Linux users.
      *
      * @param options - Options to configure launching behavior.
-     *
-     * @public
      */
     launch(options = {}) {
         const { product = this.defaultProduct } = options;
@@ -154,9 +150,7 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
         return __classPrivateFieldGet(this, _PuppeteerNode_instances, "a", _PuppeteerNode_launcher_get).launch(options);
     }
     /**
-     * @returns The default executable path.
-     *
-     * @public
+     * The default executable path.
      */
     executablePath(channel) {
         return __classPrivateFieldGet(this, _PuppeteerNode_instances, "a", _PuppeteerNode_launcher_get).executablePath(channel);
@@ -165,11 +159,11 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * @internal
      */
     get browserRevision() {
-        var _a;
-        return (_a = this.configuration.browserRevision) !== null && _a !== void 0 ? _a : this.defaultBrowserRevision;
+        var _a, _b, _c;
+        return ((_c = (_b = (_a = __classPrivateFieldGet(this, _PuppeteerNode__launcher, "f")) === null || _a === void 0 ? void 0 : _a.getActualBrowserRevision()) !== null && _b !== void 0 ? _b : this.configuration.browserRevision) !== null && _c !== void 0 ? _c : this.defaultBrowserRevision);
     }
     /**
-     * @returns The default download path for puppeteer. For puppeteer-core, this
+     * The default download path for puppeteer. For puppeteer-core, this
      * code should never be called as it is never defined.
      *
      * @internal
@@ -179,20 +173,16 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
         return ((_a = this.configuration.downloadPath) !== null && _a !== void 0 ? _a : (0, path_1.join)(this.configuration.cacheDirectory, this.product));
     }
     /**
-     * @returns The name of the browser that was last launched.
-     *
-     * @public
+     * The name of the browser that was last launched.
      */
     get lastLaunchedProduct() {
         var _a;
         return (_a = __classPrivateFieldGet(this, _PuppeteerNode_lastLaunchedProduct, "f")) !== null && _a !== void 0 ? _a : this.defaultProduct;
     }
     /**
-     * @returns The name of the browser that will be launched by default. For
+     * The name of the browser that will be launched by default. For
      * `puppeteer`, this is influenced by your configuration. Otherwise, it's
      * `chrome`.
-     *
-     * @public
      */
     get defaultProduct() {
         var _a;
@@ -205,8 +195,6 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * {@link PuppeteerNode.lastLaunchedProduct | lastLaunchedProduct}.
      *
      * @returns The name of the browser that is under automation.
-     *
-     * @public
      */
     get product() {
         return __classPrivateFieldGet(this, _PuppeteerNode_instances, "a", _PuppeteerNode_launcher_get).product;
@@ -215,35 +203,38 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * @param options - Set of configurable options to set on the browser.
      *
      * @returns The default flags that Chromium will be launched with.
-     *
-     * @public
      */
     defaultArgs(options = {}) {
         return __classPrivateFieldGet(this, _PuppeteerNode_instances, "a", _PuppeteerNode_launcher_get).defaultArgs(options);
     }
     /**
-     * @deprecated If you are using `puppeteer-core`, do not use this method. Just
-     * construct {@link BrowserFetcher} manually.
-     *
      * @param options - Set of configurable options to specify the settings of the
      * BrowserFetcher.
      *
+     * @remarks
+     * If you are using `puppeteer-core`, do not use this method. Just
+     * construct {@link BrowserFetcher} manually.
+     *
      * @returns A new BrowserFetcher instance.
      */
-    createBrowserFetcher(options) {
+    createBrowserFetcher(options = {}) {
         var _a;
         const downloadPath = this.defaultDownloadPath;
-        if (downloadPath) {
+        if (!options.path && downloadPath) {
             options.path = downloadPath;
         }
         if (!options.path) {
             throw new Error('A `path` must be specified for `puppeteer-core`.');
         }
-        if ((_a = this.configuration.experiments) === null || _a === void 0 ? void 0 : _a.macArmChromiumEnabled) {
+        if (!('useMacOSARMBinary' in options) &&
+            ((_a = this.configuration.experiments) === null || _a === void 0 ? void 0 : _a.macArmChromiumEnabled)) {
             options.useMacOSARMBinary = true;
         }
-        if (this.configuration.downloadHost) {
+        if (!('host' in options) && this.configuration.downloadHost) {
             options.host = this.configuration.downloadHost;
+        }
+        if (!('product' in options) && this.configuration.defaultProduct) {
+            options.product = this.configuration.defaultProduct;
         }
         return new BrowserFetcher_js_1.BrowserFetcher(options);
     }

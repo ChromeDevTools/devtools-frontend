@@ -15,13 +15,14 @@
  */
 /// <reference types="node" />
 /// <reference types="node" />
-import { Protocol } from 'devtools-protocol';
 import type { Readable } from 'stream';
-import { CDPSession } from './Connection.js';
-import { ElementHandle } from './ElementHandle.js';
-import { CommonEventEmitter } from './EventEmitter.js';
-import { ExecutionContext } from './ExecutionContext.js';
-import { JSHandle } from './JSHandle.js';
+import type { Protocol } from 'devtools-protocol';
+import type { ElementHandle } from '../api/ElementHandle.js';
+import type { JSHandle } from '../api/JSHandle.js';
+import { Page } from '../api/Page.js';
+import type { CDPSession } from './Connection.js';
+import type { CommonEventEmitter } from './EventEmitter.js';
+import type { ExecutionContext } from './ExecutionContext.js';
 /**
  * @internal
  */
@@ -69,6 +70,18 @@ export declare const isNumber: (obj: unknown) => obj is number;
 /**
  * @internal
  */
+export declare const isPlainObject: (obj: unknown) => obj is Record<any, unknown>;
+/**
+ * @internal
+ */
+export declare const isRegExp: (obj: unknown) => obj is RegExp;
+/**
+ * @internal
+ */
+export declare const isDate: (obj: unknown) => obj is Date;
+/**
+ * @internal
+ */
 export declare function waitForEvent<T>(emitter: CommonEventEmitter, eventName: string | symbol, predicate: (event: T) => Promise<boolean> | boolean, timeout: number, abortPromise: Promise<Error>): Promise<T>;
 /**
  * @internal
@@ -81,19 +94,11 @@ export declare function evaluationString(fun: Function | string, ...args: unknow
 /**
  * @internal
  */
+export declare function addPageBinding(type: string, name: string): void;
+/**
+ * @internal
+ */
 export declare function pageBindingInitString(type: string, name: string): string;
-/**
- * @internal
- */
-export declare function pageBindingDeliverResultString(name: string, seq: number, result: unknown): string;
-/**
- * @internal
- */
-export declare function pageBindingDeliverErrorString(name: string, seq: number, message: string, stack?: string): string;
-/**
- * @internal
- */
-export declare function pageBindingDeliverErrorValueString(name: string, seq: number, value: unknown): string;
 /**
  * @internal
  */
@@ -101,7 +106,7 @@ export declare function waitWithTimeout<T>(promise: Promise<T>, taskName: string
 /**
  * @internal
  */
-export declare function importFS(): Promise<typeof import('fs')>;
+export declare function importFSPromises(): Promise<typeof import('fs/promises')>;
 /**
  * @internal
  */
@@ -110,4 +115,8 @@ export declare function getReadableAsBuffer(readable: Readable, path?: string): 
  * @internal
  */
 export declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<Readable>;
+/**
+ * @internal
+ */
+export declare function setPageContent(page: Pick<Page, 'evaluate'>, content: string): Promise<void>;
 //# sourceMappingURL=util.d.ts.map

@@ -31,9 +31,19 @@ import { BrowserContext } from './BrowserContext.js';
  * @internal
  */
 export class Browser extends BrowserBase {
-    /**
-     * @internal
-     */
+    static async create(opts) {
+        // TODO: await until the connection is established.
+        try {
+            await opts.connection.send('session.new', {});
+        }
+        catch { }
+        await opts.connection.send('session.subscribe', {
+            events: [
+                'browsingContext.contextCreated',
+            ],
+        });
+        return new Browser(opts);
+    }
     constructor(opts) {
         super();
         _Browser_process.set(this, void 0);
@@ -43,18 +53,10 @@ export class Browser extends BrowserBase {
         __classPrivateFieldSet(this, _Browser_closeCallback, opts.closeCallback, "f");
         __classPrivateFieldSet(this, _Browser_connection, opts.connection, "f");
     }
-    /**
-     * @internal
-     */
-    static async create(opts) {
-        // TODO: await until the connection is established.
-        (await opts.connection.send('session.new', {}));
-        return new Browser(opts);
-    }
     async close() {
         var _a;
-        await ((_a = __classPrivateFieldGet(this, _Browser_closeCallback, "f")) === null || _a === void 0 ? void 0 : _a.call(null));
         __classPrivateFieldGet(this, _Browser_connection, "f").dispose();
+        await ((_a = __classPrivateFieldGet(this, _Browser_closeCallback, "f")) === null || _a === void 0 ? void 0 : _a.call(null));
     }
     isConnected() {
         return !__classPrivateFieldGet(this, _Browser_connection, "f").closed;

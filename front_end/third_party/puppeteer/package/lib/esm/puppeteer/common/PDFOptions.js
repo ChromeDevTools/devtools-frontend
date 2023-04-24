@@ -16,7 +16,7 @@
 /**
  * @internal
  */
-export const _paperFormats = {
+export const paperFormats = {
     letter: { width: 8.5, height: 11 },
     legal: { width: 8.5, height: 14 },
     tabloid: { width: 11, height: 17 },

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 import { Protocol } from 'devtools-protocol';
+import { ElementHandle } from '../api/ElementHandle.js';
+import { HTTPResponse } from '../api/HTTPResponse.js';
+import { Page, WaitTimeoutOptions } from '../api/Page.js';
 import { CDPSession } from './Connection.js';
-import { ElementHandle } from './ElementHandle.js';
+import { DeviceRequestPrompt, DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { FrameManager } from './FrameManager.js';
-import { HTTPResponse } from './HTTPResponse.js';
 import { MouseButton } from './Input.js';
 import { IsolatedWorldChart, WaitForSelectorOptions } from './IsolatedWorld.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
-import { Page } from '../api/Page.js';
-import { EvaluateFunc, HandleFor, NodeFor } from './types.js';
+import { EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from './types.js';
 /**
  * @public
  */
@@ -113,7 +114,7 @@ export interface FrameAddStyleTagOptions {
  * An example of dumping frame tree:
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -193,11 +194,11 @@ export declare class Frame {
      */
     updateClient(client: CDPSession): void;
     /**
-     * @returns The page associated with the frame.
+     * The page associated with the frame.
      */
     page(): Page;
     /**
-     * @returns `true` if the frame is an out-of-process (OOP) frame. Otherwise,
+     * Is `true` if the frame is an out-of-process (OOP) frame. Otherwise,
      * `false`.
      */
     isOOPFrame(): boolean;
@@ -240,6 +241,7 @@ export declare class Frame {
      */
     goto(url: string, options?: {
         referer?: string;
+        referrerPolicy?: string;
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<HTTPResponse | null>;
@@ -328,10 +330,7 @@ export declare class Frame {
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        ElementHandle<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<NodeFor<Selector>, Params> = EvaluateFuncWith<NodeFor<Selector>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * Runs the given function on an array of elements matching the given selector
      * in the frame.
@@ -352,10 +351,7 @@ export declare class Frame {
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        Array<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * @deprecated Use {@link Frame.$$} with the `xpath` prefix.
      *
@@ -375,7 +371,7 @@ export declare class Frame {
      * @example
      *
      * ```ts
-     * const puppeteer = require('puppeteer');
+     * import puppeteer from 'puppeteer';
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -422,7 +418,7 @@ export declare class Frame {
      * an XPath.
      *
      * @param xpath - the XPath expression to wait for.
-     * @param options - options to configure the visiblity of the element and how
+     * @param options - options to configure the visibility of the element and how
      * long to wait before timing out.
      */
     waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
@@ -431,7 +427,7 @@ export declare class Frame {
      * The `waitForFunction` can be used to observe viewport size change:
      *
      * ```ts
-     * const puppeteer = require('puppeteer');
+     * import puppeteer from 'puppeteer';
      *
      * (async () => {
      * .  const browser = await puppeteer.launch();
@@ -461,7 +457,7 @@ export declare class Frame {
      */
     waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: FrameWaitForFunctionOptions, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
-     * @returns The full HTML contents of the frame, including the DOCTYPE.
+     * The full HTML contents of the frame, including the DOCTYPE.
      */
     content(): Promise<string>;
     /**
@@ -476,7 +472,7 @@ export declare class Frame {
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<void>;
     /**
-     * @returns The frame's `name` attribute as specified in the tag.
+     * The frame's `name` attribute as specified in the tag.
      *
      * @remarks
      * If the name is empty, it returns the `id` attribute instead.
@@ -487,19 +483,19 @@ export declare class Frame {
      */
     name(): string;
     /**
-     * @returns The frame's URL.
+     * The frame's URL.
      */
     url(): string;
     /**
-     * @returns The parent frame, if any. Detached and main frames return `null`.
+     * The parent frame, if any. Detached and main frames return `null`.
      */
     parentFrame(): Frame | null;
     /**
-     * @returns An array of child frames.
+     * An array of child frames.
      */
     childFrames(): Frame[];
     /**
-     * @returns `true` if the frame has been detached. Otherwise, `false`.
+     * Is`true` if the frame has been detached. Otherwise, `false`.
      */
     isDetached(): boolean;
     /**
@@ -629,9 +625,37 @@ export declare class Frame {
      */
     waitForTimeout(milliseconds: number): Promise<void>;
     /**
-     * @returns the frame's title.
+     * The frame's title.
      */
     title(): Promise<string>;
+    /**
+     * @internal
+     */
+    _deviceRequestPromptManager(): DeviceRequestPromptManager;
+    /**
+     * This method is typically coupled with an action that triggers a device
+     * request from an api such as WebBluetooth.
+     *
+     * :::caution
+     *
+     * This must be called before the device request is made. It will not return a
+     * currently active device prompt.
+     *
+     * :::
+     *
+     * @example
+     *
+     * ```ts
+     * const [devicePrompt] = Promise.all([
+     *   frame.waitForDevicePrompt(),
+     *   frame.click('#connect-bluetooth'),
+     * ]);
+     * await devicePrompt.select(
+     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+     * );
+     * ```
+     */
+    waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
     /**
      * @internal
      */

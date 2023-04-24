@@ -17,5 +17,5 @@
  * Supported products.
  * @public
  */
-export declare type Product = 'chrome' | 'firefox';
+export type Product = 'chrome' | 'firefox';
 //# sourceMappingURL=Product.d.ts.map

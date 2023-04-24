@@ -27,7 +27,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _ProtocolError_code, _ProtocolError_originalMessage;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = exports.ProtocolError = exports.TimeoutError = exports.CustomError = void 0;
+exports.errors = exports.ProtocolError = exports.AbortError = exports.TimeoutError = exports.CustomError = void 0;
 /**
  * @deprecated Do not use.
  *
@@ -58,6 +58,18 @@ class TimeoutError extends CustomError {
 }
 exports.TimeoutError = TimeoutError;
 /**
+ * AbortError is emitted whenever certain operations are terminated due to
+ * an abort request.
+ *
+ * @remarks
+ * Example operations are {@link Page.waitForSelector | page.waitForSelector}.
+ *
+ * @public
+ */
+class AbortError extends CustomError {
+}
+exports.AbortError = AbortError;
+/**
  * ProtocolError is emitted whenever there is an error from the protocol.
  *
  * @public
@@ -68,25 +80,21 @@ class ProtocolError extends CustomError {
         _ProtocolError_code.set(this, void 0);
         _ProtocolError_originalMessage.set(this, '');
     }
-    /**
-     * @internal
-     */
     set code(code) {
         __classPrivateFieldSet(this, _ProtocolError_code, code, "f");
     }
     /**
+     * @readonly
      * @public
      */
     get code() {
         return __classPrivateFieldGet(this, _ProtocolError_code, "f");
     }
-    /**
-     * @internal
-     */
     set originalMessage(originalMessage) {
         __classPrivateFieldSet(this, _ProtocolError_originalMessage, originalMessage, "f");
     }
     /**
+     * @readonly
      * @public
      */
     get originalMessage() {

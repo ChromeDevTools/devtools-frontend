@@ -26,11 +26,11 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _Coverage_jsCoverage, _Coverage_cssCoverage, _JSCoverage_instances, _JSCoverage_client, _JSCoverage_enabled, _JSCoverage_scriptURLs, _JSCoverage_scriptSources, _JSCoverage_eventListeners, _JSCoverage_resetOnNavigation, _JSCoverage_reportAnonymousScripts, _JSCoverage_includeRawScriptCoverage, _JSCoverage_onExecutionContextsCleared, _JSCoverage_onScriptParsed, _CSSCoverage_instances, _CSSCoverage_client, _CSSCoverage_enabled, _CSSCoverage_stylesheetURLs, _CSSCoverage_stylesheetSources, _CSSCoverage_eventListeners, _CSSCoverage_resetOnNavigation, _CSSCoverage_onExecutionContextsCleared, _CSSCoverage_onStyleSheet;
 import { assert } from '../util/assert.js';
-import { addEventListener, debugError } from './util.js';
 import { EVALUATION_SCRIPT_URL } from './ExecutionContext.js';
+import { addEventListener, debugError } from './util.js';
 import { removeEventListeners } from './util.js';
 /**
- * The Coverage class provides methods to gathers information about parts of
+ * The Coverage class provides methods to gather information about parts of
  * JavaScript and CSS that were used by the page.
  *
  * @remarks
@@ -90,7 +90,7 @@ export class Coverage {
         return await __classPrivateFieldGet(this, _Coverage_jsCoverage, "f").start(options);
     }
     /**
-     * @returns Promise that resolves to the array of coverage reports for
+     * Promise that resolves to the array of coverage reports for
      * all scripts.
      *
      * @remarks
@@ -109,8 +109,9 @@ export class Coverage {
         return await __classPrivateFieldGet(this, _Coverage_cssCoverage, "f").start(options);
     }
     /**
-     * @returns Promise that resolves to the array of coverage reports
+     * Promise that resolves to the array of coverage reports
      * for all stylesheets.
+     *
      * @remarks
      * CSS Coverage doesn't include dynamically injected style tags
      * without sourceURLs.

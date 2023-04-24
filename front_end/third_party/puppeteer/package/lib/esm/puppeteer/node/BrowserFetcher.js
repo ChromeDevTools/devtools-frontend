@@ -26,23 +26,22 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _BrowserFetcher_instances, _BrowserFetcher_product, _BrowserFetcher_downloadPath, _BrowserFetcher_downloadHost, _BrowserFetcher_platform, _BrowserFetcher_getFolderPath;
 import { exec as execChildProcess } from 'child_process';
-import extractZip from 'extract-zip';
 import { createReadStream, createWriteStream, existsSync, readdirSync } from 'fs';
 import { chmod, mkdir, readdir, unlink } from 'fs/promises';
-import * as http from 'http';
-import * as https from 'https';
+import http from 'http';
+import https from 'https';
+import os from 'os';
+import path from 'path';
+import URL from 'url';
+import { promisify, format } from 'util';
+import extractZip from 'extract-zip';
 import createHttpsProxyAgent from 'https-proxy-agent';
-import * as os from 'os';
-import * as path from 'path';
 import { getProxyForUrl } from 'proxy-from-env';
-import removeRecursive from 'rimraf';
 import tar from 'tar-fs';
 import bzip from 'unbzip2-stream';
-import * as URL from 'url';
-import * as util from 'util';
-import { promisify } from 'util';
 import { debug } from '../common/Debug.js';
 import { assert } from '../util/assert.js';
+import { rm } from './util/fs.js';
 const debugFetcher = debug('puppeteer:fetcher');
 const downloadURLs = {
     chrome: {
@@ -89,7 +88,7 @@ function archiveName(product, platform, revision) {
     }
 }
 function downloadURL(product, platform, host, revision) {
-    const url = util.format(downloadURLs[product][platform], host, revision, archiveName(product, platform, revision));
+    const url = format(downloadURLs[product][platform], host, revision, archiveName(product, platform, revision));
     return url;
 }
 function handleArm64() {
@@ -189,21 +188,21 @@ export class BrowserFetcher {
         assert(downloadURLs[__classPrivateFieldGet(this, _BrowserFetcher_product, "f")][__classPrivateFieldGet(this, _BrowserFetcher_platform, "f")], 'Unsupported platform: ' + __classPrivateFieldGet(this, _BrowserFetcher_platform, "f"));
     }
     /**
-     * @returns Returns the current `Platform`, which is one of `mac`, `linux`,
+     * Returns the current `Platform`, which is one of `mac`, `linux`,
      * `win32` or `win64`.
      */
     platform() {
         return __classPrivateFieldGet(this, _BrowserFetcher_platform, "f");
     }
     /**
-     * @returns Returns the current `Product`, which is one of `chrome` or
+     * Returns the current `Product`, which is one of `chrome` or
      * `firefox`.
      */
     product() {
         return __classPrivateFieldGet(this, _BrowserFetcher_product, "f");
     }
     /**
-     * @returns The download host being used.
+     * The download host being used.
      */
     host() {
         return __classPrivateFieldGet(this, _BrowserFetcher_downloadHost, "f");
@@ -297,15 +296,13 @@ export class BrowserFetcher {
      * @remarks
      * This method is affected by the current `product`.
      * @param revision - A revision to remove for the current `product`.
-     * @returns A promise that resolves when the revision has been removes or
+     * @returns A promise that resolves when the revision has been removed or
      * throws if the revision has not been downloaded.
      */
     async remove(revision) {
         const folderPath = __classPrivateFieldGet(this, _BrowserFetcher_instances, "m", _BrowserFetcher_getFolderPath).call(this, revision);
         assert(existsSync(folderPath), `Failed to remove: revision ${revision} is not downloaded`);
-        await new Promise(fulfill => {
-            return removeRecursive(folderPath, fulfill);
-        });
+        await rm(folderPath);
     }
     /**
      * @param revision - The revision to get info for.
@@ -363,6 +360,12 @@ export class BrowserFetcher {
             url,
             product: __classPrivateFieldGet(this, _BrowserFetcher_product, "f"),
         };
+    }
+    /**
+     * @internal
+     */
+    getDownloadPath() {
+        return __classPrivateFieldGet(this, _BrowserFetcher_downloadPath, "f");
     }
 }
 _BrowserFetcher_product = new WeakMap(), _BrowserFetcher_downloadPath = new WeakMap(), _BrowserFetcher_downloadHost = new WeakMap(), _BrowserFetcher_platform = new WeakMap(), _BrowserFetcher_instances = new WeakSet(), _BrowserFetcher_getFolderPath = function _BrowserFetcher_getFolderPath(revision) {

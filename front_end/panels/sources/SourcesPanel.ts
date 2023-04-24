@@ -577,6 +577,9 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       color: 'var(--icon-default)',
       width: '16px',
     };
+    // <devtools-icon> collapses to 0 width, wrong height otherwise, throwing off alignment and size calculation.
+    previewIcon.style.minHeight = '16px';
+    previewIcon.style.minWidth = '16px';
     menuSection.appendCheckboxItem(
         menuItem, toggleExperiment, Root.Runtime.experiments.isEnabled(experiment), false, previewIcon);
   }

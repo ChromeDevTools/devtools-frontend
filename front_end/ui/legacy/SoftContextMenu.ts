@@ -221,6 +221,7 @@ export class SoftContextMenu {
     checkMarkElement.classList.add('checkmark');
     checkMarkElement.style.minWidth =
         '14px';  // <devtools-icon> collapses to 0 width otherwise, throwing off alignment.
+    checkMarkElement.style.minHeight = '14px';
     menuItemElement.appendChild(checkMarkElement);
     if (!item.checked) {
       checkMarkElement.style.opacity = '0';

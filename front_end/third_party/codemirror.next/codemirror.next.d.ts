@@ -5483,7 +5483,7 @@ property changed to `mac`.)
 declare const standardKeymap: readonly KeyBinding[];
 
 /**
-CSS property and value keyword completion source.
+CSS property, variable, and value keyword completion source.
 */
 declare const cssCompletionSource: CompletionSource;
 

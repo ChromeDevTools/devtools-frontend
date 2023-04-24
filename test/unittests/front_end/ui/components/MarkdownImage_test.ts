@@ -15,9 +15,9 @@ describe('MarkdownImage', () => {
   const imageSource = 'Images/lighthouse_logo.svg';
   before(async () => {
     MarkdownView.MarkdownImagesMap.markdownImages.set('test-icon', {
-      src: new URL('../../../../../front_end/Images/survey_feedback_icon.svg', import.meta.url).toString(),
-      width: '16px',
-      height: '16px',
+      src: new URL('../../../../../front_end/Images/review.svg', import.meta.url).toString(),
+      width: '20px',
+      height: '20px',
       isIcon: true,
     });
     MarkdownView.MarkdownImagesMap.markdownImages.set('test-image', {
@@ -36,8 +36,8 @@ describe('MarkdownImage', () => {
     const iconComponent = getElementWithinComponent(component, 'devtools-icon', IconButton.Icon.Icon);
     assert.isNotNull(iconComponent);
     const boundingClient = iconComponent.getBoundingClientRect();
-    assert.strictEqual(boundingClient.width, 16);
-    assert.strictEqual(boundingClient.height, 16);
+    assert.strictEqual(boundingClient.width, 20);
+    assert.strictEqual(boundingClient.height, 20);
   });
   it('renders image correctly', () => {
     const component = new MarkdownView.MarkdownImage.MarkdownImage();

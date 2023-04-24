@@ -22,11 +22,11 @@ export interface ImageData {
  * [
  *   'feedbackIcon',
  *   {
- *     src: 'Images/survey_feedback_icon.svg',
+ *     src: 'Images/review.svg',
  *     isIcon: true,
  *     width: '20px',
  *     height: '20px',
- *     color: 'var(--color-text-disabled)',
+ *     color: 'var(--icon-disabled)',
  *   },
  * ]
  *

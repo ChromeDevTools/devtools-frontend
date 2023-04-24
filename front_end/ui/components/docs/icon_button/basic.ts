@@ -12,13 +12,13 @@ function appendComponent(data: IconButton.IconButton.IconButtonData) {
 
 appendComponent({
   clickHandler: (): void => {},
-  groups: [{iconName: 'survey_feedback_icon', iconColor: 'var(--color-text-primary)', text: '1 item'}],
+  groups: [{iconName: 'review', iconColor: 'var(--icon-default)', text: '1 item'}],
 });
 
 appendComponent({
   clickHandler: (): void => {},
   groups: [
-    {iconName: 'survey_feedback_icon', iconColor: 'var(--color-primary-old)', text: 'Test'},
+    {iconName: 'review', iconColor: 'var(--icon-primary)', text: 'Test'},
     {iconName: 'warning_icon', iconColor: '', text: '1'},
   ],
 });

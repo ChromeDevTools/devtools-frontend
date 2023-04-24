@@ -197,17 +197,16 @@
 
 .data-grid td.disclosure::before {
   user-select: none;
-  -webkit-mask-image: var(--image-file-treeoutlineTriangles);
-  -webkit-mask-position: 0 0;
-  -webkit-mask-size: 32px 24px;
+  -webkit-mask-image: var(--image-file-triangle-right);
   float: left;
-  width: 8px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   margin-right: 2px;
   content: "";
   position: relative;
   top: 3px;
-  background-color: var(--color-text-secondary);
+  background-color: var(--icon-default);
+  transition: transform 200ms;
 }
 
 .data-grid tr:not(.parent) td.disclosure::before {
@@ -215,7 +214,7 @@
 }
 
 .data-grid tr.expanded td.disclosure::before {
-  -webkit-mask-position: -16px 0;
+  transform: rotate(90deg);
 }
 
 .data-grid tbody tr.revealed.selected {
@@ -251,13 +250,7 @@
 }
 
 .data-grid:focus tr.parent.selected td.disclosure::before {
-  background-color: var(--color-selected-option);
-  -webkit-mask-position: 0 0;
-}
-
-.data-grid:focus tr.expanded.selected td.disclosure::before {
-  background-color: var(--color-selected-option);
-  -webkit-mask-position: -16px 0;
+  background-color: var(--icon-force-white);
 }
 
 .data-grid tr.inactive {

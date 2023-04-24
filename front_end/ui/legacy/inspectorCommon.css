@@ -1205,6 +1205,15 @@ span[is="dt-icon-label"] {
   background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
 }
 
+.force-white-icons [is="ui-icon"].spritesheet-triangle-right,
+:host-context(.force-white-icons) [is="ui-icon"].spritesheet-triangle-right,
+[is="ui-icon"].force-white-icons.spritesheet-triangle-right,
+.-theme-preserve {
+  -webkit-mask-image: var(--image-file-triangle-right);
+  -webkit-mask-position: var(--spritesheet-position);
+  background: var(--icon-force-white) !important; /* stylelint-disable-line declaration-no-important */
+}
+
 .force-white-icons [is="ui-icon"].spritesheet-warning,
 :host-context(.force-white-icons) [is="ui-icon"].spritesheet-warning,
 [is="ui-icon"].force-white-icons.spritesheet-warning,

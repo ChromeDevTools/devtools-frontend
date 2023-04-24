@@ -58,19 +58,19 @@ details > summary:hover {
 details > summary::before {
   display: block;
   user-select: none;
-  -webkit-mask-image: var(--image-file-treeoutlineTriangles);
-  -webkit-mask-size: 32px 24px;
-  -webkit-mask-position: 0 0;
-  background-color: var(--color-text-secondary);
+  -webkit-mask-image: var(--image-file-triangle-right);
+  background-color: var(--icon-default);
   content: "";
-  height: 12px;
-  min-width: 10px;
-  max-width: 10px;
+  height: 14px;
+  min-width: 14px;
+  max-width: 14px;
+  margin-left: -4px;
   overflow: hidden;
+  transition: transform 200ms;
 }
 
 details[open] > summary::before {
-  -webkit-mask-position: -16px 0;
+  transform: rotate(90deg);
 }
 
 .group-header {

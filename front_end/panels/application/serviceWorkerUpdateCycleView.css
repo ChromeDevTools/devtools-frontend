@@ -37,18 +37,15 @@
 
 .service-worker-update-timing-bar-clickable::before {
   user-select: none;
-  -webkit-mask-image: var(--image-file-treeoutlineTriangles);
-  -webkit-mask-position: 0 0;
-  -webkit-mask-size: 32px 24px;
+  -webkit-mask-image: var(--image-file-triangle-right);
   float: left;
-  width: 8px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   margin-right: 2px;
   content: "";
   position: relative;
-  top: 3px;
-  background-color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--icon-default);
+  transition: transform 200ms;
 }
 
 .service-worker-update-timing-bar-clickable {
@@ -61,7 +58,7 @@
 }
 
 .service-worker-update-timing-bar-clickable[aria-checked="true"]::before {
-  -webkit-mask-position: -16px 0;
+  transform: rotate(90deg);
 }
 
 .service-worker-update-timing-bar-details-collapsed {

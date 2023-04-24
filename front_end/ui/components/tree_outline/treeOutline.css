@@ -29,16 +29,16 @@ li {
 .arrow-icon {
   display: block;
   user-select: none;
-  -webkit-mask-image: var(--image-file-treeoutlineTriangles);
-  -webkit-mask-size: 32px 24px;
-  -webkit-mask-position: 0 0;
-  background-color: var(--color-text-primary);
+  -webkit-mask-image: var(--image-file-triangle-right);
+  background-color: var(--icon-default);
   content: "";
+  align-self: flex-start;
   text-shadow: none;
-  height: 12px;
-  width: 13px;
+  height: 14px;
+  width: 14px;
   overflow: hidden;
   flex: none;
+  transition: transform 200ms;
 }
 
 ul {
@@ -55,7 +55,7 @@ li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {
 }
 
 li.parent.expanded > .arrow-and-key-wrapper > .arrow-icon {
-  -webkit-mask-position: -16px 0;
+  transform: rotate(90deg);
 }
 
 li.is-top-level {

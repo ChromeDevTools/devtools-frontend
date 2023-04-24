@@ -22,17 +22,16 @@ div {
 
 .arrow-icon {
   display: inline-block;
-  -webkit-mask-image: var(--image-file-treeoutlineTriangles);
-  -webkit-mask-size: 32px 24px;
-  -webkit-mask-position: 0 0;
-  background-color: var(--color-text-primary);
+  -webkit-mask-image: var(--image-file-triangle-right);
+  background-color: var(--icon-default);
   margin-top: 2px;
-  height: 12px;
-  width: 10px;
+  height: 14px;
+  width: 14px;
+  transition: transform 200ms;
 }
 
 .arrow-icon.expanded {
-  -webkit-mask-position: -16px 0;
+  transform: rotate(90deg);
 }
 
 .expandable-list-container {

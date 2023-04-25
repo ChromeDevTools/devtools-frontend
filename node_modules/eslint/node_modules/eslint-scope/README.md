@@ -1,3 +1,7 @@
+[![npm version](https://img.shields.io/npm/v/eslint-scope.svg)](https://www.npmjs.com/package/eslint-scope)
+[![Downloads](https://img.shields.io/npm/dm/eslint-scope.svg)](https://www.npmjs.com/package/eslint-scope)
+[![Build Status](https://github.com/eslint/eslint-scope/workflows/CI/badge.svg)](https://github.com/eslint/eslint-scope/actions)
+
 # ESLint Scope
 
 ESLint Scope is the [ECMAScript](http://www.ecma-international.org/publications/standards/Ecma-262.htm) scope analyzer used in ESLint. It is a fork of [escope](http://github.com/estools/escope).

@@ -2134,9 +2134,35 @@ export interface FlameChartMarker {
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
+  /**
+   * Emitted when the <canvas> element of the FlameChart is focused by the user.
+   **/
   CanvasFocused = 'CanvasFocused',
+  /**
+   * Emitted when an event is selected by either mouse click, or hitting
+   * <enter> on the keyboard - e.g. the same actions that would invoke a
+   * <button> element.
+   *
+   * Will be emitted with a number which is the index of the entry that has
+   * been selected, or -1 if no entry is selected (e.g the user has clicked
+   * away from any events)
+   */
   EntryInvoked = 'EntryInvoked',
+  /**
+   * Emitted when an event is selected via keyboard navigation using the arrow
+   * keys.
+   *
+   * Will be emitted with a number which is the index of the entry that has
+   * been selected, or -1 if no entry is selected.
+   */
   EntrySelected = 'EntrySelected',
+  /**
+   * Emitted when an event is hovered over with the mouse.
+   *
+   * Will be emitted with a number which is the index of the entry that has
+   * been hovered on, or -1 if no entry is selected (the user has moved their
+   * mouse off the event)
+   */
   EntryHighlighted = 'EntryHighlighted',
 }
 

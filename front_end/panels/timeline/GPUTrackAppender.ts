@@ -111,6 +111,8 @@ export class GPUTrackAppender implements TrackAppender {
         const lastOpenEventEndTime = lastOpenEvent.ts + (lastOpenEvent.dur || 0);
         if (lastOpenEventEndTime <= event.ts) {
           openEvents.pop();
+        } else {
+          break;
         }
       }
 

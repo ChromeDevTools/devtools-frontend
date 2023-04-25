@@ -327,20 +327,15 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     const idleNodeId = this.idleNode ? this.idleNode.id : -1;
     let prevNodeId: number = samples[0];
     let nodeId: number = samples[1];
-    let count = 0;
     for (let sampleIndex = 1; sampleIndex < samplesCount - 1; sampleIndex++) {
       const nextNodeId = samples[sampleIndex + 1];
       if (nodeId === programNodeId && !isSystemNode(prevNodeId) && !isSystemNode(nextNodeId) &&
           bottomNode((idToNode.get(prevNodeId) as ProfileNode)) ===
               bottomNode((idToNode.get(nextNodeId) as ProfileNode))) {
-        ++count;
         samples[sampleIndex] = prevNodeId;
       }
       prevNodeId = nodeId;
       nodeId = nextNodeId;
-    }
-    if (count) {
-      console.warn(`CPU profile is interpolating JS stacks for ${count} samples.`);
     }
     function bottomNode(node: ProfileNode): ProfileNode {
       while (node.parent && node.parent.parent) {

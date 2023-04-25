@@ -106,7 +106,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       return this.timelineDataInternal;
     }
     this.requests = [];
-    this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
+    this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     if (this.model) {
       this.appendTimelineData();
     }
@@ -336,9 +336,12 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
         this.timelineDataInternal.entryLevels[i] = maxLevel;
       }
     }
-    this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData(
-        this.timelineDataInternal.entryLevels, this.timelineDataInternal.entryTotalTimes,
-        this.timelineDataInternal.entryStartTimes, [this.group]);
+    this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.create({
+      entryLevels: this.timelineDataInternal.entryLevels,
+      entryTotalTimes: this.timelineDataInternal.entryTotalTimes,
+      entryStartTimes: this.timelineDataInternal.entryStartTimes,
+      groups: [this.group],
+    });
     this.maxLevel = maxLevel;
   }
 

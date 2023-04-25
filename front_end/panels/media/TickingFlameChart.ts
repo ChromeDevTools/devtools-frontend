@@ -381,7 +381,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
 
     // Contains the numerical indicies. This is passed as a reference to the events
     // so that they can update it when they change.
-    this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
+    this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
 
     // The current sum of all group heights.
     this.maxLevel = 0;

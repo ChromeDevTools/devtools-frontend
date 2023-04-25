@@ -289,7 +289,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    */
   #instantiateTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     if (!this.timelineDataInternal) {
-      this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
+      this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     }
     return this.timelineDataInternal;
   }
@@ -388,7 +388,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return this.timelineDataInternal;
     }
 
-    this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
+    this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     if (!this.legacyTimelineModel) {
       return this.timelineDataInternal;
     }

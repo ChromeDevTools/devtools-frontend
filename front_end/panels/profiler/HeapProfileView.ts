@@ -688,7 +688,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     this.maxStackDepthInternal = maxDepth + 1;
     this.entryNodes = entryNodes;
     this.timelineDataInternal =
-        new PerfUI.FlameChart.FlameChartTimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+        PerfUI.FlameChart.FlameChartTimelineData.create({entryLevels, entryTotalTimes, entryStartTimes, groups: null});
 
     return this.timelineDataInternal;
   }

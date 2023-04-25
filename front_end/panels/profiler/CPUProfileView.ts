@@ -382,7 +382,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     this.maxStackDepthInternal = maxDepth + 1;
     this.entryNodes = entryNodes;
     this.timelineData_ =
-        new PerfUI.FlameChart.FlameChartTimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+        PerfUI.FlameChart.FlameChartTimelineData.create({entryLevels, entryTotalTimes, entryStartTimes, groups: null});
 
     this.entrySelfTimes = entrySelfTimes;
 

@@ -28,7 +28,7 @@ describeWithEnvironment('TimingTrackAppender', () => {
   let timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   let timingsTrackAppender: Timeline.TimingsTrackAppender.TimingsTrackAppender;
   let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
-  let flameChartData = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
+  let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
   beforeEach(async () => {
     traceParsedData = await loadModelDataFromTraceFile('timings-track.json.gz');
@@ -39,7 +39,7 @@ describeWithEnvironment('TimingTrackAppender', () => {
   });
   afterEach(() => {
     entryData = [];
-    flameChartData = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
+    flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     entryTypeByLevel = [];
   });
 

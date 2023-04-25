@@ -2078,7 +2078,7 @@ export class FlameChartTimelineData {
   flowEndTimes: number[];
   flowEndLevels: number[];
   selectedGroup: Group|null;
-  constructor(
+  private constructor(
       entryLevels: number[]|Uint16Array, entryTotalTimes: number[]|Float32Array, entryStartTimes: number[]|Float64Array,
       groups: Group[]|null) {
     this.entryLevels = entryLevels;
@@ -2091,6 +2091,24 @@ export class FlameChartTimelineData {
     this.flowEndTimes = [];
     this.flowEndLevels = [];
     this.selectedGroup = null;
+  }
+
+  static create(data: {
+    entryLevels: FlameChartTimelineData['entryLevels'],
+    entryTotalTimes: FlameChartTimelineData['entryTotalTimes'],
+    entryStartTimes: FlameChartTimelineData['entryStartTimes'],
+    groups: FlameChartTimelineData['groups']|null,
+  }): FlameChartTimelineData {
+    return new FlameChartTimelineData(data.entryLevels, data.entryTotalTimes, data.entryStartTimes, data.groups);
+  }
+
+  static createEmpty(): FlameChartTimelineData {
+    return new FlameChartTimelineData(
+        [],  // entry levels: what level on the timeline is an event on?,
+        [],  // entry total times: the total duration of an event,
+        [],  // entry start times: the start time of a given event
+        [],  // groups: a list of flame chart groups, which roughly correlate to each individual track
+    );
   }
 }
 

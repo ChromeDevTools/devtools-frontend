@@ -34,7 +34,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
-    const flameChartData = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
+    const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     const traceParsedData = await loadModelDataFromTraceFile(trace);
     const timelineModel = (await traceModelFromTraceFile(trace)).timelineModel;
     const interactionsTrackAppender =

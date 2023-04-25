@@ -29,7 +29,7 @@ describeWithEnvironment('GPUTrackAppender', () => {
   let timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   let gpuTrackAppender: Timeline.GPUTrackAppender.GPUTrackAppender;
   let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
-  let flameChartData = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
+  let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
   beforeEach(async () => {
@@ -41,7 +41,7 @@ describeWithEnvironment('GPUTrackAppender', () => {
 
   afterEach(() => {
     entryData = [];
-    flameChartData = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
+    flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     entryTypeByLevel = [];
   });
 

@@ -267,6 +267,12 @@ const UIStrings = {
    */
   parseAndCompile: 'Parse and Compile',
   /**
+   * @description Text in Timeline UIUtils of the Performance panel.
+   * "Code Cache" refers to JavaScript bytecode cache: https://v8.dev/blog/code-caching-for-devs
+   * "Deserialize" refers to the process of reading the code cache.
+   */
+  deserializeCodeCache: 'Deserialize Code Cache',
+  /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
   streamingWasmResponse: 'Streaming Wasm Response',
@@ -1239,6 +1245,8 @@ export class TimelineUIUtils {
         new TimelineRecordStyle(i18nString(UIStrings.waitingForNetwork), idle);
     eventStyles[type.StreamingCompileScriptParsing] =
         new TimelineRecordStyle(i18nString(UIStrings.parseAndCompile), scripting);
+    eventStyles[type.BackgroundDeserialize] =
+        new TimelineRecordStyle(i18nString(UIStrings.deserializeCodeCache), scripting);
     eventStyles[type.WasmStreamFromResponseCallback] =
         new TimelineRecordStyle(i18nString(UIStrings.streamingWasmResponse), scripting);
     eventStyles[type.WasmCompiledModule] = new TimelineRecordStyle(i18nString(UIStrings.compiledWasmModule), scripting);
@@ -1574,6 +1582,7 @@ export class TimelineUIUtils {
       }
 
       case recordType.StreamingCompileScript:
+      case recordType.BackgroundDeserialize:
       case recordType.XHRReadyStateChange:
       case recordType.XHRLoad: {
         const url = eventData['url'];
@@ -1746,6 +1755,7 @@ export class TimelineUIUtils {
         break;
       }
 
+      case recordType.BackgroundDeserialize:
       case recordType.StreamingCompileScript: {
         const url = eventData['url'];
         if (url) {

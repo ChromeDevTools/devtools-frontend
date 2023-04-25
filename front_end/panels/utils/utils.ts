@@ -27,7 +27,7 @@ export function iconDataForResourceType(resourceType: Common.ResourceType.Resour
   if (resourceType.isWebbundle()) {
     return {iconName: 'bundle', color: 'var(--icon-default)'};
   }
-  return {iconName: 'document', color: 'var(--icon-default)'};
+  return {iconName: 'file-generic', color: 'var(--icon-default)'};
 }
 
 export async function formatCSSChangesFromDiff(diff: Diff.Diff.DiffArray): Promise<string> {

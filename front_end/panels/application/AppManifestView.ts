@@ -625,8 +625,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         copyButton.data = {
           groups: [{
             iconName: 'copy',
-            iconHeight: '14px',
-            iconWidth: '14px',
+            iconHeight: '12px',
+            iconWidth: '12px',
             text: '',
             iconColor: 'var(--icon-default-hover)',
           }],

@@ -128,7 +128,7 @@ class SharedStorageResetBudgetButton extends HTMLElement {
         title=${i18nString(UIStrings.resetBudget)}
         @click=${(): void => this.#resetBudgetHandler()}>
       <${IconButton.Icon.Icon.litTagName} .data=${
-      {iconName: 'revert', color: 'var(--icon-default)', width: '14px', height: '14px'} as
+      {iconName: 'undo', color: 'var(--icon-default)', width: '16px', height: '16px'} as
       IconButton.Icon.IconWithName}>
         </${IconButton.Icon.Icon.litTagName}>
       </button>`, this.#shadow, {host: this});

@@ -41,7 +41,7 @@ function findPropertyAt(node: CodeMirror.SyntaxNode, pos: number): CodeMirror.Sy
     return null;
   }
   for (let cur: CodeMirror.SyntaxNode|null = node; cur; cur = cur.parent) {
-    if (cur.name === 'StyleSheet') {
+    if (cur.name === 'StyleSheet' || cur.name === 'Styles' || cur.name === 'CallExpression') {
       break;
     } else if (cur.name === 'Declaration') {
       const name = cur.getChild('PropertyName'), colon = cur.getChild(':');

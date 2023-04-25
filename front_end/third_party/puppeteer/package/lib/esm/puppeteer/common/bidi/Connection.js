@@ -24,25 +24,28 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Connection_instances, _Connection_transport, _Connection_delay, _Connection_lastId, _Connection_closed, _Connection_callbacks, _Connection_onClose;
+var _Connection_instances, _Connection_transport, _Connection_delay, _Connection_timeout, _Connection_closed, _Connection_callbacks, _Connection_contexts, _Connection_maybeEmitOnContext, _Connection_handleSpecialEvents, _Connection_onClose;
+import { CallbackRegistry } from '../Connection.js';
 import { debug } from '../Debug.js';
+import { EventEmitter } from '../EventEmitter.js';
+import { Context } from './Context.js';
 const debugProtocolSend = debug('puppeteer:webDriverBiDi:SEND ►');
 const debugProtocolReceive = debug('puppeteer:webDriverBiDi:RECV ◀');
-import { EventEmitter } from '../EventEmitter.js';
-import { ProtocolError } from '../Errors.js';
 /**
  * @internal
  */
 export class Connection extends EventEmitter {
-    constructor(transport, delay = 0) {
+    constructor(transport, delay = 0, timeout) {
         super();
         _Connection_instances.add(this);
         _Connection_transport.set(this, void 0);
         _Connection_delay.set(this, void 0);
-        _Connection_lastId.set(this, 0);
+        _Connection_timeout.set(this, 0);
         _Connection_closed.set(this, false);
-        _Connection_callbacks.set(this, new Map());
+        _Connection_callbacks.set(this, new CallbackRegistry());
+        _Connection_contexts.set(this, new Map());
         __classPrivateFieldSet(this, _Connection_delay, delay, "f");
+        __classPrivateFieldSet(this, _Connection_timeout, timeout !== null && timeout !== void 0 ? timeout : 180000, "f");
         __classPrivateFieldSet(this, _Connection_transport, transport, "f");
         __classPrivateFieldGet(this, _Connection_transport, "f").onmessage = this.onMessage.bind(this);
         __classPrivateFieldGet(this, _Connection_transport, "f").onclose = __classPrivateFieldGet(this, _Connection_instances, "m", _Connection_onClose).bind(this);
@@ -50,23 +53,18 @@ export class Connection extends EventEmitter {
     get closed() {
         return __classPrivateFieldGet(this, _Connection_closed, "f");
     }
+    context(contextId) {
+        return __classPrivateFieldGet(this, _Connection_contexts, "f").get(contextId) || null;
+    }
     send(method, params) {
-        var _a;
-        const id = __classPrivateFieldSet(this, _Connection_lastId, (_a = __classPrivateFieldGet(this, _Connection_lastId, "f"), ++_a), "f");
-        const stringifiedMessage = JSON.stringify({
-            id,
-            method,
-            params,
-        });
-        debugProtocolSend(stringifiedMessage);
-        __classPrivateFieldGet(this, _Connection_transport, "f").send(stringifiedMessage);
-        return new Promise((resolve, reject) => {
-            __classPrivateFieldGet(this, _Connection_callbacks, "f").set(id, {
-                resolve,
-                reject,
-                error: new ProtocolError(),
+        return __classPrivateFieldGet(this, _Connection_callbacks, "f").create(method, __classPrivateFieldGet(this, _Connection_timeout, "f"), id => {
+            const stringifiedMessage = JSON.stringify({
+                id,
                 method,
+                params,
             });
+            debugProtocolSend(stringifiedMessage);
+            __classPrivateFieldGet(this, _Connection_transport, "f").send(stringifiedMessage);
         });
     }
     /**
@@ -81,19 +79,16 @@ export class Connection extends EventEmitter {
         debugProtocolReceive(message);
         const object = JSON.parse(message);
         if ('id' in object) {
-            const callback = __classPrivateFieldGet(this, _Connection_callbacks, "f").get(object.id);
-            // Callbacks could be all rejected if someone has called `.dispose()`.
-            if (callback) {
-                __classPrivateFieldGet(this, _Connection_callbacks, "f").delete(object.id);
-                if ('error' in object) {
-                    callback.reject(createProtocolError(callback.error, callback.method, object));
-                }
-                else {
-                    callback.resolve(object.result);
-                }
+            if ('error' in object) {
+                __classPrivateFieldGet(this, _Connection_callbacks, "f").reject(object.id, createProtocolError(object), object.message);
+            }
+            else {
+                __classPrivateFieldGet(this, _Connection_callbacks, "f").resolve(object.id, object);
             }
         }
         else {
+            __classPrivateFieldGet(this, _Connection_instances, "m", _Connection_handleSpecialEvents).call(this, object);
+            __classPrivateFieldGet(this, _Connection_instances, "m", _Connection_maybeEmitOnContext).call(this, object);
             this.emit(object.method, object.params);
         }
     }
@@ -102,28 +97,39 @@ export class Connection extends EventEmitter {
         __classPrivateFieldGet(this, _Connection_transport, "f").close();
     }
 }
-_Connection_transport = new WeakMap(), _Connection_delay = new WeakMap(), _Connection_lastId = new WeakMap(), _Connection_closed = new WeakMap(), _Connection_callbacks = new WeakMap(), _Connection_instances = new WeakSet(), _Connection_onClose = function _Connection_onClose() {
+_Connection_transport = new WeakMap(), _Connection_delay = new WeakMap(), _Connection_timeout = new WeakMap(), _Connection_closed = new WeakMap(), _Connection_callbacks = new WeakMap(), _Connection_contexts = new WeakMap(), _Connection_instances = new WeakSet(), _Connection_maybeEmitOnContext = function _Connection_maybeEmitOnContext(event) {
+    let context;
+    // Context specific events
+    if ('context' in event.params && event.params.context) {
+        context = __classPrivateFieldGet(this, _Connection_contexts, "f").get(event.params.context);
+        // `log.entryAdded` specific context
+    }
+    else if ('source' in event.params && event.params.source.context) {
+        context = __classPrivateFieldGet(this, _Connection_contexts, "f").get(event.params.source.context);
+    }
+    context === null || context === void 0 ? void 0 : context.emit(event.method, event.params);
+}, _Connection_handleSpecialEvents = function _Connection_handleSpecialEvents(event) {
+    switch (event.method) {
+        case 'browsingContext.contextCreated':
+            __classPrivateFieldGet(this, _Connection_contexts, "f").set(event.params.context, new Context(this, event.params));
+    }
+}, _Connection_onClose = function _Connection_onClose() {
     if (__classPrivateFieldGet(this, _Connection_closed, "f")) {
         return;
     }
     __classPrivateFieldSet(this, _Connection_closed, true, "f");
     __classPrivateFieldGet(this, _Connection_transport, "f").onmessage = undefined;
     __classPrivateFieldGet(this, _Connection_transport, "f").onclose = undefined;
-    for (const callback of __classPrivateFieldGet(this, _Connection_callbacks, "f").values()) {
-        callback.reject(rewriteError(callback.error, `Protocol error (${callback.method}): Connection closed.`));
-    }
     __classPrivateFieldGet(this, _Connection_callbacks, "f").clear();
 };
-function rewriteError(error, message, originalMessage) {
-    error.message = message;
-    error.originalMessage = originalMessage !== null && originalMessage !== void 0 ? originalMessage : error.originalMessage;
-    return error;
-}
-function createProtocolError(error, method, object) {
-    let message = `Protocol error (${method}): ${object.error} ${object.message}`;
+/**
+ * @internal
+ */
+function createProtocolError(object) {
+    let message = `${object.error} ${object.message}`;
     if (object.stacktrace) {
         message += ` ${object.stacktrace}`;
     }
-    return rewriteError(error, message, object.message);
+    return message;
 }
 //# sourceMappingURL=Connection.js.map

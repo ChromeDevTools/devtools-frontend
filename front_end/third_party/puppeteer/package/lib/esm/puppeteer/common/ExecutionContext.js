@@ -18,9 +18,21 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _ExecutionContext_instances, _ExecutionContext_evaluate;
-import { JSHandle } from './JSHandle.js';
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var _ExecutionContext_instances, _ExecutionContext_bindingsInstalled, _ExecutionContext_puppeteerUtil, _ExecutionContext_installGlobalBinding, _ExecutionContext_evaluate;
+import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
+import { stringifyFunction } from '../util/Function.js';
+import { ARIAQueryHandler } from './AriaQueryHandler.js';
+import { Binding } from './Binding.js';
+import { CDPElementHandle } from './ElementHandle.js';
+import { CDPJSHandle } from './JSHandle.js';
 import { LazyArg } from './LazyArg.js';
+import { scriptInjector } from './ScriptInjector.js';
 import { createJSHandle, getExceptionMessage, isString, valueFromRemoteObject, } from './util.js';
 /**
  * @public
@@ -50,15 +62,42 @@ const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
  * @internal
  */
 export class ExecutionContext {
-    /**
-     * @internal
-     */
     constructor(client, contextPayload, world) {
         _ExecutionContext_instances.add(this);
+        _ExecutionContext_bindingsInstalled.set(this, false);
+        _ExecutionContext_puppeteerUtil.set(this, void 0);
         this._client = client;
         this._world = world;
         this._contextId = contextPayload.id;
-        this._contextName = contextPayload.name;
+        if (contextPayload.name) {
+            this._contextName = contextPayload.name;
+        }
+    }
+    get puppeteerUtil() {
+        let promise = Promise.resolve();
+        if (!__classPrivateFieldGet(this, _ExecutionContext_bindingsInstalled, "f")) {
+            promise = Promise.all([
+                __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_installGlobalBinding).call(this, new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne)),
+                __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_installGlobalBinding).call(this, new Binding('__ariaQuerySelectorAll', (async (element, selector) => {
+                    const results = ARIAQueryHandler.queryAll(element, selector);
+                    return element.executionContext().evaluateHandle((...elements) => {
+                        return elements;
+                    }, ...(await AsyncIterableUtil.collect(results)));
+                }))),
+            ]);
+            __classPrivateFieldSet(this, _ExecutionContext_bindingsInstalled, true, "f");
+        }
+        scriptInjector.inject(script => {
+            if (__classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f")) {
+                __classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f").then(handle => {
+                    handle.dispose();
+                });
+            }
+            __classPrivateFieldSet(this, _ExecutionContext_puppeteerUtil, promise.then(() => {
+                return this.evaluateHandle(script);
+            }), "f");
+        }, !__classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f"));
+        return __classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f");
     }
     /**
      * Evaluates the given function.
@@ -156,7 +195,19 @@ export class ExecutionContext {
         return __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_evaluate).call(this, false, pageFunction, ...args);
     }
 }
-_ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async function _ExecutionContext_evaluate(returnByValue, pageFunction, ...args) {
+_ExecutionContext_bindingsInstalled = new WeakMap(), _ExecutionContext_puppeteerUtil = new WeakMap(), _ExecutionContext_instances = new WeakSet(), _ExecutionContext_installGlobalBinding = async function _ExecutionContext_installGlobalBinding(binding) {
+    try {
+        if (this._world) {
+            this._world._bindings.set(binding.name, binding);
+            await this._world._addBindingToContext(this, binding.name);
+        }
+    }
+    catch {
+        // If the binding cannot be added, then either the browser doesn't support
+        // bindings (e.g. Firefox) or the context is broken. Either breakage is
+        // okay, so we ignore the error.
+    }
+}, _ExecutionContext_evaluate = async function _ExecutionContext_evaluate(returnByValue, pageFunction, ...args) {
     const suffix = `//# sourceURL=${EVALUATION_SCRIPT_URL}`;
     if (isString(pageFunction)) {
         const contextId = this._contextId;
@@ -180,32 +231,10 @@ _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async 
             ? valueFromRemoteObject(remoteObject)
             : createJSHandle(this, remoteObject);
     }
-    let functionText = pageFunction.toString();
-    try {
-        new Function('(' + functionText + ')');
-    }
-    catch (error) {
-        // This means we might have a function shorthand. Try another
-        // time prefixing 'function '.
-        if (functionText.startsWith('async ')) {
-            functionText =
-                'async function ' + functionText.substring('async '.length);
-        }
-        else {
-            functionText = 'function ' + functionText;
-        }
-        try {
-            new Function('(' + functionText + ')');
-        }
-        catch (error) {
-            // We tried hard to serialize, but there's a weird beast here.
-            throw new Error('Passed function is not well-serializable!');
-        }
-    }
     let callFunctionOnPromise;
     try {
         callFunctionOnPromise = this._client.send('Runtime.callFunctionOn', {
-            functionDeclaration: functionText + '\n' + suffix + '\n',
+            functionDeclaration: `${stringifyFunction(pageFunction)}\n${suffix}\n`,
             executionContextId: this._contextId,
             arguments: await Promise.all(args.map(convertArgument.bind(this))),
             returnByValue,
@@ -229,7 +258,7 @@ _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async 
         : createJSHandle(this, remoteObject);
     async function convertArgument(arg) {
         if (arg instanceof LazyArg) {
-            arg = await arg.get();
+            arg = await arg.get(this);
         }
         if (typeof arg === 'bigint') {
             // eslint-disable-line valid-typeof
@@ -247,7 +276,9 @@ _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async 
         if (Object.is(arg, NaN)) {
             return { unserializableValue: 'NaN' };
         }
-        const objectHandle = arg && arg instanceof JSHandle ? arg : null;
+        const objectHandle = arg && (arg instanceof CDPJSHandle || arg instanceof CDPElementHandle)
+            ? arg
+            : null;
         if (objectHandle) {
             if (objectHandle.executionContext() !== this) {
                 throw new Error('JSHandles can be evaluated only in the context they were created!');

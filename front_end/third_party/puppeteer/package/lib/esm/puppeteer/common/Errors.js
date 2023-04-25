@@ -53,6 +53,17 @@ export class CustomError extends Error {
 export class TimeoutError extends CustomError {
 }
 /**
+ * AbortError is emitted whenever certain operations are terminated due to
+ * an abort request.
+ *
+ * @remarks
+ * Example operations are {@link Page.waitForSelector | page.waitForSelector}.
+ *
+ * @public
+ */
+export class AbortError extends CustomError {
+}
+/**
  * ProtocolError is emitted whenever there is an error from the protocol.
  *
  * @public
@@ -63,25 +74,21 @@ export class ProtocolError extends CustomError {
         _ProtocolError_code.set(this, void 0);
         _ProtocolError_originalMessage.set(this, '');
     }
-    /**
-     * @internal
-     */
     set code(code) {
         __classPrivateFieldSet(this, _ProtocolError_code, code, "f");
     }
     /**
+     * @readonly
      * @public
      */
     get code() {
         return __classPrivateFieldGet(this, _ProtocolError_code, "f");
     }
-    /**
-     * @internal
-     */
     set originalMessage(originalMessage) {
         __classPrivateFieldSet(this, _ProtocolError_originalMessage, originalMessage, "f");
     }
     /**
+     * @readonly
      * @public
      */
     get originalMessage() {

@@ -25,11 +25,13 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _WaitTask_world, _WaitTask_bindings, _WaitTask_polling, _WaitTask_root, _WaitTask_fn, _WaitTask_args, _WaitTask_timeout, _WaitTask_result, _WaitTask_poller, _TaskManager_tasks;
+var _WaitTask_world, _WaitTask_polling, _WaitTask_root, _WaitTask_fn, _WaitTask_args, _WaitTask_timeout, _WaitTask_result, _WaitTask_poller, _WaitTask_signal, _TaskManager_tasks;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskManager = exports.WaitTask = void 0;
 const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
+const Function_js_1 = require("../util/Function.js");
 const Errors_js_1 = require("./Errors.js");
+const LazyArg_js_1 = require("./LazyArg.js");
 /**
  * @internal
  */
@@ -37,7 +39,6 @@ class WaitTask {
     constructor(world, options, fn, ...args) {
         var _a;
         _WaitTask_world.set(this, void 0);
-        _WaitTask_bindings.set(this, void 0);
         _WaitTask_polling.set(this, void 0);
         _WaitTask_root.set(this, void 0);
         _WaitTask_fn.set(this, void 0);
@@ -45,16 +46,22 @@ class WaitTask {
         _WaitTask_timeout.set(this, void 0);
         _WaitTask_result.set(this, (0, DeferredPromise_js_1.createDeferredPromise)());
         _WaitTask_poller.set(this, void 0);
+        _WaitTask_signal.set(this, void 0);
         __classPrivateFieldSet(this, _WaitTask_world, world, "f");
-        __classPrivateFieldSet(this, _WaitTask_bindings, (_a = options.bindings) !== null && _a !== void 0 ? _a : new Map(), "f");
         __classPrivateFieldSet(this, _WaitTask_polling, options.polling, "f");
         __classPrivateFieldSet(this, _WaitTask_root, options.root, "f");
+        __classPrivateFieldSet(this, _WaitTask_signal, options.signal, "f");
+        (_a = __classPrivateFieldGet(this, _WaitTask_signal, "f")) === null || _a === void 0 ? void 0 : _a.addEventListener('abort', () => {
+            this.terminate(new Errors_js_1.AbortError('WaitTask has been aborted.'));
+        }, {
+            once: true,
+        });
         switch (typeof fn) {
             case 'string':
                 __classPrivateFieldSet(this, _WaitTask_fn, `() => {return (${fn});}`, "f");
                 break;
             default:
-                __classPrivateFieldSet(this, _WaitTask_fn, fn.toString(), "f");
+                __classPrivateFieldSet(this, _WaitTask_fn, (0, Function_js_1.stringifyFunction)(fn), "f");
                 break;
         }
         __classPrivateFieldSet(this, _WaitTask_args, args, "f");
@@ -64,11 +71,6 @@ class WaitTask {
                 this.terminate(new Errors_js_1.TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`));
             }, options.timeout), "f");
         }
-        if (__classPrivateFieldGet(this, _WaitTask_bindings, "f").size !== 0) {
-            for (const [name, fn] of __classPrivateFieldGet(this, _WaitTask_bindings, "f")) {
-                __classPrivateFieldGet(this, _WaitTask_world, "f")._boundFunctions.set(name, fn);
-            }
-        }
         this.rerun();
     }
     get result() {
@@ -76,12 +78,6 @@ class WaitTask {
     }
     async rerun() {
         try {
-            if (__classPrivateFieldGet(this, _WaitTask_bindings, "f").size !== 0) {
-                const context = await __classPrivateFieldGet(this, _WaitTask_world, "f").executionContext();
-                await Promise.all([...__classPrivateFieldGet(this, _WaitTask_bindings, "f")].map(async ([name]) => {
-                    return await __classPrivateFieldGet(this, _WaitTask_world, "f")._addBindingToContext(context, name);
-                }));
-            }
             switch (__classPrivateFieldGet(this, _WaitTask_polling, "f")) {
                 case 'raf':
                     __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ RAFPoller, createFunction }, fn, ...args) => {
@@ -89,7 +85,9 @@ class WaitTask {
                         return new RAFPoller(() => {
                             return fun(...args);
                         });
-                    }, await __classPrivateFieldGet(this, _WaitTask_world, "f").puppeteerUtil, __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }, LazyArg_js_1.LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
                     break;
                 case 'mutation':
                     __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ MutationPoller, createFunction }, root, fn, ...args) => {
@@ -97,7 +95,9 @@ class WaitTask {
                         return new MutationPoller(() => {
                             return fun(...args);
                         }, root || document);
-                    }, await __classPrivateFieldGet(this, _WaitTask_world, "f").puppeteerUtil, __classPrivateFieldGet(this, _WaitTask_root, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }, LazyArg_js_1.LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), __classPrivateFieldGet(this, _WaitTask_root, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
                     break;
                 default:
                     __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ IntervalPoller, createFunction }, ms, fn, ...args) => {
@@ -105,7 +105,9 @@ class WaitTask {
                         return new IntervalPoller(() => {
                             return fun(...args);
                         }, ms);
-                    }, await __classPrivateFieldGet(this, _WaitTask_world, "f").puppeteerUtil, __classPrivateFieldGet(this, _WaitTask_polling, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }, LazyArg_js_1.LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), __classPrivateFieldGet(this, _WaitTask_polling, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
                     break;
             }
             await __classPrivateFieldGet(this, _WaitTask_poller, "f").evaluate(poller => {
@@ -173,7 +175,7 @@ class WaitTask {
     }
 }
 exports.WaitTask = WaitTask;
-_WaitTask_world = new WeakMap(), _WaitTask_bindings = new WeakMap(), _WaitTask_polling = new WeakMap(), _WaitTask_root = new WeakMap(), _WaitTask_fn = new WeakMap(), _WaitTask_args = new WeakMap(), _WaitTask_timeout = new WeakMap(), _WaitTask_result = new WeakMap(), _WaitTask_poller = new WeakMap();
+_WaitTask_world = new WeakMap(), _WaitTask_polling = new WeakMap(), _WaitTask_root = new WeakMap(), _WaitTask_fn = new WeakMap(), _WaitTask_args = new WeakMap(), _WaitTask_timeout = new WeakMap(), _WaitTask_result = new WeakMap(), _WaitTask_poller = new WeakMap(), _WaitTask_signal = new WeakMap();
 /**
  * @internal
  */

@@ -29,11 +29,11 @@ var _Coverage_jsCoverage, _Coverage_cssCoverage, _JSCoverage_instances, _JSCover
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CSSCoverage = exports.JSCoverage = exports.Coverage = void 0;
 const assert_js_1 = require("../util/assert.js");
-const util_js_1 = require("./util.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
+const util_js_1 = require("./util.js");
 const util_js_2 = require("./util.js");
 /**
- * The Coverage class provides methods to gathers information about parts of
+ * The Coverage class provides methods to gather information about parts of
  * JavaScript and CSS that were used by the page.
  *
  * @remarks
@@ -93,7 +93,7 @@ class Coverage {
         return await __classPrivateFieldGet(this, _Coverage_jsCoverage, "f").start(options);
     }
     /**
-     * @returns Promise that resolves to the array of coverage reports for
+     * Promise that resolves to the array of coverage reports for
      * all scripts.
      *
      * @remarks
@@ -112,8 +112,9 @@ class Coverage {
         return await __classPrivateFieldGet(this, _Coverage_cssCoverage, "f").start(options);
     }
     /**
-     * @returns Promise that resolves to the array of coverage reports
+     * Promise that resolves to the array of coverage reports
      * for all stylesheets.
+     *
      * @remarks
      * CSS Coverage doesn't include dynamically injected style tags
      * without sourceURLs.

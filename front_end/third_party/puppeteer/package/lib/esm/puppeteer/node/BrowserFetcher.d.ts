@@ -19,7 +19,7 @@ import { Product } from '../common/Product.js';
  *
  * @public
  */
-export declare type Platform = 'linux' | 'mac' | 'mac_arm' | 'win32' | 'win64';
+export type Platform = 'linux' | 'mac' | 'mac_arm' | 'win32' | 'win64';
 /**
  * @public
  */
@@ -31,13 +31,13 @@ export interface BrowserFetcherOptions {
     /**
      * Determines which platform the browser will be suited for.
      *
-     * @defaultValue Auto-detected.
+     * @defaultValue **Auto-detected.**
      */
     platform?: Platform;
     /**
      * Determines which product the {@link BrowserFetcher} is for.
      *
-     * @defaultValue `"chrome"`.
+     * @defaultValue `chrome`
      */
     product?: 'chrome' | 'firefox';
     /**
@@ -108,17 +108,17 @@ export declare class BrowserFetcher {
      */
     constructor(options: BrowserFetcherOptions);
     /**
-     * @returns Returns the current `Platform`, which is one of `mac`, `linux`,
+     * Returns the current `Platform`, which is one of `mac`, `linux`,
      * `win32` or `win64`.
      */
     platform(): Platform;
     /**
-     * @returns Returns the current `Product`, which is one of `chrome` or
+     * Returns the current `Product`, which is one of `chrome` or
      * `firefox`.
      */
     product(): Product;
     /**
-     * @returns The download host being used.
+     * The download host being used.
      */
     host(): string;
     /**
@@ -152,7 +152,7 @@ export declare class BrowserFetcher {
      * @remarks
      * This method is affected by the current `product`.
      * @param revision - A revision to remove for the current `product`.
-     * @returns A promise that resolves when the revision has been removes or
+     * @returns A promise that resolves when the revision has been removed or
      * throws if the revision has not been downloaded.
      */
     remove(revision: string): Promise<void>;
@@ -161,5 +161,9 @@ export declare class BrowserFetcher {
      * @returns The revision info for the given revision.
      */
     revisionInfo(revision: string): BrowserFetcherRevisionInfo;
+    /**
+     * @internal
+     */
+    getDownloadPath(): string;
 }
 //# sourceMappingURL=BrowserFetcher.d.ts.map

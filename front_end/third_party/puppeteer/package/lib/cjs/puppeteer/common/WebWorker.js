@@ -13,11 +13,11 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _WebWorker_executionContext, _WebWorker_client, _WebWorker_url;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebWorker = void 0;
+const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
 const EventEmitter_js_1 = require("./EventEmitter.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 const util_js_1 = require("./util.js");
-const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
 /**
  * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
@@ -62,7 +62,7 @@ class WebWorker extends EventEmitter_js_1.EventEmitter {
         __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.consoleAPICalled', async (event) => {
             const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
             return consoleAPICalled(event.type, event.args.map((object) => {
-                return new JSHandle_js_1.JSHandle(context, object);
+                return new JSHandle_js_1.CDPJSHandle(context, object);
             }), event.stackTrace);
         });
         __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.exceptionThrown', exception => {
@@ -78,10 +78,16 @@ class WebWorker extends EventEmitter_js_1.EventEmitter {
         return __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
     }
     /**
-     * @returns The URL of this web worker.
+     * The URL of this web worker.
      */
     url() {
         return __classPrivateFieldGet(this, _WebWorker_url, "f");
+    }
+    /**
+     * The CDP session client the WebWorker belongs to.
+     */
+    get client() {
+        return __classPrivateFieldGet(this, _WebWorker_client, "f");
     }
     /**
      * If the function passed to the `worker.evaluate` returns a Promise, then

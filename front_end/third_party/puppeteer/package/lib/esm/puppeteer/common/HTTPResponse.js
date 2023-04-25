@@ -9,26 +9,22 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _HTTPResponse_instances, _HTTPResponse_client, _HTTPResponse_request, _HTTPResponse_contentPromise, _HTTPResponse_bodyLoadedPromise, _HTTPResponse_bodyLoadedPromiseFulfill, _HTTPResponse_remoteAddress, _HTTPResponse_status, _HTTPResponse_statusText, _HTTPResponse_url, _HTTPResponse_fromDiskCache, _HTTPResponse_fromServiceWorker, _HTTPResponse_headers, _HTTPResponse_securityDetails, _HTTPResponse_timing, _HTTPResponse_parseStatusTextFromExtrInfo;
-import { SecurityDetails } from './SecurityDetails.js';
+var _HTTPResponse_instances, _HTTPResponse_client, _HTTPResponse_request, _HTTPResponse_contentPromise, _HTTPResponse_bodyLoadedPromise, _HTTPResponse_remoteAddress, _HTTPResponse_status, _HTTPResponse_statusText, _HTTPResponse_url, _HTTPResponse_fromDiskCache, _HTTPResponse_fromServiceWorker, _HTTPResponse_headers, _HTTPResponse_securityDetails, _HTTPResponse_timing, _HTTPResponse_parseStatusTextFromExtrInfo;
+import { HTTPResponse as BaseHTTPResponse, } from '../api/HTTPResponse.js';
+import { createDeferredPromise } from '../util/DeferredPromise.js';
 import { ProtocolError } from './Errors.js';
+import { SecurityDetails } from './SecurityDetails.js';
 /**
- * The HTTPResponse class represents responses which are received by the
- * {@link Page} class.
- *
- * @public
+ * @internal
  */
-export class HTTPResponse {
-    /**
-     * @internal
-     */
+export class HTTPResponse extends BaseHTTPResponse {
     constructor(client, request, responsePayload, extraInfo) {
+        super();
         _HTTPResponse_instances.add(this);
         _HTTPResponse_client.set(this, void 0);
         _HTTPResponse_request.set(this, void 0);
         _HTTPResponse_contentPromise.set(this, null);
-        _HTTPResponse_bodyLoadedPromise.set(this, void 0);
-        _HTTPResponse_bodyLoadedPromiseFulfill.set(this, () => { });
+        _HTTPResponse_bodyLoadedPromise.set(this, createDeferredPromise());
         _HTTPResponse_remoteAddress.set(this, void 0);
         _HTTPResponse_status.set(this, void 0);
         _HTTPResponse_statusText.set(this, void 0);
@@ -40,9 +36,6 @@ export class HTTPResponse {
         _HTTPResponse_timing.set(this, void 0);
         __classPrivateFieldSet(this, _HTTPResponse_client, client, "f");
         __classPrivateFieldSet(this, _HTTPResponse_request, request, "f");
-        __classPrivateFieldSet(this, _HTTPResponse_bodyLoadedPromise, new Promise(fulfill => {
-            __classPrivateFieldSet(this, _HTTPResponse_bodyLoadedPromiseFulfill, fulfill, "f");
-        }), "f");
         __classPrivateFieldSet(this, _HTTPResponse_remoteAddress, {
             ip: responsePayload.remoteIPAddress,
             port: responsePayload.remotePort,
@@ -62,71 +55,37 @@ export class HTTPResponse {
             : null, "f");
         __classPrivateFieldSet(this, _HTTPResponse_timing, responsePayload.timing || null, "f");
     }
-    /**
-     * @internal
-     */
     _resolveBody(err) {
         if (err) {
-            return __classPrivateFieldGet(this, _HTTPResponse_bodyLoadedPromiseFulfill, "f").call(this, err);
+            return __classPrivateFieldGet(this, _HTTPResponse_bodyLoadedPromise, "f").resolve(err);
         }
-        return __classPrivateFieldGet(this, _HTTPResponse_bodyLoadedPromiseFulfill, "f").call(this);
+        return __classPrivateFieldGet(this, _HTTPResponse_bodyLoadedPromise, "f").resolve();
     }
-    /**
-     * @returns The IP address and port number used to connect to the remote
-     * server.
-     */
     remoteAddress() {
         return __classPrivateFieldGet(this, _HTTPResponse_remoteAddress, "f");
     }
-    /**
-     * @returns The URL of the response.
-     */
     url() {
         return __classPrivateFieldGet(this, _HTTPResponse_url, "f");
     }
-    /**
-     * @returns True if the response was successful (status in the range 200-299).
-     */
     ok() {
         // TODO: document === 0 case?
         return __classPrivateFieldGet(this, _HTTPResponse_status, "f") === 0 || (__classPrivateFieldGet(this, _HTTPResponse_status, "f") >= 200 && __classPrivateFieldGet(this, _HTTPResponse_status, "f") <= 299);
     }
-    /**
-     * @returns The status code of the response (e.g., 200 for a success).
-     */
     status() {
         return __classPrivateFieldGet(this, _HTTPResponse_status, "f");
     }
-    /**
-     * @returns The status text of the response (e.g. usually an "OK" for a
-     * success).
-     */
     statusText() {
         return __classPrivateFieldGet(this, _HTTPResponse_statusText, "f");
     }
-    /**
-     * @returns An object with HTTP headers associated with the response. All
-     * header names are lower-case.
-     */
     headers() {
         return __classPrivateFieldGet(this, _HTTPResponse_headers, "f");
     }
-    /**
-     * @returns {@link SecurityDetails} if the response was received over the
-     * secure connection, or `null` otherwise.
-     */
     securityDetails() {
         return __classPrivateFieldGet(this, _HTTPResponse_securityDetails, "f");
     }
-    /**
-     * @returns Timing information related to the response.
-     */
     timing() {
         return __classPrivateFieldGet(this, _HTTPResponse_timing, "f");
     }
-    /**
-     * @returns Promise which resolves to a buffer with response body.
-     */
     buffer() {
         if (!__classPrivateFieldGet(this, _HTTPResponse_contentPromise, "f")) {
             __classPrivateFieldSet(this, _HTTPResponse_contentPromise, __classPrivateFieldGet(this, _HTTPResponse_bodyLoadedPromise, "f").then(async (error) => {
@@ -150,54 +109,20 @@ export class HTTPResponse {
         }
         return __classPrivateFieldGet(this, _HTTPResponse_contentPromise, "f");
     }
-    /**
-     * @returns Promise which resolves to a text representation of response body.
-     */
-    async text() {
-        const content = await this.buffer();
-        return content.toString('utf8');
-    }
-    /**
-     *
-     * @returns Promise which resolves to a JSON representation of response body.
-     *
-     * @remarks
-     *
-     * This method will throw if the response body is not parsable via
-     * `JSON.parse`.
-     */
-    async json() {
-        const content = await this.text();
-        return JSON.parse(content);
-    }
-    /**
-     * @returns A matching {@link HTTPRequest} object.
-     */
     request() {
         return __classPrivateFieldGet(this, _HTTPResponse_request, "f");
     }
-    /**
-     * @returns True if the response was served from either the browser's disk
-     * cache or memory cache.
-     */
     fromCache() {
         return __classPrivateFieldGet(this, _HTTPResponse_fromDiskCache, "f") || __classPrivateFieldGet(this, _HTTPResponse_request, "f")._fromMemoryCache;
     }
-    /**
-     * @returns True if the response was served by a service worker.
-     */
     fromServiceWorker() {
         return __classPrivateFieldGet(this, _HTTPResponse_fromServiceWorker, "f");
     }
-    /**
-     * @returns A {@link Frame} that initiated this response, or `null` if
-     * navigating to error pages.
-     */
     frame() {
         return __classPrivateFieldGet(this, _HTTPResponse_request, "f").frame();
     }
 }
-_HTTPResponse_client = new WeakMap(), _HTTPResponse_request = new WeakMap(), _HTTPResponse_contentPromise = new WeakMap(), _HTTPResponse_bodyLoadedPromise = new WeakMap(), _HTTPResponse_bodyLoadedPromiseFulfill = new WeakMap(), _HTTPResponse_remoteAddress = new WeakMap(), _HTTPResponse_status = new WeakMap(), _HTTPResponse_statusText = new WeakMap(), _HTTPResponse_url = new WeakMap(), _HTTPResponse_fromDiskCache = new WeakMap(), _HTTPResponse_fromServiceWorker = new WeakMap(), _HTTPResponse_headers = new WeakMap(), _HTTPResponse_securityDetails = new WeakMap(), _HTTPResponse_timing = new WeakMap(), _HTTPResponse_instances = new WeakSet(), _HTTPResponse_parseStatusTextFromExtrInfo = function _HTTPResponse_parseStatusTextFromExtrInfo(extraInfo) {
+_HTTPResponse_client = new WeakMap(), _HTTPResponse_request = new WeakMap(), _HTTPResponse_contentPromise = new WeakMap(), _HTTPResponse_bodyLoadedPromise = new WeakMap(), _HTTPResponse_remoteAddress = new WeakMap(), _HTTPResponse_status = new WeakMap(), _HTTPResponse_statusText = new WeakMap(), _HTTPResponse_url = new WeakMap(), _HTTPResponse_fromDiskCache = new WeakMap(), _HTTPResponse_fromServiceWorker = new WeakMap(), _HTTPResponse_headers = new WeakMap(), _HTTPResponse_securityDetails = new WeakMap(), _HTTPResponse_timing = new WeakMap(), _HTTPResponse_instances = new WeakSet(), _HTTPResponse_parseStatusTextFromExtrInfo = function _HTTPResponse_parseStatusTextFromExtrInfo(extraInfo) {
     if (!extraInfo || !extraInfo.headersText) {
         return;
     }

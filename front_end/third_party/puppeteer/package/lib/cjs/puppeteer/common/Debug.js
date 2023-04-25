@@ -38,7 +38,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.debug = exports.importDebug = void 0;
+exports.getCapturedLogs = exports.setLogCapture = exports.debug = exports.importDebug = void 0;
 const environment_js_1 = require("../environment.js");
 /**
  * @internal
@@ -95,6 +95,9 @@ exports.importDebug = importDebug;
 const debug = (prefix) => {
     if (environment_js_1.isNode) {
         return async (...logArgs) => {
+            if (captureLogs) {
+                capturedLogs.push(prefix + logArgs);
+            }
             (await importDebug())(prefix)(logArgs);
         };
     }
@@ -121,4 +124,27 @@ const debug = (prefix) => {
     };
 };
 exports.debug = debug;
+/**
+ * @internal
+ */
+let capturedLogs = [];
+/**
+ * @internal
+ */
+let captureLogs = false;
+/**
+ * @internal
+ */
+function setLogCapture(value) {
+    capturedLogs = [];
+    captureLogs = value;
+}
+exports.setLogCapture = setLogCapture;
+/**
+ * @internal
+ */
+function getCapturedLogs() {
+    return capturedLogs;
+}
+exports.getCapturedLogs = getCapturedLogs;
 //# sourceMappingURL=Debug.js.map

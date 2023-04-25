@@ -40,10 +40,11 @@ class BrowserContext extends BrowserContext_js_1.BrowserContext {
         __classPrivateFieldSet(this, _BrowserContext_connection, connection, "f");
     }
     async newPage() {
-        const result = (await __classPrivateFieldGet(this, _BrowserContext_connection, "f").send('browsingContext.create', {
+        const { result } = await __classPrivateFieldGet(this, _BrowserContext_connection, "f").send('browsingContext.create', {
             type: 'tab',
-        }));
-        return new Page_js_1.Page(__classPrivateFieldGet(this, _BrowserContext_connection, "f"), result.context);
+        });
+        const context = __classPrivateFieldGet(this, _BrowserContext_connection, "f").context(result.context);
+        return new Page_js_1.Page(context);
     }
     async close() { }
 }

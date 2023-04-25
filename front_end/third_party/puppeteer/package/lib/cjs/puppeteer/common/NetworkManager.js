@@ -25,16 +25,16 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _NetworkManager_instances, _NetworkManager_client, _NetworkManager_ignoreHTTPSErrors, _NetworkManager_frameManager, _NetworkManager_networkEventManager, _NetworkManager_extraHTTPHeaders, _NetworkManager_credentials, _NetworkManager_attemptedAuthentications, _NetworkManager_userRequestInterceptionEnabled, _NetworkManager_protocolRequestInterceptionEnabled, _NetworkManager_userCacheDisabled, _NetworkManager_emulatedNetworkConditions, _NetworkManager_deferredInitPromise, _NetworkManager_updateNetworkConditions, _NetworkManager_updateProtocolRequestInterception, _NetworkManager_cacheDisabled, _NetworkManager_updateProtocolCacheDisabled, _NetworkManager_onRequestWillBeSent, _NetworkManager_onAuthRequired, _NetworkManager_onRequestPaused, _NetworkManager_patchRequestEventHeaders, _NetworkManager_onRequest, _NetworkManager_onRequestServedFromCache, _NetworkManager_handleRequestRedirect, _NetworkManager_emitResponseEvent, _NetworkManager_onResponseReceived, _NetworkManager_onResponseReceivedExtraInfo, _NetworkManager_forgetRequest, _NetworkManager_onLoadingFinished, _NetworkManager_emitLoadingFinished, _NetworkManager_onLoadingFailed, _NetworkManager_emitLoadingFailed;
+var _NetworkManager_instances, _NetworkManager_client, _NetworkManager_ignoreHTTPSErrors, _NetworkManager_frameManager, _NetworkManager_networkEventManager, _NetworkManager_extraHTTPHeaders, _NetworkManager_credentials, _NetworkManager_attemptedAuthentications, _NetworkManager_userRequestInterceptionEnabled, _NetworkManager_protocolRequestInterceptionEnabled, _NetworkManager_userCacheDisabled, _NetworkManager_emulatedNetworkConditions, _NetworkManager_deferredInitPromise, _NetworkManager_updateNetworkConditions, _NetworkManager_updateProtocolRequestInterception, _NetworkManager_cacheDisabled, _NetworkManager_updateProtocolCacheDisabled, _NetworkManager_onRequestWillBeSent, _NetworkManager_onAuthRequired, _NetworkManager_onRequestPaused, _NetworkManager_patchRequestEventHeaders, _NetworkManager_onRequestWithoutNetworkInstrumentation, _NetworkManager_onRequest, _NetworkManager_onRequestServedFromCache, _NetworkManager_handleRequestRedirect, _NetworkManager_emitResponseEvent, _NetworkManager_onResponseReceived, _NetworkManager_onResponseReceivedExtraInfo, _NetworkManager_forgetRequest, _NetworkManager_onLoadingFinished, _NetworkManager_emitLoadingFinished, _NetworkManager_onLoadingFailed, _NetworkManager_emitLoadingFailed;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetworkManager = exports.NetworkManagerEmittedEvents = void 0;
 const assert_js_1 = require("../util/assert.js");
+const DebuggableDeferredPromise_js_1 = require("../util/DebuggableDeferredPromise.js");
 const EventEmitter_js_1 = require("./EventEmitter.js");
 const HTTPRequest_js_1 = require("./HTTPRequest.js");
 const HTTPResponse_js_1 = require("./HTTPResponse.js");
 const NetworkEventManager_js_1 = require("./NetworkEventManager.js");
 const util_js_1 = require("./util.js");
-const DebuggableDeferredPromise_js_1 = require("../util/DebuggableDeferredPromise.js");
 /**
  * We use symbols to prevent any external parties listening to these events.
  * They are internal to Puppeteer.
@@ -247,6 +247,7 @@ _NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new 
     }
     const { networkId: networkRequestId, requestId: fetchRequestId } = event;
     if (!networkRequestId) {
+        __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onRequestWithoutNetworkInstrumentation).call(this, event);
         return;
     }
     const requestWillBeSentEvent = (() => {
@@ -273,6 +274,15 @@ _NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new 
         // includes extra headers, like: Accept, Origin
         ...requestPausedEvent.request.headers,
     };
+}, _NetworkManager_onRequestWithoutNetworkInstrumentation = function _NetworkManager_onRequestWithoutNetworkInstrumentation(event) {
+    // If an event has no networkId it should not have any network events. We
+    // still want to dispatch it for the interception by the user.
+    const frame = event.frameId
+        ? __classPrivateFieldGet(this, _NetworkManager_frameManager, "f").frame(event.frameId)
+        : null;
+    const request = new HTTPRequest_js_1.HTTPRequest(__classPrivateFieldGet(this, _NetworkManager_client, "f"), frame, event.requestId, __classPrivateFieldGet(this, _NetworkManager_userRequestInterceptionEnabled, "f"), event, []);
+    this.emit(exports.NetworkManagerEmittedEvents.Request, request);
+    request.finalizeInterceptions();
 }, _NetworkManager_onRequest = function _NetworkManager_onRequest(event, fetchRequestId) {
     let redirectChain = [];
     if (event.redirectResponse) {
@@ -335,6 +345,12 @@ _NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new 
     if (extraInfos.length) {
         (0, util_js_1.debugError)(new Error('Unexpected extraInfo events for request ' +
             responseReceived.requestId));
+    }
+    // Chromium sends wrong extraInfo events for responses served from cache.
+    // See https://github.com/puppeteer/puppeteer/issues/9965 and
+    // https://crbug.com/1340398.
+    if (responseReceived.response.fromDiskCache) {
+        extraInfo = null;
     }
     const response = new HTTPResponse_js_1.HTTPResponse(__classPrivateFieldGet(this, _NetworkManager_client, "f"), request, responseReceived.response, extraInfo);
     request._response = response;

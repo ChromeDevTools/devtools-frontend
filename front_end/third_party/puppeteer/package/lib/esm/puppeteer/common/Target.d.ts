@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Page } from '../api/Page.js';
-import { WebWorker } from './WebWorker.js';
-import { CDPSession } from './Connection.js';
+import { Protocol } from 'devtools-protocol';
 import type { Browser, IsPageTargetCallback } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
+import { Page } from '../api/Page.js';
+import { CDPSession } from './Connection.js';
 import { Viewport } from './PuppeteerViewport.js';
-import { Protocol } from 'devtools-protocol';
-import { TaskQueue } from './TaskQueue.js';
 import { TargetManager } from './TargetManager.js';
+import { TaskQueue } from './TaskQueue.js';
+import { WebWorker } from './WebWorker.js';
 /**
+ * Target represents a
+ * {@link https://chromedevtools.github.io/devtools-protocol/tot/Target/ | CDP target}.
+ * In CDP a target is something that can be debugged such a frame, a page or a
+ * worker.
+ *
  * @public
  */
 export declare class Target {

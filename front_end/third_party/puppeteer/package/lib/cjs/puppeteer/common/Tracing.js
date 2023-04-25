@@ -29,8 +29,8 @@ exports.Tracing = void 0;
  * limitations under the License.
  */
 const assert_js_1 = require("../util/assert.js");
-const util_js_1 = require("./util.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
+const util_js_1 = require("./util.js");
 /**
  * The Tracing class exposes the tracing audit interface.
  * @remarks

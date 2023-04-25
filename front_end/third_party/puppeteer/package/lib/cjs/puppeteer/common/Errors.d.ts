@@ -37,25 +37,32 @@ export declare class CustomError extends Error {
 export declare class TimeoutError extends CustomError {
 }
 /**
+ * AbortError is emitted whenever certain operations are terminated due to
+ * an abort request.
+ *
+ * @remarks
+ * Example operations are {@link Page.waitForSelector | page.waitForSelector}.
+ *
+ * @public
+ */
+export declare class AbortError extends CustomError {
+}
+/**
  * ProtocolError is emitted whenever there is an error from the protocol.
  *
  * @public
  */
 export declare class ProtocolError extends CustomError {
     #private;
-    /**
-     * @internal
-     */
     set code(code: number | undefined);
     /**
+     * @readonly
      * @public
      */
     get code(): number | undefined;
-    /**
-     * @internal
-     */
     set originalMessage(originalMessage: string);
     /**
+     * @readonly
      * @public
      */
     get originalMessage(): string;

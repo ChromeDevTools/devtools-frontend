@@ -15,13 +15,13 @@
  */
 /// <reference types="node" />
 import { ChildProcess } from 'child_process';
-import { Connection } from './Connection.js';
+import { Browser as BrowserBase, BrowserCloseCallback, TargetFilterCallback, IsPageTargetCallback, BrowserContextOptions, WaitForTargetOptions, Permission } from '../api/Browser.js';
+import { BrowserContext } from '../api/BrowserContext.js';
 import { Page } from '../api/Page.js';
+import { Connection } from './Connection.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
 import { TargetManager } from './TargetManager.js';
-import { Browser as BrowserBase, BrowserCloseCallback, TargetFilterCallback, IsPageTargetCallback, BrowserContextOptions, WaitForTargetOptions, Permission } from '../api/Browser.js';
-import { BrowserContext } from '../api/BrowserContext.js';
 /**
  * @internal
  */
@@ -217,7 +217,7 @@ export declare class CDPBrowserContext extends BrowserContext {
      * ```
      *
      * @param predicate - A function to be run for every target
-     * @param options - An object of options. Accepts a timout,
+     * @param options - An object of options. Accepts a timeout,
      * which is the maximum wait time in milliseconds.
      * Pass `0` to disable the timeout. Defaults to 30 seconds.
      * @returns Promise which resolves to the first target found

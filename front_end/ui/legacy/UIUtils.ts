@@ -1209,23 +1209,6 @@ export class CheckboxLabel extends HTMLSpanElement {
     return element;
   }
 
-  set backgroundColor(color: string) {
-    this.checkboxElement.classList.add('dt-checkbox-themed');
-    this.checkboxElement.style.backgroundColor = color;
-  }
-
-  set checkColor(color: string) {
-    this.checkboxElement.classList.add('dt-checkbox-themed');
-    const stylesheet = document.createElement('style');
-    stylesheet.textContent = 'input.dt-checkbox-themed:checked:after { background-color: ' + color + '}';
-    this.shadowRootInternal.appendChild(stylesheet);
-  }
-
-  set borderColor(color: string) {
-    this.checkboxElement.classList.add('dt-checkbox-themed');
-    this.checkboxElement.style.borderColor = color;
-  }
-
   private static lastId = 0;
   static constructorInternal: (() => Element)|null = null;
 }

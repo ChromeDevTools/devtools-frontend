@@ -502,12 +502,8 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterU
   private fireUpdated(): void {
     this.dispatchEventToListeners(FilterUIEvents.FilterChanged);
   }
-
-  setColor(backgroundColor: string, borderColor: string): void {
-    this.label.backgroundColor = backgroundColor;
-    this.label.borderColor = borderColor;
-  }
 }
+
 export interface Item {
   name: string;
   label: () => string;

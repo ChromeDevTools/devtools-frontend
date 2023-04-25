@@ -65,7 +65,6 @@ devtools_svg_sources = [
   "bundle.svg",
   "check-circle.svg",
   "check-double.svg",
-  "checkboxCheckmark.svg",
   "checkmark.svg",
   "chevron-double-right.svg",
   "chevron-down.svg",

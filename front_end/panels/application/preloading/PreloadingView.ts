@@ -261,10 +261,12 @@ export class PreloadingView extends UI.Widget.VBox {
   private makeVsplit(left: HTMLElement, right: HTMLElement): UI.SplitWidget.SplitWidget {
     const leftContainer = new UI.Widget.VBox();
     leftContainer.setMinimumSize(0, 40);
+    leftContainer.contentElement.classList.add('overflow-auto');
     leftContainer.contentElement.appendChild(left);
 
     const rightContainer = new UI.Widget.VBox();
     rightContainer.setMinimumSize(0, 80);
+    rightContainer.contentElement.classList.add('overflow-auto');
     rightContainer.contentElement.appendChild(right);
 
     const vsplit = new UI.SplitWidget.SplitWidget(

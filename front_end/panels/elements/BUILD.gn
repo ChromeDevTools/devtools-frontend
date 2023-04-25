@@ -79,7 +79,6 @@ devtools_module("elements") {
     "../../models/bindings:bundle",
     "../../models/extensions:bundle",
     "../../models/issues_manager:bundle",
-    "../../models/issues_manager:bundle",
     "../../models/workspace:bundle",
     "../../models/workspace_diff:bundle",
     "../../panels/emulation:bundle",

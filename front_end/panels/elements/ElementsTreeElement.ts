@@ -46,7 +46,9 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Emulation from '../emulation/emulation.js';
+
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+
 import * as ElementsComponents from './components/components.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {ElementsPanel} from './ElementsPanel.js';
@@ -244,6 +246,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private hintElement?: HTMLElement;
   private contentElement: HTMLElement;
   #elementIssues: Map<string, IssuesManager.GenericIssue.GenericIssue> = new Map();
+  #nodeElementToIssue: Map<Element, IssuesManager.GenericIssue.GenericIssue> = new Map();
 
   readonly tagTypeContext: TagTypeContext;
 
@@ -440,24 +443,32 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const issueDetails = issue.details();
 
     if (issueDetails.violatingNodeAttribute) {
-      this.#highlightViolatingAttr(issueDetails.violatingNodeAttribute);
+      this.#highlightViolatingAttr(issueDetails.violatingNodeAttribute, issue);
     } else {
-      this.#highlightTagAsViolating();
+      this.#highlightTagAsViolating(issue);
     }
   }
 
-  #highlightTagAsViolating(): void {
-    this.listItemElement.getElementsByClassName('webkit-html-tag-name')[0].classList.add('violating-element');
+  get issuesByNodeElement(): Map<Element, IssuesManager.GenericIssue.GenericIssue> {
+    return this.#nodeElementToIssue;
   }
 
-  #highlightViolatingAttr(name: string): void {
+  #highlightViolatingAttr(name: string, issue: IssuesManager.GenericIssue.GenericIssue): void {
     const tag = this.listItemElement.getElementsByClassName('webkit-html-tag')[0];
     const attributes = tag.getElementsByClassName('webkit-html-attribute');
     for (const attribute of attributes) {
       if (attribute.getElementsByClassName('webkit-html-attribute-name')[0].textContent === name) {
-        attribute.getElementsByClassName('webkit-html-attribute-name')[0].classList.add('violating-element');
+        const attributeElement = attribute.getElementsByClassName('webkit-html-attribute-name')[0];
+        attributeElement.classList.add('violating-element');
+        this.#nodeElementToIssue.set(attributeElement, issue);
       }
     }
+  }
+
+  #highlightTagAsViolating(issue: IssuesManager.GenericIssue.GenericIssue): void {
+    const tagElement = this.listItemElement.getElementsByClassName('webkit-html-tag-name')[0];
+    tagElement.classList.add('violating-element');
+    this.#nodeElementToIssue.set(tagElement, issue);
   }
 
   expandedChildrenLimit(): number {

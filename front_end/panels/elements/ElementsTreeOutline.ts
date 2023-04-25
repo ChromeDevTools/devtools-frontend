@@ -36,11 +36,14 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {IssuesPane} from '../issues/IssuesPane.js';
 
 import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
@@ -108,6 +111,8 @@ export class ElementsTreeOutline extends
   #genericIssues: Array<IssuesManager.GenericIssue.GenericIssue> = [];
   #topLayerContainerByParent: Map<UI.TreeOutline.TreeElement, TopLayerContainer> = new Map();
   #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
+  #popupHelper?: UI.PopoverHelper.PopoverHelper;
+  #nodeElementToIssue: Map<Element, IssuesManager.GenericIssue.GenericIssue> = new Map();
 
   constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean) {
     super();
@@ -193,6 +198,83 @@ export class ElementsTreeOutline extends
     this.showHTMLCommentsSetting = Common.Settings.Settings.instance().moduleSetting('showHTMLComments');
     this.showHTMLCommentsSetting.addChangeListener(this.onShowHTMLCommentsChange.bind(this));
     this.setUseLightSelectionColor(true);
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL)) {
+      this.#popupHelper = new UI.PopoverHelper.PopoverHelper(this.elementInternal, event => {
+        const hoveredNode = event.composedPath()[0] as Element;
+        if (!hoveredNode || !hoveredNode.matches('.violating-element')) {
+          return null;
+        }
+
+        const issue = this.#nodeElementToIssue.get(hoveredNode);
+        if (!issue) {
+          return null;
+        }
+        const issueDetails = issue.details();
+
+        const tooltipTitle = this.#issueCodeToTooltipTitle(issueDetails.errorType);
+        const issueKindIcon = new IconButton.Icon.Icon();
+        issueKindIcon.data = IssueCounter.IssueCounter.getIssueKindIconData(issue.getKind());
+        issueKindIcon.style.cursor = 'pointer';
+        const viewIssueElement = document.createElement('a');
+        viewIssueElement.href = '#';
+        viewIssueElement.textContent = 'View issue:';
+
+        const issueTitle = document.createElement('span');
+        issueTitle.textContent = tooltipTitle;
+
+        const element = document.createElement('div');
+        element.appendChild(issueKindIcon);
+        element.appendChild(viewIssueElement);
+        element.appendChild(issueTitle);
+        element.style.display = 'flex';
+        element.style.alignItems = 'center';
+        element.style.gap = '5px';
+
+        return {
+          box: hoveredNode.boxInWindow(),
+          show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+            popover.setIgnoreLeftMargin(true);
+            const openIssueEvent = (): void => {
+              void UI.ViewManager.ViewManager.instance().showView('issues-pane');
+              void IssuesPane.instance().reveal(issue);
+            };
+            viewIssueElement.addEventListener('click', () => openIssueEvent());
+            issueKindIcon.addEventListener('click', () => openIssueEvent());
+            popover.contentElement.appendChild(element);
+            return true;
+          },
+        };
+      });
+      this.#popupHelper.setTimeout(300);
+      this.#popupHelper.setHasPadding(true);
+    }
+  }
+
+  #issueCodeToTooltipTitle(errorType: Protocol.Audits.GenericIssueErrorType): string {
+    switch (errorType) {
+      case Protocol.Audits.GenericIssueErrorType.FormLabelForNameError:
+        return 'Incorrect use of <label for=FORM_ELEMENT>';
+      case Protocol.Audits.GenericIssueErrorType.FormDuplicateIdForInputError:
+        return 'Duplicate form field id in the same form';
+      case Protocol.Audits.GenericIssueErrorType.FormInputWithNoLabelError:
+        return 'Form field without valid aria-labelledby attribute or associated label';
+      case Protocol.Audits.GenericIssueErrorType.FormAutocompleteAttributeEmptyError:
+        return 'Incorrect use of autocomplete attribute';
+      case Protocol.Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError:
+        return 'A form field element should have an id or name attribute';
+      case Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingId:
+        return 'An aria-labelledby attribute doesn\'t match any element id';
+      case Protocol.Audits.GenericIssueErrorType.FormInputAssignedAutocompleteValueToIdOrNameAttributeError:
+        return 'An element doesn\'t have an autocomplete attribute';
+      case Protocol.Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInput:
+        return 'No label associated with a form field';
+      case Protocol.Audits.GenericIssueErrorType.FormLabelForMatchesNonExistingIdError:
+        return 'Incorrect use of <label for=FORM_ELEMENT>';
+      case Protocol.Audits.GenericIssueErrorType.FormInputHasWrongButWellIntendedAutocompleteValueError:
+        return 'Non-standard autocomplete attribute value';
+      default:
+        return '';
+    }
   }
 
   static forDOMModel(domModel: SDK.DOMModel.DOMModel): ElementsTreeOutline|null {
@@ -220,6 +302,10 @@ export class ElementsTreeOutline extends
   async #addTreeElementIssue(issue: IssuesManager.GenericIssue.GenericIssue): Promise<void> {
     const issueDetails = issue.details();
 
+    const tooltipTitle = this.#issueCodeToTooltipTitle(issueDetails.errorType);
+    if (!tooltipTitle) {
+      return;
+    }
     if (!this.rootDOMNode || !issueDetails.violatingNodeId) {
       return;
     }
@@ -234,6 +320,11 @@ export class ElementsTreeOutline extends
     const treeElement = this.findTreeElement(node);
     if (treeElement) {
       treeElement.addIssue(issue);
+      const treeElementNodeElementsToIssue = treeElement.issuesByNodeElement;
+      // This element could be the treeElement tags name or an attribute.
+      for (const [element, issue] of treeElementNodeElementsToIssue) {
+        this.#nodeElementToIssue.set(element, issue);
+      }
     }
   }
 

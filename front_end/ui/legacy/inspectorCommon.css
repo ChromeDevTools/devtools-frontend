@@ -368,13 +368,12 @@ input::placeholder {
   outline: none;
   padding-right: 20px;
   padding-left: 6px;
-  background-image: var(--image-file-chromeSelect);
+  background-image: var(--image-file-arrow-drop-down-light);
   background-color: var(--color-background-elevation-0);
   background-position: right center;
   background-repeat: no-repeat;
   min-height: 24px;
   min-width: 80px;
-  background-size: 15px;
 }
 
 .chrome-select:disabled {
@@ -385,7 +384,7 @@ input::placeholder {
 :host-context(.-theme-with-dark-background) .chrome-select {
   --override-chrome-select-border-color: rgb(230 230 230 / 20%);
 
-  background-image: var(--image-file-chromeSelectDark);
+  background-image: var(--image-file-arrow-drop-down-dark);
 }
 
 .chrome-select:enabled:active,
@@ -407,23 +406,23 @@ input::placeholder {
 
 @media (forced-colors: active) and (prefers-color-scheme: light) {
   .chrome-select {
-    background-image: var(--image-file-chromeSelect);
+    background-image: var(--image-file-arrow-drop-down-light);
   }
 
   .-theme-with-dark-background .chrome-select,
   :host-context(.-theme-with-dark-background) .chrome-select {
-    background-image: var(--image-file-chromeSelect);
+    background-image: var(--image-file-arrow-drop-down-light);
   }
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
   .chrome-select {
-    background-image: var(--image-file-chromeSelectDark);
+    background-image: var(--image-file-arrow-drop-down-dark);
   }
 
   .-theme-with-dark-background .chrome-select,
   :host-context(.-theme-with-dark-background) .chrome-select {
-    background-image: var(--image-file-chromeSelectDark);
+    background-image: var(--image-file-arrow-drop-down-dark);
   }
 }
 

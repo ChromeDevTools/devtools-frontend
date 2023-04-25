@@ -680,7 +680,7 @@ export class MetricIndicator {
 
   private updateSwatchElement(): void {
     const color = this.active ? this.color : 'var(--icon-disabled)';
-    this.swatchElement.data = {iconName: 'checkmark', color, width: '14px', height: '14px'};
+    this.swatchElement.data = {iconName: 'checkmark', color, width: '16px', height: '14px'};
   }
 
   private toggleIndicator(): void {

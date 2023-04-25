@@ -256,7 +256,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     // Events for tracks that are migrated to the new engine won't use
     // TimelineModel.TimelineData.
     if (event instanceof SDK.TracingModel.Event) {
-      const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
+      const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
       backendNodeIds = timelineData.backendNodeIds;
     } else if (TraceEngine.Types.TraceEvents.isTraceEventLayoutShift(event)) {
       const impactedNodes = event.args.data?.impacted_nodes ?? [];

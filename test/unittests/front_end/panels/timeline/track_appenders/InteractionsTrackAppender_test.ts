@@ -14,7 +14,7 @@ import type * as TimelineModel from '../../../../../../front_end/models/timeline
 const {assert} = chai;
 
 function initTrackAppender(
-    flameChartData: PerfUI.FlameChart.TimelineData, traceParsedData: TraceModel.Handlers.Types.TraceParseData,
+    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, traceParsedData: TraceModel.Handlers.Types.TraceParseData,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     timelineModel: TimelineModel.TimelineModel.TimelineModelImpl):
@@ -27,14 +27,14 @@ function initTrackAppender(
 describeWithEnvironment('InteractionsTrackAppender', () => {
   async function renderTrackAppender(trace: string): Promise<{
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
-    flameChartData: PerfUI.FlameChart.TimelineData,
+    flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     interactionsTrackAppender: Timeline.InteractionsTrackAppender.InteractionsTrackAppender,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
     traceParsedData: Readonly<TraceModel.TraceModel.PartialTraceParseDataDuringMigration>,
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
-    const flameChartData = new PerfUI.FlameChart.TimelineData([], [], [], []);
+    const flameChartData = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
     const traceParsedData = await loadModelDataFromTraceFile(trace);
     const timelineModel = (await traceModelFromTraceFile(trace)).timelineModel;
     const interactionsTrackAppender =

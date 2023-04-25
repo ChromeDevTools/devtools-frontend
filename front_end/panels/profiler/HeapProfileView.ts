@@ -631,7 +631,7 @@ export class NodeFormatter implements Formatter {
 export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
   readonly profile: SDK.ProfileTreeModel.ProfileTreeModel;
   readonly heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
-  timelineDataInternal?: PerfUI.FlameChart.TimelineData;
+  timelineDataInternal?: PerfUI.FlameChart.FlameChartTimelineData;
 
   constructor(
       profile: SDK.ProfileTreeModel.ProfileTreeModel, heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null) {
@@ -656,7 +656,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     return i18nString(UIStrings.skb, {PH1: Platform.NumberUtilities.withThousandsSeparator(value / 1e3)});
   }
 
-  override calculateTimelineData(): PerfUI.FlameChart.TimelineData {
+  override calculateTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     function nodesCount(node: SDK.ProfileTreeModel.ProfileNode): number {
       return node.children.reduce((count, node) => count + nodesCount(node), 1);
     }
@@ -687,7 +687,8 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
 
     this.maxStackDepthInternal = maxDepth + 1;
     this.entryNodes = entryNodes;
-    this.timelineDataInternal = new PerfUI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+    this.timelineDataInternal =
+        new PerfUI.FlameChart.FlameChartTimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
     return this.timelineDataInternal;
   }

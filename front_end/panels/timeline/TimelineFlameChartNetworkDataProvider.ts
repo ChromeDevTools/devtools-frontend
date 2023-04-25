@@ -101,12 +101,12 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return this.maxLevel;
   }
 
-  timelineData(): PerfUI.FlameChart.TimelineData {
+  timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     if (this.timelineDataInternal) {
       return this.timelineDataInternal;
     }
     this.requests = [];
-    this.timelineDataInternal = new PerfUI.FlameChart.TimelineData([], [], [], []);
+    this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
     if (this.model) {
       this.appendTimelineData();
     }
@@ -336,7 +336,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
         this.timelineDataInternal.entryLevels[i] = maxLevel;
       }
     }
-    this.timelineDataInternal = new PerfUI.FlameChart.TimelineData(
+    this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData(
         this.timelineDataInternal.entryLevels, this.timelineDataInternal.entryTotalTimes,
         this.timelineDataInternal.entryStartTimes, [this.group]);
     this.maxLevel = maxLevel;

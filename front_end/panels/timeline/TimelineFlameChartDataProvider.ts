@@ -139,7 +139,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     PerfUI.FlameChart.FlameChartDataProvider {
   private droppedFramePatternCanvas: HTMLCanvasElement;
   private partialFramePatternCanvas: HTMLCanvasElement;
-  private timelineDataInternal: PerfUI.FlameChart.TimelineData|null;
+  private timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null;
   private currentLevel: number;
 
   // The Performance and the Timeline models are expected to be
@@ -287,9 +287,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * adding data to it. In case the timeline data hasn't been instanced
    * creates a new instance and returns it.
    */
-  #instantiateTimelineData(): PerfUI.FlameChart.TimelineData {
+  #instantiateTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     if (!this.timelineDataInternal) {
-      this.timelineDataInternal = new PerfUI.FlameChart.TimelineData([], [], [], []);
+      this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
     }
     return this.timelineDataInternal;
   }
@@ -338,7 +338,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return '';
     }
     if (entryType === entryTypes.TrackAppender) {
-      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.TimelineData);
+      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
       const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
       return this.compatibilityTracksAppender?.titleForEvent(event, eventLevel) || null;
@@ -381,14 +381,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * the new trace engine) and the legacy code paths present in this
    * file. The result built data is cached and returned.
    */
-  timelineData(): PerfUI.FlameChart.TimelineData {
+  timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     if (this.timelineDataInternal && this.timelineDataInternal.entryLevels.length !== 0) {
       // The flame chart data is built already, so return the cached
       // data.
       return this.timelineDataInternal;
     }
 
-    this.timelineDataInternal = new PerfUI.FlameChart.TimelineData([], [], [], []);
+    this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
     if (!this.legacyTimelineModel) {
       return this.timelineDataInternal;
     }
@@ -803,7 +803,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   private entryType(entryIndex: number): EntryType {
-    return this.entryTypeByLevel[(this.timelineDataInternal as PerfUI.FlameChart.TimelineData).entryLevels[entryIndex]];
+    return this.entryTypeByLevel[(this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData)
+                                     .entryLevels[entryIndex]];
   }
 
   prepareHighlightedEntryInfo(entryIndex: number): Element|null {
@@ -818,7 +819,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         return null;
       }
       const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
-      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.TimelineData);
+      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
       const highlightedEntryInfo = this.compatibilityTracksAppender.highlightedEntryInfo(event, eventLevel);
       title = highlightedEntryInfo.title;
@@ -926,7 +927,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return 'white';
     }
     if (entryType === entryTypes.TrackAppender) {
-      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.TimelineData);
+      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
       const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
       return this.compatibilityTracksAppender?.colorForEvent(event, eventLevel) || '';
@@ -1068,7 +1069,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     if (entryType === entryTypes.Event) {
       const event = (data as SDK.TracingModel.Event);
-      if (TimelineModel.TimelineModel.TimelineData.forEvent(event).warning) {
+      if (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning) {
         paintWarningDecoration(barX, barWidth - 1.5);
       }
     }
@@ -1103,7 +1104,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     if (entryType === entryTypes.Event) {
       const event = (this.entryData[entryIndex] as SDK.TracingModel.Event);
-      return Boolean(TimelineModel.TimelineModel.TimelineData.forEvent(event).warning);
+      return Boolean(TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning);
     }
     return false;
   }
@@ -1113,14 +1114,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const group =
         ({startLevel: this.currentLevel, name: title, style: style, selectable: selectable, expanded} as
          PerfUI.FlameChart.Group);
-    (this.timelineDataInternal as PerfUI.FlameChart.TimelineData).groups.push(group);
+    (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData).groups.push(group);
     return group;
   }
 
   private appendEvent(event: SDK.TracingModel.Event, level: number): number {
     const index = this.entryData.length;
     this.entryData.push(event);
-    const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.TimelineData);
+    const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
     timelineData.entryLevels[index] = level;
     timelineData.entryTotalTimes[index] = event.duration || InstantEventVisibleDurationMs;
     timelineData.entryStartTimes[index] = event.startTime;
@@ -1137,7 +1138,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const index = this.entryData.length;
       this.entryData.push(steps[i + eventOffset]);
       const startTime = steps[i].startTime;
-      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.TimelineData);
+      const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       timelineData.entryLevels[index] = level;
       timelineData.entryTotalTimes[index] = steps[i + 1].startTime - startTime;
       timelineData.entryStartTimes[index] = startTime;
@@ -1219,7 +1220,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       // Find the closest ancestor with an initiator.
       let initiator;
       for (; event; event = this.eventParent(event)) {
-        initiator = TimelineModel.TimelineModel.TimelineData.forEvent(event).initiator();
+        initiator = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).initiator();
         if (initiator) {
           break;
         }

@@ -79,7 +79,7 @@ describeWithMockConnection('TimelineUIUtils', () => {
         ],
       },
     });
-    const data = TimelineModel.TimelineModel.TimelineData.forEvent(event);
+    const data = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
     data.stackTrace = event.args.data.stackTrace;
     assert.strictEqual(
         'test.js:1:1', await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(event));
@@ -193,7 +193,7 @@ describeWithMockConnection('TimelineUIUtils', () => {
           }],
         },
       });
-      const data = TimelineModel.TimelineModel.TimelineData.forEvent(functionCallEvent);
+      const data = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(functionCallEvent);
       data.stackTrace = functionCallEvent.args.data.stackTrace;
       const linkifier = new Components.Linkifier.Linkifier();
       let linkifierCallback: () => void = () => {};

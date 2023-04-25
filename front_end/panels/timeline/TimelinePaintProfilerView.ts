@@ -72,7 +72,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
 
     this.updateWhenVisible();
     if (this.event.name === TimelineModel.TimelineModel.RecordType.Paint) {
-      return Boolean(TimelineModel.TimelineModel.TimelineData.forEvent(event).picture);
+      return Boolean(TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).picture);
     }
     if (this.event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       return this.frameModel.hasRasterTile(this.event);
@@ -100,7 +100,8 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this.pendingSnapshot});
     } else if (this.event && this.event.name === TimelineModel.TimelineModel.RecordType.Paint) {
       const picture =
-          (TimelineModel.TimelineModel.TimelineData.forEvent(this.event).picture as SDK.TracingModel.ObjectSnapshot);
+          (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(this.event).picture as
+           SDK.TracingModel.ObjectSnapshot);
       snapshotPromise =
           picture.objectPromise()
               .then(

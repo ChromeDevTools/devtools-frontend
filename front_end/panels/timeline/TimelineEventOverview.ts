@@ -277,7 +277,7 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
     for (const track of this.model.timelineModel().tracks()) {
       const events = track.events;
       for (let i = 0; i < events.length; ++i) {
-        if (!TimelineModel.TimelineModel.TimelineData.forEvent(events[i]).warning) {
+        if (!TimelineModel.TimelineModel.EventOnTimelineData.forEvent(events[i]).warning) {
           continue;
         }
         const duration = events[i].duration;

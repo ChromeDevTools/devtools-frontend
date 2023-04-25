@@ -41,7 +41,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   readonly colorGeneratorInternal: Common.Color.Generator;
   maxStackDepthInternal: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  timelineData_: PerfUI.FlameChart.TimelineData|null;
+  timelineData_: PerfUI.FlameChart.FlameChartTimelineData|null;
   entryNodes: SDK.ProfileTreeModel.ProfileNode[];
   #font: string;
   boldFont?: string;
@@ -82,11 +82,11 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
     return this.maxStackDepthInternal;
   }
 
-  timelineData(): PerfUI.FlameChart.TimelineData|null {
+  timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
     return this.timelineData_ || this.calculateTimelineData();
   }
 
-  calculateTimelineData(): PerfUI.FlameChart.TimelineData {
+  calculateTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     throw 'Not implemented.';
   }
 
@@ -359,7 +359,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
     this.dispatchEventToListeners(OverviewPaneEvents.WindowChanged, windowPosition);
   }
 
-  timelineData(): PerfUI.FlameChart.TimelineData|null {
+  timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
     return this.dataProvider.timelineData();
   }
 
@@ -419,7 +419,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
 
   calculateDrawData(width: number): Uint8Array {
     const dataProvider = this.dataProvider;
-    const timelineData = (this.timelineData() as PerfUI.FlameChart.TimelineData);
+    const timelineData = (this.timelineData() as PerfUI.FlameChart.FlameChartTimelineData);
     const entryStartTimes = timelineData.entryStartTimes;
     const entryTotalTimes = timelineData.entryTotalTimes;
     const entryLevels = timelineData.entryLevels;

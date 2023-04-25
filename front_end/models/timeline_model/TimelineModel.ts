@@ -1121,7 +1121,7 @@ export class TimelineModelImpl {
         }, 0);
         if (totalTime > TimelineModelImpl.Thresholds.ForcedLayout) {
           for (const e of this.currentTaskLayoutAndRecalcEvents) {
-            const timelineData = TimelineData.forEvent(e);
+            const timelineData = EventOnTimelineData.forEvent(e);
             timelineData.warning = e.name === RecordType.Layout ? TimelineModelImpl.WarningType.ForcedLayout :
                                                                   TimelineModelImpl.WarningType.ForcedStyle;
           }
@@ -1137,7 +1137,7 @@ export class TimelineModelImpl {
     }
 
     const eventData = event.args['data'] || event.args['beginData'] || {};
-    const timelineData = TimelineData.forEvent(event);
+    const timelineData = EventOnTimelineData.forEvent(event);
     if (eventData['stackTrace']) {
       timelineData.stackTrace = eventData['stackTrace'].map((callFrameOrProfileNode: Protocol.Runtime.CallFrame) => {
         // `callFrameOrProfileNode` can also be a `SDK.ProfileTreeModel.ProfileNode` for JSSample; that class
@@ -1159,7 +1159,7 @@ export class TimelineModelImpl {
     let pageFrameId = TimelineModelImpl.eventFrameId(event);
     const last = eventStack[eventStack.length - 1];
     if (!pageFrameId && last) {
-      pageFrameId = TimelineData.forEvent(last).frameId;
+      pageFrameId = EventOnTimelineData.forEvent(last).frameId;
     }
     timelineData.frameId = pageFrameId || (this.mainFrame && this.mainFrame.frameId) || '';
     this.asyncEventTracker.processEvent(event);
@@ -1210,7 +1210,7 @@ export class TimelineModelImpl {
         if (!this.layoutInvalidate[frameId] && this.lastRecalculateStylesEvent &&
             this.lastRecalculateStylesEvent.endTime !== undefined &&
             this.lastRecalculateStylesEvent.endTime > event.startTime) {
-          layoutInitator = TimelineData.forEvent(this.lastRecalculateStylesEvent).initiator();
+          layoutInitator = EventOnTimelineData.forEvent(this.lastRecalculateStylesEvent).initiator();
         }
         this.layoutInvalidate[frameId] = layoutInitator;
         break;
@@ -1331,7 +1331,7 @@ export class TimelineModelImpl {
         }
         const paintEvent = this.lastPaintForLayer[layerUpdateEvent.args['layerId']];
         if (paintEvent) {
-          TimelineData.forEvent(paintEvent).picture = (event as SDK.TracingModel.ObjectSnapshot);
+          EventOnTimelineData.forEvent(paintEvent).picture = (event as SDK.TracingModel.ObjectSnapshot);
         }
         break;
       }
@@ -1358,7 +1358,7 @@ export class TimelineModelImpl {
         if (!paintImageEvent) {
           break;
         }
-        const paintImageData = TimelineData.forEvent(paintImageEvent);
+        const paintImageData = EventOnTimelineData.forEvent(paintImageEvent);
         timelineData.backendNodeIds.push(paintImageData.backendNodeIds[0]);
         timelineData.url = paintImageData.url;
         break;
@@ -1370,7 +1370,7 @@ export class TimelineModelImpl {
           break;
         }
         this.paintImageEventByPixelRefId[event.args['LazyPixelRef']] = paintImageEvent;
-        const paintImageData = TimelineData.forEvent(paintImageEvent);
+        const paintImageData = EventOnTimelineData.forEvent(paintImageEvent);
         timelineData.backendNodeIds.push(paintImageData.backendNodeIds[0]);
         timelineData.url = paintImageData.url;
         break;
@@ -2290,7 +2290,7 @@ export class InvalidationTrackingEvent {
   cause: InvalidationCause;
   linkedRecalcStyleEvent: boolean;
   linkedLayoutEvent: boolean;
-  constructor(event: SDK.TracingModel.Event, timelineData: TimelineData) {
+  constructor(event: SDK.TracingModel.Event, timelineData: EventOnTimelineData) {
     this.type = event.name;
     this.startTime = event.startTime;
     this.tracingEvent = event;
@@ -2458,7 +2458,7 @@ export class InvalidationTracker {
 
   private addSyntheticStyleRecalcInvalidation(
       baseEvent: SDK.TracingModel.Event, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
-    const timelineData = TimelineData.forEvent(baseEvent);
+    const timelineData = EventOnTimelineData.forEvent(baseEvent);
     const invalidation = new InvalidationTrackingEvent(baseEvent, timelineData);
     invalidation.type = RecordType.StyleRecalcInvalidationTracking;
     if (styleInvalidatorInvalidation.cause.reason) {
@@ -2610,7 +2610,7 @@ export class TimelineAsyncEventTracker {
         return;
       }
       const initiator = initiatorMap.get(id);
-      const timelineData = TimelineData.forEvent(event);
+      const timelineData = EventOnTimelineData.forEvent(event);
       timelineData.setInitiator(initiator ? initiator : null);
       if (!timelineData.frameId && initiator) {
         timelineData.frameId = TimelineModelImpl.eventFrameId(initiator);
@@ -2622,7 +2622,7 @@ export class TimelineAsyncEventTracker {
   private static typeToInitiator: Map<RecordType, RecordType>|null = null;
 }
 
-export class TimelineData {
+export class EventOnTimelineData {
   warning: string|null;
   previewElement: Element|null;
   url: Platform.DevToolsPath.UrlString|null;
@@ -2649,7 +2649,7 @@ export class TimelineData {
     if (!initiator || this.url) {
       return;
     }
-    const initiatorURL = TimelineData.forEvent(initiator).url;
+    const initiatorURL = EventOnTimelineData.forEvent(initiator).url;
     if (initiatorURL) {
       this.url = initiatorURL;
     }
@@ -2665,29 +2665,30 @@ export class TimelineData {
   }
 
   stackTraceForSelfOrInitiator(): Protocol.Runtime.CallFrame[]|null {
-    return this.stackTrace || (this.initiatorInternal && TimelineData.forEvent(this.initiatorInternal).stackTrace);
+    return this.stackTrace ||
+        (this.initiatorInternal && EventOnTimelineData.forEvent(this.initiatorInternal).stackTrace);
   }
 
-  static forEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): TimelineData {
+  static forEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): EventOnTimelineData {
     if (event instanceof SDK.TracingModel.PayloadEvent) {
-      return TimelineData.forTraceEventData(event.rawPayload());
+      return EventOnTimelineData.forTraceEventData(event.rawPayload());
     }
     if (!(event instanceof SDK.TracingModel.Event)) {
-      return TimelineData.forTraceEventData(event);
+      return EventOnTimelineData.forTraceEventData(event);
     }
     return getOrCreateEventData(event);
   }
 
-  static forTraceEventData(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineData {
+  static forTraceEventData(event: TraceEngine.Types.TraceEvents.TraceEventData): EventOnTimelineData {
     return getOrCreateEventData(event);
   }
 }
 
 function getOrCreateEventData(event: SDK.TracingModel.ConstructedEvent|
-                              TraceEngine.Types.TraceEvents.TraceEventData): TimelineData {
+                              TraceEngine.Types.TraceEvents.TraceEventData): EventOnTimelineData {
   let data = eventToData.get(event);
   if (!data) {
-    data = new TimelineData();
+    data = new EventOnTimelineData();
     eventToData.set(event, data);
   }
   return data;

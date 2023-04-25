@@ -55,7 +55,7 @@ TimelineModel.InvalidationTracker = TimelineModelModule.TimelineModel.Invalidati
 TimelineModel.TimelineAsyncEventTracker = TimelineModelModule.TimelineModel.TimelineAsyncEventTracker;
 
 /** @constructor */
-TimelineModel.TimelineData = TimelineModelModule.TimelineModel.TimelineData;
+TimelineModel.TimelineData = TimelineModelModule.TimelineModel.EventOnTimelineData;
 
 /** @constructor */
 TimelineModel.TimelineModelFilter = TimelineModelModule.TimelineModelFilter.TimelineModelFilter;

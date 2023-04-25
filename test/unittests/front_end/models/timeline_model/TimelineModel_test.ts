@@ -1754,7 +1754,7 @@ describeWithEnvironment('TimelineData', () => {
     if (!lcpSDKEvent) {
       throw new Error('Could not find SDK Event.');
     }
-    const dataForEvent = TimelineModel.TimelineModel.TimelineData.forEvent(lcpSDKEvent);
+    const dataForEvent = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(lcpSDKEvent);
     dataForEvent.backendNodeIds.push(123 as Protocol.DOM.BackendNodeId);
 
     // Now find the same event from the new engine
@@ -1768,8 +1768,8 @@ describeWithEnvironment('TimelineData', () => {
     assert.strictEqual(lcpNewEngineEvent, lcpSDKEvent.rawPayload());
 
     assert.strictEqual(
-        TimelineModel.TimelineModel.TimelineData.forEvent(lcpSDKEvent).backendNodeIds,
-        TimelineModel.TimelineModel.TimelineData.forEvent(lcpNewEngineEvent).backendNodeIds,
+        TimelineModel.TimelineModel.EventOnTimelineData.forEvent(lcpSDKEvent).backendNodeIds,
+        TimelineModel.TimelineModel.EventOnTimelineData.forEvent(lcpNewEngineEvent).backendNodeIds,
     );
   });
 
@@ -1783,8 +1783,8 @@ describeWithEnvironment('TimelineData', () => {
         100,
         thread,
     );
-    const dataForEvent = TimelineModel.TimelineModel.TimelineData.forEvent(fakeConstructedEvent);
+    const dataForEvent = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(fakeConstructedEvent);
     dataForEvent.backendNodeIds.push(123 as Protocol.DOM.BackendNodeId);
-    assert.strictEqual(dataForEvent, TimelineModel.TimelineModel.TimelineData.forEvent(fakeConstructedEvent));
+    assert.strictEqual(dataForEvent, TimelineModel.TimelineModel.EventOnTimelineData.forEvent(fakeConstructedEvent));
   });
 });

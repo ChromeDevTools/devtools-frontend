@@ -8,7 +8,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as TraceEngine from '../../models/trace/trace.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
-import {RecordType, TimelineData, TimelineModelImpl} from './TimelineModel.js';
+import {RecordType, EventOnTimelineData, TimelineModelImpl} from './TimelineModel.js';
 import {type TimelineModelFilter} from './TimelineModelFilter.js';
 
 export class Node {
@@ -519,7 +519,7 @@ export function eventStackFrame(event: SDK.TracingModel.Event|
   if (TimelineModelImpl.isJsFrameEvent(event)) {
     return event.args['data'] || null as Protocol.Runtime.CallFrame | null;
   }
-  return TimelineData.forEvent(event).topFrame();
+  return EventOnTimelineData.forEvent(event).topFrame();
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

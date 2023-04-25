@@ -129,7 +129,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private visibleLevelOffsets?: Uint32Array|null;
   private visibleLevels?: Uint16Array|null;
   private groupOffsets?: Uint32Array|null;
-  private rawTimelineData?: TimelineData|null;
+  private rawTimelineData?: FlameChartTimelineData|null;
   private forceDecorationCache?: Int8Array|null;
   private entryColorsCache?: string[]|null;
   private visibleLevelHeights?: Uint32Array;
@@ -319,7 +319,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateHighlight();
   }
 
-  private timelineData(): TimelineData|null {
+  private timelineData(): FlameChartTimelineData|null {
     if (!this.dataProvider) {
       return null;
     }
@@ -1043,7 +1043,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * Drawn on a color by color basis to minimize the amount of times context.style is switched.
    */
   private drawGenericEvents(
-      context: CanvasRenderingContext2D, timelineData: TimelineData, color: string, indexes: number[]): void {
+      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, color: string, indexes: number[]): void {
     const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
     context.save();
     context.beginPath();
@@ -1071,7 +1071,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * Marks the portion of long tasks where the 50ms threshold was exceeded.
    */
   private drawLongInteractionsCandyStripes(
-      context: CanvasRenderingContext2D, timelineData: TimelineData, indexes: number[]): void {
+      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, indexes: number[]): void {
     const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
 
     const levelsOfInteractionsTrack: number[] = [];
@@ -1131,7 +1131,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * Marks the portion of long tasks where the 50ms threshold was exceeded.
    */
   private drawLongTaskRegions(
-      context: CanvasRenderingContext2D, timelineData: TimelineData, color: string, indexes: number[]): void {
+      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, color: string, indexes: number[]): void {
     const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
     let mainThreadTopLevel = -1;
 
@@ -1189,7 +1189,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    *  - Gathers marker events (LCP, FCP, DCL, etc.).
    *  - Gathers event titles that should be rendered.
    */
-  private getDrawableData(context: CanvasRenderingContext2D, timelineData: TimelineData):
+  private getDrawableData(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData):
       {colorBuckets: Map<string, {indexes: number[]}>, titleIndices: number[], markerIndices: number[]} {
     // These are the event indexes of events that we are drawing onto the timeline that:
     // 1) have text within them
@@ -1425,7 +1425,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   /**
    * Draws page load events in the Timings track (LCP, FCP, DCL, etc.)
    */
-  private drawMarkers(context: CanvasRenderingContext2D, timelineData: TimelineData, markerIndices: number[]): void {
+  private drawMarkers(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, markerIndices: number[]):
+      void {
     const {entryStartTimes, entryLevels} = timelineData;
     this.markerPositions.clear();
     context.textBaseline = 'alphabetic';
@@ -1469,7 +1470,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * in the Performance Panel timeline).
    */
   private drawEventTitles(
-      context: CanvasRenderingContext2D, timelineData: TimelineData, titleIndices: number[], width: number): void {
+      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, titleIndices: number[],
+      width: number): void {
     const timeToPixel = this.chartViewport.timeToPixel();
     const textPadding = this.textPadding;
     context.save();
@@ -1755,7 +1757,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.viewportElement.appendChild(element);
   }
 
-  private processTimelineData(timelineData: TimelineData|null): void {
+  private processTimelineData(timelineData: FlameChartTimelineData|null): void {
     if (!timelineData) {
       this.timelineLevels = null;
       this.visibleLevelOffsets = null;
@@ -2065,7 +2067,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 export const HeaderHeight = 15;
 export const MinimalTimeWindowMs = 0.5;
 
-export class TimelineData {
+export class FlameChartTimelineData {
   entryLevels: number[]|Uint16Array;
   entryTotalTimes: number[]|Float32Array;
   entryStartTimes: number[]|Float64Array;
@@ -2101,7 +2103,7 @@ export interface FlameChartDataProvider {
 
   maxStackDepth(): number;
 
-  timelineData(): TimelineData|null;
+  timelineData(): FlameChartTimelineData|null;
 
   prepareHighlightedEntryInfo(entryIndex: number): Element|null;
 

@@ -883,7 +883,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         return (event: SDK.TracingModel.Event): string => TimelineModel.TimelineProfileTree.eventURL(event) || '';
       case GroupBy.Frame:
         return (event: SDK.TracingModel.Event): string =>
-                   TimelineModel.TimelineModel.TimelineData.forEvent(event).frameId || '';
+                   TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).frameId || '';
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
         return null;

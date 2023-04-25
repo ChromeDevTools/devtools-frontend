@@ -61,7 +61,7 @@ export interface EventProperties {
  * Wrapper class for each event displayed on the timeline.
  */
 export class Event {
-  private timelineData: PerfUI.FlameChart.TimelineData;
+  private timelineData: PerfUI.FlameChart.FlameChartTimelineData;
   private setLive: (arg0: number) => number;
   private readonly setComplete: (arg0: number) => void;
   private readonly updateMaxTime: (arg0: number) => void;
@@ -73,7 +73,7 @@ export class Event {
   private readonly hoverData: Object;
 
   constructor(
-      timelineData: PerfUI.FlameChart.TimelineData, eventHandlers: EventHandlers,
+      timelineData: PerfUI.FlameChart.FlameChartTimelineData, eventHandlers: EventHandlers,
       eventProperties: EventProperties|
       undefined = {color: undefined, duration: undefined, hoverData: {}, level: 0, name: '', startTime: 0}) {
     // These allow the event to privately change it's own data in the timeline.
@@ -363,7 +363,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
   private bounds: Bounds;
   private readonly liveEvents: Set<number>;
   private eventMap: Map<number, Event>;
-  private readonly timelineDataInternal: PerfUI.FlameChart.TimelineData;
+  private readonly timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData;
   private maxLevel: number;
 
   constructor(initialBounds: Bounds, updateMaxTime: (arg0: number) => void) {
@@ -381,7 +381,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
 
     // Contains the numerical indicies. This is passed as a reference to the events
     // so that they can update it when they change.
-    this.timelineDataInternal = new PerfUI.FlameChart.TimelineData([], [], [], []);
+    this.timelineDataInternal = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
 
     // The current sum of all group heights.
     this.maxLevel = 0;
@@ -450,7 +450,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
     return this.maxLevel + 1;
   }
 
-  timelineData(): PerfUI.FlameChart.TimelineData {
+  timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     return this.timelineDataInternal;
   }
 

@@ -341,7 +341,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     return Boolean(node.deoptReason);
   }
 
-  override calculateTimelineData(): PerfUI.FlameChart.TimelineData {
+  override calculateTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     const entries: (CPUFlameChartDataProvider.ChartEntry|null)[] = [];
     const stack: number[] = [];
     let maxDepth = 5;
@@ -381,7 +381,8 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
 
     this.maxStackDepthInternal = maxDepth + 1;
     this.entryNodes = entryNodes;
-    this.timelineData_ = new PerfUI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+    this.timelineData_ =
+        new PerfUI.FlameChart.FlameChartTimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
     this.entrySelfTimes = entrySelfTimes;
 
@@ -415,7 +416,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     pushEntryInfoRow(i18nString(UIStrings.name), name);
     const selfTime = millisecondsToString((this.entrySelfTimes as Float32Array)[entryIndex]);
     const totalTime =
-        millisecondsToString((timelineData as PerfUI.FlameChart.TimelineData).entryTotalTimes[entryIndex]);
+        millisecondsToString((timelineData as PerfUI.FlameChart.FlameChartTimelineData).entryTotalTimes[entryIndex]);
     pushEntryInfoRow(i18nString(UIStrings.selfTime), selfTime);
     pushEntryInfoRow(i18nString(UIStrings.totalTime), totalTime);
     const linkifier = new Components.Linkifier.Linkifier();

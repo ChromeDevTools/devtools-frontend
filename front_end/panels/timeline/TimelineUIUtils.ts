@@ -1344,7 +1344,7 @@ export class TimelineUIUtils {
   static testContentMatching(traceEvent: SDK.TracingModel.Event, regExp: RegExp): boolean {
     const title = TimelineUIUtils.eventStyle(traceEvent).title;
     const tokens = [title];
-    const url = TimelineModel.TimelineModel.TimelineData.forEvent(traceEvent).url;
+    const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(traceEvent).url;
     if (url) {
       tokens.push(url);
     }
@@ -1379,7 +1379,7 @@ export class TimelineUIUtils {
     }
     const stackTrace = data && data['stackTrace'];
     const frame = stackTrace && stackTrace.length && stackTrace[0] ||
-        TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
+        TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).topFrame();
     return frame && frame.url as Platform.DevToolsPath.UrlString || null;
   }
 
@@ -1599,7 +1599,7 @@ export class TimelineUIUtils {
       case recordType.DecodeImage:
       case recordType.ResizeImage:
       case recordType.DecodeLazyPixelRef: {
-        const url = TimelineModel.TimelineModel.TimelineData.forEvent(event).url;
+        const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).url;
         if (url) {
           detailsText = Bindings.ResourceUtils.displayNameForURL(url);
         }
@@ -1630,7 +1630,7 @@ export class TimelineUIUtils {
     return detailsText;
 
     async function linkifyTopCallFrameAsText(): Promise<string|null> {
-      const frame = TimelineModel.TimelineModel.TimelineData.forEvent(event).topFrame();
+      const frame = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).topFrame();
       if (!frame) {
         return null;
       }
@@ -1679,7 +1679,7 @@ export class TimelineUIUtils {
       case recordType.ResourceReceivedData:
       case recordType.ResourceReceiveResponse:
       case recordType.ResourceFinish: {
-        const url = TimelineModel.TimelineModel.TimelineData.forEvent(event).url;
+        const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).url;
         if (url) {
           const options = {
             tabStop: true,
@@ -1871,7 +1871,7 @@ export class TimelineUIUtils {
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (typeof event[previewElementSymbol] === 'undefined') {
         let previewElement: (Element|null)|null = null;
-        const url = TimelineModel.TimelineModel.TimelineData.forEvent(event).url;
+        const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).url;
         if (url) {
           previewElement = await Components.ImagePreview.ImagePreview.build(target, url, false, {
             imageAltText: Components.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
@@ -1879,7 +1879,7 @@ export class TimelineUIUtils {
           });
         } else if (
             event instanceof SDK.TracingModel.Event &&
-            TimelineModel.TimelineModel.TimelineData.forEvent(event).picture) {
+            TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).picture) {
           previewElement = await TimelineUIUtils.buildPicturePreviewContent(event, target);
         }
         // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
@@ -1887,7 +1887,7 @@ export class TimelineUIUtils {
       }
 
       const nodeIdsToResolve = new Set<Protocol.DOM.BackendNodeId>();
-      const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
+      const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
       if (timelineData.backendNodeIds) {
         for (let i = 0; i < timelineData.backendNodeIds.length; ++i) {
           nodeIdsToResolve.add(timelineData.backendNodeIds[i]);
@@ -1923,7 +1923,7 @@ export class TimelineUIUtils {
     contentHelper.addSection(TimelineUIUtils.eventTitle(event), color);
 
     const eventData = event.args['data'];
-    const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
+    const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
     const initiator = timelineData.initiator();
     let url: Platform.DevToolsPath.UrlString|null = null;
 
@@ -2581,7 +2581,7 @@ export class TimelineUIUtils {
     }
     const title = i18nString(UIStrings.initiator);
     const sendRequest = request.children[0];
-    const topFrame = TimelineModel.TimelineModel.TimelineData.forEvent(sendRequest).topFrame();
+    const topFrame = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(sendRequest).topFrame();
     if (topFrame) {
       const link = linkifier.maybeLinkifyConsoleCallFrame(
           target, topFrame, {tabStop: true, inlineFrameIndex: 0, showColumnNumber: true});
@@ -2589,9 +2589,9 @@ export class TimelineUIUtils {
         contentHelper.appendElementRow(title, link);
       }
     } else {
-      const initiator = TimelineModel.TimelineModel.TimelineData.forEvent(sendRequest).initiator();
+      const initiator = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(sendRequest).initiator();
       if (initiator) {
-        const initiatorURL = TimelineModel.TimelineModel.TimelineData.forEvent(initiator).url;
+        const initiatorURL = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(initiator).url;
         if (initiatorURL) {
           const link =
               linkifier.maybeLinkifyScriptLocation(target, null, initiatorURL, 0, {tabStop: true, inlineFrameIndex: 0});
@@ -2650,7 +2650,7 @@ export class TimelineUIUtils {
         break;
     }
 
-    const timelineData = TimelineModel.TimelineModel.TimelineData.forEvent(event);
+    const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
     // Direct cause.
     if (timelineData.stackTrace && timelineData.stackTrace.length) {
       contentHelper.addSection(i18nString(UIStrings.callStacks));
@@ -2659,7 +2659,7 @@ export class TimelineUIUtils {
           TimelineUIUtils.stackTraceFromCallFrames(timelineData.stackTrace));
     }
 
-    const initiator = TimelineModel.TimelineModel.TimelineData.forEvent(event).initiator();
+    const initiator = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).initiator();
     // Indirect causes.
     if (event instanceof SDK.TracingModel.Event &&
         TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event) && target) {
@@ -2686,7 +2686,7 @@ export class TimelineUIUtils {
       });
       contentHelper.appendElementRow(i18nString(UIStrings.initiator), link);
 
-      const initiatorStackTrace = TimelineModel.TimelineModel.TimelineData.forEvent(initiator).stackTrace;
+      const initiatorStackTrace = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(initiator).stackTrace;
       if (initiatorStackTrace) {
         contentHelper.appendStackTrace(
             callSiteStackLabel || i18nString(UIStrings.firstInvalidated),
@@ -3177,8 +3177,9 @@ export class TimelineUIUtils {
 
   static eventWarning(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData, warningType?: string):
       Element|null {
-    const timelineData =
-        event instanceof SDK.TracingModel.Event ? TimelineModel.TimelineModel.TimelineData.forEvent(event) : null;
+    const timelineData = event instanceof SDK.TracingModel.Event ?
+        TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event) :
+        null;
     const {duration} = SDK.TracingModel.timesForEventInMilliseconds(event);
     const warning = warningType || timelineData?.warning;
     if (!warning) {

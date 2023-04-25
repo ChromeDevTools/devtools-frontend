@@ -14,7 +14,8 @@ import type * as TimelineModel from '../../../../../../front_end/models/timeline
 const {assert} = chai;
 
 function initTrackAppender(
-    flameChartData: PerfUI.FlameChart.TimelineData, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+    flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
+    traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     timelineModel: TimelineModel.TimelineModel.TimelineModelImpl): Timeline.GPUTrackAppender.GPUTrackAppender {
@@ -28,7 +29,7 @@ describeWithEnvironment('GPUTrackAppender', () => {
   let timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   let gpuTrackAppender: Timeline.GPUTrackAppender.GPUTrackAppender;
   let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
-  let flameChartData = new PerfUI.FlameChart.TimelineData([], [], [], []);
+  let flameChartData = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
   beforeEach(async () => {
@@ -40,7 +41,7 @@ describeWithEnvironment('GPUTrackAppender', () => {
 
   afterEach(() => {
     entryData = [];
-    flameChartData = new PerfUI.FlameChart.TimelineData([], [], [], []);
+    flameChartData = new PerfUI.FlameChart.FlameChartTimelineData([], [], [], []);
     entryTypeByLevel = [];
   });
 

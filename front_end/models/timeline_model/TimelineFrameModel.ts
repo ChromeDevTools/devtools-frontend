@@ -35,7 +35,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../trace/trace.js';
 
-import {RecordType, TimelineData} from './TimelineModel.js';
+import {RecordType, EventOnTimelineData} from './TimelineModel.js';
 
 import {TracingLayerTree, type TracingLayerPayload, type TracingLayerTile} from './TracingLayerTree.js';
 
@@ -345,8 +345,8 @@ export class TimelineFrameModel {
     if (event.name === RecordType.BeginMainThreadFrame && event.args['data'] && event.args['data']['frameId']) {
       this.framePendingCommit.mainFrameId = event.args['data']['frameId'];
     }
-    if (event.name === RecordType.Paint && event.args['data']['layerId'] && TimelineData.forEvent(event).picture &&
-        this.target) {
+    if (event.name === RecordType.Paint && event.args['data']['layerId'] &&
+        EventOnTimelineData.forEvent(event).picture && this.target) {
       this.framePendingCommit.paints.push(new LayerPaintEvent(event, this.target));
     }
     // Commit will be replacing CompositeLayers but CompositeLayers is kept
@@ -502,7 +502,7 @@ export class LayerPaintEvent {
     rect: Array<number>,
     serializedPicture: string,
   }|null> {
-    const picture = TimelineData.forEvent(this.eventInternal).picture;
+    const picture = EventOnTimelineData.forEvent(this.eventInternal).picture;
     if (!picture) {
       return Promise.resolve(null);
     }

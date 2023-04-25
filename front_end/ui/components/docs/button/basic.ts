@@ -294,7 +294,7 @@ for (let i = 0; i < 6; i++) {
   const toolbarButton = new Buttons.Button.Button();
   toolbarButton.onclick = () => alert('clicked');
   toolbarButton.data = {
-    variant: Buttons.Button.Variant.TOOLBAR,
+    variant: i % 2 === 1 ? Buttons.Button.Variant.TOOLBAR : Buttons.Button.Variant.PRIMARY_TOOLBAR,
     iconUrl: testIcon,
   };
   appendToToolbar(toolbarButton);

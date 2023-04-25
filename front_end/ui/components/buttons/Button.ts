@@ -18,6 +18,8 @@ export const enum Variant {
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
   TOOLBAR = 'toolbar',
+  // Just like toolbar but has a style similar to a primary button.
+  PRIMARY_TOOLBAR = 'primary_toolbar',
   ROUND = 'round',
 }
 
@@ -46,7 +48,7 @@ interface ButtonState {
 }
 
 export type ButtonData = {
-  variant: Variant.TOOLBAR|Variant.ROUND,
+  variant: Variant.PRIMARY_TOOLBAR|Variant.TOOLBAR|Variant.ROUND,
   iconUrl: string,
   size?: Size,
   disabled?: boolean,
@@ -213,11 +215,15 @@ export class Button extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  #isToolbarVariant(): boolean {
+    return this.#props.variant === Variant.TOOLBAR || this.#props.variant === Variant.PRIMARY_TOOLBAR;
+  }
+
   #render(): void {
     if (!this.#props.variant) {
       throw new Error('Button requires a variant to be defined');
     }
-    if (this.#props.variant === Variant.TOOLBAR) {
+    if (this.#isToolbarVariant()) {
       if (!this.#props.iconUrl) {
         throw new Error('Toolbar button requires an icon');
       }
@@ -236,7 +242,8 @@ export class Button extends HTMLElement {
     const classes = {
       primary: this.#props.variant === Variant.PRIMARY,
       secondary: this.#props.variant === Variant.SECONDARY,
-      toolbar: this.#props.variant === Variant.TOOLBAR,
+      toolbar: this.#isToolbarVariant(),
+      'primary-toolbar': this.#props.variant === Variant.PRIMARY_TOOLBAR,
       round: this.#props.variant === Variant.ROUND,
       'text-with-icon': Boolean(this.#props.iconUrl) && !this.#isEmpty,
       'only-icon': Boolean(this.#props.iconUrl) && this.#isEmpty,

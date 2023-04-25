@@ -205,6 +205,10 @@ button.round devtools-icon {
   --icon-color: var(--icon-default);
 }
 
+button.primary-toolbar devtools-icon {
+  --icon-color: var(--icon-primary);
+}
+
 button.primary devtools-icon {
   --icon-color: var(--color-background);
 }
@@ -245,8 +249,16 @@ button.toolbar:active devtools-icon {
   --icon-color: var(--icon-toggled);
 }
 
+button.primary-toolbar:active devtools-icon {
+  --icon-color: var(--icon-primary);
+}
+
 button.toolbar:hover devtools-icon {
   --icon-color: var(--icon-default-hover);
+}
+
+button.primary-toolbar:hover devtools-icon {
+  --icon-color: var(--icon-primary);
 }
 
 button.toolbar:disabled devtools-icon,

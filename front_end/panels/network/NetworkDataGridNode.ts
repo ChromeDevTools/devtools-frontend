@@ -1082,7 +1082,9 @@ export class NetworkRequestNode extends NetworkNode {
         iconElement.title = this.requestInternal.resourceType().title();
         iconElement.style.setProperty(
             '-webkit-mask',
-            `url('${new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url).toString()}')  no-repeat center`);
+            `url('${
+                new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url)
+                    .toString()}')  no-repeat center /99%`);
         iconElement.style.setProperty('background-color', iconData.color);
       }
       iconElement.classList.add('icon');
@@ -1099,7 +1101,7 @@ export class NetworkRequestNode extends NetworkNode {
         secondIconElement.title = i18nString(UIStrings.webBundleInnerRequest);
         secondIconElement.style.setProperty(
             '-webkit-mask',
-            `url('${new URL('../../Images/bundle.svg', import.meta.url).toString()}')  no-repeat center`);
+            `url('${new URL('../../Images/bundle.svg', import.meta.url).toString()}')  no-repeat center /99%`);
         secondIconElement.style.setProperty('background-color', 'var(--icon-info)');
 
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);

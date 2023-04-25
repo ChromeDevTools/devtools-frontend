@@ -251,9 +251,9 @@
 }
 
 .network-log-grid.data-grid.small .icon {
-  margin-top: 0;
-  width: 20px;
-  height: 20px;
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
 }
 
 .image-network-icon-preview {

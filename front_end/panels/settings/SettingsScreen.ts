@@ -479,6 +479,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
 
   private createExperimentCheckbox(experiment: Root.Runtime.Experiment): HTMLParagraphElement {
     const label = UI.UIUtils.CheckboxLabel.create(experiment.title, experiment.isEnabled());
+    label.classList.add('experiment-label');
     const input = label.checkboxElement;
     input.name = experiment.name;
     function listener(): void {

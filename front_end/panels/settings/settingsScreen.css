@@ -187,8 +187,12 @@ label {
   align-items: center;
 }
 
-.settings-experiment .link-icon {
-  margin-left: 2px;
+.settings-experiment .devtools-link:has(.link-icon) {
+  outline-offset: 0;
+}
+
+.experiment-label {
+  margin-right: 2px;
 }
 
 .settings-experiment-unstable {

@@ -135,6 +135,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   private gpuMemoryUsageInternal: number;
   private paints: LayerPaintEvent[];
   private compositingReasons: string[];
+  private compositingReasonIds: string[];
   private drawsContentInternal: boolean;
   private paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
   constructor(paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null, payload: TracingLayerPayload) {
@@ -152,6 +153,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     this.gpuMemoryUsageInternal = -1;
     this.paints = [];
     this.compositingReasons = [];
+    this.compositingReasonIds = [];
     this.drawsContentInternal = false;
 
     this.paintProfilerModel = paintProfilerModel;
@@ -172,6 +174,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     this.createScrollRects(payload);
 
     this.compositingReasons = payload.compositing_reasons || [];
+    this.compositingReasonIds = payload.compositing_reason_ids || [];
     this.drawsContentInternal = Boolean(payload.draws_content);
     this.gpuMemoryUsageInternal = payload.gpu_memory_usage;
     this.paints = [];
@@ -358,9 +361,8 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     return Promise.resolve(this.compositingReasons);
   }
 
-  // TODO(wangxianzhu): Remove this function after updating blink web tests.
   requestCompositingReasonIds(): Promise<string[]> {
-    return Promise.resolve([]);
+    return Promise.resolve(this.compositingReasonIds);
   }
 
   drawsContent(): boolean {

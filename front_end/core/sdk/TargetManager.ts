@@ -33,6 +33,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #browserTargetInternal: Target|null;
   #scopeTarget: Target|null;
   #defaultScopeSet: boolean;
+  readonly #scopeChangeListeners: Set<() => void>;
 
   private constructor() {
     super();
@@ -45,6 +46,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#scopeTarget = null;
     this.#scopedObservers = new WeakSet();
     this.#defaultScopeSet = false;
+    this.#scopeChangeListeners = new Set();
   }
 
   static instance({forceNew}: {
@@ -391,6 +393,17 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
         }
       }
     }
+    for (const scopeChangeListener of this.#scopeChangeListeners) {
+      scopeChangeListener();
+    }
+  }
+
+  addScopeChangeListener(listener: () => void): void {
+    this.#scopeChangeListeners.add(listener);
+  }
+
+  removeScopeChangeListener(listener: () => void): void {
+    this.#scopeChangeListeners.delete(listener);
   }
 
   scopeTarget(): Target|null {

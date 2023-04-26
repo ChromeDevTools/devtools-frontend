@@ -1,4 +1,7 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
+// Copyright 2023 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -19,31 +22,34 @@ import {createContentProviderUISourceCodes} from '../../helpers/UISourceCodeHelp
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 
 describeWithMockConnection('NetworkNavigatorView', () => {
+  let workspace: Workspace.Workspace.WorkspaceImpl;
+  beforeEach(async () => {
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+    });
+    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
+    const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+    Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    stubNoopSettings();
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, '');
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.JUST_MY_CODE, '');
+  });
+
   const revealMainTarget = (targetFactory: () => SDK.Target.Target) => {
     let target: SDK.Target.Target;
     let project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject;
 
     beforeEach(async () => {
-      const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-      const targetManager = SDK.TargetManager.TargetManager.instance();
-      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-        forceNew: true,
-        resourceMapping,
-        targetManager,
-      });
-      Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
-      const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
-          {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
-      Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
-      UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
       target = targetFactory();
-      stubNoopSettings();
-      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, '');
-      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.JUST_MY_CODE, '');
-
       ({project} = createContentProviderUISourceCodes({
          items: [
            {url: 'http://example.com/' as Platform.DevToolsPath.UrlString, mimeType: 'text/html'},
@@ -95,30 +101,55 @@ describeWithMockConnection('NetworkNavigatorView', () => {
                                 return createTarget({parentTarget: tabTarget});
                               }));
 
+  it('updates in scope change', () => {
+    const target = createTarget();
+    const {project} = createContentProviderUISourceCodes({
+      items: [
+        {url: 'http://example.com/' as Platform.DevToolsPath.UrlString, mimeType: 'text/html'},
+        {url: 'http://example.com/favicon.ico' as Platform.DevToolsPath.UrlString, mimeType: 'image/x-icon'},
+        {url: 'http://example.com/gtm.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+      ],
+      projectId: 'project',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      target,
+    });
+    const anotherTarget = createTarget();
+    const {project: anotherProject} = createContentProviderUISourceCodes({
+      items: [
+        {url: 'http://example.org/' as Platform.DevToolsPath.UrlString, mimeType: 'text/html'},
+        {url: 'http://example.org/background.bmp' as Platform.DevToolsPath.UrlString, mimeType: 'image/x-icon'},
+      ],
+      projectId: 'anotherProject',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      target: anotherTarget,
+    });
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
+
+    let rootElement = navigatorView.scriptsTree.rootElement();
+    assertNotNullOrUndefined(rootElement);
+    assert.strictEqual(rootElement.childCount(), 1);
+    assert.strictEqual(rootElement.firstChild()?.childCount(), 3);
+    assert.deepEqual(rootElement.firstChild()?.children().map(i => i.title), ['(index)', 'gtm.js', 'favicon.ico']);
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
+
+    rootElement = navigatorView.scriptsTree.rootElement();
+    assertNotNullOrUndefined(rootElement);
+    assert.strictEqual(rootElement.childCount(), 1);
+    assert.strictEqual(rootElement.firstChild()?.childCount(), 2);
+    assert.deepEqual(rootElement.firstChild()?.children().map(i => i.title), ['(index)', 'background.bmp']);
+
+    project.removeProject();
+    anotherProject.removeProject();
+  });
+
   describe('removing source codes selection throttling', () => {
     let target: SDK.Target.Target;
-    let workspace: Workspace.Workspace.WorkspaceImpl;
 
-    beforeEach(async () => {
-      const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-      workspace = Workspace.Workspace.WorkspaceImpl.instance();
-      const targetManager = SDK.TargetManager.TargetManager.instance();
-      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-        forceNew: true,
-        resourceMapping,
-        targetManager,
-      });
-      Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
-      const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
-          {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
-      Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
-      UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    beforeEach(() => {
       target = createTarget();
-      stubNoopSettings();
-      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.AUTHORED_DEPLOYED_GROUPING, '');
-      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.JUST_MY_CODE, '');
     });
 
     it('selects just once when removing multiple sibling source codes', () => {

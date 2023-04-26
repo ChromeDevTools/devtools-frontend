@@ -167,14 +167,17 @@ describeWithMockConnection('TargetManager', () => {
     const target2 = createTarget();
     const targetObserver = sinon.spy(new SDK.TargetManager.Observer());
     const modelObserver = sinon.spy(new SDK.TargetManager.SDKModelObserver<SDK.ResourceTreeModel.ResourceTreeModel>());
+    const scopeChangeListener = sinon.spy();
 
     targetManager.observeTargets(targetObserver, {scoped: true});
     targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, modelObserver, {scoped: true});
+    targetManager.addScopeChangeListener(scopeChangeListener);
 
     assert.isTrue(targetObserver.targetAdded.calledOnceWith(target1));
     assert.isTrue(modelObserver.modelAdded.calledOnce);
     assert.isFalse(targetObserver.targetRemoved.called);
     assert.isFalse(modelObserver.modelRemoved.called);
+    assert.isFalse(scopeChangeListener.called);
 
     targetObserver.targetAdded.resetHistory();
     modelObserver.modelAdded.resetHistory();
@@ -186,30 +189,36 @@ describeWithMockConnection('TargetManager', () => {
     assert.isTrue(modelObserver.modelAdded.calledOnce);
     assert.isTrue(targetObserver.targetAdded.calledAfter(targetObserver.targetRemoved));
     assert.isTrue(modelObserver.modelAdded.calledAfter(modelObserver.modelRemoved));
+    assert.isTrue(scopeChangeListener.called);
 
     targetObserver.targetAdded.resetHistory();
     targetObserver.targetRemoved.resetHistory();
     modelObserver.modelAdded.resetHistory();
     modelObserver.modelRemoved.resetHistory();
+    scopeChangeListener.resetHistory();
 
     targetManager.setScopeTarget(null);
     assert.isFalse(targetObserver.targetAdded.called);
     assert.isFalse(modelObserver.modelAdded.calledOnce);
     assert.isTrue(targetObserver.targetRemoved.calledOnceWith(target1));
     assert.isTrue(modelObserver.modelRemoved.called);
+    assert.isTrue(scopeChangeListener.called);
 
     targetObserver.targetAdded.resetHistory();
     targetObserver.targetRemoved.resetHistory();
     modelObserver.modelAdded.resetHistory();
     modelObserver.modelRemoved.resetHistory();
+    scopeChangeListener.resetHistory();
 
     const target3 = createTarget();
     assert.isFalse(targetObserver.targetAdded.called);
     assert.isFalse(modelObserver.modelAdded.called);
+    assert.isFalse(scopeChangeListener.called);
 
     targetManager.setScopeTarget(target3);
     assert.isTrue(targetObserver.targetAdded.called);
     assert.isTrue(modelObserver.modelAdded.called);
+    assert.isTrue(scopeChangeListener.called);
   });
 
   it('short-cicuits setting the same scope target', () => {

@@ -33,7 +33,7 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
   constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
     this.workspace = workspace;
     this.#modelToInfo = new Map();
-    targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this, {scoped: true});
+    targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
   }
 
   modelAdded(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void {

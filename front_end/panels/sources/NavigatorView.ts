@@ -585,7 +585,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
-  private removeProject(project: Workspace.Workspace.Project): void {
+  removeProject(project: Workspace.Workspace.Project): void {
     this.removeUISourceCodes(project.uiSourceCodes());
     if (project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;

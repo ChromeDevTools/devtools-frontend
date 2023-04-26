@@ -112,9 +112,8 @@ describeWithMockConnection('ResourceMapping', () => {
     assert.isNotNull(workspace.uiSourceCodeForURL(url));
   });
 
-  it('does not create UISourceCode for added out of scope target', () => {
+  it('creates UISourceCode for added out of scope target', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
-    assert.isNull(workspace.uiSourceCodeForURL(url));
 
     const mimeType = 'text/html';
     const frameId = 'other' as Protocol.Page.FrameId;
@@ -123,7 +122,7 @@ describeWithMockConnection('ResourceMapping', () => {
         resourceTreeModel, null, otherUrl, otherUrl, frameId, null,
         Common.ResourceType.ResourceType.fromMimeType(mimeType), mimeType, null, null));
     uiSourceCode = workspace.uiSourceCodeForURL(otherUrl) as Workspace.UISourceCode.UISourceCode;
-    assert.isNull(uiSourceCode);
+    assert.isNotNull(uiSourceCode);
   });
 
   describe('uiLocationToJSLocations', () => {

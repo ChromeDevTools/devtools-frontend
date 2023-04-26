@@ -58,16 +58,4 @@ describeWithMockConnection('DebuggerWorkspaceBinding', () => {
     assert.strictEqual(uiSourceCode.url(), scriptUrl);
     assert.deepEqual(Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode), target);
   });
-
-  const createsUiSourceCode = (inScope: boolean) => async () => {
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-    const scriptUrl = 'http://script-host/script.js' as Platform.DevToolsPath.UrlString;
-    const scriptInfo = {url: scriptUrl, content: 'console.log(1);', startLine: 0, startColumn: 0, hasSourceURL: false};
-    const script = await backend.addScript(target, scriptInfo, null);
-    await new Promise(resolve => setTimeout(resolve, 0));
-    assert.strictEqual(Boolean(debuggerWorkspaceBinding.uiSourceCodeForScript(script)), inScope);
-  };
-
-  it('creates UISourceCode for in scope scritps', createsUiSourceCode(true));
-  it('does not create UISourceCode for out of scope scritps', createsUiSourceCode(false));
 });

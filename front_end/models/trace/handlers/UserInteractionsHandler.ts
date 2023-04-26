@@ -118,17 +118,16 @@ const keyboardEventTypes = new Set([
   'keyup',
 ]);
 
-function categoryOfInteraction(interaction: Types.TraceEvents.SyntheticInteractionEvent): 'KEYBOARD'|'POINTER'|
-    'UNKNOWN' {
+export type InteractionCategory = 'KEYBOARD'|'POINTER'|'OTHER';
+export function categoryOfInteraction(interaction: Types.TraceEvents.SyntheticInteractionEvent): InteractionCategory {
   if (pointerEventTypes.has(interaction.type)) {
     return 'POINTER';
   }
-  if (keyboardEventTypes) {
+  if (keyboardEventTypes.has(interaction.type)) {
     return 'KEYBOARD';
   }
 
-  console.error(`Unexpected interaction type: ${interaction.type}`);
-  return 'UNKNOWN';
+  return 'OTHER';
 }
 
 /**
@@ -156,19 +155,20 @@ function categoryOfInteraction(interaction: Types.TraceEvents.SyntheticInteracti
  **/
 export function removeNestedInteractions(interactions: readonly Types.TraceEvents.SyntheticInteractionEvent[]):
     readonly Types.TraceEvents.SyntheticInteractionEvent[] {
-  const earliestEventForEndTimePointerEvents =
-      new Map<Types.Timing.MicroSeconds, Types.TraceEvents.SyntheticInteractionEvent>();
-  const earliestEventForEndTimeKeyboardEvents =
-      new Map<Types.Timing.MicroSeconds, Types.TraceEvents.SyntheticInteractionEvent>();
+  /**
+   * Because we nest events only that are in the same category, we store the
+   * longest event for a given end time by category.
+   **/
+  const earliestEventForEndTimePerCategory:
+      Record<InteractionCategory, Map<Types.Timing.MicroSeconds, Types.TraceEvents.SyntheticInteractionEvent>> = {
+        POINTER: new Map(),
+        KEYBOARD: new Map(),
+        OTHER: new Map(),
+      };
 
   function storeEventIfEarliestForCategoryAndEndTime(interaction: Types.TraceEvents.SyntheticInteractionEvent): void {
     const category = categoryOfInteraction(interaction);
-    if (category === 'UNKNOWN') {
-      // This interaction has an unknown category, so just silently drop it.
-      return;
-    }
-    const mapToUse =
-        category === 'KEYBOARD' ? earliestEventForEndTimeKeyboardEvents : earliestEventForEndTimePointerEvents;
+    const mapToUse = earliestEventForEndTimePerCategory[category];
     const endTime = Types.Timing.MicroSeconds(interaction.ts + interaction.dur);
 
     const earliestCurrentEvent = mapToUse.get(endTime);
@@ -185,11 +185,10 @@ export function removeNestedInteractions(interactions: readonly Types.TraceEvent
     storeEventIfEarliestForCategoryAndEndTime(interaction);
   }
 
-  // Combine all the events back into an array and sort them by timestamp.
-  const keptEvents = [
-    ...earliestEventForEndTimeKeyboardEvents.values(),
-    ...earliestEventForEndTimePointerEvents.values(),
-  ];
+  // Combine all the events that we have kept from all the per-category event
+  // maps back into an array and sort them by timestamp.
+  const keptEvents = Object.values(earliestEventForEndTimePerCategory)
+                         .flatMap(eventsByEndTime => Array.from(eventsByEndTime.values()));
   keptEvents.sort((eventA, eventB) => {
     return eventA.ts - eventB.ts;
   });

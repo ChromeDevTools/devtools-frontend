@@ -177,7 +177,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    */
   titleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
     if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event)) {
-      return event.type;
+      return titleForInteractionEvent(event);
     }
     return event.name;
   }
@@ -190,4 +190,25 @@ export class InteractionsTrackAppender implements TrackAppender {
     const title = this.titleForEvent(event);
     return {title, formattedTime: getFormattedTime(event.dur)};
   }
+}
+
+/**
+ * Return the title to use for a given interaction event.
+ * Exported so the title in the DetailsView can re-use the same logic
+ **/
+export function titleForInteractionEvent(event: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent): string {
+  const category = TraceEngine.Handlers.ModelHandlers.UserInteractions.categoryOfInteraction(event);
+  // Because we hide nested interactions, we do not want to show the
+  // specific type of the interaction that was not hidden, so instead we
+  // show just the category of that interaction.
+  if (category === 'OTHER') {
+    return 'Other';
+  }
+  if (category === 'KEYBOARD') {
+    return 'Keyboard';
+  }
+  if (category === 'POINTER') {
+    return 'Pointer';
+  }
+  return event.type;
 }

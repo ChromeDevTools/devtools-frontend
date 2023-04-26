@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import {loadEventsFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
-describe('UserInteractions', function() {
+describe('UserInteractionsHandler', function() {
   setTraceModelTimeout(this);
   beforeEach(async () => {
     TraceModel.Handlers.ModelHandlers.UserInteractions.reset();
@@ -175,6 +175,17 @@ describe('UserInteractions', function() {
         const eventD = makeFakeInteraction('pointerdown', {startTime: 6, endTime: 20, interactionId: 4});
         const result = removeNestedInteractions([eventA, eventB, eventC, eventD]);
         assert.deepEqual(result, [eventA, eventD]);
+      });
+
+      it('does not remove interactions with an unexpected type', () => {
+        /**
+         * =====A=[pointerdown]=====
+         *   ===========B=[unknown]=
+         */
+        const eventA = makeFakeInteraction('pointerdown', {startTime: 0, endTime: 10, interactionId: 1});
+        const eventB = makeFakeInteraction('unknown', {startTime: 2, endTime: 10, interactionId: 2});
+        const result = removeNestedInteractions([eventA, eventB]);
+        assert.deepEqual(result, [eventA, eventB]);
       });
 
       it('correctly identifies nested events when their parent overlaps with multiple events', () => {

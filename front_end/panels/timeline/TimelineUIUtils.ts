@@ -52,6 +52,7 @@ import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.cs
 import {CLSRect} from './CLSLinkifier.js';
 import {TimelinePanel} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
+import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
 
 const UIStrings = {
   /**
@@ -1437,8 +1438,7 @@ export class TimelineUIUtils {
       }
 
       if (payload && TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(payload)) {
-        // For interaction events, show the type of the interaction as its title
-        return payload.type;
+        return titleForInteractionEvent(payload);
       }
     }
     const title = TimelineUIUtils.eventStyle(event).title;

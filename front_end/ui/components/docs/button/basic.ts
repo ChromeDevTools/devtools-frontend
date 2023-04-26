@@ -161,6 +161,16 @@ primaryIconOnlyButton.onclick = () => alert('clicked');
 primaryIconOnlyButton.style.width = '24px';
 appendButton(primaryIconOnlyButton);
 
+// Primary Icon with a name
+const primaryIconByNameButton = new Buttons.Button.Button();
+primaryIconByNameButton.data = {
+  variant: Buttons.Button.Variant.PRIMARY,
+  iconName: 'file-image',
+};
+primaryIconByNameButton.onclick = () => alert('clicked');
+primaryIconByNameButton.innerHTML = 'Icon by name';
+appendButton(primaryIconByNameButton);
+
 // Secondary Icon Only
 const secondaryIconOnlyButton = new Buttons.Button.Button();
 secondaryIconOnlyButton.onclick = () => alert('clicked');

@@ -317,14 +317,24 @@ export class DebuggerPlugin extends Plugin {
           return false;
         }
         const line = selectionLine(this.editor);
-        const breakpoint =
-            this.breakpoints.find(b => b.position >= line.from && b.position <= line.to)?.breakpoint || null;
         Host.userMetrics.breakpointEditDialogRevealedFrom(
             Host.UserMetrics.BreakpointEditDialogRevealedFrom.KeyboardShortcut);
-        this.editBreakpointCondition({line, breakpoint, location: null, isLogpoint: breakpoint?.isLogpoint()});
+
+        this.#openEditDialogForLine(line);
         return true;
       },
     });
+  }
+
+  #openEditDialogForLine(line: CodeMirror.Line): void {
+    if (this.muted) {
+      return;
+    }
+    if (this.activeBreakpointDialog) {
+      this.activeBreakpointDialog.finishEditing(false, '');
+    }
+    const breakpoint = this.breakpoints.find(b => b.position >= line.from && b.position <= line.to)?.breakpoint || null;
+    this.editBreakpointCondition({line, breakpoint, location: null, isLogpoint: breakpoint?.isLogpoint()});
   }
 
   override editorInitialized(editor: TextEditor.TextEditor.TextEditor): void {
@@ -1464,9 +1474,18 @@ export class DebuggerPlugin extends Plugin {
   }
 
   private handleGutterClick(line: CodeMirror.Line, event: MouseEvent): boolean {
-    if (this.muted || event.button !== 0 || event.altKey || event.ctrlKey || event.metaKey) {
+    if (this.muted || event.button !== 0 || event.altKey) {
       return false;
     }
+    if (event.metaKey || event.ctrlKey) {
+      if (event.shiftKey) {
+        return false;
+      }
+      Host.userMetrics.breakpointEditDialogRevealedFrom(Host.UserMetrics.BreakpointEditDialogRevealedFrom.MouseClick);
+      this.#openEditDialogForLine(line);
+      return true;
+    }
+
     void this.toggleBreakpoint(line, event.shiftKey);
     return true;
   }

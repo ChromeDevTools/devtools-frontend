@@ -788,7 +788,8 @@ export const enum BreakpointEditDialogRevealedFrom {
   LineGutterContextMenu = 3,
   KeyboardShortcut = 4,
   Linkifier = 5,
-  MaxValue = 6,
+  MouseClick = 6,
+  MaxValue = 7,
 }
 
 export const enum ColorConvertedFrom {

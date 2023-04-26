@@ -14,11 +14,13 @@ import {
   step,
   waitFor,
   waitForFunction,
+  withControlOrMetaKey,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,
+  CODE_LINE_COLUMN_SELECTOR,
   getBreakpointHitLocation,
   isBreakpointSet,
   isEqualOrAbbreviation,
@@ -270,4 +272,27 @@ describe('The Sources Tab', async function() {
          await click(RESUME_BUTTON);
        });
      });
+
+  describe('The breakpoint edit dialog', () => {
+    it('shows up on Ctrl/Meta + click if no breakpoint was set', async () => {
+      await openSourceCodeEditorForFile(CLICK_BREAKPOINT_SCRIPT, CLICK_BREAKPOINT_HTML);
+      const lineNumberColumn = await waitFor(CODE_LINE_COLUMN_SELECTOR);
+      await withControlOrMetaKey(async () => {
+        await click('text/4', {root: lineNumberColumn});
+      });
+      await waitFor('.sources-edit-breakpoint-dialog');
+    });
+
+    it('shows up on Ctrl/Meta + click if breakpoint was already set', async () => {
+      const {frontend} = getBrowserAndPages();
+      await openSourceCodeEditorForFile(CLICK_BREAKPOINT_SCRIPT, CLICK_BREAKPOINT_HTML);
+      await addBreakpointForLine(frontend, 4);
+
+      const lineNumberColumn = await waitFor(CODE_LINE_COLUMN_SELECTOR);
+      await withControlOrMetaKey(async () => {
+        await click('text/4', {root: lineNumberColumn});
+      });
+      await waitFor('.sources-edit-breakpoint-dialog');
+    });
+  });
 });

@@ -45,7 +45,7 @@ describe('Bounce Tracking issue', async () => {
     });
     await expandIssue();
     const issueElement =
-        await getIssueByTitle('Chrome may soon delete state for intermediate websites in recent navigation chain');
+        await getIssueByTitle('Chrome may soon delete state for intermediate websites in a recent navigation chain');
     assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('2 potentially tracking websites', issueElement);
     await ensureResourceSectionIsExpanded(section);

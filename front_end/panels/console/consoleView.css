@@ -392,7 +392,8 @@
 }
 
 #console-messages .resource-links {
-  vertical-align: bottom;
+  margin-top: -1px;
+  margin-bottom: -2px;
 }
 
 #console-messages .link:hover,

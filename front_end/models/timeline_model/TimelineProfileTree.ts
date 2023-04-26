@@ -15,13 +15,13 @@ export class Node {
   totalTime: number;
   selfTime: number;
   id: string|symbol;
-  event: SDK.TracingModel.Event|null;
+  event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null;
   parent!: Node|null;
   groupId: string;
   isGroupNodeInternal: boolean;
   depth: number;
 
-  constructor(id: string|symbol, event: SDK.TracingModel.Event|null) {
+  constructor(id: string|symbol, event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null) {
     this.totalTime = 0;
     this.selfTime = 0;
     this.id = id;
@@ -43,12 +43,17 @@ export class Node {
   setHasChildren(_value: boolean): void {
     throw 'Not implemented';
   }
-
+  /**
+   * Returns the direct descendants of this node.
+   * @returns a map with ordered <nodeId, Node> tuples.
+   */
   children(): ChildrenCache {
     throw 'Not implemented';
   }
 
-  searchTree(matchFunction: (arg0: SDK.TracingModel.Event) => boolean, results?: Node[]): Node[] {
+  searchTree(
+      matchFunction: (arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean,
+      results?: Node[]): Node[] {
     results = results || [];
     if (this.event && matchFunction(this.event)) {
       results.push(this);
@@ -66,7 +71,9 @@ export class TopDownNode extends Node {
   childrenInternal: ChildrenCache|null;
   override parent: TopDownNode|null;
 
-  constructor(id: string|symbol, event: SDK.TracingModel.Event|null, parent: TopDownNode|null) {
+  constructor(
+      id: string|symbol, event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null,
+      parent: TopDownNode|null) {
     super(id, event);
     this.root = parent && parent.root;
     this.hasChildrenInternal = false;
@@ -87,6 +94,7 @@ export class TopDownNode extends Node {
   }
 
   private buildChildren(): ChildrenCache {
+    // Tracks the ancestor path of this node, includes the current node.
     const path: TopDownNode[] = [];
     for (let node: TopDownNode = (this as TopDownNode); node.parent && !node.isGroupNode(); node = node.parent) {
       path.push((node as TopDownNode));
@@ -105,8 +113,12 @@ export class TopDownNode extends Node {
     const eventIdCallback = root.doNotAggregate ? undefined : _eventId;
     const eventGroupIdCallback = root.getEventGroupIdCallback();
     let depth = 0;
+    // The amount of ancestors found to match this node's ancestors
+    // during the event tree walk.
     let matchedDepth = 0;
     let currentDirectChild: Node|null = null;
+
+    // Walk on the full event tree to find this node's children.
     TimelineModelImpl.forEachEvent(
         root.events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime, root.filter);
 
@@ -136,12 +148,11 @@ export class TopDownNode extends Node {
       --depth;
     }
 
+    /**
+     * Creates a child node.
+     */
     function processEvent(
         e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData, duration: number): void {
-      if (SDK.TracingModel.eventIsFromNewEngine(e)) {
-        // TODO(crbug.com/1433692): Add support for new engine types.
-        return;
-      }
       if (depth === path.length + 2) {
         if (!currentDirectChild) {
           return;
@@ -172,18 +183,21 @@ export class TopDownNode extends Node {
       currentDirectChild = node;
     }
 
+    /**
+     * Checks if the path of ancestors of an event matches the path of
+     * ancestors of the current node. In other words, checks if an event
+     * is a child of this node. As the check is done, the partial result
+     * is cached on `matchedDepth`, for future checks.
+     */
     function matchPath(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
-      if (SDK.TracingModel.eventIsFromNewEngine(e)) {
-        // TODO(crbug.com/1433692): Add support for new engine types.
-        return false;
-      }
+      const {endTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
       if (matchedDepth === path.length) {
         return true;
       }
       if (matchedDepth !== depth - 1) {
         return false;
       }
-      if (!e.endTime) {
+      if (!endTime) {
         return false;
       }
       if (!eventIdCallback) {
@@ -220,18 +234,21 @@ export class TopDownNode extends Node {
 }
 
 export class TopDownRootNode extends TopDownNode {
-  readonly events: SDK.TracingModel.Event[];
   readonly filter: (e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean;
+  readonly events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[];
   readonly startTime: number;
   readonly endTime: number;
-  eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null|undefined;
+  eventGroupIdCallback: ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|null
+      |undefined;
   readonly doNotAggregate: boolean|undefined;
   override totalTime: number;
   override selfTime: number;
 
   constructor(
-      events: SDK.TracingModel.Event[], filters: TimelineModelFilter[], startTime: number, endTime: number,
-      doNotAggregate?: boolean, eventGroupIdCallback?: ((arg0: SDK.TracingModel.Event) => string)|null) {
+      events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[], filters: TimelineModelFilter[],
+      startTime: number, endTime: number, doNotAggregate?: boolean,
+      eventGroupIdCallback?: ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|
+      null) {
     super('', null, null);
     this.root = this;
     this.events = events;
@@ -271,14 +288,15 @@ export class TopDownRootNode extends TopDownNode {
     return groupNodes;
   }
 
-  getEventGroupIdCallback(): ((arg0: SDK.TracingModel.Event) => string)|null|undefined {
+  getEventGroupIdCallback():
+      ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|null|undefined {
     return this.eventGroupIdCallback;
   }
 }
 
 export class BottomUpRootNode extends Node {
   private childrenInternal: ChildrenCache|null;
-  readonly events: SDK.TracingModel.Event[];
+  readonly events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[];
   private textFilter: TimelineModelFilter;
   readonly filter: (e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean;
   readonly startTime: number;
@@ -287,8 +305,9 @@ export class BottomUpRootNode extends Node {
   override totalTime: number;
 
   constructor(
-      events: SDK.TracingModel.Event[], textFilter: TimelineModelFilter, filters: TimelineModelFilter[],
-      startTime: number, endTime: number, eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null) {
+      events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[], textFilter: TimelineModelFilter,
+      filters: TimelineModelFilter[], startTime: number, endTime: number,
+      eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null) {
     super('', null);
     this.childrenInternal = null;
     this.events = events;
@@ -349,10 +368,6 @@ export class BottomUpRootNode extends Node {
       const id = _eventId(e);
       let node = nodeById.get(id);
       if (!node) {
-        if (SDK.TracingModel.eventIsFromNewEngine(e)) {
-          // TODO(crbug.com/1433692): Add support for new engine types.
-          return;
-        }
         node = new BottomUpNode(root, id, e, false, root);
         nodeById.set(id, node);
       }
@@ -428,7 +443,9 @@ export class BottomUpNode extends Node {
   private cachedChildren: ChildrenCache|null;
   private hasChildrenInternal: boolean;
 
-  constructor(root: BottomUpRootNode, id: string, event: SDK.TracingModel.Event, hasChildren: boolean, parent: Node) {
+  constructor(
+      root: BottomUpRootNode, id: string, event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData,
+      hasChildren: boolean, parent: Node) {
     super(id, event);
     this.parent = parent;
     this.root = root;
@@ -492,10 +509,6 @@ export class BottomUpNode extends Node {
       node = nodeById.get(childId);
       if (!node) {
         const event = eventStack[eventStack.length - self.depth];
-        if (SDK.TracingModel.eventIsFromNewEngine(event)) {
-          // TODO(crbug.com/1433692): Add support for new engine types.
-          return;
-        }
         const hasChildren = eventStack.length > self.depth;
         node = new BottomUpNode(self.root, childId, event, hasChildren, self);
         nodeById.set(childId, node);
@@ -511,7 +524,9 @@ export class BottomUpNode extends Node {
     return this.cachedChildren;
   }
 
-  override searchTree(matchFunction: (arg0: SDK.TracingModel.Event) => boolean, results?: Node[]): Node[] {
+  override searchTree(
+      matchFunction: (arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean,
+      results?: Node[]): Node[] {
     results = results || [];
     if (this.event && matchFunction(this.event)) {
       results.push(this);
@@ -520,7 +535,8 @@ export class BottomUpNode extends Node {
   }
 }
 
-export function eventURL(event: SDK.TracingModel.Event): Platform.DevToolsPath.UrlString|null {
+export function eventURL(event: SDK.TracingModel.Event|
+                         TraceEngine.Types.TraceEvents.TraceEventData): Platform.DevToolsPath.UrlString|null {
   const data = event.args['data'] || event.args['beginData'];
   if (data && data['url']) {
     return data['url'];

@@ -11,6 +11,7 @@ ts_library("timeline_model") {
     "TimelineJSProfile_test.ts",
     "TimelineModelFilter_test.ts",
     "TimelineModel_test.ts",
+    "TimelineProfileTree_test.ts",
   ]
 
   deps = [

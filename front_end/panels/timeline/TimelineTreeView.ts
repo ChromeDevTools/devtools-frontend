@@ -309,7 +309,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     toolbar.appendToolbarItem(textFilterUI);
   }
 
-  modelEvents(): SDK.TracingModel.Event[] {
+  modelEvents(): SDK.TracingModel.Event[]|TraceEngine.Types.TraceEvents.TraceEventData[] {
     return this.track ? this.track.eventsForTreeView() : [];
   }
 
@@ -375,8 +375,10 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     throw new Error('Not Implemented');
   }
 
-  buildTopDownTree(doNotAggregate: boolean, groupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null):
-      TimelineModel.TimelineProfileTree.Node {
+  buildTopDownTree(
+      doNotAggregate: boolean,
+      groupIdCallback: ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|
+      null): TimelineModel.TimelineProfileTree.Node {
     return new TimelineModel.TimelineProfileTree.TopDownRootNode(
         this.modelEvents(), this.filters(), this.startTime, this.endTime, doNotAggregate, groupIdCallback);
   }
@@ -630,7 +632,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     let showPercents = false;
     let value: number;
     let maxTime: number|undefined;
-    let event: SDK.TracingModel.Event|null;
+    let event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null;
     switch (columnId) {
       case 'startTime': {
         event = this.profileNode.event;
@@ -638,7 +640,9 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         if (!model) {
           throw new Error('Unable to find model for tree view');
         }
-        value = (event ? event.startTime : 0) - model.timelineModel().minimumRecordTime();
+        const timings = event && SDK.TracingModel.timesForEventInMilliseconds(event);
+        const startTime = timings?.startTime ?? 0;
+        value = startTime - model.timelineModel().minimumRecordTime();
       } break;
       case 'self':
         value = this.profileNode.selfTime;
@@ -866,23 +870,27 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     return true;
   }
 
-  protected groupingFunction(groupBy: string): ((arg0: SDK.TracingModel.Event) => string)|null {
+  protected groupingFunction(groupBy: string):
+      ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|null {
     const GroupBy = AggregatedTimelineTreeView.GroupBy;
     switch (groupBy) {
       case GroupBy.None:
         return null;
       case GroupBy.EventName:
-        return (event: SDK.TracingModel.Event): string => TimelineUIUtils.eventStyle(event).title;
+        return (event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string =>
+                   TimelineUIUtils.eventStyle(event).title;
       case GroupBy.Category:
-        return (event: SDK.TracingModel.Event): string => TimelineUIUtils.eventStyle(event).category.name;
+        return (event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string =>
+                   TimelineUIUtils.eventStyle(event).category.name;
       case GroupBy.Subdomain:
         return this.domainByEvent.bind(this, false);
       case GroupBy.Domain:
         return this.domainByEvent.bind(this, true);
       case GroupBy.URL:
-        return (event: SDK.TracingModel.Event): string => TimelineModel.TimelineProfileTree.eventURL(event) || '';
+        return (event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string =>
+                   TimelineModel.TimelineProfileTree.eventURL(event) || '';
       case GroupBy.Frame:
-        return (event: SDK.TracingModel.Event): string =>
+        return (event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string =>
                    TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).frameId || '';
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
@@ -890,7 +898,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private domainByEvent(groupSubdomains: boolean, event: SDK.TracingModel.Event): string {
+  private domainByEvent(
+      groupSubdomains: boolean, event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string {
     const url = TimelineModel.TimelineProfileTree.eventURL(event);
     if (!url) {
       return '';

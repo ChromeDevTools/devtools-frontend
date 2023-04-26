@@ -1350,7 +1350,8 @@ export class TimelineUIUtils {
     return frame.functionName;
   }
 
-  static testContentMatching(traceEvent: SDK.TracingModel.Event, regExp: RegExp): boolean {
+  static testContentMatching(
+      traceEvent: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData, regExp: RegExp): boolean {
     const title = TimelineUIUtils.eventStyle(traceEvent).title;
     const tokens = [title];
     const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(traceEvent).url;
@@ -2386,7 +2387,9 @@ export class TimelineUIUtils {
     return contentHelper.fragment;
   }
 
-  static statsForTimeRange(events: SDK.TracingModel.Event[], startTime: number, endTime: number): {
+  static statsForTimeRange(
+      events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[], startTime: number,
+      endTime: number): {
     [x: string]: number,
   } {
     if (!events.length) {
@@ -2444,7 +2447,8 @@ export class TimelineUIUtils {
       return result;
     }
 
-    function buildRangeStatsCacheIfNeeded(events: SDK.TracingModel.Event[]): void {
+    function buildRangeStatsCacheIfNeeded(
+        events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[]): void {
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (events[categoryBreakdownCacheSymbol]) {
         return;

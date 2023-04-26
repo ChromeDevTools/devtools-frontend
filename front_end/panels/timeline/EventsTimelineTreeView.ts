@@ -4,10 +4,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as SDK from '../../core/sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 import {Category, IsLong} from './TimelineFilters.js';
 
@@ -63,10 +64,6 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   override updateContents(selection: TimelineSelection): void {
     super.updateContents(selection);
     if (TimelineSelection.isTraceEventSelection(selection.object)) {
-      if (SDK.TracingModel.eventIsFromNewEngine(selection.object)) {
-        // TODO: support new trace event types in the tree view.
-        return;
-      }
       this.selectEvent(selection.object, true);
     }
   }
@@ -89,7 +86,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private findNodeWithEvent(event: SDK.TracingModel.Event): TimelineModel.TimelineProfileTree.Node|null {
+  private findNodeWithEvent(event: SDK.TracingModel.Event|
+                            TraceEngine.Types.TraceEvents.TraceEventData): TimelineModel.TimelineProfileTree.Node|null {
     const iterators = [this.currentTree.children().values()];
     while (iterators.length) {
       const {done, value: child} = iterators[iterators.length - 1].next();
@@ -105,7 +103,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return null;
   }
 
-  private selectEvent(event: SDK.TracingModel.Event, expand?: boolean): void {
+  private selectEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData, expand?: boolean):
+      void {
     const node = this.findNodeWithEvent(event);
     if (!node) {
       return;

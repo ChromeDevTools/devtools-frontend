@@ -33,6 +33,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   private lastPrimaryPageModel: PreloadingModel|null = null;
   private documents: Map<Protocol.Network.LoaderId, DocumentPreloadingData> =
       new Map<Protocol.Network.LoaderId, DocumentPreloadingData>();
+  private preloadEnabledState: string = '';
 
   constructor(target: Target) {
     super(target);
@@ -211,6 +212,11 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.ModelUpdated);
   }
 
+  onPreloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
+    this.preloadEnabledState = event.state;
+    this.dispatchEventToListeners(Events.ModelUpdated);
+  }
+
   onPreloadingAttemptSourcesUpdated(event: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void {
     const loaderId = event.loaderId;
     this.ensureDocumentPreloadingData(loaderId);
@@ -273,6 +279,10 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
 
   ruleSetRemoved(event: Protocol.Preload.RuleSetRemovedEvent): void {
     this.model.onRuleSetRemoved(event);
+  }
+
+  preloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
+    this.model.onPreloadEnabledStateUpdated(event);
   }
 
   preloadingAttemptSourcesUpdated(event: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void {

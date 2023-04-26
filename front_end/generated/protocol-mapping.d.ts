@@ -637,6 +637,10 @@ export namespace ProtocolMapping {
      */
     'Preload.prerenderAttemptCompleted': [Protocol.Preload.PrerenderAttemptCompletedEvent];
     /**
+     * Fired when a preload enabled state is updated.
+     */
+    'Preload.preloadEnabledStateUpdated': [Protocol.Preload.PreloadEnabledStateUpdatedEvent];
+    /**
      * Fired when a prefetch attempt is updated.
      */
     'Preload.prefetchStatusUpdated': [Protocol.Preload.PrefetchStatusUpdatedEvent];
@@ -3657,6 +3661,13 @@ export namespace ProtocolMapping {
     'Storage.deleteStorageBucket': {
       paramsType: [Protocol.Storage.DeleteStorageBucketRequest];
       returnType: void;
+    };
+    /**
+     * Deletes state for sites identified as potential bounce trackers, immediately.
+     */
+    'Storage.runBounceTrackingMitigations': {
+      paramsType: [];
+      returnType: Protocol.Storage.RunBounceTrackingMitigationsResponse;
     };
     /**
      * Returns information about the system.

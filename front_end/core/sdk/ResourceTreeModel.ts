@@ -1243,6 +1243,9 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
   prerenderStatusUpdated(_event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
   }
 
+  preloadEnabledStateUpdated(_event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
+  }
+
   preloadingAttemptSourcesUpdated(): void {
   }
 }

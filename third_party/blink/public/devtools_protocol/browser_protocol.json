@@ -1461,7 +1461,8 @@
                         "OsTriggerIgnored",
                         "InvalidRegisterOsSourceHeader",
                         "InvalidRegisterOsTriggerHeader",
-                        "WebAndOsHeaders"
+                        "WebAndOsHeaders",
+                        "NoWebOrOsSupport"
                     ]
                 },
                 {
@@ -1641,14 +1642,17 @@
                         "WellKnownNoResponse",
                         "WellKnownInvalidResponse",
                         "WellKnownListEmpty",
+                        "WellKnownInvalidContentType",
                         "ConfigNotInWellKnown",
                         "WellKnownTooBig",
                         "ConfigHttpNotFound",
                         "ConfigNoResponse",
                         "ConfigInvalidResponse",
+                        "ConfigInvalidContentType",
                         "ClientMetadataHttpNotFound",
                         "ClientMetadataNoResponse",
                         "ClientMetadataInvalidResponse",
+                        "ClientMetadataInvalidContentType",
                         "DisabledInSettings",
                         "ErrorFetchingSignin",
                         "InvalidSigninResponse",
@@ -1656,10 +1660,12 @@
                         "AccountsNoResponse",
                         "AccountsInvalidResponse",
                         "AccountsListEmpty",
+                        "AccountsInvalidContentType",
                         "IdTokenHttpNotFound",
                         "IdTokenNoResponse",
                         "IdTokenInvalidResponse",
                         "IdTokenInvalidRequest",
+                        "IdTokenInvalidContentType",
                         "ErrorIdToken",
                         "Canceled",
                         "RpPageNotVisible"
@@ -10273,7 +10279,6 @@
                         {
                             "name": "compositingReasons",
                             "description": "A list of strings specifying reasons for the given layer to become composited.",
-                            "deprecated": true,
                             "type": "array",
                             "items": {
                                 "type": "string"
@@ -15437,6 +15442,8 @@
                         "payment",
                         "picture-in-picture",
                         "private-aggregation",
+                        "private-state-token-issuance",
+                        "private-state-token-redemption",
                         "publickey-credentials-get",
                         "run-ad-auction",
                         "screen-wake-lock",
@@ -15447,7 +15454,6 @@
                         "smart-card",
                         "storage-access",
                         "sync-xhr",
-                        "trust-token-redemption",
                         "unload",
                         "usb",
                         "vertical-scroll",
@@ -19942,6 +19948,20 @@
                             "type": "string"
                         }
                     ]
+                },
+                {
+                    "name": "runBounceTrackingMitigations",
+                    "description": "Deletes state for sites identified as potential bounce trackers, immediately.",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "deletedSites",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -23133,7 +23153,20 @@
                         "CrossSiteRedirectInMainFrameNavigation",
                         "CrossSiteNavigationInMainFrameNavigation",
                         "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation",
-                        "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"
+                        "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation",
+                        "MemoryPressureOnTrigger",
+                        "MemoryPressureAfterTriggered"
+                    ]
+                },
+                {
+                    "id": "PreloadEnabledState",
+                    "type": "string",
+                    "enum": [
+                        "Enabled",
+                        "DisabledByDataSaver",
+                        "DisabledByBatterySaver",
+                        "DisabledByPreference",
+                        "NotSupported"
                     ]
                 },
                 {
@@ -23204,6 +23237,16 @@
                             "description": "This is used to give users more information about the name of the API call\nthat is incompatible with prerender and has caused the cancellation of the attempt",
                             "optional": true,
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "preloadEnabledStateUpdated",
+                    "description": "Fired when a preload enabled state is updated.",
+                    "parameters": [
+                        {
+                            "name": "state",
+                            "$ref": "PreloadEnabledState"
                         }
                     ]
                 },

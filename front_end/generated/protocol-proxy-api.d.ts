@@ -3029,6 +3029,11 @@ declare namespace ProtocolProxyApi {
      */
     invoke_deleteStorageBucket(params: Protocol.Storage.DeleteStorageBucketRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Deletes state for sites identified as potential bounce trackers, immediately.
+     */
+    invoke_runBounceTrackingMitigations(): Promise<Protocol.Storage.RunBounceTrackingMitigationsResponse>;
+
   }
   export interface StorageDispatcher {
     /**
@@ -3641,6 +3646,11 @@ declare namespace ProtocolProxyApi {
      * Fired when a prerender attempt is completed.
      */
     prerenderAttemptCompleted(params: Protocol.Preload.PrerenderAttemptCompletedEvent): void;
+
+    /**
+     * Fired when a preload enabled state is updated.
+     */
+    preloadEnabledStateUpdated(params: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void;
 
     /**
      * Fired when a prefetch attempt is updated.

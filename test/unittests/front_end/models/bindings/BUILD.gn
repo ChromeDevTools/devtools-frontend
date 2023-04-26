@@ -14,6 +14,7 @@ ts_library("bindings") {
     "FileUtils_test.ts",
     "IgnoreListManager_test.ts",
     "LiveLocation_test.ts",
+    "PresentationConsoleMessageHelper_test.ts",
     "ResourceMapping_test.ts",
     "ResourceScriptMapping_test.ts",
     "ResourceUtils_test.ts",

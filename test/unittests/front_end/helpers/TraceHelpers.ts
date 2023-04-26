@@ -156,7 +156,7 @@ export async function loadModelDataFromTraceFile(name: string): Promise<TraceMod
 // This mock class is used for instancing a flame chart in the helpers.
 // Its implementation is empty because the methods aren't used by the
 // helpers, only the mere definition.
-class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDelegate {
+export class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDelegate {
   windowChanged(_startTime: number, _endTime: number, _animate: boolean): void {
   }
   updateRangeSelection(_startTime: number, _endTime: number): void {

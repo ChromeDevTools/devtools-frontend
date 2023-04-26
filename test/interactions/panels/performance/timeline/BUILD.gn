@@ -6,6 +6,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 node_ts_library("timeline") {
   sources = [
+    "flamechart_test.ts",
     "gpu_track_test.ts",
     "interactions_track_test.ts",
     "layout_shifts_track_test.ts",

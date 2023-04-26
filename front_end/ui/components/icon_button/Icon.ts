@@ -46,11 +46,13 @@ export class Icon extends HTMLElement {
     this.#color = data.color;
     this.#width = isString(width) ? width : (isString(height) ? height : this.#width);
     this.#height = isString(height) ? height : (isString(width) ? width : this.#height);
-    if ('iconPath' in data) {
+    if ('iconPath' in data && data.iconPath) {
       this.#iconPath = data.iconPath;
-    } else {
+    } else if ('iconName' in data && data.iconName) {
       this.#iconPath = new URL(`../../../Images/${data.iconName}.svg`, import.meta.url).toString();
       this.#iconName = data.iconName;
+    } else {
+      throw new Error('Misconfigured iconName or iconPath.');
     }
     this.#render();
   }

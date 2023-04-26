@@ -5,9 +5,7 @@
 export class Trie {
   #size!: number;
   #root: number;
-  #edges!: {
-    [x: string]: number,
-  }[];
+  #edges!: Map<string, number>[];
   #isWord!: boolean[];
   #wordsInSubtree!: number[];
   #freeNodes!: number[];
@@ -22,7 +20,7 @@ export class Trie {
     ++this.#wordsInSubtree[this.#root];
     for (let i = 0; i < word.length; ++i) {
       const edge = word[i];
-      let next: number = this.#edges[node][edge];
+      let next = this.#edges[node].get(edge);
       if (!next) {
         if (this.#freeNodes.length) {
           next = (this.#freeNodes.pop() as number);
@@ -30,9 +28,9 @@ export class Trie {
           next = this.#size++;
           this.#isWord.push(false);
           this.#wordsInSubtree.push(0);
-          this.#edges.push(Object.create(null));
+          this.#edges.push(new Map());
         }
-        this.#edges[node][edge] = next;
+        this.#edges[node].set(edge, next);
       }
       ++this.#wordsInSubtree[next];
       node = next;
@@ -48,9 +46,9 @@ export class Trie {
     --this.#wordsInSubtree[this.#root];
     for (let i = 0; i < word.length; ++i) {
       const edge = word[i];
-      const next = this.#edges[node][edge];
+      const next = this.#edges[node].get(edge) as number;
       if (!--this.#wordsInSubtree[next]) {
-        delete this.#edges[node][edge];
+        this.#edges[node].delete(edge);
         this.#freeNodes.push(next);
       }
       node = next;
@@ -60,9 +58,9 @@ export class Trie {
   }
 
   has(word: string): boolean {
-    let node: number = this.#root;
+    let node: number|undefined = this.#root;
     for (let i = 0; i < word.length; ++i) {
-      node = this.#edges[node][word[i]];
+      node = this.#edges[node].get(word[i]);
       if (!node) {
         return false;
       }
@@ -72,9 +70,9 @@ export class Trie {
 
   words(prefix?: string): string[] {
     prefix = prefix || '';
-    let node: number = this.#root;
+    let node: number|undefined = this.#root;
     for (let i = 0; i < prefix.length; ++i) {
-      node = this.#edges[node][prefix[i]];
+      node = this.#edges[node].get(prefix[i]);
       if (!node) {
         return [];
       }
@@ -89,16 +87,16 @@ export class Trie {
       results.push(prefix);
     }
     const edges = this.#edges[node];
-    for (const edge in edges) {
-      this.dfs(edges[edge], prefix + edge, results);
+    for (const [edge, node] of edges) {
+      this.dfs(node, prefix + edge, results);
     }
   }
 
   longestPrefix(word: string, fullWordOnly: boolean): string {
-    let node: number = this.#root;
+    let node: number|undefined = this.#root;
     let wordIndex = 0;
     for (let i = 0; i < word.length; ++i) {
-      node = this.#edges[node][word[i]];
+      node = this.#edges[node].get(word[i]);
       if (!node) {
         break;
       }
@@ -112,7 +110,7 @@ export class Trie {
   clear(): void {
     this.#size = 1;
     this.#root = 0;
-    this.#edges = [Object.create(null)];
+    this.#edges = [new Map()];
     this.#isWord = [false];
     this.#wordsInSubtree = [0];
     this.#freeNodes = [];

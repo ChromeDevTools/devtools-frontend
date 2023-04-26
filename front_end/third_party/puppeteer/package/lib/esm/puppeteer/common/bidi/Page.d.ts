@@ -13,39 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/// <reference types="node" />
-/// <reference types="node" />
-import type { Readable } from 'stream';
-import { HTTPResponse } from '../../api/HTTPResponse.js';
-import { Page as PageBase, ScreenshotOptions, WaitForOptions } from '../../api/Page.js';
-import { PDFOptions } from '../PDFOptions.js';
-import { EvaluateFunc, HandleFor } from '../types.js';
-import { Context } from './Context.js';
+import { Page as PageBase } from '../../api/Page.js';
+import { Connection } from './Connection.js';
+import type { EvaluateFunc } from '..//types.js';
 /**
  * @internal
  */
 export declare class Page extends PageBase {
     #private;
-    constructor(context: Context);
+    constructor(connection: Connection, contextId: string);
     close(): Promise<void>;
-    evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
-    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    goto(url: string, options?: WaitForOptions & {
-        referer?: string | undefined;
-        referrerPolicy?: string | undefined;
-    }): Promise<HTTPResponse | null>;
-    url(): string;
-    setDefaultNavigationTimeout(timeout: number): void;
-    setDefaultTimeout(timeout: number): void;
-    setContent(html: string, options?: WaitForOptions): Promise<void>;
-    content(): Promise<string>;
-    pdf(options?: PDFOptions): Promise<Buffer>;
-    createPDFStream(options?: PDFOptions | undefined): Promise<Readable>;
-    screenshot(options: ScreenshotOptions & {
-        encoding: 'base64';
-    }): Promise<string>;
-    screenshot(options?: ScreenshotOptions & {
-        encoding?: 'binary';
-    }): never;
+    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ..._args: Params): Promise<Awaited<ReturnType<Func>>>;
 }
 //# sourceMappingURL=Page.d.ts.map

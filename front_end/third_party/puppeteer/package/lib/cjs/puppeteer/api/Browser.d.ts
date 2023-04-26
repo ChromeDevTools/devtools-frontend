@@ -17,9 +17,9 @@
 import { ChildProcess } from 'child_process';
 import { Protocol } from 'devtools-protocol';
 import { EventEmitter } from '../common/EventEmitter.js';
+import type { Page } from './Page.js';
 import type { Target } from '../common/Target.js';
 import type { BrowserContext } from './BrowserContext.js';
-import type { Page } from './Page.js';
 /**
  * BrowserContext options.
  *
@@ -39,15 +39,15 @@ export interface BrowserContextOptions {
 /**
  * @internal
  */
-export type BrowserCloseCallback = () => Promise<void> | void;
+export declare type BrowserCloseCallback = () => Promise<void> | void;
 /**
  * @public
  */
-export type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => boolean;
+export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => boolean;
 /**
  * @internal
  */
-export type IsPageTargetCallback = (target: Protocol.Target.TargetInfo) => boolean;
+export declare type IsPageTargetCallback = (target: Protocol.Target.TargetInfo) => boolean;
 /**
  * @internal
  */
@@ -55,14 +55,14 @@ export declare const WEB_PERMISSION_TO_PROTOCOL_PERMISSION: Map<Permission, Prot
 /**
  * @public
  */
-export type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'payment-handler' | 'persistent-storage' | 'idle-detection' | 'midi-sysex';
+export declare type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'payment-handler' | 'persistent-storage' | 'idle-detection' | 'midi-sysex';
 /**
  * @public
  */
 export interface WaitForTargetOptions {
     /**
      * Maximum wait time in milliseconds. Pass `0` to disable the timeout.
-     * @defaultValue `30_000`
+     * @defaultValue 30 seconds.
      */
     timeout?: number;
 }
@@ -124,7 +124,7 @@ export declare const enum BrowserEmittedEvents {
  * An example of using a {@link Browser} to create a {@link Page}:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -138,7 +138,7 @@ export declare const enum BrowserEmittedEvents {
  * An example of disconnecting from and reconnecting to a {@link Browser}:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();

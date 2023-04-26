@@ -71,18 +71,16 @@ class FileChooser {
         return __classPrivateFieldGet(this, _FileChooser_multiple, "f");
     }
     /**
-     * Accept the file chooser request with the given file paths.
+     * Accept the file chooser request with given paths.
      *
-     * @remarks This will not validate whether the file paths exists. Also, if a
-     * path is relative, then it is resolved against the
+     * @param filePaths - If some of the `filePaths` are relative paths, then
+     * they are resolved relative to the
      * {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
-     * For locals script connecting to remote chrome environments, paths must be
-     * absolute.
      */
-    async accept(paths) {
+    async accept(filePaths) {
         (0, assert_js_1.assert)(!__classPrivateFieldGet(this, _FileChooser_handled, "f"), 'Cannot accept FileChooser which is already handled!');
         __classPrivateFieldSet(this, _FileChooser_handled, true, "f");
-        await __classPrivateFieldGet(this, _FileChooser_element, "f").uploadFile(...paths);
+        await __classPrivateFieldGet(this, _FileChooser_element, "f").uploadFile(...filePaths);
     }
     /**
      * Closes the file chooser without selecting any files.

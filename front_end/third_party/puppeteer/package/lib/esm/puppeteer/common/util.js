@@ -17,9 +17,9 @@ import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { debug } from './Debug.js';
-import { CDPElementHandle } from './ElementHandle.js';
+import { ElementHandle } from './ElementHandle.js';
 import { TimeoutError } from './Errors.js';
-import { CDPJSHandle } from './JSHandle.js';
+import { JSHandle } from './JSHandle.js';
 /**
  * @internal
  */
@@ -51,7 +51,7 @@ export function getExceptionMessage(exceptionDetails) {
 export function valueFromRemoteObject(remoteObject) {
     assert(!remoteObject.objectId, 'Cannot extract value when objectId is given');
     if (remoteObject.unserializableValue) {
-        if (remoteObject.type === 'bigint') {
+        if (remoteObject.type === 'bigint' && typeof BigInt !== 'undefined') {
             return BigInt(remoteObject.unserializableValue.replace('n', ''));
         }
         switch (remoteObject.unserializableValue) {
@@ -116,24 +116,6 @@ export const isNumber = (obj) => {
 /**
  * @internal
  */
-export const isPlainObject = (obj) => {
-    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === Object;
-};
-/**
- * @internal
- */
-export const isRegExp = (obj) => {
-    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === RegExp;
-};
-/**
- * @internal
- */
-export const isDate = (obj) => {
-    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === Date;
-};
-/**
- * @internal
- */
 export async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise) {
     let eventTimeout;
     let resolveCallback;
@@ -174,9 +156,9 @@ export async function waitForEvent(emitter, eventName, predicate, timeout, abort
  */
 export function createJSHandle(context, remoteObject) {
     if (remoteObject.subtype === 'node' && context._world) {
-        return new CDPElementHandle(context, remoteObject, context._world.frame());
+        return new ElementHandle(context, remoteObject, context._world.frame());
     }
-    return new CDPJSHandle(context, remoteObject);
+    return new JSHandle(context, remoteObject);
 }
 /**
  * @internal
@@ -197,51 +179,61 @@ export function evaluationString(fun, ...args) {
 /**
  * @internal
  */
-export function addPageBinding(type, name) {
-    // This is the CDP binding.
-    // @ts-expect-error: In a different context.
-    const callCDP = globalThis[name];
-    // We replace the CDP binding with a Puppeteer binding.
-    Object.assign(globalThis, {
-        [name](...args) {
-            var _a, _b, _c;
-            // This is the Puppeteer binding.
-            // @ts-expect-error: In a different context.
-            const callPuppeteer = globalThis[name];
-            (_a = callPuppeteer.args) !== null && _a !== void 0 ? _a : (callPuppeteer.args = new Map());
-            (_b = callPuppeteer.callbacks) !== null && _b !== void 0 ? _b : (callPuppeteer.callbacks = new Map());
-            const seq = ((_c = callPuppeteer.lastSeq) !== null && _c !== void 0 ? _c : 0) + 1;
-            callPuppeteer.lastSeq = seq;
-            callPuppeteer.args.set(seq, args);
-            callCDP(JSON.stringify({
-                type,
-                name,
-                seq,
-                args,
-                isTrivial: !args.some(value => {
-                    return value instanceof Node;
-                }),
-            }));
-            return new Promise((resolve, reject) => {
-                callPuppeteer.callbacks.set(seq, {
-                    resolve(value) {
-                        callPuppeteer.args.delete(seq);
-                        resolve(value);
-                    },
-                    reject(value) {
-                        callPuppeteer.args.delete(seq);
-                        reject(value);
-                    },
+export function pageBindingInitString(type, name) {
+    function addPageBinding(type, name) {
+        // This is the CDP binding.
+        // @ts-expect-error: In a different context.
+        const callCDP = self[name];
+        // We replace the CDP binding with a Puppeteer binding.
+        Object.assign(self, {
+            [name](...args) {
+                var _a, _b;
+                // This is the Puppeteer binding.
+                // @ts-expect-error: In a different context.
+                const callPuppeteer = self[name];
+                (_a = callPuppeteer.callbacks) !== null && _a !== void 0 ? _a : (callPuppeteer.callbacks = new Map());
+                const seq = ((_b = callPuppeteer.lastSeq) !== null && _b !== void 0 ? _b : 0) + 1;
+                callPuppeteer.lastSeq = seq;
+                callCDP(JSON.stringify({ type, name, seq, args }));
+                return new Promise((resolve, reject) => {
+                    callPuppeteer.callbacks.set(seq, { resolve, reject });
                 });
-            });
-        },
-    });
+            },
+        });
+    }
+    return evaluationString(addPageBinding, type, name);
 }
 /**
  * @internal
  */
-export function pageBindingInitString(type, name) {
-    return evaluationString(addPageBinding, type, name);
+export function pageBindingDeliverResultString(name, seq, result) {
+    function deliverResult(name, seq, result) {
+        window[name].callbacks.get(seq).resolve(result);
+        window[name].callbacks.delete(seq);
+    }
+    return evaluationString(deliverResult, name, seq, result);
+}
+/**
+ * @internal
+ */
+export function pageBindingDeliverErrorString(name, seq, message, stack) {
+    function deliverError(name, seq, message, stack) {
+        const error = new Error(message);
+        error.stack = stack;
+        window[name].callbacks.get(seq).reject(error);
+        window[name].callbacks.delete(seq);
+    }
+    return evaluationString(deliverError, name, seq, message, stack);
+}
+/**
+ * @internal
+ */
+export function pageBindingDeliverErrorValueString(name, seq, value) {
+    function deliverErrorValue(name, seq, value) {
+        window[name].callbacks.get(seq).reject(value);
+        window[name].callbacks.delete(seq);
+    }
+    return evaluationString(deliverErrorValue, name, seq, value);
 }
 /**
  * @internal
@@ -249,7 +241,7 @@ export function pageBindingInitString(type, name) {
 export async function waitWithTimeout(promise, taskName, timeout) {
     let reject;
     const timeoutError = new TimeoutError(`waiting for ${taskName} failed: timeout ${timeout}ms exceeded`);
-    const timeoutPromise = new Promise((_, rej) => {
+    const timeoutPromise = new Promise((_res, rej) => {
         return (reject = rej);
     });
     let timeoutTimer = null;
@@ -274,17 +266,9 @@ let fs = null;
 /**
  * @internal
  */
-export async function importFSPromises() {
+export async function importFS() {
     if (!fs) {
-        try {
-            fs = await import('fs/promises');
-        }
-        catch (error) {
-            if (error instanceof TypeError) {
-                throw new Error('Cannot write to a path outside of a Node-like environment.');
-            }
-            throw error;
-        }
+        fs = await import('fs');
     }
     return fs;
 }
@@ -294,7 +278,16 @@ export async function importFSPromises() {
 export async function getReadableAsBuffer(readable, path) {
     const buffers = [];
     if (path) {
-        const fs = await importFSPromises();
+        let fs;
+        try {
+            fs = (await importFS()).promises;
+        }
+        catch (error) {
+            if (error instanceof TypeError) {
+                throw new Error('Cannot write to a path outside of a Node-like environment.');
+            }
+            throw error;
+        }
         const fileHandle = await fs.open(path, 'w+');
         for await (const chunk of readable) {
             buffers.push(chunk);
@@ -339,17 +332,5 @@ export async function getReadableFromProtocolStream(client, handle) {
             }
         },
     });
-}
-/**
- * @internal
- */
-export async function setPageContent(page, content) {
-    // We rely upon the fact that document.open() will reset frame lifecycle with "init"
-    // lifecycle event. @see https://crrev.com/608658
-    return page.evaluate(html => {
-        document.open();
-        document.write(html);
-        document.close();
-    }, content);
 }
 //# sourceMappingURL=util.js.map

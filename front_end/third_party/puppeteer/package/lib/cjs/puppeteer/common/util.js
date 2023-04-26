@@ -38,7 +38,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getExceptionMessage = exports.debugError = void 0;
+exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFS = exports.waitWithTimeout = exports.pageBindingDeliverErrorValueString = exports.pageBindingDeliverErrorString = exports.pageBindingDeliverResultString = exports.pageBindingInitString = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getExceptionMessage = exports.debugError = void 0;
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
@@ -78,7 +78,7 @@ exports.getExceptionMessage = getExceptionMessage;
 function valueFromRemoteObject(remoteObject) {
     (0, assert_js_1.assert)(!remoteObject.objectId, 'Cannot extract value when objectId is given');
     if (remoteObject.unserializableValue) {
-        if (remoteObject.type === 'bigint') {
+        if (remoteObject.type === 'bigint' && typeof BigInt !== 'undefined') {
             return BigInt(remoteObject.unserializableValue.replace('n', ''));
         }
         switch (remoteObject.unserializableValue) {
@@ -149,27 +149,6 @@ exports.isNumber = isNumber;
 /**
  * @internal
  */
-const isPlainObject = (obj) => {
-    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === Object;
-};
-exports.isPlainObject = isPlainObject;
-/**
- * @internal
- */
-const isRegExp = (obj) => {
-    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === RegExp;
-};
-exports.isRegExp = isRegExp;
-/**
- * @internal
- */
-const isDate = (obj) => {
-    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === Date;
-};
-exports.isDate = isDate;
-/**
- * @internal
- */
 async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise) {
     let eventTimeout;
     let resolveCallback;
@@ -211,9 +190,9 @@ exports.waitForEvent = waitForEvent;
  */
 function createJSHandle(context, remoteObject) {
     if (remoteObject.subtype === 'node' && context._world) {
-        return new ElementHandle_js_1.CDPElementHandle(context, remoteObject, context._world.frame());
+        return new ElementHandle_js_1.ElementHandle(context, remoteObject, context._world.frame());
     }
-    return new JSHandle_js_1.CDPJSHandle(context, remoteObject);
+    return new JSHandle_js_1.JSHandle(context, remoteObject);
 }
 exports.createJSHandle = createJSHandle;
 /**
@@ -236,61 +215,73 @@ exports.evaluationString = evaluationString;
 /**
  * @internal
  */
-function addPageBinding(type, name) {
-    // This is the CDP binding.
-    // @ts-expect-error: In a different context.
-    const callCDP = globalThis[name];
-    // We replace the CDP binding with a Puppeteer binding.
-    Object.assign(globalThis, {
-        [name](...args) {
-            var _a, _b, _c;
-            // This is the Puppeteer binding.
-            // @ts-expect-error: In a different context.
-            const callPuppeteer = globalThis[name];
-            (_a = callPuppeteer.args) !== null && _a !== void 0 ? _a : (callPuppeteer.args = new Map());
-            (_b = callPuppeteer.callbacks) !== null && _b !== void 0 ? _b : (callPuppeteer.callbacks = new Map());
-            const seq = ((_c = callPuppeteer.lastSeq) !== null && _c !== void 0 ? _c : 0) + 1;
-            callPuppeteer.lastSeq = seq;
-            callPuppeteer.args.set(seq, args);
-            callCDP(JSON.stringify({
-                type,
-                name,
-                seq,
-                args,
-                isTrivial: !args.some(value => {
-                    return value instanceof Node;
-                }),
-            }));
-            return new Promise((resolve, reject) => {
-                callPuppeteer.callbacks.set(seq, {
-                    resolve(value) {
-                        callPuppeteer.args.delete(seq);
-                        resolve(value);
-                    },
-                    reject(value) {
-                        callPuppeteer.args.delete(seq);
-                        reject(value);
-                    },
-                });
-            });
-        },
-    });
-}
-exports.addPageBinding = addPageBinding;
-/**
- * @internal
- */
 function pageBindingInitString(type, name) {
+    function addPageBinding(type, name) {
+        // This is the CDP binding.
+        // @ts-expect-error: In a different context.
+        const callCDP = self[name];
+        // We replace the CDP binding with a Puppeteer binding.
+        Object.assign(self, {
+            [name](...args) {
+                var _a, _b;
+                // This is the Puppeteer binding.
+                // @ts-expect-error: In a different context.
+                const callPuppeteer = self[name];
+                (_a = callPuppeteer.callbacks) !== null && _a !== void 0 ? _a : (callPuppeteer.callbacks = new Map());
+                const seq = ((_b = callPuppeteer.lastSeq) !== null && _b !== void 0 ? _b : 0) + 1;
+                callPuppeteer.lastSeq = seq;
+                callCDP(JSON.stringify({ type, name, seq, args }));
+                return new Promise((resolve, reject) => {
+                    callPuppeteer.callbacks.set(seq, { resolve, reject });
+                });
+            },
+        });
+    }
     return evaluationString(addPageBinding, type, name);
 }
 exports.pageBindingInitString = pageBindingInitString;
 /**
  * @internal
  */
+function pageBindingDeliverResultString(name, seq, result) {
+    function deliverResult(name, seq, result) {
+        window[name].callbacks.get(seq).resolve(result);
+        window[name].callbacks.delete(seq);
+    }
+    return evaluationString(deliverResult, name, seq, result);
+}
+exports.pageBindingDeliverResultString = pageBindingDeliverResultString;
+/**
+ * @internal
+ */
+function pageBindingDeliverErrorString(name, seq, message, stack) {
+    function deliverError(name, seq, message, stack) {
+        const error = new Error(message);
+        error.stack = stack;
+        window[name].callbacks.get(seq).reject(error);
+        window[name].callbacks.delete(seq);
+    }
+    return evaluationString(deliverError, name, seq, message, stack);
+}
+exports.pageBindingDeliverErrorString = pageBindingDeliverErrorString;
+/**
+ * @internal
+ */
+function pageBindingDeliverErrorValueString(name, seq, value) {
+    function deliverErrorValue(name, seq, value) {
+        window[name].callbacks.get(seq).reject(value);
+        window[name].callbacks.delete(seq);
+    }
+    return evaluationString(deliverErrorValue, name, seq, value);
+}
+exports.pageBindingDeliverErrorValueString = pageBindingDeliverErrorValueString;
+/**
+ * @internal
+ */
 async function waitWithTimeout(promise, taskName, timeout) {
     let reject;
     const timeoutError = new Errors_js_1.TimeoutError(`waiting for ${taskName} failed: timeout ${timeout}ms exceeded`);
-    const timeoutPromise = new Promise((_, rej) => {
+    const timeoutPromise = new Promise((_res, rej) => {
         return (reject = rej);
     });
     let timeoutTimer = null;
@@ -316,10 +307,22 @@ let fs = null;
 /**
  * @internal
  */
-async function importFSPromises() {
+async function importFS() {
     if (!fs) {
+        fs = await Promise.resolve().then(() => __importStar(require('fs')));
+    }
+    return fs;
+}
+exports.importFS = importFS;
+/**
+ * @internal
+ */
+async function getReadableAsBuffer(readable, path) {
+    const buffers = [];
+    if (path) {
+        let fs;
         try {
-            fs = await Promise.resolve().then(() => __importStar(require('fs/promises')));
+            fs = (await importFS()).promises;
         }
         catch (error) {
             if (error instanceof TypeError) {
@@ -327,17 +330,6 @@ async function importFSPromises() {
             }
             throw error;
         }
-    }
-    return fs;
-}
-exports.importFSPromises = importFSPromises;
-/**
- * @internal
- */
-async function getReadableAsBuffer(readable, path) {
-    const buffers = [];
-    if (path) {
-        const fs = await importFSPromises();
         const fileHandle = await fs.open(path, 'w+');
         for await (const chunk of readable) {
             buffers.push(chunk);
@@ -385,17 +377,4 @@ async function getReadableFromProtocolStream(client, handle) {
     });
 }
 exports.getReadableFromProtocolStream = getReadableFromProtocolStream;
-/**
- * @internal
- */
-async function setPageContent(page, content) {
-    // We rely upon the fact that document.open() will reset frame lifecycle with "init"
-    // lifecycle event. @see https://crrev.com/608658
-    return page.evaluate(html => {
-        document.open();
-        document.write(html);
-        document.close();
-    }, content);
-}
-exports.setPageContent = setPageContent;
 //# sourceMappingURL=util.js.map

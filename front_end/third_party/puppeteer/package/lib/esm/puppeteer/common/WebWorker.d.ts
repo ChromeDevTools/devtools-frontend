@@ -16,18 +16,18 @@
 import { Protocol } from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
 import { ConsoleMessageType } from './ConsoleMessage.js';
+import { EvaluateFunc, HandleFor } from './types.js';
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
-import { CDPJSHandle } from './JSHandle.js';
-import { EvaluateFunc, HandleFor } from './types.js';
+import { JSHandle } from './JSHandle.js';
 /**
  * @internal
  */
-export type ConsoleAPICalledCallback = (eventType: ConsoleMessageType, handles: CDPJSHandle[], trace: Protocol.Runtime.StackTrace) => void;
+export declare type ConsoleAPICalledCallback = (eventType: ConsoleMessageType, handles: JSHandle[], trace: Protocol.Runtime.StackTrace) => void;
 /**
  * @internal
  */
-export type ExceptionThrownCallback = (details: Protocol.Runtime.ExceptionDetails) => void;
+export declare type ExceptionThrownCallback = (details: Protocol.Runtime.ExceptionDetails) => void;
 /**
  * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
@@ -65,13 +65,9 @@ export declare class WebWorker extends EventEmitter {
      */
     executionContext(): Promise<ExecutionContext>;
     /**
-     * The URL of this web worker.
+     * @returns The URL of this web worker.
      */
     url(): string;
-    /**
-     * The CDP session client the WebWorker belongs to.
-     */
-    get client(): CDPSession;
     /**
      * If the function passed to the `worker.evaluate` returns a Promise, then
      * `worker.evaluate` would wait for the promise to resolve and return its

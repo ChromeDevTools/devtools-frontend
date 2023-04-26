@@ -15,35 +15,61 @@
  */
 import { createTextContent, isSuitableNodeForTextMatching, } from './TextContent.js';
 /**
+ * Queries the given node for a node matching the given text selector.
+ *
+ * @internal
+ */
+export const textQuerySelector = (root, selector) => {
+    for (const node of root.childNodes) {
+        if (node instanceof Element && isSuitableNodeForTextMatching(node)) {
+            let matchedNode;
+            if (node.shadowRoot) {
+                matchedNode = textQuerySelector(node.shadowRoot, selector);
+            }
+            else {
+                matchedNode = textQuerySelector(node, selector);
+            }
+            if (matchedNode) {
+                return matchedNode;
+            }
+        }
+    }
+    if (root instanceof Element) {
+        const textContent = createTextContent(root);
+        if (textContent.full.includes(selector)) {
+            return root;
+        }
+    }
+    return null;
+};
+/**
  * Queries the given node for all nodes matching the given text selector.
  *
  * @internal
  */
-export const textQuerySelectorAll = function* (root, selector) {
-    let yielded = false;
+export const textQuerySelectorAll = (root, selector) => {
+    let results = [];
     for (const node of root.childNodes) {
-        if (node instanceof Element && isSuitableNodeForTextMatching(node)) {
-            let matches;
-            if (!node.shadowRoot) {
-                matches = textQuerySelectorAll(node, selector);
+        if (node instanceof Element) {
+            let matchedNodes;
+            if (node.shadowRoot) {
+                matchedNodes = textQuerySelectorAll(node.shadowRoot, selector);
             }
             else {
-                matches = textQuerySelectorAll(node.shadowRoot, selector);
+                matchedNodes = textQuerySelectorAll(node, selector);
             }
-            for (const match of matches) {
-                yield match;
-                yielded = true;
-            }
+            results = results.concat(matchedNodes);
         }
     }
-    if (yielded) {
-        return;
+    if (results.length > 0) {
+        return results;
     }
-    if (root instanceof Element && isSuitableNodeForTextMatching(root)) {
+    if (root instanceof Element) {
         const textContent = createTextContent(root);
         if (textContent.full.includes(selector)) {
-            yield root;
+            return [root];
         }
     }
+    return [];
 };
 //# sourceMappingURL=TextQuerySelector.js.map

@@ -334,8 +334,8 @@ export class HeaderSectionRow extends HTMLElement {
           <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
             iconName: 'issue-exclamation-filled',
             color: 'var(--icon-warning)',
-            width: '20px',
-            height: '20px',
+            width: '16px',
+            height: '16px',
           } as IconButton.Icon.IconData}>
           </${IconButton.Icon.Icon.litTagName}
           >${i18nString(UIStrings.learnMoreInTheIssuesTab)}

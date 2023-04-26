@@ -550,8 +550,8 @@ export class FrameDetailsReportView extends HTMLElement {
                 <${IconButton.Icon.Icon.litTagName} .data=${{
                   iconName: 'code-circle',
                   color: 'var(--icon-link)',
-                  width: '20px',
-                  height: '20px',
+                  width: '16px',
+                  height: '16px',
                 } as IconButton.Icon.IconData}>
                 </${IconButton.Icon.Icon.litTagName}>
               </button>

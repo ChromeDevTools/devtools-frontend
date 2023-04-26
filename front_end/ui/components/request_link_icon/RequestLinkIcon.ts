@@ -132,8 +132,8 @@ export class RequestLinkIcon extends HTMLElement {
     return {
       iconName: 'arrow-up-down-circle',
       color: `var(${this.#iconColor()})`,
-      width: '20px',
-      height: '20px',
+      width: '16px',
+      height: '16px',
     };
   }
 

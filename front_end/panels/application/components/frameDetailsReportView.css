@@ -32,7 +32,7 @@ button.link {
 }
 
 button.link:has(devtools-icon) {
-  margin-top: 3px;
+  margin-top: 5px;
 }
 
 button.text-link {

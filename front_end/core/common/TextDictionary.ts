@@ -32,10 +32,10 @@ import {Trie} from './Trie.js';
 
 export class TextDictionary {
   readonly words: Map<string, number>;
-  readonly index: Trie;
+  readonly index: Trie<string>;
   constructor() {
     this.words = new Map();
-    this.index = new Trie();
+    this.index = Trie.newStringTrie();
   }
 
   addWord(word: string): void {

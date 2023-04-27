@@ -393,10 +393,10 @@ export class Automapping {
 
 class FilePathIndex {
   private readonly encoder: PathEncoder;
-  private readonly reversedIndex: Common.Trie.Trie;
+  private readonly reversedIndex: Common.Trie.Trie<string>;
   constructor(encoder: PathEncoder) {
     this.encoder = encoder;
-    this.reversedIndex = new Common.Trie.Trie();
+    this.reversedIndex = Common.Trie.Trie.newStringTrie();
   }
 
   addPath(path: Platform.DevToolsPath.UrlString): void {
@@ -424,11 +424,11 @@ class FilePathIndex {
 
 class FolderIndex {
   private readonly encoder: PathEncoder;
-  private readonly index: Common.Trie.Trie;
+  private readonly index: Common.Trie.Trie<string>;
   private readonly folderCount: Map<string, number>;
   constructor(encoder: PathEncoder) {
     this.encoder = encoder;
-    this.index = new Common.Trie.Trie();
+    this.index = Common.Trie.Trie.newStringTrie();
     this.folderCount = new Map();
   }
 

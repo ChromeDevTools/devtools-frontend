@@ -561,7 +561,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       const fileSystem = (project as Persistence.FileSystemWorkspaceBinding.FileSystem);
       return Platform.StringUtilities.reverse(encoder.encode(fileSystem.fileSystemPath()));
     });
-    const reversedIndex = new Common.Trie.Trie();
+    const reversedIndex = Common.Trie.Trie.newStringTrie();
     for (const reversedPath of reversedPaths) {
       reversedIndex.add(reversedPath);
     }

@@ -33,6 +33,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
 import * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
@@ -992,6 +993,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.drawGenericEvents(context, timelineData, color, indexes);
       this.drawLongTaskRegions(context, timelineData, color, indexes);
       this.drawLongInteractionsCandyStripes(context, timelineData, indexes);
+      this.#drawDecorations(context, timelineData, indexes);
     }
 
     this.drawMarkers(context, timelineData, markerIndices);
@@ -1067,6 +1069,55 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.restore();
   }
 
+  /**
+   * Draws decorations onto events. {@see FlameChartDecoration}.
+   */
+  #drawDecorations(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, indexes: number[]): void {
+    context.save();
+    const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
+
+    let hasDrawnCandyStripe = false;
+    for (let i = 0; i < indexes.length; ++i) {
+      const entryIndex = indexes[i];
+      const decorationsForEvent = timelineData.entryDecorations.at(entryIndex);
+      if (!decorationsForEvent || decorationsForEvent.length < 1) {
+        continue;
+      }
+      for (const decoration of decorationsForEvent) {
+        const duration = entryTotalTimes[entryIndex];
+        if (decoration.type === 'CANDY') {
+          const candyStripeStartTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(decoration.startAtTime);
+          if (duration < candyStripeStartTime) {
+            // If the duration of the event is less than the start time to draw the candy stripes, then we have no stripes to draw.
+            continue;
+          }
+          hasDrawnCandyStripe = true;
+
+          const entryStartTime = entryStartTimes[entryIndex];
+
+          // Draw a rectangle over the event, starting at the X value of the
+          // event's start time + the startDuration of the candy striping.
+          const barX = this.timeToPositionClipped(entryStartTime + candyStripeStartTime);
+          const barLevel = entryLevels[entryIndex];
+          const barHeight = this.levelHeight(barLevel);
+          const barY = this.levelToOffset(barLevel);
+          const barRight = this.timeToPositionClipped(entryStartTime + duration);
+          const barWidth = Math.max(barRight - barX, 1);
+          context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
+        }
+      }
+    }
+
+    // We draw all the rectangles and then fill them all in at the end with the pattern.
+    if (hasDrawnCandyStripe) {
+      const candyStripePattern = context.createPattern(this.candyStripeCanvas, 'repeat');
+      if (candyStripePattern) {
+        context.fillStyle = candyStripePattern;
+        context.fill();
+      }
+    }
+    context.restore();
+  }
   /**
    * Marks the portion of long tasks where the 50ms threshold was exceeded.
    */
@@ -2067,10 +2118,34 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 export const HeaderHeight = 15;
 export const MinimalTimeWindowMs = 0.5;
 
+/**
+ * Represents a decoration that can be added to event. Each event can have as
+ * many decorations as required.
+ *
+ * Currently only one type is supported to represent adding candy striping to an event.
+ *
+ * It is anticipated in the future that we will add to this as we want to
+ * annotate events in more ways.
+ *
+ * This work is being tracked in crbug.com/1434297.
+ **/
+export type FlameChartDecoration = {
+  type: 'CANDY',
+  // We often only want to highlight problem parts of events, so this time sets
+  // the minimum time at which the candystriping will start. If you want to
+  // candystripe the entire event, set this to 0.
+  startAtTime: TraceEngine.Types.Timing.MicroSeconds,
+};
+
 export class FlameChartTimelineData {
   entryLevels: number[]|Uint16Array;
   entryTotalTimes: number[]|Float32Array;
   entryStartTimes: number[]|Float64Array;
+  /**
+   * An array of entry decorations, where each item in the array is an array of
+   * decorations for the event at that index.
+   **/
+  readonly entryDecorations: FlameChartDecoration[][];
   groups: Group[];
   markers: FlameChartMarker[];
   flowStartTimes: number[];
@@ -2080,10 +2155,11 @@ export class FlameChartTimelineData {
   selectedGroup: Group|null;
   private constructor(
       entryLevels: number[]|Uint16Array, entryTotalTimes: number[]|Float32Array, entryStartTimes: number[]|Float64Array,
-      groups: Group[]|null) {
+      groups: Group[]|null, entryDecorations: FlameChartDecoration[][] = []) {
     this.entryLevels = entryLevels;
     this.entryTotalTimes = entryTotalTimes;
     this.entryStartTimes = entryStartTimes;
+    this.entryDecorations = entryDecorations;
     this.groups = groups || [];
     this.markers = [];
     this.flowStartTimes = [];
@@ -2098,8 +2174,10 @@ export class FlameChartTimelineData {
     entryTotalTimes: FlameChartTimelineData['entryTotalTimes'],
     entryStartTimes: FlameChartTimelineData['entryStartTimes'],
     groups: FlameChartTimelineData['groups']|null,
+    entryDecorations?: FlameChartDecoration[][],
   }): FlameChartTimelineData {
-    return new FlameChartTimelineData(data.entryLevels, data.entryTotalTimes, data.entryStartTimes, data.groups);
+    return new FlameChartTimelineData(
+        data.entryLevels, data.entryTotalTimes, data.entryStartTimes, data.groups, data.entryDecorations || []);
   }
 
   static createEmpty(): FlameChartTimelineData {

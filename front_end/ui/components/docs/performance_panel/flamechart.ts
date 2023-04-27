@@ -7,95 +7,106 @@ import * as TraceHelpers from '../../../../../test/unittests/front_end/helpers/T
 import * as PerfUI from '../../../legacy/components/perf_ui/perf_ui.js';
 import * as ComponentSetup from '../../helpers/helpers.js';
 import type * as Platform from '../../../../core/platform/platform.js';
-import type * as SDK from '../../../../core/sdk/sdk.js';
+import * as TraceEngine from '../../../../models/trace/trace.js';
+import {FakeProvider} from './FlameChartHelpers.js';
 
 await EnvironmentHelpers.initializeGlobalVars();
 await ComponentSetup.ComponentServerSetup.setup();
 
-class FakeProvider implements PerfUI.FlameChart.FlameChartDataProvider {
-  minimumBoundary(): number {
-    return 0;
+/**
+ * Render a basic flame chart with 3 events on the same level
+ **/
+function renderExample1() {
+  class FakeProviderWithBasicEvents extends FakeProvider {
+    override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+      return PerfUI.FlameChart.FlameChartTimelineData.create({
+        entryLevels: [1, 1, 1],
+        entryStartTimes: [5, 60, 80],
+        entryTotalTimes: [50, 10, 10],
+        groups: [{
+          name: 'Test Group' as Platform.UIString.LocalizedString,
+          startLevel: 1,
+          style: {
+            height: 17,
+            padding: 4,
+            collapsible: false,
+            color: 'black',
+            backgroundColor: 'grey',
+            nestingLevel: 0,
+            itemsHeight: 17,
+          },
+        }],
+      });
+    }
   }
 
-  totalTime(): number {
-    return 100;
+  const container = document.querySelector('div#container1');
+  if (!container) {
+    throw new Error('No container');
   }
+  const delegate = new TraceHelpers.MockFlameChartDelegate();
+  const dataProvider = new FakeProviderWithBasicEvents();
+  const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
 
-  formatValue(value: number): string {
-    return value.toString();
-  }
-
-  maxStackDepth(): number {
-    return 3;
-  }
-
-  prepareHighlightedEntryInfo(_entryIndex: number): Element|null {
-    return null;
-  }
-
-  canJumpToEntry(_entryIndex: number): boolean {
-    return false;
-  }
-
-  entryTitle(entryIndex: number): string|null {
-    return `Entry ${entryIndex}`;
-  }
-
-  entryFont(_entryIndex: number): string|null {
-    return null;
-  }
-
-  entryColor(_entryIndex: number): string {
-    return 'lightblue';
-  }
-
-  decorateEntry(): boolean {
-    return false;
-  }
-
-  forceDecoration(_entryIndex: number): boolean {
-    return false;
-  }
-
-  textColor(_entryIndex: number): string {
-    return 'black';
-  }
-
-  navStartTimes(): Map<string, SDK.TracingModel.Event> {
-    return new Map();
-  }
-
-  timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
-    return PerfUI.FlameChart.FlameChartTimelineData.create({
-      entryLevels: [1, 1, 1],
-      entryStartTimes: [5, 60, 80],
-      entryTotalTimes: [50, 10, 10],
-      groups: [{
-        name: 'Test Group' as Platform.UIString.LocalizedString,
-        startLevel: 1,
-        style: {
-          height: 17,
-          padding: 4,
-          collapsible: false,
-          color: 'black',
-          backgroundColor: 'grey',
-          nestingLevel: 0,
-          itemsHeight: 17,
-        },
-      }],
-    });
-  }
+  flameChart.markAsRoot();
+  flameChart.setWindowTimes(0, 100);
+  flameChart.show(container);
+  flameChart.update();
 }
 
-const container1 = document.querySelector('div#container1');
-if (!container1) {
-  throw new Error('No container');
-}
-const delegate = new TraceHelpers.MockFlameChartDelegate();
-const dataProvider = new FakeProvider();
-const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
+/**
+ * Render a flame chart with main thread long events to stripe.
+ **/
+function renderExample2() {
+  class FakeProviderWithLongTasksForStriping extends FakeProvider {
+    override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+      return PerfUI.FlameChart.FlameChartTimelineData.create({
+        entryLevels: [1, 1, 2],
+        entryStartTimes: [5, 80, 5],
+        entryTotalTimes: [70, 10, 80],
+        entryDecorations: [
+          [{
+            type: 'CANDY',
+            startAtTime: TraceEngine.Types.Timing.MicroSeconds(50_000),
+          }],
+          [/* No decorations for the event with index 1 */],
+          [
+            {
+              type: 'CANDY',
+              startAtTime: TraceEngine.Types.Timing.MicroSeconds(50_000),
+            },
+          ],
+        ],
+        groups: [{
+          name: 'Testing Candy Stripe decorations' as Platform.UIString.LocalizedString,
+          startLevel: 1,
+          style: {
+            height: 17,
+            padding: 4,
+            collapsible: false,
+            color: 'black',
+            backgroundColor: 'grey',
+            nestingLevel: 0,
+            itemsHeight: 17,
+          },
+        }],
+      });
+    }
+  }
 
-flameChart.markAsRoot();
-flameChart.setWindowTimes(0, 100);
-flameChart.show(container1);
-flameChart.update();
+  const container = document.querySelector('div#container2');
+  if (!container) {
+    throw new Error('No container');
+  }
+  const delegate = new TraceHelpers.MockFlameChartDelegate();
+  const dataProvider = new FakeProviderWithLongTasksForStriping();
+  const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
+
+  flameChart.markAsRoot();
+  flameChart.setWindowTimes(0, 100);
+  flameChart.show(container);
+  flameChart.update();
+}
+
+renderExample1();
+renderExample2();

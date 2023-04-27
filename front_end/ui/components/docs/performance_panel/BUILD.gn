@@ -8,6 +8,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("ts") {
   testonly = true
   sources = [
+    "FlameChartHelpers.ts",
     "basic.ts",
     "cpuprofile.ts",
     "flamechart.ts",

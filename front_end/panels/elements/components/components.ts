@@ -11,6 +11,7 @@ import * as CSSHintDetailsView from './CSSHintDetailsView.js';
 import * as CSSPropertyDocsView from './CSSPropertyDocsView.js';
 import * as CSSPropertyIconResolver from './CSSPropertyIconResolver.js';
 import * as CSSQuery from './CSSQuery.js';
+import * as CSSVariableValueView from './CSSVariableValueView.js';
 import * as ElementsBreadcrumbs from './ElementsBreadcrumbs.js';
 import * as ElementsBreadcrumbsUtils from './ElementsBreadcrumbsUtils.js';
 import * as ElementsTreeExpandButton from './ElementsTreeExpandButton.js';
@@ -30,6 +31,7 @@ export {
   CSSPropertyDocsView,
   CSSPropertyIconResolver,
   CSSQuery,
+  CSSVariableValueView,
   ElementsBreadcrumbs,
   ElementsBreadcrumbsUtils,
   ElementsTreeExpandButton,

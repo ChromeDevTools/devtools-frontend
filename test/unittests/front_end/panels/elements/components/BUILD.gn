@@ -13,6 +13,7 @@ ts_library("components") {
     "CSSPropertyDocsView_test.ts",
     "CSSPropertyIconResolver_test.ts",
     "CSSQuery_test.ts",
+    "CSSVariableValueView_test.ts",
     "ComputedStyleProperty_test.ts",
     "ComputedStyleTrace_test.ts",
     "ElementsBreadcrumbs_test.ts",

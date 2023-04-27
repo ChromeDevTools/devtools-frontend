@@ -146,30 +146,30 @@ it('can highlight JavaScript compatible with CodeMirror 5', testHighlight(`
 `, 'text/x-gss'));
 
   it('can highlight LESS', testHighlight(`
-[definition @width]: [number 10px];
-[definition @height]: [variable @width] + [number 10px];
+[variable @width]: [number 10px];
+[variable @height]: [variable @width] + [number 10px];
 
-[builtin #header] {
+#[atom header] {
   [property width]: [variable @width];
   [property height]: [variable @height];
 }
 `, 'text/x-less'));
 
   it('can highlight SCSS', testHighlight(`
-[definition $width]: [number 10px];
-[definition $height]: [variable $width] + [number 10px];
+[variable $width]: [number 10px];
+[variable $height]: [variable $width] + [number 10px];
 
-[builtin #header] {
+#[atom header] {
   [property width]: [variable $width];
   [property height]: [variable $height];
 }
 `, 'text/x-scss'));
 
   it('can highlight SASS', testHighlight(`
-[variable $width]: [number 10][number px]
-[variable $height]: [variable $width] + [number 10][number px]
+[variable $width]: [number 10px]
+[variable $height]: [variable $width] + [number 10px]
 
-[builtin #header]
+#[atom header]
   [property width]: [variable $width]
   [property height]: [variable $height]
 `, 'text/x-sass'));

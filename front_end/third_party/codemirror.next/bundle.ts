@@ -79,8 +79,8 @@ export function json() {
 export async function kotlin() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).kotlin);
 }
-export async function less() {
-  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/css')).less);
+export function less() {
+  return import('@codemirror/lang-less');
 }
 export function markdown() {
   return import('@codemirror/lang-markdown');
@@ -91,14 +91,11 @@ export function php() {
 export function python() {
   return import('@codemirror/lang-python');
 }
-export async function sass() {
-  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/sass')).sass);
+export function sass() {
+  return import('@codemirror/lang-sass');
 }
 export async function scala() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).scala);
-}
-export async function scss() {
-  return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/css')).sCSS);
 }
 export async function shell() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/shell')).shell);

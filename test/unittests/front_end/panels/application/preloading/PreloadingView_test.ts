@@ -619,8 +619,7 @@ describeWithMockConnection('PreloadingView', async () => {
     );
 
     // Turn off filtering.
-    ruleSetGridComponent.dispatchEvent(
-        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'Validity', value: 'valid'}, {cells}));
+    view.setCheckboxFilterBySelectedRuleSetForTest(false);
 
     await coordinator.done();
 

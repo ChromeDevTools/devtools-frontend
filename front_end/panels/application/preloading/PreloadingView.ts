@@ -18,6 +18,10 @@ import preloadingViewStyles from './preloadingView.css.js';
 
 const UIStrings = {
   /**
+   *@description Checkbox: If rule set is selected in rule set grid, filters preloading attempts in preloading attempts grid.
+   */
+  checkboxFilterBySelectedRuleSet: 'Filter by selected rule set',
+  /**
    *@description Text in grid: Rule set is valid
    */
   validityValid: 'Valid',
@@ -231,6 +235,7 @@ export class PreloadingView extends UI.Widget.VBox {
   private readonly modelProxy: PreloadingModelProxy;
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
   private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
+  private checkboxFilterBySelectedRuleSet: UI.Toolbar.ToolbarCheckbox;
 
   private readonly infobarContainer: HTMLDivElement;
   private readonly hsplitUsedPreloading: UI.SplitWidget.SplitWidget;
@@ -258,11 +263,13 @@ export class PreloadingView extends UI.Widget.VBox {
     //                       +- RuleSetGrid
     //                  +- rightContainer
     //                       +- RuleSetDetailsReportView
-    //             +- vsplitPreloadingAttempts
-    //                  +- leftContainer
-    //                       +- PreloadingGrid
-    //                  +- rightContainer
-    //                       +- PreloadingDetailsReportView
+    //             +- VBox
+    //                  +- toolbar (filtering)
+    //                  +- vsplitPreloadingAttempts
+    //                       +- leftContainer
+    //                            +- PreloadingGrid
+    //                       +- rightContainer
+    //                            +- PreloadingDetailsReportView
     //        +- VBox
     //             + UsedPreloadingReportView
     //
@@ -279,8 +286,17 @@ export class PreloadingView extends UI.Widget.VBox {
     this.ruleSetGrid.addEventListener('cellfocused', this.onRuleSetsGridCellFocused.bind(this));
     this.vsplitRuleSets = this.makeVsplit(this.ruleSetGrid, this.ruleSetDetails);
 
+    const preloadingAttempts = new UI.Widget.VBox();
+
+    const toolbar = new UI.Toolbar.Toolbar('preloading-toolbar', preloadingAttempts.contentElement);
+    this.checkboxFilterBySelectedRuleSet = new UI.Toolbar.ToolbarCheckbox(
+        i18nString(UIStrings.checkboxFilterBySelectedRuleSet), /* tooltip? */ undefined, this.render.bind(this));
+    this.checkboxFilterBySelectedRuleSet.setChecked(true);
+    toolbar.appendToolbarItem(this.checkboxFilterBySelectedRuleSet);
+
     this.preloadingGrid.addEventListener('cellfocused', this.onPreloadingGridCellFocused.bind(this));
     const vsplitPreloadingAttempts = this.makeVsplit(this.preloadingGrid, this.preloadingDetails);
+    vsplitPreloadingAttempts.show(preloadingAttempts.contentElement);
 
     this.hsplit = new UI.SplitWidget.SplitWidget(
         /* isVertical */ false,
@@ -291,7 +307,7 @@ export class PreloadingView extends UI.Widget.VBox {
         /* constraintsInDip */ undefined,
     );
     this.hsplit.setSidebarWidget(this.vsplitRuleSets);
-    this.hsplit.setMainWidget(vsplitPreloadingAttempts);
+    this.hsplit.setMainWidget(preloadingAttempts);
 
     const usedPreloadingContainer = new UI.Widget.VBox();
     usedPreloadingContainer.contentElement.appendChild(this.usedPreloading);
@@ -353,16 +369,6 @@ export class PreloadingView extends UI.Widget.VBox {
     this.modelProxy.initialize();
   }
 
-  // `cellfocused` events only emitted focus modified. So, we can't
-  // catch the case focused cell is clicked. Currently, we need
-  //
-  // 1. Click a cell and focus.
-  // 2. Click out of rows.
-  // 3. Click the last cell.
-  //
-  // to hide the details.
-  //
-  // TODO(https://crbug.com/1384419): Consider to add `cellclicked` event.
   private updateRuleSetDetails(): void {
     const id = this.focusedRuleSetId;
     const ruleSet = id === null ? null : this.modelProxy.model.getRuleSetById(id);
@@ -438,13 +444,14 @@ export class PreloadingView extends UI.Widget.VBox {
     this.updateRuleSetDetails();
 
     // Update preloaidng grid
-    const preloadingAttemptRows = this.modelProxy.model.getPreloadingAttempts(this.focusedRuleSetId)
-                                      .map(({id, value}) => ({
-                                             id,
-                                             action: PreloadingUIUtils.action(value),
-                                             url: value.key.url,
-                                             status: PreloadingUIUtils.status(value),
-                                           }));
+    const filteringRuleSetId = this.checkboxFilterBySelectedRuleSet.checked() ? this.focusedRuleSetId : null;
+    const preloadingAttemptRows =
+        this.modelProxy.model.getPreloadingAttempts(filteringRuleSetId).map(({id, value}) => ({
+                                                                              id,
+                                                                              action: PreloadingUIUtils.action(value),
+                                                                              url: value.key.url,
+                                                                              status: PreloadingUIUtils.status(value),
+                                                                            }));
     this.preloadingGrid.update(preloadingAttemptRows);
 
     this.updatePreloadingDetails();
@@ -454,13 +461,8 @@ export class PreloadingView extends UI.Widget.VBox {
 
   private onRuleSetsGridCellFocused(event: Event): void {
     const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
-    const id = focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as Protocol.Preload.RuleSetId;
-    if (this.focusedRuleSetId === id) {
-      // Toggle details
-      this.focusedRuleSetId = null;
-    } else {
-      this.focusedRuleSetId = id;
-    }
+    this.focusedRuleSetId =
+        focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as Protocol.Preload.RuleSetId;
     this.render();
   }
 
@@ -533,5 +535,10 @@ export class PreloadingView extends UI.Widget.VBox {
 
   getFeatureFlagWarningsPromiseForTest(): Promise<void> {
     return this.featureFlagWarningsPromise;
+  }
+
+  setCheckboxFilterBySelectedRuleSetForTest(checked: boolean): void {
+    this.checkboxFilterBySelectedRuleSet.setChecked(checked);
+    this.render();
   }
 }

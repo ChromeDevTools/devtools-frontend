@@ -36,8 +36,6 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type * as TraceEngine from '../../models/trace/trace.js';
-
 import {type PerformanceModel} from './PerformanceModel.js';
 
 import {TimelineUIUtils, type TimelineCategory} from './TimelineUIUtils.js';
@@ -207,7 +205,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         x += quantSizePx;
       }
 
-      function onEventStart(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+      function onEventStart(e: SDK.TracingModel.CompatibleTraceEvent): void {
         const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
         const index = categoryIndexStack.length ? categoryIndexStack[categoryIndexStack.length - 1] : idleIndex;
         quantizer.appendInterval(startTime, (index as number));
@@ -219,7 +217,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         categoryIndexStack.push(categoryIndex !== undefined ? categoryIndex : otherIndex);
       }
 
-      function onEventEnd(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+      function onEventEnd(e: SDK.TracingModel.CompatibleTraceEvent): void {
         const {endTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
         const lastCategoryIndex = categoryIndexStack.pop();
         if (endTime !== undefined && lastCategoryIndex) {

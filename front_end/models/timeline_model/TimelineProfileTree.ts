@@ -15,13 +15,13 @@ export class Node {
   totalTime: number;
   selfTime: number;
   id: string|symbol;
-  event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null;
+  event: SDK.TracingModel.CompatibleTraceEvent|null;
   parent!: Node|null;
   groupId: string;
   isGroupNodeInternal: boolean;
   depth: number;
 
-  constructor(id: string|symbol, event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null) {
+  constructor(id: string|symbol, event: SDK.TracingModel.CompatibleTraceEvent|null) {
     this.totalTime = 0;
     this.selfTime = 0;
     this.id = id;
@@ -51,9 +51,7 @@ export class Node {
     throw 'Not implemented';
   }
 
-  searchTree(
-      matchFunction: (arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean,
-      results?: Node[]): Node[] {
+  searchTree(matchFunction: (arg0: SDK.TracingModel.CompatibleTraceEvent) => boolean, results?: Node[]): Node[] {
     results = results || [];
     if (this.event && matchFunction(this.event)) {
       results.push(this);
@@ -71,9 +69,7 @@ export class TopDownNode extends Node {
   childrenInternal: ChildrenCache|null;
   override parent: TopDownNode|null;
 
-  constructor(
-      id: string|symbol, event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null,
-      parent: TopDownNode|null) {
+  constructor(id: string|symbol, event: SDK.TracingModel.CompatibleTraceEvent|null, parent: TopDownNode|null) {
     super(id, event);
     this.root = parent && parent.root;
     this.hasChildrenInternal = false;
@@ -122,7 +118,7 @@ export class TopDownNode extends Node {
     TimelineModelImpl.forEachEvent(
         root.events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime, root.filter);
 
-    function onStartEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+    function onStartEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       const {startTime: currentStartTime, endTime: currentEndTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
 
       ++depth;
@@ -140,7 +136,7 @@ export class TopDownNode extends Node {
       processEvent(e, duration);
     }
 
-    function onInstantEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+    function onInstantEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       ++depth;
       if (matchedDepth === path.length && depth <= path.length + 2) {
         processEvent(e, 0);
@@ -151,8 +147,7 @@ export class TopDownNode extends Node {
     /**
      * Creates a child node.
      */
-    function processEvent(
-        e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData, duration: number): void {
+    function processEvent(e: SDK.TracingModel.CompatibleTraceEvent, duration: number): void {
       if (depth === path.length + 2) {
         if (!currentDirectChild) {
           return;
@@ -189,7 +184,7 @@ export class TopDownNode extends Node {
      * is a child of this node. As the check is done, the partial result
      * is cached on `matchedDepth`, for future checks.
      */
-    function matchPath(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+    function matchPath(e: SDK.TracingModel.CompatibleTraceEvent): boolean {
       const {endTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
       if (matchedDepth === path.length) {
         return true;
@@ -217,7 +212,7 @@ export class TopDownNode extends Node {
       return false;
     }
 
-    function onEndEvent(_e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+    function onEndEvent(_e: SDK.TracingModel.CompatibleTraceEvent): void {
       --depth;
       if (matchedDepth > depth) {
         matchedDepth = depth;
@@ -234,26 +229,23 @@ export class TopDownNode extends Node {
 }
 
 export class TopDownRootNode extends TopDownNode {
-  readonly filter: (e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean;
-  readonly events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[];
+  readonly filter: (e: SDK.TracingModel.CompatibleTraceEvent) => boolean;
+  readonly events: (SDK.TracingModel.CompatibleTraceEvent)[];
   readonly startTime: number;
   readonly endTime: number;
-  eventGroupIdCallback: ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|null
-      |undefined;
+  eventGroupIdCallback: ((arg0: SDK.TracingModel.CompatibleTraceEvent) => string)|null|undefined;
   readonly doNotAggregate: boolean|undefined;
   override totalTime: number;
   override selfTime: number;
 
   constructor(
-      events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[], filters: TimelineModelFilter[],
-      startTime: number, endTime: number, doNotAggregate?: boolean,
-      eventGroupIdCallback?: ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|
-      null) {
+      events: (SDK.TracingModel.CompatibleTraceEvent)[], filters: TimelineModelFilter[], startTime: number,
+      endTime: number, doNotAggregate?: boolean,
+      eventGroupIdCallback?: ((arg0: SDK.TracingModel.CompatibleTraceEvent) => string)|null) {
     super('', null, null);
     this.root = this;
     this.events = events;
-    this.filter = (e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean =>
-        filters.every(f => f.accept(e));
+    this.filter = (e: SDK.TracingModel.CompatibleTraceEvent): boolean => filters.every(f => f.accept(e));
     this.startTime = startTime;
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;
@@ -288,32 +280,30 @@ export class TopDownRootNode extends TopDownNode {
     return groupNodes;
   }
 
-  getEventGroupIdCallback():
-      ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|null|undefined {
+  getEventGroupIdCallback(): ((arg0: SDK.TracingModel.CompatibleTraceEvent) => string)|null|undefined {
     return this.eventGroupIdCallback;
   }
 }
 
 export class BottomUpRootNode extends Node {
   private childrenInternal: ChildrenCache|null;
-  readonly events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[];
+  readonly events: (SDK.TracingModel.CompatibleTraceEvent)[];
   private textFilter: TimelineModelFilter;
-  readonly filter: (e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean;
+  readonly filter: (e: SDK.TracingModel.CompatibleTraceEvent) => boolean;
   readonly startTime: number;
   readonly endTime: number;
   private eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null;
   override totalTime: number;
 
   constructor(
-      events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[], textFilter: TimelineModelFilter,
+      events: (SDK.TracingModel.CompatibleTraceEvent)[], textFilter: TimelineModelFilter,
       filters: TimelineModelFilter[], startTime: number, endTime: number,
       eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null) {
     super('', null);
     this.childrenInternal = null;
     this.events = events;
     this.textFilter = textFilter;
-    this.filter = (e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean =>
-        filters.every(f => f.accept(e));
+    this.filter = (e: SDK.TracingModel.CompatibleTraceEvent): boolean => filters.every(f => f.accept(e));
     this.startTime = startTime;
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;
@@ -350,7 +340,7 @@ export class BottomUpRootNode extends Node {
     const totalTimeById = new Map<string, number>();
     TimelineModelImpl.forEachEvent(this.events, onStartEvent, onEndEvent, undefined, startTime, endTime, this.filter);
 
-    function onStartEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+    function onStartEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       const {startTime: currentStartTime, endTime: currentEndTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
       const actualEndTime = currentEndTime !== undefined ? Math.min(currentEndTime, endTime) : endTime;
       const duration = actualEndTime - Math.max(currentStartTime, startTime);
@@ -364,7 +354,7 @@ export class BottomUpRootNode extends Node {
       firstNodeStack.push(noNodeOnStack);
     }
 
-    function onEndEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+    function onEndEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       const id = _eventId(e);
       let node = nodeById.get(id);
       if (!node) {
@@ -444,8 +434,8 @@ export class BottomUpNode extends Node {
   private hasChildrenInternal: boolean;
 
   constructor(
-      root: BottomUpRootNode, id: string, event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData,
-      hasChildren: boolean, parent: Node) {
+      root: BottomUpRootNode, id: string, event: SDK.TracingModel.CompatibleTraceEvent, hasChildren: boolean,
+      parent: Node) {
     super(id, event);
     this.parent = parent;
     this.root = root;
@@ -468,7 +458,7 @@ export class BottomUpNode extends Node {
     }
     const selfTimeStack: number[] = [0];
     const eventIdStack: string[] = [];
-    const eventStack: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[] = [];
+    const eventStack: (SDK.TracingModel.CompatibleTraceEvent)[] = [];
     const nodeById = new Map<string, BottomUpNode>();
     const startTime = this.root.startTime;
     const endTime = this.root.endTime;
@@ -477,7 +467,7 @@ export class BottomUpNode extends Node {
     TimelineModelImpl.forEachEvent(
         this.root.events, onStartEvent, onEndEvent, undefined, startTime, endTime, this.root.filter);
 
-    function onStartEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+    function onStartEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       const {startTime: currentStartTime, endTime: currentEndTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
       const actualEndTime = currentEndTime !== undefined ? Math.min(currentEndTime, endTime) : endTime;
       const duration = actualEndTime - Math.max(currentStartTime, startTime);
@@ -491,7 +481,7 @@ export class BottomUpNode extends Node {
       eventStack.push(e);
     }
 
-    function onEndEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+    function onEndEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       const {startTime: currentStartTime, endTime: currentEndTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
       const selfTime = selfTimeStack.pop();
       const id = eventIdStack.pop();
@@ -524,9 +514,8 @@ export class BottomUpNode extends Node {
     return this.cachedChildren;
   }
 
-  override searchTree(
-      matchFunction: (arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean,
-      results?: Node[]): Node[] {
+  override searchTree(matchFunction: (arg0: SDK.TracingModel.CompatibleTraceEvent) => boolean, results?: Node[]):
+      Node[] {
     results = results || [];
     if (this.event && matchFunction(this.event)) {
       results.push(this);
@@ -563,7 +552,7 @@ export function eventStackFrame(event: SDK.TracingModel.Event|
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export function _eventId(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string {
+export function _eventId(event: SDK.TracingModel.CompatibleTraceEvent): string {
   if (event.name === RecordType.TimeStamp) {
     return `${event.name}:${event.args.data.message}`;
   }

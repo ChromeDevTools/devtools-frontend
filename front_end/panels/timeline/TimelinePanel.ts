@@ -1467,9 +1467,8 @@ export const rowHeight = 18;
 export const headerHeight = 20;
 export interface TimelineModeViewDelegate {
   select(selection: TimelineSelection|null): void;
-  selectEntryAtTime(events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[]|null, time: number):
-      void;
-  highlightEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null): void;
+  selectEntryAtTime(events: (SDK.TracingModel.CompatibleTraceEvent)[]|null, time: number): void;
+  highlightEvent(event: SDK.TracingModel.CompatibleTraceEvent|null): void;
 }
 
 export class StatusPane extends UI.Widget.VBox {

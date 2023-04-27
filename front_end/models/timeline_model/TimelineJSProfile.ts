@@ -119,7 +119,7 @@ export class TimelineJSProfileProcessor {
      * We expect they'll either be trace events happening within JS (eg forced layout),
      * or, in the fakeJSInvocation case, the JS finished and we're seeing the subsequent event.
      */
-    function onStartEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+    function onStartEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       if (SDK.TracingModel.eventIsFromNewEngine(e)) {
         // TODO(crbug.com/1431175) support CPU profiles in new engine.
         return;
@@ -135,8 +135,7 @@ export class TimelineJSProfileProcessor {
     }
 
     function onInstantEvent(
-        e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData,
-        parent: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null): void {
+        e: SDK.TracingModel.CompatibleTraceEvent, parent: SDK.TracingModel.CompatibleTraceEvent|null): void {
       if (SDK.TracingModel.eventIsFromNewEngine(e) || SDK.TracingModel.eventIsFromNewEngine(parent)) {
         // TODO(crbug.com/1431175) support CPU profiles in new engine.
         return;
@@ -158,7 +157,7 @@ export class TimelineJSProfileProcessor {
       }
     }
 
-    function onEndEvent(e: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): void {
+    function onEndEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       if (SDK.TracingModel.eventIsFromNewEngine(e)) {
         // TODO(crbug.com/1431175) support CPU profiles in new engine.
         return;

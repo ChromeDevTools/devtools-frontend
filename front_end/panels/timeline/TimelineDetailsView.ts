@@ -281,8 +281,8 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.tabbedPane.selectTab(Tab.PaintProfiler, true);
   }
 
-  private appendDetailsTabsForTraceEventAndShowDetails(
-      event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData, content: Node): void {
+  private appendDetailsTabsForTraceEventAndShowDetails(event: SDK.TracingModel.CompatibleTraceEvent, content: Node):
+      void {
     this.setContent(content);
     if (SDK.TracingModel.eventIsFromNewEngine(event)) {
       // TODO(crbug.com/1386091): Add support for this use case in the

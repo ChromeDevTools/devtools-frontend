@@ -376,9 +376,8 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   buildTopDownTree(
-      doNotAggregate: boolean,
-      groupIdCallback: ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|
-      null): TimelineModel.TimelineProfileTree.Node {
+      doNotAggregate: boolean, groupIdCallback: ((arg0: SDK.TracingModel.CompatibleTraceEvent) => string)|null):
+      TimelineModel.TimelineProfileTree.Node {
     return new TimelineModel.TimelineProfileTree.TopDownRootNode(
         this.modelEvents(), this.filters(), this.startTime, this.endTime, doNotAggregate, groupIdCallback);
   }
@@ -632,7 +631,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     let showPercents = false;
     let value: number;
     let maxTime: number|undefined;
-    let event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null;
+    let event: SDK.TracingModel.CompatibleTraceEvent|null;
     switch (columnId) {
       case 'startTime': {
         event = this.profileNode.event;
@@ -870,27 +869,25 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     return true;
   }
 
-  protected groupingFunction(groupBy: string):
-      ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => string)|null {
+  protected groupingFunction(groupBy: string): ((arg0: SDK.TracingModel.CompatibleTraceEvent) => string)|null {
     const GroupBy = AggregatedTimelineTreeView.GroupBy;
     switch (groupBy) {
       case GroupBy.None:
         return null;
       case GroupBy.EventName:
-        return (event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string =>
-                   TimelineUIUtils.eventStyle(event).title;
+        return (event: SDK.TracingModel.CompatibleTraceEvent): string => TimelineUIUtils.eventStyle(event).title;
       case GroupBy.Category:
-        return (event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string =>
+        return (event: SDK.TracingModel.CompatibleTraceEvent): string =>
                    TimelineUIUtils.eventStyle(event).category.name;
       case GroupBy.Subdomain:
         return this.domainByEvent.bind(this, false);
       case GroupBy.Domain:
         return this.domainByEvent.bind(this, true);
       case GroupBy.URL:
-        return (event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string =>
+        return (event: SDK.TracingModel.CompatibleTraceEvent): string =>
                    TimelineModel.TimelineProfileTree.eventURL(event) || '';
       case GroupBy.Frame:
-        return (event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string =>
+        return (event: SDK.TracingModel.CompatibleTraceEvent): string =>
                    TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).frameId || '';
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
@@ -898,8 +895,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private domainByEvent(
-      groupSubdomains: boolean, event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): string {
+  private domainByEvent(groupSubdomains: boolean, event: SDK.TracingModel.CompatibleTraceEvent): string {
     const url = TimelineModel.TimelineProfileTree.eventURL(event);
     if (!url) {
       return '';

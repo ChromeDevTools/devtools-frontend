@@ -193,17 +193,15 @@ export class TimelineModelImpl {
    * 9. End A
    */
   static forEachEvent(
-      events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[],
-      onStartEvent: (arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => void,
-      onEndEvent: (arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => void,
+      events: (SDK.TracingModel.CompatibleTraceEvent)[],
+      onStartEvent: (arg0: SDK.TracingModel.CompatibleTraceEvent) => void,
+      onEndEvent: (arg0: SDK.TracingModel.CompatibleTraceEvent) => void,
       onInstantEvent?:
-          ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData,
-            arg1: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null) => void),
-      startTime?: number, endTime?: number,
-      filter?: ((arg0: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData) => boolean)): void {
+          ((arg0: SDK.TracingModel.CompatibleTraceEvent, arg1: SDK.TracingModel.CompatibleTraceEvent|null) => void),
+      startTime?: number, endTime?: number, filter?: ((arg0: SDK.TracingModel.CompatibleTraceEvent) => boolean)): void {
     startTime = startTime || 0;
     endTime = endTime || Infinity;
-    const stack: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[] = [];
+    const stack: (SDK.TracingModel.CompatibleTraceEvent)[] = [];
     const startEvent = TimelineModelImpl.topLevelEventEndingAfter(events, startTime);
     for (let i = startEvent; i < events.length; ++i) {
       const e = events[i];
@@ -247,8 +245,7 @@ export class TimelineModelImpl {
     }
   }
 
-  private static topLevelEventEndingAfter(
-      events: (SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData)[], time: number): number {
+  private static topLevelEventEndingAfter(events: (SDK.TracingModel.CompatibleTraceEvent)[], time: number): number {
     let index =
         Platform.ArrayUtilities.upperBound(
             events, time, (time, event) => time - SDK.TracingModel.timesForEventInMilliseconds(event).startTime) -
@@ -270,7 +267,7 @@ export class TimelineModelImpl {
    * every LCP Candidate event as a potential marker event. The logic to pick the
    * right candidate to use is implemeneted in the TimelineFlameChartDataProvider.
    **/
-  isMarkerEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  isMarkerEvent(event: SDK.TracingModel.CompatibleTraceEvent): boolean {
     switch (event.name) {
       case RecordType.TimeStamp:
         return true;
@@ -329,7 +326,7 @@ export class TimelineModelImpl {
     return event.name === RecordType.ParseHTML;
   }
 
-  static isJsFrameEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  static isJsFrameEvent(event: SDK.TracingModel.CompatibleTraceEvent): boolean {
     return event.name === RecordType.JSFrame || event.name === RecordType.JSIdleFrame ||
         event.name === RecordType.JSSystemFrame;
   }
@@ -363,7 +360,7 @@ export class TimelineModelImpl {
     return {time: this.totalBlockingTimeInternal, estimated: false};
   }
 
-  targetByEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): SDK.Target.Target|null {
+  targetByEvent(event: SDK.TracingModel.CompatibleTraceEvent): SDK.Target.Target|null {
     let thread;
     if (event instanceof SDK.TracingModel.Event) {
       thread = event.thread;
@@ -2685,7 +2682,7 @@ export class EventOnTimelineData {
         (this.initiatorInternal && EventOnTimelineData.forEvent(this.initiatorInternal).stackTrace);
   }
 
-  static forEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): EventOnTimelineData {
+  static forEvent(event: SDK.TracingModel.CompatibleTraceEvent): EventOnTimelineData {
     if (event instanceof SDK.TracingModel.PayloadEvent) {
       return EventOnTimelineData.forTraceEventData(event.rawPayload());
     }

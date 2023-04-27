@@ -48,7 +48,7 @@ export class TracingModel {
     this.#mainFrameNavStartTimes = new Map();
   }
 
-  static isTopLevelEvent(event: Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  static isTopLevelEvent(event: CompatibleTraceEvent): boolean {
     return eventHasCategory(event, DevToolsTimelineEventCategory) && event.name === 'RunTask' ||
         eventHasCategory(event, LegacyTopLevelEventCategory) ||
         eventHasCategory(event, DevToolsMetadataEventCategory) &&
@@ -953,7 +953,7 @@ export function timesForEventInMilliseconds(event: Event|
 // Parsed categories are cached to prevent calling cat.split() multiple
 // times on the same categories string.
 const parsedCategories = new Map<string, Set<string>>();
-export function eventHasCategory(event: Event|TraceEngine.Types.TraceEvents.TraceEventData, category: string): boolean {
+export function eventHasCategory(event: CompatibleTraceEvent, category: string): boolean {
   if (event instanceof Event) {
     return event.hasCategory(category);
   }
@@ -980,7 +980,9 @@ export function threadIDForEvent(event: Event|
   return event.tid;
 }
 
-export function eventIsFromNewEngine(event: Event|TraceEngine.Types.TraceEvents.TraceEventData|
+export function eventIsFromNewEngine(event: CompatibleTraceEvent|
                                      null): event is TraceEngine.Types.TraceEvents.TraceEventData {
   return event !== null && !(event instanceof Event);
 }
+
+export type CompatibleTraceEvent = Event|TraceEngine.Types.TraceEvents.TraceEventData;

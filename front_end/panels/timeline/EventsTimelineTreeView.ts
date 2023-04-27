@@ -103,8 +103,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return null;
   }
 
-  private selectEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData, expand?: boolean):
-      void {
+  private selectEvent(event: SDK.TracingModel.CompatibleTraceEvent, expand?: boolean): void {
     const node = this.findNodeWithEvent(event);
     if (!node) {
       return;

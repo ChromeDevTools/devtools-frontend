@@ -1247,7 +1247,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.entryParent[eventIndex] || null;
   }
 
-  eventByIndex(entryIndex: number): SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData|null {
+  eventByIndex(entryIndex: number): SDK.TracingModel.CompatibleTraceEvent|null {
     if (entryIndex < 0) {
       return null;
     }

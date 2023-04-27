@@ -3,12 +3,11 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
 export abstract class TimelineModelFilter {
-  abstract accept(_event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean;
+  abstract accept(_event: SDK.TracingModel.CompatibleTraceEvent): boolean;
 }
 
 export class TimelineVisibleEventsFilter extends TimelineModelFilter {
@@ -18,11 +17,11 @@ export class TimelineVisibleEventsFilter extends TimelineModelFilter {
     this.visibleTypes = new Set(visibleTypes);
   }
 
-  accept(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  accept(event: SDK.TracingModel.CompatibleTraceEvent): boolean {
     return this.visibleTypes.has(TimelineVisibleEventsFilter.eventType(event));
   }
 
-  static eventType(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): RecordType {
+  static eventType(event: SDK.TracingModel.CompatibleTraceEvent): RecordType {
     if (SDK.TracingModel.eventHasCategory(event, TimelineModelImpl.Category.Console)) {
       return RecordType.ConsoleTime;
     }
@@ -40,7 +39,7 @@ export class TimelineInvisibleEventsFilter extends TimelineModelFilter {
     this.invisibleTypes = new Set(invisibleTypes);
   }
 
-  accept(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  accept(event: SDK.TracingModel.CompatibleTraceEvent): boolean {
     return !this.invisibleTypes.has(TimelineVisibleEventsFilter.eventType(event));
   }
 }
@@ -52,7 +51,7 @@ export class ExclusiveNameFilter extends TimelineModelFilter {
     this.excludeNames = new Set(excludeNames);
   }
 
-  accept(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  accept(event: SDK.TracingModel.CompatibleTraceEvent): boolean {
     return !this.excludeNames.has(event.name);
   }
 }

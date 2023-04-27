@@ -59,7 +59,7 @@ export class TimelineSelection {
     return SDK.TracingModel.eventIsFromNewEngine(object);
   }
 
-  static fromTraceEvent(event: SDK.TracingModel.Event|TraceEngine.Types.TraceEvents.TraceEventData): TimelineSelection {
+  static fromTraceEvent(event: SDK.TracingModel.CompatibleTraceEvent): TimelineSelection {
     const {startTime, endTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
     return new TimelineSelection(startTime, TraceEngine.Types.Timing.MilliSeconds(endTime || (startTime + 1)), event);
   }

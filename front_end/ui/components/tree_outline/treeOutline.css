@@ -32,7 +32,6 @@ li {
   -webkit-mask-image: var(--image-file-triangle-right);
   background-color: var(--icon-default);
   content: "";
-  align-self: flex-start;
   text-shadow: none;
   height: 14px;
   width: 14px;

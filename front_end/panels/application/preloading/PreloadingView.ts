@@ -4,6 +4,7 @@
 
 import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 
+import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Protocol from '../../../generated/protocol.js';
@@ -70,6 +71,25 @@ const UIStrings = {
    */
   warningDetailPrerenderingDisabledByFeatureFlag:
       'Prerendering is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons.',
+  /**
+   *@description Title of preloading state disabled warning in infobar
+   */
+  warningTitlePreloadingStateDisabled: 'Preloading is disabled',
+  /**
+   *@description Detail of preloading state disabled warning in infobar
+   *@example {chrome://settings/preloading} PH1
+   *@example {chrome://extensions} PH2
+   */
+  warningDetailPreloadingStateDisabled:
+      'Preloading is disabled because of user settings or an extension. Go to {PH1} to learn more, or go to {PH2} to disable the extension.',
+  /**
+   *@description Text of Preload pages settings
+   */
+  preloadingPageSettings: 'Preload pages settings',
+  /**
+   *@description Text of Extension settings
+   */
+  extensionSettings: 'Extensions settings',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/PreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -338,6 +358,21 @@ export class PreloadingView extends UI.Widget.VBox {
         ruleSets,
       };
     }
+    // TODO(crbug.com/1384419): Add more information in PreloadEnabledState from
+    // backend to distinguish the details of the reasons why preloading is
+    // disabled.
+    if (this.modelProxy.model.getPreloadEnabledState() === Protocol.Preload.PreloadEnabledState.DisabledByPreference) {
+      const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
+      preloadingSettingLink.href = 'chrome://settings/cookies';
+      preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPageSettings);
+      const extensionSettingLink = new ChromeLink.ChromeLink.ChromeLink();
+      extensionSettingLink.href = 'chrome://extensions';
+      extensionSettingLink.textContent = i18nString(UIStrings.extensionSettings);
+      const detailsMessage = i18n.i18n.getFormatLocalizedString(
+          str_, UIStrings.warningDetailPreloadingStateDisabled,
+          {PH1: preloadingSettingLink, PH2: extensionSettingLink});
+      this.showInfobar(i18nString(UIStrings.warningTitlePreloadingStateDisabled), detailsMessage);
+    }
   }
 
   render(): void {
@@ -415,11 +450,11 @@ export class PreloadingView extends UI.Widget.VBox {
     }
   }
 
-  private showInfobar(titleText: string, detailsText: string): void {
+  private showInfobar(titleText: string, detailsMessage: string|Element): void {
     const infobar = new UI.Infobar.Infobar(
         UI.Infobar.Type.Warning, /* text */ titleText, /* actions? */ undefined, /* disableSetting? */ undefined);
     infobar.setParentView(this);
-    infobar.createDetailsRowMessage(detailsText);
+    infobar.createDetailsRowMessage(detailsMessage);
     this.infobarContainer.appendChild(infobar.element);
   }
 

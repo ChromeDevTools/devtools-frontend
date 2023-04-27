@@ -718,4 +718,24 @@ describeWithMockConnection('PreloadingView', async () => {
         infoTexts,
         ['Preloading was disabled, but is force-enabled now', 'Prerendering was disabled, but is force-enabled now']);
   });
+
+  it('shows an warning if PreloadEnabledState DisabledByPreference', async () => {
+    const emulator = new NavigationEmulator();
+
+    await emulator.openDevTools();
+    const view = createView(emulator.primaryTarget);
+
+    dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
+      state: 'DisabledByPreference',
+    });
+
+    const infobarContainer = view.getInfobarContainerForTest();
+    const infoTexts = Array.from(infobarContainer.children).map(infobarElement => {
+      assertShadowRoot(infobarElement.shadowRoot);
+      const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
+      assertNotNullOrUndefined(infoText);
+      return infoText.textContent;
+    });
+    assert.deepEqual(infoTexts, ['Preloading is disabled']);
+  });
 });

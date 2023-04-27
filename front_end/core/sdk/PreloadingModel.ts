@@ -145,6 +145,10 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     return document.preloadingAttempts.getAll(null, document.sources);
   }
 
+  getPreloadEnabledState(): string {
+    return this.preloadEnabledState;
+  }
+
   private onPrimaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
     const {frame, type} = event.data;

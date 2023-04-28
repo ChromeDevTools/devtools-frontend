@@ -99,8 +99,12 @@ export class PopoverHelper {
 
   private mouseMove(ev: Event): void {
     const event = (ev as MouseEvent);
-    // Pretend that nothing has happened.
     if (this.eventInScheduledContent(event)) {
+      // Reschedule showing popover since mouse moved and
+      // we only want to show the popover when the mouse is
+      // standing still on the container for some amount of time.
+      this.stopShowPopoverTimer();
+      this.startShowPopoverTimer(event, this.isPopoverVisible() ? this.showTimeout * 0.6 : this.showTimeout);
       return;
     }
 

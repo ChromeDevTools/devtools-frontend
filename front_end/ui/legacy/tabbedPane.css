@@ -112,6 +112,10 @@
   margin-right: 2px;
 }
 
+.tabbed-pane-header-tab-icon devtools-icon {
+  margin-left: -1px;
+}
+
 .tabbed-pane-header-tab {
   float: left;
   padding: 2px 0.8em;

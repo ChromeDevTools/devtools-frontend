@@ -62,11 +62,6 @@
   white-space: normal;
 }
 
-.toolbar:not(.floating) .toolbar-item:last-child:not(:first-child) {
-  flex-shrink: 1;
-  justify-content: left;
-}
-
 .toolbar-dropdown-arrow {
   background-color: var(--color-text-secondary);
   pointer-events: none;
@@ -437,6 +432,11 @@ select.toolbar-item:focus-visible > * {
   margin-top: -1px;
   width: 28px;
   left: -2px;
+}
+
+.toolbar-shadow:not(.floating) .toolbar-item:last-child:not(:first-child) {
+  flex-shrink: 1;
+  justify-content: left;
 }
 
 input[is="history-input"] {

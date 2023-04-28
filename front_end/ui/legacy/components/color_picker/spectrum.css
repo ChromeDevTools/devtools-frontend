@@ -339,6 +339,8 @@
 
 [is="ui-icon"].icon-mask.copy-color-icon {
   background-color: var(--color-background);
+  margin-top: 2px;
+  margin-left: 2px;
 }
 
 .spectrum-text {

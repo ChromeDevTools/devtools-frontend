@@ -26,6 +26,11 @@
   min-height: 30px;
 }
 
+.ignore-list-option devtools-icon {
+  margin-bottom: -1px;
+  margin-left: 6px;
+}
+
 .ignore-list-option-group {
   margin-top: 16px;
   margin-bottom: 3px;

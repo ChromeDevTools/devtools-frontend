@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import frameworkIgnoreListSettingsTabStyles from './frameworkIgnoreListSettingsTab.css.js';
@@ -80,6 +81,10 @@ const UIStrings = {
    *@description Error message in Framework Ignore List settings pane that declares pattern must be a valid regular expression
    */
   patternMustBeAValidRegular: 'Pattern must be a valid regular expression',
+  /**
+   *@description Text that is usually a hyperlink to more documentation
+   */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/FrameworkIgnoreListSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -124,6 +129,15 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
         Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts'), true));
     UI.Tooltip.Tooltip.install(
         automaticallyIgnoreList, i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScriptsTooltip));
+
+    const automaticallyIgnoreLink = UI.XLink.XLink.create('http://goo.gle/skip-third-party');
+    automaticallyIgnoreLink.textContent = '';
+    automaticallyIgnoreLink.setAttribute('aria-label', i18nString(UIStrings.learnMore));
+
+    const automaticallyIgnoreLinkIcon = new IconButton.Icon.Icon();
+    automaticallyIgnoreLinkIcon.data = {iconName: 'help', color: 'var(--icon-default)', width: '16px', height: '16px'};
+    automaticallyIgnoreLink.prepend(automaticallyIgnoreLinkIcon);
+    automaticallyIgnoreList.appendChild(automaticallyIgnoreLink);
 
     ignoreListOptions.createChild('div', 'ignore-list-option-group').textContent =
         i18nString(UIStrings.customExclusionRules);

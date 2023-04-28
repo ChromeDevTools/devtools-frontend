@@ -365,7 +365,8 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     [labelAA, labelAAA].forEach(e => e.addEventListener('click', () => ContrastDetails.showHelp()));
 
     this.elementInternal.classList.toggle('contrast-fail', !this.passesAA);
-    this.contrastValueBubble.classList.toggle('contrast-aa', this.passesAA);
+    // show checkmark icon when passes AA, but not AAA
+    this.contrastValueBubble.classList.toggle('contrast-aa', this.passesAA && !passesAAA);
     this.contrastValueBubble.classList.toggle('contrast-aaa', passesAAA);
   }
 

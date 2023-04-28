@@ -46,9 +46,10 @@
   transform: scale(0.7);
   content: "";
   text-shadow: none;
-  margin-right: -2px;
-  height: 12px;
-  width: 14px;
+  margin-left: -4px;
+  margin-top: -2px;
+  height: 16px;
+  width: 16px;
   position: absolute;
   display: inline-block;
 }

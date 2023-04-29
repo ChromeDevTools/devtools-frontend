@@ -224,10 +224,10 @@ export function getAPCAThreshold(fontSize: string, fontWeight: string): number|n
 }
 
 export function isLargeFont(fontSize: string, fontWeight: string): boolean {
-  const boldWeights = ['bold', 'bolder', '600', '700', '800', '900'];
+  const boldWeights = ['bold', 'bolder'];
 
   const fontSizePx = parseFloat(fontSize.replace('px', ''));
-  const isBold = (boldWeights.indexOf(fontWeight) !== -1);
+  const isBold = isNaN(Number(fontWeight)) ? boldWeights.includes(fontWeight) : Number(fontWeight) >= 600;
 
   const fontSizePt = fontSizePx * 72 / 96;
   if (isBold) {

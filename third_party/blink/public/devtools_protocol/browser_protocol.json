@@ -23002,6 +23002,22 @@
                             "type": "string"
                         },
                         {
+                            "name": "backendNodeId",
+                            "description": "A speculation rule set is either added through an inline\n<script> tag or through an external resource via the\n'Speculation-Rules' HTTP header. For the first case, we include\nthe BackendNodeId of the relevant <script> tag. For the second\ncase, we include the external URL where the rule set was loaded\nfrom, and also RequestId if Network domain is enabled.\n\nSee also:\n- https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-script\n- https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-header",
+                            "optional": true,
+                            "$ref": "DOM.BackendNodeId"
+                        },
+                        {
+                            "name": "url",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "requestId",
+                            "optional": true,
+                            "$ref": "Network.RequestId"
+                        },
+                        {
                             "name": "errorType",
                             "description": "Error information\n`errorMessage` is null iff `errorType` is null.",
                             "optional": true,

@@ -15389,6 +15389,21 @@ export namespace Preload {
      */
     sourceText: string;
     /**
+     * A speculation rule set is either added through an inline
+     * <script> tag or through an external resource via the
+     * 'Speculation-Rules' HTTP header. For the first case, we include
+     * the BackendNodeId of the relevant <script> tag. For the second
+     * case, we include the external URL where the rule set was loaded
+     * from, and also RequestId if Network domain is enabled.
+     *
+     * See also:
+     * - https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-script
+     * - https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-header
+     */
+    backendNodeId?: DOM.BackendNodeId;
+    url?: string;
+    requestId?: Network.RequestId;
+    /**
      * Error information
      * `errorMessage` is null iff `errorType` is null.
      */

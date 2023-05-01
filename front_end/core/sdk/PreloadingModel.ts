@@ -33,7 +33,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   private lastPrimaryPageModel: PreloadingModel|null = null;
   private documents: Map<Protocol.Network.LoaderId, DocumentPreloadingData> =
       new Map<Protocol.Network.LoaderId, DocumentPreloadingData>();
-  private preloadEnabledState: string = '';
+  private preloadEnabledState: Protocol.Preload.PreloadEnabledState|null = null;
 
   constructor(target: Target) {
     super(target);
@@ -145,7 +145,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     return document.preloadingAttempts.getAll(null, document.sources);
   }
 
-  getPreloadEnabledState(): string {
+  getPreloadEnabledState(): Protocol.Preload.PreloadEnabledState|null {
     return this.preloadEnabledState;
   }
 

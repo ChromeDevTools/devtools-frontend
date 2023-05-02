@@ -17,6 +17,7 @@ ts_library("meta") {
     "../../../../../front_end/core/i18n:bundle",
     "../../../../../front_end/ui/legacy:bundle",
     "../../../../../front_end/ui/legacy/components/quick_open:bundle",
+    "../../../../../front_end/ui/legacy/components/source_frame:bundle",
     "../../helpers",
   ]
 }

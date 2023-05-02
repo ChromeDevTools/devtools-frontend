@@ -895,6 +895,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         if (match[0].length) {
           const from = pos + match.index;
           ranges.push(new SearchMatch(from, from + match[0].length, match));
+        } else {
+          regex.lastIndex = match.index + 1;
         }
       }
       pos += line.length + 1;
@@ -1096,9 +1098,14 @@ const searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
             if (!match) {
               break;
             }
-            const start = pos + match.index, end = start + match[0].length;
-            const current = active.currentRange && active.currentRange.from === start && active.currentRange.to === end;
-            builder.add(start, end, current ? currentSearchMatchDeco : searchMatchDeco);
+            if (match[0].length) {
+              const start = pos + match.index, end = start + match[0].length;
+              const current =
+                  active.currentRange && active.currentRange.from === start && active.currentRange.to === end;
+              builder.add(start, end, current ? currentSearchMatchDeco : searchMatchDeco);
+            } else {
+              active.regexp.regex.lastIndex = match.index + 1;
+            }
           }
         }
         pos += part.length;

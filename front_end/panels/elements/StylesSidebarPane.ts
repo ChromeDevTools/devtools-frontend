@@ -316,9 +316,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
                                                Host.UserMetrics.CSSPropertyDocumentation.ToggledOff;
       Host.userMetrics.cssPropertyDocumentation(metricType);
     });
-    if (showDocumentationSetting.get()) {
-      this.#webCustomData = WebCustomData.create();
-    }
 
     this.#hintPopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
       const hoveredNode = event.composedPath()[0];

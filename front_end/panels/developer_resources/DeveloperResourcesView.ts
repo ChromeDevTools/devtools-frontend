@@ -19,14 +19,15 @@ const UIStrings = {
    * @description Tooltip for a checkbox in the toolbar of the developer resources view. The
    * inspected target is the webpage that DevTools is debugging/inspecting/attached to.
    */
-  loadHttpsDeveloperResources: 'Load `HTTP(S)` developer resources through the inspected target',
+  loadHttpsDeveloperResources:
+      'Load `HTTP(S)` developer resources through the website you inspect, not through DevTools',
   /**
    * @description Text for a checkbox in the toolbar of the developer resources view. The target is
    * the webpage that DevTools is debugging/inspecting/attached to. This setting makes it so
    * developer resources are requested from the webpage itself, and not from the DevTools
    * application.
    */
-  enableLoadingThroughTarget: 'Enable loading through target',
+  enableLoadingThroughTarget: 'Load through website',
   /**
    *@description Text for resources load status
    *@example {1} PH1

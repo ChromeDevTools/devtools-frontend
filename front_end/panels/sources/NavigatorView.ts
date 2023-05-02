@@ -556,14 +556,14 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     if (!fileSystemProjects.length) {
       return;
     }
-    const encoder = new Persistence.Persistence.PathEncoder();
-    const reversedPaths = fileSystemProjects.map(project => {
+
+    const reversedIndex = Common.Trie.Trie.newArrayTrie<string[]>();
+    const reversedPaths = [];
+    for (const project of fileSystemProjects) {
       const fileSystem = (project as Persistence.FileSystemWorkspaceBinding.FileSystem);
-      return Platform.StringUtilities.reverse(encoder.encode(fileSystem.fileSystemPath()));
-    });
-    const reversedIndex = Common.Trie.Trie.newStringTrie();
-    for (const reversedPath of reversedPaths) {
-      reversedIndex.add(reversedPath);
+      const reversedPathParts = fileSystem.fileSystemPath().split('/').reverse();
+      reversedPaths.push(reversedPathParts);
+      reversedIndex.add(reversedPathParts);
     }
 
     const rootOrDeployed = this.rootOrDeployedNode();
@@ -574,9 +574,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       reversedIndex.remove(reversedPath);
       const commonPrefix = reversedIndex.longestPrefix(reversedPath, false /* fullWordOnly */);
       reversedIndex.add(reversedPath);
-      const prefixPath = reversedPath.substring(0, commonPrefix.length + 1);
+      const prefixPath = reversedPath.slice(0, commonPrefix.length + 1);
       const path = Common.ParsedURL.ParsedURL.encodedPathToRawPathString(
-          encoder.decode(Platform.StringUtilities.reverse(prefixPath)) as Platform.DevToolsPath.EncodedPathString);
+          prefixPath.reverse().join('/') as Platform.DevToolsPath.EncodedPathString);
 
       const fileSystemNode = rootOrDeployed.child(project.id());
       if (fileSystemNode) {

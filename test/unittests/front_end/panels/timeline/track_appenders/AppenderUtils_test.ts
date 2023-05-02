@@ -84,4 +84,37 @@ describeWithEnvironment('AppenderUtils', () => {
       assert.strictEqual(formattedTime, '10.00\u00A0ms');
     });
   });
+
+  describe('getFirstFitLevel', () => {
+    it('returns the level correctly', async () => {
+      const lastUsedTimeByLevel: number[] = [];
+      const eventOne = {
+        ...defaultTraceEvent,
+        ts: TraceEngine.Types.Timing.MicroSeconds(0),
+        dur: TraceEngine.Types.Timing.MicroSeconds(10),
+      };
+      const eventTwo = {
+        ...defaultTraceEvent,
+        ts: TraceEngine.Types.Timing.MicroSeconds(5),
+        dur: TraceEngine.Types.Timing.MicroSeconds(10),
+      };
+      const eventThree = {
+        ...defaultTraceEvent,
+        ts: TraceEngine.Types.Timing.MicroSeconds(20),
+        dur: TraceEngine.Types.Timing.MicroSeconds(10),
+      };
+
+      let level = Timeline.AppenderUtils.getFirstFitLevel(eventOne, lastUsedTimeByLevel);
+      // For first event, the track is empty, so it always returns 0.
+      assert.strictEqual(level, 0);
+
+      level = Timeline.AppenderUtils.getFirstFitLevel(eventTwo, lastUsedTimeByLevel);
+      // For eventTwo, its start time is smaller than eventOne's end time, so it should be appended to level 1.
+      assert.strictEqual(level, 1);
+
+      level = Timeline.AppenderUtils.getFirstFitLevel(eventThree, lastUsedTimeByLevel);
+      // For eventThree, it doesn't overlap with eventOne, so it can fit in level 0.
+      assert.strictEqual(level, 0);
+    });
+  });
 });

@@ -86,3 +86,25 @@ export function getFormattedTime(
       i18n.TimeUtilities.millisToString(formattedTotalTime, true);
   return formattedTime;
 }
+
+/**
+ * Returns the first level that is available for an async event.
+ * @param event the async event.
+ * @param lastUsedTimeByLevel the array that stores the last timestamp that is used by a level.
+ * @returns the first available level for the event.
+ */
+export function getFirstFitLevel(
+    event: TraceEngine.Types.TraceEvents.TraceEventData, lastUsedTimeByLevel: number[]): number {
+  let level = 0;
+  const startTime = event.ts;
+  const endTime = event.ts + (event.dur || 0);
+  // Look vertically for the first level where this event fits,
+  // that is, where it wouldn't overlap with other events.
+  while (level < lastUsedTimeByLevel.length && startTime < lastUsedTimeByLevel[level]) {
+    // For async event, we look each level from beginning, and see if start timestamp of this
+    // event is used by current level already. If yes, we will go to check next level.
+    ++level;
+  }
+  lastUsedTimeByLevel[level] = endTime;
+  return level;
+}

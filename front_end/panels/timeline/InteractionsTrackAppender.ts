@@ -17,7 +17,7 @@ import {
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Common from '../../core/common/common.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getFirstFitLevel, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
@@ -112,26 +112,18 @@ export class InteractionsTrackAppender implements TrackAppender {
    * interactions (the first available level to append more data).
    */
 
-  #appendInteractionsAtLevel(currentLevel: number): number {
+  #appendInteractionsAtLevel(trackStartLevel: number): number {
     const interactions = this.#traceParsedData.UserInteractions.interactionEventsWithNoNesting;
     const lastUsedTimeByLevel: number[] = [];
     for (let i = 0; i < interactions.length; ++i) {
       const event = interactions[i];
-      const startTime = event.ts;
-      let level;
-      // look vertically for the first level where this event fits,
-      // that is, where it wouldn't overlap with other events.
-      for (level = 0; level < lastUsedTimeByLevel.length && lastUsedTimeByLevel[level] > startTime; ++level) {
-      }
-
-      this.#appendEventAtLevel(event, currentLevel + level);
-      const endTime = event.ts + (event.dur || 0);
-      lastUsedTimeByLevel[level] = endTime;
+      const level = getFirstFitLevel(event, lastUsedTimeByLevel);
+      this.#appendEventAtLevel(event, trackStartLevel + level);
     }
-    this.#legacyEntryTypeByLevel.length = currentLevel + lastUsedTimeByLevel.length;
+    this.#legacyEntryTypeByLevel.length = trackStartLevel + lastUsedTimeByLevel.length;
     // Set the entry type to TrackAppender for all the levels occupied by the appended timings.
-    this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, currentLevel);
-    return currentLevel + lastUsedTimeByLevel.length;
+    this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, trackStartLevel);
+    return trackStartLevel + lastUsedTimeByLevel.length;
   }
 
   /**

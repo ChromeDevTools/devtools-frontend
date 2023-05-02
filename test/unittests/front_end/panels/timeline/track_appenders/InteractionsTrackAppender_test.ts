@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
+import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
@@ -14,7 +14,8 @@ import type * as TimelineModel from '../../../../../../front_end/models/timeline
 const {assert} = chai;
 
 function initTrackAppender(
-    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, traceParsedData: TraceModel.Handlers.Types.TraceParseData,
+    flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
+    traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     timelineModel: TimelineModel.TimelineModel.TimelineModelImpl):
@@ -30,7 +31,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     interactionsTrackAppender: Timeline.InteractionsTrackAppender.InteractionsTrackAppender,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
-    traceParsedData: Readonly<TraceModel.TraceModel.PartialTraceParseDataDuringMigration>,
+    traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>,
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
@@ -86,7 +87,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
         assert.isDefined(markerIndex);
         assert.strictEqual(
             flameChartData.entryStartTimes[markerIndex],
-            TraceModel.Helpers.Timing.microSecondsToMilliseconds(event.ts));
+            TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts));
       }
     });
 
@@ -97,11 +98,29 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
       for (const event of events) {
         const markerIndex = entryData.indexOf(event);
         assert.isDefined(markerIndex);
-        const expectedTotalTimeForEvent = TraceModel.Helpers.Timing.microSecondsToMilliseconds(
-            (event.dur || 0) as TraceModel.Types.Timing.MicroSeconds);
+        const expectedTotalTimeForEvent = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
+            (event.dur || 0) as TraceEngine.Types.Timing.MicroSeconds);
         assert.strictEqual(flameChartData.entryTotalTimes[markerIndex], expectedTotalTimeForEvent);
       }
     });
+  });
+
+  it('candy-stripes long interactions', async () => {
+    const {traceParsedData, flameChartData, entryData} = await renderTrackAppender('one-second-interaction.json.gz');
+    const longInteraction = traceParsedData.UserInteractions.longestInteractionEvent;
+    if (!longInteraction) {
+      throw new Error('Could not find longest interaction');
+    }
+    const entryIndex = entryData.indexOf(longInteraction);
+    const decorationsForEntry = flameChartData.entryDecorations[entryIndex];
+    assert.deepEqual(
+        decorationsForEntry, [{type: 'CANDY', startAtTime: TraceEngine.Types.Timing.MicroSeconds(200_000)}]);
+  });
+
+  it('does not candy-stripe interactions less than 200ms', async () => {
+    const {flameChartData} = await renderTrackAppender('slow-interaction-button-click.json.gz');
+    // None of the interactions are over 200ms, so we do not expect to see any decorations
+    assert.lengthOf(flameChartData.entryDecorations, 0);
   });
 
   it('returns the correct title for a pointer interaction, using its category', async () => {

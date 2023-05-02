@@ -29,6 +29,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/InteractionsTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const LONG_INTERACTION_THRESHOLD =
+    TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(200));
+
 export class InteractionsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'Interactions';
 
@@ -147,9 +150,24 @@ export class InteractionsTrackAppender implements TrackAppender {
     this.#flameChartData.entryLevels[index] = level;
     this.#flameChartData.entryStartTimes[index] =
         TraceEngine.Helpers.Timing.microSecondsToMilliseconds(syntheticEvent.ts);
-    const msDuration = syntheticEvent.dur || TraceEngine.Types.Timing.MicroSeconds(0);
-    this.#flameChartData.entryTotalTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(msDuration);
+    const eventDurationMicroSeconds = syntheticEvent.dur || TraceEngine.Types.Timing.MicroSeconds(0);
+
+    if (eventDurationMicroSeconds > LONG_INTERACTION_THRESHOLD) {
+      this.#addCandyStripingForLongInteraction(index);
+    }
+
+    this.#flameChartData.entryTotalTimes[index] =
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(eventDurationMicroSeconds);
     return index;
+  }
+
+  #addCandyStripingForLongInteraction(eventIndex: number): void {
+    const decorationsForEvent = this.#flameChartData.entryDecorations[eventIndex] || [];
+    decorationsForEvent.push({
+      type: 'CANDY',
+      startAtTime: LONG_INTERACTION_THRESHOLD,
+    });
+    this.#flameChartData.entryDecorations[eventIndex] = decorationsForEvent;
   }
 
   /*

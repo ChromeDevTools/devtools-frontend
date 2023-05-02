@@ -44,7 +44,7 @@ async function checkGoldensForPlatform(platform) {
     // If this is excecuted in windows `relativeGoldenPath` will come with
     // backward slashes, so the path needs to be fixed.
     const unixRelativeGoldenPath = relativeGoldenPath.replace(/\\/g, '/');
-    const isWin = process.platform.includes('win');
+    const isWin = process.platform === 'win32';
     try {
       const textSearchCommand = isWin ? `GET-CHILDITEM ${interactionTestRoot}* -recurs | Select-String -Pattern "${
                                             unixRelativeGoldenPath}" -CaseSensitive` :

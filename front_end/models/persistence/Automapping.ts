@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as Platform from '../../core/platform/platform.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -44,7 +44,7 @@ export class Automapping {
     this.sourceCodeToMetadataMap = new WeakMap();
 
     const pathEncoder = new PathEncoder();
-    this.filesIndex = new FilePathIndex(pathEncoder);
+    this.filesIndex = new FilePathIndex();
     this.projectFoldersIndex = new FolderIndex(pathEncoder);
     this.activeFoldersIndex = new FolderIndex(pathEncoder);
 
@@ -392,33 +392,26 @@ export class Automapping {
 }
 
 class FilePathIndex {
-  private readonly encoder: PathEncoder;
-  private readonly reversedIndex: Common.Trie.Trie<string>;
-  constructor(encoder: PathEncoder) {
-    this.encoder = encoder;
-    this.reversedIndex = Common.Trie.Trie.newStringTrie();
-  }
+  readonly #reversedIndex = Common.Trie.Trie.newArrayTrie<string[]>();
 
   addPath(path: Platform.DevToolsPath.UrlString): void {
-    const encodedPath = this.encoder.encode(path);
-    this.reversedIndex.add(Platform.StringUtilities.reverse(encodedPath));
+    const reversePathParts = path.split('/').reverse();
+    this.#reversedIndex.add(reversePathParts);
   }
 
   removePath(path: Platform.DevToolsPath.UrlString): void {
-    const encodedPath = this.encoder.encode(path);
-    this.reversedIndex.remove(Platform.StringUtilities.reverse(encodedPath));
+    const reversePathParts = path.split('/').reverse();
+    this.#reversedIndex.remove(reversePathParts);
   }
 
   similarFiles(networkPath: Platform.DevToolsPath.EncodedPathString): Platform.DevToolsPath.UrlString[] {
-    const encodedPath = this.encoder.encode(networkPath);
-    const reversedEncodedPath = Platform.StringUtilities.reverse(encodedPath);
-    const longestCommonPrefix = this.reversedIndex.longestPrefix(reversedEncodedPath, false);
-    if (!longestCommonPrefix) {
+    const reversePathParts = networkPath.split('/').reverse();
+    const longestCommonPrefix = this.#reversedIndex.longestPrefix(reversePathParts, false);
+    if (longestCommonPrefix.length === 0) {
       return [];
     }
-    return this.reversedIndex.words(longestCommonPrefix)
-               .map(encodedPath => this.encoder.decode(Platform.StringUtilities.reverse(encodedPath))) as
-        Platform.DevToolsPath.UrlString[];
+    return this.#reversedIndex.words(longestCommonPrefix)
+               .map(reversePathParts => reversePathParts.reverse().join('/')) as Platform.DevToolsPath.UrlString[];
   }
 }
 

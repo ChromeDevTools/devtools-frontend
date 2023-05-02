@@ -123,7 +123,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'disableAsyncStackTraces', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'breakpointsActive', true),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'javaScriptDisabled', false),
-    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skipContentScripts', false),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skipContentScripts', true),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'automaticallyIgnoreListKnownThirdPartyScripts', true),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'enableIgnoreListing', true),
     createSettingValue(

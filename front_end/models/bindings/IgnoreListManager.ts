@@ -26,7 +26,7 @@ const UIStrings = {
   /**
    *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
    */
-  addAllContentScriptsToIgnoreList: 'Add all content scripts to ignore list',
+  addAllContentScriptsToIgnoreList: 'Add all extension scripts to ignore list',
   /**
    *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
    */

@@ -21,7 +21,7 @@ const UIStrings = {
   removeFromIgnoreList: 'Remove from ignore list',
   addScriptToIgnoreList: 'Add script to ignore list',
   addDirectoryToIgnoreList: 'Add directory to ignore list',
-  addAllContentScriptsToIgnoreList: 'Add all content scripts to ignore list',
+  addAllContentScriptsToIgnoreList: 'Add all extension scripts to ignore list',
   addAllThirdPartyScriptsToIgnoreList: 'Add all third-party scripts to ignore list',
 };
 
@@ -198,11 +198,14 @@ describeWithMockConnection('IgnoreListManager', () => {
   it('default is do not ignore', () => {
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(webpackUiSourceCode));
-    assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(contentScriptUiSourceCode));
   });
 
   it('default is ignore third party', () => {
     assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(thirdPartyUiSourceCode));
+  });
+
+  it('default is ignore content scripts from extensions', () => {
+    assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(contentScriptUiSourceCode));
   });
 
   it('script context menu enables and disables ignore listing', () => {
@@ -226,16 +229,10 @@ describeWithMockConnection('IgnoreListManager', () => {
   });
 
   it('script context menu enables and disables ignore listing for content scripts', () => {
-    let {items, callbacks} = getContextMenu(contentScriptUiSourceCode);
-
-    assert.sameMembers(items, [UIStrings.addScriptToIgnoreList, UIStrings.addAllContentScriptsToIgnoreList]);
-
-    notNull(callbacks.get(UIStrings.addAllContentScriptsToIgnoreList))();
-
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
     assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(contentScriptUiSourceCode));
 
-    ({items, callbacks} = getContextMenu(contentScriptUiSourceCode));
+    let {items, callbacks} = getContextMenu(contentScriptUiSourceCode);
 
     assert.sameMembers(items, [UIStrings.removeFromIgnoreList]);
 
@@ -243,6 +240,14 @@ describeWithMockConnection('IgnoreListManager', () => {
 
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(contentScriptUiSourceCode));
+
+    ({items, callbacks} = getContextMenu(contentScriptUiSourceCode));
+    assert.sameMembers(items, [UIStrings.addScriptToIgnoreList, UIStrings.addAllContentScriptsToIgnoreList]);
+
+    notNull(callbacks.get(UIStrings.addAllContentScriptsToIgnoreList))();
+
+    assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
+    assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(contentScriptUiSourceCode));
   });
 
   it('script context menu enables and disables ignore listing for third party scripts', () => {

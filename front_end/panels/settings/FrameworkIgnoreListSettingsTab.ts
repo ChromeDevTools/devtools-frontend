@@ -21,20 +21,11 @@ const UIStrings = {
   /**
    *@description Text in Framework Ignore List Settings Tab of the Settings
    */
-  ignoreListContentScripts: 'Add content scripts to ignore list',
-  /**
-   *@description Ignore List content scripts title in Framework Ignore List Settings Tab of the Settings
-   */
-  ignoreListContentScriptsExtension: 'Add content scripts to ignore list (extension scripts in the page)',
+  ignoreListContentScripts: 'Content scripts injected by extensions',
   /**
    *@description Text in Framework Ignore List Settings Tab of the Settings
    */
-  automaticallyIgnoreListKnownThirdPartyScripts: 'Automatically add known third-party scripts to ignore list',
-  /**
-   *@description Text in Framework Ignore List Settings Tab of the Settings
-   */
-  automaticallyIgnoreListKnownThirdPartyScriptsTooltip:
-      'Add sources from the `x_google_ignoreList` field from source maps to the ignore list',
+  automaticallyIgnoreListKnownThirdPartyScripts: 'Known third-party scripts from source maps',
   /**
    *@description Text in Framework Ignore List Settings Tab of the Settings
    */
@@ -121,14 +112,11 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     ignoreListContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.ignoreListContentScripts),
         Common.Settings.Settings.instance().moduleSetting('skipContentScripts'), true));
-    UI.Tooltip.Tooltip.install(ignoreListContentScripts, i18nString(UIStrings.ignoreListContentScriptsExtension));
 
     const automaticallyIgnoreList = ignoreListOptions.createChild('div', 'ignore-list-option');
     automaticallyIgnoreList.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScripts),
         Common.Settings.Settings.instance().moduleSetting('automaticallyIgnoreListKnownThirdPartyScripts'), true));
-    UI.Tooltip.Tooltip.install(
-        automaticallyIgnoreList, i18nString(UIStrings.automaticallyIgnoreListKnownThirdPartyScriptsTooltip));
 
     const automaticallyIgnoreLink = UI.XLink.XLink.create('http://goo.gle/skip-third-party');
     automaticallyIgnoreLink.textContent = '';

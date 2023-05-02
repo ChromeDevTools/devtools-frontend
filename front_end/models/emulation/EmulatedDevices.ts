@@ -1775,5 +1775,27 @@ const emulatedDevices = [
     },
     'type': 'phone',
   },
+  {
+    'order': 200,
+    'show-by-default': true,
+    'title': 'Facebook for Android v407 on Pixel 6',
+    'screen': {
+      'horizontal': {
+        'width': 892,
+        'height': 412,
+      },
+      'device-pixel-ratio': 3.5,
+      'vertical': {
+        'width': 412,
+        'height': 892,
+      },
+    },
+    'capabilities': ['touch', 'mobile'],
+    'user-agent':
+        'Mozilla/5.0 (Linux; Android 12; Pixel 6 Build/SQ3A.220705.004; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/%s Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/407.0.0.0.65;]',
+    'user-agent-metadata':
+        {'platform': 'Android', 'platformVersion': '12', 'architecture': '', 'model': 'Pixel 6', 'mobile': true},
+    'type': 'phone',
+  },
   // DEVICE-LIST-END
 ];

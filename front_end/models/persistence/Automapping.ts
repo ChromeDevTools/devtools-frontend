@@ -10,7 +10,7 @@ import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {FileSystemWorkspaceBinding, type FileSystem} from './FileSystemWorkspaceBinding.js';
-import {PathEncoder, PersistenceImpl} from './PersistenceImpl.js';
+import {PersistenceImpl} from './PersistenceImpl.js';
 
 export class Automapping {
   private readonly workspace: Workspace.Workspace.WorkspaceImpl;
@@ -43,10 +43,9 @@ export class Automapping {
     this.sourceCodeToAutoMappingStatusMap = new WeakMap();
     this.sourceCodeToMetadataMap = new WeakMap();
 
-    const pathEncoder = new PathEncoder();
     this.filesIndex = new FilePathIndex();
-    this.projectFoldersIndex = new FolderIndex(pathEncoder);
-    this.activeFoldersIndex = new FolderIndex(pathEncoder);
+    this.projectFoldersIndex = new FolderIndex();
+    this.activeFoldersIndex = new FolderIndex();
 
     this.interceptors = [];
 
@@ -416,48 +415,46 @@ class FilePathIndex {
 }
 
 class FolderIndex {
-  private readonly encoder: PathEncoder;
-  private readonly index: Common.Trie.Trie<string>;
-  private readonly folderCount: Map<string, number>;
-  constructor(encoder: PathEncoder) {
-    this.encoder = encoder;
-    this.index = Common.Trie.Trie.newStringTrie();
-    this.folderCount = new Map();
-  }
+  readonly #index = Common.Trie.Trie.newArrayTrie<string[]>();
+  readonly #folderCount = new Map<string, number>();
 
   addFolder(path: Platform.DevToolsPath.UrlString): boolean {
-    if (path.endsWith('/')) {
-      path = Common.ParsedURL.ParsedURL.substring(path, 0, path.length - 1);
-    }
-    const encodedPath = this.encoder.encode(path);
-    this.index.add(encodedPath);
-    const count = this.folderCount.get(encodedPath) || 0;
-    this.folderCount.set(encodedPath, count + 1);
+    const pathParts = this.#removeTrailingSlash(path).split('/');
+    this.#index.add(pathParts);
+
+    const pathForCount = pathParts.join('/');
+    const count = this.#folderCount.get(pathForCount) ?? 0;
+    this.#folderCount.set(pathForCount, count + 1);
     return count === 0;
   }
 
   removeFolder(path: Platform.DevToolsPath.UrlString): boolean {
-    if (path.endsWith('/')) {
-      path = Common.ParsedURL.ParsedURL.substring(path, 0, path.length - 1);
-    }
-    const encodedPath = this.encoder.encode(path);
-    const count = this.folderCount.get(encodedPath) || 0;
+    const pathParts = this.#removeTrailingSlash(path).split('/');
+    const pathForCount = pathParts.join('/');
+    const count = this.#folderCount.get(pathForCount) ?? 0;
     if (!count) {
       return false;
     }
     if (count > 1) {
-      this.folderCount.set(encodedPath, count - 1);
+      this.#folderCount.set(pathForCount, count - 1);
       return false;
     }
-    this.index.remove(encodedPath);
-    this.folderCount.delete(encodedPath);
+    this.#index.remove(pathParts);
+    this.#folderCount.delete(pathForCount);
     return true;
   }
 
   closestParentFolder(path: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
-    const encodedPath = this.encoder.encode(path);
-    const commonPrefix = this.index.longestPrefix(encodedPath, true);
-    return this.encoder.decode(commonPrefix) as Platform.DevToolsPath.UrlString;
+    const pathParts = path.split('/');
+    const commonPrefix = this.#index.longestPrefix(pathParts, /* fullWordOnly */ true);
+    return commonPrefix.join('/') as Platform.DevToolsPath.UrlString;
+  }
+
+  #removeTrailingSlash(path: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
+    if (path.endsWith('/')) {
+      return Common.ParsedURL.ParsedURL.substring(path, 0, path.length - 1);
+    }
+    return path;
   }
 }
 

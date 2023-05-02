@@ -89,22 +89,34 @@ UI.ActionRegistration.registerActionExtension({
 const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
 UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistry});
 Common.Settings.settingForTest('flamechartMouseWheelAction').set('zoom');
+
 const params = new URLSearchParams(window.location.search);
 const traceFileName = params.get('trace');
+const cpuprofileName = params.get('cpuprofile');
+const nodeMode = params.get('isNode');
+const isNodeMode = nodeMode === 'true' ? true : false;
 
+const timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: isNodeMode});
+const container = document.getElementById('container');
+if (!container) {
+  throw new Error('could not find container');
+}
+container.innerHTML = '';
+timeline.markAsRoot();
+timeline.show(container);
+
+let fileName;
 if (traceFileName) {
-  const timeline = new Timeline.TimelinePanel.TimelinePanel();
-  const container = document.getElementById('container');
-  if (!container) {
-    throw new Error('could not find container');
-  }
-  container.innerHTML = '';
-  timeline.markAsRoot();
-  timeline.show(container);
-  const traceFile = new URL(`../../../../../test/unittests/fixtures/traces/${traceFileName}.json.gz`, import.meta.url);
-  const response = await fetch(traceFile);
+  fileName = `${traceFileName}.json.gz`;
+} else if (cpuprofileName) {
+  fileName = `${cpuprofileName}.cpuprofile.gz`;
+}
+
+if (fileName) {
+  const file = new URL(`../../../../../test/unittests/fixtures/traces/${fileName}`, import.meta.url);
+  const response = await fetch(file);
   const asBlob = await response.blob();
-  const asFile = new File([asBlob], `${traceFileName}.json.gz`, {
+  const asFile = new File([asBlob], `${fileName}`, {
     type: 'application/gzip',
   });
   void timeline.loadFromFile(asFile);

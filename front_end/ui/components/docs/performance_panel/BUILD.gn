@@ -10,7 +10,6 @@ ts_library("ts") {
   sources = [
     "FlameChartHelpers.ts",
     "basic.ts",
-    "cpuprofile.ts",
     "flamechart.ts",
     "track_example.ts",
   ]
@@ -32,7 +31,6 @@ copy_to_gen("performance_panel") {
   testonly = true
   sources = [
     "basic.html",
-    "cpuprofile.html",
     "flamechart.html",
     "track_example.html",
   ]

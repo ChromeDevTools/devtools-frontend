@@ -1,0 +1,74 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.keybinds-category-header {
+  white-space: nowrap;
+  padding: 0 10px 20px;
+  display: flex;
+}
+
+.keybinds-category-header-text {
+  line-height: 24px;
+  flex: auto;
+  font-weight: bold;
+}
+
+.keybinds-key {
+  padding: 0.1em 0.6em;
+  border: 1px solid var(--color-details-hairline);
+  font-size: 11px;
+  background-color: var(--color-background-elevation-1);
+  color: var(--color-text-primary);
+  box-shadow: var(--box-shadow-outline-color);
+  border-radius: 3px;
+  display: inline-block;
+  margin: 0 0.1em;
+  text-shadow: 0 1px 0 var(--color-background);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.keybinds-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.keybinds-list-item {
+  line-height: 30px;
+  display: flex;
+  padding: 0 10px;
+}
+
+.keybinds-list-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  user-select: none;
+  color: var(--color-text-primary);
+  text-align: start;
+  position: relative;
+  margin-right: 0;
+}
+
+.keybinds-shortcut-separator {
+  white-space: pre-wrap;
+}
+
+.keybinds-action-name {
+  flex: auto;
+  padding-right: 30px;
+}
+
+.keybinds-shortcut {
+  flex: none;
+}
+
+.close-icon {
+  width: 12px;
+  height: 12px;
+  padding-top: 2px;
+}

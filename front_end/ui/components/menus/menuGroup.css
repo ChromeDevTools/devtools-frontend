@@ -1,0 +1,14 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.menu-group-label {
+  margin: 4px 30px 4px 10px;
+  font-size: 12px;
+  line-height: 16px;
+  position: relative;
+  color: var(--color-text-secondary);
+  display: block;
+}

@@ -6,6 +6,7 @@
 const path = require('path');
 const PERFOMANCE_PANEL_INTERACTION_TESTS_PATH =
     path.join(__dirname, '..', '..', '..', 'test', 'interactions', 'panels', 'performance');
+const UI_COMPONENTS_PATH = path.join(__dirname, '..', '..', '..', 'test', 'interactions', 'ui', 'components');
 module.exports = {
   meta : {
     type : 'problem',
@@ -23,7 +24,7 @@ module.exports = {
   create : function(context) {
     const fileName = path.resolve(context.getFilename());
     function reportPathIfInvalid(node) {
-      if(!fileName.includes(PERFOMANCE_PANEL_INTERACTION_TESTS_PATH)) {
+      if (!fileName.includes(PERFOMANCE_PANEL_INTERACTION_TESTS_PATH) && !fileName.includes(UI_COMPONENTS_PATH)) {
         context.report({
           node,
           messageId: 'invalidScreenshotTest'

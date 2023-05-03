@@ -47,6 +47,7 @@ const notAScreenshotTestDisabledCode = `describe('Performance panel', () => {
 });`;
 
 const perfPanelInteractionTestsPath = 'test/interactions/panels/performance/';
+const uiInteractionTestsPath = 'test/interactions/ui/components/';
 const notPerfPanelTestPath = 'test/interactions/data_grid/data_grid_test.ts';
 
 ruleTester.run('ban_screenshot_test_outside_perf_panel', rule, {
@@ -54,6 +55,10 @@ ruleTester.run('ban_screenshot_test_outside_perf_panel', rule, {
     {
       code: enabledTestCode,
       filename: `${perfPanelInteractionTestsPath}timeline/timeline_test.ts`,
+    },
+    {
+      code: enabledTestCode,
+      filename: `${uiInteractionTestsPath}/Dialog_test.ts`,
     },
     {
       code: disabledTestCode,

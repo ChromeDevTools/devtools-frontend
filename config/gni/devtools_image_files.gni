@@ -189,6 +189,7 @@ devtools_svg_sources = [
   "screen-rotation.svg",
   "search.svg",
   "securityIcons.svg",
+  "select-arrow-icon.svg",
   "select-element.svg",
   "settings_14x14_icon.svg",
   "shadow.svg",

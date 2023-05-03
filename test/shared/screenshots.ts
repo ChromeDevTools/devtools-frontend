@@ -17,6 +17,8 @@ import {makeCustomWrappedIt} from '../shared/mocha-extensions.js';
 import {
   platform,
   getBrowserAndPages,
+  waitFor,
+  timeout,
 } from '../shared/helper.js';
 
 /**
@@ -324,3 +326,14 @@ function setGeneratedFileAsGolden(golden: string, generated: string) {
 }
 
 export const itScreenshot = makeCustomWrappedIt('[screenshot]:');
+
+export async function waitForDialogAnimationEnd(root?: puppeteer.ElementHandle) {
+  const ANIMATION_TIMEOUT = 2000;
+  const dialog = await waitFor('dialog[open]', root);
+  const animationPromise = dialog.evaluate((dialog: Element) => {
+    return new Promise<void>(resolve => {
+      dialog.addEventListener('animationend', () => resolve(), {once: true});
+    });
+  });
+  await Promise.race([animationPromise, timeout(ANIMATION_TIMEOUT)]);
+}

@@ -1,0 +1,92 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+.show {
+  font-size: 12px;
+  color: var(--color-text-primary);
+  height: 100%;
+  width: 100%;
+  border: none;
+  border-radius: var(--override-select-menu-show-button-border-radius);
+  padding: var(--override-select-menu-show-button-padding, 1px 6px);
+}
+
+.show:focus-visible {
+  outline: 1px auto var(--override-select-menu-show-button-outline, -webkit-focus-ring-color);
+}
+
+#button-label-wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#label {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: fit-content;
+  height: 100%;
+}
+
+#label[witharrow].single-arrow {
+  padding: 0;
+}
+
+#label[witharrow] {
+  padding: var(--override-select-menu-label-with-arrow-padding, 0 10px 0 0);
+  text-align: left;
+}
+
+.single-arrow + span#arrow {
+  margin: 0;
+}
+
+#arrow {
+  mask-image: var(--deploy-menu-arrow);
+  -webkit-mask-image: var(--deploy-menu-arrow);
+  -webkit-mask-position-y: center;
+  margin-left: 5px;
+  width: 8px;
+  flex-shrink: 0;
+  height: 4px;
+  display: inline-block;
+  -webkit-mask-repeat: no-repeat;
+  background-color: var(--override-throttling-icon-and-text-color, var(--override-select-menu-arrow-color, var(--color-text-primary)));
+  transform: rotate(var(--arrow-angle));
+  transform-origin: center;
+  mask-repeat: no-repeat;
+  transition: 200ms;
+}
+
+.single-arrow {
+  border-radius: 0 3px 3px 0;
+  border: 1px solid var(--override-select-menu-border, var(--color-background-elevation-2));
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button[aria-expanded="true"] #arrow {
+  transform: rotate(calc(var(--arrow-angle) + 180deg));
+}
+
+button {
+  background: none;
+}
+
+button[disabled] {
+  color: var(--color-input-outline-disabled);
+}

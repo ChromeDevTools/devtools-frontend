@@ -1,0 +1,53 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.menu-item {
+  padding: 4px 30px 4px calc(10px + var(--menu-checkmark-width));
+  font-size: 12px;
+  line-height: 16px;
+  position: relative;
+  display: block;
+  color: var(--color-text-primary);
+}
+
+.menu-item:focus {
+  outline: none;
+}
+
+:host(:not(:first-child)) .menu-item {
+  border-top: var(--override-divider-line);
+}
+
+:host-context(devtools-menu-group) .menu-item {
+  padding: 4px 30px 4px 36px;
+}
+
+.is-selected-item::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+  width: calc(var(--menu-checkmark-width) - 10px);
+  height: var(--menu-checkmark-height);
+  mask-image: var(--selected-item-check);
+  -webkit-mask-image: var(--selected-item-check);
+  background: var(--color-text-secondary);
+}
+
+:host(:hover:not(.prevents-close)) .menu-item,
+:host(:focus-visible:not(.prevents-close)) .menu-item {
+  background: var(--color-background-elevation-2);
+}
+
+:host(:focus) {
+  outline: none;
+}

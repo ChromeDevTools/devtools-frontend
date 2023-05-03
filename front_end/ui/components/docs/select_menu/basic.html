@@ -1,0 +1,45 @@
+<!--
+  Copyright 2023 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Select menu example</title>
+  <style>
+    #root {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .place-holder {
+      display: flex;
+      align-items: center;
+      margin: 20px;
+      justify-content: center;
+      flex-direction: column;
+      width: 130px;
+      height: 290px;
+    }
+    #place-holder-4 {
+      height: 400px;
+    }
+    devtools-select-menu {
+      display: block;
+      height: 25px;
+      width: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script src="./basic.js" type="module"></script>
+</body>
+
+</html>

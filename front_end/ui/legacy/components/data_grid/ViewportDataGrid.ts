@@ -214,6 +214,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
       node.revealed = true;
       previousElement = element;
     }
+    (this.selectedNode?.elementInternal?.firstElementChild as HTMLElement)?.focus();
 
     this.setVerticalPadding(viewportState.topPadding, viewportState.bottomPadding);
     this.lastScrollTop = scrollTop;

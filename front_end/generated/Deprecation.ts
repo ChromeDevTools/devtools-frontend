@@ -215,6 +215,10 @@ export const UIStrings = {
    */
   V8SharedArrayBufferConstructedInExtensionWithoutIsolation: "Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.",
   /**
+   * @description Warning displayed to developers when the Web SQL API is used to let them know this API is deprecated.
+   */
+  WebSQL: "Web SQL is deprecated. Please use SQLite WebAssembly or Indexed Database",
+  /**
    * @description A deprecation warning shown in the DevTools Issues tab. 'window-placement' and 'window-management' are the name of the javascript descriptors (do not translate). The warning is shown when web pages attempt to use 'window-placement' in permission APIs (e.g. navigator.permissions.query(...))
    */
   WindowPlacementPermissionDescriptorUsed: "The permission descriptor `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename.",
@@ -350,6 +354,10 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "milestone": 96
+  },
+  "WebSQL": {
+    "chromeStatusFeature": 5134293578285056,
+    "milestone": 115
   },
   "WindowPlacementPermissionDescriptorUsed": {
     "chromeStatusFeature": 5137018030391296,

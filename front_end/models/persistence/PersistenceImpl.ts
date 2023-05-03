@@ -388,21 +388,6 @@ export type EventTypes = {
   [Events.BindingRemoved]: PersistenceBinding,
 };
 
-export class PathEncoder {
-  private readonly encoder: Common.CharacterIdMap.CharacterIdMap<string>;
-  constructor() {
-    this.encoder = new Common.CharacterIdMap.CharacterIdMap();
-  }
-
-  encode(path: string): string {
-    return path.split('/').map(token => this.encoder.toChar(token)).join('');
-  }
-
-  decode(path: string): string {
-    return path.split('').map(token => this.encoder.fromChar(token)).join('/');
-  }
-}
-
 export class PersistenceBinding {
   network: Workspace.UISourceCode.UISourceCode;
   fileSystem: Workspace.UISourceCode.UISourceCode;

@@ -229,8 +229,7 @@ describeWithLocale('RequestLinkIcon', () => {
 
       resolver.resolve(mockRequest as unknown as SDK.NetworkRequest.NetworkRequest);
 
-      await new Promise(r => setTimeout(r));  // Drain Microtask queue to get the cooridnator.write posted.
-      await coordinator.done();
+      await coordinator.done({waitForWork: true});
 
       const {containerClasses: containerClassesAfter} = extractData(shadowRoot);
       assert.include(containerClassesAfter, 'link');
@@ -249,8 +248,7 @@ describeWithLocale('RequestLinkIcon', () => {
 
       resolver.resolve(mockRequest as unknown as SDK.NetworkRequest.NetworkRequest);
 
-      await new Promise(r => setTimeout(r));  // Drain Microtask queue to get the cooridnator.write posted.
-      await coordinator.done();
+      await coordinator.done({waitForWork: true});
 
       const {label: labelAfter} = extractData(shadowRoot);
       assert.strictEqual(labelAfter, 'baz');
@@ -269,8 +267,7 @@ describeWithLocale('RequestLinkIcon', () => {
 
       resolver.resolve(mockRequest as unknown as SDK.NetworkRequest.NetworkRequest);
 
-      await new Promise(r => setTimeout(r));  // Drain Microtask queue to get the cooridnator.write posted.
-      await coordinator.done();
+      await coordinator.done({waitForWork: true});
 
       const {iconData: iconDataAfter} = extractData(shadowRoot);
       assert.strictEqual(iconDataAfter.color, 'var(--icon-link)');
@@ -304,8 +301,7 @@ describeWithLocale('RequestLinkIcon', () => {
 
       resolver.resolve(mockRequest2 as unknown as SDK.NetworkRequest.NetworkRequest);
 
-      await new Promise(r => setTimeout(r));  // Drain Microtask queue to get the cooridnator.write posted.
-      await coordinator.done();
+      await coordinator.done({waitForWork: true});
 
       const {label: labelAfter} = extractData(shadowRoot);
       assert.strictEqual(labelAfter, 'baz');

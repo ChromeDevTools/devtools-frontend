@@ -140,8 +140,7 @@ describeWithRealConnection('FrameDetailsView', () => {
     };
 
     assertShadowRoot(component.shadowRoot);
-    await coordinator.done();
-    await coordinator.done();  // 2nd call awaits async render
+    await coordinator.done({waitForWork: true});
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
@@ -219,8 +218,7 @@ describeWithRealConnection('FrameDetailsView', () => {
     };
 
     assertShadowRoot(component.shadowRoot);
-    await coordinator.done();
-    await coordinator.done();  // 2nd call awaits async render
+    await coordinator.done({waitForWork: true});
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [

@@ -56,8 +56,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     };
 
     assertShadowRoot(component.shadowRoot);
-    await coordinator.done();
-    await coordinator.done();  // 2nd call awaits async render
+    await coordinator.done({waitForWork: true});
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
@@ -82,8 +81,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     component.data = {} as ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataViewData;
 
     assertShadowRoot(component.shadowRoot);
-    await coordinator.done();
-    await coordinator.done();  // 2nd call awaits async render
+    await coordinator.done({waitForWork: true});
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
@@ -115,8 +113,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     component.resetBudgetHandler = resetBudgetHandlerSpy;
 
     assertShadowRoot(component.shadowRoot);
-    await coordinator.done();
-    await coordinator.done();  // 2nd call awaits async render
+    await coordinator.done({waitForWork: true});
 
     const resetButtonComponent = component.shadowRoot.querySelector('devtools-shared-storage-reset-budget-button');
     assertElement(resetButtonComponent, HTMLElement);

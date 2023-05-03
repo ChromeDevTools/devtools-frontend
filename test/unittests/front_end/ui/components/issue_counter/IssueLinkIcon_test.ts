@@ -169,8 +169,7 @@ describeWithLocale('IssueLinkIcon', () => {
 
       resolver.resolve(mockIssue as unknown as IssuesManager.Issue.Issue);
 
-      await new Promise(r => setTimeout(r));  // Drain Microtask queue to get the cooridnator.write posted.
-      await coordinator.done();
+      await coordinator.done({waitForWork: true});
 
       const {containerClasses: containerClassesAfter} = extractData(shadowRoot);
       assert.include(containerClassesAfter, 'link');
@@ -188,8 +187,7 @@ describeWithLocale('IssueLinkIcon', () => {
 
       resolver.resolve(mockIssue as unknown as IssuesManager.Issue.Issue);
 
-      await new Promise(r => setTimeout(r));  // Drain Microtask queue to get the cooridnator.write posted.
-      await coordinator.done();
+      await coordinator.done({waitForWork: true});
 
       const {iconData: iconDataAfter} = extractData(shadowRoot);
       assert.strictEqual(iconDataAfter.color, pageErrorIcon.color);
@@ -213,8 +211,7 @@ describeWithLocale('IssueLinkIcon', () => {
         issue: mockIssue2 as unknown as IssuesManager.Issue.Issue,
       };
 
-      await new Promise(r => setTimeout(r));  // Drain Microtask queue to get the cooridnator.write posted.
-      await coordinator.done();
+      await coordinator.done({waitForWork: true});
 
       const {iconData: iconDataAfter} = extractData(shadowRoot);
       assert.strictEqual(iconDataAfter.color, breakingChangeIcon.color);

@@ -102,8 +102,8 @@ export class RenderCoordinator extends EventTarget {
     return this.#pendingWorkFrames.length;
   }
 
-  done(): Promise<void> {
-    if (this.#pendingWorkFrames.length === 0) {
+  done(options?: {waitForWork: boolean}): Promise<void> {
+    if (this.#pendingWorkFrames.length === 0 && !options?.waitForWork) {
       this.#logIfEnabled('[Queue empty]');
       return Promise.resolve();
     }

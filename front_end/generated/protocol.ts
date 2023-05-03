@@ -915,31 +915,6 @@ export namespace Audits {
     type: SharedArrayBufferIssueType;
   }
 
-  export const enum TwaQualityEnforcementViolationType {
-    KHttpError = 'kHttpError',
-    KUnavailableOffline = 'kUnavailableOffline',
-    KDigitalAssetLinks = 'kDigitalAssetLinks',
-  }
-
-  export interface TrustedWebActivityIssueDetails {
-    /**
-     * The url that triggers the violation.
-     */
-    url: string;
-    violationType: TwaQualityEnforcementViolationType;
-    httpStatusCode?: integer;
-    /**
-     * The package name of the Trusted Web Activity client app. This field is
-     * only used when violation type is kDigitalAssetLinks.
-     */
-    packageName?: string;
-    /**
-     * The signature of the Trusted Web Activity client app. This field is only
-     * used when violation type is kDigitalAssetLinks.
-     */
-    signature?: string;
-  }
-
   export interface LowTextContrastIssueDetails {
     violatingNodeId: DOM.BackendNodeId;
     violatingNodeSelector: string;
@@ -1137,7 +1112,6 @@ export namespace Audits {
     HeavyAdIssue = 'HeavyAdIssue',
     ContentSecurityPolicyIssue = 'ContentSecurityPolicyIssue',
     SharedArrayBufferIssue = 'SharedArrayBufferIssue',
-    TrustedWebActivityIssue = 'TrustedWebActivityIssue',
     LowTextContrastIssue = 'LowTextContrastIssue',
     CorsIssue = 'CorsIssue',
     AttributionReportingIssue = 'AttributionReportingIssue',
@@ -1162,7 +1136,6 @@ export namespace Audits {
     heavyAdIssueDetails?: HeavyAdIssueDetails;
     contentSecurityPolicyIssueDetails?: ContentSecurityPolicyIssueDetails;
     sharedArrayBufferIssueDetails?: SharedArrayBufferIssueDetails;
-    twaQualityEnforcementDetails?: TrustedWebActivityIssueDetails;
     lowTextContrastIssueDetails?: LowTextContrastIssueDetails;
     corsIssueDetails?: CorsIssueDetails;
     attributionReportingIssueDetails?: AttributionReportingIssueDetails;

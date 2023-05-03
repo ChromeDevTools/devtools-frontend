@@ -17,7 +17,7 @@ import {
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Common from '../../core/common/common.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import {buildGroupStyle, buildTrackHeader, getFirstFitLevel, getFormattedTime} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getAsyncEventLevel, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
@@ -117,7 +117,7 @@ export class InteractionsTrackAppender implements TrackAppender {
     const lastUsedTimeByLevel: number[] = [];
     for (let i = 0; i < interactions.length; ++i) {
       const event = interactions[i];
-      const level = getFirstFitLevel(event, lastUsedTimeByLevel);
+      const level = getAsyncEventLevel(event, lastUsedTimeByLevel);
       this.#appendEventAtLevel(event, trackStartLevel + level);
     }
     this.#legacyEntryTypeByLevel.length = trackStartLevel + lastUsedTimeByLevel.length;

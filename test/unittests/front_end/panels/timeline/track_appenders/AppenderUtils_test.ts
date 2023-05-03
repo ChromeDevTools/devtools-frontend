@@ -85,7 +85,7 @@ describeWithEnvironment('AppenderUtils', () => {
     });
   });
 
-  describe('getFirstFitLevel', () => {
+  describe('getAsyncEventLevel', () => {
     it('returns the level correctly', async () => {
       const lastUsedTimeByLevel: number[] = [];
       const eventOne = {
@@ -104,17 +104,59 @@ describeWithEnvironment('AppenderUtils', () => {
         dur: TraceEngine.Types.Timing.MicroSeconds(10),
       };
 
-      let level = Timeline.AppenderUtils.getFirstFitLevel(eventOne, lastUsedTimeByLevel);
+      let level = Timeline.AppenderUtils.getAsyncEventLevel(eventOne, lastUsedTimeByLevel);
       // For first event, the track is empty, so it always returns 0.
       assert.strictEqual(level, 0);
 
-      level = Timeline.AppenderUtils.getFirstFitLevel(eventTwo, lastUsedTimeByLevel);
+      level = Timeline.AppenderUtils.getAsyncEventLevel(eventTwo, lastUsedTimeByLevel);
       // For eventTwo, its start time is smaller than eventOne's end time, so it should be appended to level 1.
       assert.strictEqual(level, 1);
 
-      level = Timeline.AppenderUtils.getFirstFitLevel(eventThree, lastUsedTimeByLevel);
+      level = Timeline.AppenderUtils.getAsyncEventLevel(eventThree, lastUsedTimeByLevel);
       // For eventThree, it doesn't overlap with eventOne, so it can fit in level 0.
       assert.strictEqual(level, 0);
+    });
+  });
+
+  describe('getSyncEventLevel', () => {
+    it('returns the level correctly', async () => {
+      const openEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
+      const eventOne = {
+        ...defaultTraceEvent,
+        ts: TraceEngine.Types.Timing.MicroSeconds(0),
+        dur: TraceEngine.Types.Timing.MicroSeconds(30),
+      };
+      const eventTwo = {
+        ...defaultTraceEvent,
+        ts: TraceEngine.Types.Timing.MicroSeconds(5),
+        dur: TraceEngine.Types.Timing.MicroSeconds(10),
+      };
+      const eventThree = {
+        ...defaultTraceEvent,
+        ts: TraceEngine.Types.Timing.MicroSeconds(10),
+        dur: TraceEngine.Types.Timing.MicroSeconds(2),
+      };
+      const eventFour = {
+        ...defaultTraceEvent,
+        ts: TraceEngine.Types.Timing.MicroSeconds(20),
+        dur: TraceEngine.Types.Timing.MicroSeconds(10),
+      };
+
+      let level = Timeline.AppenderUtils.getSyncEventLevel(eventOne, openEvents);
+      // For first event, the track is empty, so it always returns 0.
+      assert.strictEqual(level, 0);
+
+      level = Timeline.AppenderUtils.getSyncEventLevel(eventTwo, openEvents);
+      // For eventTwo, its time is a subset of the eventOne, so it will be append as eventOne's child.
+      assert.strictEqual(level, 1);
+
+      level = Timeline.AppenderUtils.getSyncEventLevel(eventThree, openEvents);
+      // For eventTwo, its time is a subset of the eventTwo, so it will be append as eventTwo's child.
+      assert.strictEqual(level, 2);
+
+      level = Timeline.AppenderUtils.getSyncEventLevel(eventFour, openEvents);
+      // For eventFour, its time is a subset of eventOne but not eventTwo, so it will be append as eventTwo's child.
+      assert.strictEqual(level, 1);
     });
   });
 });

@@ -17,7 +17,7 @@ import {
   InstantEventVisibleDurationMs,
   type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getFormattedTime, getSyncEventLevel} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
@@ -102,25 +102,13 @@ export class GPUTrackAppender implements TrackAppender {
   #appendGPUsAtLevel(trackStartLevel: number): number {
     const gpuEvents = this.#traceParsedData.GPU.mainGPUThreadTasks;
 
-    const openEvents = [];
+    const openEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
     let maxStackDepth = 0;
     for (let i = 0; i < gpuEvents.length; ++i) {
       const event = gpuEvents[i];
-      while (openEvents.length) {
-        const lastOpenEvent = openEvents[openEvents.length - 1];
-        const lastOpenEventEndTime = lastOpenEvent.ts + (lastOpenEvent.dur || 0);
-        if (lastOpenEventEndTime <= event.ts) {
-          openEvents.pop();
-        } else {
-          break;
-        }
-      }
-
-      const level = trackStartLevel + openEvents.length;
-      this.#appendEventAtLevel(event, level);
-
-      maxStackDepth = Math.max(maxStackDepth, openEvents.length + 1);
-      openEvents.push(event);
+      const level = getSyncEventLevel(event, openEvents);
+      maxStackDepth = Math.max(maxStackDepth, level + 1);
+      this.#appendEventAtLevel(event, trackStartLevel + level);
     }
 
     this.#legacyEntryTypeByLevel.length = trackStartLevel + maxStackDepth;

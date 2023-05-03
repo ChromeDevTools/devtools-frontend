@@ -64,7 +64,7 @@ describeWithEnvironment('AppenderUtils', () => {
     it('returns the time info for given total time correctly', async () => {
       const totalTime = TraceEngine.Types.Timing.MicroSeconds(10000);
       const formattedTime = Timeline.AppenderUtils.getFormattedTime(totalTime);
-      // The i18n encondes spaces using the u00A0 unicode character.
+      // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(formattedTime, '10.00\u00A0ms');
     });
 
@@ -72,7 +72,7 @@ describeWithEnvironment('AppenderUtils', () => {
       const totalTime = TraceEngine.Types.Timing.MicroSeconds(10000);
       const selfTime = TraceEngine.Types.Timing.MicroSeconds(1000);
       const formattedTime = Timeline.AppenderUtils.getFormattedTime(totalTime, selfTime);
-      // The i18n encondes spaces using the u00A0 unicode character.
+      // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(formattedTime, '10.00\u00A0ms (self 1.00\u00A0ms)');
     });
 
@@ -80,7 +80,7 @@ describeWithEnvironment('AppenderUtils', () => {
       const totalTime = TraceEngine.Types.Timing.MicroSeconds(10000);
       const selfTime = TraceEngine.Types.Timing.MicroSeconds(10000);
       const formattedTime = Timeline.AppenderUtils.getFormattedTime(totalTime, selfTime);
-      // The i18n encondes spaces using the u00A0 unicode character.
+      // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(formattedTime, '10.00\u00A0ms');
     });
   });

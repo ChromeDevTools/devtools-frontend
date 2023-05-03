@@ -249,14 +249,14 @@ describeWithEnvironment('TimingTrackAppender', function() {
     it('returns the info for a performance.measure calls correctly', () => {
       const performanceMeasures = traceParsedData.UserTimings.performanceMeasures;
       const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(performanceMeasures[0]);
-      // The i18n encondes spaces using the u00A0 unicode character.
+      // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(highlightedEntryInfo.formattedTime, ('500.07\u00A0ms'));
     });
 
     it('returns the info for a console.time calls correctly', () => {
       const consoleTimings = traceParsedData.UserTimings.consoleTimings;
       const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(consoleTimings[0]);
-      // The i18n encondes spaces using the u00A0 unicode character.
+      // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(highlightedEntryInfo.formattedTime, ('1.60\u00A0s'));
     });
   });

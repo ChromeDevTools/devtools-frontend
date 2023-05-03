@@ -101,7 +101,7 @@ describeWithEnvironment('GPUTrackAppender', () => {
     it('returns the info for a entry correctly', () => {
       const gpuEvents = traceParsedData.GPU.mainGPUThreadTasks;
       const highlightedEntryInfo = gpuTrackAppender.highlightedEntryInfo(gpuEvents[0]);
-      // The i18n encondes spaces using the u00A0 unicode character.
+      // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(highlightedEntryInfo.formattedTime, '52.37\u00A0ms');
     });
   });

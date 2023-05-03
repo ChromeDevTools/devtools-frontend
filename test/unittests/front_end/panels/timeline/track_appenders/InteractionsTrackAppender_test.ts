@@ -159,7 +159,7 @@ describeWithEnvironment('InteractionsTrackAppender', () => {
         await renderTrackAppender('slow-interaction-button-click.json.gz');
     const firstInteraction = traceParsedData.UserInteractions.interactionEvents[0];
     const highlightedEntryInfo = interactionsTrackAppender.highlightedEntryInfo(firstInteraction);
-    // The i18n encondes spaces using the u00A0 unicode character.
+    // The i18n encodes spaces using the u00A0 unicode character.
     assert.strictEqual(highlightedEntryInfo.formattedTime, ('31.72\u00A0ms'));
   });
 });

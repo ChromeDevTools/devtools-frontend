@@ -104,7 +104,7 @@ export class InteractionsTrackAppender implements TrackAppender {
 
   /**
    * Adds into the flame chart data the trace events dispatched by the
-   * performace.measure API. These events are taken from the UserInteractions
+   * performance.measure API. These events are taken from the UserInteractions
    * handler.
    * @param currentLevel the flame chart level from which interactions will
    * be appended.

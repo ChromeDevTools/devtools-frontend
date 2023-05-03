@@ -147,7 +147,7 @@ export const enum PlayerPropertyKeys {
   Bitrate = 'kBitrate',
   MaxDuration = 'kMaxDuration',
   StartTime = 'kStartTime',
-  IsVideoEncrypted = 'kIsVideoEncrypted',
+  IsCdmAttached = 'kIsCdmAttached',
   IsStreaming = 'kIsStreaming',
   FrameUrl = 'kFrameUrl',
   FrameTitle = 'kFrameTitle',

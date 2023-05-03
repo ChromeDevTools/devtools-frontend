@@ -561,7 +561,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       new ShadowSwatchPopoverHelper(this, swatchPopoverHelper, cssShadowSwatch);
       const colorSwatch = cssShadowSwatch.colorSwatch();
       if (colorSwatch) {
-        new ColorSwatchPopoverIcon(this, swatchPopoverHelper, colorSwatch);
+        const swatchIcon = new ColorSwatchPopoverIcon(this, swatchPopoverHelper, colorSwatch);
+        swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.ColorChanged, ev => {
+          // TODO(crbug.com/1402233): Is it really okay to dispatch an event from `Swatch` here?
+          colorSwatch.dispatchEvent(new InlineEditor.ColorSwatch.ColorChangedEvent(ev.data));
+        });
+        colorSwatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, () => {
+          void this.applyStyleText(this.renderedPropertyText(), false);
+        });
       }
       container.appendChild(cssShadowSwatch);
     }

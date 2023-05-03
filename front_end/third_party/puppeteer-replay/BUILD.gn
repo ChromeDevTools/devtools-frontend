@@ -1,0 +1,37 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../devtools-frontend/scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../devtools-frontend/scripts/build/ninja/devtools_pre_built.gni")
+
+EXCLUDED_SOURCES = [
+  "package/lib/cli.js",
+  "package/lib/main.cjs",
+  "package/lib/extension-test.js",
+]
+
+SOURCES = [
+  "package/lib/cjs/main.d.ts",
+  "package/lib/cli.js.map",
+  "package/lib/extension-test.js",
+  "package/lib/extension-test.js.map",
+  "package/lib/main.d.ts",
+  "package/lib/main.js",
+  "package/lib/main.js.map",
+  "puppeteer-replay-tsconfig.json",
+]
+
+devtools_pre_built("puppeteer-replay") {
+  sources_are_release = false
+
+  sources = filter_exclude(SOURCES, EXCLUDED_SOURCES)
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "puppeteer-replay.ts"
+
+  deps = [ ":puppeteer-replay" ]
+
+  visibility = [ "../../panels/recorder/*" ]
+}

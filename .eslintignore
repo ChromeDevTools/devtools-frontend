@@ -25,6 +25,8 @@ front_end/third_party/lighthouse/*/
 front_end/third_party/codemirror.next/bundle.ts
 // Lit lib files are auto-generated and rolled up as part of the install script.
 front_end/third_party/lit/src/*.ts
+// @puppeteer/replay is auto-generated.
+front_end/third_party/puppeteer-replay/**/*.ts
 
 node_modules
 scripts/migration/**/*.js

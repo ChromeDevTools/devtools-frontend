@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": ["package/lib/main.js"]
+}

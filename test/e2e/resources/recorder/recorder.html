@@ -1,0 +1,82 @@
+<!--
+  Copyright 2020 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<div>
+  <button id="mouse-button">Mouse click button</button>
+  <button id="test">Test Button</button>
+  <form id="form1">
+    <button id="form-button" type="submit">Form Button</button>
+  </form>
+  <div id="form1-result"></div>
+  <form class="form2">
+    <button><span id="span">Hello World</span></button>
+  </form>
+  <form>
+    <div><span id="span2">Hello</span> World</div>
+  </form>
+  <label for="input">Input</label>
+  <form><input id="input" /></form>
+  <a id="shadow-root" role="link">Hello&nbsp;</a>
+  <iframe id="iframe"></iframe>
+  <button id="popup">Open Popup</button>
+  <a href="recorder2.html">Page 2</a>
+  <button id="synthetic">Trigger Synthetic Event</button>
+  <button id="synthetic-handler">Synthetic Event Handler</button>
+  <button id="selector-attribute" data-devtools-test="selector-attribute">
+    Custom selector attribute
+  </button>
+</div>
+<script>
+  document
+    .getElementById('mouse-button')
+    .addEventListener('mouseup', (event) => event.preventDefault());
+  window.addEventListener('submit', (event) => {
+    if (!event.target.classList.contains('submittable')) {
+      event.preventDefault();
+    }
+  });
+  const link = document.getElementById('shadow-root');
+  const span1 = document.createElement('span');
+  link.append(span1);
+  const shadow = span1.attachShadow({ mode: 'open' });
+  const span2 = document.createElement('span');
+  span2.id = 'inner-span';
+  span2.textContent = 'World';
+  shadow.append(span2);
+
+  const iframe = document.getElementById('iframe');
+  const button = document.createElement('button');
+  button.textContent = 'iframe button';
+  button.id = 'in-iframe';
+  iframe.contentDocument.body.append(button);
+
+  const innerIframe = document.createElement('iframe');
+  const innerIframeButton = document.createElement('button');
+  innerIframeButton.textContent = 'Inner iframe button';
+  innerIframeButton.id = 'inner-iframe';
+  iframe.contentDocument.body.append(innerIframe);
+  innerIframe.contentDocument.body.append(innerIframeButton);
+
+  document.getElementById('popup').addEventListener('click', () => {
+    window.open(
+      'popup.html',
+      'Window Name ' + new Date(),
+      'resizable,scrollbars,status,width=200,height=200'
+    );
+  });
+
+  document.getElementById('synthetic').addEventListener('click', () => {
+    const handler = document.getElementById('synthetic-handler');
+    handler.addEventListener('click', () => {
+      console.log('synthetic event handled');
+    });
+    const event = new Event('click');
+    handler.dispatchEvent(event);
+  });
+
+  document.getElementById('form1').addEventListener('submit', () => {
+    document.getElementById('form1-result').textContent = 'From 1 Submitted';
+  });
+</script>

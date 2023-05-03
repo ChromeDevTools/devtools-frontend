@@ -1,0 +1,33 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import(
+    "../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("extensions") {
+  sources = [ "ExtensionManager.ts" ]
+
+  deps = [
+    "../../../core/common:bundle",
+    "../../../models/extensions:bundle",
+  ]
+
+  public_deps = []
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "extensions.ts"
+
+  deps = [ ":extensions" ]
+
+  visibility = [
+    ":*",
+    "../:*",
+    "../components:*",
+    "../converters:*",
+    "../../../../test/unittests/front_end/panels/recorder/*",
+    "../../../ui/components/docs/*",
+  ]
+}

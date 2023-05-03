@@ -88,6 +88,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/*",
     "../../ui/components/docs/performance_panel/*",
     "../js_profiler/*",
+    "../recorder/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../input/*",

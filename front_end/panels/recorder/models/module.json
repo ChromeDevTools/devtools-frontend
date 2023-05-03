@@ -1,0 +1,10 @@
+{
+  "dependencies": [
+    "ui/legacy",
+    "models/persistence",
+    "panels/accessibility",
+    "panels/elements",
+    "third_party/puppeteer"
+  ],
+  "resources": []
+}

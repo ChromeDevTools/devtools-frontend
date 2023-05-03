@@ -123,6 +123,7 @@ devtools_entrypoint("bundle") {
     "../../ui/components/docs/elements_breadcrumbs/*",
     "../../ui/components/docs/flexbox_editor/*",
     "../../ui/components/docs/layout_pane/*",
+    "../../panels/recorder/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../network/*",

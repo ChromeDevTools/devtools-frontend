@@ -1,0 +1,22 @@
+<!--
+  Copyright 2023 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<script>
+  class CustomElement extends HTMLElement {
+    constructor() {
+      super();
+      const shadow = this.attachShadow({ mode: 'open' });
+      shadow.innerHTML = `<button id="test">Click me</button>`;
+    }
+  }
+  customElements.define('custom-element', CustomElement);
+
+  function addMore() {
+    setTimeout(() => {
+      document.body.append(new CustomElement());
+    }, 100);
+  }
+</script>
+<custom-element onclick="addMore();"></custom-element>

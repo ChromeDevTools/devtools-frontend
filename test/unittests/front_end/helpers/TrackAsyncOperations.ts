@@ -16,7 +16,11 @@ export function startTrackingAsyncActivity() {
   // We are tracking all asynchronous activity but let it run normally during
   // the test.
   stub('requestAnimationFrame', trackingRequestAnimationFrame);
+  // TODO(crbug.com/1442123): figure out why types are wrong.
+  // @ts-ignore
   stub('setTimeout', trackingSetTimeout);
+  // TODO(crbug.com/1442123): figure out why types are wrong.
+  // @ts-ignore
   stub('setInterval', trackingSetInterval);
   stub('requestIdleCallback', trackingRequestIdleCallback);
   stub('cancelAnimationFrame', id => cancelTrackingActivity('a' + id));
@@ -145,6 +149,8 @@ function trackingSetTimeout(arg: TimerHandler, time?: number, ...params: unknown
       activity.pending = false;
       resolve();
     };
+    // TODO(crbug.com/1442123): figure out why types are wrong.
+    // @ts-ignore
     id = original(setTimeout)(activity.runImmediate, time);
     activity.id = 't' + id;
     activity.cancelDelayed = () => {

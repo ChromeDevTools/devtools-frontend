@@ -1,0 +1,252 @@
+{
+  "Recorder UI Record should rename a recording - 1": {
+    "title": "Test with Hello world",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Test Button"],
+          ["#test"],
+          ["xpath///*[@id=\"test\"]"],
+          ["pierce/#test"],
+          ["text/Test Button"]
+        ]
+      }
+    ]
+  },
+  "Recorder UI Record Selector picker should select through the selector picker - 1": {
+    "title": "Test",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html",
+            "title": ""
+          }
+        ],
+        "target": "main",
+        "selectors": [
+          "aria/Test button",
+          "#test-button",
+          "xpath///*[@id=\"test-button\"]",
+          "pierce/#test-button",
+          "text/Test button"
+        ]
+      }
+    ]
+  },
+  "Recorder UI Record Selector picker should select through the selector picker twice - 1": {
+    "title": "Test",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html",
+            "title": ""
+          }
+        ],
+        "target": "main",
+        "selectors": [
+          "aria/Test button",
+          "#test-button",
+          "xpath///*[@id=\"test-button\"]",
+          "pierce/#test-button",
+          "text/Test button"
+        ]
+      }
+    ]
+  },
+  "Recorder UI Record Selector picker should select through the selector picker twice - 2": {
+    "title": "Test",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html",
+            "title": ""
+          }
+        ],
+        "target": "main",
+        "selectors": [
+          "aria/Back to Page 1",
+          "a",
+          "xpath//html/body/a",
+          "pierce/a",
+          "text/Back to Page"
+        ]
+      }
+    ]
+  },
+  "Recorder UI Record Selector picker should select through the selector picker during recording - 1": {
+    "title": "Test",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html",
+            "title": ""
+          }
+        ],
+        "target": "main",
+        "selectors": [
+          "aria/Test button",
+          "#test-button",
+          "xpath///*[@id=\"test-button\"]",
+          "pierce/#test-button",
+          "text/Test button"
+        ]
+      }
+    ]
+  },
+  "Recorder UI Settings should change network settings - 1": {
+    "title": "Test",
+    "steps": [
+      {
+        "type": "emulateNetworkConditions",
+        "download": 50000,
+        "upload": 50000,
+        "latency": 2000
+      },
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Test Button"],
+          ["#test"],
+          ["xpath///*[@id=\"test\"]"],
+          ["pierce/#test"],
+          ["text/Test Button"]
+        ]
+      }
+    ]
+  }
+}

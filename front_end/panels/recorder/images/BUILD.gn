@@ -1,0 +1,39 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import(
+    "../../../../scripts/build/ninja/devtools_pre_built.gni")
+
+image_files = [
+  "abort_icon.svg",
+  "advance_icon.svg",
+  "feedback_icon.svg",
+  "minus_icon.svg",
+  "path_icon.svg",
+  "record_icon.svg",
+  "select_icon.svg",
+  "step_icon.svg",
+  "throttling_icon.svg",
+  "more_icon.svg",
+  "extension_icon.svg",
+  "close_icon.svg",
+  "delete_icon.svg",
+  "edit_icon.svg",
+  "export_icon.svg",
+  "import_icon.svg",
+  "play_icon.svg",
+  "plus_icon.svg",
+  "question_icon.svg",
+  "select-arrow-icon.svg",
+  "settings_cog_icon.svg",
+]
+
+devtools_pre_built("images") {
+  sources = []
+  data = []
+  foreach(image, image_files) {
+    sources += [ image ]
+    data += [ "$target_gen_dir/$image" ]
+  }
+}

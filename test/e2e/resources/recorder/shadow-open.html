@@ -1,0 +1,24 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<script>
+  class LoginElement extends HTMLElement {
+    constructor() {
+      super();
+      const shadow = this.attachShadow({ mode: 'open' });
+      shadow.innerHTML = `
+        <p>sss</p>
+        <button>Login</button>
+      `;
+    }
+  }
+  customElements.define('login-element', LoginElement);
+</script>
+<header>
+  <login-element></login-element>
+</header>
+<main>
+  <login-element></login-element>
+</main>

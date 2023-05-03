@@ -1,0 +1,51 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<input id="one" />
+<input id="two" />
+<input id="checkbox" type="checkbox" />
+<input id="color" type="color" />
+<input id="date" type="date" />
+<input id="reset" type="reset" />
+<input id="submit" type="submit" />
+<input id="button" type="button" />
+<input id="datetime-local" type="datetime-local" />
+<input id="email" type="email" />
+<input id="file" type="file" />
+<input id="image" type="image" />
+<input id="month" type="month" />
+<input id="number" type="number" />
+<input id="password" type="password" />
+<input id="radio" type="radio" />
+<input id="range" type="range" />
+<input id="search" type="search" />
+<input id="time" type="time" />
+<input id="url" type="url" />
+<input id="week" type="week" />
+<input id="prefilled" value="abc" />
+<input id="partially-prefilled" value="abc" />
+<input id="to-be-modified" />
+<input id="contiguous-field-1" type="text" />
+<input id="contiguous-field-2" type="text" />
+<pre id="log"></pre>
+<script>
+  window.addEventListener('input', (e) => {
+    log.innerText += e.target.id + ':' + e.target.value + '\n';
+  });
+  window.addEventListener('mousedown', (e) => {
+    if (e.target.id === 'to-be-modified') {
+      e.target.id = 'modified';
+    }
+  });
+  document.getElementById('contiguous-field-1').addEventListener(
+    'keydown',
+    (e) => {
+      if (e.target.value === 'something') {
+        document.getElementById('contiguous-field-2').focus();
+      }
+    },
+    true
+  );
+</script>

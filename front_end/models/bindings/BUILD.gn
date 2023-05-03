@@ -61,6 +61,7 @@ devtools_entrypoint("bundle") {
     "../../panels/network/*",
     "../../panels/profiler/*",
     "../../panels/sources/*",
+    "../../panels/recorder/*",
     "../persistence/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents

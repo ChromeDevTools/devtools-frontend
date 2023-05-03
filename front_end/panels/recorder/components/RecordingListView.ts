@@ -1,0 +1,243 @@
+// Copyright 2023 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Models from '../models/models.js';
+import * as Actions from '../recorder-actions.js';  // eslint-disable-line rulesdir/es_modules_import
+
+import recordingListViewStyles from './recordingListView.css.js';
+
+const UIStrings = {
+  /**
+   *@description The title of the page that contains a list of saved recordings that the user has..
+   */
+  savedRecordings: 'Saved recordings',
+  /**
+   * @description The title of the button that leads to create a new recording page.
+   */
+  createRecording: 'Create a new recording',
+  /**
+   * @description The title of the button that is shown next to each of the recordings and that triggers playing of the recording.
+   */
+  playRecording: 'Play recording',
+  /**
+   * @description The title of the button that is shown next to each of the recordings and that triggers deletion of the recording.
+   */
+  deleteRecording: 'Delete recording',
+  /**
+   * @description The title of the row corresponding to a recording. By clicking on the row, the user open the recording for editing.
+   */
+  openRecording: 'Open recording',
+};
+const str_ = i18n.i18n.registerUIStrings(
+    'panels/recorder/components/RecordingListView.ts',
+    UIStrings,
+);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'devtools-recording-list-view': RecordingListView;
+  }
+
+  interface HTMLElementEventMap {
+    openrecording: OpenRecordingEvent;
+    deleterecording: DeleteRecordingEvent;
+  }
+}
+
+export class CreateRecordingEvent extends Event {
+  static readonly eventName = 'createrecording';
+  constructor() {
+    super(CreateRecordingEvent.eventName);
+  }
+}
+
+export class DeleteRecordingEvent extends Event {
+  static readonly eventName = 'deleterecording';
+  constructor(public storageName: string) {
+    super(DeleteRecordingEvent.eventName);
+  }
+}
+
+export class OpenRecordingEvent extends Event {
+  static readonly eventName = 'openrecording';
+  constructor(public storageName: string) {
+    super(OpenRecordingEvent.eventName);
+  }
+}
+
+export class PlayRecordingEvent extends Event {
+  static readonly eventName = 'playrecording';
+  constructor(public storageName: string) {
+    super(PlayRecordingEvent.eventName);
+  }
+}
+
+interface Recording {
+  storageName: string;
+  name: string;
+}
+
+const pathIconUrl = new URL(
+                        '../images/path_icon.svg',
+                        import.meta.url,
+                        )
+                        .toString();
+const playIconUrl = new URL(
+                        '../images/play_icon.svg',
+                        import.meta.url,
+                        )
+                        .toString();
+const deleteIconUrl = new URL(
+                          '../images/delete_icon.svg',
+                          import.meta.url,
+                          )
+                          .toString();
+export class RecordingListView extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-recording-list-view`;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #props: {recordings: Recording[], replayAllowed: boolean} = {
+    recordings: [],
+    replayAllowed: true,
+  };
+
+  connectedCallback(): void {
+    this.#shadow.adoptedStyleSheets = [recordingListViewStyles];
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  set recordings(recordings: Recording[]) {
+    this.#props.recordings = recordings;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  set replayAllowed(value: boolean) {
+    this.#props.replayAllowed = value;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
+  #onCreateClick(): void {
+    this.dispatchEvent(new CreateRecordingEvent());
+  }
+
+  #onDeleteClick(storageName: string, event: Event): void {
+    event.stopPropagation();
+    this.dispatchEvent(new DeleteRecordingEvent(storageName));
+  }
+
+  #onOpenClick(storageName: string, event: Event): void {
+    event.stopPropagation();
+    this.dispatchEvent(new OpenRecordingEvent(storageName));
+  }
+
+  #onPlayRecordingClick(storageName: string, event: Event): void {
+    event.stopPropagation();
+    this.dispatchEvent(new PlayRecordingEvent(storageName));
+  }
+
+  #onKeyDown(storageName: string, event: Event): void {
+    if ((event as KeyboardEvent).key !== 'Enter') {
+      return;
+    }
+    this.#onOpenClick(storageName, event);
+  }
+
+  #stopPropagation(event: Event): void {
+    event.stopPropagation();
+  }
+
+  #render = (): void => {
+    // clang-format off
+    LitHtml.render(
+      LitHtml.html`
+        <div class="wrapper">
+          <div class="header">
+            <h1>${i18nString(UIStrings.savedRecordings)}</h1>
+            <${Buttons.Button.Button.litTagName}
+              .variant=${Buttons.Button.Variant.PRIMARY}
+              @click=${this.#onCreateClick}
+              title=${Models.Tooltip.getTooltipForActions(
+                i18nString(UIStrings.createRecording),
+                Actions.RecorderActions.CreateRecording,
+              )}
+            >
+              ${i18nString(UIStrings.createRecording)}
+            </${Buttons.Button.Button.litTagName}>
+          </div>
+          <div class="table">
+            ${this.#props.recordings.map(recording => {
+              return LitHtml.html`
+                  <div role="button" tabindex="0" aria-label=${i18nString(
+                    UIStrings.openRecording,
+                  )} class="row" @keydown=${this.#onKeyDown.bind(
+                this,
+                recording.storageName,
+              )} @click=${this.#onOpenClick.bind(this, recording.storageName)}>
+                    <div class="icon">
+                      <${IconButton.Icon.Icon.litTagName} .data=${
+                {
+                  iconPath: pathIconUrl,
+                  color: 'var(--color-primary-old)',
+                } as IconButton.Icon.IconData
+              }>
+                      </${IconButton.Icon.Icon.litTagName}>
+                    </div>
+                    <div class="title">${recording.name}</div>
+                    <div class="actions">
+                      ${
+                        this.#props.replayAllowed
+                          ? LitHtml.html`<button title=${i18nString(
+                              UIStrings.playRecording,
+                            )} @keydown=${
+                              this.#stopPropagation
+                            } @click=${this.#onPlayRecordingClick.bind(
+                              this,
+                              recording.storageName,
+                            )}>
+                        <${IconButton.Icon.Icon.litTagName} .data=${
+                              {
+                                iconPath: playIconUrl,
+                                color: 'var(--color-text-primary)',
+                              } as IconButton.Icon.IconData
+                            }>
+                        </${IconButton.Icon.Icon.litTagName}>
+                      </button><div class="divider"></div>`
+                          : ''
+                      }
+                      <button class="delete-recording-button" title=${i18nString(
+                        UIStrings.deleteRecording,
+                      )} @keydown=${
+                this.#stopPropagation
+              } @click=${this.#onDeleteClick.bind(this, recording.storageName)}>
+                        <${IconButton.Icon.Icon.litTagName} .data=${
+                {
+                  iconPath: deleteIconUrl,
+                  color: 'var(--color-text-primary)',
+                } as IconButton.Icon.IconData
+              }>
+                        </${IconButton.Icon.Icon.litTagName}>
+                      </button>
+                    </div>
+                  </div>
+                `;
+            })}
+          </div>
+        </div>
+      `,
+      this.#shadow,
+      { host: this },
+    );
+    // clang-format on
+  };
+}
+
+ComponentHelpers.CustomElements.defineComponent(
+    'devtools-recording-list-view',
+    RecordingListView,
+);

@@ -1,0 +1,96 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+}
+
+:host {
+  display: block;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  color: var(--color-syntax-1);
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size);
+  align-items: center;
+  line-height: 18px;
+  margin-top: 3px;
+}
+
+.row devtools-button {
+  line-height: 1;
+  margin-left: 0.5em;
+}
+
+.separator {
+  margin-right: 0.5em;
+  color: var(--color-text-primary);
+}
+
+.padded {
+  margin-left: 2em;
+}
+
+.padded.double {
+  margin-left: 4em;
+}
+
+.selector-picker {
+  width: 18px;
+  height: 18px;
+}
+
+.inline-button {
+  width: 18px;
+  height: 18px;
+  opacity: 0%;
+  visibility: hidden;
+  transition: opacity 200ms;
+}
+
+.row:focus-within .inline-button,
+.row:hover .inline-button {
+  opacity: 100%;
+  visibility: visible;
+}
+
+.wrapped.row {
+  flex-wrap: wrap;
+}
+
+.gap.row {
+  gap: 5px;
+}
+
+.gap.row devtools-button {
+  margin-left: 0;
+}
+
+.regular-font {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.row-buttons {
+  margin-top: 3px;
+}
+
+.error {
+  margin: 3px 0 6px;
+  padding: 8px 12px;
+  background: var(--color-error-background);
+  color: var(--color-error-text);
+}

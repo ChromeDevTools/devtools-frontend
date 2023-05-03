@@ -150,6 +150,16 @@ module.exports = {
       'rules': {
         'rulesdir/use_private_class_members': 2,
       }
+    },
+    // TODO(crbug/1402569): Remove once LitElement is fully adopted.
+    {
+      'files': ['panels/recorder/**/*.ts'],
+      'rules': {
+        'rulesdir/check_component_naming': 0,
+        'rulesdir/ban_literal_devtools_component_tag_names': 0,
+        // TODO(crbug/1402569): Reenable once https://github.com/microsoft/TypeScript/issues/48885 is closed.
+        'rulesdir/use_private_class_members': 0,
+      }
     }
   ]
 };

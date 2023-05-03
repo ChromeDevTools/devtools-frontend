@@ -1,0 +1,93 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  box-sizing: border-box;
+  font-size: inherit;
+}
+
+.wrapper {
+  padding: 24px;
+  flex: 1;
+}
+
+h1 {
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0.02em;
+  color: var(--color-text-primary);
+  margin: 0;
+  font-weight: normal;
+}
+
+.row-label {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+  display: inline-block;
+  margin-top: 32px;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid var(--color-details-hairline);
+  padding: 12px;
+  background: var(--color-background);
+}
+
+.controls {
+  display: flex;
+}
+
+.error {
+  margin: 16px 0 0;
+  padding: 8px;
+  background: var(--color-error-background);
+  color: var(--color-error-text);
+}
+
+.row-label .link {
+  position: relative;
+  top: 0.25em;
+}
+
+.row-label .link:focus-visible {
+  outline: var(--color-input-outline-active) auto 1px;
+}
+
+.header-wrapper {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  gap: 4px;
+  line-height: 1.1;
+  padding: 4px;
+}
+
+.checkbox-container {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: var(--color-input-outline-active) auto 1px;
+}

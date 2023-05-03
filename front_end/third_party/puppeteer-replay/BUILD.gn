@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../devtools-frontend/scripts/build/ninja/devtools_entrypoint.gni")
-import("../../../devtools-frontend/scripts/build/ninja/devtools_pre_built.gni")
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 EXCLUDED_SOURCES = [
   "package/lib/cli.js",

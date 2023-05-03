@@ -1,0 +1,94 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/copy.gni")
+import(
+    "../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/node.gni")
+
+devtools_module("injected") {
+  sources = [
+    "Logger.ts",
+    "MonotonicArray.ts",
+    "RecordingClient.ts",
+    "SelectorComputer.ts",
+    "SelectorPicker.ts",
+    "Step.ts",
+    "selectors/ARIASelector.ts",
+    "selectors/CSSSelector.ts",
+    "selectors/PierceSelector.ts",
+    "selectors/Selector.ts",
+    "selectors/TextSelector.ts",
+    "selectors/XPath.ts",
+    "util.ts",
+  ]
+
+  visibility = [
+    ":*",
+    "../:*",
+    "../../../../test/interactions/front_end/panels/recorder/*",
+    "../../../../test/unittests/front_end/panels/recorder/*",
+    "../../../ui/components/docs/recorder_injected/*",
+    "../controllers:*",
+    "../models:*",
+  ]
+
+  deps = [
+    "../../../third_party/puppeteer:puppeteer",
+    "../../../third_party/puppeteer-replay:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "injected.ts"
+
+  visibility = [
+    ":*",
+    "../:*",
+    "../../../../test/interactions/panels/recorder/*",
+    "../../../../test/unittests/front_end/panels/recorder/*",
+    "../../../ui/components/docs/recorder_injected/*",
+    "../controllers:*",
+    "../models:*",
+  ]
+
+  deps = [ ":injected" ]
+}
+
+node_action("bundled_library") {
+  script = "node_modules/rollup/dist/bin/rollup"
+
+  _bundled_entrypoint = target_gen_dir + "/injected.js"
+  _output_file_location = target_gen_dir + "/injected.generated.js"
+
+  inputs = [
+    _bundled_entrypoint,
+    "rollup.config.js",
+  ]
+
+  deps = [ ":bundle" ]
+
+  args = [
+    # TODO(crbug.com/1098074): We need to hide warnings that are written stderr,
+    # as Chromium does not process the returncode of the subprocess correctly
+    # and instead looks if `stderr` is empty.
+    "--silent",
+    "--config",
+    rebase_path("rollup.config.js", root_build_dir),
+    "--input",
+    rebase_path(_bundled_entrypoint, root_build_dir),
+    "--file",
+    rebase_path(_output_file_location, root_build_dir),
+  ]
+
+  if (is_debug) {
+    args += [ "--environment DEBUG_INJECTED" ]
+  }
+
+  outputs = [ _output_file_location ]
+  metadata = {
+    grd_files = [ _output_file_location ]
+  }
+}

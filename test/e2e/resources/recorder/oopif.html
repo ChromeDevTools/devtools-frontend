@@ -1,0 +1,11 @@
+<!--
+  Copyright 2021 Google LLC. All rights reserved.
+-->
+<!DOCTYPE html>
+<h1>Navigation in OOPIF iframes</h1>
+<script>
+  const url = new URL('./iframe1.html', document.location);
+  const iframe = document.createElement('iframe');
+  iframe.src = url.toString().replace('localhost', 'devtools.oopif.test');
+  document.body.append(iframe);
+</script>

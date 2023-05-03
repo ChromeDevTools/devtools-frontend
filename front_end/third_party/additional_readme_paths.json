@@ -10,5 +10,6 @@
   "lit",
   "marked",
   "puppeteer",
+  "puppeteer-replay",
   "wasmparser"
 ]

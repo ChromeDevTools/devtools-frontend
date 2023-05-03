@@ -1,0 +1,20 @@
+<!--
+  Copyright 2021 Google LLC. All rights reserved.
+-->
+<!DOCTYPE html>
+<h1>Navigation in top page and iframe at the same time</h1>
+<button>Navigate</button>
+<script>
+  const url = new URL('./iframe1.html', document.location);
+  const iframe = document.createElement('iframe');
+  iframe.src = url.toString().replace('localhost', 'devtools.oopif.test');
+  document.body.append(iframe);
+  document.querySelector('button').onclick = () => {
+    iframe.src = new URL('./iframe2.html', document.location)
+      .toString()
+      .replace('localhost', 'devtools.oopif.test');
+    setTimeout(() => {
+      window.location.href = 'input.html';
+    }, 50);
+  };
+</script>

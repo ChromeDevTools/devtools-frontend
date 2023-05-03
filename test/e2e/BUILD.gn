@@ -45,6 +45,7 @@ node_ts_library("tests") {
     "settings",
     "snippets",
     "sources",
+    "recorder",
     "webaudio",
   ]
 }

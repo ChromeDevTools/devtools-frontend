@@ -1,0 +1,38 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-weight: normal;
+  font-size: inherit;
+}
+
+:host {
+  flex: 1;
+  display: block;
+  overflow: auto;
+}
+
+.wrapper {
+  padding: 24px;
+  background-color: var(--color-background);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fit-content {
+  width: fit-content;
+}
+
+.align-right {
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}

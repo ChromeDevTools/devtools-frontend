@@ -1,0 +1,13 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import(
+    "../../../../../../third_party/typescript/typescript.gni")
+
+ts_library("util") {
+  testonly = true
+  sources = [ "SharedObject_test.ts" ]
+
+  deps = [ "../../../../../../front_end/panels/recorder/util:bundle" ]
+}

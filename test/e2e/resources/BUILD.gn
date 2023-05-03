@@ -32,6 +32,7 @@ group("resources") {
     "sensors",
     "sources",
     "webaudio",
+    "recorder",
   ]
 }
 

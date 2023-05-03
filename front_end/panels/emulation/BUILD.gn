@@ -71,6 +71,7 @@ devtools_entrypoint("bundle") {
     "../elements/*",
     "../lighthouse/*",
     "../settings/emulation/*",
+    "../recorder/*",
   ]
 
   visibility += devtools_panels_visibility

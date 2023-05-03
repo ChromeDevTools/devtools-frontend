@@ -1,0 +1,1433 @@
+{
+  "Recorder should capture the initial page as the url of the first section - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      }
+    ]
+  },
+  "Recorder should capture clicks on buttons - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Test Button"],
+          ["#test"],
+          ["xpath///*[@id=\"test\"]"],
+          ["pierce/#test"],
+          ["text/Test Button"]
+        ]
+      }
+    ]
+  },
+  "Recorder should capture non-primary clicks and double clicks - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Mouse click button"],
+          ["#mouse-button"],
+          ["xpath///*[@id=\"mouse-button\"]"],
+          ["pierce/#mouse-button"],
+          ["text/Mouse click button"]
+        ],
+        "button": "auxiliary"
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Mouse click button"],
+          ["#mouse-button"],
+          ["xpath///*[@id=\"mouse-button\"]"],
+          ["pierce/#mouse-button"],
+          ["text/Mouse click button"]
+        ],
+        "button": "secondary"
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Mouse click button"],
+          ["#mouse-button"],
+          ["xpath///*[@id=\"mouse-button\"]"],
+          ["pierce/#mouse-button"],
+          ["text/Mouse click button"]
+        ],
+        "button": "forward"
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Mouse click button"],
+          ["#mouse-button"],
+          ["xpath///*[@id=\"mouse-button\"]"],
+          ["pierce/#mouse-button"],
+          ["text/Mouse click button"]
+        ],
+        "button": "back"
+      },
+      {
+        "type": "doubleClick",
+        "target": "main",
+        "selectors": [
+          ["aria/Mouse click button"],
+          ["#mouse-button"],
+          ["xpath///*[@id=\"mouse-button\"]"],
+          ["pierce/#mouse-button"],
+          ["text/Mouse click button"]
+        ]
+      }
+    ]
+  },
+  "Recorder should capture clicks on input buttons - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Reset"],
+          ["#reset"],
+          ["xpath///*[@id=\"reset\"]"],
+          ["pierce/#reset"]
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["#submit"],
+          ["xpath///*[@id=\"submit\"]"],
+          ["pierce/#submit"]
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["#button"],
+          ["xpath///*[@id=\"button\"]"],
+          ["pierce/#button"]
+        ]
+      }
+    ]
+  },
+  "Recorder should capture clicks on buttons with custom selector attribute - 1": {
+    "title": "New Recording",
+    "selectorAttribute": "data-devtools-test",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["[data-devtools-test='selector-attribute']"],
+          ["xpath///*[@data-devtools-test=\"selector-attribute\"]"],
+          ["pierce/[data-devtools-test='selector-attribute']"],
+          ["aria/Custom selector attribute"],
+          ["text/Custom selector"]
+        ]
+      }
+    ]
+  },
+  "Recorder should capture Enter key presses on buttons - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Enter"
+      },
+      {
+        "type": "keyUp",
+        "key": "Enter",
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should not capture synthetic events - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Trigger Synthetic Event"],
+          ["#synthetic"],
+          ["xpath///*[@id=\"synthetic\"]"],
+          ["pierce/#synthetic"],
+          ["text/Trigger Synthetic"]
+        ]
+      }
+    ]
+  },
+  "Recorder should capture implicit form submissions - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/form.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/form.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Name:"],
+          ["#name"],
+          ["xpath///*[@id=\"name\"]"],
+          ["pierce/#name"]
+        ]
+      },
+      {
+        "type": "change",
+        "value": "test",
+        "selectors": [
+          ["aria/Name:"],
+          ["#name"],
+          ["xpath///*[@id=\"name\"]"],
+          ["pierce/#name"]
+        ],
+        "target": "main"
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Enter",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/form.html?name=test",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "keyUp",
+        "key": "Enter",
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should capture clicks on submit buttons inside of forms as click steps - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Form Button"],
+          ["#form-button"],
+          ["xpath///*[@id=\"form-button\"]"],
+          ["pierce/#form-button"],
+          ["text/Form Button"]
+        ]
+      }
+    ]
+  },
+  "Recorder should build an ARIA selector for the parent element that is interactive - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Hello World", "aria/[role=\"generic\"]"],
+          ["#span"],
+          ["xpath///*[@id=\"span\"]"],
+          ["pierce/#span"]
+        ]
+      }
+    ]
+  },
+  "Recorder should fall back to a css selector if an element does not have an accessible and interactive parent - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["#span2"],
+          ["xpath///*[@id=\"span2\"]"],
+          ["pierce/#span2"]
+        ]
+      }
+    ]
+  },
+  "Recorder should create an aria selector even if the element is within a shadow root - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["#shadow-root > span", "#inner-span"],
+          [
+            "xpath///*[@id=\"shadow-root\"]/span",
+            "xpath///*[@id=\"inner-span\"]"
+          ],
+          ["pierce/#inner-span"]
+        ]
+      }
+    ]
+  },
+  "Recorder should record clicks on shadow DOM elements with slots containing text nodes only - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/shadow-text-node.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/shadow-text-node.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["custom-button"],
+          ["xpath//html/body/custom-button"],
+          ["pierce/custom-button"]
+        ]
+      }
+    ]
+  },
+  "Recorder should record interactions with elements within iframes - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/iframe button"],
+          ["#in-iframe"],
+          ["xpath///*[@id=\"in-iframe\"]"],
+          ["pierce/#in-iframe"],
+          ["text/iframe button"]
+        ],
+        "frame": [0]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Inner iframe button"],
+          ["#inner-iframe"],
+          ["xpath///*[@id=\"inner-iframe\"]"],
+          ["pierce/#inner-iframe"],
+          ["text/Inner iframe"]
+        ],
+        "frame": [0, 0]
+      }
+    ]
+  },
+  "Recorder should wait for navigations in the generated scripts - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Page 2"],
+          ["a:nth-of-type(2)"],
+          ["xpath//html/body/div/a[2]"],
+          ["pierce/a:nth-of-type(2)"],
+          ["text/Page 2"]
+        ],
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Back to Page 1"],
+          ["a"],
+          ["xpath//html/body/a"],
+          ["pierce/a"],
+          ["text/Back to Page"]
+        ],
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      }
+    ]
+  },
+  "Recorder should capture keyboard events on inputs - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Tab"
+      },
+      {
+        "type": "keyUp",
+        "key": "Tab",
+        "target": "main"
+      },
+      {
+        "type": "change",
+        "value": "1",
+        "selectors": [["#one"], ["xpath///*[@id=\"one\"]"], ["pierce/#one"]],
+        "target": "main"
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Tab"
+      },
+      {
+        "type": "keyUp",
+        "key": "Tab",
+        "target": "main"
+      },
+      {
+        "type": "change",
+        "value": "2",
+        "selectors": [["#two"], ["xpath///*[@id=\"two\"]"], ["pierce/#two"]],
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should capture keyboard events on non-text inputs - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["#color"],
+          ["xpath///*[@id=\"color\"]"],
+          ["pierce/#color"],
+          ["text/#000000"]
+        ]
+      },
+      {
+        "type": "change",
+        "value": "#333333",
+        "selectors": [
+          ["#color"],
+          ["xpath///*[@id=\"color\"]"],
+          ["pierce/#color"],
+          ["text/#000000"]
+        ],
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should capture navigation without change - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Tab"
+      },
+      {
+        "type": "keyUp",
+        "key": "Tab",
+        "target": "main"
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Shift"
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Tab"
+      },
+      {
+        "type": "keyUp",
+        "key": "Tab",
+        "target": "main"
+      },
+      {
+        "type": "keyUp",
+        "key": "Shift",
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should capture a change that causes navigation without blur or change - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/programmatic-navigation-on-keydown.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/programmatic-navigation-on-keydown.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "change",
+        "value": "1",
+        "selectors": [["input"], ["xpath//html/body/input"], ["pierce/input"]],
+        "target": "main"
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Enter",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "keyUp",
+        "key": "Enter",
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should associate events with right navigations - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/multiple-navigations.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/multiple-navigations.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Navigate"],
+          ["button"],
+          ["xpath//html/body/button"],
+          ["pierce/button"],
+          ["text/Navigate"]
+        ],
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+            "title": ""
+          }
+        ]
+      }
+    ]
+  },
+  "Recorder should work for select elements - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/select.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/select.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Select"],
+          ["#select"],
+          ["xpath///*[@id=\"select\"]"],
+          ["pierce/#select"]
+        ]
+      },
+      {
+        "type": "change",
+        "value": "O2",
+        "selectors": [
+          ["aria/Select"],
+          ["#select"],
+          ["xpath///*[@id=\"select\"]"],
+          ["pierce/#select"]
+        ],
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should work for checkbox elements - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/checkbox.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/checkbox.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/checkbox"],
+          ["#checkbox"],
+          ["xpath///*[@id=\"checkbox\"]"],
+          ["pierce/#checkbox"]
+        ]
+      }
+    ]
+  },
+  "Recorder should work for elements modified on mousedown - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["#to-be-modified"],
+          ["xpath///*[@id=\"to-be-modified\"]"],
+          ["pierce/#to-be-modified"]
+        ]
+      }
+    ]
+  },
+  "Recorder should record OOPIF interactions - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/oopif.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/oopif.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "https://devtools.oopif.test:<test-port>/test/e2e/resources/recorder/iframe1.html",
+        "selectors": [
+          ["aria/To iframe 2"],
+          ["a"],
+          ["xpath//html/body/a"],
+          ["pierce/a"],
+          ["text/To iframe 2"]
+        ],
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://devtools.oopif.test:<test-port>/test/e2e/resources/recorder/iframe2.html",
+            "title": ""
+          }
+        ]
+      }
+    ]
+  },
+  "Recorder should record interactions with popups - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Open Popup"],
+          ["#popup"],
+          ["xpath///*[@id=\"popup\"]"],
+          ["pierce/#popup"],
+          ["text/Open Popup"]
+        ]
+      },
+      {
+        "type": "click",
+        "target": "https://localhost:<test-port>/test/e2e/resources/recorder/popup.html",
+        "selectors": [
+          ["aria/Button in Popup"],
+          ["button"],
+          ["xpath//html/body/button"],
+          ["pierce/button"],
+          ["text/Button in Popup"]
+        ]
+      }
+    ]
+  },
+  "Recorder should break out shifts in text controls - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Tab"
+      },
+      {
+        "type": "keyUp",
+        "key": "Tab",
+        "target": "main"
+      },
+      {
+        "type": "change",
+        "value": "1",
+        "selectors": [["#one"], ["xpath///*[@id=\"one\"]"], ["pierce/#one"]],
+        "target": "main"
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "Shift"
+      },
+      {
+        "type": "keyUp",
+        "key": "Shift",
+        "target": "main"
+      },
+      {
+        "type": "change",
+        "value": "1d",
+        "selectors": [["#one"], ["xpath///*[@id=\"one\"]"], ["pierce/#one"]],
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should work with contiguous inputs - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/input.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "change",
+        "value": "something",
+        "selectors": [
+          ["#contiguous-field-1"],
+          ["xpath///*[@id=\"contiguous-field-1\"]"],
+          ["pierce/#contiguous-field-1"]
+        ],
+        "target": "main"
+      },
+      {
+        "type": "change",
+        "value": "works",
+        "selectors": [
+          ["#contiguous-field-2"],
+          ["xpath///*[@id=\"contiguous-field-2\"]"],
+          ["pierce/#contiguous-field-2"]
+        ],
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should work with shadow inputs - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/shadow-input.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/shadow-input.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["custom-input", "input"],
+          ["xpath//html/body/custom-input", "xpath//input"],
+          ["pierce/input"]
+        ]
+      },
+      {
+        "type": "change",
+        "value": "works",
+        "selectors": [
+          ["custom-input", "input"],
+          ["xpath//html/body/custom-input", "xpath//input"],
+          ["pierce/input"]
+        ],
+        "target": "main"
+      }
+    ]
+  },
+  "Recorder should edit while recording - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "click",
+        "target": "main",
+        "selectors": [
+          ["aria/Test Button"],
+          ["#test"],
+          ["xpath///*[@id=\"test\"]"],
+          ["pierce/#test"],
+          ["text/Test Button"]
+        ]
+      }
+    ]
+  },
+  "Recorder should edit the type while recording - 1": {
+    "type": "emulateNetworkConditions",
+    "download": 1000,
+    "latency": 25,
+    "upload": 1000
+  },
+  "Recorder should edit the type while recording - 2": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "emulateNetworkConditions",
+        "download": 1000,
+        "latency": 25,
+        "upload": 1000
+      }
+    ]
+  },
+  "Recorder should add an assertion through the button - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "waitForElement",
+        "selectors": [[".cls"]]
+      }
+    ]
+  },
+  "Recorder Shortcuts should start with keyboard shortcut while on the create page - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      }
+    ]
+  },
+  "Recorder Shortcuts should stop with keyboard shortcut without recording it - 1": {
+    "title": "Test recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      }
+    ]
+  },
+  "Recorder Shortcuts should stop recording with shortcut on the target - 1": {
+    "title": "New Recording",
+    "steps": [
+      {
+        "type": "setViewport",
+        "width": 1280,
+        "height": 720,
+        "deviceScaleFactor": 1,
+        "isMobile": false,
+        "hasTouch": false,
+        "isLandscape": false
+      },
+      {
+        "type": "navigate",
+        "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+        "assertedEvents": [
+          {
+            "type": "navigation",
+            "url": "https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html",
+            "title": ""
+          }
+        ]
+      },
+      {
+        "type": "keyDown",
+        "target": "main",
+        "key": "e"
+      },
+      {
+        "type": "keyUp",
+        "key": "e",
+        "target": "main"
+      }
+    ]
+  }
+}

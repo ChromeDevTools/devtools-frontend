@@ -50,6 +50,7 @@ devtools_entrypoint("bundle") {
     "../../panels/elements/*",
     "../../panels/sources/*",
     "../../panels/timeline/*",
+    "../../panels/recorder/*",
   ]
 
   visibility += devtools_models_visibility

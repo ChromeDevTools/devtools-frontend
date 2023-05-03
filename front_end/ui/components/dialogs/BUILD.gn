@@ -35,10 +35,5 @@ devtools_entrypoint("bundle") {
     ":dialogs",
   ]
 
-  visibility = [
-    "../*",
-    "../../../../test/interactions/*",
-    "../../../../test/screenshots/*",
-    "../../../../test/unittests/front_end/*",
-  ]
+  visibility = [ "*" ]
 }

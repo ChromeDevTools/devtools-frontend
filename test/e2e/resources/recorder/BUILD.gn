@@ -1,0 +1,28 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/copy.gni")
+
+copy_to_gen("recorder") {
+  sources = [
+    "checkbox.html",
+    "form.html",
+    "iframe1.html",
+    "iframe2.html",
+    "input.html",
+    "multiple-navigations.html",
+    "oopif.html",
+    "popup.html",
+    "programmatic-navigation-on-keydown.html",
+    "recorder.html",
+    "recorder2.html",
+    "scroll-into-view.html",
+    "scroll.html",
+    "select.html",
+    "shadow-dynamic.html",
+    "shadow-input.html",
+    "shadow-open.html",
+    "shadow-text-node.html",
+  ]
+}

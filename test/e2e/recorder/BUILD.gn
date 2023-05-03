@@ -1,0 +1,21 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../third_party/typescript/typescript.gni")
+
+node_ts_library("recorder") {
+  sources = [
+    "export_test.ts",
+    "helpers.ts",
+    "recorder_test.ts",
+    "replay_test.ts",
+    "ui_test.ts",
+  ]
+
+  deps = [
+    "../../../test/e2e/helpers",
+    "../../../test/shared",
+    "../../../front_end/panels/recorder:bundle",
+  ]
+}

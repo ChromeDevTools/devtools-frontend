@@ -1247,6 +1247,7 @@ export class TimelineUIUtils {
         new TimelineRecordStyle(i18nString(UIStrings.parseAndCompile), scripting);
     eventStyles[type.BackgroundDeserialize] =
         new TimelineRecordStyle(i18nString(UIStrings.deserializeCodeCache), scripting);
+    eventStyles[type.FinalizeDeserialization] = new TimelineRecordStyle(UIStrings.profilingOverhead, other);
     eventStyles[type.WasmStreamFromResponseCallback] =
         new TimelineRecordStyle(i18nString(UIStrings.streamingWasmResponse), scripting);
     eventStyles[type.WasmCompiledModule] = new TimelineRecordStyle(i18nString(UIStrings.compiledWasmModule), scripting);

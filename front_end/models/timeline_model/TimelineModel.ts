@@ -1619,6 +1619,7 @@ export enum RecordType {
   StreamingCompileScriptWaiting = 'v8.parseOnBackgroundWaiting',
   StreamingCompileScriptParsing = 'v8.parseOnBackgroundParsing',
   BackgroundDeserialize = 'v8.deserializeOnBackground',
+  FinalizeDeserialization = 'V8.FinalizeDeserialization',
   V8Execute = 'V8.Execute',
 
   UpdateCounters = 'UpdateCounters',

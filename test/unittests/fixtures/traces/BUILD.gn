@@ -42,6 +42,7 @@ copy_to_gen("traces") {
     "slow-interaction-keydown.json.gz",
     "style-invalidation-change-attribute.json.gz",
     "style-invalidation-change-id.json.gz",
+    "sync-like-timings.json.gz",
     "threejs-gpu.json.gz",
     "timings-track.json.gz",
     "user-timings-complex.json.gz",

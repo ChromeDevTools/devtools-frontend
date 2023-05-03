@@ -230,7 +230,7 @@ export class TopDownNode extends Node {
 
 export class TopDownRootNode extends TopDownNode {
   readonly filter: (e: SDK.TracingModel.CompatibleTraceEvent) => boolean;
-  readonly events: (SDK.TracingModel.CompatibleTraceEvent)[];
+  readonly events: SDK.TracingModel.CompatibleTraceEvent[];
   readonly startTime: number;
   readonly endTime: number;
   eventGroupIdCallback: ((arg0: SDK.TracingModel.CompatibleTraceEvent) => string)|null|undefined;
@@ -239,7 +239,7 @@ export class TopDownRootNode extends TopDownNode {
   override selfTime: number;
 
   constructor(
-      events: (SDK.TracingModel.CompatibleTraceEvent)[], filters: TimelineModelFilter[], startTime: number,
+      events: SDK.TracingModel.CompatibleTraceEvent[], filters: TimelineModelFilter[], startTime: number,
       endTime: number, doNotAggregate?: boolean,
       eventGroupIdCallback?: ((arg0: SDK.TracingModel.CompatibleTraceEvent) => string)|null) {
     super('', null, null);
@@ -287,7 +287,7 @@ export class TopDownRootNode extends TopDownNode {
 
 export class BottomUpRootNode extends Node {
   private childrenInternal: ChildrenCache|null;
-  readonly events: (SDK.TracingModel.CompatibleTraceEvent)[];
+  readonly events: SDK.TracingModel.CompatibleTraceEvent[];
   private textFilter: TimelineModelFilter;
   readonly filter: (e: SDK.TracingModel.CompatibleTraceEvent) => boolean;
   readonly startTime: number;
@@ -296,9 +296,8 @@ export class BottomUpRootNode extends Node {
   override totalTime: number;
 
   constructor(
-      events: (SDK.TracingModel.CompatibleTraceEvent)[], textFilter: TimelineModelFilter,
-      filters: TimelineModelFilter[], startTime: number, endTime: number,
-      eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null) {
+      events: SDK.TracingModel.CompatibleTraceEvent[], textFilter: TimelineModelFilter, filters: TimelineModelFilter[],
+      startTime: number, endTime: number, eventGroupIdCallback: ((arg0: SDK.TracingModel.Event) => string)|null) {
     super('', null);
     this.childrenInternal = null;
     this.events = events;
@@ -458,7 +457,7 @@ export class BottomUpNode extends Node {
     }
     const selfTimeStack: number[] = [0];
     const eventIdStack: string[] = [];
-    const eventStack: (SDK.TracingModel.CompatibleTraceEvent)[] = [];
+    const eventStack: SDK.TracingModel.CompatibleTraceEvent[] = [];
     const nodeById = new Map<string, BottomUpNode>();
     const startTime = this.root.startTime;
     const endTime = this.root.endTime;

@@ -2386,7 +2386,7 @@ export class TimelineUIUtils {
     return contentHelper.fragment;
   }
 
-  static statsForTimeRange(events: (SDK.TracingModel.CompatibleTraceEvent)[], startTime: number, endTime: number): {
+  static statsForTimeRange(events: SDK.TracingModel.CompatibleTraceEvent[], startTime: number, endTime: number): {
     [x: string]: number,
   } {
     if (!events.length) {
@@ -2444,7 +2444,7 @@ export class TimelineUIUtils {
       return result;
     }
 
-    function buildRangeStatsCacheIfNeeded(events: (SDK.TracingModel.CompatibleTraceEvent)[]): void {
+    function buildRangeStatsCacheIfNeeded(events: SDK.TracingModel.CompatibleTraceEvent[]): void {
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (events[categoryBreakdownCacheSymbol]) {
         return;

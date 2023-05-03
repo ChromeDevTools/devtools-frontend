@@ -8,6 +8,7 @@ ts_library("track_appenders") {
   testonly = true
   sources = [
     "AppenderUtils_test.ts",
+    "CompatibilityTracksAppender_test.ts",
     "GPUTrackAppender_test.ts",
     "InteractionsTrackAppender_test.ts",
     "LayoutShiftsTrackAppender_test.ts",

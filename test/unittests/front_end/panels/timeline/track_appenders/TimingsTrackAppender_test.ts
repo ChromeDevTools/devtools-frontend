@@ -7,7 +7,7 @@ import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.
 import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {traceModelFromTraceFile} from '../../../helpers/TimelineHelpers.js';
-import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {loadModelDataFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
 import type * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
 
@@ -23,13 +23,14 @@ function initTrackAppender(
   return compatibilityTracksAppender.timingsTrackAppender();
 }
 
-describeWithEnvironment('TimingTrackAppender', () => {
+describeWithEnvironment('TimingTrackAppender', function() {
   let traceParsedData: TraceModel.Handlers.Types.TraceParseData;
   let timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   let timingsTrackAppender: Timeline.TimingsTrackAppender.TimingsTrackAppender;
   let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
+  setTraceModelTimeout(this);
   beforeEach(async () => {
     traceParsedData = await loadModelDataFromTraceFile('timings-track.json.gz');
     timelineModel = (await traceModelFromTraceFile('timings-track.json.gz')).timelineModel;

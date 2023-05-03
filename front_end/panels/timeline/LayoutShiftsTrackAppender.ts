@@ -87,7 +87,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
     const group = buildTrackHeader(
         currentLevel, i18nString(UIStrings.layoutShifts), style,
         /* selectable= */ true, expanded, this.#legacyTrack);
-    this.#flameChartData.groups.push(group);
+    this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 
   /**

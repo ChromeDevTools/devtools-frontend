@@ -88,7 +88,7 @@ export class GPUTrackAppender implements TrackAppender {
     const style = buildGroupStyle({shareHeaderLine: false});
     const group = buildTrackHeader(
         currentLevel, i18nString(UIStrings.gpu), style, /* selectable= */ true, expanded, this.#legacyTrack);
-    this.#flameChartData.groups.push(group);
+    this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 
   /**

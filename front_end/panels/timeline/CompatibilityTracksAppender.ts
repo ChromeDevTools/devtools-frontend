@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
@@ -73,6 +73,9 @@ export type TrackAppenderName = typeof TrackNames[number];
 
 export class CompatibilityTracksAppender {
   #trackForLevel = new Map<number, TrackAppender>();
+  #trackForGroup = new Map<PerfUI.FlameChart.Group, TrackAppender>();
+  #eventsForTrack = new Map<TrackAppenderName, TraceEngine.Types.TraceEvents.TraceEventData[]>();
+  #trackEventsForTreeview = new Map<TrackAppenderName, TraceEngine.Types.TraceEvents.TraceEventData[]>();
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration;
   #entryData: TimelineFlameChartEntry[];
@@ -172,6 +175,138 @@ export class CompatibilityTracksAppender {
 
   layoutShiftsTrackAppender(): LayoutShiftsTrackAppender {
     return this.#layoutShiftsTrackAppender;
+  }
+
+  eventsInTrack(trackAppenderName: TrackAppenderName): TraceEngine.Types.TraceEvents.TraceEventData[] {
+    const cachedData = this.#eventsForTrack.get(trackAppenderName);
+    if (cachedData) {
+      return cachedData;
+    }
+
+    // Calculate the levels occupied by a track.
+    let trackStartLevel = null;
+    let trackEndLevel = null;
+    for (const [level, track] of this.#trackForLevel) {
+      if (track.appenderName !== trackAppenderName) {
+        continue;
+      }
+      if (trackStartLevel === null) {
+        trackStartLevel = level;
+      }
+      trackEndLevel = level;
+    }
+
+    if (trackStartLevel === null || trackEndLevel === null) {
+      throw new Error(`Could not find events for track: ${trackAppenderName}`);
+    }
+    const entryLevels = this.#flameChartData.entryLevels;
+    const events = [];
+    for (let i = 0; i < entryLevels.length; i++) {
+      if (trackStartLevel <= entryLevels[i] && entryLevels[i] <= trackEndLevel) {
+        events.push(this.#entryData[i] as TraceEngine.Types.TraceEvents.TraceEventData);
+      }
+    }
+    events.sort((a, b) => a.ts - b.ts);
+    this.#eventsForTrack.set(trackAppenderName, events);
+    return events;
+  }
+
+  /**
+   * Determines if the given events, which are assumed to be ordered can
+   * be organized into tree structures.
+   * This condition is met if there is *not* a pair of async events
+   * e1 and e2 where:
+   *
+   * e1.startTime <= e2.startTime && e1.endTime > e2.startTime && e1.endTime > e2.endTime.
+   * or, graphically:
+   * |------- e1 ------|
+   *   |------- e2 --------|
+   *
+   * Because a parent-child relationship cannot be made from the example
+   * above, a tree cannot be made from the set of events.
+   *
+   * Note that this will also return true if multiple trees can be
+   * built, for example if none of the events overlap with each other.
+   */
+  canBuildTreesFromEvents(events: readonly TraceEngine.Types.TraceEvents.TraceEventData[]): boolean {
+    const stack: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
+    for (const event of events) {
+      const startTime = event.ts;
+      const endTime = event.ts + (event.dur || 0);
+      let parent = stack.at(-1);
+      if (parent === undefined) {
+        stack.push(event);
+        continue;
+      }
+      let parentEndTime = parent.ts + (parent.dur || 0);
+      // Discard events that are not parents for this event. The parent
+      // is one whose end time is after this event start time.
+      while (stack.length && startTime >= parentEndTime) {
+        stack.pop();
+        parent = stack.at(-1);
+
+        if (parent === undefined) {
+          break;
+        }
+        parentEndTime = parent.ts + (parent.dur || 0);
+      }
+      if (stack.length && endTime > parentEndTime) {
+        // If such an event exists but its end time is before this
+        // event's end time, then a tree cannot be made using this
+        // events.
+        return false;
+      }
+      stack.push(event);
+    }
+    return true;
+  }
+
+  /**
+   * Gets the events to be shown in the tree views of the details pane
+   * (Bottom-up, Call tree, etc.). These are the events from the track
+   * that can be arranged in a tree shape.
+   */
+  eventsForTreeView(trackAppenderName: TrackAppenderName): TraceEngine.Types.TraceEvents.TraceEventData[] {
+    const cachedData = this.#trackEventsForTreeview.get(trackAppenderName);
+    if (cachedData) {
+      return cachedData;
+    }
+
+    let trackEvents = this.eventsInTrack(trackAppenderName);
+    if (!this.canBuildTreesFromEvents(trackEvents)) {
+      // Some tracks can include both async and sync events. When this
+      // happens, we use all events for the tree views if a trees can be
+      // built from both sync and async events. If this is not possible,
+      // async events are filtered out and only sync events are used
+      // (it's assumed a tree can always be built using a tracks sync
+      // events).
+      trackEvents = trackEvents.filter(e => !TraceEngine.Types.TraceEvents.isAsyncPhase(e.ph));
+    }
+    this.#trackEventsForTreeview.set(trackAppenderName, trackEvents);
+    return trackEvents;
+  }
+
+  /**
+   * Caches the track appender that owns a flame chart group. FlameChart
+   * groups are created for each track in the timeline. When an user
+   * selects a track in the UI, the track's group is passed to the model
+   * layer to inform about the selection.
+   */
+  registerTrackForGroup(group: PerfUI.FlameChart.Group, appender: TrackAppender): void {
+    this.#flameChartData.groups.push(group);
+    this.#trackForGroup.set(group, appender);
+  }
+
+  /**
+   * Given a FlameChart group, gets the events to be shown in the tree
+   * views if that group was registered by the appender system.
+   */
+  groupEventsForTreeView(group: PerfUI.FlameChart.Group): TraceEngine.Types.TraceEvents.TraceEventData[]|null {
+    const track = this.#trackForGroup.get(group);
+    if (!track) {
+      return null;
+    }
+    return this.eventsForTreeView(track.appenderName);
   }
 
   /**

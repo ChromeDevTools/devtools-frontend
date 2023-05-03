@@ -104,7 +104,7 @@ export class TimingsTrackAppender implements TrackAppender {
         buildGroupStyle({shareHeaderLine: true, useFirstLineForOverview: true, collapsible: trackIsCollapsible});
     const group = buildTrackHeader(
         currentLevel, i18nString(UIStrings.timings), style, /* selectable= */ true, expanded, this.#legacyTrack);
-    this.#flameChartData.groups.push(group);
+    this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 
   /**

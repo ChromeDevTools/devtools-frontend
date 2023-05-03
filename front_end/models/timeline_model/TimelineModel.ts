@@ -193,7 +193,7 @@ export class TimelineModelImpl {
    * 9. End A
    */
   static forEachEvent(
-      events: (SDK.TracingModel.CompatibleTraceEvent)[],
+      events: SDK.TracingModel.CompatibleTraceEvent[],
       onStartEvent: (arg0: SDK.TracingModel.CompatibleTraceEvent) => void,
       onEndEvent: (arg0: SDK.TracingModel.CompatibleTraceEvent) => void,
       onInstantEvent?:
@@ -201,7 +201,7 @@ export class TimelineModelImpl {
       startTime?: number, endTime?: number, filter?: ((arg0: SDK.TracingModel.CompatibleTraceEvent) => boolean)): void {
     startTime = startTime || 0;
     endTime = endTime || Infinity;
-    const stack: (SDK.TracingModel.CompatibleTraceEvent)[] = [];
+    const stack: SDK.TracingModel.CompatibleTraceEvent[] = [];
     const startEvent = TimelineModelImpl.topLevelEventEndingAfter(events, startTime);
     for (let i = startEvent; i < events.length; ++i) {
       const e = events[i];
@@ -245,7 +245,7 @@ export class TimelineModelImpl {
     }
   }
 
-  private static topLevelEventEndingAfter(events: (SDK.TracingModel.CompatibleTraceEvent)[], time: number): number {
+  private static topLevelEventEndingAfter(events: SDK.TracingModel.CompatibleTraceEvent[], time: number): number {
     let index =
         Platform.ArrayUtilities.upperBound(
             events, time, (time, event) => time - SDK.TracingModel.timesForEventInMilliseconds(event).startTime) -

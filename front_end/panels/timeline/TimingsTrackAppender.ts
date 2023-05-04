@@ -44,18 +44,16 @@ export class TimingsTrackAppender implements TrackAppender {
   #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
   #entryData: TimelineFlameChartEntry[];
   // TODO(crbug.com/1416533)
-  // These are used only for compatibility with the legacy flame chart
+  // This is used only for compatibility with the legacy flame chart
   // architecture of the panel. Once all tracks have been migrated to
   // use the new engine and flame chart architecture, the reference can
   // be removed.
   #legacyEntryTypeByLevel: EntryType[];
-  #legacyTrack: TimelineModel.TimelineModel.Track|null;
 
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
       traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[],
-      legacyTrack?: TimelineModel.TimelineModel.Track) {
+      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[]) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = new Common.Color.Generator(
         {
@@ -68,7 +66,6 @@ export class TimingsTrackAppender implements TrackAppender {
     this.#traceParsedData = traceParsedData;
     this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
-    this.#legacyTrack = legacyTrack || null;
   }
 
   /**
@@ -102,8 +99,8 @@ export class TimingsTrackAppender implements TrackAppender {
     const trackIsCollapsible = this.#traceParsedData.UserTimings.performanceMeasures.length > 0;
     const style =
         buildGroupStyle({shareHeaderLine: true, useFirstLineForOverview: true, collapsible: trackIsCollapsible});
-    const group = buildTrackHeader(
-        currentLevel, i18nString(UIStrings.timings), style, /* selectable= */ true, expanded, this.#legacyTrack);
+    const group =
+        buildTrackHeader(currentLevel, i18nString(UIStrings.timings), style, /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 

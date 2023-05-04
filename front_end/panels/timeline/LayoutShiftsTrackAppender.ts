@@ -15,7 +15,6 @@ import {
   type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
@@ -36,24 +35,21 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
   #entryData: TimelineFlameChartEntry[];
   // TODO(crbug.com/1416533)
-  // These are used only for compatibility with the legacy flame chart
+  // This is used only for compatibility with the legacy flame chart
   // architecture of the panel. Once all tracks have been migrated to
   // use the new engine and flame chart architecture, the reference can
   // be removed.
   #legacyEntryTypeByLevel: EntryType[];
-  #legacyTrack: TimelineModel.TimelineModel.Track|null;
 
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
       traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[],
-      legacyTrack?: TimelineModel.TimelineModel.Track) {
+      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[]) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
     this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
-    this.#legacyTrack = legacyTrack || null;
   }
 
   /**
@@ -86,7 +82,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
     const style = buildGroupStyle({collapsible: false});
     const group = buildTrackHeader(
         currentLevel, i18nString(UIStrings.layoutShifts), style,
-        /* selectable= */ true, expanded, this.#legacyTrack);
+        /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 

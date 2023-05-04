@@ -48,10 +48,6 @@ const UIStrings = {
    */
   threadS: 'Thread {PH1}',
   /**
-   *@description Text shown when rendering the User Interactions track in the Performance panel
-   */
-  userInteractions: 'User Interactions',
-  /**
    *@description Title of a worker in the timeline flame chart of the Performance panel
    *@example {https://google.com} PH1
    */
@@ -296,36 +292,6 @@ export class TimelineModelImpl {
     return event.name === RecordType.LayoutShift;
   }
 
-  isUserTimingEvent(event: SDK.TracingModel.Event): boolean {
-    return event.categoriesString === TimelineModelImpl.Category.UserTiming;
-  }
-
-  isConsoleTimestampEvent(event: SDK.TracingModel.Event): boolean {
-    return event.name === RecordType.TimeStamp;
-  }
-
-  isEventTimingInteractionEvent(event: SDK.TracingModel.Event): boolean {
-    if (event.name !== RecordType.EventTiming) {
-      return false;
-    }
-    type InteractionEventData = {
-      duration?: number, interactionId: number,
-    };
-    const data = event.args.data as InteractionEventData;
-    // Filter out:
-    // 1. events without a duration, or a duration of 0
-    // 2. events without an interactionId, or with an interactionId of 0,
-    //    which indicates that it's not a "top level" interaction event and
-    //    we can therefore ignore it. This can happen with "mousedown" for
-    //    example; an interaction ID is assigned to the "pointerdown" event
-    //    as it's the "first" event to be triggered when the user clicks,
-    //    but the browser doesn't attempt to assign IDs to all subsequent
-    //    events, as that's a hard heuristic to get right.
-    const duration = data.duration || 0;
-    const interactionId = data.interactionId || 0;
-    return (duration > 0 && interactionId > 0);
-  }
-
   isParseHTMLEvent(event: SDK.TracingModel.Event): boolean {
     return event.name === RecordType.ParseHTML;
   }
@@ -432,120 +398,7 @@ export class TimelineModelImpl {
     }
     this.inspectedTargetEventsInternal.sort(SDK.TracingModel.Event.compareStartTime);
     this.processAsyncBrowserEvents(tracingModel);
-    this.buildGPUEvents(tracingModel);
-    this.buildTimings();
-    this.buildLoadingEvents(tracingModel, layoutShiftEvents);
-    this.collectInteractionEvents(tracingModel);
     this.resetProcessingState();
-  }
-
-  /**
-   * This function pushes a copy of each performance.mark() and console.timeStamp() event from the
-   * Main track into Timings so they can be appended to the performance UI.
-   * Performance.mark() are a part of the "blink.user_timing" category alongside
-   * Navigation and Resource Timing events, so we must filter them out before pushing.
-   *
-   * Note: Although this looks like a duplicate of the timings appending at the
-   * TimingsTrackAppender, this is still necessary for compatibility with features
-   * outside the flame chart that rely on the definition and construction of the legacy
-   * TimelineModel.Track version of the timings track (f.e. the details pane).
-   */
-  private buildTimings(): void {
-    const timingsTrack = this.tracksInternal.find(track => track.type === TrackType.Timings);
-    if (!timingsTrack) {
-      return;
-    }
-    const ResourceTimingNames = [
-      'workerStart',
-      'redirectStart',
-      'redirectEnd',
-      'fetchStart',
-      'domainLookupStart',
-      'domainLookupEnd',
-      'connectStart',
-      'connectEnd',
-      'secureConnectionStart',
-      'requestStart',
-      'responseStart',
-      'responseEnd',
-    ];
-    const NavTimingNames = [
-      'navigationStart',
-      'commitNavigationEnd',
-      'unloadEventStart',
-      'unloadEventEnd',
-      'redirectStart',
-      'redirectEnd',
-      'fetchStart',
-      'domainLookupStart',
-      'domainLookupEnd',
-      'connectStart',
-      'connectEnd',
-      'secureConnectionStart',
-      'requestStart',
-      'responseStart',
-      'responseEnd',
-      'domLoading',
-      'domInteractive',
-      'domContentLoadedEventStart',
-      'domContentLoadedEventEnd',
-      'domComplete',
-      'loadEventStart',
-      'loadEventEnd',
-    ];
-    const IgnoreNames = [...ResourceTimingNames, ...NavTimingNames];
-    for (const track of this.tracks()) {
-      if (track.type === TrackType.MainThread) {
-        for (const event of track.events) {
-          if (this.isUserTimingEvent(event) || this.isConsoleTimestampEvent(event)) {
-            if (IgnoreNames.includes(event.name)) {
-              continue;
-            }
-            if (TraceEngine.Types.TraceEvents.isAsyncPhase(event.phase)) {
-              continue;
-            }
-            if (event.endTime === undefined) {
-              event.setEndTime(event.startTime);
-            }
-            timingsTrack.events.push(event);
-          }
-        }
-      }
-    }
-  }
-  private collectInteractionEvents(tracingModel: SDK.TracingModel.TracingModel): void {
-    const interactionEvents: SDK.TracingModel.AsyncEvent[] = [];
-    for (const process of tracingModel.sortedProcesses()) {
-      // Interactions will only appear on the Renderer processes.
-      if (process.name() !== 'Renderer') {
-        continue;
-      }
-
-      // And also only on CrRendererMain threads.
-      const rendererThread = process.threadByName('CrRendererMain');
-      if (!rendererThread) {
-        continue;
-      }
-
-      // EventTiming events are async, so we only have to check asyncEvents,
-      // and not worry about sync events.
-      for (const event of rendererThread.asyncEvents()) {
-        if (!this.isEventTimingInteractionEvent(event)) {
-          continue;
-        }
-        interactionEvents.push(event);
-      }
-    }
-    if (interactionEvents.length === 0) {
-      // No events found, so bail early and don't bother creating the track
-      // because it will be empty.
-      return;
-    }
-
-    const track = this.ensureNamedTrack(TrackType.UserInteractions);
-    track.name = UIStrings.userInteractions;
-    track.forMainFrame = true;
-    track.asyncEvents = interactionEvents;
   }
 
   private processGenericTrace(tracingModel: SDK.TracingModel.TracingModel): void {
@@ -808,37 +661,11 @@ export class TimelineModelImpl {
     }
   }
 
-  private buildLoadingEvents(tracingModel: SDK.TracingModel.TracingModel, layoutShiftEvents: SDK.TracingModel.Event[]):
-      void {
-    const thread = tracingModel.getThreadByName('Renderer', 'CrRendererMain');
-    if (!thread) {
-      return;
-    }
-    const track = this.ensureNamedTrack(TrackType.Experience);
-    track.thread = thread;
-    track.events = layoutShiftEvents;
-  }
-
   private processAsyncBrowserEvents(tracingModel: SDK.TracingModel.TracingModel): void {
     const browserMain = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
     if (browserMain) {
       this.processAsyncEvents(browserMain);
     }
-  }
-
-  private buildGPUEvents(tracingModel: SDK.TracingModel.TracingModel): void {
-    const thread =
-        tracingModel.getThreadByName('Gpu', 'CrGpuMain') || tracingModel.getThreadByName('GPU Process', 'CrGpuMain');
-    if (!thread) {
-      return;
-    }
-
-    const gpuEventName = RecordType.GPUTask;
-    const track = this.ensureNamedTrack(TrackType.GPU);
-    track.thread = thread;
-    track.events = Root.Runtime.experiments.isEnabled('timelineShowAllEvents') ?
-        thread.events() :
-        thread.events().filter(event => event.name === gpuEventName);
   }
 
   private resetProcessingState(): void {
@@ -1103,16 +930,6 @@ export class TimelineModelImpl {
     for (let i = 0; i < asyncEvents.length; ++i) {
       const asyncEvent = asyncEvents[i];
 
-      if (asyncEvent.hasCategory(TimelineModelImpl.Category.Console)) {
-        group(TrackType.Timings).push(asyncEvent);
-        continue;
-      }
-
-      if (asyncEvent.hasCategory(TimelineModelImpl.Category.UserTiming)) {
-        group(TrackType.Timings).push(asyncEvent);
-        continue;
-      }
-
       if (asyncEvent.name === RecordType.Animation) {
         group(TrackType.Animation).push(asyncEvent);
         continue;
@@ -1179,10 +996,6 @@ export class TimelineModelImpl {
     }
     timelineData.frameId = pageFrameId || (this.mainFrame && this.mainFrame.frameId) || '';
     this.asyncEventTracker.processEvent(event);
-
-    if (this.isMarkerEvent(event)) {
-      this.ensureNamedTrack(TrackType.Timings);
-    }
 
     switch (event.name) {
       case RecordType.ResourceSendRequest:
@@ -2027,13 +1840,9 @@ export enum TrackType {
   MainThread = 'MainThread',
   Worker = 'Worker',
   Animation = 'Animation',
-  Timings = 'Timings',
-  Console = 'Console',
   Raster = 'Raster',
-  GPU = 'GPU',
   Experience = 'Experience',
   Other = 'Other',
-  UserInteractions = 'UserInteractions',
 }
 
 const enum WorkletType {

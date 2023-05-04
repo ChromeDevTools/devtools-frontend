@@ -5,7 +5,7 @@
 import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import {type TimelineFlameChartEntry, type EntryType} from './TimelineFlameChartDataProvider.js';
 import {TimingsTrackAppender} from './TimingsTrackAppender.js';
 import {InteractionsTrackAppender} from './InteractionsTrackAppender.js';
@@ -117,34 +117,23 @@ export class CompatibilityTracksAppender {
     this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
     this.#legacyTimelineModel = legacyTimelineModel;
-    const timingsLegacyTrack =
-        this.#legacyTimelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.Timings);
+
     this.#timingsTrackAppender = new TimingsTrackAppender(
-        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel,
-        timingsLegacyTrack);
+        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel);
     this.#allTrackAppenders.push(this.#timingsTrackAppender);
 
-    const interactionsLegacyTrack = this.#legacyTimelineModel.tracks().find(
-        track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
     this.#interactionsTrackAppender = new InteractionsTrackAppender(
-        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel,
-        interactionsLegacyTrack);
+        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel);
     this.#allTrackAppenders.push(this.#interactionsTrackAppender);
 
-    const gpuLegacyTrack =
-        this.#legacyTimelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.GPU);
     this.#gpuTrackAppender = new GPUTrackAppender(
-        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel,
-        gpuLegacyTrack);
+        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel);
     this.#allTrackAppenders.push(this.#gpuTrackAppender);
 
     // Layout Shifts track in OPP was called the "Experience" track even though
     // all it shows are layout shifts.
-    const layoutShiftsLegacyTrack = this.#legacyTimelineModel.tracks().find(
-        track => track.type === TimelineModel.TimelineModel.TrackType.Experience);
     this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(
-        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel,
-        layoutShiftsLegacyTrack);
+        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel);
     this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
   }
 

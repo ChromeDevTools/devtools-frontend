@@ -10,14 +10,18 @@ import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
 describe('UserTimingsHandler', () => {
   let timingsData: TraceModel.Handlers.ModelHandlers.UserTimings.UserTimingsData;
   describe('performance timings', () => {
-    before(async () => {
-      const events = await loadEventsFromTraceFile('user-timings.json.gz');
+    async function getTimingsDataFromEvents(events: readonly TraceModel.Types.TraceEvents.TraceEventData[]):
+        Promise<TraceModel.Handlers.ModelHandlers.UserTimings.UserTimingsData> {
       TraceModel.Handlers.ModelHandlers.UserTimings.reset();
       for (const event of events) {
         TraceModel.Handlers.ModelHandlers.UserTimings.handleEvent(event);
       }
       await TraceModel.Handlers.ModelHandlers.UserTimings.finalize();
-      timingsData = TraceModel.Handlers.ModelHandlers.UserTimings.data();
+      return TraceModel.Handlers.ModelHandlers.UserTimings.data();
+    }
+    before(async () => {
+      const events = await loadEventsFromTraceFile('user-timings.json.gz');
+      timingsData = await getTimingsDataFromEvents(events);
     });
     describe('performance.measure events parsing', () => {
       it('parses the start and end events and returns a list of blocks', async () => {
@@ -71,6 +75,39 @@ describe('UserTimingsHandler', () => {
           // Ensure for each timing pair we've set the dur correctly.
           assert.strictEqual(timing.dur, timing.args.data.endEvent.ts - timing.args.data.beginEvent.ts);
         }
+      });
+      it('correctly extracts nested timings in the correct order', async () => {
+        const events = await loadEventsFromTraceFile('user-timings-complex.json.gz');
+        const complexTimingsData = await getTimingsDataFromEvents(events);
+        const userTimingEventNames = [];
+        for (const event of complexTimingsData.performanceMeasures) {
+          // This trace has multiple user timings events, in this instance we only care about the ones that include 'nested' in the name.
+          if (event.name.includes('nested')) {
+            userTimingEventNames.push(event.name);
+          }
+        }
+        assert.deepEqual(userTimingEventNames, [
+          'nested-a',
+          'nested-b',
+          'nested-c',
+          'nested-d',
+        ]);
+      });
+      it('correctly orders measures when one measure encapsulates the others', async () => {
+        const events = await loadEventsFromTraceFile('user-timings-complex.json.gz');
+        const complexTimingsData = await getTimingsDataFromEvents(events);
+        const userTimingEventNames = [];
+        for (const event of complexTimingsData.performanceMeasures) {
+          // This trace has multiple user timings events, in this instance we only care about the ones that start with 'duration'
+          if (event.name.startsWith('duration')) {
+            userTimingEventNames.push(event.name);
+          }
+        }
+        assert.deepEqual(userTimingEventNames, [
+          'durationTimeTotal',
+          'durationTime1',
+          'durationTime2',
+        ]);
       });
     });
     describe('performance.mark events parsing', () => {

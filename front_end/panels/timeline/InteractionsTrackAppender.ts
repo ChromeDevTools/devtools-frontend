@@ -16,7 +16,6 @@ import {
 } from './CompatibilityTracksAppender.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Common from '../../core/common/common.js';
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import {buildGroupStyle, buildTrackHeader, getAsyncEventLevel, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
@@ -41,18 +40,16 @@ export class InteractionsTrackAppender implements TrackAppender {
   #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
   #entryData: TimelineFlameChartEntry[];
   // TODO(crbug.com/1416533)
-  // These are used only for compatibility with the legacy flame chart
+  // This is used only for compatibility with the legacy flame chart
   // architecture of the panel. Once all tracks have been migrated to
   // use the new engine and flame chart architecture, the reference can
   // be removed.
   #legacyEntryTypeByLevel: EntryType[];
-  #legacyTrack: TimelineModel.TimelineModel.Track|null;
 
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
       traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[],
-      legacyTrack?: TimelineModel.TimelineModel.Track) {
+      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[]) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = new Common.Color.Generator(
         {
@@ -65,7 +62,6 @@ export class InteractionsTrackAppender implements TrackAppender {
     this.#traceParsedData = traceParsedData;
     this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
-    this.#legacyTrack = legacyTrack || null;
   }
 
   /**
@@ -97,8 +93,8 @@ export class InteractionsTrackAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#traceParsedData.UserInteractions.interactionEvents.length > 0;
     const style = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
-    const group = buildTrackHeader(
-        currentLevel, i18nString(UIStrings.interactions), style, /* selectable= */ true, expanded, this.#legacyTrack);
+    const group =
+        buildTrackHeader(currentLevel, i18nString(UIStrings.interactions), style, /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 

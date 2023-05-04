@@ -202,139 +202,6 @@ describeWithEnvironment('TimelineModel', () => {
       timelineModel,
     };
   }
-
-  describe('interaction events', () => {
-    it('pulls out the expected interaction events from a trace', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
-      const interactionsTrack =
-          timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
-      if (!interactionsTrack) {
-        assert.fail('No interactions track was found.');
-        return;
-      }
-      const foundInteractions = interactionsTrack.asyncEvents;
-      // We expect there to be 3 interactions:
-      // 1. The pointerdown event when the user clicked.
-      // 2. The pointerup event.
-      // 3. The click event.
-      assert.lengthOf(foundInteractions, 3);
-      assert.deepEqual(foundInteractions.map(event => event.args.data.type), ['pointerdown', 'pointerup', 'click']);
-      // All interactions should have the same interactionId as they all map to the same user interaction.
-      assert.isTrue(foundInteractions.every(event => {
-        return event.args.data.interactionId === 1540;
-      }));
-    });
-
-    it('detects correct events for a click and keydown interaction', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-keydown.json.gz');
-      const interactionsTrack =
-          timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
-      if (!interactionsTrack) {
-        assert.fail('No interactions track was found.');
-        return;
-      }
-      const foundInteractions = interactionsTrack.asyncEvents;
-      // We expect there to be 3 interactions:
-      // User clicks on input:
-      // 1.pointerdown, 2. pointerup, 3. click
-      // User types into input:
-      // 4. keydown, 5. keyup
-      assert.deepEqual(
-          foundInteractions.map(event => event.args.data.type),
-          ['pointerdown', 'pointerup', 'click', 'keydown', 'keyup']);
-
-      assert.deepEqual(foundInteractions.map(e => e.args.data.interactionId), [
-        // The first three events relate to the click, so they have the same InteractionID
-        7371,
-        7371,
-        7371,
-        // The final two relate to the keypress, so they have the same InteractionID
-        7378,
-        7378,
-      ]);
-    });
-
-    it('finds all interaction events with a duration and interactionId', async () => {
-      const {timelineModel} = traceWithEvents([
-        {
-          cat: 'devtools.timeline',
-          ph: TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
-          pid: 1537729,  // the Renderer Thread
-          tid: 1,        // CrRendererMain
-          id: '1234',
-          ts: 10,
-          dur: 500,
-          scope: 'scope',
-          name: 'EventTiming',
-          args: {
-            data: {
-              'duration': 16,
-              'interactionId': 9700,
-              'nodeId': 0,
-              'processingEnd': 993,
-              'processingStart': 993,
-              'timeStamp': 985,
-              'type': 'pointerdown',
-            },
-          } as unknown as SDK.TracingManager.EventPayload['args'],
-        },
-        // Has an interactionId of 0, so should NOT be included.
-        {
-          cat: 'devtools.timeline',
-          ph: TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
-          pid: 1537729,  // the Renderer Thread
-          tid: 1,        // CrRendererMain
-          id: '1234',
-          ts: 10,
-          dur: 500,
-          scope: 'scope',
-          name: 'EventTiming',
-          args: {
-            data: {
-              'duration': 16,
-              'interactionId': 0,
-              'nodeId': 0,
-              'processingEnd': 993,
-              'processingStart': 993,
-              'timeStamp': 985,
-              'type': 'pointerdown',
-            },
-          } as unknown as SDK.TracingManager.EventPayload['args'],
-        },
-        // Has an duration of 0, so should NOT be included.
-        {
-          cat: 'devtools.timeline',
-          ph: TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_START,
-          pid: 1537729,  // the Renderer Thread
-          tid: 1,        // CrRendererMain
-          id: '1234',
-          ts: 10,
-          dur: 500,
-          scope: 'scope',
-          name: 'EventTiming',
-          args: {
-            data: {
-              'duration': 0,
-              'interactionId': 0,
-              'nodeId': 0,
-              'processingEnd': 993,
-              'processingStart': 993,
-              'timeStamp': 985,
-              'type': 'pointerdown',
-            },
-          } as unknown as SDK.TracingManager.EventPayload['args'],
-        },
-      ]);
-      const interactionsTrack =
-          timelineModel.tracks().find(track => track.type === TimelineModel.TimelineModel.TrackType.UserInteractions);
-      if (!interactionsTrack) {
-        assert.fail('No interactions track was found.');
-        return;
-      }
-      const foundInteractions = interactionsTrack.asyncEvents;
-      assert.lengthOf(foundInteractions, 1);
-    });
-  });
   describe('isMarkerEvent', () => {
     it('is true for a timestamp event', async () => {
       // Note: exact trace does not matter here, but we need a real one so all the metadata is set correctly on the TimelineModel
@@ -792,16 +659,6 @@ describeWithEnvironment('TimelineModel', () => {
         processId: 1538738,
         processName: 'Service: auction_worklet.mojom.AuctionWorkletService',
       },
-      {
-        name: '',
-        type: TimelineModel.TimelineModel.TrackType.Experience,
-        forMainFrame: false,
-        url: Platform.DevToolsPath.EmptyUrlString,
-        threadName: 'CrRendererMain',
-        threadId: 1,
-        processId: 1537729,
-        processName: 'Renderer',
-      },
     ]);
   });
 
@@ -918,16 +775,6 @@ describeWithEnvironment('TimelineModel', () => {
         type: TimelineModel.TimelineModel.TrackType.Other,
         url: Platform.DevToolsPath.EmptyUrlString,
       },
-      {
-        forMainFrame: false,
-        name: '',
-        processId: 1537729,
-        processName: 'Renderer',
-        threadId: 1,
-        threadName: 'CrRendererMain',
-        type: TimelineModel.TimelineModel.TrackType.Experience,
-        url: Platform.DevToolsPath.EmptyUrlString,
-      },
     ]);
   });
 
@@ -1040,16 +887,6 @@ describeWithEnvironment('TimelineModel', () => {
         threadId: 15,
         threadName: 'ThreadPoolForegroundWorker',
         type: TimelineModel.TimelineModel.TrackType.Other,
-        url: Platform.DevToolsPath.EmptyUrlString,
-      },
-      {
-        forMainFrame: false,
-        name: '',
-        processId: 1537729,
-        processName: 'Renderer',
-        threadId: 1,
-        threadName: 'CrRendererMain',
-        type: TimelineModel.TimelineModel.TrackType.Experience,
         url: Platform.DevToolsPath.EmptyUrlString,
       },
     ]);
@@ -1169,16 +1006,6 @@ describeWithEnvironment('TimelineModel', () => {
         type: 'Other',
         url: 'https://192.168.0.105',
       },
-      {
-        forMainFrame: false,
-        name: '',
-        processId: 1537729,
-        processName: 'Renderer',
-        threadId: 1,
-        threadName: 'CrRendererMain',
-        type: 'Experience',
-        url: '',
-      },
     ]);
   });
 
@@ -1262,16 +1089,6 @@ describeWithEnvironment('TimelineModel', () => {
         threadName: 'AuctionV8HelperThread',
         type: 'Other',
         url: 'https://192.168.0.105',
-      },
-      {
-        forMainFrame: false,
-        name: '',
-        processId: 1537729,
-        processName: 'Renderer',
-        threadId: 1,
-        threadName: 'CrRendererMain',
-        type: 'Experience',
-        url: '',
       },
     ]);
   });
@@ -1399,16 +1216,6 @@ describeWithEnvironment('TimelineModel', () => {
         processId: 1538739,
         processName: 'Service: auction_worklet.mojom.AuctionWorkletService',
       },
-      {
-        name: '',
-        type: TimelineModel.TimelineModel.TrackType.Experience,
-        forMainFrame: false,
-        url: Platform.DevToolsPath.EmptyUrlString,
-        threadName: 'CrRendererMain',
-        threadId: 1,
-        processId: 1537729,
-        processName: 'Renderer',
-      },
     ]);
 
     // Now, verify that the actual track honors the timestamp boundaries.
@@ -1423,175 +1230,6 @@ describeWithEnvironment('TimelineModel', () => {
         'RunTaskB',
       ]);
     }
-  });
-
-  describe('#isEventTimingInteractionEvent', () => {
-    it('returns true for an event timing with a duration and interactionId', () => {
-      const {timelineModel} = traceWithEvents([]);
-      const event = {
-        name: 'EventTiming',
-        args: {
-          data: {
-            duration: 100,
-            interactionId: 200,
-          },
-        },
-      } as unknown as SDK.TracingModel.Event;
-      assert.isTrue(timelineModel.isEventTimingInteractionEvent(event));
-    });
-
-    it('returns false if the event has no duration', () => {
-      const {timelineModel} = traceWithEvents([]);
-      const event = {
-        name: 'EventTiming',
-        args: {
-          data: {
-            interactionId: 200,
-          },
-        },
-      } as unknown as SDK.TracingModel.Event;
-      assert.isFalse(timelineModel.isEventTimingInteractionEvent(event));
-    });
-
-    it('returns false if the event has no interaction ID', () => {
-      const {timelineModel} = traceWithEvents([]);
-      const event = {
-        name: 'EventTiming',
-        args: {
-          data: {
-            duration: 200,
-          },
-        },
-      } as unknown as SDK.TracingModel.Event;
-      assert.isFalse(timelineModel.isEventTimingInteractionEvent(event));
-    });
-
-    it('returns false if the duration is 0', () => {
-      const {timelineModel} = traceWithEvents([]);
-      const event = {
-        name: 'EventTiming',
-        args: {
-          data: {
-            duration: 0,
-            interactionId: 200,
-          },
-        },
-      } as unknown as SDK.TracingModel.Event;
-      assert.isFalse(timelineModel.isEventTimingInteractionEvent(event));
-    });
-
-    it('returns false if the interactionId is 0', () => {
-      const {timelineModel} = traceWithEvents([]);
-      const event = {
-        name: 'EventTiming',
-        args: {
-          data: {
-            duration: 100,
-            interactionId: 0,
-          },
-        },
-      } as unknown as SDK.TracingModel.Event;
-      assert.isFalse(timelineModel.isEventTimingInteractionEvent(event));
-    });
-  });
-
-  describe('rendering user timings in the correct order', () => {
-    it('correctly populates the track with basic performance measures', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('user-timings.json.gz');
-      const userTimingEventNames: string[] = [];
-      for (const track of timelineModel.tracks()) {
-        if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
-          continue;
-        }
-        for (const event of track.asyncEvents) {
-          if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
-            userTimingEventNames.push(event.name);
-          }
-        }
-      }
-      assert.deepEqual(userTimingEventNames, [
-        'first measure',
-        'second measure',
-        'third measure',
-      ]);
-    });
-    it('correctly populates the track with nested timings in the correct order', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('user-timings-complex.json.gz');
-      const userTimingEventNames: string[] = [];
-      for (const track of timelineModel.tracks()) {
-        if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
-          continue;
-        }
-        for (const event of track.asyncEvents) {
-          // This trace has multiple user timings events, in this instance we only care about the ones that include 'nested' in the name.
-          if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming) &&
-              event.name.includes('nested')) {
-            userTimingEventNames.push(event.name);
-          }
-        }
-      }
-      assert.deepEqual(userTimingEventNames, [
-        'nested-a',
-        'nested-b',
-        'nested-c',
-        'nested-d',
-      ]);
-    });
-
-    it('renders all the performance marks from the trace', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('user-timings-complex.json.gz');
-      const userTimingPerformanceMarkNames: string[] = [];
-      for (const track of timelineModel.tracks()) {
-        if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
-          continue;
-        }
-        for (const event of track.eventsForTreeView()) {
-          if (event.phase !== TraceEngine.Types.TraceEvents.Phase.MARK) {
-            continue;
-          }
-          userTimingPerformanceMarkNames.push(event.name);
-        }
-      }
-      assert.deepEqual(
-          userTimingPerformanceMarkNames,
-          [
-            'nested-a-start',
-            'nested-b-start',
-            'nested-b-end',
-            'nested-c-start',
-            'nested-d-start',
-            'nested-d-end',
-            'nested-c-end',
-            'nested-a-end',
-            'startTime1',
-            'endTime1',
-            'startTime2',
-            'endTime2',
-          ],
-      );
-    });
-
-    it('correctly orders measures when one measure encapsulates the others', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('user-timings-complex.json.gz');
-      const userTimingEventNames: string[] = [];
-      for (const track of timelineModel.tracks()) {
-        if (track.type !== TimelineModel.TimelineModel.TrackType.Timings) {
-          continue;
-        }
-        for (const event of track.asyncEvents) {
-          // This trace has multiple user timings events, in this instance we only care about the ones that start with 'duration'
-          if (event.hasCategory(TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming) &&
-              event.name.startsWith('duration')) {
-            userTimingEventNames.push(event.name);
-          }
-        }
-      }
-      assert.deepEqual(userTimingEventNames, [
-        'durationTimeTotal',
-        'durationTime1',
-        'durationTime2',
-      ]);
-    });
   });
 
   describe('style invalidations', () => {

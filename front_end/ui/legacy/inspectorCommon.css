@@ -749,3 +749,15 @@ iframe.panel.extension {
     --legacy-focus-ring-inactive-shadow-color: ButtonText;
   }
 }
+
+/* COHERENT_BEGIN */
+[aria-label="Cohtml panel"] .vbox.flex-auto {
+  min-height: auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+[aria-label="Cohtml panel"] {
+  overflow: hidden;
+}
+/* COHERENT_END */

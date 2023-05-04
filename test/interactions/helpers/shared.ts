@@ -29,6 +29,8 @@ export const preloadForCodeCoverage = (name: string) => {
   before(async function() {
     this.timeout(0);
     const {frontend} = getBrowserAndPages();
+    // Double Puppeteer's Default
+    frontend.setDefaultNavigationTimeout(60_000);
     await frontend.setExtraHTTPHeaders({
       'devtools-compute-coverage': '1',
     });

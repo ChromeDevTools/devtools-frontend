@@ -100,7 +100,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     if (Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
     }
-    if (!Root.Runtime.Runtime.queryParam('timelineTracingJSProfileDisabled') && options.enableJSSampling) {
+    if (options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
     }
     if (Root.Runtime.experiments.isEnabled('timelineInvalidationTracking')) {
@@ -116,7 +116,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     }
 
     this.performanceModel.setRecordStartTime(Date.now());
-    const response = await this.startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
+    const response = await this.startRecordingWithCategories(categoriesArray.join(','));
     if (response.getError()) {
       await this.waitForTracingToStop(false);
       await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
@@ -162,12 +162,6 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     // but it's too late. Backend connection is closed.
   }
 
-  private async startProfilingOnAllModels(): Promise<void> {
-    this.profiling = true;
-    const models = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel);
-    await Promise.all(models.map(model => model.startRecording()));
-  }
-
   private addCpuProfile(targetId: Protocol.Target.TargetID|'main', cpuProfile: Protocol.Profiler.Profile|null): void {
     if (!cpuProfile) {
       Common.Console.Console.instance().warn(i18nString(UIStrings.cpuProfileForATargetIsNot));
@@ -192,8 +186,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     await Promise.all(promises);
   }
 
-  private async startRecordingWithCategories(categories: string, enableJSSampling?: boolean):
-      Promise<Protocol.ProtocolResponseWithError> {
+  private async startRecordingWithCategories(categories: string): Promise<Protocol.ProtocolResponseWithError> {
     if (!this.tracingManager) {
       throw new Error(UIStrings.tracingNotSupported);
     }
@@ -201,10 +194,6 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     // caused by starting CPU profiler, that needs to traverse JS heap to collect
     // all the functions data.
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
-    if (enableJSSampling && Root.Runtime.Runtime.queryParam('timelineTracingJSProfileDisabled')) {
-      await this.startProfilingOnAllModels();
-    }
-
     return this.tracingManager.start(this, categories, '');
   }
 

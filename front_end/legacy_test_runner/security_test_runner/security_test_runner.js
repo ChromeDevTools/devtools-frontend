@@ -33,3 +33,6 @@ SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
 SecurityTestRunner.dispatchRequestFinished = function(request) {
   TestRunner.networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
 };
+
+const globalTestRunner = self.SecurityTestRunner;
+export {globalTestRunner as SecurityTestRunner};

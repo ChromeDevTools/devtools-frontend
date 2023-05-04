@@ -161,3 +161,6 @@ LayersTestRunner.dumpSelectedStyles = function(message, element) {
 
   TestRunner.addResult(message + ': ' + classes.join(', '));
 };
+
+const globalTestRunner = self.LayersTestRunner;
+export {globalTestRunner as LayersTestRunner};

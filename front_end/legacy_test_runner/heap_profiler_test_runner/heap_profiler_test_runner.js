@@ -742,3 +742,6 @@ HeapProfilerTestRunner.startSamplingHeapProfiler = async function() {
 HeapProfilerTestRunner.stopSamplingHeapProfiler = function() {
   Profiler.SamplingHeapProfileType.instance.stopRecordingProfile();
 };
+
+const globalTestRunner = self.HeapProfilerTestRunner;
+export {globalTestRunner as HeapProfilerTestRunner};

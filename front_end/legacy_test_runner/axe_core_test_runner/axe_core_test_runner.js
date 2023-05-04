@@ -173,3 +173,6 @@ AxeCoreTestRunner.runValidation = async function(element, rules, config) {
     TestRunner.addResult(`aXe threw an error: '${e}'`);
   }
 };
+
+const globalTestRunner = self.AxeCoreTestRunner;
+export {globalTestRunner as AxeCoreTestRunner};

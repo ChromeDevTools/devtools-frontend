@@ -11,3 +11,6 @@ import './EditDOMTestRunner.js';
 import './SetOuterHTMLTestRunner.js';
 import './ElementsPanelShadowSelectionOnRefreshTestRunner.js';
 import './StylesUpdateLinksTestRunner.js';
+
+const {ElementsTestRunner} = self;
+export {ElementsTestRunner};

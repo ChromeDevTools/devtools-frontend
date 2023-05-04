@@ -13,3 +13,6 @@ import './IsolatedFilesystemTestRunner.js';
 import './AutomappingTestRunner.js';
 import './PersistenceTestRunner.js';
 import './OverridesTestRunner.js';
+
+const {BindingsTestRunner} = self;
+export {BindingsTestRunner};

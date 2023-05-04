@@ -291,3 +291,6 @@ TestRunner.deprecatedInitAsync(`
     });
   }
 `);
+
+const globalTestRunner = self.NetworkTestRunner;
+export {globalTestRunner as NetworkTestRunner};

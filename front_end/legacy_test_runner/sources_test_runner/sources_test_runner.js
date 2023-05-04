@@ -16,3 +16,6 @@ import './LiveEditTestRunner.js';
 import './SearchTestRunner.js';
 import './EditorTestRunner.js';
 import './AutocompleteTestRunner.js';
+
+const {SourcesTestRunner} = self;
+export {SourcesTestRunner};

@@ -723,3 +723,6 @@ ConsoleTestRunner.visibleIndices = function() {
   }
   return {first, last, count};
 };
+
+const globalTestRunner = self.ConsoleTestRunner;
+export {globalTestRunner as ConsoleTestRunner};

@@ -153,3 +153,6 @@ CoverageTestRunner.dumpCoverageListView = function() {
     TestRunner.addResult(`${url} ${type} used: ${data.usedSize()} unused: ${data.unusedSize()} total: ${data.size()}`);
   }
 };
+
+const globalTestRunner = self.CoverageTestRunner;
+export {globalTestRunner as CoverageTestRunner};

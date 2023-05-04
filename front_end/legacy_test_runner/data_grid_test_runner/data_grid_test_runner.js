@@ -79,3 +79,6 @@ DataGridTestRunner.dumpAndValidateDataGrid = function(root) {
   DataGridTestRunner.dumpDataGrid(root);
   DataGridTestRunner.validateDataGrid(root);
 };
+
+const globalTestRunner = self.DataGridTestRunner;
+export {globalTestRunner as DataGridTestRunner};

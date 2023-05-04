@@ -73,3 +73,6 @@ CPUProfilerTestRunner.profileViewRefresh = function() {
     callback.callback(this);
   }
 };
+
+const globalTestRunner = self.CPUProfilerTestRunner;
+export {globalTestRunner as CPUProfilerTestRunner};

@@ -80,3 +80,6 @@ AccessibilityTestRunner.findARIAAttributeTreeElement = function(attribute) {
 
   return null;
 };
+
+const globalTestRunner = self.AccessibilityTestRunner;
+export {globalTestRunner as AccessibilityTestRunner};

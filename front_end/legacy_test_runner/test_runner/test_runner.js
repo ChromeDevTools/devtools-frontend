@@ -6,10 +6,6 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as TestRunner from './TestRunner.js';
 
-export {
-  TestRunner,
-};
-
 self.Platform = self.Platform || {};
 self.Platform.StringUtilities = Platform.StringUtilities;
 
@@ -114,3 +110,6 @@ export class _TestObserver {
 }
 
 SDK.targetManager.observeTargets(new _TestObserver());
+
+const globalTestRunner = self.TestRunner;
+export {globalTestRunner as TestRunner};

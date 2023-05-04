@@ -295,3 +295,6 @@ class MockPageConnection {
     return Promise.resolve();
   }
 }
+
+const globalTestRunner = self.SDKTestRunner;
+export {globalTestRunner as SDKTestRunner};

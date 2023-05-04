@@ -7,3 +7,6 @@ import '../../models/extensions/extensions-legacy.js';
 
 import './ExtensionsNetworkTestRunner.js';
 import './ExtensionsTestRunner.js';
+
+const {ExtensionsTestRunner} = self;
+export {ExtensionsTestRunner};

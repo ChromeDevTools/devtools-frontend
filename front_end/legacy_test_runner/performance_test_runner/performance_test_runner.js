@@ -8,3 +8,6 @@ import '../../panels/timeline/timeline-legacy.js';
 
 import './TimelineTestRunner.js';
 import './TimelineDataTestRunner.js';
+
+const {PerformanceTestRunner} = self;
+export {PerformanceTestRunner};

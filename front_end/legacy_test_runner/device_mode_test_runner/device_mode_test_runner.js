@@ -46,3 +46,6 @@ DeviceModeTestRunner.buildFakePhone = function(overrides) {
   const json = Object.assign(StandardPhoneJSON, overrides || {});
   return Emulation.EmulatedDevice.fromJSONV1(json);
 };
+
+const globalTestRunner = self.DeviceModeTestRunner;
+export {globalTestRunner as DeviceModeTestRunner};

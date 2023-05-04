@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "फाइल राइट करत आहे…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "बाउन्स ट्रॅकिंग मिटिगेशन"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints Infrastructure"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "नवीन टीपची URL"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "जुळणारा service worker आढळला नाही. तुम्हाला पेज रीलोड करावे लागू शकते किंवा सध्याच्या पेजसाठी service worker च्या व्याप्तीमध्ये व्याप्ती आणि मॅनिफेस्टमधील सुरू करा URL यांचा समावेश आहे हे तपासावे लागू शकते."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Store आयडी दिलेला नाही"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "अयशस्वी झाले"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "ट्रिगर केलेला नाही"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "प्रलंबित"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "प्रीलोड करता आले नाही."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "प्रीलोड करण्याचा प्रयत्न अद्याप ट्रिगर केलेला नाही."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "प्रीलोडचा प्रयत्न पात्र आहे, मात्र तो प्रलंबित आहे."
@@ -4446,7 +4452,7 @@
     "message": "कन्सोल साफ केला"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "लोकांची फसवणूक करण्यासाठी आणि त्यांची खाती ताब्यात घेण्यासाठी devtools मध्ये कोड पेस्ट करणे हा मार्ग अनेकदा वापरला जातो. हे या पेजवर ब्लॉक केलेले आहे."
+    "message": "पेस्टिंग कोड या पेजवर ब्लॉक केला आहे. DevTools मध्ये कोड पेस्ट केल्याने, हल्लेखोर तुमचे खाते ताब्यात घेऊ शकतात."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "कन्सोल सेटिंग्ज"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# स्रोत}other{# स्रोत}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{१ संभाव्य ट्रॅकिंग वेबसाइट}other{# संभाव्य ट्रॅकिंग वेबसाइट}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# स्रोत}other{# स्रोत}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "सर्वोत्तम सराव"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "फक्त HTTP/HTTPS पेज आणि Chrome एक्स्टेंशन ऑडिट करता येतात. ऑडिट सुरू करण्यासाठी वेगळ्या पेजवर नेव्हिगेट करा."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "फक्त HTTP किंवा HTTPS वरील पेजचे ऑडिट करू शकते. वेगळ्या पेजवर नेव्हिगेट करा."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "स्‍टोरेज साफ करा"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "आर्किटेक्चर (उदा. x८६)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} हटवा"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "संपूर्ण आवृत्ती सूचीमधून ब्रँड हटवा"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "ब्रँड"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "वापरकर्ता एजंट प्रॉपर्टी"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "वापरकर्ता एजंट विभागामधून ब्रँड हटवा"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "आवृत्ती {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "आवृत्ती (उदा. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "हटवा"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "ब्रँड पंक्ती हटवली"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "पूर्ण आवृत्तीची सूची (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "अधिक जाणून घ्या"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "मोबाइल"
@@ -10107,7 +10119,7 @@
     "message": "अपडेट करा"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "वापरकर्ता एजंट क्लायंट सूचना या अधिक संरचित मार्गाने, अधिक उत्तम गोपनीयता अकाउंटिंगसह ब्राउझर आणि डिव्हाइसला ओळखणार्‍या वापरकर्ता एजंट स्ट्रिंगचा पर्याय आहेत. अधिक जाणून घेण्यासाठी बटणावर क्लिक करा."
+    "message": "वापरकर्ता एजंट Client Hints या अधिक संरचित मार्गाने, अधिक उत्तम गोपनीयता अकाउंटिंगसह ब्राउझर आणि डिव्हाइसला ओळखणार्‍या वापरकर्ता एजंट स्ट्रिंगचा पर्याय आहेत."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "वापरकर्ता एजंट (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "ब्रेकपॉइंटचा प्रकार"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "संपादित करा डायलॉग बंद करा आणि बदल सेव्ह करा"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "सशर्त ब्रेकपॉइंट"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "पहा"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (एका अ‍ॅक्टिव्हिटीला लागणारा वेळ {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "दस्तऐवज"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (एका अ‍ॅक्टिव्हिटीला लागणारा वेळ {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "परस्‍परसंवाद"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (एका अ‍ॅक्टिव्हिटीला लागणारा वेळ {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "लेआउट शिफ्ट"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "लक्ष्यासाठी CPU प्रोफाइल उपलब्ध नाही."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "मुख्य — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "घटना: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "दुर्लक्ष करण्याच्या गोष्टींच्या सूचीवर"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "प्रगत पेंट इंस्ट्रुमेंटेशन (धीमे) सुरू करा"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "टाइमलाइन सेव्ह करता आली नाही: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "प्रोफायलर सुरू करत आहे…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "टायमर इंस्टॉल करा"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "आयडी"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "लेआउट अप्रमाणित करा"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "स्थान"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "दीर्घ कालावधीचा संवाद"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "दीर्घकालीन टास्क"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} हे संभाव्य परफॉर्मन्स बॉटलनेक आहे."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} हा पेजचा खराब प्रतिसाद दर्शवत आहे."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. दीर्घ फ्रेम वेळा {PH2} दर्शवतात"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "होय"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (एका अ‍ॅक्टिव्हिटीला लागणारा वेळ {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "वेळा"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "कोड संपादक"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH3} पैकी {PH2} सूचना"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "बॅकग्राउंड सेवा"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "कन्सोल"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "डीबगर"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "ड्रॉवर"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "घटक"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "ग्लोबल"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "मदत"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript प्रोफायलर"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "स्तर"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "मेमरी"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "मोबाइल"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "नेव्हिगेशन"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "नेटवर्क"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "परफॉर्मन्स"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "रेंडरिंग"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "स्रोत"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "स्क्रीनशॉट"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "सेटिंग्ज"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "स्रोत"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "बंद करा"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} पॅनल"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "ड्रॉवर"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "ड्रॉवर साइडबार"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "घटक"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "नेटवर्क"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "पॅनल"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "सेटिंग्ज"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "स्रोत"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

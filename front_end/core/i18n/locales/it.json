@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Scrittura file in corso…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Mitigazioni del monitoraggio del rimbalzo"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infrastruttura Client Hints"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL nuova nota"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Nessuna corrispondenza service worker rilevata. Potrebbe essere necessario ricaricare la pagina o verificare che l'ambito del service worker per la pagina corrente includa l'ambito e l'URL di avvio dal file manifest."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Nessun ID Play Store fornito"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Errore"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Non attivato"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "In attesa"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Precaricamento non riuscito."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Tentativo di precaricamento non ancora attivato."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Il tentativo di precaricamento è idoneo, ma in attesa."
@@ -4446,7 +4452,7 @@
     "message": "Console cancellata"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Spesso il codice viene incollato in DevTools per truffare le persone e assumere il controllo dei loro account. L'operazione è bloccata in questa pagina."
+    "message": "Non è possibile incollare il codice in questa pagina. Se incolli il codice in DevTools gli utenti malintenzionati possono assumere il controllo del tuo account."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Impostazioni della console"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# fonte}other{# fonti}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 sito web con monitoraggio potenzialmente attivato}other{# siti web con monitoraggio potenzialmente attivato}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# risorsa}other{# risorse}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Best practice"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "È possibile eseguire un controllo solo su pagine HTTP/HTTPS ed estensioni Chrome. Vai a una pagina diversa per avviare un controllo."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Può controllare le pagine solo su HTTP o HTTPS. Naviga a un'altra pagina."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Cancella dati archiviati"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Architettura (ad es. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Elimina {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Elimina brand dall'elenco delle versioni complete"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Brand"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Proprietà dello user agent"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Elimina brand dalla sezione user agent"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versione {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versione (ad es. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Elimina"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Riga del brand eliminata"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Elenco di versioni complete (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Scopri di più"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Dispositivi mobili"
@@ -10107,7 +10119,7 @@
     "message": "Aggiorna"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "I suggerimenti client dello user agent sono un'alternativa alla stringa user agent e identificano il browser e il dispositivo in modo più strutturato e con una migliore gestione delle privacy. Fai clic sul pulsante per scoprire di più."
+    "message": "I client hint dello user agent sono un'alternativa alla stringa dello user agent e identificano il browser e il dispositivo in modo più strutturato e con una migliore gestione delle privacy."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "User agent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Tipo di punto di interruzione"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Chiudi la finestra di dialogo di modifica e salva le modifiche"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Punto di interruzione condizionale"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Controllo"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (soltanto nel nodo: {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Documenti"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (soltanto nel nodo: {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interazioni"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (soltanto nel nodo: {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Variazioni del layout"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Il profilo CPU per un target non è disponibile."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Principale - {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Occorrenze: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Nell'elenco di elementi da ignorare"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Attiva la strumentazione di colorazione avanzata (lento)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Impossibile salvare la sequenza temporale: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Inizializzazione del profiler in corso…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installa timer"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Invalida layout"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Località"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Interazione lunga"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Attività lunga"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} è un probabile collo di bottiglia."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} indica una scarsa adattabilità della pagina."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Valori di durata frame elevati sono indicativi di {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Sì"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (soltanto nel nodo: {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Tempi"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Editor di codice"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, suggerimento {PH2} di {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Servizi in background"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Console"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Debugger"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Riquadro a scomparsa"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elementi"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Globale"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Guida"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Profiler di JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Livelli"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memoria"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Dispositivo mobile"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigazione"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Rete"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Prestazioni"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Rendering"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Risorse"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Screenshot"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Impostazioni"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Origini"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Chiudi"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Riquadro {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Riquadro a scomparsa"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Barra laterale del riquadro a scomparsa"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elementi"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Rete"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Riquadro"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Impostazioni"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Origini"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "ਫ਼ਾਈਲ ਲਿਖੀ ਜਾ ਰਹੀ ਹੈ…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "ਬਾਊਂਸ ਟਰੈਕਿੰਗ ਮਿਟੀਗੇਸ਼ਨ"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "ਕਲਾਇੰਟ ਸੰਕੇਤ ਢਾਂਚਾ"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "ਨਵਾਂ ਨੋਟ URL"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "ਕਿਸੇ ਮੇਲ ਖਾਂਦੇ service worker ਦਾ ਪਤਾ ਨਹੀਂ ਲੱਗਿਆ। ਤੁਹਾਨੂੰ ਪੰਨਾ ਰੀਲੋਡ ਕਰਨ ਦੀ ਲੋੜ ਪੈ ਸਕਦੀ ਹੈ, ਜਾਂ ਸਕੋਪ ਨਾਲ ਨੱਥੀ ਕੀਤੇ ਮੌਜੂਦਾ ਪੰਨੇ ਲਈ service worker ਦੇ ਸਕੋਪ ਦੀ ਜਾਂਚ ਕਰੋ ਅਤੇ ਮੈਨੀਫ਼ੈਸਟ ਤੋਂ URL ਸ਼ੁਰੂ ਕਰੋ।"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "ਕੋਈ Play Store ਆਈਡੀ ਮੁਹੱਈਆ ਨਹੀਂ ਕਰਵਾਈ ਗਈ"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "ਅਸਫਲਤਾ"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "ਟ੍ਰਿਗਰ ਨਹੀਂ ਕੀਤੀ ਗਈ"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "ਵਿਚਾਰ-ਅਧੀਨ"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "ਪ੍ਰੀਲੋਡਿੰਗ ਅਸਫਲ ਰਹੀ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "ਪ੍ਰੀਲੋਡ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਹਾਲੇ ਟ੍ਰਿਗਰ ਨਹੀਂ ਕੀਤੀ ਗਈ ਹੈ।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "ਪ੍ਰੀਲੋਡਿੰਗ ਦੀ ਕੋਸ਼ਿਸ਼ ਯੋਗ ਹੈ ਪਰ ਵਿਚਾਰ-ਅਧੀਨ ਹੈ।"
@@ -4446,7 +4452,7 @@
     "message": "ਕੰਸੋਲ ਕਲੀਅਰ ਕੀਤਾ ਗਿਆ"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "devtools ਵਿੱਚ ਕੋਡ ਪੇਸਟ ਕਰਨ ਦੀ ਵਰਤੋਂ ਅਕਸਰ ਲੋਕਾਂ ਨਾਲ ਧੋਖਾ ਕਰਨ ਅਤੇ ਉਨ੍ਹਾਂ ਦੇ ਖਾਤਿਆਂ ਨੂੰ ਕੰਟਰੋਲ ਕਰਨ ਲਈ ਕੀਤੀ ਜਾਂਦੀ ਹੈ। ਇਹ ਇਸ ਪੰਨੇ 'ਤੇ ਬਲਾਕ ਕੀਤਾ ਗਿਆ ਹੈ।"
+    "message": "ਇਸ ਪੰਨੇ 'ਤੇ ਕੋਡ ਨੂੰ ਪੇਸਟ ਕਰਨ ਦੀ ਵਿਸ਼ੇਸ਼ਤਾ ਬਲਾਕ ਹੈ। ਕੋਡਾਂ ਨੂੰ DevTools ਵਿੱਚ ਪੇਸਟ ਕਰਨ ਨਾਲ ਹਮਲਾਵਰਾਂ ਨੂੰ ਤੁਹਾਡੇ ਖਾਤੇ 'ਤੇ ਅਧਿਕਾਰ ਹਾਸਲ ਕਰਨ ਦੀ ਆਗਿਆ ਮਿਲ ਸਕਦੀ ਹੈ।"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "ਕੰਸੋਲ ਸੈਟਿੰਗਾਂ"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# ਸਰੋਤ}one{# ਸਰੋਤ}other{# ਸਰੋਤ}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{ਸੰਭਾਵੀ ਤੌਰ 'ਤੇ ਟਰੈਕ ਕਰਨ ਵਾਲੀ 1 ਵੈੱਬਸਾਈਟ}one{ਸੰਭਾਵੀ ਤੌਰ 'ਤੇ ਟਰੈਕ ਕਰਨ ਵਾਲੀ # ਵੈੱਬਸਾਈਟ}other{ਸੰਭਾਵੀ ਤੌਰ 'ਤੇ ਟਰੈਕ ਕਰਨ ਵਾਲੀਆਂ # ਵੈੱਬਸਾਈਟਾਂ}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ਸਰੋਤ}one{# ਸਰੋਤ}other{# ਸਰੋਤ}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "ਬਿਹਤਰੀਨ ਵਿਹਾਰ"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "ਸਿਰਫ਼ HTTP/HTTPS ਪੰਨਿਆਂ ਅਤੇ Chrome ਐਕਸਟੈਂਸ਼ਨਾਂ ਦੀ ਆਡਿਟ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ। ਆਡਿਟ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਕਿਸੇ ਵੱਖਰੇ ਪੰਨੇ 'ਤੇ ਜਾਓ।"
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "ਸਿਰਫ਼ HTTP ਜਾਂ HTTPS 'ਤੇ ਪੰਨਿਆਂ ਦਾ ਆਡਿਟ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ। ਵੱਖਰੇ ਪੰਨੇ 'ਤੇ ਜਾਓ।"
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "ਸਟੋਰੇਜ ਕਲੀਅਰ ਕਰੋ"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ਆਰਕੀਟੈਕਚਰ (ਜਿਵੇਂ ਕਿ x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} ਨੂੰ ਮਿਟਾਓ"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "ਬ੍ਰਾਂਡ ਨੂੰ ਪੂਰੇ ਵਰਜਨ ਦੀ ਸੂਚੀ ਵਿੱਚੋਂ ਮਿਟਾਓ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "ਬ੍ਰਾਂਡ"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਦੀਆਂ ਪ੍ਰਾਪਰਟੀਆਂ"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "ਬ੍ਰਾਂਡ ਨੂੰ ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਸੈਕਸ਼ਨ ਵਿੱਚੋਂ ਮਿਟਾਓ"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "ਵਰਜਨ {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "ਵਰਜਨ (ਜਿਵੇਂ ਕਿ 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "ਮਿਟਾਓ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "ਬ੍ਰਾਂਡ ਕਤਾਰ ਮਿਟਾ ਦਿੱਤੀ ਗਈ"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "ਪੂਰੇ ਵਰਜਨ ਦੀ ਸੂਚੀ (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "ਹੋਰ ਜਾਣੋ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "ਮੋਬਾਈਲ"
@@ -10107,7 +10119,7 @@
     "message": "ਅੱਪਡੇਟ ਕਰੋ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਕਲਾਇੰਟ ਸੰਕੇਤ, ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਸਤਰ ਦਾ ਇੱਕ ਵਿਕਲਪ ਹਨ ਜੋ ਵਧੇਰੇ ਢਾਂਚਾਗਤ ਢੰਗ ਨਾਲ ਨੀਤੀ ਦੀ ਬਿਹਤਰ ਜਵਾਬਦੇਹੀ ਵਾਲੇ ਬ੍ਰਾਊਜ਼ਰ ਅਤੇ ਡੀਵਾਈਸ ਦੀ ਪਛਾਣ ਕਰਦੇ ਹਨ। ਹੋਰ ਜਾਣਨ ਲਈ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ।"
+    "message": "ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਕਲਾਇੰਟ ਸੰਕੇਤ, ਵਰਤੋਂਕਾਰ ਏਜੰਟ ਸਤਰ ਦਾ ਇੱਕ ਵਿਕਲਪ ਹਨ ਜੋ ਜ਼ਿਆਦਾ ਢਾਂਚਾਗਤ ਤਰੀਕੇ ਨਾਲ ਨੀਤੀ ਦੀ ਬਿਹਤਰ ਜਵਾਬਦੇਹੀ ਵਾਲੇ ਬ੍ਰਾਊਜ਼ਰ ਅਤੇ ਡੀਵਾਈਸ ਦੀ ਪਛਾਣ ਕਰਦੇ ਹਨ।"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "ਵਰਤੋਂਕਾਰ ਏਜੰਟ (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "ਬ੍ਰੇਕਪੁਆਇੰਟ ਦੀ ਕਿਸਮ"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "ਸੰਪਾਦਨ ਵਿੰਡੋ ਬੰਦ ਕਰ ਕੇ ਤਬਦੀਲੀਆਂ ਨੂੰ ਰੱਖਿਅਤ ਕਰੋ"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "ਸ਼ਰਤਬੱਧ ਬ੍ਰੇਕਪੁਆਇੰਟ"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "ਦੇਖੋ"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (ਸਵੈ {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "ਦਸਤਾਵੇਜ਼"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (ਸਵੈ {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "ਅੰਤਰਕਿਰਿਆਵਾਂ"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (ਸਵੈ {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "ਖਾਕਾ ਸ਼ਿਫਟ"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "ਟੀਚੇ ਲਈ CPU ਪ੍ਰੋਫਾਈਲ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।"
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "ਮੁੱਖ — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "ਘਟਨਾਵਾਂ: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "ਅਣਡਿੱਠ ਸੂਚੀ 'ਤੇ"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "ਉੱਨਤ ਪੇਂਟ ਉਪਕਰਨ ਚਾਲੂ ਕਰੋ (ਹੌਲੀ)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "ਟਾਈਮਲਾਈਨ ਰੱਖਿਅਤ ਕਰਨਾ ਅਸਫਲ ਰਿਹਾ: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "ਪ੍ਰੋਫਾਈਲਰ ਸ਼ੁਰੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ਟਾਈਮਰ ਸਥਾਪਤ ਕਰੋ"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ਆਈਡੀ"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ਖਾਕੇ ਨੂੰ ਅਪ੍ਰਮਾਣਿਤ ਕਰੋ"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "ਟਿਕਾਣਾ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "ਲੰਬੀ ਅੰਤਰਕਿਰਿਆ"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "ਲੰਬਾ ਕਾਰਜ"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} ਇੱਕ ਸੰਭਾਵਿਤ ਕਾਰਗੁਜ਼ਾਰੀ ਰੁਕਾਵਟ ਹੈ।"
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} ਖਰਾਬ ਪੰਨਾ ਪ੍ਰਤੀਕਿਰਿਆ ਦਰਸਾ ਰਿਹਾ ਹੈ।"
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}। ਲੰਬੇ ਫ੍ਰੇਮ ਸਮੇਂ {PH2} ਦਾ ਇਸ਼ਾਰੇ ਹਨ"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "ਹਾਂ"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (ਸਵੈ {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "ਟਾਈਮਿੰਗ"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "ਕੋਡ ਸੰਪਾਦਕ"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH3} ਵਿੱਚੋਂ {PH2} ਸੁਝਾਅ"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "ਬੈਕਗ੍ਰਾਊਂਡ ਸੇਵਾਵਾਂ"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "ਕੰਸੋਲ"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "ਡੀਬੱਗਰ"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "ਦਰਾਜ਼"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "ਤੱਤ"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "ਗਲੋਬਲ"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "ਮਦਦ"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript ਪ੍ਰੋਫਾਈਲਰ"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "ਤਹਿਆਂ"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "ਮੈਮੋਰੀ"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "ਮੋਬਾਈਲ"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "ਨੈਵੀਗੇਸ਼ਨ"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "ਨੈੱਟਵਰਕ"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "ਕਾਰਗੁਜ਼ਾਰੀ"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "ਰੈਂਡਰਿੰਗ"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "ਸਰੋਤ"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "ਸਕ੍ਰੀਨਸ਼ਾਟ"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "ਸੈਟਿੰਗਾਂ"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "ਸਰੋਤ"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "ਬੰਦ ਕਰੋ"
   },
@@ -12723,7 +12804,7 @@
     "message": "(ਕੋਈ ਆਈਟਮ ਨਹੀਂ ਚੁਣੀ ਗਈ)"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSOfS": {
-    "message": "{PH1}, {PH3} ਵਿਚੋਂ {PH2} ਸੁਝਾਅ"
+    "message": "{PH1}, {PH3} ਵਿੱਚੋਂ {PH2} ਸੁਝਾਅ"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSSelected": {
     "message": "{PH1}, ਸੁਝਾਅ ਚੁਣਿਆ ਗਿਆ"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} ਪੈਨਲ"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "ਦਰਾਜ਼"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "ਦਰਾਜ਼ ਸਾਈਡਬਾਰ"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "ਤੱਤ"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "ਨੈੱਟਵਰਕ"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "ਪੈਨਲ"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "ਸੈਟਿੰਗਾਂ"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "ਸਰੋਤ"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

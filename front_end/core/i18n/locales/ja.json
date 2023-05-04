@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "ファイルを書き込んでいます…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "バウンス トラッキング対策"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints インフラストラクチャ"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "新しいメモ URL"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "一致する service worker が検出されませんでした。ページを再読み込みするか、現在のページの service worker のスコープにマニフェストのスコープと開始 URL が含まれていることを確認する必要があります。"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play ストアの ID が提供されていません"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "エラー"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "トリガーされていません"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "保留中"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "プリロードに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "プリロードの試行はまだトリガーされていません。"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "プリロードは可能ですが、保留中です。"
@@ -4446,7 +4452,7 @@
     "message": "コンソールが消去されました"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "開発ツールにコードを貼り付ける操作は、ユーザーを騙してアカウントを乗っ取る目的で行われることが多いため、このページではブロックされています。"
+    "message": "このページでのコードの貼り付けはブロックされています。コードを開発ツールに貼り付けると、攻撃者がアカウントを乗っ取るおそれがあります。"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "コンソールの設定"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# 件のソース}other{# 件のソース}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 件のトラッキング ウェブサイト}other{# 件のトラッキング ウェブサイト}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# 件のリソース}other{# 件のリソース}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "おすすめの方法"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "HTTP / HTTPS ページと Chrome 拡張機能のみ監査できます。監査を開始するには、別のページに移動します。"
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "HTTP または HTTPS のページのみを監査できます。別のページに移動します。"
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "ストレージを消去"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "アーキテクチャ（例: x86）"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} を削除"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "フルバージョン リストからブランドを削除"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "ブランド"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "ユーザー エージェントのプロパティ"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "ユーザー エージェント セクションからブランドを削除"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "バージョン {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "バージョン（例: 87.0.4280.88）"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "削除"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "ブランド行を削除しました"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "フルバージョンのリスト（Sec-CH-UA-Full-Version-List）"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "詳細"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "モバイル"
@@ -10107,7 +10119,7 @@
     "message": "更新"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "ユーザー エージェント クライアント ヒントはユーザー エージェント文字列に代わるもので、プライバシーを重視した、より構造化された方法でブラウザとデバイスを識別します。ボタンをクリックすると詳細が表示されます。"
+    "message": "ユーザー エージェント クライアント ヒントはユーザー エージェント文字列に代わるもので、プライバシーを重視した、より構造化された方法でブラウザとデバイスを識別します。"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "ユーザー エージェント（Sec-CH-UA）"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "ブレークポイントの種類"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "編集ダイアログを閉じて変更を保存"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "条件付きブレークポイント"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "監視"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1}（セルフ {PH2}）"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "ドキュメント"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1}（セルフ {PH2}）"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "操作"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1}（セルフ {PH2}）"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "レイアウト シフト"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "目標の CPU プロファイルが使用できません。"
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "メイン - {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "発生回数: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "無視リスト上"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "高度な描画パフォーマンスの計測（低速）を有効にする"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "タイムフレームの保存に失敗しました（{PH1}（{PH2}））"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "プロファイラを初期化しています…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "タイマーをインストール"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "レイアウトを無効化"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "場所"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "長いインタラクション"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "長時間のタスク"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}がパフォーマンスのボトルネックである可能性があります。"
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} は、ページの応答性が低いことを示します。"
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}。フレーム時間が長い場合は、{PH2}を示しています。"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "はい"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1}（セルフ {PH2}）"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "タイミング"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "コードエディタ"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}、候補 {PH2}/{PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "バックグラウンド サービス"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "コンソール"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "デバッガ"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "ドロワー"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "要素"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "グローバル"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "ヘルプ"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript プロファイラ"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "レイヤ"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "メモリ"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "モバイル"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "ナビゲーション"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "ネットワーク"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "パフォーマンス"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "レンダリング"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "リソース"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "スクリーンショット"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "設定"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "ソース"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "閉じる"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "[{PH1}] パネル"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "ドロワー"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "ドロワー サイドバー"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "要素"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "ネットワーク"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "パネル"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "設定"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "ソース"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

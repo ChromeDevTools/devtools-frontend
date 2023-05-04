@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "កំពុងសរសេរឯកសារ…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "ការកាត់បន្ថយ​ការតាមដាន​ដែលគេចវេះពីការរារាំង"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "ហេដ្ឋារចនាសម្ព័ន្ធ Client Hints"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL នៃកំណត់ចំណាំ​ថ្មី"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "រកមិនឃើញ service worker ដែលត្រូវគ្នាទេ។ អ្នកប្រហែលជាត្រូវផ្ទុកទំព័រឡើងវិញ ឬពិនិត្យមើលថាតើដែនកំណត់នៃ service worker សម្រាប់ទំព័របច្ចុប្បន្នត្រូវនឹងដែនកំណត់នេះឬអត់ និងចាប់ផ្ដើម URL ពីមេនីហ្វេសថ៍។"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "មិនបានផ្ដល់​លេខសម្គាល់ Play store ទេ"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "មិន​បាន​សម្រេច"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "មិនទាន់​បើកដំណើរការ"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "កំពុងរង់ចាំ"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "មិន​អាច​ផ្ទុក​ជា​មុន​បាន​ទេ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "មិនទាន់​បើកដំណើរការ​ការព្យាយាម​ផ្ទុកជាមុន​នៅឡើយទេ។"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "អាច​ឱ្យព្យាយាម​ផ្ទុក​ជា​មុនបាន ប៉ុន្តែ​កំពុង​រង់ចាំ។"
@@ -4446,7 +4452,7 @@
     "message": "បានសម្អាតកុងសូល"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "ការ​ដាក់​កូដ​ចូល​ក្នុង​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ជា​រឿយៗ​ត្រូវ​បាន​ប្រើដើម្បី​​ឆបោក​មនុស្ស​ និង​គ្រប់គ្រង​គណនី​របស់​ពួកគេ។ សកម្មភាពនេះ​ត្រូវ​បាន​ទប់ស្កាត់​នៅ​លើ​ទំព័រ​នេះ។"
+    "message": "ការដាក់​កូដចូល​ត្រូវបាន​ទប់ស្កាត់​នៅលើ​ទំព័រនេះ។ ការដាក់​កូដចូល​ក្នុង​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​អាចអនុញ្ញាតឱ្យ​អ្នកវាយប្រហារ​គ្រប់គ្រង​លើគណនី​របស់អ្នក។"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "ការកំណត់កុងសូល"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{ប្រភព #}other{ប្រភព #}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{មានគេហទំព័រ 1 ដែលអាច​កំពុងតែ​តាមដាន}other{មានគេហទំព័រ # ដែលអាច​កំពុងតែ​តាមដាន}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{ធនធាន #}other{ធនធាន #}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "ការអនុវត្តល្អបំផុត"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "អាចត្រួតពិនិត្យទំព័រ​ HTTP/HTTPS និងកម្មវិធីបន្ថែម​ Chrome តែប៉ុណ្ណោះ។ សូមចូលទៅកាន់ទំព័រផ្សេង ដើម្បីចាប់ផ្ដើមការត្រួតពិនិត្យ។"
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "អាច​ត្រួតពិនិត្យ​បានតែ​ទំព័រ​នៅលើ HTTP ឬ HTTPS ប៉ុណ្ណោះ។ ចូលទៅកាន់​ទំព័រផ្សេង។"
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "សម្អាត​ទំហំ​ផ្ទុក"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ស្ថាបត្យកម្ម (ឧ. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "លុប {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "លុបម៉ាក​ចេញពី​បញ្ជីកំណែ​ពេញលេញ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "ម៉ាក"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "លក្ខណៈ​ភ្នាក់ងារ​អ្នក​ប្រើប្រាស់"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "លុបម៉ាក​ចេញពី​ផ្នែក​ភ្នាក់ងារ​អ្នកប្រើប្រាស់"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "កំណែ {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "កំណែ (ឧ. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "លុប"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "បានលុបជួរដេកអំពីម៉ាកហើយ"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "បញ្ជី​កំណែ​ពេញលេញ (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "ស្វែងយល់បន្ថែម"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "ឧបករណ៍​ចល័ត"
@@ -10107,7 +10119,7 @@
     "message": "ធ្វើបច្ចុប្បន្នភាព"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "តម្រុយ​កម្មវិធីភ្ញៀវ​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់​គឺជាជម្រើសផ្សេងទៀត​សម្រាប់ជួរអក្សរ​នៃភ្នាក់ងារអ្នកប្រើប្រាស់​ដែលសម្គាល់​កម្មវិធីរុករកតាមអ៊ីនធឺណិត និងឧបករណ៍​តាមរបៀបដែលមាន​ការរៀបចំរចនាសម្ព័ន្ធត្រឹមត្រូវជាង និង​មានទំនួលខុសត្រូវ​លើឯកជនភាព​កាន់តែប្រសើរ។ សូមចុច​ប៊ូតុង ដើម្បី​ស្វែងយល់​បន្ថែម​។"
+    "message": "តម្រុយ​កម្មវិធីភ្ញៀវ​នៃភ្នាក់ងារ​អ្នកប្រើប្រាស់​គឺជាជម្រើសផ្សេងទៀត​សម្រាប់ជួរអក្សរ​នៃភ្នាក់ងារអ្នកប្រើប្រាស់​ដែលសម្គាល់​កម្មវិធីរុករកតាមអ៊ីនធឺណិត និងឧបករណ៍​តាមរបៀបដែលមានរចនាសម្ព័ន្ធកាន់តែច្បាស់លាស់ និង​មានទំនួលខុសត្រូវ​លើឯកជនភាព​កាន់តែប្រសើរ។"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "ភ្នាក់ងារ​អ្នក​ប្រើប្រាស់ (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "ប្រភេទ​ចំណុចផ្អាក"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "បិទ​ប្រអប់កែ និង​រក្សាទុក​ការផ្លាស់ប្ដូរ"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "ចំណុចផ្អាក​តាមស្ថានភាព"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "ការមើល"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (រយៈពេល​ផ្ទាល់ខ្លួន {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "ឯកសារ"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (រយៈពេល​ផ្ទាល់ខ្លួន {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "អន្តរកម្ម"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (រយៈពេល​ផ្ទាល់ខ្លួន {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "កា​រប្ដូរ​ប្លង់"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "មិនមាន​កម្រងព័ត៌មាន CPU សម្រាប់​គោលដៅ​ទេ។"
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "ចម្បង — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "ការកើតឡើង៖ {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "នៅលើ​បញ្ជី​មិនអើពើ"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "បើក​ការវាស់ស្ទង់ការ​គូរកម្រិត​ខ្ពស់ (យឺត)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "មិនអាច​រក្សាទុក​បន្ទាត់​ពេលវេលា​បានទេ៖ {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "កំពុង​ចាប់ផ្ដើម​កម្មវិធី​ចងក្រង​ព័ត៌មាន…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ដំឡើង​កម្មវិធី​កំណត់ម៉ោង"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "លេខសម្គាល់"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "បញ្ឈប់​សុពលភាព​ប្លង់"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "ទីតាំង"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "អន្តរកម្ម​រយៈពេលយូរ"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "កិច្ចការ​រយៈពេលវែង"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} ទំនងជា​ភាពរអាក់រអួល​នៃប្រតិបត្តិការ​។"
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} កំពុងបង្ហាញ​ការឆ្លើយតប​ទំព័រ​ខ្សោយ។"
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}។ រយៈពេលវែង​របស់ស៊ុម​គឺជាការបង្ហាញ​អំពី {PH2}"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "បាទ/ចាស"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (រយៈពេល​ផ្ទាល់ខ្លួន {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "រយៈពេល"
   },
@@ -12312,7 +12333,7 @@
     "message": "នាំ​ចេញ"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
-    "message": "លេខសម្គាល់"
+    "message": "លេខ​កូដសម្គាល់"
   },
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "គឺជាព័ត៌មានផ្ទៀងផ្ទាត់ផ្ទៃក្នុង"
@@ -12550,6 +12571,66 @@
   },
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "កម្មវិធីកែកូដ"
+  },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, ការណែនាំ {PH2} នៃ {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "សេវាកម្ម​ផ្ទៃខាងក្រោយ"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "កុងសូល"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "កម្មវិធី​ជួសជុល"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "ថត​"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "ធាតុ"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "សកល"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "ជំនួយ"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "កម្មវិធី​ចងក្រង​ព័ត៌មាន JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "ស្រទាប់"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "អង្គចងចាំ"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "ឧបករណ៍​ចល័ត"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "ការរុករក"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "បណ្ដាញ"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "ប្រតិបត្តិការ"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "ការបំប្លែង"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "ធនធាន"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "រូបថតអេក្រង់"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "ការកំណត់"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "ប្រភព"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "បិទ"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "ផ្ទាំង {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "ថត​"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "របារចំហៀង​ថត"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "ធាតុ"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "បណ្ដាញ"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "ផ្ទាំង"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "ការកំណត់"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "ប្រភព"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

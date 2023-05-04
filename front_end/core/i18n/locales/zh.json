@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "正在写入文件…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "“反弹跟踪缓解措施”相关提案"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "客户端提示基础架构"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "新备注网址"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "未检测到任何匹配的 service worker。您可能需要重新加载网页，或检查当前网页的 service worker 范围是否包含清单中的范围和起始网址。"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "未提供 Play 商店 ID"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "失败"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "未触发"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "待处理"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "预加载失败。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "预加载尝试尚未触发。"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "预加载尝试符合条件，但尚待处理。"
@@ -4446,7 +4452,7 @@
     "message": "已清除控制台"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "不良之徒往往会通过将代码粘贴到开发者工具中来欺骗用户及侵占帐号。系统已禁止在此网页上执行这类粘贴。"
+    "message": "此页面禁止粘贴代码。将代码粘贴到开发者工具中可让攻击者接管您的帐号。"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "控制台设置"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# 个来源}other{# 个来源}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{有 1 个可能会跟踪的网站}other{有 # 个可能会跟踪的网站}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# 项资源}other{# 项资源}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "最佳做法"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "只能审核 HTTP/HTTPS 网页和 Chrome 扩展程序。转到其他网页以开始审核。"
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "只能审核使用 HTTP 或 HTTPS 的网页。请前往其他网页。"
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "清除存储数据"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "架构（例如 x86）"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "删除 {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "从完整版本列表中删除品牌"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "品牌"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "用户代理属性"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "从“用户代理”部分中删除品牌"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "版本 {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "版本（例如 87.0.4280.88）"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "删除"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "已删除品牌行"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "完整版本列表 (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "了解详情"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "手机"
@@ -10107,7 +10119,7 @@
     "message": "更新"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "用户代理客户端提示是用户代理字符串的替代文字，能以结构更完善的方式识别浏览器和设备，同时提供更好的隐私保护。点击按钮可了解详情。"
+    "message": "用户代理客户端提示是用户代理字符串的替代文字，能以结构更完善的方式识别浏览器和设备，同时提供更好的隐私保护。"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "用户代理 (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "断点类型"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "关闭修改对话框并保存更改"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "条件断点"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "监视"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1}（自身耗时 {PH2}）"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "文档"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1}（自身耗时 {PH2}）"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "互动"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1}（自身耗时 {PH2}）"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "布局偏移"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "无法显示目标的 CPU 性能分析报告。"
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "主要 - {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "发生次数：{PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "在忽略列表中"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "启用高级绘制插桩（慢速）"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "未能保存时间轴：{PH1}（{PH2}）"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "正在初始化性能剖析器…"
@@ -11643,7 +11658,7 @@
     "message": "演变了"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "体验"
+    "message": "经验"
   },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "无法从缓存加载脚本"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "安装定时器"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "使布局失效"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "位置"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "互动耗时非常长"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "长任务"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}可能是性能瓶颈。"
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "“{PH1}”表明网页响应速度非常慢。"
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}。帧时间较长表明出现{PH2}。"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "是"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1}（自身耗时 {PH2}）"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "时间"
   },
@@ -12201,7 +12222,7 @@
     "message": "在“图层”视图中隐藏 chrome 框架"
   },
   "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "JavaScript 性能剖析器"
+    "message": "JavaScript 性能分析器"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "加载性能分析报告…"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "代码编辑器"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}，这是第 {PH2} 条建议，共 {PH3} 条"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "后台服务"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "控制台"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "调试程序"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "抽屉式导航栏"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "元素"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "全局"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "帮助"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript 性能分析器"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "图层"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "内存"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "移动设备"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "导航"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "网络"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "性能"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "渲染"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "资源"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "屏幕截图"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "设置"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "来源"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "关闭"
   },
@@ -12723,7 +12804,7 @@
     "message": "（未选择任何条目）"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSOfS": {
-    "message": "{PH1}，第 {PH2} 条建议（共 {PH3} 条）"
+    "message": "{PH1}，这是第 {PH2} 条建议，共 {PH3} 条"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSSelected": {
     "message": "{PH1}，这条建议已被选中"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1}面板"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "抽屉式导航栏"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "抽屉式导航栏边栏"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "元素"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "网络"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "面板"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "设置"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "来源"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

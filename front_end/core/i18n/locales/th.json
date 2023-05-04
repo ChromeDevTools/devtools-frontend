@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "กำลังเขียนไฟล์…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "การลดการติดตามการเข้าออก"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "โครงสร้างพื้นฐาน Client Hints"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL โน้ตใหม่"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "ไม่พบ service worker ที่ตรงกัน คุณอาจต้องโหลดหน้านี้ซ้ำหรือตรวจสอบว่าขอบเขตของ service worker สำหรับหน้าปัจจุบันครอบคลุมขอบเขตและ URL เริ่มต้นจากไฟล์ Manifest"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "ไม่ได้ระบุรหัส Play Store"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "ไม่สำเร็จ"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "ไม่ได้เรียกใช้"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "รอดำเนินการ"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "การโหลดล่วงหน้าไม่สำเร็จ"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "ยังไม่ได้เรียกใช้ความพยายามในการโหลดล่วงหน้า"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "ความพยายามในการโหลดล่วงหน้ามีสิทธิ์ แต่กำลังรอดำเนินการ"
@@ -4446,7 +4452,7 @@
     "message": "ล้างคอนโซลแล้ว"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "การวางโค้ดลงในเครื่องมือสำหรับนักพัฒนาเว็บมักจะใช้เพื่อหลอกลวงผู้คนและเข้าควบคุมบัญชี จึงถูกบล็อกในหน้านี้"
+    "message": "หน้านี้บล็อกการวางโค้ด การวางโค้ดลงในเครื่องมือสำหรับนักพัฒนาเว็บจะทำให้ผู้โจมตีเข้าควบคุมบัญชีของคุณได้"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "การตั้งค่าคอนโซล"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{แหล่งที่มา # แหล่ง}other{แหล่งที่มา # แหล่ง}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{อาจมีเว็บไซต์ที่มีการติดตาม 1 รายการ}other{อาจมีเว็บไซต์ที่มีการติดตาม # รายการ}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{ทรัพยากร # รายการ}other{ทรัพยากร # รายการ}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "แนวทางปฏิบัติแนะนำ"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "ตรวจสอบหน้า HTTP/HTTPS และส่วนขยาย Chrome ได้เท่านั้น ไปที่หน้าอื่นเพื่อเริ่มตรวจสอบ"
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "ตรวจสอบได้เฉพาะหน้าใน HTTP หรือ HTTPS เท่านั้น ไปที่หน้าอื่น"
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "ล้างพื้นที่เก็บข้อมูล"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "สถาปัตยกรรม (เช่น x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "ลบ {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "ลบแบรนด์ออกจากรายการเวอร์ชันแบบเต็ม"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "แบรนด์"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "พร็อพเพอร์ตี้ User Agent"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "ลบแบรนด์ออกจากส่วน User Agent"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "เวอร์ชัน {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "เวอร์ชัน (เช่น 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "ลบ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "ลบแถวแบรนด์แล้ว"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "รายการเวอร์ชันแบบเต็ม (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "อุปกรณ์เคลื่อนที่"
@@ -10107,7 +10119,7 @@
     "message": "อัปเดต"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "คำแนะนำสำหรับไคลเอ็นต์ User Agent เป็นอีกทางเลือกสำหรับสตริง User Agent ซึ่งจะระบุถึงเบราว์เซอร์และอุปกรณ์ด้วยวิธีที่เป็นระบบระเบียบมากกว่าและมีการรับผิดชอบต่อความเป็นส่วนตัวที่ดีกว่า คลิกที่ปุ่มเพื่อดูข้อมูลเพิ่มเติม"
+    "message": "คำแนะนำสำหรับไคลเอ็นต์ User Agent เป็นอีกทางเลือกสำหรับสตริง User Agent ซึ่งจะระบุถึงเบราว์เซอร์และอุปกรณ์ด้วยวิธีที่เป็นระบบระเบียบมากกว่าและมีการรับผิดชอบต่อความเป็นส่วนตัวที่ดีกว่า"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "User Agent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "ประเภทเบรกพอยท์"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "ปิดกล่องโต้ตอบการแก้ไขและบันทึกการเปลี่ยนแปลง"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "เบรกพอยท์แบบมีเงื่อนไข"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "ดู"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (กิจกรรมเดียว {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "เอกสาร"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (กิจกรรมเดียว {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "การโต้ตอบ"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (กิจกรรมเดียว {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "การเปลี่ยนเลย์เอาต์"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "โปรไฟล์ CPU สำหรับเป้าหมายไม่พร้อมใช้งาน"
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "หลัก — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "รายการ: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "ในรายการละเว้น"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "เปิดใช้การวัดคุมการแสดงผลขั้นสูง (ช้า)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "บันทึกไทม์ไลน์ไม่สำเร็จ: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "กำลังเริ่มต้นเครื่องมือสร้างโปรไฟล์…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ติดตั้งตัวจับเวลา"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "รหัส"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ระบุว่าเลย์เอาต์ไม่ถูกต้อง"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "ตำแหน่ง"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "การโต้ตอบแบบยาว"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "งานที่ใช้เวลานาน"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} น่าจะเป็นจุดคอขวดของประสิทธิภาพ"
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1}ระบุว่าการตอบสนองของหน้าเว็บไม่ดี"
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1} หากการแสดงผลเฟรมใช้เวลานาน ถือเป็นสัญญาณบ่งบอกถึง {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "ใช่"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (กิจกรรมเดียว {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "ระยะเวลา"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "ตัวแก้ไขโค้ด"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, คำแนะนำ {PH2} จาก {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "บริการที่ทำงานอยู่เบื้องหลัง"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "คอนโซล"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "โปรแกรมแก้ไขข้อบกพร่อง"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "ลิ้นชัก"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "องค์ประกอบ"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "ส่วนกลาง"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "ความช่วยเหลือ"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "เครื่องมือสร้างโปรไฟล์ JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "เลเยอร์"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "หน่วยความจำ"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "อุปกรณ์เคลื่อนที่"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "การนำทาง"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "เครือข่าย"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "ประสิทธิภาพ"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "การแสดงภาพ"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "ทรัพยากร"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "ภาพหน้าจอ"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "การตั้งค่า"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "แหล่งที่มา"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "ปิด"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "แผง {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "ลิ้นชัก"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "แถบด้านข้างของลิ้นชัก"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "องค์ประกอบ"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "เครือข่าย"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "แผง"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "การตั้งค่า"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "แหล่งที่มา"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

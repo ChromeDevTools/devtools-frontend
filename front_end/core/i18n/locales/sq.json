@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Po shkruan skedar…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Masat parandaluese ndaj gjurmimit me ridrejtim"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infrastruktura e sugjerimeve të klientit"
   },
@@ -2381,9 +2384,6 @@
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL-ja e shënimit të ri"
   },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Nuk u zbuluan përputhje për service worker. Mund të të duhet të ringarkosh faqen ose të kontrollosh nëse fushëveprimi i service worker për faqen aktuale përfshin fushëveprimin dhe URL-në fillestare nga manifesti."
-  },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Nuk u dha asnjë ID e \"Dyqanit të Play\""
   },
@@ -2973,7 +2973,7 @@
     "message": "Etiketa e sinkronizimit periodik"
   },
   "panels/application/ServiceWorkersView.ts | pushData": {
-    "message": "Shty të dhënat"
+    "message": "Shtyj të dhënat"
   },
   "panels/application/ServiceWorkersView.ts | pushString": {
     "message": "Shtyp"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Dështim"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Nuk është aktivizuar"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Në pritje"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Ngarkimi paraprak dështoi."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Përpjekja për ngarkimin paraprak nuk është aktivizuar ende."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Përpjekja për ngarkimin paraprak është e përshtatshme, por në pritje."
@@ -4446,7 +4452,7 @@
     "message": "Paneli komandues u pastrua"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Ngjitja e kodit në veglat e zhvilluesve përdoret shpesh për mashtrimin e njerëzve dhe marrjen e kontrollit mbi llogaritë e tyre. Kjo është bllokuar në këtë faqe."
+    "message": "Ngjitja e kodit është e bllokuar në këtë faqe. Ngjitja e kodit te DevTools mund të lejojë që sulmuesit të marrin kontrollin mbi llogarinë tënde."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Cilësimet e panelit komandues"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# burim}other{# burime}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 sajt uebi ndoshta gjurmues}other{# sajte uebi ndoshta gjurmuese}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# burim}other{# burime}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Praktikat më të mira"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Mund të auditojë vetëm faqet HTTP/HTTPS dhe shtesat Chrome. Shko në një faqe tjetër për të filluar një auditim."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Mund të auditohen vetëm faqet me protokollin HTTP ose HTTPS. Navigo te një faqe tjetër."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Pastro hapësirën ruajtëse"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arkitektura (p.sh. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Fshi {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Fshi markën nga lista e versioneve të plota"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Marka"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Vetitë e agjentit të përdoruesit"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Fshi markën nga seksioni i agjentit të përdoruesit"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versioni {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versioni (p.sh. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Fshi"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Rreshti i markës u fshi"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Lista e versioneve të plota (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Mëso më shumë"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Celular"
@@ -10107,7 +10119,7 @@
     "message": "Përditëso"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Sugjerimet e klientit të agjentit të përdoruesit janë një alternativë ndaj vargut të agjentit të përdoruesit që identifikon shfletuesin dhe pajisjen në një mënyrë më të strukturuar me llogaritje më të mirë të privatësisë. Kliko butonin për të mësuar më shumë."
+    "message": "Sugjerimet e klientit të agjentit të përdoruesit janë një alternativë ndaj vargut të agjentit të përdoruesit që identifikon shfletuesin dhe pajisjen në një mënyrë më të strukturuar me llogaritje më të mirë të privatësisë."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Agjenti i përdoruesit (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Lloji i pikës së ndërprerjes"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Mbyll dialogun e modifikimit dhe ruaj ndryshimet"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Pikë ndërprerjeje me kushtëzim"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Shiko"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (vetë {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumente"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (vetë {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Ndërveprimet"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (vetë {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Zhvendosjet e strukturës"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Profili i CPU-së për një objektiv nuk ofrohet."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Kryesore — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Përsëritje: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Në listën e shpërfilljes"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Aktivizo instrumentimin e paraqitjes së përparuar (i ngadaltë)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Ruajtja e kronologjisë dështoi: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Po nis profilizuesi…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instalo kohëmatësin"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Zhvlerëso strukturën"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Vendndodhja"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Ndërveprimi i gjatë"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Detyrë e gjatë"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} ka gjasë të jetë pengesë performance."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} po tregon reagueshmëri të dobët të faqes."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Kohët e gjata të kuadrove janë tregues i {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Po"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (vetë {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Koha"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Redaktuesi i kodit"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, sugjerimi {PH2} nga {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Shërbimet në sfond"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Paneli komandues"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Korrigjuesi"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Sirtari"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elementet"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Globale"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Ndihma"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Profilizuesi i JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Shtresat"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memoria"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Celulari"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigimi"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Rrjeti"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Performanca"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Paraqitja"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Burimet"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Pamja e ekranit"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Cilësimet"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Burimet"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Mbyll"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Paneli {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Sirtari"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Shiriti anësor i sirtarit"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elementet"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Rrjeti"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Paneli"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Cilësimet"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Burimet"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

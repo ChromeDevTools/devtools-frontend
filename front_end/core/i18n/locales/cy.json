@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Wrthi'n ysgrifennu ffeil…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Lliniariadau Olrhain Dychwelyd"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Seilwaith Awgrymiadau Cleient"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL nodyn newydd"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Ni chanfuwyd unrhyw service worker sy'n cyfateb. Mae'n bosib y bydd angen i chi ail-lwytho'r dudalen, neu wirio bod cwmpas y service worker ar gyfer y dudalen bresennol yn amgáu'r cwmpas a chychwyn URL o'r maniffest."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Ni ddarperir rhif adnabod Play Store"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Methiant"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Heb ei sbarduno"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Ar y gweill"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Wedi methu â rhaglwytho."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Nid yw ymgais cyn-lwytho wedi'i sbarduno eto."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Mae'r ymgais rhaglwytho yn gymwys ond mae wrthi'n aros."
@@ -4446,7 +4452,7 @@
     "message": "Mae'r consol wedi'i glirio"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Mae gludo cod i devtools yn aml yn cael ei ddefnyddio i dwyllo pobl a chymryd rheolaeth o'u cyfrifon. Mae wedi'i rwystro ar y dudalen hon."
+    "message": "Mae gludo cod wedi'i rwystro ar y dudalen hon. Gall gludo cod i devtools ganiatáu i ymosodwyr gymryd drosodd eich cyfrif."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Gosodiadau consol"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# ffynhonnell}zero{# ffynhonnell}two{# ffynhonnell}few{# ffynhonnell}many{# ffynhonnell}other{# ffynhonnell}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 gwefan sy'n bosib o fod yn olrhain}zero{# gwefan sy'n bosib o fod yn olrhain}two{# wefan sy'n bosib o fod yn olrhain}few{# gwefan sy'n bosib o fod yn olrhain}many{# gwefan sy'n bosib o fod yn olrhain}other{# gwefan sy'n bosib o fod yn olrhain}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# adnodd}zero{# adnodd}two{# adnodd}few{# adnodd}many{# adnodd}other{# adnodd}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Arferion gorau"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Dim ond tudalennau HTTP/HTTPS ac estyniadau Chrome sy'n gallu cael eu harchwilio. Llywiwch i dudalen wahanol i ddechrau archwiliad."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Gall archwilio tudalennau ar HTTP neu HTTPS yn unig. Llywiwch i dudalen wahanol."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Clirio'r storfa"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Saernïaeth (e.e. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Dileu {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Dileu brand o'r rhestr fersiwn lawn"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Brand"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Priodweddau asiant defnyddiwr"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Dileu brand o'r adran asiant defnyddiwr"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Fersiwn {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Fersiwn (ee 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Dileu"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Wedi dileu'r rhes brand"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Rhestr fersiwn llawn (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Dysgu rhagor"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Symudol"
@@ -10107,7 +10119,7 @@
     "message": "Diweddaru"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Mae awgrymiadau cleient asiant defnyddiwr yn ddewis amgen i'r llinyn asiant defnyddiwr sy'n nodi'r porwr a'r ddyfais mewn ffordd fwy strwythuredig gyda chyfrifon preifatrwydd gwell. Cliciwch y botwm i ddysgu rhagor."
+    "message": "Mae awgrymiadau cleient asiant defnyddiwr yn ddewis amgen i'r llinyn asiant defnyddiwr sy'n nodi'r porwr a'r ddyfais mewn ffordd fwy strwythuredig gyda chyfrifon preifatrwydd gwell."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Asiant defnyddiwr (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Math y torbwynt"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Cau'r deialog golygu a chadw newidiadau"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Torbwynt amodol"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Gwylio"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (hunan {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dogfennau"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (hunan {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Rhyngweithiadau"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (hunan {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Symudiadau Cynllun"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Nid yw'r proffil CPU ar gyfer targed ar gael."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Prif — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Digwyddiadau: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Ar y rhestr anwybyddu"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Galluogi offerwaith peintio uwch (araf)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Wedi methu â chadw'r llinell amser: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Wrthi'n cychwyn y proffiliwr…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Amserydd Gosod"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Dull adnabod"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Annilysu'r Cynllun"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Lleoliad"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Rhyngweithiad hir"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Tasg hir"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "Mae {PH1} yn debygol o fod yn dagfa berfformiad."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "Mae {PH1} yn dangos ymatebolrwydd tudalen gwael."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Mae amseroedd ffrâm hir yn arwydd o {PH2}"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ie"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (hunan {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Amseru"
   },
@@ -12312,7 +12333,7 @@
     "message": "Allforio"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
-    "message": "Rhif Adnabod"
+    "message": "Dull adnabod"
   },
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "Yn Breswylydd"
@@ -12550,6 +12571,66 @@
   },
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Golygydd cod"
+  },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, awgrym {PH2} o {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Gwasanaethau Cefndir"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Consol"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Dadfygiwr"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Drôr"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elfennau"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Byd-eang"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Cymorth"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Proffiliwr JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Haenau"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Cof"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Symudol"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Llywio"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Rhwydwaith"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Perfformiad"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Wrthi'n rendro"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Adnoddau"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Sgrinlun"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Gosodiadau"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Ffynonellau"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Cau"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Panel {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Drôr"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Bar ochr drôr"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elfennau"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Rhwydwaith"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Gosodiadau"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Ffynonellau"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

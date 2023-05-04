@@ -126,7 +126,7 @@
     "message": "Konzol"
   },
   "core/common/SettingRegistration.ts | debugger": {
-    "message": "Hibakereső"
+    "message": "Hibaelhárító"
   },
   "core/common/SettingRegistration.ts | elements": {
     "message": "Elemek"
@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Fájl írása…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Visszafordulás nyomon követésének mérséklései"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints-infrastruktúra"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Új jegyzet URL-je"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Nem észlelhető egyező service worker. Elképzelhető, hogy újra be kell töltenie az oldalt, vagy ellenőriznie kell, hogy a(z) service worker aktuális oldalra vonatkozó hatóköre tartalmazza-e a manifestben található hatókört és start_url-t."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Nincs megadva Play Áruház-azonosító"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Hiba"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Nincs aktiválva"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Függőben"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Előtöltés sikertelen."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Az előtöltési kísérlet még nem aktiválódott."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Az előtöltési kísérlet jogosult, de függőben van."
@@ -4446,7 +4452,7 @@
     "message": "Konzol kiürítve"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "A kódok DevToolsba való beillesztését gyakran emberek átverésére és fiókjaik étvételére használják. A funkció le van tiltva ezen az oldalon."
+    "message": "A kód beillesztése le van tiltva ezen az oldalon. Ha kódot illeszt be a DevTools eszközbe, akkor a támadók átvehetik az irányítást a fiókja felett."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konzolbeállítások"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# forrás}other{# forrás}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 potenciálisan nyomon követő webhely}other{# potenciálisan nyomon követő webhely}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# erőforrás}other{# erőforrás}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Bevált módszerek"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Csak HTTP-/HTTPS-oldalak és Chrome-bővítmények auditálhatók. Az auditálás megkezdéséhez navigáljon másik oldalra."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Csak HTTP- vagy HTTPS-előtagú oldalakat tud auditálni. Lépjen másik oldalra."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Tárhely ürítése"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Architektúra (pl. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} törlése"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Márka törlése a teljes verziólistából"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Márka"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Felhasználói ügynök tulajdonságai"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Márka törlése a felhasználói ügynök szakaszból"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Verzió: {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Verzió (pl. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Törlés"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Márkasor törölve"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Teljes verziók listája (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "További információ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobil"
@@ -10107,7 +10119,7 @@
     "message": "Frissítés"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "A felhasználói ügynök ügyféltippjei alternatívát kínálnak a felhasználói ügynök karakterláncához, és strukturáltabban azonosítják a böngészőt és az eszközt, jobb adatvédelmi megoldásokkal. További információért kattintson a gombra."
+    "message": "A felhasználói ügynök ügyfél-információi alternatívát kínálnak a felhasználói ügynök karakterláncához, és strukturáltabban azonosítják a böngészőt és az eszközt, jobb adatvédelmi megoldásokkal."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Felhasználói ügynök (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Töréspont típusa"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Szerkesztési párbeszédpanel bezárása és a változtatások mentése"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Feltételes töréspont"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Figyelés"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (saját: {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumentumok"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (saját: {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interakciók"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (saját: {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Elrendezésmozgások"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Nincs rendelkezésre álló CPU-profil a célzáshoz."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Elsődleges – {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Előfordulások: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Mellőzési listán"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Speciális megjelenítésmérés engedélyezése (lassú)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Nem sikerült az idővonal mentése: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Teljesítményelemző eszköz inicializálása…"
@@ -11643,7 +11658,7 @@
     "message": "továbbfejlesztett"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "Tapasztalat"
+    "message": "Élmény"
   },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "nem sikerült betölteni a szkriptet a gyorsítótárból"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Időmérő telepítése"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Azonosító"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Elrendezés érvénytelenítése"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Hely"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Hosszú interakció"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Hosszú feladat"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "A(z) {PH1} valószínűleg teljesítményt érintő szűk keresztmetszet."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "A(z) {PH1} az oldal gyenge válaszadási hajlandóságát jelzi."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. A hosszú képkockaidők a következőt jelezhetik: {PH2}"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Igen"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (saját: {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Mért idők"
   },
@@ -12312,7 +12333,7 @@
     "message": "Exportálás"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
-    "message": "azonosító"
+    "message": "Azonosító"
   },
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "Rezidens"
@@ -12550,6 +12571,66 @@
   },
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Kódszerkesztő"
+  },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH3}/{PH2}. javaslat"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Háttérszolgáltatások"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konzol"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Hibaelhárító"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Fiók"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elemek"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Globális"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Súgó"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript Profiler teljesítményelemző eszköz"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Rétegek"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memória"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobil"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigáció"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Hálózat"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Teljesítmény"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Renderelés"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Források"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Képernyőkép"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Beállítások"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Források"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Bezárás"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} panel"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Fiók"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Fiók oldalsávja"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elemek"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Hálózat"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Beállítások"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Források"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

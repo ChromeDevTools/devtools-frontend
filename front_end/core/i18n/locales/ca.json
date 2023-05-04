@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "S'està escrivint el fitxer…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Mitigacions del seguiment de rebots"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infraestructura de Client Hints"
   },
@@ -1890,7 +1893,7 @@
     "message": "{PH1} és {PH2} a l'antecedent: "
   },
   "panels/accessibility/AccessibilityStrings.ts | aHumanreadableVersionOfTheValue": {
-    "message": "Una versió del valor d'un widget d'intervals que les persones poden llegir (quan sigui necessari)."
+    "message": "Una versió del valor d'un widget d'intervals llegible per humans (quan sigui necessari)."
   },
   "panels/accessibility/AccessibilityStrings.ts | activeDescendant": {
     "message": "Descendent actiu"
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL de la nota nova"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "No s'ha detectat cap service worker coincident. Pot ser que hagis de tornar a carregar la pàgina o comprovar que l'abast que té service worker per a la pàgina actual englobi l'abast i l'URL d'inici del fitxer de manifest."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "No s'ha proporcionat cap identificador de Play Store"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Error"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "No activat"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Pendent"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "S'ha produït un error en la precàrrega."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "L'intent de precàrrega encara no s'ha activat."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "L'intent de precàrrega és apte, però està pendent."
@@ -4446,7 +4452,7 @@
     "message": "La consola s'ha esborrat"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "L'enganxament de codi a devtools sovint es fa servir per estafar els usuaris i controlar els seus comptes. Està bloquejat en aquesta pàgina."
+    "message": "L'opció per enganxar el codi està bloquejada en aquesta pàgina. Si enganxes el codi a DevTools, els atacants poden apropiar-se del teu compte."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Configuració de la consola"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# font}other{# fonts}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 lloc web de seguiment potencial}other{# llocs web de seguiment potencial}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# recurs}other{# recursos}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Pràctiques recomanades"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Només pot auditar pàgines HTTP o HTTPS i extensions Chrome. Navega fins a una altra pàgina per iniciar una auditoria."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Només pot auditar pàgines HTTP o HTTPS. Navega fins a una altra pàgina."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Esborra emmagatzematge"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arquitectura (per exemple, x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Suprimeix {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Suprimeix la marca de la llista de versions completes"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Marca"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Propietats d'agent d'usuari"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Suprimeix la marca de la secció d'agent d'usuari"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versió {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versió (p. ex., 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Suprimeix"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "S'ha suprimit la fila de la marca"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Llista de versions completes (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Més informació"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mòbil"
@@ -10107,7 +10119,7 @@
     "message": "Actualitza"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Els suggeriments del client d'agent d'usuari són una alternativa a la cadena d'agent d'usuari que identifica el navegador i el dispositiu de manera més estructurada i tenint més en compte la privadesa. Fes clic al botó per obtenir més informació."
+    "message": "Els Client Hints de l'agent d'usuari són una alternativa a la cadena d'agent d'usuari que identifica el navegador i el dispositiu de manera més estructurada i tenint més en compte la privadesa."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Agent d'usuari (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Tipus de punt de ruptura"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Tanca el quadre de diàleg d'edició i desa els canvis"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Punt de ruptura condicional"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Inspecció"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (temps individual: {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Documents"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (temps individual: {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interaccions"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (temps individual: {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Canvis de disseny"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "El perfil de CPU d'un objectiu no està disponible."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Principal - {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Ocurrències: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "A la llista d'elements ignorats"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Activa la instrumentació de la renderització avançada (lenta)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "No s'ha pogut desar la cronologia: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "S'està inicialitzant l'analitzador de rendiment…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instal·la un temporitzador"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Invalida el disseny"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Ubicació"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Interacció llarga"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Tasca llarga"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "És probable que {PH1} sigui un coll d'ampolla de rendiment."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} indica que la capacitat de resposta de la pàgina és deficient."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Els temps prolongats entre fotogrames són un indicador de {PH2}."
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Sí"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (temps individual: {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Temps"
   },
@@ -12312,7 +12333,7 @@
     "message": "Exporta"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
-    "message": "Identificador"
+    "message": "ID"
   },
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "És resident"
@@ -12550,6 +12571,66 @@
   },
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Editor de codi"
+  },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, suggeriment {PH2} de {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Serveis en segon pla"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Consola"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Depurador"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Tauler"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elements"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Global"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Ajuda"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Analitzador de rendiment de JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Capes"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memòria"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mòbil"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navegació"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Xarxa"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Rendiment"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Renderització"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Recursos"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Captura de pantalla"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Configuració"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Fonts"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Tanca"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Tauler {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Tauler"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Barra lateral del tauler"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elements"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Xarxa"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Tauler"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Configuració"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Fonts"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

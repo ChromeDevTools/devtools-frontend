@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Fitxategian idazten…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Erreboteen jarraipena egitea gutxitzeko neurriak"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Bezeroaren goiburu-eremuen azpiegitura"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Ohar berriaren URLa"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Ez da hauteman bat datorren service worker. Litekeena da orria berriro kargatu behar izatea; bestela, egiaztatu une honetako orriaren service worker esparruak manifestuaren esparrua eta URLaren hasiera barne hartzen dituela."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Ez da eman Play Store-ko IDrik"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Hutsegitea"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Ez da abiarazi"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Zain"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Huts egin du aurrez kargatzeak."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Aurrez kargatzeko saiakera ez da abiarazi oraindik."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Aukera dago aurrez kargatzeko, baina zain dago."
@@ -4446,7 +4452,7 @@
     "message": "Garbitu da kontsola"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Garatzaileentzako tresnetan kodea itsasten da maiz jendeari iruzurra egiteko eta haien kontuez jabetzeko. Aukera hori blokeatuta dago orri honetan."
+    "message": "Kodea itsasteko aukera blokeatuta dago orri honetan. Garatzaileentzako tresnetan kodea itsatsiz gero, baliteke erasotzaileek zure kontuaren kontrola hartzea."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Kontsolaren ezarpenak"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# iturburu}other{# iturburu}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{Agian jarraipena egiten duen webgune bat}other{Agian jarraipena egiten duten # webgune}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# baliabide}other{# baliabide}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Jardunbide egokiak"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "HTTP/HTTPS moduko orriak eta Chrome-ren luzapenak soilik audita daitezke. Auditatzen hasteko, joan beste orri batera."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "HTTP edo HTTPS darabilten orriak soilik audita daitezke. Joan beste orri batera."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Garbitu memoria"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arkitektura (adibidez, x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Ezabatu {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Ezabatu marka bertsio osoaren zerrendatik"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Marka"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Erabiltzaile-agentearen propietateak"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Ezabatu marka erabiltzaile-agenteen ataletik"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "{PH1} bertsioa"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Bertsioa (adibidez, 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Ezabatu"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Ezabatu da markaren errenkada"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Bertsioen zerrenda osoa (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Lortu informazio gehiago"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mugikorra"
@@ -10107,7 +10119,7 @@
     "message": "Eguneratu"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Erabiltzaile-agentearen katearen ordez erabil daitezke erabiltzaile-agentearen bezero-doikuntzak; era egituratuagoan identifikatzen ditu arakatzailea eta gailua eta hobeto zaintzen du pribatutasuna. Egin klik botoian informazio gehiago lortzeko."
+    "message": "Erabiltzaile-agentearen katearen ordez erabil daitezke erabiltzaile-agentearen bezeroaren goiburu-eremuak; era egituratuagoan identifikatzen ditu arakatzailea eta gailua eta hobeto zaintzen du pribatutasuna."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Erabiltzaile-agentea (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Eten-puntu mota"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Itxi editatzeko leihoa eta gorde aldaketak"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Baldintzapeko eten-puntua"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Ikuskapena"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (nodoak {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumentuak"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPUa"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (nodoak {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Elkarrekintzak"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (nodoak {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Diseinu-aldaketak"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Ez dago eskuragarri helburu baterako PUZaren profila."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Nagusia ({PH1})"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Agerpenak: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Ez ikusi egitekoen zerrendan"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Gaitu errendatze-tresneria aurreratua (motela)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Ezin izan da gorde kronologia: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Errendimendu-analizatzailea hasieratzen…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instalatu tenporizadorea"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Identifikatzailea"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Baliogabetu diseinua"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Kokapena"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Interakzio luzea"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Zeregin luzea"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} errendimenduaren buxadura bat da ziurrenik."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1}: orriaren moldagarritasuna kaskarra dela esan nahi du."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Marko-denbora luzeek {PH2} adierazten dute"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Bai"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (nodoak {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Denborak"
   },
@@ -12312,7 +12333,7 @@
     "message": "Esportatu"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
-    "message": "IDa"
+    "message": "Identifikatzailea"
   },
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "Bertakoa da"
@@ -12550,6 +12571,66 @@
   },
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Kode-editorea"
+  },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH2}/{PH3} iradokizuna"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Atzeko planoko zerbitzuak"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Kontsola"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Araztailea"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Panel lerrakorra"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elementuak"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Orokorra"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Laguntza"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript-en errendimendu-analizatzailea"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Geruzak"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memoria"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mugikorra"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Nabigazioa"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Sarea"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Errendimendua"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Errendatzea"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Baliabideak"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Pantaila-argazkia"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Ezarpenak"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Iturburuak"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Itxi"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} panela"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Panel lerrakorra"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Panel lerrakorraren alboko barra"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elementuak"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Sarea"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panela"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Ezarpenak"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Iturburuak"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

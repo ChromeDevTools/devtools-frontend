@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Notiek rakstīšana failā…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Atlēcienu izsekošanas mazināšana"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints infrastruktūra"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Jaunas piezīmes URL"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Netika konstatēts neviens atbilstošs service worker. Iespējams, būs atkārtoti jāielādē lapa vai jāpārbauda, vai pašreizējās lapas service worker savā tvērumā iekļauj manifestā norādīto tvērumu un sākuma URL."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Nav norādīts Play veikala ID"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Kļūme"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Nav aktivizēts"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Gaida"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Iepriekšēja ielāde neizdevās."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Iepriekšējas ielādes mēģinājums vēl nav aktivizēts."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Iepriekšējas ielādes mēģinājums ir derīgs, taču gaida izpildi."
@@ -4446,7 +4452,7 @@
     "message": "Konsole ir notīrīta"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Koda ielīmēšana izstrādātāju rīkos bieži tiek izmantota lietotāju krāpšanai un kontu pārņemšanai. Šī iespēja šajā lapā ir bloķēta."
+    "message": "Koda ielīmēšana šajā lapā ir bloķēta. Ielīmējot kodu izstrādātāja rīkos, uzbrucēji var pārņemt jūsu kontu."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsoles iestatījumi"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# avots}zero{# avotu}one{# avots}other{# avoti}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 vietne, kurā, iespējams, tiek izmantota izsekošana}zero{# vietnes, kurās, iespējams, tiek izmantota izsekošana}one{# vietne, kurā, iespējams, tiek izmantota izsekošana}other{# vietnes, kurās, iespējams, tiek izmantota izsekošana}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resurss}zero{# resursu}one{# resurss}other{# resursi}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Paraugprakse"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Var pārbaudīt tikai HTTP/HTTPS lapas un Chrome paplašinājumus. Lai sāktu pārbaudi, pārejiet uz citu lapu."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Var pārbaudīt tikai lapas ar protokolu HTTP vai HTTPS. Pārejiet uz citu lapu."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Notīrīt krātuvi"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arhitektūra (piem., x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Dzēst: {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Dzēst zīmolu no pilnā versiju saraksta"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Zīmols"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Lietotāja aģenta rekvizīti"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Dzēst zīmolu no lietotāja aģenta sadaļas"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versija {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versija (piemēram, 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Dzēst"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Zīmola rinda ir izdzēsta."
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Pilns versiju saraksts (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Uzzināt vairāk"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobilā ierīce"
@@ -10107,7 +10119,7 @@
     "message": "Atjaunināt"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Lietotāja aģenta klienta norādes var izmantot kā alternatīvu lietotāja aģenta virknei — tās strukturētākā veidā identificē pārlūku un ierīci, kā arī nodrošina labākas konfidencialitātes aizsardzības iespējas. Lai uzzinātu vairāk, noklikšķiniet uz pogas."
+    "message": "Lietotāja aģenta klienta norādes var izmantot kā alternatīvu lietotāja aģenta virknei — tās strukturētākā veidā identificē pārlūku un ierīci, kā arī nodrošina labākas konfidencialitātes aizsardzības iespējas."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Lietotāja aģents (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Pārtraukumpunkta veids"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Aizvērt rediģēšanas dialoglodziņu un saglabāt izmaiņas"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Nosacījuma pārtraukumpunkts"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Uzraudzība"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (vienas darbības ilgums: {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumenti"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "Grafiskais procesors"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (vienas darbības ilgums: {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Darbības"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (vienas darbības ilgums: {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Izkārtojuma nobīdes"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Centrālā procesora profilētājs mērķim nav pieejams."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Galvenais — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Gadījumi: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Iekļauts ignorēto sarakstā"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Iespējot papildu marķējuma instrumentāciju (lēna)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Neizdevās saglabāt laika grafiku: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Notiek profilētāja inicializēšana…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instalēšanas taimeris"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Atzīmēt izkārtojumu kā nederīgu"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Atrašanās vieta"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Ilga mijiedarbība"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Ilgstošs uzdevums"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}, iespējams, ir veiktspējas elements ar nepietiekamu caurlaides spēju"
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} norāda uz vāju lapas reaģētspēju."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Ilgs kadra laiks liecina par šādu problēmu: {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Jā"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (vienas darbības ilgums: {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Laikspiedoli"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Koda redaktors"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH2}. ieteikums no {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Fona pakalpojumi"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konsole"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Atkļūdotājs"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Atvilktne"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elementi"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Globāli"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Palīdzība"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript profilētājs"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Slāņi"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Atmiņa"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobilajām ierīcēm"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigācija"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Tīkls"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Veiktspēja"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Atveidošana"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Resursi"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Ekrānuzņēmums"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Iestatījumi"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Avoti"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Aizvērt"
   },
@@ -12723,7 +12804,7 @@
     "message": "(nav atlasīts neviens vienums)"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSOfS": {
-    "message": "{PH1}, {PH2}. ieteikums no {PH3}"
+    "message": "{PH1}, {PH2}. ieteikums no {PH3}"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSSelected": {
     "message": "{PH1}, ieteikums ir atlasīts"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Panelis: {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Atvilktne"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Atvilktnes sānjosla"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elementi"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Tīkls"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panelis"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Iestatījumi"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Avoti"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

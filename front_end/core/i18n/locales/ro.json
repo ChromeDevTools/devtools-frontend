@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Se scrie fișierul…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Avertismente privind urmărirea ieșirilor imediate"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infrastructura indiciilor pentru clienți"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Adresa URL a notei noi"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Nu s-a detectat niciun service worker care corespunde. Poate fi necesar să reîncarci pagina sau să verifici dacă aria de acoperire asociată cu service worker pentru pagina actuală include aria de acoperire și adresa URL inițială din manifest."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Nu s-a indicat niciun cod din Magazinul Play"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Nereușită"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Nu s-a declanșat"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "În așteptare"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Preîncărcarea nu a reușit."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Încercarea de preîncărcare nu este declanșată încă."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Încercarea de preîncărcare este eligibilă, dar în așteptare."
@@ -4446,7 +4452,7 @@
     "message": "Consola a fost ștearsă"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Inserarea codului în DevTools este folosită adesea pentru a induce în eroare utilizatorii și pentru a prelua controlul asupra conturilor lor. Opțiunea este blocată pe această pagină."
+    "message": "Inserarea de cod este blocată pe această pagină. Inserarea de cod în DevTools poate permite atacatorilor să-ți preia contul."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Setările consolei"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# sursă}few{# surse}other{# de surse}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{Un site cu potențial de urmărire}few{# site-uri cu potențial de urmărire}other{# de site-uri cu potențial de urmărire}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resursă}few{# resurse}other{# de resurse}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Cele mai bune practici"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Poate audita numai pagini HTTP / HTTPS și extensii Chrome. Navighează la altă pagină pentru a începe un audit."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Paginile pot fi auditate numai prin HTTP sau HTTPS. Navighează la o altă pagină."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Șterge datele stocate"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arhitectură (de ex., x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Șterge {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Șterge marca din lista de versiuni complete"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Marcă"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Proprietăți user agent"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Șterge marca din secțiunea user agent"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versiunea {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versiunea (de ex., 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Șterge"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "S-a șters rândul pentru marcă"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Lista completă a versiunilor (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Află mai multe"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobil"
@@ -10107,7 +10119,7 @@
     "message": "Actualizează"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Indiciile pentru clientul user agent sunt o alternativă la șirul pentru user agent, care identifică browserul și dispozitivul într-un mod mai structurat, cu o mai bună gestionare a confidențialității. Dă clic pe buton pentru a afla mai multe."
+    "message": "Indiciile pentru clientul user agent sunt o alternativă la șirul pentru user agent, care identifică browserul și dispozitivul într-un mod mai structurat, cu o mai bună gestionare a confidențialității."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "User agent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Tipul punctului de întrerupere"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Închide fereastra de dialog pentru editare și salvează modificările"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Punct de întrerupere condițional"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Vizionare"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} ({PH2} individual)"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Documente"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} individual)"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interacțiuni"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} individual)"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Schimbările aspectului"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Profilul CPU pentru un obiectiv nu este disponibil."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Principal – {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Apariții: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Pe lista de ignorat"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Activează codul de măsurare pentru redare avansată (lent)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Cronologia nu a fost salvată: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Se inițializează profilerul…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instalează temporizatorul"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Invalidează aspectul"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Locație"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Interacțiune de durată"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Activitate îndelungată"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} este probabil un element bottleneck pentru performanță."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} indică o adaptabilitate scăzută a paginii."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Duratele îndelungate de redare a cadrelor indică un {PH2}"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Da"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} individual)"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Durate"
   },
@@ -12312,7 +12333,7 @@
     "message": "Exportă"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
-    "message": "Cod"
+    "message": "ID"
   },
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "Sunt rezidente"
@@ -12550,6 +12571,66 @@
   },
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Editor de cod"
+  },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, sugestia {PH2} din {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Servicii în fundal"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Consolă"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Depanator"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Panou"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elemente"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Global"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Ajutor"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Profilerul JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Straturi"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memorie"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobil"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigare"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Rețea"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Performanță"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Se redă"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Resurse"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Captură de ecran"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Setări"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Surse"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Închide"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Panoul {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Panou"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Bara laterală a panoului"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elemente"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Rețea"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panou"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Setări"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Surse"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

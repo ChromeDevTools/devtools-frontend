@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "جارٍ الكتابة في الملف…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "إجراءات الحدّ من التتبّع الارتدادي"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints Infrastructure (البنية الأساسية لتعديلات البرامج)"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "عنوان URL لملاحظة جديدة"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "لم يتم رصد service worker مطابق. قد تحتاج إلى إعادة تحميل الصفحة، أو التأكّد من أنّ نطاق service worker للصفحة الحالية يشتمل على النطاق وعنوان URL البداية من ملف البيان."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "لم يتم توفير رقم تعريف \"متجر Play\"."
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "تعذّر إتمام العملية."
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "لم يتم إجراء المحاولة"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "في انتظار الموافقة"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "تعذَّرت عملية التحميل المُسبق."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "لم يتم إجراء محاولة التحميل المُسبق بعد."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "محاولة التحميل المُسبق مؤهَّلة ولكنّها في انتظار الموافقة."
@@ -4446,7 +4452,7 @@
     "message": "تم محو وحدة التحكم."
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "غالبًا ما يتم استخدام إجراء لصق الرموز البرمجية في أدوات مطوّري البرامج لخداع المستخدمين والاستيلاء على حساباتهم، لذلك تم حظر هذا الإجراء في هذه الصفحة."
+    "message": "تم حظر لصق الرمز في هذه الصفحة. يمكن أن يؤدي لصق الرمز في أدوات مطوّري البرامج إلى السماح للمهاجمين بالاستيلاء على حسابك."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "إعدادات وحدة التحكم"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{مصدر واحد}zero{# مصدر}two{مصدران}few{# مصادر}many{# مصدرًا}other{# مصدر}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{هناك موقع إلكتروني واحد يُحتمل أنّه يتتبّع نشاط المستخدم.}zero{هناك # موقع إلكتروني يُحتمل أنّه يتتبّع نشاط المستخدم.}two{هناك موقعان إلكترونيان يُحتمل أنّهما يتتبّعان نشاط المستخدم.}few{هناك # مواقع إلكترونية يُحتمل أنّها تتتبّع نشاط المستخدم.}many{هناك # موقعًا إلكترونيًا يُحتمل أنّه يتتبّع نشاط المستخدم.}other{هناك # موقع إلكتروني يُحتمل أنّه يتتبّع نشاط المستخدم.}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{مورد واحد}zero{# مورد}two{موردان}few{# موارد}many{# موردًا}other{# مورد}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "أفضل الممارسات"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "يمكن التدقيق في صفحات البروتوكول HTTP/HTTPS وإضافات Chrome فقط. انتقِل إلى صفحة أخرى لبدء عملية تدقيق."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "يمكن تدقيق الصفحات المتوفّرة عبر بروتوكول HTTP أو HTTPS فقط. انتقِل إلى صفحة مختلفة."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "محو مساحة التخزين"
@@ -9465,7 +9474,7 @@
     "message": "إعادة التحميل لعرض التفاصيل"
   },
   "panels/security/SecurityPanel.ts | resources": {
-    "message": "المصادر"
+    "message": "المَراجِع"
   },
   "panels/security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
     "message": "أصبحت آلية تبادل مفاتيح تشفير RSA قديمة. يُرجى تفعيل مجموعة الرموز المستندة إلى بروتوكول ECDHE."
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "بنية وحدة المعالجة المركزية (مثل x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "حذف {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "حذف علامة تجارية من قائمة الإصدارات الكاملة"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "العلامة التجارية"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "سمات وكيل المستخدم"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "حذف علامة تجارية من قسم وكيل المستخدم"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "الإصدار {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "الإصدار (مثل 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "حذف"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "تم حذف صف العلامات التجارية."
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "قائمة الإصدارات الكاملة (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "مزيد من المعلومات"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "جهاز جوّال"
@@ -10107,7 +10119,7 @@
     "message": "تحديث"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "تعديلات برنامج وكيل المستخدم هي بديل لسلسلة وكيل المستخدم التي توفِّر معلومات منظّمَة بشكل أكبر عن المتصفِّح والجهاز مع مراعاة الخصوصية بطريقة أفضل. انقر على الزر لمزيد من المعلومات."
+    "message": "إنّ حقول معلومات العميل الخاصة ببرنامج وكيل المستخدم هي بديل لسلسلة وكيل المستخدم التي توفِّر معلومات منظّمَة بشكل أكبر عن المتصفِّح والجهاز مع مراعاة الخصوصية بطريقة أفضل."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "وكيل المستخدم (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "نوع نقطة الإيقاف"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "إغلاق مربّع حوار التعديل وحفظ التغييرات"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "نقطة الإيقاف المشروطة"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "مشاهدة"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "‫{PH1} (الوقت المستغرق في هذه العقدة وحدها {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "المستندات"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "وحدة معالجة الرسومات"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "‫{PH1} (الوقت المستغرق في هذه العقدة وحدها {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "التفاعلات"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "‫{PH1} (الوقت المستغرق في هذه العقدة وحدها {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "متغيّرات التصميم"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "لا يتوفّر تحليل وحدة المعالجة المركزية (CPU) لأحد الأهداف."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "الكائن الرئيسي: {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "عدد مواضع الورود: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "في قائمة التجاهل"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "تفعيل قياس سرعة العرض المتقدم (بطيء)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "تعذَّر حفظ المخطّط الزمني: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "جارٍ إعداد المحلّل…"
@@ -11643,7 +11658,7 @@
     "message": "الموقع الإلكتروني المطوَّر"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "الخبرة"
+    "message": "التجربة"
   },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "تعذَّر تحميل النص البرمجي من ذاكرة التخزين المؤقت"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "تثبيت موقِّت"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "رقم التعريف"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "إلغاء صلاحية التصميم"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "الموقع الجغرافي"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "تفاعل طويل"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "مهمة طويلة"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} هو مؤثِّر سلبي محتمل على الأداء."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "يتم توضيح السرعة المتدنية لاستجابة الصفحة من خلال {PH1}."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. تشير أوقات عرض اللقطات الطويلة إلى {PH2}."
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "نعم"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "‫{PH1} (الوقت المستغرق في هذه العقدة وحدها {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "الأوقات"
   },
@@ -12201,7 +12222,7 @@
     "message": "إخفاء إطار chrome في طريقة عرض \"الطبقات\""
   },
   "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "أداة تحليل JavaScript"
+    "message": "محلّل JavaScript"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "تحميل الملف التعريفي…"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "أداة تعديل الرموز"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "‫{PH1}، الاقتراح رقم {PH2} من إجمالي {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "خدمات تُشغَّل في الخلفية"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "وحدة التحكّم"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "برنامج تصحيح الأخطاء"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "الدرج"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "العناصر"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "عالمي"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "مساعدة"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "محلّل JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "الطبقات"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "الذاكرة"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "الجهاز الجوّال"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "التنقّل"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "الشبكة"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "الأداء"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "العرض"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "المَراجِع"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "لقطة شاشة"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "الإعدادات"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "المصادر"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "إغلاق"
   },
@@ -12723,7 +12804,7 @@
     "message": "(لم يتم اختيار أي عنصر)"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSOfS": {
-    "message": "{PH1}، الاقتراح رقم {PH2} من إجمالي {PH3}"
+    "message": "‫{PH1}، الاقتراح رقم {PH2} من إجمالي {PH3}"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSSelected": {
     "message": "الاقتراحات التي تم اختيارها: {PH1}"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "لوحة {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "الدرج"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "الشريط الجانبي للدرج"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "العناصر"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "الشبكة"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "لوحة"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "الإعدادات"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "المصادر"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Kirjoitetaan tiedostoa…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Jäljittämisen lieventämisen uudelleenohjaaminen"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints ‑infrastruktuuri"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Uuden muistiinpanon URL-osoite"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Vastaavuutta ei havaittu: service worker. Sinun on ehkä päivitettävä sivu tai tarkistettava, kattavatko nykyisen sivun laajuus ja service worker manifestin ja aloitus-URL:in."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Ei Play Kaupan tunnusta"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Virhe"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Ei käynnistetty"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Odottaa"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Esilataus epäonnistui."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Esilatausyritys ei ole vielä käynnistynyt."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Esilatausyritys on kelvollinen, mutta se odottaa."
@@ -4446,7 +4452,7 @@
     "message": "Konsoli tyhjennetty"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Koodia liitetään usein kehittäjätyökaluihin ihmisten huijaamiseksi ja heidän tiliensä kaappaamiseksi. Se on estetty tällä sivulla."
+    "message": "Liittämiskoodi on estetty tällä sivulla. Jos liität koodia DevToolsiin, hyökkääjät voivat kaapata tilisi."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsolin asetukset"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# lähde}other{# lähdettä}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 mahdollisesti jäljittävä verkkosivusto}other{# mahdollisesti jäljittävää sivustoa}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resurssi}other{# resurssia}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Parhaat käytännöt"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Voi tarkastaa vain HTTP/-HTTPS -sivuja ja Chrome-laajennuksia. Aloita tarkastus siirtymällä toiselle sivulle."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Voi tarkastaa vain HTTP- tai HTTPS-sivuja. Siirry toiselle sivulle."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Tyhjennä tallennustila"
@@ -9465,7 +9474,7 @@
     "message": "Katso tiedot lataamalla uudelleen"
   },
   "panels/security/SecurityPanel.ts | resources": {
-    "message": "Materiaalit"
+    "message": "Lisätietoa"
   },
   "panels/security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
     "message": "RSA-avainvaihto on vanhentunut. Valitse ECDHE-pohjainen salausmenettely."
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arkkitehtuuri (esim. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Poista {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Poista brändi täydestä versioluettelosta"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Merkki"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Käyttäjäagentin omaisuudet"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Poista brändi käyttäjäagenttiosiosta"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versio {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versio (esim. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Poista"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Brändirivi poistettiin"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Lista täysistä versioista (Sec-CH-UA-full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Lue lisää"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Matkapuhelin"
@@ -10107,7 +10119,7 @@
     "message": "Päivitä"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Käyttäjäagentin asiakassovelluksen vihjeet ovat vaihtoehto käyttäjäagentin merkkijonolle. Niillä voidaan tunnistaa selain ja laite paremmin jäsennellyllä tavalla huomioiden myös tietosuoja paremmin. Klikkaa painiketta, niin saat lisätietoja."
+    "message": "Käyttäjäagentin asiakassovelluksen vihjeet ovat vaihtoehto käyttäjäagentin merkkijonolle. Niillä voidaan tunnistaa selain ja laite paremmin jäsennellyllä tavalla huomioiden myös tietosuoja paremmin."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Käyttäjäagentti (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Pysäytyspisteen tyyppi"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Sulje muokkausikkuna ja tallenna muutokset"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Ehdollinen pysäytyspiste"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Katso"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (itse {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumentit"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "Grafiikkasuoritin"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (itse {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interaktiot"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (itse {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Asettelun muutokset"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Kohteen suoritinprofiili ei ole käytettävissä."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Ensisijainen — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Esiintymät: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Ohitusluettelossa"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Ota edistynyt piirtämisen instrumentointi (hidas) käyttöön"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Aikajanan tallennus epäonnistui: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Alustetaan profiloijaa…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Asenna ajastin"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Tunnus"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Merkitse asettelu kelpaamattomaksi"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Sijainti"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Pitkä interaktio"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Pitkä tehtävä"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} on todennäköisesti suorituskyvyn pullonkaula."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} tarkoittaa, että sivun responsiivisuus on huono."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Pitkien kehysaikojen syynä voi olla {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Kyllä"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (itse {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Ajat"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Koodieditori"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, ehdotus {PH2}/{PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Taustapalvelut"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konsoli"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Virheenkorjaus"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Vetopaneeli"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elementit"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Yleiset"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Ohje"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript-resurssianalyysi"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Tasot"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Muisti"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobiili"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigointi"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Verkko"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Suorituskyky"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Renderöinti"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Lisätietoa"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Kuvakaappaus"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Asetukset"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Lähteet"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Sulje"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Paneeli: {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Vetopaneeli"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Vetopaneelin sivupalkki"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elementit"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Verkko"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Paneeli"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Asetukset"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Lähteet"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

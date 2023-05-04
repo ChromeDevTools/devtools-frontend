@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Записва се файл…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Намаляване на възможносите за проследяване чрез пренасочване"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Инфраструктура за подсказки за клиентски програми"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL адрес на нова бележка"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Не е открит съответстващ файл service worker. Може да се наложи да презаредите страницата или да се уверите, че зададените в манифеста обхват и URL адрес за стартиране попадат в обхвата на service worker за текущата страница."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Не е предоставен идентификатор за Google Play Магазин"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Неуспех"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Не е задействано"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Изчаква се"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Предварителното зареждане не бе успешно."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Опитът за предварително зареждане още не се е задействал."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Опитът за предварително зареждане отговаря на условията, но е в състояние на изчакване."
@@ -4446,7 +4452,7 @@
     "message": "Данните в конзолата са изчистени"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Поставянето на код в DevTools често се използва с цел измама на хора и поемане на контрол над профилите им. Действието е блокирано на тази страница."
+    "message": "Поставянето на код е блокирано на тази страница. Поставянето на код в DevTools може да даде възможност на хакери да откраднат профила ви."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Настройки на конзолата"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# източник}other{# източника}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 потенциално проследяващ уебсайт}other{# потенциално проследяващи уебсайта}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ресурс}other{# ресурса}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Най-добри практики"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Могат да се проверяват само страници с HTTP/HTTPS и разширения за Chrome. Отворете друга страница, за да стартирате проверка."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Могат да се проверяват само страници с HTTP или HTTPS. Отворете друга страница."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Изчистване на хранилището"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Архитектура (напр. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Изтриване на {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Изтриване на марката от списъка на пълната версия"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Марка"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Свойства на потребителския агент"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Изтриване на марката от секцията на потребителския агент"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Версия {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Версия (напр. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Изтриване"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Изтрит е ред с марки"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Списък на пълните версии (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Научете повече"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Мобилно устройство"
@@ -10107,7 +10119,7 @@
     "message": "Актуализиране"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Подсказките за потребителския агент са алтернатива на съответния низ и служат за идентифициране на браузъра и устройството по по-структуриран начин, който е по-подходящ от гледна точка на поверителността. Кликнете върху бутона, за да научите повече."
+    "message": "Подсказките за потребителския агент са алтернатива на съответния низ и служат за идентифициране на браузъра и устройството по по-структуриран начин, който е по-подходящ от гледна точка на поверителността."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Потребителски агент (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Тип точка на прекъсване"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Затваряне на диалоговия прозорец за редактиране и запазване на промените"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Условна точка на прекъсване"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Наблюдение"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (собствено: {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Документи"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "ГП"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (собствено: {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Взаимодействия"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (собствено: {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Структурни промени"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Не е налице профил на процесора за определена цел."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Основно – {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Срещания: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "В списъка за пренебрегване"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Активиране на разширената инструментация на изобразяването (бавна)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Запазването на хронологията не бе успешно: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Инструментът за анализ се инициализира…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Инсталиране на таймер"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Идентификатор"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Анулиране на валидността на оформление"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Местоположение"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Продължително взаимодействие"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Дълга задача"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}: това вероятно е слабо място, което влияе на ефективността."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} показва слаба реакция на страницата."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Дългото време за изобразяване на кадъра е признак за {PH2}"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Да"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (собствено: {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Времена"
   },
@@ -12312,7 +12333,7 @@
     "message": "Експортиране"
   },
   "panels/webauthn/WebauthnPane.ts | id": {
-    "message": "Идент. №"
+    "message": "Идентификатор"
   },
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "Представлява резидентна идентификационна информация"
@@ -12550,6 +12571,66 @@
   },
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Редактор на код"
+  },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, предложение {PH2} от {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Фонови услуги"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Конзола"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Инструмент за откриване и отстраняване на грешки"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Слой"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Елементи"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Глобални"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Помощ"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Инструмент за анализ на JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Слоеве"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Памет"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Мобилни"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Навигиране"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Мрежа"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Ефективност"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Рендериране"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Ресурси"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Екранна снимка"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Настройки"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Източници"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "Затваряне"
@@ -12803,6 +12884,27 @@
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Панел „{PH1}“"
   },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Слой"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Странична лента за слоя"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Елементи"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Мрежа"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Панел"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Настройки"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Източници"
+  },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"
   },
@@ -13014,7 +13116,7 @@
     "message": "Свойства на CSS"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Изтриване на {PH1}"
+    "message": "Изтриване на „{PH1}“"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
     "message": "Резервен елемент {PH1}"

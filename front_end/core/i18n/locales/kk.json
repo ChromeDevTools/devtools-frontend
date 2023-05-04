@@ -126,7 +126,7 @@
     "message": "Консоль"
   },
   "core/common/SettingRegistration.ts | debugger": {
-    "message": "Түзетуші"
+    "message": "Түзеткіш"
   },
   "core/common/SettingRegistration.ts | elements": {
     "message": "Элементтер"
@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Файл жазылуда…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Бас тартуды бақылау жеңілдіктері"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints жинағының инфрақұрылымы"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Жаңа жазба URL мекенжайы"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Сәйкес келетін service worker анықталмады. Сізге бетті қайта жүктеу керек болуы мүмкін немесе қазіргі бетке арналған service worker ауқымы манифестегі ауқымды және бастапқы URL мекенжайын қамтитынын тексеріңіз."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Store идентификаторы көрсетілмеген."
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Орындалмаған"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Іске қосылмаған"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Күтілуде"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Алдын ала жүктеу сәтсіз болды."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Алдын ала жүктеу әрекеті әлі іске қосылмаған."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Алдын ала жүктеу мүмкіндігі жарамды, бірақ күтілуде."
@@ -4446,7 +4452,7 @@
     "message": "Консоль өшірілді"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Кодты әзірлеуші құралдарына қою көбінесе адамдарды алдау және аккаунттарын иемдену үшін пайдаланылады. Ол бұл бетте бөгелген."
+    "message": "Бұл бетте кодты қою блокталған. Кодты әзірлеуші құралдарына қою шабуылшылардың аккаунтыңызды басып алуына мүмкіндік береді."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Консоль параметрлері"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# дереккөз}other{# дереккөз}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 ықтимал бақылау веб-сайты}other{# ықтимал бақылау веб-сайты}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ресурс}other{# ресурс}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Кеңестер"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "HTTP/HTTPS беттері мен Chrome кеңейтімдерін ғана тексере алады. Тексеруді бастау үшін басқа бетке өтіңіз."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "HTTP немесе HTTPS беттерін ғана тексере алады. Басқа бетке өтіңіз."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Жадты тазалау"
@@ -7143,7 +7152,7 @@
     "message": "Үлгі қосу"
   },
   "panels/network/BlockedURLsPane.ts | dBlocked": {
-    "message": "{PH1} бөгелген"
+    "message": "{PH1} блокталған"
   },
   "panels/network/BlockedURLsPane.ts | enableNetworkRequestBlocking": {
     "message": "Желі сұрауын бөгеуді қосу"
@@ -9624,7 +9633,7 @@
     "message": "Бұл бастапқы сайтпен байланысыңыз қорғалмаған."
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
-    "message": "Бұл бетте қорғалмаған ресурстар сұралды, ал олар бөгелген."
+    "message": "Бұл бетте қорғалмаған ресурстар сұралды, ал олар блокталған."
   },
   "panels/security/security-meta.ts | security": {
     "message": "Қауіпсіздік"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Құрылым (мысалы, x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} жою"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Брендті толық нұсқалар тізімінен жою"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Бренд"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Пайдаланушы агентінің сипаттары"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Брендті пайдаланушы агенті бөлімінен жою"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Нұсқасы: {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Нұсқа (мысалы, 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Жою"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Бренд қатарын жою"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Толық нұсқалар тізімі (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Толығырақ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Мобильдік"
@@ -10107,7 +10119,7 @@
     "message": "Жаңарту"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Пайдаланушы агенті клиентінің тұспалдары пайдаланушы агентінің жолына балама, ол браузерді және құрылғыны құпиялығы жақсырақ құрылымдалған тәсілмен анықтайды. Толық ақпарат алу үшін осы түймені басыңыз."
+    "message": "Пайдаланушы агенті клиентінің тұспалдары пайдаланушы агентінің жолына балама, олар браузерді және құрылғыны құпиялығы жақсырақ құрылымдалған тәсілмен анықтайды."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Пайдаланушы агенті (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Тоқтату нүктесінің түрі"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Өзгерту диалогтік терезесін жабу және өзгерістерді сақтау"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Шартты тоқтату нүктесі"
@@ -10611,7 +10626,7 @@
     "message": "Анықталған ерекше жағдайларда кідірту"
   },
   "panels/sources/SourcesPanel.ts | resumeWithAllPausesBlockedForMs": {
-    "message": "500 мс бөгелген барлық кідірісті жалғастыру"
+    "message": "500 мс блокталған барлық кідірісті жалғастыру"
   },
   "panels/sources/SourcesPanel.ts | revealInSidebar": {
     "message": "Жылжыту жолағында көрсету"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Сағат"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (өзіндік {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Құжаттар"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (өзіндік {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Өзара әрекеттестік"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (өзіндік {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Формат өзгерістері"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Нысана үшін орталық процессор профилі қолжетімді емес."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Негізгі — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Кездесулері: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Елемеу тізімінде"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Қосымша бояу құралдарын қосу (баяу)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Хронология сақталмады: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Профильдеушіні іске қосу…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Таймер орнату"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Идентификатор"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Схемасын жарамсыз деп тану"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Орын"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Ұзақ әрекеттестік"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Ұзын тапсырма"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} жұмыстағы қиын тұс болуы мүмкін."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} беттің нашар жауап беретінін көрсетеді."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Ұзын кадр уақыты – {PH2} белгісі"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Иә"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (өзіндік {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Уақыт белгілері"
   },
@@ -12201,7 +12222,7 @@
     "message": "Қабаттар көрінісінде chrome кадрын жасыру"
   },
   "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "JavaScript профильдеушісі"
+    "message": "JavaScript Profiler"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "Профильді жүктеу…"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Код редакторы"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH2}/{PH3} ұсынысы"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Фондық қызметтер"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Консоль"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Түзеткіш"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Тартпа"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Элементтер"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Жалпы"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Анықтама"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript Profiler"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Қабаттар"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Жад"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Мобильдік құрылғы"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Навигация"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Желі"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Өнімділік"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Рендеринг"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Ресурстар"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Скриншот"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Параметрлер"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Дереккөздер"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Жабу"
   },
@@ -12723,7 +12804,7 @@
     "message": "(ешбір элемент таңдалмаған)"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSOfS": {
-    "message": "{PH1}, {PH2} / {PH3} ұсынысы"
+    "message": "{PH1}, {PH2}/{PH3} ұсынысы"
   },
   "ui/legacy/SuggestBox.ts | sSuggestionSSelected": {
     "message": "{PH1}, ұсыныс таңдалды"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} панелі"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Тартпа"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Тартпаның жылжыту жолағы"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Элементтер"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Желі"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Панель"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Параметрлер"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Дереккөздер"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

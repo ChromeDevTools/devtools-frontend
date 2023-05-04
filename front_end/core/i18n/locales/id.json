@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Menulis file…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Mitigasi Pelacakan Kembali"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infrastruktur Petunjuk Klien"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL catatan baru"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Tidak terdeteksi service worker yang cocok. Anda harus memuat ulang halaman, atau memeriksa apakah cakupan service worker untuk halaman saat ini menyertakan scope dan start_URL dari manifes."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "ID Play Store tidak ada"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Gagal"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Tidak dipicu"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Tertunda"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Pramuat gagal."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Upaya pramuat belum dipicu."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Upaya pramuat memenuhi syarat tetapi tertunda."
@@ -4446,7 +4452,7 @@
     "message": "Konsol dihapus"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Menempelkan kode ke devtools sering digunakan untuk melakukan scam dan mengambil alih akun orang. Tindakan ini diblokir di halaman ini."
+    "message": "Kode penempelan diblokir di halaman ini. Dengan menempelkan kode ke devtools, penyerang dapat mengambil alih akun Anda."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Setelan konsol"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# asal}other{# asal}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 situs berpotensi melacak aktivitas pengguna}other{# situs berpotensi melacak aktivitas pengguna}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resource}other{# resource}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Praktik terbaik"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Hanya dapat mengaudit halaman HTTP/HTTPS dan ekstensi Chrome. Buka halaman lain untuk memulai audit."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Hanya dapat mengaudit halaman di HTTP atau HTTPS. Buka halaman lain."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Hapus penyimpanan"
@@ -9465,7 +9474,7 @@
     "message": "Muat ulang untuk menampilkan detail"
   },
   "panels/security/SecurityPanel.ts | resources": {
-    "message": "Referensi"
+    "message": "Resource"
   },
   "panels/security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
     "message": "Pertukaran kunci RSA tidak digunakan lagi. Aktifkan suite cipher berbasis ECDHE"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arsitektur (mis. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Hapus {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Hapus brand dari daftar versi lengkap"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Merek"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Properti agen pengguna"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Hapus brand dari bagian agen pengguna"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versi {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versi (mis. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Hapus"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Baris merek dihapus"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Daftar versi lengkap (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Pelajari lebih lanjut"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Seluler"
@@ -10107,7 +10119,7 @@
     "message": "Update"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Petunjuk klien agen pengguna adalah alternatif dari string agen pengguna yang mengidentifikasi browser dan perangkat dengan cara yang lebih terstruktur dengan penghitungan privasi yang lebih baik. Klik tombol untuk mempelajari lebih lanjut."
+    "message": "Client hints agen pengguna adalah alternatif dari string agen pengguna yang mengidentifikasi browser dan perangkat dengan cara yang lebih terstruktur dengan penghitungan privasi yang lebih baik."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Agen pengguna (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Jenis titik henti sementara"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Tutup dialog edit dan simpan perubahan"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Titik henti sementara bersyarat"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Tonton"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} ({PH2} mandiri)"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumen"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} mandiri)"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interaksi"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} mandiri)"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Pergeseran Tata Letak"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Profil CPU untuk target tidak tersedia."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Utama — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Kejadian: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Pada daftar abaikan"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Aktifkan instrumentasi paint lanjutan (lambat)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Gagal menyimpan linimasa: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Melakukan inisialisasi profiler…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Instal Timer"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Tata Letak Tidak Valid"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Lokasi"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Interaksi panjang"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Tugas panjang"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} mungkin merupakan bottleneck performa."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} menunjukkan responsivitas halaman yang buruk."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Waktu render frame yang lama merupakan indikasi {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ya"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} mandiri)"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Informasi Waktu"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Editor kode"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, saran {PH2} dari {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Layanan Latar Belakang"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konsol"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Debugger"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Panel samping"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elemen"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Global"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Bantuan"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Profiler JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Lapisan"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memori"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Ponsel"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigasi"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Jaringan"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Performa"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Rendering"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Resource"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Screenshot"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Setelan"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Sumber"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Tutup"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Panel {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Panel samping"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Sidebar panel samping"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elemen"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Jaringan"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Setelan"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Sumber"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

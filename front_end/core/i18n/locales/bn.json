@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "ফাইলে লেখা হচ্ছে…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "বাউন্স ট্র্যাকিং মিটিগেশন"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints ইনফ্রাস্ট্রাকচার"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "নতুন নোটের URL"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "মিলে যাওয়া কোনও service worker শনাক্ত করা যায়নি। আপনাকে পৃষ্ঠা রিলোড করতে হতে পারে অথবা বর্তমান পৃষ্ঠার স্কোপ service worker-এর স্কোপের সাথে মেলে কিনা চেক করে 'ম্যানিফেস্ট' থেকে ইউআরএল শুরু করতে হতে পারে।"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "কোনও Play Store আইডি প্রদান করা হয়নি"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "করা যায়নি"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "ট্রিগার হয়নি"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "বাকি আছে"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "প্রিলোড হয়নি।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "প্রিলোড করার চেষ্টা এখনও ট্রিগার হয়নি।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "উপযুক্তভাবে প্রিলোড করার চেষ্টা করা হয়েছে তবে সেটি পেন্ডিং রয়েছে।"
@@ -4446,7 +4452,7 @@
     "message": "কনসোল মুছে ফেলা হয়েছে"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "লোকজনের সাথে স্ক্যাম করে তাদের অ্যাকাউন্ট হস্তগত করতে প্রায়ই DevTools-এ 'পেস্টিং' কোড ব্যবহার করা হয়। এই পৃষ্ঠায় এটি ব্লক করা আছে।"
+    "message": "এই পৃষ্ঠায় কোড পেস্ট করার সুবিধা ব্লক করা হয়েছে। DevTools-এ কোড পেস্টিং করলে আক্রমণকারীরা আপনার অ্যাকাউন্টের নিয়ন্ত্রণ নিতে পারে।"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "কনসোল সেটিংস"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{#টি সোর্স}one{#টি সোর্স}other{#টি সোর্স}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{সম্ভাব্য ১টি ট্র্যাকিং ওয়েবসাইট}one{সম্ভাব্য #টি ট্র্যাকিং ওয়েবসাইট}other{সম্ভাব্য #টি ট্র্যাকিং ওয়েবসাইট}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{#টি রিসোর্স}one{#টি রিসোর্স}other{#টি রিসোর্স}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "পেশাদার পদ্ধতি"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "শুধু HTTP/HTTPS পৃষ্ঠা ও Chrome এক্সটেনশন পরীক্ষা করে দেখতে পারে। পরীক্ষা করে দেখার জন্য আলাদা একটি পৃষ্ঠাতে নেভিগেট করুন।"
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "HTTP বা HTTP-এ শুধুমাত্র পৃষ্ঠা অডিট করা যাবে। নেভিগেট করে আলাদা পৃষ্ঠায় যান।"
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "স্টোরেজ মুছুন"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "সিস্টেম আর্কিটেকচার (উদাহরণ: x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} মুছুন"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "ভার্সনের সম্পূর্ণ তালিকা থেকে ব্র্যান্ড মুছে দিন"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "ব্র্যান্ড"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "ইউজার এজেন্ট প্রপার্টি"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "ইউজার এজেন্ট বিভাগ থেকে ব্র্যান্ড মুছে দিন"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "ভার্সন {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "ভার্সন (যেমন 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "মুছুন"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "ব্র্যান্ডের সারি মোছা হয়েছে"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "সম্পূর্ণ ভার্সনের তালিকা (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "আরও জানুন"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "মোবাইল"
@@ -10107,7 +10119,7 @@
     "message": "আপডেট করুন"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "ইউজার এজেন্ট ক্লায়েন্ট হিন্ট হল ইউজার এজেন্ট স্ট্রিংয়ের বিকল্প ব্যবস্থা যা আরও সুসংগঠিতভাবে এবং আরও বেশি গোপনীয়তার সাথে ব্রাউজার ও ডিভাইস শনাক্ত করে। আরও জানতে বোতামে ক্লিক করুন।"
+    "message": "ইউজার এজেন্টের ক্লায়েন্ট হিন্ট হল ইউজার এজেন্ট স্ট্রিংয়ের বিকল্প ব্যবস্থা যা আরও সুসংগঠিতভাবে এবং আরও বেশি গোপনীয়তার সাথে ব্রাউজার ও ডিভাইস শনাক্ত করে।"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "ইউজার এজেন্ট (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "ব্রেকপয়েন্টের ধরন"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "এডিট সংক্রান্ত ডায়ালগ বন্ধ করুন ও পরিবর্তন সেভ করুন"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "কন্ডিশনাল ব্রেকপয়েন্ট"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "দেখুন"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (সেল্ফ {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "ডকুমেন্ট"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (সেল্ফ {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "ইন্টারঅ্যাকশন"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (সেল্ফ {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "লেআউট শিফ্ট"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "টার্গেটের জন্য CPU প্রোফাইল উপলভ্য নেই।"
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "প্রধান — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "ঘটনা: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "উপেক্ষার তালিকায় আছে"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "উন্নত পেন্ট সরঞ্জাম (স্লো) চালু করুন"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "টাইমলাইন সেভ করা যায়নি: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "প্রোফাইলার শুরু করা হচ্ছে…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "টাইমার ইনস্টল করুন"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "আইডি"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "লেআউট বাতিল করুন"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "লোকেশন"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "দীর্ঘ ইন্ট‍ার‍্যাকশন"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "লম্বা টাস্ক"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} সম্ভবত একটি পারফর্ম্যান্স বটলনেক।"
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} নির্দেশ করে যে এই পৃষ্ঠায় উত্তর পেতে দীর্ঘ সময় লাগে।"
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. লম্বা ফ্রেম সময়গুলি {PH2}-এর সূচক"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "হ্যাঁ"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (সেল্ফ {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "সময়"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "কোড এডিটর"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH3}টির মধ্যে {PH2} নম্বর সাজেশন"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "ব্যাকগ্রাউন্ড পরিষেবা"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "কনসোল"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "ডিবাগার"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "ড্রয়ার"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "এলিমেন্ট"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "গ্লোবাল"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "সহায়তা"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "জাভাস্ক্রিপ্ট প্রোফাইলার"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "লেয়ার"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "মেমরি"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "মোবাইল"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "নেভিগেশন মোড"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "নেটওয়ার্ক"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "পারফর্ম্যান্স"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "রেন্ডার করা হচ্ছে"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "রিসোর্স"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "স্ক্রিনশট"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "সেটিংস"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "সোর্স"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "বন্ধ করুন"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} প্যানেল"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "ড্রয়ার"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "ড্রয়ার সাইডবার"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "এলিমেন্ট"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "নেটওয়ার্ক"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "প্যানেল"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "সেটিংস"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "সোর্স"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

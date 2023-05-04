@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Файлыг бичиж байна…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Дахин чиглүүлэх хяналтыг багасгах"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Клиентийн зааврын дэд бүтэц"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Шинэ тэмдэглэлийн URL"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Тохирох service worker илэрсэнгүй. Та хуудсыг дахин ачаалах эсвэл одоогийн хуудасны service worker-н хүрээ нь хүрээг хязгаарлаж байгааг шалгаж, тодорхойлогч файлаас URL эхлүүлэх шаардлагатай байж магадгүй."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Store ID өгөөгүй"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Амжилтгүй"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Идэвхжүүлээгүй"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Хүлээгдэж буй"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Урьдчилан ачаалж чадсангүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Урьдчилан ачаалах оролдлогыг одоогоор идэвхжүүлээгүй байна."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Урьдчилан ачаалах оролдлого зохих эрхтэй ч хүлээгдэж байна."
@@ -4446,7 +4452,7 @@
     "message": "Консолыг арилгасан"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "DevTools-д код буулгахыг ихэвчлэн хүмүүсийг залилах болон тэдний бүртгэлийг булаан авахад ашигладаг. Үүнийг энэ хуудсан дээр блоклосон."
+    "message": "Код буулгахыг энэ хуудсанд блоклосон. DevTools-д код буулгах нь халдагчдад таны бүртгэлийг хяналтдаа авах боломжийг олгож болно."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Консолын тохиргоо"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# эх сурвалж}other{# эх сурвалж}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 вебсайт хянаж байж болзошгүй}other{# вебсайт хянаж байж болзошгүй}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# нөөц}other{# нөөц}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Шилдэг туршлага"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Зөвхөн HTTP/HTTPS хуудас болон Chrome-н өргөтгөлд аудит хийх боломжтой. Аудитыг эхлүүлэхийн тулд өөр хуудас руу шилжинэ үү."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Зөвхөн HTTP эсвэл HTTPS дээрх хуудаснуудыг аудит хийх боломжтой. Өөр хуудас руу шилжинэ үү."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Хадгалах санг цэвэрлэх"
@@ -9465,7 +9474,7 @@
     "message": "Дэлгэрэнгүй мэдээллийг харахын тулд дахин ачаалах"
   },
   "panels/security/SecurityPanel.ts | resources": {
-    "message": "Нөөц"
+    "message": "Нөөцүүд"
   },
   "panels/security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
     "message": "RSA түлхүүрийн солилцоо хуучирсан. ECDHE-д суурилсан цифрийн цуглуулгыг идэвхжүүлнэ үү."
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Архитектур (ж.нь x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1}-г устгах"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Бүтэн хувилбарын жагсаалтаас брэнд устгана уу"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Брэнд"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Хэрэглэгчийн агентын шинж чанарууд"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Хэрэглэгчийн агентын хэсгээс брэнд устгана уу"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Хувилбар {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Хувилбар (жш.нь. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Устгах"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Брэндийн мөрийг устгасан"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Бүрэн хувилбарын жагсаалт (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Нэмэлт мэдээлэл авах"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Мобайл"
@@ -10107,7 +10119,7 @@
     "message": "Шинэчлэх"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Хэрэглэгчийн агентын клиентийн заавар нь хөтөч болон төхөөрөмжийг бүртгэлийн илүү сайн нууцлалын тусламжтай илүү бүтэцлэгдсэн байдлаар тодорхойлдог хэрэглэгчийн агентын өөр хувилбар юм. Нэмэлт мэдээлэл авахын тулд товчлуурыг товшино уу."
+    "message": "Хэрэглэгчийн агентын Client Hints нь хөтөч болон төхөөрөмжийг бүртгэлийн илүү сайн нууцлал бүхий илүү бүтэцлэгдсэн байдлаар тодорхойлдог хэрэглэгчийн агентын мөрийн өөр хувилбар юм."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Хэрэглэгчийн агент (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Хугарлын цэгийн төрөл"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Засах харилцан цонхыг хааж өөрчлөлтийг хадгална уу"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Нөхцөлт хугарлын цэг"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Үзэх"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (өөрөө {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Документ"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (өөрөө {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Харилцан үйлдэл"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (өөрөө {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Бүдүүвчийн шилжилт"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Зорилтын төв процессорын нэгжийн профайл боломжгүй байна."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Үндсэн — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Тохиолдол: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Үл хэрэгсэх жагсаалтад"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Нарийвчилсан будгийн хэрэгслийг идэвхжүүлэх (удаан)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Он цагийн хэлхээсийг хадгалж чадсангүй: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Профайлерыг эхлүүлж байна…"
@@ -11643,7 +11658,7 @@
     "message": "хувьсан өөрчлөгдсөн"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "Туршлага"
+    "message": "Хэрэглээ"
   },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "завсрын санах ойгоос скриптийг ачаалж чадсангүй"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Цаг хэмжигчийг суулгах"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Бүдүүвчийг хүчингүй болгох"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Байршил"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Удаан харилцан үйлдэл"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Урт хугацаатай ажил"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} нь гүйцэтгэлийн гацаа байж магадгүй."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} нь хуудасны муу хариу үйлдэлт байдлыг зааж байна."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Урт фреймийн хугацаа нь {PH2}-г илэрхийлнэ"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Тийм"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (өөрөө {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Хугацаа"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Код засварлагч"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH3}-с {PH2} зөвлөмж"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Арын үйлчилгээнүүд"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Консол"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Дебаг хийгч"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Шургуулга"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Элементүүд"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Глобал"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Тусламж"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript-н профайлер"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Давхаргууд"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Санах ой"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Гар утас"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Навигац"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Сүлжээ"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Гүйцэтгэл"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Рэндэрлэх"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Нөөцүүд"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Дэлгэцийн агшин"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Тохиргоо"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Эх сурвалжууд"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Хаах"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1}-н түр зуурын самбар"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Шургуулга"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Шургуулгын хажуугийн цэс"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Элементүүд"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Сүлжээ"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Түр зуурын самбар"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Тохиргоо"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Эх сурвалжууд"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

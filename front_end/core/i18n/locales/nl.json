@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Bestand schrijven…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Beperkingen voor bouncetracking"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints-infrastructuur"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL van nieuwe notitie"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Geen overeenkomende service worker waargenomen. Laad de pagina opnieuw of ga na of het bereik van de service worker voor de huidige pagina het bereik en de start-URL van het manifest omvat."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Geen Play Store-ID opgegeven"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Mislukt"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Niet geactiveerd"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "In behandeling"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Vooraf laden mislukt."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "De poging voor vooraf laden is nog niet geactiveerd."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Poging voor vooraf laden komt in aanmerking, maar is in behandeling."
@@ -4446,7 +4452,7 @@
     "message": "Console gewist"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Code plakken in DevTools wordt vaak gebruikt om mensen op te lichten en hun accounts over te nemen. Deze functionaliteit is geblokkeerd op deze pagina."
+    "message": "Plakken van code is geblokkeerd op deze pagina. Als je code in DevTools plakt, kunnen hackers je account overnemen."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Console-instellingen"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# bron}other{# bronnen}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 potentiële trackingwebsite}other{# potentiële trackingwebsites}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resource}other{# resources}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Praktische tips"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Kan alleen HTTP-/HTTPS-pagina's en Chrome-extensies controleren. Ga naar een andere pagina om een audit te starten."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Kan alleen HTTP- of HTTPS-pagina's controleren. Ga naar een andere pagina."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Opslag wissen"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Architectuur (bijvoorbeeld x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} verwijderen"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Merk verwijderen uit volledige lijst met versies"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Merk"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "User-agentproperty's"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Merk verwijderen uit gedeelte met user-agents"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versie {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versie (bijv. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Verwijderen"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Merkrij verwijderd"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Volledige-versielijst (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Meer informatie"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobiel"
@@ -10107,7 +10119,7 @@
     "message": "Updaten"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Hints voor user-agentclients zijn een alternatief voor de user-agenttekenreeks. Ze identificeren de browser en het apparaat op een beter gestructureerde manier die meer rekening houdt met privacy. Klik op de knop voor meer informatie."
+    "message": "Client Hints voor user-agents zijn een alternatief voor de user-agenttekenreeks. Ze identificeren de browser en het apparaat op een beter gestructureerde manier die meer rekening houdt met privacy."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "User-agent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Type breakpoint"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Dialoogvenster voor bewerken sluiten en wijzigingen opslaan"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Voorwaardelijk breakpoint"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Kijken"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (zelf {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Documenten"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (zelf {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interacties"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (zelf {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Indelingsverschuivingen"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU-profiel voor doel is niet beschikbaar."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Hoofd: {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Frequentie: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Op negeerlijst"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Geavanceerde weergave-instrumentatie aanzetten (langzaam)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Kan tijdlijn niet opslaan: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Profiler initialiseren…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installatietimer"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Indeling ongeldig maken"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Locatie"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Lange interactie"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Lange taak"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} is waarschijnlijk een knelpunt."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} geeft aan dat de pagina niet goed reageert."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Een lange frameduur is een teken van {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ja"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (zelf {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Timings"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Code-editor"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, suggestie {PH2} van {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Achtergrondservices"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Console"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Debugger"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Lade"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elementen"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Algemeen"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Hulp"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript-profiler"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Lagen"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Geheugen"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobiel"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigatie"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Netwerk"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Prestaties"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Renderen"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Resources"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Screenshot"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Instellingen"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Bronnen"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Sluiten"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1}-deelvenster"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Lade"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Zijbalk van lade"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elementen"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Netwerk"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Deelvenster"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Instellingen"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Bronnen"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

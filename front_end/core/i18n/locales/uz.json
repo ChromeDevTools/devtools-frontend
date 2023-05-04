@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Fayl yozilmoqda…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Qaytarish trekingini yumshatish choralari"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Mijozlarga bildirgilar infratuzilmasi"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Yangi qayd URL manzili"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Hech qanday mos service worker aniqlanmadi. Sahifani qayta yuklang yoki service worker qamrovi manifest faylidagi URL manzildan boshlab, joriy sahifa miqyosigacha qoʻllanilishini tekshiring."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Market idenfitikatori berilmadi"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Xatolik"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Ishga tushirilmagan"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Kutilmoqda"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Avvaldan yuklash amalga oshmadi."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Oldindan yuklashga urinish hali ishga tushirilmagan."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Oldindan yuklashga urinish mumkin, lekin hali kutilmoqda."
@@ -4446,7 +4452,7 @@
     "message": "Terminal tozalandi"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Devtools ichiga kod joylash odatda tovlamachilik qilish va boshqalarning hisobini egallashda ishlatiladi. Bunday amal ushbu sahifada taqiqlangan."
+    "message": "Bu sahifada kodni joylash bloklangan. Kodni devtools ichiga joylash firibgarlarga hisobingizni egallab olishiga imkon beradi."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Terminal sozlamalari"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# ta manba}other{# ta manba}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 ta ehtimoliy treking veb-sayt}other{# ta ehtimoliy treking veb-sayt}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ta resurs}other{# ta resurs}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Misollar"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Faqat HTTP/HTTPS sahifalar va Chrome kengaytmalar tekshirilishi mumkin. Tekshirish uchun boshqa sahifani oching."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Faqat HTTP yoki HTTPS sahifalarini tekshirish mumkin. Boshqa sahifani oching."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Xotirani tozalash"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arxitekturasi (x86 kabi)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Oʻchirish: {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Toʻliq versiya roʻyxatidan brendni oʻchirib tashlash"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Brend"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Foydalanuvchi agenti xususiyatlari"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Foydalanuvchi agenti boʻlimidan brendni oʻchirib tashlash"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "{PH1} versiyasi"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versiyasi (m-n, 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Oʻchirish"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Brend qatori oʻchirildi"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Toʻliq versiya roʻyxati (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Batafsil"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobil"
@@ -10107,7 +10119,7 @@
     "message": "Yangilash"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Foydalanuvchi agenti mijoz bildirgilari hisoblar maxfiyligi yaxshiroq tuzilgan brauzer va qurilmalarga muqobil qatorlar hisoblanadi. Batafsil axborot uchun tugmani bosing."
+    "message": "Foydalanuvchi agenti mijoz bildirgilari hisoblar maxfiyligi yaxshiroq tuzilgan brauzer va qurilmalarga muqobil qatorlar hisoblanadi."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Foydalanuvchi agenti (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Uzish nuqtasi turi"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Tahrir muloqot oynasini yopish va oʻzgartirishlarni saqlash"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Shartli uzish nuqtasi"
@@ -10776,7 +10791,7 @@
     "message": "Figurali qavslarni moslash"
   },
   "panels/sources/sources-meta.ts | breakpoints": {
-    "message": "Uzish nuqtalari"
+    "message": "Uzilish nuqtalari"
   },
   "panels/sources/sources-meta.ts | closeAll": {
     "message": "Hammasini yopish"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Watch"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (mustaqil {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Hujjatlar"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (mustaqil {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Harakatlar"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (mustaqil {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Interfeys oʻzgarishlari"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Moʻljal qilingan CPU profil mavjud emas."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Asosiy — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Hodisalar: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Inkor etish roʻyxatida"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Kengaytirilgan apparatli chizishni yoqish (sekin)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Vaqt tasmasi saqlanmadi: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Profayler ishga tushmoqda…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Taymer oʻrnatish"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Maket bekor qilinishi"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Joylashuv"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Uzun interaksiya"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Uzoq vazifa"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} unumdorlik tirbandligi shekilli."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} sahifaning moslashuvchanligi yaxshi emasligini anglatadi."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Uzoq freym vaqtlari {PH2} deb hisoblanadi"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ha"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (mustaqil {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Vaqtlar"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Kod muharriri"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, taklif: {PH2} / {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Fondagi xizmatlar"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konsol"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Debager"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Tortma"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elementlar"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Global"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Yordam"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript profayleri"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Qatlamlar"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Xotira"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobil"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigatsiya"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Tarmoq"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Unumdorlik"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Renderlash"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Resurslar"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Skrinshot"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Sozlamalar"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Manbalar"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Yopish"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} paneli"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Tortma"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Tortma yon paneli"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elementlar"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Tarmoq"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Sozlamalar"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Manbalar"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

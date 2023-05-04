@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Đang ghi tệp…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Giảm thiểu theo dõi số trang không truy cập"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints Infrastructure"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL ghi chú mới"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Chưa phát hiện service worker nào trùng khớp. Bạn có thể phải tải lại trang hoặc kiểm tra để đảm bảo phạm vi của service worker cho trang hiện tại bao gồm phạm vi và URL bắt đầu của tệp kê khai."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Chưa cung cấp mã nhận dạng trong Cửa hàng Play"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Lỗi"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Chưa kích hoạt"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Đang chờ xử lý"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Không tải trước được."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Yêu cầu tải trước chưa được kích hoạt."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Yêu cầu tải trước hợp lệ nhưng đang chờ xử lý."
@@ -4446,7 +4452,7 @@
     "message": "Bảng điều khiển đã bị xóa thông tin"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Kẻ xấu thường dán mã vào công cụ cho nhà phát triển để lừa đảo mọi người và chiếm đoạt tài khoản của họ. Hành động đó bị chặn trên trang này."
+    "message": "Bạn không thể dán mã vào trang này. Nếu bạn dán mã vào công cụ cho nhà phát triển, kẻ tấn công sẽ dễ chiếm đoạt tài khoản của bạn hơn."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Chế độ cài đặt trên bảng điều khiển"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# nguồn}other{# nguồn}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 trang web có khả năng theo dõi}other{# trang web có khả năng đang theo dõi}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# tài nguyên}other{# tài nguyên}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Những phương pháp hay nhất"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Chỉ có thể kiểm tra các trang HTTP/HTTPS và các tiện ích Chrome. Hãy chuyển đến một trang khác để bắt đầu quá trình kiểm tra."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Chỉ có thể kiểm tra các trang trên HTTP hoặc HTTPS. Chuyển đến một trang khác."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Xóa bộ nhớ"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Cấu trúc (ví dụ: x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Xoá {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Xoá thương hiệu khỏi danh sách phiên bản đầy đủ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Thương hiệu"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Thuộc tính tác nhân người dùng"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Xoá thương hiệu khỏi phần tác nhân người dùng"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Phiên bản {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Phiên bản (ví dụ: 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Xoá"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Đã xóa hàng tên thương hiệu"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Danh sách phiên bản đầy đủ (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Tìm hiểu thêm"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Di động"
@@ -10107,7 +10119,7 @@
     "message": "Cập nhật"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Thông tin mô tả của ứng dụng tác nhân người dùng là giải pháp thay thế cho chuỗi tác nhân người dùng, giúp nhận dạng trình duyệt và thiết bị theo cách có cấu trúc hơn nhờ khả năng xem xét toàn diện hơn về quyền riêng tư. Hãy nhấp vào nút này để tìm hiểu thêm."
+    "message": "Client Hints của tác nhân người dùng là giải pháp thay thế cho chuỗi tác nhân người dùng, giúp nhận dạng trình duyệt và thiết bị theo cách có cấu trúc hơn nhờ khả năng xem xét toàn diện hơn về quyền riêng tư."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Tác nhân người dùng (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Loại điểm ngắt"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Đóng hộp thoại chỉnh sửa và lưu thay đổi"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Điểm ngắt có điều kiện"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Biểu thức canh gác"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} ({PH2} riêng)"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Tài liệu"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} riêng)"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Lượt tương tác"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} riêng)"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Thay đổi bố cục"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Không có cấu hình CPU cho một mục tiêu."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Chính – {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Lần xuất hiện: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Trên danh sách bỏ qua"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Bật khả năng đo lường bản vẽ nâng cao (chậm)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Không lưu được dòng thời gian: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Đang khởi động trình phân tích tài nguyên…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Cài đặt đồng hồ hẹn giờ"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Mã nhận dạng"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Vô hiệu hóa bố cục"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Vị trí"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Thời gian tương tác kéo dài"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Nhiệm vụ có thời hạn dài"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} có thể là nút thắt cổ chai của hiệu suất."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} cho thấy trang có tốc độ phản hồi kém."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Thời gian kết xuất khung hình dài là dấu hiệu của {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Có"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} riêng)"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Thời gian"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Trình soạn thảo mã"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, đề xuất {PH2}/{PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Dịch vụ nền"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Bảng điều khiển"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Trình gỡ lỗi"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Ngăn"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Phần tử"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Toàn cục"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Trợ giúp"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Trình phân tích tài nguyên JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Lớp"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Bộ nhớ"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Di động"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Điều hướng"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Mạng"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Hiệu suất"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Kết xuất"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Tài nguyên"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Ảnh chụp màn hình"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Cài đặt"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Nguồn"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Đóng"
   },
@@ -12803,6 +12884,27 @@
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Bảng điều khiển {PH1}"
   },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Ngăn"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Thanh bên của ngăn"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Phần tử"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Mạng"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Bảng điều khiển"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Cài đặt"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Nguồn"
+  },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"
   },
@@ -13014,7 +13116,7 @@
     "message": "Thuộc tính CSS"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Xoá {PH1}"
+    "message": "Xóa {PH1}"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
     "message": "Bản dự phòng {PH1}"

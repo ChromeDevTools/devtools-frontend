@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Dosya yazılıyor…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Hemen Çıkma Durumunu İzleme Çözümleri"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "İstemci İpuçları Altyapısı"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Yeni not URL'si"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Eşleşen service worker algılanmadı. Sayfayı yeniden yüklemeniz veya mevcut sayfaya ait service worker kapsamının, manifest dosyasındaki kapsamı ve başlangıç URL'sini içerdiğinden emin olmanız gerekir."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Store kimliği sağlanmadı"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Başarısız"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Tetiklenmedi"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Beklemede"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Önceden yükleme başarısız oldu."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Önceden yükleme denemesi henüz tetiklenmedi."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Önceden yükleme denemesi uygun ancak beklemede."
@@ -4446,7 +4452,7 @@
     "message": "Konsol temizlendi"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Geliştirici Araçları'na kod yapıştırmak, genellikle kullanıcıları dolandırmak ve hesaplarını ele geçirmek için kullanılır. Yapıştırma işlemi bu sayfada engellenmiştir."
+    "message": "Bu sayfada kod yapıştırma işlemi engelleniyor. Geliştirici araçlarına kod yapıştırmak saldırganların hesabınızı ele geçirmesine neden olabilir."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsol ayarları"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# kaynak}other{# kaynak}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{İzleme olasılığı olan 1 web sitesi}other{İzleme olasılığı olan # web sitesi}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# kaynak}other{# kaynak}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "En iyi uygulamalar"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Yalnızca HTTP/HTTPS sayfaları ve Chrome uzantıları denetlenebilir. Denetleme başlatmak için başka bir sayfaya gidin."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Yalnızca HTTP veya HTTPS sayfalarını denetleyebilir. Farklı bir sayfaya gidin."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Depolama alanını temizle"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Mimari (ör. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} sil"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Markayı tam sürüm listesinden sil"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Marka"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Kullanıcı aracısı özellikleri"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Markayı kullanıcı aracısı bölümünden sil"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Sürüm {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Sürüm (ör. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Sil"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Marka satırı silindi"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Tam sürüm listesi (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Daha fazla bilgi"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Cep telefonu"
@@ -10107,7 +10119,7 @@
     "message": "Güncelle"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Kullanıcı aracısı dizesine bir alternatif olan kullanıcı aracısı istemci ipuçları, tarayıcıları ve cihazları daha iyi gizlilikle daha düzenli bir biçimde tanımlar. Daha fazla bilgi edinmek için düğmeyi tıklayın."
+    "message": "Kullanıcı aracısı dizesine bir alternatif olan kullanıcı aracısı istemci ipuçları, tarayıcıları ve cihazları daha iyi gizlilikle daha düzenli bir biçimde tanımlar."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Kullanıcı aracısı (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Kesme noktası türü"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Düzenleme iletişim kutusunu kapat ve değişiklikleri kaydet"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Koşulllu kesme noktası"
@@ -10776,7 +10791,7 @@
     "message": "Ayraç eşleştirme"
   },
   "panels/sources/sources-meta.ts | breakpoints": {
-    "message": "Kırma noktaları"
+    "message": "Kesme noktaları"
   },
   "panels/sources/sources-meta.ts | closeAll": {
     "message": "Tümünü Kapat"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "İzle"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (kendisi {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokümanlar"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (kendisi {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Etkileşimler"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (kendisi {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Düzen Kaymaları"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Hedef için CPU profili kullanılamıyor."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Asıl — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Geçtiği yer sayısı: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Yoksayılanlar listesinde"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Gelişmiş boyama enstrümantasyonunu etkinleştir (yavaş)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Zaman çizelgesi kaydedilemedi: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Profil aracı başlatılıyor…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Zamanlayıcı yükle"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Kimlik"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Düzeni Geçersiz Kıl"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Yer"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Uzun etkileşim"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Uzun görev"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}, olası bir performans sorunu."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1}, sayfada duyarlılığın zayıf olduğunu gösteriyor."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Uzun kare süreleri {PH2} durumuna işaret eder"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Evet"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (kendisi {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Zamanlamalar"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Kod düzenleyici"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, Öneri {PH2}/{PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Arka Plan Hizmetleri"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konsol"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Hata ayıklayıcı"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Çekmece"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Öğeler"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Global"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Yardım"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript Profil Aracı"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Katmanlar"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Bellek"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobil"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Gezinme"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Ağ"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Performans"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Oluşturma"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Kaynaklar"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Ekran görüntüsü"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Ayarlar"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Kaynaklar"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Kapat"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} bölmesi"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Çekmece"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Çekmece kenar çubuğu"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Öğeler"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Ağ"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Ayarlar"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Kaynaklar"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

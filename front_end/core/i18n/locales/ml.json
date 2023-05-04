@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "ഫയൽ റൈറ്റ് ചെയ്യുന്നു…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "ബൗൺസ് ട്രാക്കിംഗ് മിജിറ്റേഷനുകൾ"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "ക്ലയന്റ് സൂചനകളുടെ ഇൻഫ്രാസ്‌ട്രക്‌ചർ"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "പുതിയ കുറിപ്പിന്റെ URL"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "പൊരുത്തമുള്ള service worker കണ്ടെത്തിയില്ല. നിങ്ങൾക്ക് പേജ് റീലോഡ് ചെയ്യേണ്ടി വന്നേക്കാം, അല്ലെങ്കിൽ നിലവിലെ പേജിനുള്ള service worker എന്നതിന്റെ പരിധി, പരിധിയെ ഉൾപ്പെടുത്തുന്നുണ്ടെന്ന് പരിശോധിച്ച് മാനിഫെസ്റ്റിൽ നിന്ന് URL ആരംഭിക്കേണ്ടി വന്നേക്കാം."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Store ഐഡി നൽകിയിട്ടില്ല"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "പരാജയം"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "ട്രിഗർ ചെയ്തിട്ടില്ല"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "തീർച്ചപ്പെടുത്താത്തവ"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "മുൻകൂട്ടി ലോഡ് ചെയ്യാനായില്ല."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "പ്രീലോഡ് ചെയ്യാനുള്ള ശ്രമം ഇതുവരെ ട്രിഗർ ചെയ്തില്ല."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "മുൻകൂട്ടി ലോഡ് ചെയ്യുന്നതിനുള്ള ശ്രമം യോഗ്യമാണ് എന്നാൽ തീർപ്പാക്കാത്തതാണ്."
@@ -4446,7 +4452,7 @@
     "message": "കൺസോൾ മായ്‌ച്ചു"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "devtools-ൽ കോഡ് ഒട്ടിക്കുന്നത് പലപ്പോഴും ആളുകളെ കബളിപ്പിക്കാനും അവരുടെ അക്കൗണ്ടുകൾ തട്ടിയെടുക്കുന്നതിനും ഉപയോഗിക്കുന്നു. അത് ഈ പേജിൽ ബ്ലോക്ക് ചെയ്തിരിക്കുന്നു."
+    "message": "കോഡ് ഒട്ടിക്കുന്നത് ഈ പേജിൽ ബ്ലോക്ക് ചെയ്തിരിക്കുന്നു. DevTools-ൽ കോഡ് ഒട്ടിക്കുന്നത് നിങ്ങളുടെ അക്കൗണ്ട് കൈവശപ്പെടുത്താൻ ആക്രമണകാരികളെ അനുവദിച്ചേക്കാം."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "കൺസോൾ ക്രമീകരണം"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# ഉറവിടം}other{# ഉറവിടങ്ങൾ}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{ട്രാക്ക് ചെയ്യാൻ സാധ്യതയുള്ള 1 വെബ്‌സൈറ്റ്}other{ട്രാക്ക് ചെയ്യാൻ സാധ്യതയുള്ള # വെബ്‌സൈറ്റുകൾ}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ഉറവിടം}other{# ഉറവിടങ്ങൾ}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "മികച്ച കീഴ്‌വഴക്കങ്ങൾ"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "HTTP/HTTPS പേജുകളും Chrome വിപുലീകരണങ്ങളും മാത്രമേ ഓഡിറ്റ് ചെയ്യാനാകൂ. ഓഡിറ്റ് ആരംഭിക്കാൻ മറ്റൊരു പേജിലേക്ക് പോകുക."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "HTTP-യിലോ HTTPS-ലോ ഉള്ള പേജുകൾ മാത്രമേ ഓഡിറ്റ് ചെയ്യാനാകൂ. മറ്റൊരു പേജിലേക്ക് പോകുക."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "സ്‌റ്റോറേജ് മായ്‌ക്കുക"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ആർക്കി‌ടെക്‌ച്ചർ (ഉദാ. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} ഇല്ലാതാക്കുക"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "പൂർണ്ണമായ പതിപ്പിന്റെ ലിസ്റ്റിൽ നിന്ന് ബ്രാൻഡ് ഇല്ലാതാക്കുക"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "ബ്രാൻഡ്"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "ഉപയോക്തൃ ഏജന്റ് പ്രോപ്പർട്ടികൾ"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "ഉപയോക്തൃ ഏജന്റ് വിഭാഗത്തിൽ നിന്ന് ബ്രാൻഡ് ഇല്ലാതാക്കുക"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "പതിപ്പ് {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "പതിപ്പ് (ഉദാ. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "ഇല്ലാതാക്കുക"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "ബ്രാൻഡ് വരി ഇല്ലാതാക്കി"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "പൂർണ്ണമായ പതിപ്പിന്റെ ലിസ്റ്റ് (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "കൂടുതലറിയുക"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "മൊബൈൽ"
@@ -10107,7 +10119,7 @@
     "message": "അപ്ഡേറ്റ് ചെയ്യുക"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "മികച്ച സ്വകാര്യതാ പരിരക്ഷ കണക്കിലെടുത്ത് കൂടുതൽ ഘടനാപരമായ രീതിയിൽ ബ്രൗസറിനെയും ഉപകരണത്തെയും തിരിച്ചറിയുന്ന, ഉപയോക്തൃ-ഏജന്റ് സ്ട്രിംഗിന്റെ ഒരു ബദലാണ് ഉപയോക്തൃ-ഏജന്റ് ക്ലയന്റ് സൂചനകൾ. കൂടുതലറിയാൻ ബട്ടൺ ക്ലിക്ക് ചെയ്യുക."
+    "message": "മികച്ച സ്വകാര്യതാ പരിരക്ഷ കണക്കിലെടുത്ത് കൂടുതൽ ഘടനാപരമായ രീതിയിൽ ബ്രൗസറിനെയും ഉപകരണത്തെയും തിരിച്ചറിയുന്ന, ഉപയോക്തൃ-ഏജന്റ് സ്ട്രിംഗിന്റെ ഒരു ബദലാണ് ഉപയോക്തൃ-ഏജന്റ് ക്ലയന്റ് ഹിന്റുകൾ."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "ഉപയോക്തൃ ഏജന്റ് (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "ബ്രേക്ക്‌പോയിന്റ് തരം"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "എഡിറ്റ് ഡയലോഗ് അടച്ച ശേഷം മാറ്റങ്ങൾ സംരക്ഷിക്കുക"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "കണ്ടീഷണൽ ബ്രേക്ക്‌പോയിന്റ്"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "കാണുക"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (സെൽഫ് {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "ഡോക്യുമെന്റുകൾ"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (സെൽഫ് {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "ഇടപെടലുകൾ"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (സെൽഫ് {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "ലേഔട്ട് ഷിഫ്റ്റുകൾ"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "ടാർഗറ്റിനായുള്ള CPU പ്രൊഫൈൽ ലഭ്യമല്ല."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "പ്രധാനപ്പെട്ടത് — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "സംഭവങ്ങൾ: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "നിരസിക്കൽ ലിസ്റ്റിൽ"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "വിപുലീകരിച്ച പെയിന്റ് ഇൻസ്ട്രുമെന്റേഷൻ പ്രവർത്തനക്ഷമമാക്കുക (കുറഞ്ഞ വേഗത)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "ടൈംലൈൻ സംരക്ഷിക്കാനായില്ല: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "പ്രൊഫൈലർ ഇനിഷ്യലൈസ് ചെയ്യുന്നു…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ടൈമർ ഇൻസ്‌റ്റാൾ ചെയ്യുക"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ഐഡി"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ലേഔട്ട് അസാധുവാക്കുക"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "ലൊക്കേഷൻ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "ലോംഗ് ഇന്ററാക്ഷൻ"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "ദൈർഘ്യമേറിയ ടാസ്‌ക്"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "പ്രകടനത്തിൽ ഉണ്ടാകാനിടയുള്ള ഒരു തടസ്സമാണ് {PH1}."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1}, ദുർബലമായ പേജ് റെസ്‌പോൺസീവ്‌നെസ് സൂചിപ്പിക്കുന്നു."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. ദൈർഘ്യമേറിയ ഫ്രെയിം സമയങ്ങൾ {PH2} എന്നതിന്റെ സൂചനയാണ്"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "ഉവ്വ്"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (സെൽഫ് {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "സമയം"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "കോഡ് എഡിറ്റർ"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH3}-ൽ {PH2}-ാമത്തെ നിർദ്ദേശം"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "പശ്ചാത്തല സേവനങ്ങൾ"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "കൺസോൾ"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "ഡീബഗ്ഗർ"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "ഡ്രോയർ"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "എലമെന്റുകൾ"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "ഗ്ലോബൽ"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "സഹായം"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript പ്രൊഫൈലർ"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "ലെയറുകൾ"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "മെമ്മറി"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "മൊബൈൽ"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "നാവിഗേഷൻ"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "നെറ്റ്‌വർക്ക്"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "പ്രകടനം"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "റെൻഡർ ചെയ്യൽ"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "ഉറവിടങ്ങൾ"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "സ്ക്രീൻഷോട്ട്"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "ക്രമീകരണം"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "സ്രോതസ്സുകൾ"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "അടയ്ക്കുക"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} പാനൽ"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "ഡ്രോയർ"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "ഡ്രോയർ സൈഡ്ബാർ"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "എലമെന്റുകൾ"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "നെറ്റ്‌വർക്ക്"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "പാനൽ"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "ക്രമീകരണം"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "സ്രോതസ്സുകൾ"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

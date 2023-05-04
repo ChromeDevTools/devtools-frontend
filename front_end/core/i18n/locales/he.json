@@ -126,7 +126,7 @@
     "message": "מסוף"
   },
   "core/common/SettingRegistration.ts | debugger": {
-    "message": "כלי לניפוי באגים"
+    "message": "הכלי לניפוי באגים"
   },
   "core/common/SettingRegistration.ts | elements": {
     "message": "רכיבים"
@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "מתבצעת כתיבת קובץ…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "הקלות במעקב אחר עזיבה מהדף הראשון"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "תשתית לרמזים על הלקוח (Client Hints)"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "כתובת URL של הערה חדשה"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "לא זוהה service worker תואם. ייתכן שצריך לטעון מחדש את הדף, או לבדוק אם ההיקף של service worker של הדף הנוכחי כולל את ההיקף ואת כתובת ה-URL להתחלה של קובץ המניפסט."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "לא סופק מזהה חנות Play"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "כישלון"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "לא הופעל"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "בהמתנה"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "הטעינה מראש נכשלה."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "הניסיון לטעינה מראש עוד לא הופעל."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "הניסיון לטעינה מראש עומד בדרישות אבל נמצא בהמתנה."
@@ -4446,7 +4452,7 @@
     "message": "נתוני המסוף נוקו"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "לרוב, הדבקת קוד בכלי הפיתוח מתבצעת לצורך הונאת אנשים והשתלטות על החשבונות שלהם. הפעולה הזו חסומה בדף הזה."
+    "message": "האפשרות להדביק קוד חסומה בדף הזה. הדבקת קוד בכלי הפיתוח עלולה לאפשר לתוקפים להשתלט על החשבון."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "הגדרות מסוף"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{ מקור אחד}one{# מקורות}two{# מקורות}other{# מקורות}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{יש אתר אחד שעשוי להיות במעקב}one{יש # אתרים שעשויים להיות במעקב}two{יש # אתרים שעשויים להיות במעקב}other{יש # אתרים שעשויים להיות במעקב}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{משאב אחד}one{# משאבים}two{# משאבים}other{# משאבים}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "שיטות מומלצות"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "ניתן לערוך ביקורת של דפי HTTP/HTTPS ותוספי Chrome בלבד. יש לעבור לדף אחר כדי להתחיל בביקורת."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "ניתן לערוך ביקורת של דפי HTTP או HTTPS בלבד. צריך לעבור לדף אחר."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "ניקוי האחסון"
@@ -9465,7 +9474,7 @@
     "message": "יש לטעון מחדש כדי לראות פרטים"
   },
   "panels/security/SecurityPanel.ts | resources": {
-    "message": "מקורות מידע"
+    "message": "משאבים"
   },
   "panels/security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
     "message": "חילופי מפתח RSA הוצאו משימוש. יש להפעיל חבילת הצפנה מבוססת ECDHE."
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "ארכיטקטורה (לדוגמה: x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "מחיקת {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "מחיקת המותג מרשימת הגרסאות המלאה"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "מותג"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "המאפיינים של סוכן המשתמש"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "מחיקת המותג מהקטע של סוכן המשתמש"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "גרסה {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "גרסה (לדוגמה, 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "מחיקה"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "שורת המותג נמחקה"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "רשימת גרסאות מלאות (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "מידע נוסף"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "נייד"
@@ -10107,7 +10119,7 @@
     "message": "עדכון"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "עצות ללקוח של סוכן משתמש הן חלופה למחרוזת של סוכן משתמש. הן מזהות את הדפדפן והמכשיר באופן מובנה יותר ועם ניהול פרטיות טוב יותר. יש ללחוץ על הלחצן למידע נוסף."
+    "message": "איסוף אותות בצד הלקוח של סוכן משתמש הוא חלופה למחרוזת של סוכן משתמש. האותות מאפשרים זיהוי מובנה יותר של הדפדפן והמכשיר עם ניהול פרטיות טוב יותר."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "סוכן משתמש (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "הסוג של נקודת העצירה (breakpoint)"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "סגירה של תיבת הדו-שיח לעריכה ושמירת השינויים"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "נקודת עצירה (breakpoint) מותנית"
@@ -10776,7 +10791,7 @@
     "message": "התאמת סוגריים"
   },
   "panels/sources/sources-meta.ts | breakpoints": {
-    "message": "נקודות עצירה (Breakpoints)"
+    "message": "נקודות עצירה (breakpoint)"
   },
   "panels/sources/sources-meta.ts | closeAll": {
     "message": "סגירת הכול"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "צפייה"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (עצמי {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "מסמכים"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (עצמי {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "אינטראקציות"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (עצמי {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "שינויי הפריסה"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "הכלי לניתוח ביצועי ה-CPU ליעד אינו זמין."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "ראשי — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "מופעים: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "ברשימת הפריטים להתעלמות"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "הפעלת אינסטרומנטציה מתקדמת של צביעה (איטית)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "שמירת ציר הזמן נכשלה: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "מתבצעת הפעלה של הכלי לניתוח ביצועים…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "התקנת טיימר"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "מזהה"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ביטול תוקף הפריסה"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "מיקום"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "אינטראקציה ארוכה"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "משימה ארוכה"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} הוא ככל הנראה צוואר בקבוק בביצוע."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "לפי {PH1} ניתן להסיק שמהירות התגובה בדף נמוכה."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. זמני רינדור פריים ארוכים מעידים על {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "כן"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (עצמי {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "הזמנים"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "עורך קוד"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, הצעה {PH2} מתוך {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "שירותים הפועלים ברקע"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "מסוף"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "הכלי לניפוי באגים"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "חלונית ההזזה"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "רכיבים"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "גלובלי"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "עזרה"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "הכלי לניתוח ביצועי JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "שכבות"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "זיכרון"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "נייד"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "ניווט"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "רשת"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "ביצועים"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "רינדור"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "משאבים"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "צילום מסך"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "הגדרות"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "מקורות"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "סגירה"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "חלונית {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "חלונית ההזזה"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "סרגל הצד של חלונית ההזזה"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "רכיבים"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "רשת"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "חלונית"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "הגדרות"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "מקורות"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

@@ -552,7 +552,7 @@
     "message": "አራሚ ውስጥ ለአፍታ ቆሟል"
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
-    "message": "በተፈተሸ ገጽ እንደገና መጫን ምክንያት ጭነት ተሰርዟል"
+    "message": "በተፈተሸ ገፅ እንደገና መጫን ምክንያት ጭነት ተሰርዟል"
   },
   "core/sdk/Script.ts | scriptRemovedOrDeleted": {
     "message": "ስክሪፕት ተወግዷል ወይም ተሰርዟል።"
@@ -708,7 +708,7 @@
     "message": "የሲኤስኤስ ህትመት ሚዲያ ዓይነትን አስመስል"
   },
   "core/sdk/sdk-meta.ts | emulateCssScreenMediaType": {
-    "message": "የሲኤስኤስ ማያ ገጽ ሚዲያ ዓይነትን አስመስል"
+    "message": "የሲኤስኤስ ማያ ገፅ ሚዲያ ዓይነትን አስመስል"
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "ዲውትራኖፒያን (ምንም አረንጓዴ የለም) ያስመስሉ"
@@ -798,7 +798,7 @@
     "message": "የተቀነሰ ንጽጽር"
   },
   "core/sdk/sdk-meta.ts | screen": {
-    "message": "ማያ ገጽ"
+    "message": "ማያ ገፅ"
   },
   "core/sdk/sdk-meta.ts | showAreaNames": {
     "message": "የአካባቢ ስሞችን አሳይ"
@@ -903,7 +903,7 @@
     "message": "የሲኤስኤስ prefers-reduced-motion ሚዲያ ባህሪን ያስገድዳል"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
-    "message": "የህትመት እና ማያ ገጽ ቅጦችን ለመሞከር የሚዲያ ዓይነትን ያስገድዳል"
+    "message": "የህትመት እና ማያ ገፅ ቅጦችን ለመሞከር የሚዲያ ዓይነትን ያስገድዳል"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "የእይታ ማነስ ማስመሰልን ያስገድዳል"
@@ -1047,10 +1047,10 @@
     "message": "ወደ የተለየ መስኮት ይንቀሉ"
   },
   "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "ገጽ፦ አልተመረጠም"
+    "message": "ገፅ፦ አልተመረጠም"
   },
   "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "ገጽ፦ {PH1}"
+    "message": "ገፅ፦ {PH1}"
   },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ፈቃድ እንደተሰጠው"
@@ -1497,10 +1497,10 @@
     "message": "ስፋት ከ{PH1} የሚያንስ ወይም ከእሱ እኩል መሆን አለበት።"
   },
   "models/emulation/EmulatedDevices.ts | laptopWithHiDPIScreen": {
-    "message": "HiDPI ማያ ገጽ ያለው ላፕቶፕ"
+    "message": "HiDPI ማያ ገፅ ያለው ላፕቶፕ"
   },
   "models/emulation/EmulatedDevices.ts | laptopWithMDPIScreen": {
-    "message": "የMDPI ማያ ገጽ ያለው ላፕቶፕ"
+    "message": "የMDPI ማያ ገፅ ያለው ላፕቶፕ"
   },
   "models/emulation/EmulatedDevices.ts | laptopWithTouch": {
     "message": "በመንካት የሚሰራ ላፕቶፕ"
@@ -1510,6 +1510,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "ፋይልን በመጻፍ ላይ…"
+  },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "የሚነጥሩ የመከታተያ እርማቶች"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "የደንበኛ ፍንጮች መሠረተ ልማት"
@@ -1812,7 +1815,7 @@
     "message": "የተደራሽነት ዛፉ ወደ DOM ዛፉ የላይኛው ቀኝ ጥግ ተወስዷል።"
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | fullTreeExperimentName": {
-    "message": "ባለ ሙሉ ገጽ የተደራሽነት ዛፍን አንቃ"
+    "message": "ባለ ሙሉ ገፅ የተደራሽነት ዛፍን አንቃ"
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | ignored": {
     "message": "የተተወ"
@@ -2064,7 +2067,7 @@
     "message": "በብዛት ሊመረጥ የሚችል"
   },
   "panels/accessibility/AccessibilityStrings.ts | orientation": {
-    "message": "አቀማመጠ-ገጽ"
+    "message": "አቀማመጠ-ገፅ"
   },
   "panels/accessibility/AccessibilityStrings.ts | pressed": {
     "message": "ተጭኗል"
@@ -2163,7 +2166,7 @@
     "message": "ለዚህ አባለ ነገር የቀጥታ ዝመኔዎች ቅድሚያ እንደሚጠበቅ እና ምን ዓይነት ሊጠበቅ ይችላል።"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherAndWhatTypeOfAutocomplete": {
-    "message": "በአሁኑ ጊዜ ይህ ክፍለ አካል የራስ-ሙላ አስተያየት ጥቆማዎችን ያቀርብ እንደሆነ እና ምን አይነት እንደሚያቀርብ።"
+    "message": "በአሁኑ ጊዜ ይህ ክፍለ አካል የራስ-ሙላ አስተያየት ጥቆማዎችን ያቀርብ እንደሆነ እና ምን ዓይነት እንደሚያቀርብ።"
   },
   "panels/accessibility/AccessibilityStrings.ts | whetherTheOptionRepresentedBy": {
     "message": "በዚህ አባለ ነገር የተወከለው አማራጭ በአሁኑ ጊዜ የተመረጠ ይሁን አይሆን።"
@@ -2381,9 +2384,6 @@
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "አዲስ ማስታወሻ ዩአርኤል"
   },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "ምንም ተዛማጅ service worker አልተገኘም። ገጹን እንደገና መጫን ያስፈልግዎት ይሆናል፣ ወይም ለአሁኑ ገጽ የservice worker ወሰን ወሰኑን የሚያካትት እና ዩ አር ኤል ን ከዝርዝር ሰነድ የሚያስጀምር መሆኑን ይፈትሹ።"
-  },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "ምንም የPlay መደብር መታወቂያ አልተሰጠም"
   },
@@ -2394,25 +2394,25 @@
     "message": "ማስታወሻ፦"
   },
   "panels/application/AppManifestView.ts | orientation": {
-    "message": "አቀማመጠ-ገጽ"
+    "message": "አቀማመጠ-ገፅ"
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOffline": {
-    "message": "ገጽ ከመስመር ውጭ አይሰራም"
+    "message": "ገፅ ከመስመር ውጭ አይሰራም"
   },
   "panels/application/AppManifestView.ts | pageDoesNotWorkOfflineThePage": {
-    "message": "ገጽ ከመስመር ውጭ አይሰራም። ከChrome 93 ጀምሮ የመጫኛ መስፈርት እየተለወጠ ነው እንዲሁም ይህ ጣቢያ ሊጫን አይችልም። ለተጨማሪ መረጃ {PH1}ን ይመልከቱ።"
+    "message": "ገፅ ከመስመር ውጭ አይሰራም። ከChrome 93 ጀምሮ የመጫኛ መስፈርት እየተለወጠ ነው እንዲሁም ይህ ጣቢያ ሊጫን አይችልም። ለተጨማሪ መረጃ {PH1}ን ይመልከቱ።"
   },
   "panels/application/AppManifestView.ts | pageHasNoManifestLinkUrl": {
-    "message": "ገጽ ምንም የዝርዝር ሰነድ የለውም <link> URL"
+    "message": "ገፅ ምንም የዝርዝር ሰነድ የለውም <link> URL"
   },
   "panels/application/AppManifestView.ts | pageIsLoadedInAnIncognitoWindow": {
-    "message": "ገጽ ማንነት በማያሳውቅ መስኮት ላይ ተጭኗል"
+    "message": "ገፅ ማንነት በማያሳውቅ መስኮት ላይ ተጭኗል"
   },
   "panels/application/AppManifestView.ts | pageIsNotLoadedInTheMainFrame": {
-    "message": "ገጽ በዋናው ክፈፍ ላይ አልተጫነም"
+    "message": "ገፅ በዋናው ክፈፍ ላይ አልተጫነም"
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
-    "message": "ገጽ ደህንነቱ ከተጠበቀ ምንጭ አይሰጥም"
+    "message": "ገፅ ደህንነቱ ከተጠበቀ ምንጭ አይሰጥም"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
     "message": "«prefer_related_applications» የሚደገፈው በChrome ቤታ እና በAndroid በተረጋጉ ሰርጦች ላይ ብቻ ነው።"
@@ -2454,13 +2454,13 @@
     "message": "{PH1} ዩአርኤል «{PH2}» መተንተን አልተሳካም"
   },
   "panels/application/AppManifestView.ts | screenshot": {
-    "message": "ቅጽበታዊ ገጽ እይታ"
+    "message": "ቅጽበታዊ ገፅ እይታ"
   },
   "panels/application/AppManifestView.ts | screenshotPixelSize": {
-    "message": "ቅጽበታዊ ገጽ እይታ {url} ከ\"any\" ይልቅ የፒክሰል መጠን [width]x[height] እንደ የመጀመሪያ መጠን መግለጽ አለበት።"
+    "message": "ቅጽበታዊ ገፅ እይታ {url} ከ\"any\" ይልቅ የፒክሰል መጠን [width]x[height] እንደ የመጀመሪያ መጠን መግለጽ አለበት።"
   },
   "panels/application/AppManifestView.ts | screenshotS": {
-    "message": "ቅጽበታዊ ገጽ እይታ #{PH1}"
+    "message": "ቅጽበታዊ ገፅ እይታ #{PH1}"
   },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "አጭር ስም"
@@ -2790,10 +2790,10 @@
     "message": "የደህንነት ምንጭ"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
-    "message": "ቀጣይ ገጽ አሳይ"
+    "message": "ቀጣይ ገፅ አሳይ"
   },
   "panels/application/IndexedDBViews.ts | showPreviousPage": {
-    "message": "ቀዳሚውን ገጽ አሳይ"
+    "message": "ቀዳሚውን ገፅ አሳይ"
   },
   "panels/application/IndexedDBViews.ts | someEntriesMayHaveBeenModified": {
     "message": "አንዳንድ ግቤቶች ተሻሽለው ሊሆኑ ይችላሉ"
@@ -2964,7 +2964,7 @@
     "message": "የአውታረ መረብ ጥያቄዎች"
   },
   "panels/application/ServiceWorkersView.ts | onPageReloadForceTheService": {
-    "message": "ገጽ ዳግም ሲጫን service worker እንዲዘምን ያስገድዱት እና ያግብሩት"
+    "message": "ገፅ ዳግም ሲጫን service worker እንዲዘምን ያስገድዱት እና ያግብሩት"
   },
   "panels/application/ServiceWorkersView.ts | periodicSync": {
     "message": "ክፍለ-ጊዜያዊ ስምረት"
@@ -3249,7 +3249,7 @@
     "message": "መሸጎጫው ሆን ተብሎ ተጸድቷል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | cacheLimit": {
-    "message": "ሌላ ገጽ መሸጎጫ እንዲቀመጥለት ለማስቻል ገጹ ከመሸጎጫው ወጥቷል።"
+    "message": "ሌላ ገፅ መሸጎጫ እንዲቀመጥለት ለማስቻል ገጹ ከመሸጎጫው ወጥቷል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
     "message": "ተሰኪዎችን የያዙ ገጾች በአሁኑ ጊዜ ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
@@ -3273,7 +3273,7 @@
     "message": "የMediaSession ኤፒአይን የሚጠቀሙ እና የመልሶ ማጫወት ሁኔታን ያቀናበሩ ገጾች ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentScreenReader": {
-    "message": "በማያ ገጽ አንባቢ ምክንያት የጀርባ/ፊት መሸጎጫ ተሰናክሏል።"
+    "message": "በማያ ገፅ አንባቢ ምክንያት የጀርባ/ፊት መሸጎጫ ተሰናክሏል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentSecurityHandler": {
     "message": "SecurityHandlerን የሚጠቀሙ ገጾች ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
@@ -3339,7 +3339,7 @@
     "message": "ወደ ሌላ ሲያሰሱ ደህንነታቸው የተጠበቁ የአሰሳ ዝርዝሮች ታይተዋል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | embedderSafeBrowsingTriggeredPopupBlocker": {
-    "message": "ደህንነቱ የተጠበቀ አሰሳ ይህን ገጽ እንደ አላግባብ ጥቅም ላይ የሚውል ቆጥሮታል እና ብቅ-ባይን አግዷል።"
+    "message": "ደህንነቱ የተጠበቀ አሰሳ ይህን ገፅ እንደ አላግባብ ጥቅም ላይ የሚውል ቆጥሮታል እና ብቅ-ባይን አግዷል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | enteredBackForwardCacheBeforeServiceWorkerHostAdded": {
     "message": "ገጹ በጀርባ/ፊት መሸጎጫ ላይ ሳለ የአገልግሎት ሰራተኛ ገቢር ተደርጓል።"
@@ -3351,7 +3351,7 @@
     "message": "FencedFrames የሚጠቀሙ ገጾች በbfcache ውስጥ ሊከማቹ አይችሉም።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | foregroundCacheLimit": {
-    "message": "ሌላ ገጽ መሸጎጫ እንዲቀመጥለት ለማስቻል ገጹ ከመሸጎጫው ወጥቷል።"
+    "message": "ሌላ ገፅ መሸጎጫ እንዲቀመጥለት ለማስቻል ገጹ ከመሸጎጫው ወጥቷል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | grantedMediaStreamAccess": {
     "message": "የሚዲያ ዥረት መዳረሻን የሰጡ ገጾች በአሁኑ ጊዜ ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
@@ -3399,7 +3399,7 @@
     "message": "ገጹ ከጀርባ/ፊት መሸጎጫው ወደነበረበት መመለስ ከመቻሉ በፊት ዳሰሳ ተሰርዟል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkExceedsBufferLimit": {
-    "message": "አንድ ገቢር የአውታረ መረብ ግንኙነት በጣም ብዙ ውሂብ ስለተቀበለ ገጹ ከመሸጎጫው ወጥቷል። Chrome አንድ ገጽ ተሸጉጦ ሳለ ሊቀበለው የሚችለው የውሂብ መጠንን ይገድባል።"
+    "message": "አንድ ገቢር የአውታረ መረብ ግንኙነት በጣም ብዙ ውሂብ ስለተቀበለ ገጹ ከመሸጎጫው ወጥቷል። Chrome አንድ ገፅ ተሸጉጦ ሳለ ሊቀበለው የሚችለው የውሂብ መጠንን ይገድባል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestDatapipeDrainedAsBytesConsumer": {
     "message": "inflight fetch() ወይም XHR ያላቸው ገጾች በአሁኑ ጊዜ ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
@@ -3408,7 +3408,7 @@
     "message": "አንድ ገቢር የአውታረ መረብ ጥያቄ ማዞርን የሚያካትት ስለነበር ገጹ ከጀርባ/ፊት መሸጎጫ ተወግዷል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | networkRequestTimeout": {
-    "message": "አንድ የአውታረ መረብ ግንኙነት ለበጣም ረጅም ጊዜ ክፍት ስለነበር ገጹ ከመሸጎጫው ወጥቷል። Chrome አንድ ገጽ ተሸጉጦ ሳለ ውሂብ ሊቀበል የሚችበትን የጊዜ መጠን ይገድባል።"
+    "message": "አንድ የአውታረ መረብ ግንኙነት ለበጣም ረጅም ጊዜ ክፍት ስለነበር ገጹ ከመሸጎጫው ወጥቷል። Chrome አንድ ገፅ ተሸጉጦ ሳለ ውሂብ ሊቀበል የሚችበትን የጊዜ መጠን ይገድባል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | noResponseHead": {
     "message": "የሚሰራ የአጸፋ ራስ የሌላቸው ገጾች ወደ የጀርባ/ፊት መሸጎጫ መግባት አይችሉም።"
@@ -3417,7 +3417,7 @@
     "message": "ዳሰሳ ከዋናው ክፈፍ ውጭ በሆነ ክፈፍ ውስጥ ነው የተከሰተው።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingIndexedDBTransaction": {
-    "message": "በመካሄድ ላይ ያለ የመረጃ ጠቋሚ የተሰናዳላቸው የውሂብ ጎታ ግብይቶች ያለው ገጽ በአሁኑ ጊዜ ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
+    "message": "በመካሄድ ላይ ያለ የመረጃ ጠቋሚ የተሰናዳላቸው የውሂብ ጎታ ግብይቶች ያለው ገፅ በአሁኑ ጊዜ ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | outstandingNetworkRequestDirectSocket": {
     "message": "የውስጠ-በረራ አውታረ መረብ ጥያቄ ያላቸው ገጾች በአሁኑ ጊዜ ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
@@ -3480,7 +3480,7 @@
     "message": "ገጹ በጀርባ/ፊት መሸጎጫ ላይ ሳለ በአንድ የአገልግሎት ሰራተኛ የይገባኛል ጥያቄ ተነስቶበታል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerPostMessage": {
-    "message": "አንድ የአገልግሎት ሰራተኛ በጀርባ/ፊት መሸጎጫው ውስጥ ላለው ገጽ MessageEvent ለመላክ ሞክሯል።"
+    "message": "አንድ የአገልግሎት ሰራተኛ በጀርባ/ፊት መሸጎጫው ውስጥ ላለው ገፅ MessageEvent ለመላክ ሞክሯል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | serviceWorkerUnregistration": {
     "message": "ገጹ በጀርባ/ፊት መሸጎጫ ላይ ሳለ ServiceWorker ከምዝገባ ወጥቷል።"
@@ -3861,7 +3861,7 @@
     "message": "ከመጀመሩ በፊት ነቅቷል"
   },
   "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
-    "message": "ገጹ ቅድመ ምስል ተሰርቶለት ነበር፣ ነገር ግን አሰሳው ከኦርጂናል ቅድመ ምስል ስራ በተለየ መልኩ መከናወኑን ጨርሷል፣ ስለዚህ ቅድመ ምስል የተሰራው ገጽ ሊነቃ አልቻለም።"
+    "message": "ገጹ ቅድመ ምስል ተሰርቶለት ነበር፣ ነገር ግን አሰሳው ከኦርጂናል ቅድመ ምስል ስራ በተለየ መልኩ መከናወኑን ጨርሷል፣ ስለዚህ ቅድመ ምስል የተሰራው ገፅ ሊነቃ አልቻለም።"
   },
   "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
     "message": "የቅድመ-ምስል ስራ የAudioContext ኤፒአይን እስካሁን አይደግፍም።"
@@ -3873,10 +3873,10 @@
     "message": "CancelAllHostsForTesting።"
   },
   "panels/application/components/Prerender2.ts | ClientCertRequested": {
-    "message": "ገጹ የደንበኛ የዕውቅና ማረጋገጫ እየጠየቀ ነው፣ ይህም እንደ ቅድመ-ምስል ስራ ላለ የተደበቀ ገጽ ተስማሚ አይደለም።"
+    "message": "ገጹ የደንበኛ የዕውቅና ማረጋገጫ እየጠየቀ ነው፣ ይህም እንደ ቅድመ-ምስል ስራ ላለ የተደበቀ ገፅ ተስማሚ አይደለም።"
   },
   "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ ከተጫነ በኋላ ወደ ምንጭ-ተሻጋሪ ዩአርኤል ዳስሷል። በአሁኑ ወቅት የጣቢያ-ተሻጋሪ ገጾች የቅድመ-ምስል ስራ አልተፈቀደም።"
+    "message": "ቅድመ-ምስል የተሰራለት ገፅ ከተጫነ በኋላ ወደ ምንጭ-ተሻጋሪ ዩአርኤል ዳስሷል። በአሁኑ ወቅት የጣቢያ-ተሻጋሪ ገጾች የቅድመ-ምስል ስራ አልተፈቀደም።"
   },
   "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
     "message": "ወደ ጣቢያ-ተሻጋሪ ዩአርኤል የሚያዞር ዩአርኤልን ቅድመ እይታ ለማድረግ ተሞክሯል። በአሁኑ ወቅት የጣቢያ-ተሻጋሪ ገጾች የቅድመ-ምስል ስራ አልተፈቀደም።"
@@ -3885,7 +3885,7 @@
     "message": "ውሂብ ቆጣቢ ነቅቷል"
   },
   "panels/application/components/Prerender2.ts | Destroyed": {
-    "message": "ቅድመ-ምስል የሚሰራ ገጽ ባልታወቁ ምክንያቶች ተትቷል።"
+    "message": "ቅድመ-ምስል የሚሰራ ገፅ ባልታወቁ ምክንያቶች ተትቷል።"
   },
   "panels/application/components/Prerender2.ts | DidFailLoad": {
     "message": "በቅድመ-ምስል ስራ ወቅት DidFailLoadWithError ተከስቷል።"
@@ -3897,10 +3897,10 @@
     "message": "በቅድመ-ምስል መስራት ውስጥ ማውረድ አይፈቀድም።"
   },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
-    "message": "የቅድመ-ምስል ስራ በChrome ውስጣዊ ተቀስቅሷል (ለምሳሌ፦ የኦምኒቦክስ ቅድመ-ምስል ስራ) ተሰርዟል ምክንያቱም አሰሳው ወደ ሌላ ምንጭ-ተሻጋሪ ገጽ ተዛውሯል።"
+    "message": "የቅድመ-ምስል ስራ በChrome ውስጣዊ ተቀስቅሷል (ለምሳሌ፦ የኦምኒቦክስ ቅድመ-ምስል ስራ) ተሰርዟል ምክንያቱም አሰሳው ወደ ሌላ ምንጭ-ተሻጋሪ ገፅ ተዛውሯል።"
   },
   "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
-    "message": "የቅድመ-ምስል ስራ በChrome ውስጣዊ ተቀስቅሷል (ለምሳሌ፦ የኦምኒቦክስ ቅድመ-ምስል ስራ) ተሰርዟል ምክንያቱም አሰሳው ወደ ሌላ ተመሳሳይ-ምንጭ ገጽ ተዛውሯል።"
+    "message": "የቅድመ-ምስል ስራ በChrome ውስጣዊ ተቀስቅሷል (ለምሳሌ፦ የኦምኒቦክስ ቅድመ-ምስል ስራ) ተሰርዟል ምክንያቱም አሰሳው ወደ ሌላ ተመሳሳይ-ምንጭ ገፅ ተዛውሯል።"
   },
   "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
     "message": "የማህደረ ትውስታን አጠቃቀም ለማግኘት አልተሳካም"
@@ -3939,7 +3939,7 @@
     "message": "የቅድመ-ምስል ስራ በድብልቅ ይዘት ክፈፍ ተሰርዟል።"
   },
   "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
-    "message": "ቅድሚያ ምስሉ የተሰራው ገጽ ያልተፈቀደ ኤፒአይ ጥቅም ላይ ውሏል"
+    "message": "ቅድሚያ ምስሉ የተሰራው ገፅ ያልተፈቀደ ኤፒአይ ጥቅም ላይ ውሏል"
   },
   "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
     "message": "አገልጋዩ 200/204/205 ያልሆነውን የሁኔታ ኮድ በመመለሱ ምክንያት የመጀመሪያው የቅድመ-ምስል ስራ ዳሰሳ አልተሳካም።"
@@ -3957,16 +3957,16 @@
     "message": "በመካሄድ ላይ ያለ ቅድመ-ምስል ስራ"
   },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
-    "message": "ቅድሚያ ምስሉ የተሰራው ገጽ ተበላሽቷል።"
+    "message": "ቅድሚያ ምስሉ የተሰራው ገፅ ተበላሽቷል።"
   },
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "የቅድመ-ምስል ስራ ገጹ ምስል ሰሪ ሂደት ቆሟል።"
   },
   "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ ከተጫነ በኋላ ወደ ተመሳሳይ-ጣቢያ ምንጭ-ተሻጋሪ ዩአርኤል ዳስሷል። በአሁኑ ወቅት የምንጭ-ተሻጋሪ ገጾች የቅድመ-ምስል ስራ አልተፈቀደም።"
+    "message": "ቅድመ-ምስል የተሰራለት ገፅ ከተጫነ በኋላ ወደ ተመሳሳይ-ጣቢያ ምንጭ-ተሻጋሪ ዩአርኤል ዳስሷል። በአሁኑ ወቅት የምንጭ-ተሻጋሪ ገጾች የቅድመ-ምስል ስራ አልተፈቀደም።"
   },
   "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ ከተጫነ በኋላ ወደ ተመሳሳይ-ጣቢያ ምንጭ-ተሻጋሪ ዩአርኤል ዳስሷል። የመድረሻ ጣቢያው የድጋፍ-መጫኛ-ሁነታ፡ የመግቢያ ማስረጃ ያለው-ቅድመ-ምስል ስራ ራስጌ ካልላከ በስተቀር ይህ አይፈቀድም።"
+    "message": "ቅድመ-ምስል የተሰራለት ገፅ ከተጫነ በኋላ ወደ ተመሳሳይ-ጣቢያ ምንጭ-ተሻጋሪ ዩአርኤል ዳስሷል። የመድረሻ ጣቢያው የድጋፍ-መጫኛ-ሁነታ፡ የመግቢያ ማስረጃ ያለው-ቅድመ-ምስል ስራ ራስጌ ካልላከ በስተቀር ይህ አይፈቀድም።"
   },
   "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
     "message": "ወደ ተመሳሳዩ ምንጭ-ተሻጋሪ ዩአርኤል የሚዞር ዩአርኤልን ቅድመ-ምስል ለመስራት ተሞክሯል። በአሁኑ ወቅት የምንጭ-ተሻጋሪ ገጾች የቅድመ-ምስል ስራ አልተፈቀደም።"
@@ -4032,7 +4032,7 @@
     "message": "ሁኔታ"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
-    "message": "ለዚህ ገጽ ሁሉም የተጋሩ ማከማቻ ክስተቶች።"
+    "message": "ለዚህ ገፅ ሁሉም የተጋሩ ማከማቻ ክስተቶች።"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
     "message": "አማራጭ የክስተት ልኬቶች"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "አልተሳካም"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "ያልተቀሰቀሱ"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "በመጠባበቅ ላይ"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "ቅድሚያ በመጫን ላይ አልተሳካም።"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "የቅድሚያ መጫን ሙከራ እስከአሁን አልተቀሰቀሰም።"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "የቅድሚያ መጫን ሙከራ ብቁ ነው ነገር ግን በመጠባበቅ ላይ ያለ ነው።"
@@ -4206,10 +4212,10 @@
     "message": "ተገቢነት"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
-    "message": "የ{PH1} ቅድሚያ የመጡ ንብረቶች ለዚህ ገጽ ጥቅም ላይ ውለዋል"
+    "message": "የ{PH1} ቅድሚያ የመጡ ንብረቶች ለዚህ ገፅ ጥቅም ላይ ውለዋል"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
-    "message": "ይህ ገጽ ቅድመ-ምስል ተሰርቶለታል"
+    "message": "ይህ ገፅ ቅድመ-ምስል ተሰርቶለታል"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "መክፈያ ምት"
@@ -4320,7 +4326,7 @@
     "message": "መሻሮች"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | page": {
-    "message": "ገጽ"
+    "message": "ገፅ"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showContentScripts": {
     "message": "የይዘት ስክሪፕቶችን አሳይ"
@@ -4341,7 +4347,7 @@
     "message": "መሻሮችን አሳይ"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showPage": {
-    "message": "ገጽ አሳይ"
+    "message": "ገፅ አሳይ"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showXhrfetchBreakpoints": {
     "message": "የXHR/ማምጫ መስበሪያ ነጥቦችን አሳይ"
@@ -4446,7 +4452,7 @@
     "message": "ኮንሶል ጸድቷል"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "ኮድን ወደ devtools መለጠፍ ብዙ ጊዜ ሰዎችን ለማጭበርበር እና መለያቸውን ለመንጠቅ ጥቅም ላይ ይውላል። በዚህ ገጽ ላይ ታግዷል።"
+    "message": "የመለጠፍ ኮድ በዚህ ገጽ ላይ ታግዷል። ኮድን ወደ devtools መለጠፍ አጥቂዎች መለያዎን እንዲቆጣጠሩ ሊፈቅድ ይችላል።"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "የኮንሶል ቅንብሮች"
@@ -5178,7 +5184,7 @@
     "message": "የተሰሉ ቅጦች የጎን አሞሌን ደብቅ"
   },
   "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
-    "message": "አንጓ አሁን ባለው ገጽ ውስጥ ሊገኝ አልቻለም።"
+    "message": "አንጓ አሁን ባለው ገፅ ውስጥ ሊገኝ አልቻለም።"
   },
   "panels/elements/ElementsPanel.ts | revealInElementsPanel": {
     "message": "በአባለ ነገሮች ፓነል ውስጥ ይግለጹ"
@@ -5211,7 +5217,7 @@
     "message": "መገለጫ ባህሪን አክል"
   },
   "panels/elements/ElementsTreeElement.ts | captureNodeScreenshot": {
-    "message": "የአንጓ ቅጽበታዊ ገጽ እይታን ይቅረጹ"
+    "message": "የአንጓ ቅጽበታዊ ገፅ እይታን ይቅረጹ"
   },
   "panels/elements/ElementsTreeElement.ts | children": {
     "message": "ልጆች፦"
@@ -5313,7 +5319,7 @@
     "message": "የባጅ ቅንብሮች…"
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
-    "message": "ገጽ DOM"
+    "message": "ገፅ DOM"
   },
   "panels/elements/ElementsTreeOutline.ts | reveal": {
     "message": "አሳይ"
@@ -5592,10 +5598,10 @@
     "message": "የፍርግርግ ተደራቢዎች"
   },
   "panels/elements/components/LayoutPane.ts | noFlexboxLayoutsFoundOnThisPage": {
-    "message": "በዚህ ገጽ ላይ ምንም የflexbox አቀማመጦች አልተገኙም"
+    "message": "በዚህ ገፅ ላይ ምንም የflexbox አቀማመጦች አልተገኙም"
   },
   "panels/elements/components/LayoutPane.ts | noGridLayoutsFoundOnThisPage": {
-    "message": "በዚህ ገጽ ላይ ምንም የፍርግርግ አቀማመጦች አልተገኙም"
+    "message": "በዚህ ገፅ ላይ ምንም የፍርግርግ አቀማመጦች አልተገኙም"
   },
   "panels/elements/components/LayoutPane.ts | overlayDisplaySettings": {
     "message": "የተደራቢ ማሳያ ቅንብሮች"
@@ -5610,7 +5616,7 @@
     "message": "{propertyName}ን አክል፦ {propertyValue}"
   },
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
-    "message": "የአካባቢ ቅጽበታዊ ገጽ እይታን ያንሱ"
+    "message": "የአካባቢ ቅጽበታዊ ገፅ እይታን ያንሱ"
   },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ቅጦችን ቅዳ"
@@ -5775,7 +5781,7 @@
     "message": "አሽከርክር"
   },
   "panels/emulation/DeviceModeToolbar.ts | screenOrientationOptions": {
-    "message": "የማያ ገጽ አቀማመጠ ገጽ አማራጮች"
+    "message": "የማያ ገፅ አቀማመጠ ገፅ አማራጮች"
   },
   "panels/emulation/DeviceModeToolbar.ts | showDeviceFrame": {
     "message": "የመሣሪያ ክፈፍን አሳይ"
@@ -5787,7 +5793,7 @@
     "message": "ችን አሳይ"
   },
   "panels/emulation/DeviceModeToolbar.ts | toggleDualscreenMode": {
-    "message": "ባለሁለት ማያ ገጽ ሁነታን ይቀያይሩ"
+    "message": "ባለሁለት ማያ ገፅ ሁነታን ይቀያይሩ"
   },
   "panels/emulation/DeviceModeToolbar.ts | width": {
     "message": "ስፋት"
@@ -5820,13 +5826,13 @@
     "message": "በምንጭ ኮድ ውስጥ አሳይ"
   },
   "panels/emulation/emulation-meta.ts | captureFullSizeScreenshot": {
-    "message": "ባለሙሉ መጠን ቅጽበታዊ ገጽ እይታን ይቅረጽ"
+    "message": "ባለሙሉ መጠን ቅጽበታዊ ገፅ እይታን ይቅረጽ"
   },
   "panels/emulation/emulation-meta.ts | captureNodeScreenshot": {
-    "message": "የአንጓ ቅጽበታዊ ገጽ እይታን ይቅረጹ"
+    "message": "የአንጓ ቅጽበታዊ ገፅ እይታን ይቅረጹ"
   },
   "panels/emulation/emulation-meta.ts | captureScreenshot": {
-    "message": "ቅጽበታዊ ገጽ እይታን ይቅረጹ"
+    "message": "ቅጽበታዊ ገፅ እይታን ይቅረጹ"
   },
   "panels/emulation/emulation-meta.ts | device": {
     "message": "መሣሪያ"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# ምንጭ}one{# ምንጮች}other{# ምንጮች}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 ሊሆን የሚችል በመከታተል ላይ ያለ ድር ጣቢያ}one{# ሊሆን የሚችል በመከታተል ላይ ያለ ድር ጣቢያ}other{# ሊሆኑ የሚችሉ በመከታተል ላይ ያሉ ድር ጣቢያዎች}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ግብዓት}one{# ግብዓቶች}other{# ግብዓቶች}}"
   },
@@ -6231,7 +6240,7 @@
     "message": "ችግሮችን በተጓዳኝ ምድቦች ስር አሳይ"
   },
   "panels/issues/IssuesPane.ts | groupDisplayedIssuesUnderKind": {
-    "message": "ቡድኑ ችግሮችን እንደ ገጽ ስህተቶች፣ ሰባሪ ለውጦች እና ማሻሻያዎች አሳይቷል"
+    "message": "ቡድኑ ችግሮችን እንደ ገፅ ስህተቶች፣ ሰባሪ ለውጦች እና ማሻሻያዎች አሳይቷል"
   },
   "panels/issues/IssuesPane.ts | heavyAds": {
     "message": "ከባድ ማስታወቂያዎች"
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "ምርጥ ልምዶች"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "የኤችቲቲፒ/ ኤችቲቲፒፒኤስ ገጾችን እና የChrome ቅጥያዎችን ብቻ ኦዲት ማድረግ ይችላል። ኦዲት ለመጀመር ወደ ሌላ ገጽ ያስሱ።"
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "ገጾችን ማርትዕ የሚቻለው HTTP ወይም HTTPS ላይ ነው። ወደተለየ ገጽ ያስሱ።"
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "ማከማቻን አጽዳ"
@@ -6507,10 +6516,10 @@
     "message": "DevTools ማፈን (የላቀ)"
   },
   "panels/lighthouse/LighthouseController.ts | doesThisPageFollowBestPractices": {
-    "message": "ለዘመናዊ የድር ግንባታ ምርጥ የአሠራር ልማዶችን ይህ ገጽ ይከተላል"
+    "message": "ለዘመናዊ የድር ግንባታ ምርጥ የአሠራር ልማዶችን ይህ ገፅ ይከተላል"
   },
   "panels/lighthouse/LighthouseController.ts | doesThisPageMeetTheStandardOfA": {
-    "message": "ይህ ገጽ በሂደት ላይ ያለ የድር መተግበሪያን ደረጃ ያሟላል?"
+    "message": "ይህ ገፅ በሂደት ላይ ያለ የድር መተግበሪያን ደረጃ ያሟላል?"
   },
   "panels/lighthouse/LighthouseController.ts | howLongDoesThisAppTakeToShow": {
     "message": "ይህ መተግበሪያ ይዘትን ለማሳየት እና ሊሰራበት የሚችል እንዲሆን ምን ያህል ጊዜ ይወስዳል"
@@ -6519,16 +6528,16 @@
     "message": "IndexedDB"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForAdSpeedAnd": {
-    "message": "ይህ ገጽ ለማስታወቂያ ፍጥነት እና ጥራት የተመቻቸ ነው?"
+    "message": "ይህ ገፅ ለማስታወቂያ ፍጥነት እና ጥራት የተመቻቸ ነው?"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForSearch": {
-    "message": "ለፍለጋ ሞተር ውጤቶች ደረጃ ይህ ገጽ የተመቻቸ ነው"
+    "message": "ለፍለጋ ሞተር ውጤቶች ደረጃ ይህ ገፅ የተመቻቸ ነው"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
-    "message": "ይህ ገጽ በአካል ጉዳተኞች ወይም ችግር ባለባቸው ሰዎች ጥቅም ላይ ሊውል ይችላል?"
+    "message": "ይህ ገፅ በአካል ጉዳተኞች ወይም ችግር ባለባቸው ሰዎች ጥቅም ላይ ሊውል ይችላል?"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "ጃቫስክሪፕት ተሰናክሏል። ይህንን ገጽ ኦዲት ለማድረግ ጃቫስክሪፕትን ማንቃት አለብዎት። ጃቫስክሪፕትን ለማንቃት የትእዛዝ ምናሌውን ይክፈቱ ከዚያም ጃቫስክሪፕትን አንቃ የሚለውን ትዕዛዝ ያሂዱ።"
+    "message": "ጃቫስክሪፕት ተሰናክሏል። ይህንን ገፅ ኦዲት ለማድረግ ጃቫስክሪፕትን ማንቃት አለብዎት። ጃቫስክሪፕትን ለማንቃት የትእዛዝ ምናሌውን ይክፈቱ ከዚያም ጃቫስክሪፕትን አንቃ የሚለውን ትዕዛዝ ያሂዱ።"
   },
   "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
     "message": "የቆየ አሰሳ"
@@ -6543,7 +6552,7 @@
     "message": "ተንቀሳቃሽ ስልክ"
   },
   "panels/lighthouse/LighthouseController.ts | multipleTabsAreBeingControlledBy": {
-    "message": "በርካታ ትሮች በተመሳሳዩ service worker ቁጥጥር እየተደረገባቸው ነው። ይህን ገጽ ኦዲት ለማድረግ በተመሳሳዩ ምንጭ ላይ ሌሎች ትሮችዎን ይዝጉ።"
+    "message": "በርካታ ትሮች በተመሳሳዩ service worker ቁጥጥር እየተደረገባቸው ነው። ይህን ገፅ ኦዲት ለማድረግ በተመሳሳዩ ምንጭ ላይ ሌሎች ትሮችዎን ይዝጉ።"
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
     "message": "አሰሳ (ነባሪ)"
@@ -6582,10 +6591,10 @@
     "message": "Snapshot ሁነታ በተለይም ከተጠቃሚ መስተጋብር በኋላ ገጹን በተለየ ሁኔታ ይተነትናል።"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
-    "message": "በእነዚህ አካባቢዎች የመጫኛ አፈፃፀም ላይ ተጽዕኖ የሚፈጥር የተከማቸ ውሂብ ሊኖር ይችላል፦ {PH1}። እነዚያ ግብዓቶች በውጤቶችዎ ላይ ተጽዕኖ እንዳያሳድሩ ይህን ገጽ ማንነት በማያሳውቅ መስኮት ውስጥ ኦዲት ያድርጉ።"
+    "message": "በእነዚህ አካባቢዎች የመጫኛ አፈፃፀም ላይ ተጽዕኖ የሚፈጥር የተከማቸ ውሂብ ሊኖር ይችላል፦ {PH1}። እነዚያ ግብዓቶች በውጤቶችዎ ላይ ተጽዕኖ እንዳያሳድሩ ይህን ገፅ ማንነት በማያሳውቅ መስኮት ውስጥ ኦዲት ያድርጉ።"
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
-    "message": "በዚህ አካባቢ ላይ በመጫኛ አፈጻጸም ላይ ተጽዕኖ የሚፈጥር የተከማቸ ውሂብ ሊኖር ይችላል፦ {PH1}። እነዚያ ግብዓቶች በውጤቶችዎ ላይ ተጽዕኖ እንዳያሳድሩ ይህን ገጽ ማንነት በማያሳውቅ መስኮት ውስጥ ኦዲት ያድርጉ።"
+    "message": "በዚህ አካባቢ ላይ በመጫኛ አፈጻጸም ላይ ተጽዕኖ የሚፈጥር የተከማቸ ውሂብ ሊኖር ይችላል፦ {PH1}። እነዚያ ግብዓቶች በውጤቶችዎ ላይ ተጽዕኖ እንዳያሳድሩ ይህን ገፅ ማንነት በማያሳውቅ መስኮት ውስጥ ኦዲት ያድርጉ።"
   },
   "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
     "message": "የማፈኛ ስልት"
@@ -6630,7 +6639,7 @@
     "message": "ሪፖርቶች"
   },
   "panels/lighthouse/LighthouseStartView.ts | analyzeNavigation": {
-    "message": "ገጽ ጭነቱን ተንትን"
+    "message": "ገፅ ጭነቱን ተንትን"
   },
   "panels/lighthouse/LighthouseStartView.ts | analyzeSnapshot": {
     "message": "የገጽ ሁኔታን ተንትን"
@@ -6663,7 +6672,7 @@
     "message": "ከሞባይል ገጾች መካከል 70% ያህሉ በማያ ገጹ ላይ ለመታየት ከእጥፋቱ በላይ ለሚታየው ይዘት ወደ 7 ሰከንዶች አካባቢ ይወስዳሉ። [Source: Think with Google]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | SecondsIsTheAverageTimeAMobile": {
-    "message": "19 ሴኮንዶች የሞባይል ድረ-ገጽ በ3 ጂ ግንኙነት ላይ ለመጫን የሚወስደው አማካይ ጊዜ ነው [ምንጭ፡_Google DoubleClick blog]"
+    "message": "19 ሴኮንዶች የሞባይል ድረ-ገፅ በ3 ጂ ግንኙነት ላይ ለመጫን የሚወስደው አማካይ ጊዜ ነው [ምንጭ፡_Google DoubleClick blog]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
     "message": "አህ፣ ይቅርታ! አንድ ስህተት አጋጠመን።"
@@ -6675,7 +6684,7 @@
     "message": "የገጽ መጫኛ ጊዜ ከአንድ ሰከድ ወደ ሰባት ሰከንዶች ሲጨምር የሞባይል ጣቢያ ጎብኚ የመቅረት ዕድሉ በ113% ይጨምራል። [ምንጭ፦ Think with Google]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | asTheNumberOfElementsOnAPage": {
-    "message": "በአንድ ገጽ ላይ ያሉት አባለ ነገሮች ብዛት ከ400 ወደ 6,000 ሲጨምር የመቀየር ዕድሉ 95% ቀንሷል። [ምንጭ፦ Think with Google]"
+    "message": "በአንድ ገፅ ላይ ያሉት አባለ ነገሮች ብዛት ከ400 ወደ 6,000 ሲጨምር የመቀየር ዕድሉ 95% ቀንሷል። [ምንጭ፦ Think with Google]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | auditingS": {
     "message": "{PH1}ን ኦዲት በማድረግ ላይ"
@@ -7356,7 +7365,7 @@
     "message": "(ያልታወቀ)"
   },
   "panels/network/NetworkDataGridNode.ts | unknownExplanation": {
-    "message": "የጥያቄው ሁኔታ እዚህ ሊታይ አይችልም ምክንያቱም ጥያቄው በበረራ ላይ እያለ ያቀረበው ገጽ ተራግፏል። የአውታረ መረብ ምዝግብ ማስታወሻ ለመያዝ እና ሁሉንም የጥያቄ ዝርዝሮች ለማየት chrome://net-exportን መጠቀም ይችላሉ።"
+    "message": "የጥያቄው ሁኔታ እዚህ ሊታይ አይችልም ምክንያቱም ጥያቄው በበረራ ላይ እያለ ያቀረበው ገፅ ተራግፏል። የአውታረ መረብ ምዝግብ ማስታወሻ ለመያዝ እና ሁሉንም የጥያቄ ዝርዝሮች ለማየት chrome://net-exportን መጠቀም ይችላሉ።"
   },
   "panels/network/NetworkDataGridNode.ts | webBundle": {
     "message": "(የድር ቅርቅብ)"
@@ -7698,10 +7707,10 @@
     "message": "ምንም ብጁ ራስጌዎች የሉም"
   },
   "panels/network/NetworkPanel.ts | captureScreenshots": {
-    "message": "ቅጽበታዊ ገጽ ዕይታዎችን አንሳ"
+    "message": "ቅጽበታዊ ገፅ ዕይታዎችን አንሳ"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
-    "message": "አንድ ገጽ ሲጭኑ ቅጽበታዊ ገጽ እይታዎችን ያንሱ"
+    "message": "አንድ ገፅ ሲጭኑ ቅጽበታዊ ገፅ እይታዎችን ያንሱ"
   },
   "panels/network/NetworkPanel.ts | clear": {
     "message": "አጽዳ"
@@ -8550,7 +8559,7 @@
     "message": "የሲፒዩ መገለጫዎች"
   },
   "panels/profiler/CPUProfileView.ts | cpuProfilesShow": {
-    "message": "የሲፒዩ መገለጫዎች የአፈጻጸም ሰዓት በእርስዎ ገጽ የጃቫስክሪፕት ተግባሮች ላይ የጠፋበትን ጊዜ ያሳያል።"
+    "message": "የሲፒዩ መገለጫዎች የአፈጻጸም ሰዓት በእርስዎ ገፅ የጃቫስክሪፕት ተግባሮች ላይ የጠፋበትን ጊዜ ያሳያል።"
   },
   "panels/profiler/CPUProfileView.ts | fms": {
     "message": "{PH1} ሚሴ"
@@ -8754,7 +8763,7 @@
     "message": "የስልት «{PH1}» ጥሪ ሲጠየቅ አንድ ስህተት ተከስቷል"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
-    "message": "የምደባ ጊዜ መስመሮች በጊዜ ሂደት ላይ የተተገበሩ የጃቫስክሪፕት ማህደረ ትውስታ ምደባዎችን ያሳያሉ። አንዴ መገለጫ ከተመዘገበ በኋላ በውስጡ ተመድቦ የነበሩ እና አሁንም በቀረጻው መጨረሻ ላይ ህያው ሆነው ያሉትን ነገሮች ለማየት የጊዜ ክፍተት መምረጥ ይችላሉ። የማህደረ ትውስታ ቀዳዳዎችን ለማግለል ይህን የመገለጫ አይነት ይጠቀሙ።"
+    "message": "የምደባ ጊዜ መስመሮች በጊዜ ሂደት ላይ የተተገበሩ የጃቫስክሪፕት ማህደረ ትውስታ ምደባዎችን ያሳያሉ። አንዴ መገለጫ ከተመዘገበ በኋላ በውስጡ ተመድቦ የነበሩ እና አሁንም በቀረጻው መጨረሻ ላይ ህያው ሆነው ያሉትን ነገሮች ለማየት የጊዜ ክፍተት መምረጥ ይችላሉ። የማህደረ ትውስታ ቀዳዳዎችን ለማግለል ይህን የመገለጫ ዓይነት ይጠቀሙ።"
   },
   "panels/profiler/HeapSnapshotView.ts | allObjects": {
     "message": "ሁሉም ነገሮች"
@@ -8772,7 +8781,7 @@
     "message": "የምደባ ጊዜ መስመሮች"
   },
   "panels/profiler/HeapSnapshotView.ts | baseSnapshot": {
-    "message": "የመሠረት ቅጽበታዊ ገጽ እይታ"
+    "message": "የመሠረት ቅጽበታዊ ገፅ እይታ"
   },
   "panels/profiler/HeapSnapshotView.ts | captureNumericValue": {
     "message": "በመቅረጽ ውስጥ አኃዛዊ እሴቶችን አካትት"
@@ -8805,7 +8814,7 @@
     "message": "የቁልል ቅጽበታዊ ዕይታ"
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshotProfilesShowMemory": {
-    "message": "የቁልል ቅጽበታዊ ገጽ እይታ መገለጫዎች በገጽዎ የጃቫስክሪፕት ዕቃዎች እና በተዛመዱ የ DOM አንጓዎች መካከል የማህደረ ትውስታ ስርጭትን ያሳያል።"
+    "message": "የቁልል ቅጽበታዊ ገፅ እይታ መገለጫዎች በገፅዎ የጃቫስክሪፕት ዕቃዎች እና በተዛመዱ የ DOM አንጓዎች መካከል የማህደረ ትውስታ ስርጭትን ያሳያል።"
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshots": {
     "message": "የቁልል ቅጽበታዊ ዕይታ"
@@ -8910,7 +8919,7 @@
     "message": "በሁሉም የቪኤም አብነቶች ላይ ያለው ጠቅላላ የገጽ ጃቫስክሪፕት ቁልል መጠን።"
   },
   "panels/profiler/IsolateSelector.ts | totalPageJsHeapSizeChangeTrend": {
-    "message": "ባለፉት {PH1} ደቂቃዎች ላይ የነበረው የጠቅላላ ገጽ JS ቁልል መጠን ለውጥ አዝማሚያ።"
+    "message": "ባለፉት {PH1} ደቂቃዎች ላይ የነበረው የጠቅላላ ገፅ JS ቁልል መጠን ለውጥ አዝማሚያ።"
   },
   "panels/profiler/LiveHeapProfileView.ts | allocatedJsHeapSizeCurrentlyIn": {
     "message": "በአሁኑ ጊዜ ጥቅም ላይ የዋለ የተመደበ የጄኤስ፦"
@@ -8997,7 +9006,7 @@
     "message": "ናሙናዎችን በመጫን ላይ…"
   },
   "panels/profiler/ModuleUIStrings.ts | loadingSnapshotInfo": {
-    "message": "የቅጽበታዊ ገጽ እይታ መረጃን በመጫን ላይ…"
+    "message": "የቅጽበታዊ ገፅ እይታ መረጃን በመጫን ላይ…"
   },
   "panels/profiler/ModuleUIStrings.ts | loadingStrings": {
     "message": "ሕብረቁምፊዎችን በመጫን ላይ…"
@@ -9243,7 +9252,7 @@
     "message": "ዳግም ጫን"
   },
   "panels/screencast/ScreencastView.ts | screencastViewOfDebugTarget": {
-    "message": "የሳንካ ዒላማ ዕይታን በማያ ገጽ ላይ ቅረጽ"
+    "message": "የሳንካ ዒላማ ዕይታን በማያ ገፅ ላይ ቅረጽ"
   },
   "panels/screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "ትሩ እንቅስቃሴ-አልባ ነው"
@@ -9309,16 +9318,16 @@
     "message": "{PH1} በ{PH2}"
   },
   "panels/security/SecurityModel.ts | theSecurityOfThisPageIsUnknown": {
-    "message": "የዚህ ገጽ ደህንነት ያልታወቀ ነው።"
+    "message": "የዚህ ገፅ ደህንነት ያልታወቀ ነው።"
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
-    "message": "ይህ ገጽ ደህንነቱ የተጠበቀ አይደለም።"
+    "message": "ይህ ገፅ ደህንነቱ የተጠበቀ አይደለም።"
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "ይህ ገጽ ደህንነቱ የተጠበቀ አይደለም (የተሰበረ ኤችቲቲፒኤስ)።"
+    "message": "ይህ ገፅ ደህንነቱ የተጠበቀ አይደለም (የተሰበረ ኤችቲቲፒኤስ)።"
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
-    "message": "ይህ ገጽ ደህንነቱ የተጠበቀ ነው (የሚሰራ ኤችቲቲፒኤስ)።"
+    "message": "ይህ ገፅ ደህንነቱ የተጠበቀ ነው (የሚሰራ ኤችቲቲፒኤስ)።"
   },
   "panels/security/SecurityPanel.ts | activeContentWithCertificate": {
     "message": "የእውቅና ማረጋገጫ ስህተቶች ያለው ንቁ ይዘት"
@@ -9327,7 +9336,7 @@
     "message": "ገቢር የተደባለቀ ይዘት"
   },
   "panels/security/SecurityPanel.ts | allResourcesOnThisPageAreServed": {
-    "message": "በዚህ ገጽ ላይ ያሉ ሁሉም መርጃዎች ደህንነታቸው ተጠብቆ ይስተናገዳሉ።"
+    "message": "በዚህ ገፅ ላይ ያሉ ሁሉም መርጃዎች ደህንነታቸው ተጠብቆ ይስተናገዳሉ።"
   },
   "panels/security/SecurityPanel.ts | allServedSecurely": {
     "message": "ሁሉም ደህንነቱ በተጠበቀ ሁኔታ ቀርበዋል"
@@ -9465,7 +9474,7 @@
     "message": "ዝርዝሮችን ለመመልከት ዳግም ይጫኑ"
   },
   "panels/security/SecurityPanel.ts | resources": {
-    "message": "ግብዓቶች"
+    "message": "ንብረቶች"
   },
   "panels/security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
     "message": "RSA ቁልፍ ልውውጥ የማይሠራ ነው። በECDHE ላይ የተመሠረተ የምስጠራ ጥቅልን አንቃ።"
@@ -9540,34 +9549,34 @@
     "message": "የአገልጋዩ ፊርማ ጊዜ ያለፈበትን SHA-1ን ይጠቀማል። ይልቁንስ የ A-2 ፊርማ ስልተ ቀመርን ያንቁ። (ይህ በዕውቅና ማረጋገጫው ውስጥ ካለው ፊርማ የተለየ መሆኑን ልብ ይበሉ።)"
   },
   "panels/security/SecurityPanel.ts | thisIsAnErrorPage": {
-    "message": "ይህ የስህተት ገጽ ነው።"
+    "message": "ይህ የስህተት ገፅ ነው።"
   },
   "panels/security/SecurityPanel.ts | thisOriginIsANonhttpsSecure": {
     "message": "ይህ መነሻ ኤችቲቲፒኤስ ያልሆነ ደህንነቱ የተጠበቀ መነሻ ነው።"
   },
   "panels/security/SecurityPanel.ts | thisPageHasANonhttpsSecureOrigin": {
-    "message": "ይህ ገጽ የHTTPS ያልሆነ ደህንነቱ የተጠበቀ ምንጭ አለው።"
+    "message": "ይህ ገፅ የHTTPS ያልሆነ ደህንነቱ የተጠበቀ ምንጭ አለው።"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
-    "message": "ይህ ገጽ ደህንነቱ ያልተጠበቀ የ«እርምጃ» አይነታ ያለው ቅጽ አካትቷል።"
+    "message": "ይህ ገፅ ደህንነቱ ያልተጠበቀ የ«እርምጃ» አይነታ ያለው ቅጽ አካትቷል።"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
-    "message": "ይህ ገጽ የHTTP ግብዓቶችን ያካትታል።"
+    "message": "ይህ ገፅ የHTTP ግብዓቶችን ያካትታል።"
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesResourcesThat": {
-    "message": "ይህ ገጽ ከዕውቅና ማረጋገጫ ስህተቶች ጋር የተጫኑ ግብዓቶችን ያካትታል።"
+    "message": "ይህ ገፅ ከዕውቅና ማረጋገጫ ስህተቶች ጋር የተጫኑ ግብዓቶችን ያካትታል።"
   },
   "panels/security/SecurityPanel.ts | thisPageIsDangerousFlaggedBy": {
-    "message": "ይህ ገጽ አደገኛ ነው (በGoogle የጥንቃቄ አሰሳ የተጠቆመ)።"
+    "message": "ይህ ገፅ አደገኛ ነው (በGoogle የጥንቃቄ አሰሳ የተጠቆመ)።"
   },
   "panels/security/SecurityPanel.ts | thisPageIsInsecureUnencrypted": {
-    "message": "ይህ ገጽ ደህንነቱ ያልተጠበቀ ነው (ያልተመሠጠረ HTTP)።"
+    "message": "ይህ ገፅ ደህንነቱ ያልተጠበቀ ነው (ያልተመሠጠረ HTTP)።"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspicious": {
-    "message": "ይህ ገጽ አጠራጣሪ ነው"
+    "message": "ይህ ገፅ አጠራጣሪ ነው"
   },
   "panels/security/SecurityPanel.ts | thisPageIsSuspiciousFlaggedBy": {
-    "message": "ይህ ገጽ አጠራጣሪ ነው (በChrome የተጠቆመ)።"
+    "message": "ይህ ገፅ አጠራጣሪ ነው (በChrome የተጠቆመ)።"
   },
   "panels/security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
     "message": "ይህ ጥያቄ Chrome የዕውቅና ማረጋገጫ የግልጽነት መመሪያ ተገዢ ነው።"
@@ -9585,7 +9594,7 @@
     "message": "የጣቢያው አስተናጋጅ ስም ከ{PH1} ጋር ይመሳሰላል። አጥቂዎች አንዳንድ ጊዜ በጎራው ስም ላይ ለመታየት የሚያስቸግሩ አነስተኛ ለውጦችን በማድረግ ጣቢያዎችን ያስመስላሉ።"
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "የዚህን ገጽ ሁነታ ለመፈተሽ ይህን ይጎብኙ፦ g.co/safebrowsingstatus።"
+    "message": "የዚህን ገፅ ሁነታ ለመፈተሽ ይህን ይጎብኙ፦ g.co/safebrowsingstatus።"
   },
   "panels/security/SecurityPanel.ts | unknownCanceled": {
     "message": "ያልታወቀ / ተሰርዟል"
@@ -9624,7 +9633,7 @@
     "message": "ከዚህ ምንጭ ጋር ያለዎት ግንኙነት ደህንነቱ የተጠበቀ አይደለም።"
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
-    "message": "የእርስዎ ገጽ የታገዱ ደህንነታቸው ያልጠበቁ ግብዓቶችን ጠይቋል።"
+    "message": "የእርስዎ ገፅ የታገዱ ደህንነታቸው ያልጠበቁ ግብዓቶችን ጠይቋል።"
   },
   "panels/security/security-meta.ts | security": {
     "message": "ደህንነት"
@@ -9702,7 +9711,7 @@
     "message": "ብጁ አቀማመጥ"
   },
   "panels/sensors/SensorsView.ts | deviceOrientationSetToAlphaSBeta": {
-    "message": "የመሣሪያ አቀማመጠ ገጽ የተቀናበረው ወደ አልፋ፦ {PH1}፣ ቤታ፦ {PH2}፣ ጋማ፦ {PH3}"
+    "message": "የመሣሪያ አቀማመጠ ገፅ የተቀናበረው ወደ አልፋ፦ {PH1}፣ ቤታ፦ {PH2}፣ ጋማ፦ {PH3}"
   },
   "panels/sensors/SensorsView.ts | displayDown": {
     "message": "ከታች አሳይ"
@@ -9759,7 +9768,7 @@
     "message": "አጥፋ"
   },
   "panels/sensors/SensorsView.ts | orientation": {
-    "message": "አቀማመጠ ገጽ"
+    "message": "አቀማመጠ ገፅ"
   },
   "panels/sensors/SensorsView.ts | other": {
     "message": "ሌላ…"
@@ -9792,7 +9801,7 @@
     "message": "የፍጥነት መለኪያ መሣሪያ"
   },
   "panels/sensors/sensors-meta.ts | deviceOrientation": {
-    "message": "የመሣሪያ አቀማመጠ ገጽ"
+    "message": "የመሣሪያ አቀማመጠ ገፅ"
   },
   "panels/sensors/sensors-meta.ts | devicebased": {
     "message": "በመሣሪያ ላይ የተመሠረተ"
@@ -9834,16 +9843,16 @@
     "message": "ይንኩ"
   },
   "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
-    "message": "ተጠቃሚ ንቁ ነው፣ ማያ ገጽ ተቆልፏል"
+    "message": "ተጠቃሚ ንቁ ነው፣ ማያ ገፅ ተቆልፏል"
   },
   "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
-    "message": "ተጠቃሚ ንቁ ነው፣ ማያ ገጽ ተከፍቷል"
+    "message": "ተጠቃሚ ንቁ ነው፣ ማያ ገፅ ተከፍቷል"
   },
   "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
-    "message": "የተጠቃሚ ስራ ፈት፣ ማያ ገጽ ተቆልፏል"
+    "message": "የተጠቃሚ ስራ ፈት፣ ማያ ገፅ ተቆልፏል"
   },
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
-    "message": "የተጠቃሚ ስራ ፈትት፣ ማያ ገጽ ተከፍቷል"
+    "message": "የተጠቃሚ ስራ ፈትት፣ ማያ ገፅ ተከፍቷል"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
     "message": "የፋይል ስም ስርዓተ ጥለት ያክሉ"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "መዋቅረ ኮምፒውተር (ለምሳሌ፦ x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} ሰረዝ"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "የምርት ስምን ከሙሉ ስሪት ዝርዝር ሰርዝ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "የምርት ስም"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "የተጠቃሚ ወኪል ባህሪያት"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "የምርት ስምን ከተጠቃሚ ወኪል ክፍል ሰርዝ"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "ስሪት {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "ስሪት (ለምሳሌ 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "ሰርዝ"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "የምርት ስም ረድፍ ተሰርዟል"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "የሙሉ ስሪት ዝርዝር (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "የበለጠ ለመረዳት"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "ተንቀሳቃሽ ስልክ"
@@ -10107,7 +10119,7 @@
     "message": "አዘምን"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "የተጠቃሚ ወኪል ደንበኛ ፍንጮች በተሻለ የግላዊነት መለያ አማካኝነት አሳሹን እና መሣሪያውን በተሻለ በተዋቀረ መልኩ ለይቶ የሚያውቅ የተጠቃሚ ወኪል ሕብረቁምፊ አማራጭ ነው። የበለጠ ለመረዳት አዝራርን ጠቅ ያድርጉ።"
+    "message": "የተጠቃሚ ወኪል ደንበኛ ፍንጮች በተሻለ የግላዊነት መለያ አማካኝነት አሳሹን እና መሣሪያውን በተሻለ በተዋቀረ መልኩ ለይቶ የሚያውቅ የተጠቃሚ ወኪል ሕብረቁምፊ አማራጭ ነው።"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "የተጠቃሚ ወኪል (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "የመግቻ ቦታ ዓይነት"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "የመገናኛ አርትዖትን ይዝጉ እና ለውጦችን ያስቀምጡ"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "ሁኔታዊ መግቻ ቦታ"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "ይመልከቱ"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (ራስ {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "ሰነዶች"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "ጂፒዩ"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (ራስ {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "መስተጋብሮች"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (ራስ {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "የአቀማመጥ ለውጦች"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "ለዒላማ የሲፒዩ መገለጫ አይገኝም።"
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "ዋና — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "የተከሰተባቸው፦ {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "ችላ በተባለው ዝርዝር ላይ"
@@ -11244,7 +11256,7 @@
     "message": "የቋት አጠቃቀም"
   },
   "panels/timeline/TimelinePanel.ts | captureScreenshots": {
-    "message": "ቅጽበታዊ ገጽ ዕይታዎችን አንሳ"
+    "message": "ቅጽበታዊ ገፅ ዕይታዎችን አንሳ"
   },
   "panels/timeline/TimelinePanel.ts | captureSettings": {
     "message": "ቅንብሮችን ይቅረጹ"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "የላቀ የቀለም መሣሪያን ያንቁ (ቀርፋፋ)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "የጊዜ መስመርን ማስቀመጥ አልተሳካም፦ {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "መገለጫ ሰሪን በማስጀመር ላይ…"
@@ -11319,7 +11334,7 @@
     "message": "መገለጫ አስቀምጥ…"
   },
   "panels/timeline/TimelinePanel.ts | screenshots": {
-    "message": "ቅጽበታዊ ገጽ እይታዎች"
+    "message": "ቅጽበታዊ ገፅ እይታዎች"
   },
   "panels/timeline/TimelinePanel.ts | showMemoryTimeline": {
     "message": "የማህደረ ትውስታ የጊዜ መስመርን አሳይ"
@@ -11403,7 +11418,7 @@
     "message": "አልተባም፦ {PH1}"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
-    "message": "ገጽ"
+    "message": "ገፅ"
   },
   "panels/timeline/TimelineTreeView.ts | percentPlaceholder": {
     "message": "{PH1} %"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "ሰዓት ቆጣሪን ጫን"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "መታወቂያ"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ልክ ያልሆነ አቀማመጥ"
   },
@@ -11789,6 +11807,9 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "አካባቢ"
   },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "ረጅም መስተጋብር"
+  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "ረጅም ተግባር"
   },
@@ -11802,7 +11823,7 @@
     "message": "የMIME ዓይነት"
   },
   "panels/timeline/TimelineUIUtils.ts | mimeTypeCaps": {
-    "message": "የሚሜ አይነት"
+    "message": "የሚሜ ዓይነት"
   },
   "panels/timeline/TimelineUIUtils.ts | minorGc": {
     "message": "አነስተኛ ጂሲ"
@@ -11983,6 +12004,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} የአፈፃፀም ማነቆ ሊሆን ይችላል።"
+  },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} ደካማ የገጽ ምላሽ ሰጪነትን እያመለከተ ነው።"
   },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}። ረዥም የክፈፍ ጊዜዎች የ{PH2} አመላካች ናቸው"
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "አዎ"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (ራስ {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "የሰዓት አጠባበቆች"
   },
@@ -12273,7 +12294,7 @@
     "message": "(ምንም ቀረጻዎች የሉም)"
   },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
-    "message": "ክትትልን ለመጀመር የድር ኦዲዮ ኤፒአይን የሚጠቀም ገጽ ክፈት።"
+    "message": "ክትትልን ለመጀመር የድር ኦዲዮ ኤፒአይን የሚጠቀም ገፅ ክፈት።"
   },
   "panels/web_audio/web_audio-meta.ts | audio": {
     "message": "ኦዲዮ"
@@ -12465,10 +12486,10 @@
     "message": "በአድራሻ ታሪክ ላይ ወደፊት ሂድ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | nextPage": {
-    "message": "ቀጣይ ገጽ"
+    "message": "ቀጣይ ገፅ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | previousPage": {
-    "message": "ቀዳሚ ገጽ"
+    "message": "ቀዳሚ ገፅ"
   },
   "ui/components/linear_memory_inspector/LinearMemoryNavigator.ts | refresh": {
     "message": "አድስ"
@@ -12534,7 +12555,7 @@
     "message": "የአውታረ መረብ ፓነሉን ለመክፈት እና የዩአርኤልን ጥያቄ ለማሳየት ጠቅ ያድርጉ፦ {url}"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
-    "message": "በአውታረ መረብ ፓናሉ ላይ ጥያቄ አይገኝም፣ የተመረመረውን ገጽ እንደገና ለመጫን ይሞክሩ"
+    "message": "በአውታረ መረብ ፓናሉ ላይ ጥያቄ አይገኝም፣ የተመረመረውን ገፅ እንደገና ለመጫን ይሞክሩ"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
     "message": "ያጠረ ዩአርኤል"
@@ -12550,6 +12571,66 @@
   },
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "ኮድ አርታዒ"
+  },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}፣ የአስተያየት ጥቆማ {PH2} ከ{PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "የዳራ አገልግሎቶች"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "ኮንሶል"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "አራሚ"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "መሳቢያ"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "ክፍለ-አካላት"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "ዓለም አቀፍ"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "እገዛ"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "የጃቫስክሪፕት መገለጫ ሰሪ"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "ንብርብሮች"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "ማህደረ ትውስታ"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "ሞባይል"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "አሰሳ"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "አውታረ መረብ"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "አፈጻጸም"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "ምስል በመስራት ላይ"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "ንብረቶች"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "ቅጽበታዊ ገጽ እይታ"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "ቅንብሮች"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "ምንጮች"
   },
   "ui/legacy/DockController.ts | close": {
     "message": "ዝጋ"
@@ -12753,7 +12834,7 @@
     "message": "DevTools ከገጹ ተለያይቷል።"
   },
   "ui/legacy/TargetCrashedScreen.ts | oncePageIsReloadedDevtoolsWill": {
-    "message": "አንዴ ገጽ እንደገና ከተጫነ በኋላ DevTools በራስ-ሰር እንደገና ይገናኛል።"
+    "message": "አንዴ ገፅ እንደገና ከተጫነ በኋላ DevTools በራስ-ሰር እንደገና ይገናኛል።"
   },
   "ui/legacy/Toolbar.ts | clearInput": {
     "message": "ግብዓትን አጽዳ"
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} ፓነል"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "መሳቢያ"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "የመሳቢያ የጎን አሞሌ"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "ክፍለ-አካላት"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "አውታረ መረብ"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "ፓነል"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "ቅንብሮች"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "ምንጮች"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"
@@ -13143,10 +13245,10 @@
     "message": "ቀዳሚ ክፈፍ"
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshot": {
-    "message": "ቅጽበታዊ ገጽ እይታ"
+    "message": "ቅጽበታዊ ገፅ እይታ"
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
-    "message": "ቅጽበታዊ ገጽ እይታ ለ{PH1} - ቀዳሚ ጥያቄዎችን ለመመልከት ይምረጡ።"
+    "message": "ቅጽበታዊ ገፅ እይታ ለ{PH1} - ቀዳሚ ጥያቄዎችን ለመመልከት ይምረጡ።"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | flameChart": {
     "message": "የነበልባል ገበታ"

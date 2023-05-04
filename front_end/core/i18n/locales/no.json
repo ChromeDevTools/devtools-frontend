@@ -1392,7 +1392,7 @@
     "message": "Range.expand() er avviklet. Bruk Selection.modify() i stedet."
   },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
-    "message": "Underressursforespørsler med nettadresser som inneholder innbygd legitimasjon (f.eks. https://user:pass@host/), er blokkert."
+    "message": "Underressursforespørsler med nettadresser som inneholder innebygd legitimasjon (f.eks. https://user:pass@host/), er blokkert."
   },
   "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
     "message": "rtcpMuxPolicy-alternativet er avviklet og kommer til å bli fjernet."
@@ -1510,6 +1510,9 @@
   },
   "models/har/Writer.ts | writingFile": {
     "message": "Skriver fil …"
+  },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Korrigeringer av avvisningssporing"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infrastruktur for klienthint"
@@ -2381,9 +2384,6 @@
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Ny merknad for nettadresse"
   },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Fant ingen samsvarende service worker. Du må kanskje laste inn siden på nytt eller sjekke at service worker for den gjeldende siden har et omfang som omslutter omfanget («scope») og start-nettadressen («start_url») fra manifestet."
-  },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Ingen Play Butikk-ID er oppgitt"
   },
@@ -2829,7 +2829,7 @@
     "message": "lukket"
   },
   "panels/application/OpenedWindowDetailsView.ts | crossoriginEmbedderPolicy": {
-    "message": "Regel for opphavsuavhengig innbygging"
+    "message": "Regel for opphavsuavhengig innebygging"
   },
   "panels/application/OpenedWindowDetailsView.ts | document": {
     "message": "Dokument"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Mislyktes"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Ikke utløst"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Venter"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Kunne ikke forhåndslaste."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Forsøket på forhåndslasting er ikke utløst ennå."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Forsøket på forhåndslasting er kvalifisert, men venter på behandling."
@@ -4446,7 +4452,7 @@
     "message": "Konsollen er tømt"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Innliming av kode i utviklerverktøy brukes ofte til å svindle folk og overta kontoene deres. Det er blokkert på denne siden."
+    "message": "Innliming av kode er blokkert på denne siden. Innliming av kode i Utviklerverktøy kan gjøre det mulig for angripere å ta over kontoen din."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsollinnstillinger"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# kilde}other{# kilder}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 nettsted som muligens sporer}other{# nettsteder som muligens sporer}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ressurs}other{# ressurser}}"
   },
@@ -6216,7 +6225,7 @@
     "message": "Ressursdeling på tvers av opprinnelse"
   },
   "panels/issues/IssuesPane.ts | crossOriginEmbedderPolicy": {
-    "message": "Regel for opphavsuavhengig innbygging"
+    "message": "Regel for opphavsuavhengig innebygging"
   },
   "panels/issues/IssuesPane.ts | generic": {
     "message": "Generisk"
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Anbefalte fremgangsmåter"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Kan bare utføre revisjon på HTTP-/HTTPS-sider og Chrome-utvidelser. Naviger til en annen side for å starte en revisjon."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Kan bare gjennomgå sider på HTTP eller HTTPS. Naviger til en annen side."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Tøm lagringsplass"
@@ -7905,7 +7914,7 @@
     "message": "Dette dokumentet ble blokkert fra å lastes inn i en iframe med et sandbox-attributt, fordi dokumentet spesifiserte en regel for opphavsuavhengig åpner."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
-    "message": "For at denne rammen skal kunne bygges inn i dokumentet, må responsen slå på regelen for opphavsuavhengig innbygging ved å spesifisere det følgende svarhodet:"
+    "message": "For at denne rammen skal kunne bygges inn i dokumentet, må responsen slå på regelen for opphavsuavhengig innebygging ved å spesifisere det følgende svarhodet:"
   },
   "panels/network/RequestHeadersView.ts | toUseThisResourceFromADifferent": {
     "message": "For å bruke denne ressursen fra et annet opphav må tjeneren angi en opphavsuavhengig ressursregel i svarhodene:"
@@ -8403,7 +8412,7 @@
     "message": "Dette dokumentet ble blokkert fra å lastes inn i et iframe-element med et sandbox-attributt, fordi dokumentet spesifiserte en regel for opphavsuavhengig åpning."
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
-    "message": "For å bygge denne rammen inn i dokumentet må svaret slå på regelen for opphavsuavhengig innbygging ved å spesifisere det følgende svarhodet:"
+    "message": "For å bygge denne rammen inn i dokumentet må svaret slå på regelen for opphavsuavhengig innebygging ved å spesifisere det følgende svarhodet:"
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
     "message": "For å bruke denne ressursen fra et annet opphav må tjeneren angi en opphavsuavhengig ressursregel i svarhodene:"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arkitektur (f.eks. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Slett {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Slett merkenavnet fra den fullstendige versjonslisten"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Merkevare"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Egenskaper for brukeragent"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Slett merkenavnet fra brukeragentdelen"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versjon {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versjon (f.eks. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Slett"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Slettet merkerad"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Full versjonsliste (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Finn ut mer"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobil"
@@ -10107,7 +10119,7 @@
     "message": "Oppdater"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Tips om brukeragentklienter er et alternativ til brukeragentstrengen som identifiserer nettleseren og enheten på en mer strukturert måte med bedre personvern. Klikk på knappen for å finne ut mer."
+    "message": "Klienthint om brukeragenten er et alternativ til brukeragentstrengen som identifiserer nettleseren og enheten på en mer strukturert måte med bedre personvern."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Brukeragent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Stoppunkttype"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Lukk dialogboksen for redigering, og lagre endringene"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Betinget stoppunkt"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Se"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (egen {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumenter"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (egen {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interaksjoner"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (egen {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Utseendeforskyvninger"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU-profil for et mål er ikke tilgjengelig"
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Primært — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Forekomster: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "På ignoreringslisten"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Aktiver avansert instrumentering ved opptegning (sakte)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Kunne ikke lagre tidslinjen: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Initialiserer profiler …"
@@ -11643,7 +11658,7 @@
     "message": "utviklet"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "Opplev"
+    "message": "Opplevelse"
   },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "kunne ikke laste inn skript fra hurtigbuffer"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Installeringstimer"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Ugylddigjør layout"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Sted"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Lang interaksjon"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Lang oppgave"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} er sannsynligvis en flaskehals for ytelse."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} indikerer dårlig siderespons."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Lange rammetider er en indikasjon på {PH2}"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ja"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (egen {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Tid"
   },
@@ -12201,7 +12222,7 @@
     "message": "Skjul chrome-ramme i lagvisning"
   },
   "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "JavaScript-profiler"
+    "message": "JavaScript-profileringsverktøy"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "Last inn profil …"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Koderedigerer"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, forslag {PH2} av {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Bakgrunnstjenester"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konsoll"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Feilsøkingsprogram"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Uttrekksmeny"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elementer"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Globalt"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Hjelp"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript-profileringsverktøy"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Lag"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Minne"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobil"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigering"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Nettverk"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Ytelse"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Gjengivelse"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Ressurser"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Skjermdump"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Innstillinger"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Kilder"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Lukk"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1}-panel"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Uttrekksmeny"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Uttrekkssidefelt"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elementer"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Nettverk"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Innstillinger"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Kilder"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

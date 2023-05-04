@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Schreiben in Datei…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Eindämmung von Bounce-Tracking"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client-Hints-Infrastruktur"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL für neue Notiz"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Keine passenden service worker gefunden. Versuche, die Seite zu aktualisieren, oder prüfe, ob der Bereich für den service worker für die aktuelle Seite den Bereich und die Start-URL des Manifests umfasst."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Store-ID fehlt"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Fehler"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Nicht ausgelöst"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Ausstehend"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Fehler beim Vorabladen."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Der Versuch zum Vorabladen wurde noch nicht ausgelöst."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Der Vorabladeversuch ist gültig, aber ausstehend."
@@ -4446,7 +4452,7 @@
     "message": "Konsole gelöscht"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Das Einfügen von Code in die Entwicklertools wird häufig für Betrug oder das Übernehmen von Konten missbraucht. Es ist auf dieser Seite blockiert."
+    "message": "Das Einfügen von Code auf dieser Seite ist blockiert. Wenn du Code in die Entwicklertools einfügst, könnten Angreifer die Kontrolle über dein Konto übernehmen."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsoleneinstellungen"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# Quelle}other{# Quellen}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 potenzielle Bounce-Tracking-Website}other{# potenzielle Bounce-Tracking-Websites}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# Ressource}other{# Ressourcen}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Best Practices"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Kann nur HTTP-/HTTPS-Seiten und Chrome-Erweiterungen prüfen. Rufe eine andere Seite auf, um, die Prüfung zu starten."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Seiten können nur mit HTTP oder HTTPS geprüft werden. Rufe eine andere Seite auf."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Speicherinhalt löschen"
@@ -7878,7 +7887,7 @@
     "message": "Vorläufige Header werden angezeigt. Deaktiviere den Cache, um die vollständigen Header zu sehen."
   },
   "panels/network/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Richtlinien für Verweis-URL"
+    "message": "Richtlinien für Referrer-URL"
   },
   "panels/network/RequestHeadersView.ts | remoteAddress": {
     "message": "Remote-Adresse"
@@ -8313,7 +8322,7 @@
     "message": "Rohdaten"
   },
   "panels/network/components/RequestHeadersView.ts | referrerPolicy": {
-    "message": "Richtlinien für Verweis-URL"
+    "message": "Richtlinien für Referrer-URL"
   },
   "panels/network/components/RequestHeadersView.ts | remoteAddress": {
     "message": "Remote-Adresse"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Architektur (z. B. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} löschen"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Marke aus der Liste der vollständigen Version löschen"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Marke"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "User-Agent-Eigenschaften"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Marke aus dem Abschnitt „User-Agent“ löschen"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Version {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Version (z. B. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Löschen"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Markenzeile gelöscht"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Liste der vollständigen Versionen (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Weitere Informationen"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobil"
@@ -10107,7 +10119,7 @@
     "message": "Aktualisieren"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "User-Agent-Client-Hinweise sind eine Alternative zum User-Agent-String, die den Browser und das Gerät auf strukturiertere Weise identifizieren und dabei die Privatsphäre besser wahren. Klicke auf die Schaltfläche, um weitere Informationen zu erhalten."
+    "message": "User-Agent-Client-Hinweise sind eine Alternative zum User-Agent-String, die den Browser und das Gerät auf strukturiertere Weise identifizieren und dabei die Privatsphäre besser wahren."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "User-Agent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Haltepunkttyp"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Bearbeitungsdialog schließen und Änderungen speichern"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Bedingter Haltepunkt"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Ansehen"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} ({PH2} im Knoten selbst)"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumente"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} im Knoten selbst)"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interaktionen"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} im Knoten selbst)"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Layout Shifts"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU-Profil für ein Ziel ist nicht verfügbar."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Hauptinhalt — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Vorkommen: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Auf Ignorieren-Liste"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Erweiterte Paint-Instrumentierung aktivieren (langsam)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Zeitachse konnte nicht gespeichert werden: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Profiler wird initialisiert…"
@@ -11643,7 +11658,7 @@
     "message": "weiterentwickelt"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "Erfahrung"
+    "message": "Erleben"
   },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "Fehler beim Laden des Skripts aus dem Cache"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Timer installieren"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Layout außer Kraft setzen"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Standort"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Lange Interaktion"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Lange Aufgabe"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} ist wahrscheinlich ein Leistungsengpass."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} gibt eine schlechte Reaktionsfähigkeit der Seite an."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Lange Frame Times sind ein Hinweis auf {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ja"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} ({PH2} im Knoten selbst)"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Zeitplan"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Codeeditor"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, Vorschlag {PH2} von {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Hintergrunddienste"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konsole"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Debugger"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Leiste"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elemente"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Global"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Hilfe"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript-Profiler"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Ebenen"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Arbeitsspeicher"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobilgerät"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigation"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Netzwerk"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Leistung"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Rendering"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Ressourcen"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Screenshot"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Einstellungen"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Quellen"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Schließen"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Steuerfeld „{PH1}“"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Leiste"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Seitenleiste der Leiste"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elemente"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Netzwerk"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Steuerfeld"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Einstellungen"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Quellen"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

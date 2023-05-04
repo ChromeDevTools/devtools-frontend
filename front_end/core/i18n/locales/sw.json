@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Inaadika kwenye faili…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Kupunguza Uwezekano wa Ufuatiliaji kwa Kuelekezwa Kwingine"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Muundo wa Vidokezo vya Programu Teja"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL ya dokezo jipya"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Hakuna service worker inayolingana iliyotambuliwa. Huenda ukahitaji kupakia ukurasa huu upya, au uhakikishe kwamba upeo na sehemu ya kwanza ya URL kutoka kwenye faili ya maelezo ipo ndani ya upeo wa service worker wa ukurasa wa sasa."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Hujaweka kitambulisho cha Duka la Google Play"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Imeshindwa kutekeleza"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Haijatekelezwa"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Inasubiri kushughulikiwa"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Imeshindwa kupakia mapema."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Jaribio la kupakia mapema bado halijatekelezwa."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Jaribio la kupakia mapema linastahiki lakini linasubiri."
@@ -4446,7 +4452,7 @@
     "message": "Dashibodi imefutwa"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Dashibodi ya kubandika msimbo kwenye zana za wasanidi programu mara nyingi hutumiwa kulaghai watu na kuchukua akaunti zao. Imezuiwa kwenye ukurasa huu."
+    "message": "Kubandika msimbo kumezuiwa kwenye ukurasa huu. Kubandika msimbo kwenye zana za wasanidi programu kunaweza kuruhusu wadulkuzi kuiba akaunti yako."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Mipangilio ya dashibodi"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{Chanzo #}other{Vyanzo #}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{Tovuti 1 inayoweza kufuatilia}other{Tovuti # zinazoweza kufuatilia}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{Nyenzo #}other{Nyenzo #}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Mbinu bora"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Inaweza tu kukagua kurasa za HTTP/HTTPS na viendelezi vya Chrome. Nenda kwenye ukurasa tofauti ili uanzishe ukaguzi."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Inaweza kukagua tu kurasa kwenye HTTP au HTTPS. Nenda kwenye ukurasa tofauti."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Futa hifadhi"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Muundo (k.m. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Futa {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Futa chapa kwenye orodha kamili ya toleo"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Chapa"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Vipengele vya ala ya mtumiaji"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Futa chapa kwenye sehemu ya ala ya mtumiaji"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Toleo la {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Toleo (k.m. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Futa"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Safu mlalo ya chapa imefutwa"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Orodha kamili ya toleo (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Pata maelezo zaidi"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Kifaa cha mkononi"
@@ -10107,7 +10119,7 @@
     "message": "Sasisha"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Vidokezo vya programu teja ya ala ya mtumiaji hutumiwa badala ya mfuatano wa ala ya mtumiaji na vinatambua kivinjari na kifaa kwa njia iliyoratibiwa zaidi na yenye uwajibikaji bora zaidi wa faragha. Bofya kitufe ili upate maelezo zaidi."
+    "message": "Vidokezo vya programu teja ya ala ya mtumiaji hutumiwa badala ya mfuatano wa ala ya mtumiaji na vinatambua kivinjari na kifaa kwa njia iliyoratibiwa zaidi na yenye uwajibikaji bora zaidi wa faragha."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Ala ya mtumiaji (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Aina ya sehemu ya kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Funga kidirisha cha kubadilisha na uhifadhi mabadiliko"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Sehemu inayofuata masharti ya kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Kitazamaji"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (muda wa {PH2} wa shughuli mahususi)"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Hati"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (muda wa {PH2} wa shughuli mahususi)"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Mawasiliano"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (muda wa {PH2} wa shughuli mahususi)"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Ugeuzaji wa Muundo"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Maelezo ya kiini cha kompyuta (CPU) ya sehemu lengwa hayapatikani."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Kuu — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Matukio: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Kwenye orodha ya vipengee vilivyopuuzwa"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Washa hali ya kina ya kuonyesha maudhui (polepole)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Imeshindwa kuhifadhi rekodi ya matukio: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Inaanzisha kichanganuzi…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Weka Kipima Muda"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Kitambulisho"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Batilisha Muundo"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Eneo"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Mtagusano unaochukua muda mrefu"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Jukumu refu"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "Inawezekana {PH1} ni kikwazo cha utendaji."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} inaonyesha utendaji dhaifu wa ukurasa."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Muda mrefu wa utekelezaji wa fremu ni ishara ya {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ndiyo"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (muda wa {PH2} wa shughuli mahususi)"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Muda"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Kihariri cha msimbo"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, pendekezo la {PH2} kati ya {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Huduma za Chinichini"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Dashibodi"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Kitatuzi"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Menyu"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Vipengee"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Kimataifa"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Usaidizi"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Kichanganuzi cha JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Safu"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Hifadhi"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Kifaa cha mkononi"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Usogezaji"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Mtandao"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Utendaji"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Utekelezaji"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Nyenzo"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Picha ya skrini"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Mipangilio"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Vyanzo"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Funga"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Kidirisha cha {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Menyu"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Utepe wa menyu"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Vipengee"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Mtandao"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Kidirisha"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Mipangilio"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Vyanzo"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

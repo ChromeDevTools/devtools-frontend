@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Faili kirjutamine …"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Põrkumise jälgimise leevendused"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Kliendivihjete infrastruktuur"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Uue märkuse URL"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Ühtki sobivat üksust service worker ei leitud. Teil tuleb võib-olla leht uuesti laadida või veenduda, et praeguse lehe üksuse service worker ulatus hõlmaks manifestis märgitud ulatust ja alguse URL-i."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play poe ID ei ole määratud"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Tõrge"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Ei ole käivitatud"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Ootel"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Eellaadimine ebaõnnestus."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Eellaadimise katset pole veel käivitatud."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Eellaadimise katse on sobilik, kuid ootel."
@@ -4446,7 +4452,7 @@
     "message": "Konsool on tühjendatud"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Koodi kleepimist arendaja tööriistadesse kasutatakse sageli inimeste petmiseks ja nende kontode ülevõtmiseks. See on sellel lehel blokeeritud."
+    "message": "Koodi kleepimine on sellel lehel blokeeritud. Koodi kleepimine arendaja tööriistadesse võib anda ründajatele võimaluse teie konto üle võtta."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsooli seaded"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# allikas}other{# allikat}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 potentsiaalselt jälgiv veebisait}other{# potentsiaalselt jälgivat veebisaiti}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# ressurss}other{# ressurssi}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Head tavad"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Saab auditeerida ainult HTTP-/HTTPS-lehti ja Chrome'i laiendusi. Auditi alustamiseks navigeerige muule lehele."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Saa auditeerida ainult HTTP- või HTTPS-lehti. Navigeerige teisele lehele."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Tühjenda salvestusruum"
@@ -9465,7 +9474,7 @@
     "message": "Laadi uuesti üksikasjade kuvamiseks"
   },
   "panels/security/SecurityPanel.ts | resources": {
-    "message": "Ressursid"
+    "message": "Allikad"
   },
   "panels/security/SecurityPanel.ts | rsaKeyExchangeIsObsoleteEnableAn": {
     "message": "RSA võtmevahetus on aegunud. Lubage ECDHE-põhine šifreerimiskomplekt."
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arhitektuur (nt x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Kustuta {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Kustutage bränd täieliku versiooni loendist"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Bränd"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Kasutaja-agendi atribuudid"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Kustutage bränd kasutaja-agendi jaotisest"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versioon {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versioon (nt 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Kustuta"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Brändi rida kustutati"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Täieliku versiooni loend (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Lisateave"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobiil"
@@ -10107,7 +10119,7 @@
     "message": "Värskenda"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Kasutaja-agendi kliendi vihjed on alternatiiv kasutaja-agendi stringidele, mis tuvastavad brauseri ja seadme struktureeritumal moel ning paremate privaatsusfunktsioonidega. Lisateabe saamiseks klõpsake nupul."
+    "message": "Kasutaja-agendi kliendivihjed on alternatiiv kasutaja-agendi stringidele, mis tuvastavad brauseri ja seadme struktureeritumal moel ning paremate privaatsusfunktsioonidega."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Kasutaja-agent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Katkestuspunkti tüüp"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Sulgege muutmisdialoog ja salvestage muudatused"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Tingimuslik katkestuspunkt"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Vaatamine"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (ise {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumendid"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (ise {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interaktsioonid"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (ise {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Paigutuse nihked"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Sihtmärgi jaoks mõeldud protsessori profiil ei ole saadaval."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Peamine – {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Esinemisjuhte: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Eiramisloendis"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Luba täiustatud värvimise seadmestik (aeglane)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Ajaskaala salvestamine nurjus: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Profileerija lähtestamine …"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Taimeri installimine"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Paigutuse kehtetuks muutmine"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Asukoht"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Pikk interaktsioon"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Pikk ülesanne"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} on tõenäoline toimivuse pudelikael."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} viitab lehe kehvale automaatsele kohandumisele."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Pikad kaadriajad viitavad järgmisele: {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Jah"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (ise {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Ajastused"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Koodiredaktor"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH2}. soovitus {PH3}-st"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Taustateenused"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konsool"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Silur"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Sahtel"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elemendid"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Globaalne"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Abi"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScripti profileerija"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Kihid"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Mälu"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobiil"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigeerimine"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Võrk"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Jõudlus"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Renderdamine"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Allikad"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Ekraanipilt"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Seaded"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Allikad"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Sule"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Paneel {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Sahtel"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Sahtli külgriba"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elemendid"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Võrk"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Paneel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Seaded"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Allikad"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

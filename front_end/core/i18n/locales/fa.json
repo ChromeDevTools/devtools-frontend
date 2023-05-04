@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "درحال نوشتن فایل…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "کاهش ردیابی واگشتی"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "زیرساخت نکات کارخواه"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "نشانی وب یادداشت جدید"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "service worker منطبقی شناسایی نشد. شاید لازم باشد صفحه را بار کردن مجدد کنید، یا بررسی کنید که محدوده service worker برای صفحه کنونی، محدوده و شروع نشانی وب موجود در مانیفست را دربر گیرید."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "هیچ شناسه «فروشگاه Play» ارائه نشده است"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "ناموفق"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "راه‌اندازی نشده است"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "درانتظار"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "پیش‌بارگذاری انجام نشد."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "تلاش برای پیش‌بارگذاری هنوز راه‌اندازی نشده است."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "تلاش برای پیش‌بارگذاری واجدشرایط است اما دردست انجام است."
@@ -4446,7 +4452,7 @@
     "message": "کنسول پاک شد"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "جای‌گذاری کد در DevTools اغلب برای کلاهبرداری از افراد و کنترل حساب‌های آن‌ها استفاده می‌شود. این کنش در این صفحه مسدود شده است."
+    "message": "جای‌گذاری کد در این صفحه مسدود شده است. جای‌گذاری کد در DevTools می‌تواند به مهاجمان اجازه دهد کنترل حساب شما را دردست بگیرند."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "تنظیمات کنسول"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# منبع}one{# منبع}other{# منبع}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{یک وب‌سایت ردیابی بالقوه}one{# وب‌سایت ردیابی بالقوه}other{# وب‌سایت ردیابی بالقوه}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# منبع}one{# منبع}other{# منبع}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "روال‌های مطلوب"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "فقط صفحه‌های HTTP/HTTPS و افزونه‌های Chrome را می‌توان ممیزی کرد. برای شروع ممیزی، به صفحه دیگری بروید."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "فقط صفحه‌های HTTP یا HTTPS را می‌تواند ممیزی کند. به صفحه دیگری بروید."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "پاک کردن فضای ذخیره‌سازی"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "معماری (برای نمونه x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "حذف {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "حذف نمانام از فهرست نسخه کامل"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "نمانام"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "خصوصیت‌های نماینده کاربر"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "حذف نمانام از بخش نماینده کاربر"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "نسخه {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "نسخه (برای نمونه ۸۷.۰.۴۲۸۰.۸۸)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "حذف"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "ردیف نمانام حذف شد"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "فهرست کامل نسخه‌ها (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "بیشتر بدانید"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "تلفن همراه"
@@ -10107,7 +10119,7 @@
     "message": "به‌روزرسانی"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "نکات کارخواه نماینده کاربر یک جایگزین برای رشته نماینده کاربر است که مرورگر و دستگاه را به‌طور ساختاریافته‌تری شناسایی می‌کند و توجه بیشتر به حریم خصوصی می‌کند. برای اطلاعات بیشتر، روی دکمه کلیک کنید."
+    "message": "نکات کارخواه نماینده کاربر یک جایگزین برای رشته نماینده کاربر است که مرورگر و دستگاه را به‌طور ساختاریافته‌تری شناسایی می‌کند و توجه بیشتری به حریم‌خصوصی می‌کند."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "نماینده کاربر (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "نوع نقطه توقف"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "بستن کادر ویرایش و ذخیره کردن تغییرات"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "نقطه توقف شرطی"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "تماشا"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (خود {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "اسناد"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "واحد پردازش گرافیکی (GPU)"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (خود {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "تعاملات"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (خود {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "تغییرات طرح‌بندی"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "نمایه CPU برای یکی از هدف‌ها دردسترس نیست."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "اصلی — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "تعداد رویداد: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "در فهرست نادیده گرفتن"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "فعال کردن ابزارگری نقاشی پیشرفته (آهسته)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "خط زمان ذخیره نشد: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "راه‌اندازی تحلیل‌گر…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "زمان‌سنج نصب"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "شناسه"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "ابطال طرح‌بندی"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "مکان"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "تعامل طولانی"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "تکلیف طولانی"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} احتمالاً گلوگاه عملکرد است."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} نشان‌دهنده پاسخگویی ضعیف صفحه است."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. زمان طولانی پردازش قاب نشانه {PH2} است"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "بله"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (خود {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "زمان‌بندی‌ها"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "ویرایشگر کد"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}، پیشنهاد {PH2} از {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "سرویس‌های پس‌زمینه‌ای"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "کنسول"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "اشکال‌زدا"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "کشو"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "عناصر"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "جهانی"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "راهنما"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "تحلیل‌گر جاوا اسکریپت"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "لایه‌ها"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "حافظه"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "تلفن همراه"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "پیمایش"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "شبکه"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "عملکرد"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "درحال پرداز زدن"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "منابع"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "نماگرفت"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "تنظیمات"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "منابع"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "بستن"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "پانل {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "کشو"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "نوار کناری کشو"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "عناصر"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "شبکه"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "پانل"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "تنظیمات"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "منابع"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

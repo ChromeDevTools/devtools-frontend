@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Pisanje fajla…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Ublažavanja praćenja vraćanja"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infrastruktura savjeta klijenta"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL nove bilješke"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Nije otkriven nijedan service worker koji se podudara. Možda ćete morati ponovo učitati stranicu ili provjeriti da opseg servisera (service worker) za trenutnu stranicu obuhvata opseg i pokrenuti URL iz deklaracije."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Nema ID-a Play trgovine"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Neuspješno"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Nije aktivirano"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Na čekanju"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Predučitavanje nije uspjelo."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Pokušaj predučitavanja još uvijek nije aktiviran."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Pokušaj predučitavanja ispunjava uslove, ali je na čekanju."
@@ -4446,7 +4452,7 @@
     "message": "Konzola je obrisana"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Lijepljenje koda u alatima za programere se često koristi za prevaru korisnika i preuzimanje njihovih računa. Blokirano je na ovoj stranici."
+    "message": "Lijepljenje koda je blokirano na ovoj stranici. Lijepljenje koda u alate za programere može omogućiti napadačima da preuzmu vaš račun."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Postavke konzole"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# izvor}one{# izvor}few{# izvora}other{# izvora}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 web lokacija koja potencijalno prati}one{# web lokacija koja potencijalno prati}few{# web lokacije koje potencijalno prate}other{# web lokacija koje potencijalno prate}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# izvor}one{# izvor}few{# izvora}other{# izvora}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Najbolje prakse"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Moguće je revidirati samo HTTP/HTTPs stranice i Chrome ekstenzije. Navigirajte na drugu stranicu da pokrenete reviziju."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Moguće je revidirati stranice samo na HTTP-u ili HTTPS-u. Idite na drugu stranicu."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Obriši pohranu"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Arhitektura (npr. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Brisanje stavke {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Brisanje brenda s liste punih verzija"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Brend"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Svojstva korisničkog agenta"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Brisanje brenda iz odjeljka korisničkog agenta"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Verzija {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Verzija (npr. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Izbrišite"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Red za brend je izbrisan"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Lista punih verzija (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Saznajte više"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobilni"
@@ -10107,7 +10119,7 @@
     "message": "Ažuriraj"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Nagovještaji klijenta za korisničke agente su alternativa za niz korisničkog agenta koji prepoznaje preglednik i uređaj na način koji je više strukturiran i odgovorniji prema privatnosti. Kliknite na dugme da saznate više."
+    "message": "Naznake klijenta za korisničke agente su alternativa za niz korisničkog agenta koji prepoznaje preglednik i uređaj na način koji je više strukturiran i odgovorniji prema privatnosti."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Korisnički agent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Vrsta prijelomne tačke"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Zatvorite dijaloški okvir uređivanja i sačuvajte promjene"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Uslovna prijelomna tačka"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Praćenje"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (samo čvor {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumenti"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (samo čvor {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interakcije"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (samo čvor {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Pomjeranja rasporeda"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU profil za cilj nije dostupan."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Glavno – {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Pojavljivanja: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Na listi za ignoriranje"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Omogući naprednu instrumentaciju renderovanja (sporo)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Pohranjivanje vremenskog slijeda nije uspjelo: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Pokretanje analizatora…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Tajmer instaliranja"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Poništavanje rasporeda"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Lokacija"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Duga interakcija"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Dugi zadatak"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} je vjerovatno usko grlo u performansama."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} ukazuje na loš odziv stranice."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Duga vremena učitavanja okvira su pokazatelj za: {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Da"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (samo čvor {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Vremenski rasporedi"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Uređivač koda"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH2}. prijedlog od {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Usluge u pozadini"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konzola"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Program za otklanjanje grešaka"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Panel"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Elementi"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Globalno"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Pomoć"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript analizator"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Slojevi"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memorija"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobilni uređaj"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigacija"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Mreža"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Performanse"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Renderovanje"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Izvori"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Snimak ekrana"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Postavke"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Izvori"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Zatvori"
   },
@@ -12803,6 +12884,27 @@
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Ploča {PH1}"
   },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Bočna traka panela"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Elementi"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Mreža"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Ploča"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Postavke"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Izvori"
+  },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"
   },
@@ -13014,7 +13116,7 @@
     "message": "CSS svojstva"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | deleteS": {
-    "message": "Izbriši stavku {PH1}"
+    "message": "Izbriši {PH1}"
   },
   "ui/legacy/components/inline_editor/FontEditor.ts | fallbackS": {
     "message": "Rezerva: {PH1}"

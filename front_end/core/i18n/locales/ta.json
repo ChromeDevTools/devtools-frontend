@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "ஃபைலை எழுதுகிறது…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "பவுன்ஸ் டிராக்கிங் மிடிகேஷன்கள்"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "கிளையண்ட் குறிப்புகள் உள்கட்டமைப்பு"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "புதிய குறிப்பு URL"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "பொருந்தும் service worker கண்டறியப்படவில்லை. பக்கத்தை ரெஃப்ரெஷ் செய்ய வேண்டியிருக்கலாம் அல்லது தற்போதைய பக்கத்திற்கான service worker இன் நோக்கம் மெனிஃபெஸ்ட்டின் ஸ்கோப் மற்றும் ஸ்டார்ட் URLலைக் கொண்டுள்ளதா எனச் சரிபார்க்கவும்."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Store ஐடி வழங்கப்படவில்லை"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "தோல்வி"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "செயல்படுத்தப்படவில்லை"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "நிலுவையில் உள்ளது"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "முன்கூட்டியே ஏற்றுதல் தோல்வியடைந்தது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "முன்கூட்டியே ஏற்றுதல் இன்னும் செயல்படுத்தப்படவில்லை."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "முன்கூட்டியே ஏற்றுதல் முயற்சி தகுதியானது என்றாலும் நிலுவையில் உள்ளது."
@@ -4446,7 +4452,7 @@
     "message": "கன்சோல் அழிக்கப்பட்டது"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "டெவெலப்பர் கருவிகளில் குறியீட்டை ஒட்டுவது பெரும்பாலும் மக்களை மோசடி செய்து அவர்களின் கணக்குகளைக் கையகப்படுத்தப் பயன்படுத்தப்படுகிறது. இந்தப் பக்கத்தில் அது தடுக்கப்பட்டுள்ளது."
+    "message": "குறியீட்டை ஒட்டுவது இந்தப் பக்கத்தில் தடுக்கப்பட்டுள்ளது. டெவெலப்பர் கருவிகளில் குறியீட்டை ஒட்டுவது உங்கள் கணக்கிற்கான கட்டுப்பாட்டை ஹேக்கர்கள் பெறுவதற்கு அனுமதிக்கும்."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "கன்சோல் அமைப்புகள்"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# பாதிக்கப்பட்ட மூலம்}other{# பாதிக்கப்பட்ட மூலங்கள்}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{கண்காணித்தல் அம்சம் இருக்கக்கூடிய ஓர் இணையதளம்}other{கண்காணித்தல் அம்சம் இருக்கக்கூடிய # இணையதளங்கள்}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# பாதிக்கப்பட்ட ஆதாரம்}other{# பாதிக்கப்பட்ட ஆதாரங்கள்}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "சிறந்த நடைமுறைகள்"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "HTTP/HTTPS பக்கங்களையும் Chrome நீட்டிப்புகளையும் மட்டுமே தணிக்கை செய்ய முடியும். தணிக்கையைத் தொடங்க வேறொரு பக்கத்திற்குச் செல்லவும்."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "HTTP அல்லது HTTPSஸில் உள்ள பக்கங்களை மட்டுமே சோதனை செய்யும். வேறு பக்கத்திற்குச் செல்லவும்."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "சேமிப்பகத்தில் உள்ளவற்றை அழி"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "கட்டமைப்பு (எ.கா. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "{PH1} ஐ நீக்கும்"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "முழுப் பதிப்புப் பட்டியலில் இருந்து பிராண்டை நீக்கும்"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "பிராண்டு"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "பயனர் ஏஜெண்ட் பண்புகள்"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "பயனர் ஏஜெண்ட் பிரிவில் இருந்து பிராண்டை நீக்கும்"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "பதிப்பு {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "பதிப்பு (எ.கா. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "நீக்கும்"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "பிராண்டு வரிசை நீக்கப்பட்டது"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "முழுப் பதிப்புப் பட்டியல் (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "மேலும் அறிக"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "மொபைல்"
@@ -10107,7 +10119,7 @@
     "message": "சமர்ப்பி"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "பயனர் ஏஜெண்ட் கிளையண்ட் குறிப்புகள், பயனர் ஏஜெண்ட் உள்ளீட்டிற்கான ஒரு மாற்று முறையாகும். இது தனியுரிமைக்கு அதிக முக்கியத்துவம் அளிப்பதால் உலாவியையும் சாதனத்தையும் சரியான முறையில் அடையாளம் காண்கிறது. மேலும் அறிய, பட்டனைக் கிளிக் செய்யவும்."
+    "message": "பயனர் ஏஜெண்ட் கிளையண்ட் குறிப்புகள், பயனர் ஏஜெண்ட் வார்த்தைக்கான ஒரு மாற்று முறையாகும். இது தனியுரிமைக்கு அதிக முக்கியத்துவம் அளிப்பதால் உலாவியையும் சாதனத்தையும் சரியான முறையில் அடையாளம் காண்கிறது."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "பயனர் ஏஜெண்ட் (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "பிரேக்பாயிண்ட் வகை"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "திருத்துவதற்கான உரையாடலை மூடிவிட்டு மாற்றங்களைச் சேமிக்கும்"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "நிபந்தனைக்குட்பட்ட பிரேக்பாயிண்ட்"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "வாட்ச்"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (தனிப்பட்ட முறையில் எடுத்துக்கொண்ட நேரம் {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "ஆவணங்கள்"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (தனிப்பட்ட முறையில் எடுத்துக்கொண்ட நேரம் {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "செயல்பாடுகள்"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (தனிப்பட்ட முறையில் எடுத்துக்கொண்ட நேரம் {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "லேஅவுட் ஷிஃப்ட்கள்"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "இலக்கிற்கான CPU சுயவிவரம் கிடைக்கவில்லை."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "முதன்மை — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "நிகழ்வுகள்: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "புறக்கணிப்புப் பட்டியலில் உள்ளவை"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "மேம்பட்ட பெயிண்ட் இன்ஸ்ட்ரூமென்டேஷனை (வேகம் குறைவான) இயக்கு"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "காலப்பதிவைச் சேமிக்க முடியவில்லை: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "ப்ரொஃபைலரைத் துவக்குகிறது…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "டைமரை நிறுவு"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ஐடி"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "தவறான தளவமைப்பு"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "இருப்பிடம்"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "நீண்ட செயல்பாடு"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "நீண்ட பணி"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} ஆனது செயல்திறன் சிக்கலை ஏற்படுத்த வாய்ப்புள்ளது."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} என்பது பக்கத்தின் மோசமான பதிலளிக்கும் தன்மையைக் குறிக்கிறது."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. நீண்ட ஃபிரேம் நேரங்கள் {PH2} ஏற்படுவதற்கான அறிகுறிகளாகும்"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "ஆம்"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (தனிப்பட்ட முறையில் எடுத்துக்கொண்ட நேரம் {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "நேரங்கள்"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "குறியீடு எடிட்டர்"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH2}/{PH3}வது பரிந்துரை"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "பின்னணிச் சேவைகள்"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "கன்சோல்"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "பிழைதிருத்தி"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "டிராயர்"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "உறுப்புகள்"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "பொது"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "உதவி"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript ப்ரொஃபைலர்"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "லேயர்கள்"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "நினைவகம்"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "மொபைல்"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "வழிசெலுத்தல்"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "நெட்வொர்க்"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "செயல்திறன்"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "ரென்டரிங்"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "ஆதாரங்கள்"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "ஸ்கிரீன்ஷாட்"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "அமைப்புகள்"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "ஆதாரங்கள்"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "மூடுக"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1} பேனல்"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "டிராயர்"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "டிராயர் பக்கப்பட்டி"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "உறுப்புகள்"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "நெட்வொர்க்"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "பேனல்"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "அமைப்புகள்"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "ஆதாரங்கள்"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

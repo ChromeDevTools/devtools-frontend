@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Isinusulat ang file…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Mga Pagpigil sa Bounce Tracking"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infrastructure ng Client Hints"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL ng bagong tala"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Walang na-detect na magkatugmang service worker. Posibleng kailanganin mong i-reload ang page, o tingnan kung nakapaloob sa saklaw ng service worker para sa kasalukuyang page ang saklaw at start URL mula sa manifest."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Walang ibinigay na Play store ID"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Hindi Nagtagumpay"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Hindi na-trigger"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Nakabinbin"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Hindi na-preload."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Hindi pa nati-trigger ang pagsubok sa pag-preload"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Kwalipikado pero nakabinbin ang pagsubok sa pag-preload."
@@ -4446,7 +4452,7 @@
     "message": "na-clear ang Console"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Karaniwang ginagamit ang pag-paste ng code sa mga devtool para mang-scam ng mga tao at pangasiwaan ang kanilang mga account. Na-block ito sa page na ito."
+    "message": "Naka-block sa page na ito ang pag-paste ng code. Ang pag-paste ng code sa devtools ay puwedeng magbigay-daan sa mga attacker na kontrolin ang iyong account."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Mga setting ng Console"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# source}one{# source}other{# na source}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 potensyal na website na nagta-track}one{# potensyal na website na nagta-track}other{# na potensyal na website na nagta-track}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# resource}one{# resource}other{# na resource}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Pinakamahuhusay na kagawian"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Mga HTTP/HTTPS page at extension ng Chrome lang ang mao-audit. Mag-navigate sa ibang page para magsimula ng pag-audit."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Puwede lang mag-audit ng mga page sa HTTP o HTTPS. Mag-navigate sa ibang page."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "I-clear ang storage"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Architecture (hal. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "I-delete ang {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "I-delete ang brand sa listahan ng buong bersyon"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Brand"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Mga property ng user agent"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "I-delete ang brand sa seksyon ng user agent"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Bersyon {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Bersyon (hal., 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "I-delete"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Na-delete ang row ng brand"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Listahan ng buong bersyon (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Matuto pa"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobile"
@@ -10107,7 +10119,7 @@
     "message": "I-update"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Ang mga client hint ng user agent ay alternatibo sa string ng user agent na tumutukoy sa browser at sa device sa mas structured na paraan na may mas mahusay na pagsasaalang-alang sa privacy. I-click ang button para matuto pa."
+    "message": "Ang mga client hint ng user agent ay alternatibo sa string ng user agent na tumutukoy sa browser at sa device sa mas structured na paraan na may mas mahusay na pagsasaalang-alang sa privacy."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "User agent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Uri ng breakpoint"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Isara ang dialog ng pag-edit at i-save ang mga pagbabago"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Kundisyonal na breakpoint"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Pagbabantay"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (oras ng isang aktibidad {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Mga Dokumento"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (oras ng isang aktibidad {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Mga Pakikipag-ugnayan"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (oras ng isang aktibidad {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Mga Pagbabago sa Layout"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Hindi available ang profile ng CPU para sa isang target."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Pangunahin — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Mga paglitaw: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Nasa listahan ng babalewalain"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "I-enable ang advanced na instrumentation ng paint (mabagal)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Hindi na-save ang timeline na: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Sinisimulan ang profiler…"
@@ -11643,7 +11658,7 @@
     "message": "nagbago"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "Karanasan"
+    "message": "Experience"
   },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "hindi na-load ang script mula sa cache"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Pag-install ng Timer"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Pag-invalidate sa Layout"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Lokasyon"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Mahabang interaction"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Mahabang gawain"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "Malamang na bottleneck ng performance ang {PH1}."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} ay nagsasaad ng mahinang pagiging responsive ng page."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Ang mahahabang frame time ay indikasyon ng {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Oo"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (oras ng isang aktibidad {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Mga Timing"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Editor ng code"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, suhestyon {PH2} sa {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Mga Serbisyo sa Background"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Console"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Debugger"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Drawer"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Mga Element"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Pangkalahatan"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Tulong"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Profiler sa JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Mga Layer"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memory"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobile"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigation"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Network"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Performance"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Pag-render"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Mga Resource"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Screenshot"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Mga Setting"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Mga Source"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Isara"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Panel ng {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Drawer"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Sidebar ng drawer"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Mga Element"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Network"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Mga Setting"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Mga Source"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

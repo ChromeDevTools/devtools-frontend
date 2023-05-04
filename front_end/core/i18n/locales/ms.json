@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Menulis fail…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Pengurangan Penjejakan Lantunan"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infrastruktur Client Hints"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "URL nota baharu"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Tiada service worker yang sepadan dikesan. Anda mungkin perlu memuatkan semula halaman atau memastikan bahawa skop service worker bagi halaman semasa meliputi skop dan URL mula daripada manifes."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Tiada ID Gedung Play diberikan"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Kegagalan"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Tidak dicetuskan"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Belum selesai"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Prapemuatan gagal."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Percubaan prapemuatan belum dicetuskan."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Percubaan prapemuatan ini layak tetapi belum selesai."
@@ -4446,7 +4452,7 @@
     "message": "Konsol dikosongkan"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Penampalan kod dalam alatan pembangun sering digunakan untuk membuat komplot dan merampas akaun orang lain. Penampalan kod disekat pada halaman ini."
+    "message": "Penampalan kod disekat pada halaman ini. Penampalan kod pada alatan pembangun mungkin membolehkan penyerang mengambil alih akaun anda."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Tetapan konsol"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# sumber}other{# sumber}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 laman web yang mungkin laman web penjejakan}other{# laman web yang mungkin laman web penjejakan}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# sumber}other{# sumber}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Amalan terbaik"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Hanya boleh mengaudit halaman HTTP/HTTPS dan sambungan Chrome. Navigasi ke halaman lain untuk memulakan audit."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Hanya boleh mengaudit halaman pada HTTP atau HTTPS. Navigasi ke halaman lain."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Kosongkan storan"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Seni bina (cth. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Padamkan {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Padamkan jenama daripada senarai versi penuh"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Jenama"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Sifat agen pengguna"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Padamkan jenama daripada bahagian agen pengguna"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Versi {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Versi (mis. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Padam"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Baris jenama dipadamkan"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Senarai versi penuh (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Ketahui lebih lanjut"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mudah Alih"
@@ -10107,7 +10119,7 @@
     "message": "Kemas kini"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Pembayang pelanggan ejen pengguna adalah alternatif bagi rentetan ejen pengguna yang mengenal pasti penyemak imbas dan peranti dengan cara yang lebih tersusun dengan perakaunan privasi yang lebih baik. Klik butang untuk mengetahui lebih lanjut."
+    "message": "Pembayang daripada klien ejen pengguna adalah alternatif bagi rentetan ejen pengguna yang mengenal pasti penyemak imbas dan peranti dengan cara yang lebih tersusun dengan perlindungan privasi yang lebih baik."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Agen pengguna (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Jenis titik putus"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Tutup dialog pengeditan dan simpan perubahan"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Titik putus bersyarat"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Tonton"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (berasingan {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumen"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (berasingan {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interaksi"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (berasingan {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Peralihan Reka Letak"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Profil CPU untuk sasaran tidak tersedia."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Utama — {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Kejadian: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Pada senarai abai"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Dayakan instrumen cat lanjutan (perlahan)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Gagal menyimpan garis masa: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Mengasalkan pemprofil…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Pasang Pemasa"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Taksahkan Reka Letak"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Lokasi"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Interaksi jangka masa panjang"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Tugas panjang"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} mungkin cerutan prestasi."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} menunjukkan responsif halaman yang lemah."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Masa bingkai yang lama menunjukkan {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Ya"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (berasingan {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Masa"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Editor kod"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, cadangan {PH2} daripada {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Perkhidmatan Latar"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konsol"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Penyahpepijat"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Laci"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Unsur"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Global"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Bantuan"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Pemprofil JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Lapisan"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Memori"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mudah Alih"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigasi"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Rangkaian"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Prestasi"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Pemaparan"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Sumber"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Tangkapan skrin"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Tetapan"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Sumber"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Tutup"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Panel {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Laci"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Laci bar sisi"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Unsur"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Rangkaian"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Tetapan"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Sumber"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

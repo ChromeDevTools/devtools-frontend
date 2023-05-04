@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "Zapisuje sa súbor…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "Zmiernenie sledovania vložením odkazu"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infraštruktúra tipov v súvislosti s klientom"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "Webová adresa novej poznámky"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "Nebola rozpoznaná žiadna zodpovedajúca položka service worker. Stránku budete musieť zrejme znova načítať. Prípadne skontrolujte, či rozsah service worker aktuálnej stránky zahrnuje rozsah a začiatočnú webovú adresu z manifestu."
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Nie je uvedený identifikátor Obchodu Play"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Nepodarilo sa"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "Nespustené"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "Nespracované"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Nepodarilo sa prednačítať."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "Pokus o prednačítanie ešte nebol spustený."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "Pokus o prednačítanie je vhodný, ale čaká na spracovanie."
@@ -4446,7 +4452,7 @@
     "message": "Konzola bola vymazaná"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Prilepenie kódu do nástrojov pre vývojárov sa často využíva na podvádzanie ľudí a získanie kontroly nad ich účtami. Na tejto stránke je blokované."
+    "message": "Prilepenie kódu je na tejto stránke blokované. Prilepením kódu do nástrojov pre vývojárov umožníte útočníkom prevziať kontrolu nad vaším účtom."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Nastavenia konzoly"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# zdroj}few{# zdroje}many{# sources}other{# zdrojov}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 potenciálne sledujúci web}few{# potenciálne sledujúce weby}many{# potentially tracking websites}other{# potenciálne sledujúcich webov}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# zdroj}few{# zdroje}many{# resources}other{# zdrojov}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "Osvedčené postupy"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "Dajú sa skontrolovať iba stránky HTTP/HTTPS a rozšírenia Chrome. Ak chcete začať kontrolu, prejdite na inú stránku."
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "Je možné kontrolovať iba stránky s protokolom HTTP alebo HTTPS. Prejdite na inú stránku."
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "Vymazať priestor"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "Architektúra (napr. x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "Odstrániť {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "Odstrániť značku z celého zoznamu verzií"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "Značka"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "Vlastnosti používateľského agenta"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "Odstrániť značku zo sekcie používateľského agenta"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "Verzia {PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "Verzia (napr. 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "Odstrániť"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "Riadok značky bol odstránený"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "Úplný zoznam verzií (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "Ďalšie informácie"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "Mobil"
@@ -10107,7 +10119,7 @@
     "message": "Aktualizovať"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "Tipy pre klienty používateľských agentov sú alternatívou k reťazcu používateľského agenta identifikujúceho prehliadač a zariadenie štruktúrovanejším spôsobom s lepším zabezpečením súkromia. Viac sa dozviete po kliknutí na tlačidlo."
+    "message": "Tipy pre klienty používateľských agentov sú alternatívou k reťazcu používateľského agenta identifikujúceho prehliadač a zariadenie štruktúrovanejším spôsobom s lepším zabezpečením súkromia."
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "Používateľský agent (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "Typ zlomového bodu"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "Zavrieť dialógové okno úprav a uložiť zmeny"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "Podmienečný zlomový bod"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Sledovanie"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (v uzle: {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "Dokumenty"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "Grafický procesor"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (v uzle: {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "Interakcie"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (v uzle: {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "Zmeny rozloženia"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Profil procesora pre cieľ nie je k dispozícii."
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "Hlavné – {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "Výskyty: {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "Na zozname ignorovaných"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "Povoliť rozšírenú inštrumentáciu vykreslenia (pomalú)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "Časovú os sa nepodarilo uložiť: {PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Inicializuje sa profilovač…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "Inštalovať časovač"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "Identifikátor"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "Zrušiť platnosť rozloženia"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Oblasť"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "Dlhá interakcia"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Dlhá úloha"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} je pravdepodobné kritické miesto výkonnosti."
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1} znamená slabú odozvu stránky."
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}. Dlhé časy snímky naznačujú {PH2}"
   },
@@ -12166,9 +12190,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Áno"
-  },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (v uzle: {PH2})"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Časy"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "Editor kódu"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}, {PH2}. návrh z {PH3}"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "Služby na pozadí"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "Konzola"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "Ladiaci nástroj"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "Vysúvací panel"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "Prvky"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "Globálne"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "Pomocník"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "Profilovač JavaScript"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "Vrstvy"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "Pamäť"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "Mobilné zariadenie"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "Navigácia"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "Sieť"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "Výkon"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "Vykresľovanie"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "Zdroje"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "Snímka obrazovky"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "Nastavenia"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "Zdroje"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "Zavrieť"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "Panel {PH1}"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "Vysúvací panel"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "Bočný panel vysúvacieho panela"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "Prvky"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "Sieť"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "Panel"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "Nastavenia"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "Zdroje"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

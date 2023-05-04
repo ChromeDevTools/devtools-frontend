@@ -1511,6 +1511,9 @@
   "models/har/Writer.ts | writingFile": {
     "message": "正在寫入檔案…"
   },
+  "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
+    "message": "跳出追蹤防護措施"
+  },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "用戶端提示基礎架構"
   },
@@ -2380,9 +2383,6 @@
   },
   "panels/application/AppManifestView.ts | newNoteUrl": {
     "message": "新筆記網址"
-  },
-  "panels/application/AppManifestView.ts | noMatchingServiceWorkerDetected": {
-    "message": "偵測不到相符的 service worker。您可能需要重新載入頁面，或檢查目前頁面的 service worker 範圍是否包含資訊清單的範圍和起始網址。"
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "沒有提供「Play 商店」ID"
@@ -4112,6 +4112,9 @@
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "失敗"
   },
+  "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
+    "message": "尚未觸發"
+  },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "待處理"
   },
@@ -4147,6 +4150,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "無法預先載入。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
+    "message": "尚未觸發預先載入嘗試。"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
     "message": "預先載入嘗試符合資格，不過正等待核准。"
@@ -4446,7 +4452,7 @@
     "message": "清除咗控制器"
   },
   "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "不法之徒經常會利用在開發人員工具貼上程式碼進行詐騙及侵佔帳戶，因此系統已在此頁面封鎖此功能。"
+    "message": "系統已在此頁面封鎖貼上程式碼。如果在開發人員工具貼上程式碼，可能會讓攻擊者有機可乘，侵佔您的帳戶。"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "控制器設定"
@@ -6032,6 +6038,9 @@
   "panels/issues/AffectedSourcesView.ts | nSources": {
     "message": "{n,plural, =1{# 個來源}other{# 個來源}}"
   },
+  "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
+    "message": "{n,plural, =1{1 個可能進行追蹤的網站}other{# 個可能進行追蹤的網站}}"
+  },
   "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
     "message": "{n,plural, =1{# 項資源}other{# 項資源}}"
   },
@@ -6494,8 +6503,8 @@
   "panels/lighthouse/LighthouseController.ts | bestPractices": {
     "message": "最佳做法"
   },
-  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPagesAnd": {
-    "message": "只可審核 HTTP/HTTPS 頁面和 Chrome 擴充程式。請導覽至其他頁面以開始審核。"
+  "panels/lighthouse/LighthouseController.ts | canOnlyAuditHttphttpsPages": {
+    "message": "只可審核 HTTP 或 HTTPS 上的頁面。請導覽至其他頁面。"
   },
   "panels/lighthouse/LighthouseController.ts | clearStorage": {
     "message": "清除儲存空間"
@@ -10040,8 +10049,8 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | architecturePlaceholder": {
     "message": "架構 (例如 x86)"
   },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandDeleteAriaLabel": {
-    "message": "刪除 {PH1}"
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandFullVersionListDelete": {
+    "message": "由完整版本清單刪除品牌"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandName": {
     "message": "品牌"
@@ -10052,14 +10061,14 @@
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandProperties": {
     "message": "用戶代理程式屬性"
   },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandUserAgentDelete": {
+    "message": "由用戶代理程式部分刪除品牌"
+  },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionAriaLabel": {
     "message": "版本：{PH1}"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | brandVersionPlaceholder": {
     "message": "版本 (例如 87.0.4280.88)"
-  },
-  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deleteTooltip": {
-    "message": "刪除"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | deletedBrand": {
     "message": "已刪除品牌列"
@@ -10078,6 +10087,9 @@
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | fullVersionList": {
     "message": "完整版本清單 (Sec-CH-UA-Full-Version-List)"
+  },
+  "panels/settings/emulation/components/UserAgentClientHintsForm.ts | learnMore": {
+    "message": "瞭解詳情"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | mobileCheckboxLabel": {
     "message": "流動裝置"
@@ -10107,7 +10119,7 @@
     "message": "更新"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | userAgentClientHintsInfo": {
-    "message": "用戶代理程式用戶端提示可代替用戶代理程式字串，以結構更完善的方式識別瀏覽器和裝置，同時進一步保障私隱權。如需瞭解詳情，請按一下說明按鈕。"
+    "message": "用戶代理程式用戶端提示可代替用戶代理程式字串，以結構更完善的方式識別瀏覽器和裝置，同時進一步保障私隱權。"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | useragent": {
     "message": "用戶代理程式 (Sec-CH-UA)"
@@ -10177,6 +10189,9 @@
   },
   "panels/sources/BreakpointEditDialog.ts | breakpointType": {
     "message": "中斷點類型"
+  },
+  "panels/sources/BreakpointEditDialog.ts | closeDialog": {
+    "message": "關閉編輯對話框並儲存變更"
   },
   "panels/sources/BreakpointEditDialog.ts | conditionalBreakpoint": {
     "message": "條件中斷點"
@@ -11033,6 +11048,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "監看"
   },
+  "panels/timeline/AppenderUtils.ts | sSelfS": {
+    "message": "{PH1} (個別 {PH2})"
+  },
   "panels/timeline/CountersGraph.ts | documents": {
     "message": "文件"
   },
@@ -11069,14 +11087,11 @@
   "panels/timeline/GPUTrackAppender.ts | gpu": {
     "message": "GPU"
   },
-  "panels/timeline/GPUTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (個別 {PH2})"
-  },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
     "message": "互動"
   },
-  "panels/timeline/InteractionsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (個別 {PH2})"
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
+    "message": "版面配置轉移"
   },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "無法取得目標的 CPU 設定檔。"
@@ -11152,9 +11167,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
     "message": "主要 - {PH1}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | occurrencesS": {
-    "message": "發生次數：{PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
     "message": "在忽略清單上"
@@ -11281,6 +11293,9 @@
   },
   "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
     "message": "啟用進階繪製檢測 (緩慢)"
+  },
+  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
+    "message": "無法儲存時間軸：{PH1} ({PH2})"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "分析器正在初始化…"
@@ -11726,6 +11741,9 @@
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
     "message": "安裝計時器"
   },
+  "panels/timeline/TimelineUIUtils.ts | interactionID": {
+    "message": "ID"
+  },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
     "message": "讓版面配置失效"
   },
@@ -11788,6 +11806,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "地點"
+  },
+  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
+    "message": "互動時間長"
   },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "長時間執行的工作"
@@ -11984,6 +12005,9 @@
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}可能會成為效能瓶頸。"
   },
+  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
+    "message": "{PH1}代表頁面回應速度不佳。"
+  },
   "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
     "message": "{PH1}。{PH2}會延長影格時間"
   },
@@ -12167,9 +12191,6 @@
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "是"
   },
-  "panels/timeline/TimingsTrackAppender.ts | sSelfS": {
-    "message": "{PH1} (個別 {PH2})"
-  },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "時間"
   },
@@ -12201,7 +12222,7 @@
     "message": "在「圖層」檢視模式中隱藏 chrome 頁框"
   },
   "panels/timeline/timeline-meta.ts | javascriptProfiler": {
-    "message": "JavaScript 分析器"
+    "message": "JavaScript 效能分析"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "載入設定檔…"
@@ -12551,6 +12572,66 @@
   "ui/components/text_editor/config.ts | codeEditor": {
     "message": "程式碼編輯器"
   },
+  "ui/components/text_editor/config.ts | sSuggestionSOfS": {
+    "message": "{PH1}，第 {PH2} 項建議 (總共有 {PH3} 項)"
+  },
+  "ui/legacy/ActionRegistration.ts | background_services": {
+    "message": "背景服務"
+  },
+  "ui/legacy/ActionRegistration.ts | console": {
+    "message": "控制器"
+  },
+  "ui/legacy/ActionRegistration.ts | debugger": {
+    "message": "偵錯工具"
+  },
+  "ui/legacy/ActionRegistration.ts | drawer": {
+    "message": "導覽列"
+  },
+  "ui/legacy/ActionRegistration.ts | elements": {
+    "message": "元素"
+  },
+  "ui/legacy/ActionRegistration.ts | global": {
+    "message": "通用"
+  },
+  "ui/legacy/ActionRegistration.ts | help": {
+    "message": "說明"
+  },
+  "ui/legacy/ActionRegistration.ts | javascript_profiler": {
+    "message": "JavaScript 效能分析"
+  },
+  "ui/legacy/ActionRegistration.ts | layers": {
+    "message": "圖層"
+  },
+  "ui/legacy/ActionRegistration.ts | memory": {
+    "message": "記憶體"
+  },
+  "ui/legacy/ActionRegistration.ts | mobile": {
+    "message": "流動裝置"
+  },
+  "ui/legacy/ActionRegistration.ts | navigation": {
+    "message": "導覽"
+  },
+  "ui/legacy/ActionRegistration.ts | network": {
+    "message": "網絡"
+  },
+  "ui/legacy/ActionRegistration.ts | performance": {
+    "message": "效能"
+  },
+  "ui/legacy/ActionRegistration.ts | rendering": {
+    "message": "輸出"
+  },
+  "ui/legacy/ActionRegistration.ts | resources": {
+    "message": "資源"
+  },
+  "ui/legacy/ActionRegistration.ts | screenshot": {
+    "message": "螢幕截圖"
+  },
+  "ui/legacy/ActionRegistration.ts | settings": {
+    "message": "設定"
+  },
+  "ui/legacy/ActionRegistration.ts | sources": {
+    "message": "來源"
+  },
   "ui/legacy/DockController.ts | close": {
     "message": "關閉"
   },
@@ -12802,6 +12883,27 @@
   },
   "ui/legacy/ViewManager.ts | sPanel": {
     "message": "{PH1}面板"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer": {
+    "message": "導覽列"
+  },
+  "ui/legacy/ViewRegistration.ts | drawer_sidebar": {
+    "message": "導覽列側欄"
+  },
+  "ui/legacy/ViewRegistration.ts | elements": {
+    "message": "元素"
+  },
+  "ui/legacy/ViewRegistration.ts | network": {
+    "message": "網絡"
+  },
+  "ui/legacy/ViewRegistration.ts | panel": {
+    "message": "面板"
+  },
+  "ui/legacy/ViewRegistration.ts | settings": {
+    "message": "設定"
+  },
+  "ui/legacy/ViewRegistration.ts | sources": {
+    "message": "來源"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | aa": {
     "message": "AA"

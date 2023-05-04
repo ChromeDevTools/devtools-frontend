@@ -29,7 +29,6 @@ devtools_module("issues") {
     "AffectedSharedArrayBufferIssueDetailsView.ts",
     "AffectedSourcesView.ts",
     "AffectedTrackingSitesView.ts",
-    "AffectedTrustedWebActivityIssueDetailsView.ts",
     "AttributionReportingIssueDetailsView.ts",
     "CSPViolationsListView.ts",
     "CSPViolationsView.ts",

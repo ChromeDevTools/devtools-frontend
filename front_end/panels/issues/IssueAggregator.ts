@@ -42,7 +42,6 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   #lowContrastIssues = new Set<IssuesManager.LowTextContrastIssue.LowTextContrastIssue>();
   #mixedContentIssues = new Set<IssuesManager.MixedContentIssue.MixedContentIssue>();
   #sharedArrayBufferIssues = new Set<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue>();
-  #trustedWebActivityIssues = new Set<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue>();
   #quirksModeIssues = new Set<IssuesManager.QuirksModeIssue.QuirksModeIssue>();
   #attributionReportingIssues = new Set<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>();
   #genericIssues = new Set<IssuesManager.GenericIssue.GenericIssue>();
@@ -96,10 +95,6 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
   getMixedContentIssues(): Iterable<IssuesManager.MixedContentIssue.MixedContentIssue> {
     return this.#mixedContentIssues;
-  }
-
-  getTrustedWebActivityIssues(): Iterable<IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue> {
-    return this.#trustedWebActivityIssues;
   }
 
   getCorsIssues(): Set<IssuesManager.CorsIssue.CorsIssue> {
@@ -209,9 +204,6 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     for (const details of issue.getBlockedByResponseDetails()) {
       const key = JSON.stringify(details, ['parentFrame', 'blockedFrame', 'requestId', 'frameId', 'reason', 'request']);
       this.#blockedByResponseDetails.set(key, details);
-    }
-    if (issue instanceof IssuesManager.TrustedWebActivityIssue.TrustedWebActivityIssue) {
-      this.#trustedWebActivityIssues.add(issue);
     }
     if (issue instanceof IssuesManager.ContentSecurityPolicyIssue.ContentSecurityPolicyIssue) {
       this.#cspIssues.add(issue);

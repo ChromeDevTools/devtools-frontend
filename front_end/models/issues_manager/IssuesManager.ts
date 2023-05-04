@@ -25,7 +25,6 @@ import {QuirksModeIssue} from './QuirksModeIssue.js';
 import {CookieIssue} from './CookieIssue.js';
 import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
-import {TrustedWebActivityIssue} from './TrustedWebActivityIssue.js';
 
 export {Events} from './IssuesManagerEvents.js';
 
@@ -68,10 +67,6 @@ const issueCodeHandlers = new Map<
   [
     Protocol.Audits.InspectorIssueCode.SharedArrayBufferIssue,
     SharedArrayBufferIssue.fromInspectorIssue,
-  ],
-  [
-    Protocol.Audits.InspectorIssueCode.TrustedWebActivityIssue,
-    TrustedWebActivityIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.LowTextContrastIssue,

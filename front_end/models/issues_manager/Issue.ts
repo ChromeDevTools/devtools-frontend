@@ -48,7 +48,6 @@ export enum IssueCategory {
   Cookie = 'Cookie',
   HeavyAd = 'HeavyAd',
   ContentSecurityPolicy = 'ContentSecurityPolicy',
-  TrustedWebActivity = 'TrustedWebActivity',
   LowTextContrast = 'LowTextContrast',
   Cors = 'Cors',
   AttributionReporting = 'AttributionReporting',

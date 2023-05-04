@@ -43,10 +43,6 @@ const UIStrings = {
    */
   contentSecurityPolicy: 'Content Security Policy',
   /**
-   * @description Category title for a group of trusted web activity issues
-   */
-  trustedWebActivity: 'Trusted Web Activity',
-  /**
    * @description Text for other types of items
    */
   other: 'Other',
@@ -136,8 +132,6 @@ class IssueCategoryView extends UI.TreeOutline.TreeElement {
         return i18nString(UIStrings.heavyAds);
       case IssuesManager.Issue.IssueCategory.ContentSecurityPolicy:
         return i18nString(UIStrings.contentSecurityPolicy);
-      case IssuesManager.Issue.IssueCategory.TrustedWebActivity:
-        return i18nString(UIStrings.trustedWebActivity);
       case IssuesManager.Issue.IssueCategory.LowTextContrast:
         return i18nString(UIStrings.lowTextContrast);
       case IssuesManager.Issue.IssueCategory.Cors:

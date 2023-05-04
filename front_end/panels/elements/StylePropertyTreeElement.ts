@@ -988,7 +988,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const existingElement = this.listItemElement.querySelector('.hint');
     if (existingElement) {
       activeHints.delete(existingElement);
-      existingElement.parentElement?.removeChild(existingElement);
+      existingElement?.closest('.hint-wrapper')?.remove();
     }
     const propertyName = this.property.name;
 

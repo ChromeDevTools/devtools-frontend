@@ -7,12 +7,12 @@ const {assert} = chai;
 import * as Models from '../../../../../../front_end/panels/recorder/models/models.js';
 import * as Components from '../../../../../../front_end/panels/recorder/components/components.js';
 import * as Converters from '../../../../../../front_end/panels/recorder/converters/converters.js';
-import type * as TextEditor from
-    '../../../../../../front_end/ui/components/text_editor/text_editor.js';
+import type * as TextEditor from '../../../../../../front_end/ui/components/text_editor/text_editor.js';
 import * as Host from '../../../../../../front_end/core/host/host.js';
 
 import {
   describeWithEnvironment,
+  setupActionRegistry,
 } from '../../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import {
   dispatchClickEvent,
@@ -21,22 +21,11 @@ import {
 } from '../../../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as Menus from '../../../../../../front_end/ui/components/menus/menus.js';
-import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('RecordingView', () => {
-  before(() => {
-    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({
-      forceNew: true,
-      actionRegistry,
-    });
-  });
-  after(() => {
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
-    UI.ActionRegistry.ActionRegistry.removeInstance();
-  });
+  setupActionRegistry();
 
   const step = {type: Models.Schema.StepType.Scroll as const};
   const section = {title: 'test', steps: [step], url: 'https://example.com'};

@@ -8,12 +8,15 @@ import * as RecorderComponents from '../../../../../../front_end/panels/recorder
 import * as Models from '../../../../../../front_end/panels/recorder/models/models.js';
 import {
   describeWithEnvironment,
+  setupActionRegistry,
 } from '../../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('ReplayButton', () => {
+  setupActionRegistry();
+
   let settings: Models.RecorderSettings.RecorderSettings;
   async function createReplayButton() {
     settings = new Models.RecorderSettings.RecorderSettings();

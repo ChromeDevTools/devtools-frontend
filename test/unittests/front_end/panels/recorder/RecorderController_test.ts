@@ -12,13 +12,15 @@ import * as Models from '../../../../../front_end/panels/recorder/models/models.
 import * as Components from '../../../../../front_end/panels/recorder/components/components.js';
 import {
   describeWithEnvironment,
+  setupActionRegistry,
 } from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('RecorderController', () => {
+  setupActionRegistry();
+
   function makeRecording(): Models.RecordingStorage.StoredRecording {
     const step = {
       type: Models.Schema.StepType.Navigate as const,
@@ -41,19 +43,6 @@ describeWithEnvironment('RecorderController', () => {
     await coordinator.done();
     return controller;
   }
-
-  before(() => {
-    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-    UI.ShortcutRegistry.ShortcutRegistry.instance({
-      forceNew: true,
-      actionRegistry,
-    });
-  });
-
-  after(() => {
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
-    UI.ActionRegistry.ActionRegistry.removeInstance();
-  });
 
   describe('Navigation', () => {
     it('should return back to the previous page on recordingcancelled event', async () => {

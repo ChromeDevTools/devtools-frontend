@@ -8,28 +8,18 @@ import * as Components from '../../../../../../front_end/panels/recorder/compone
 
 import {
   describeWithEnvironment,
+  setupActionRegistry,
 } from '../../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import {
   dispatchClickEvent,
   dispatchKeyDownEvent,
 } from '../../../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('RecordingListView', () => {
-  before(() => {
-    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({
-      forceNew: true,
-      actionRegistry,
-    });
-  });
-  after(() => {
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
-    UI.ActionRegistry.ActionRegistry.removeInstance();
-  });
+  setupActionRegistry();
 
   it('should open a recording on Enter', async () => {
     const view = new Components.RecordingListView.RecordingListView();

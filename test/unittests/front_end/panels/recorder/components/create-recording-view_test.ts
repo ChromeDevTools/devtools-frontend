@@ -8,21 +8,11 @@ import * as Components from '../../../../../../front_end/panels/recorder/compone
 import * as Models from '../../../../../../front_end/panels/recorder/models/models.js';
 import {
   describeWithEnvironment,
+  setupActionRegistry,
 } from '../../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 
 describeWithEnvironment('CreateRecordingView', () => {
-  before(() => {
-    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({
-      forceNew: true,
-      actionRegistry,
-    });
-  });
-  after(() => {
-    UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
-    UI.ActionRegistry.ActionRegistry.removeInstance();
-  });
+  setupActionRegistry();
 
   function createView() {
     const view = new Components.CreateRecordingView.CreateRecordingView();

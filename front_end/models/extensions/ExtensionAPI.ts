@@ -266,29 +266,6 @@ export namespace PrivateAPI {
     method: LanguageExtensionPluginCommands.RemoveRawModule,
     parameters: {rawModuleId: string},
   };
-  type GetTypeInfoRequest = {
-    method: LanguageExtensionPluginCommands.GetTypeInfo,
-    parameters: {expression: string, context: PublicAPI.Chrome.DevTools.RawLocation},
-  };
-  type GetFormatterRequest = {
-    method: LanguageExtensionPluginCommands.GetFormatter,
-    parameters: {
-      expressionOrField: string|{
-        base: PublicAPI.Chrome.DevTools.EvalBase,
-        field: Array<PublicAPI.Chrome.DevTools.FieldInfo>,
-      },
-      context: PublicAPI.Chrome.DevTools.RawLocation,
-    },
-  };
-  type GetInspectableAddressRequest = {
-    method: LanguageExtensionPluginCommands.GetInspectableAddress,
-    parameters: {
-      field: {
-        base: PublicAPI.Chrome.DevTools.EvalBase,
-        field: Array<PublicAPI.Chrome.DevTools.FieldInfo>,
-      },
-    },
-  };
   type GetFunctionInfoRequest = {
     method: LanguageExtensionPluginCommands.GetFunctionInfo,
     parameters: {rawLocation: PublicAPI.Chrome.DevTools.RawLocation},
@@ -320,8 +297,7 @@ export namespace PrivateAPI {
 
   export type LanguageExtensionRequests =
       AddRawModuleRequest|SourceLocationToRawLocationRequest|RawLocationToSourceLocationRequest|GetScopeInfoRequest|
-      ListVariablesInScopeRequest|RemoveRawModuleRequest|GetTypeInfoRequest|GetFormatterRequest|
-      GetInspectableAddressRequest|GetFunctionInfoRequest|GetInlinedFunctionRangesRequest|
+      ListVariablesInScopeRequest|RemoveRawModuleRequest|GetFunctionInfoRequest|GetInlinedFunctionRangesRequest|
       GetInlinedCalleesRangesRequest|GetMappedLinesRequest|FormatValueRequest|GetPropertiesRequest|ReleaseObjectRequest;
 
   type StringifyRequest = {
@@ -897,15 +873,6 @@ self.injectedExtensionAPI = function(
             return plugin.getScopeInfo(request.parameters.type);
           case PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope:
             return plugin.listVariablesInScope(request.parameters.rawLocation);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetTypeInfo:
-            return plugin.getTypeInfo(request.parameters.expression, request.parameters.context);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetFormatter:
-            return plugin.getFormatter(request.parameters.expressionOrField, request.parameters.context);
-          case PrivateAPI.LanguageExtensionPluginCommands.GetInspectableAddress:
-            if ('getInspectableAddress' in plugin) {
-              return plugin.getInspectableAddress(request.parameters.field);
-            }
-            return Promise.resolve({js: ''});
           case PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo:
             return plugin.getFunctionInfo(request.parameters.rawLocation);
           case PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges:
@@ -935,10 +902,6 @@ self.injectedExtensionAPI = function(
           case PrivateAPI.LanguageExtensionPluginCommands.ReleaseObject:
             if ('releaseObject' in plugin && plugin.releaseObject) {
               return plugin.releaseObject(request.parameters.objectId);
-            }
-            if (!('evaluate' in plugin) &&
-                plugin.evaluate) {  // If evalute is defined but the remote objects methods aren't, that's a bug
-              return Promise.resolve(undefined);
             }
             break;
         }

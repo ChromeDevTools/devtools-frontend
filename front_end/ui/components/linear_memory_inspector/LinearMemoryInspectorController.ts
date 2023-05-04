@@ -84,9 +84,6 @@ async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<
 }
 
 export function isDWARFMemoryObject(obj: SDK.RemoteObject.RemoteObject): boolean {
-  if (obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) {
-    return obj.inspectableAddress !== undefined;
-  }
   if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
     return obj.linearMemoryAddress !== undefined;
   }
@@ -215,31 +212,14 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
 
   static async retrieveDWARFMemoryObjectAndAddress(obj: SDK.RemoteObject.RemoteObject):
       Promise<{obj: SDK.RemoteObject.RemoteObject, address: number}|undefined> {
-    if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
-      const valueNode = obj;
-      const address = obj.linearMemoryAddress;
-      if (address === undefined) {
-        return undefined;
-      }
-      const callFrame = valueNode.callFrame;
-      const response = await obj.debuggerModel().agent.invoke_evaluateOnCallFrame({
-        callFrameId: callFrame.id,
-        expression: 'memories[0]',
-      });
-      const error = response.getError();
-      if (error) {
-        console.error(error);
-        Common.Console.Console.instance().error(i18nString(UIStrings.couldNotOpenLinearMemory));
-      }
-      const runtimeModel = obj.debuggerModel().runtimeModel();
-      return {obj: runtimeModel.createRemoteObject(response.result), address};
-    }
-    if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode)) {
+    if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject)) {
       return undefined;
     }
-
     const valueNode = obj;
-    const address = valueNode.inspectableAddress || 0;
+    const address = obj.linearMemoryAddress;
+    if (address === undefined) {
+      return undefined;
+    }
     const callFrame = valueNode.callFrame;
     const response = await obj.debuggerModel().agent.invoke_evaluateOnCallFrame({
       callFrameId: callFrame.id,
@@ -251,8 +231,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
       Common.Console.Console.instance().error(i18nString(UIStrings.couldNotOpenLinearMemory));
     }
     const runtimeModel = obj.debuggerModel().runtimeModel();
-    obj = runtimeModel.createRemoteObject(response.result);
-    return {obj, address};
+    return {obj: runtimeModel.createRemoteObject(response.result), address};
   }
 
   // This function returns the size of the source language value represented by the ValueNode or ExtensionRemoteObject.
@@ -264,25 +243,8 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
   //
   // retrieveObjectSize(ptr_ValueNode) -> 8, the size of a double
   // retrieveObjectSize(dblptr_ValueNode) -> 4, the size of a pointer
-  static extractObjectSize(obj: Bindings.DebuggerLanguagePlugins.ValueNode|
-                           Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject): number {
-    if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
-      return obj.linearMemorySize ?? 0;
-    }
-    let typeInfo = obj.sourceType.typeInfo;
-    const pointerMembers = typeInfo.members.filter(member => member.name === '*');
-    if (pointerMembers.length === 1) {
-      const typeId = pointerMembers[0].typeId;
-      const newTypeInfo = obj.sourceType.typeMap.get(typeId)?.typeInfo;
-      if (newTypeInfo !== undefined) {
-        typeInfo = newTypeInfo;
-      } else {
-        throw new Error(`Cannot find the source type information for typeId ${typeId}.`);
-      }
-    } else if (pointerMembers.length > 1) {
-      throw new Error('The number of pointers in typeInfo.members should not be greater than one.');
-    }
-    return typeInfo.size;
+  static extractObjectSize(obj: Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject): number {
+    return obj.linearMemorySize ?? 0;
   }
 
   // The object type description corresponds to the type of the highlighted memory
@@ -380,15 +342,11 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
   }
 
   static extractHighlightInfo(obj: SDK.RemoteObject.RemoteObject, expression?: string): HighlightInfo|undefined {
-    if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ValueNode) &&
-        !(obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject)) {
+    if (!(obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject)) {
       return undefined;
     }
 
-    const startAddress =
-        (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject ? obj.linearMemoryAddress :
-                                                                                 obj.inspectableAddress) ??
-        0;
+    const startAddress = obj.linearMemoryAddress ?? 0;
 
     let highlightInfo;
     try {

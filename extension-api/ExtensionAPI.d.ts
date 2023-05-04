@@ -147,35 +147,6 @@ export namespace Chrome {
       name: string;
     }
 
-    export type Enumerator = {
-      name: string,
-      value: unknown,
-      typeId: unknown,
-    };
-
-    export interface FieldInfo {
-      name?: string;
-      offset: number;
-      typeId: unknown;
-    }
-
-    export interface TypeInfo {
-      typeNames: string[];
-      typeId: unknown;
-      members: FieldInfo[];
-      enumerators?: Enumerator[];
-      alignment: number;
-      arraySize: number;
-      size: number;
-      canExpand: boolean;
-      hasValue: boolean;
-    }
-
-    export interface EvalBase {
-      rootType: TypeInfo;
-      payload: unknown;
-    }
-
     export type RecorderExtensionPlugin = RecorderExtensionExportPlugin|RecorderExtensionReplayPlugin;
 
     export interface RecorderExtensionExportPlugin {
@@ -188,7 +159,6 @@ export namespace Chrome {
 
     export type RemoteObjectId = string;
     export type RemoteObjectType = 'object'|'undefined'|'string'|'number'|'boolean'|'bigint'|'array'|'null';
-
 
     export interface RemoteObject {
       type: RemoteObjectType;
@@ -240,49 +210,6 @@ export namespace Chrome {
       removeRawModule(rawModuleId: string): Promise<void>;
 
       /**
-       * DEPRECATED. Return type information for an expression. The result describes the type (and recursively its
-       * member types) of the result of the expression if it were evaluated in the given context.
-       * TODO(crbug.com/1342848) Remove.
-       */
-      getTypeInfo(expression: string, context: RawLocation): Promise<{
-        typeInfos: Array<TypeInfo>,
-        base: EvalBase,
-      }|null>;
-
-      /**
-       * DEPRECATED. Returns a piece of JavaScript code that, if evaluated, produces a representation of the given
-       * expression or field.
-       * TODO(crbug.com/1342848) Remove.
-       */
-      getFormatter(
-          expressionOrField: string|{
-            base: EvalBase,
-            field: Array<FieldInfo>,
-          },
-          context: RawLocation): Promise<{
-        js: string,
-      }|null>;
-
-      /**
-       * Evaluate a source language expression in the context of a given raw location and a given stopId. stopId is an
-       * opaque key that should be passed to the APIs accessing wasm state, e.g., getWasmLinearMemory. A stopId is
-       * invalidated once the debugger resumes.
-       * TODO(crbug.com/1342848) Make non-optional.
-       */
-      evaluate?(expression: string, context: RawLocation, stopId: unknown): Promise<RemoteObject|null>;
-
-      /**
-       * DEPRECATED. Returns a piece of JavaScript code that, if evaluated, produces the address of the given field in the wasm memory.
-       * TODO(crbug.com/1342848) Remove.
-       */
-      getInspectableAddress(field: {
-        base: EvalBase,
-        field: Array<FieldInfo>,
-      }): Promise<{
-        js: string,
-      }>;
-
-      /**
        * Retrieve function name(s) for the function(s) containing the rawLocation. This returns more than one entry if
        * the location is inside of an inlined function with the innermost function at index 0.
        */
@@ -308,15 +235,21 @@ export namespace Chrome {
       getMappedLines(rawModuleId: string, sourceFileURL: string): Promise<number[]|undefined>;
 
       /**
-       * Retrieve properties of the remote object identified by the object id.
-       * TODO(crbug.com/1342848) Make non-optional.
+       * Evaluate a source language expression in the context of a given raw location and a given stopId. stopId is an
+       * opaque key that should be passed to the APIs accessing wasm state, e.g., getWasmLinearMemory. A stopId is
+       * invalidated once the debugger resumes.
        */
-      getProperties?(objectId: RemoteObjectId): Promise<PropertyDescriptor[]>;
+      evaluate(expression: string, context: RawLocation, stopId: unknown): Promise<RemoteObject|null>;
+
+      /**
+       * Retrieve properties of the remote object identified by the object id.
+       */
+      getProperties(objectId: RemoteObjectId): Promise<PropertyDescriptor[]>;
+
       /**
        * Permanently release the remote object identified by the object id.
-       * TODO(crbug.com/1342848) Make non-optional.
        */
-      releaseObject?(objectId: RemoteObjectId): Promise<void>;
+      releaseObject(objectId: RemoteObjectId): Promise<void>;
     }
 
 

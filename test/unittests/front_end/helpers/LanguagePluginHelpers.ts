@@ -55,22 +55,6 @@ export class TestPlugin implements Bindings.DebuggerLanguagePlugins.DebuggerLang
   async removeRawModule(_rawModuleId: string): Promise<void> {
   }
 
-  async getTypeInfo(_expression: string, _context: Chrome.DevTools.RawLocation):
-      Promise<{typeInfos: Array<Chrome.DevTools.TypeInfo>, base: Chrome.DevTools.EvalBase}|null> {
-    return null;
-  }
-
-  async getFormatter(
-      _expressionOrField: string|{base: Chrome.DevTools.EvalBase, field: Array<Chrome.DevTools.FieldInfo>},
-      _context: Chrome.DevTools.RawLocation): Promise<{js: string}|null> {
-    return null;
-  }
-
-  getInspectableAddress(_field: {base: Chrome.DevTools.EvalBase, field: Array<Chrome.DevTools.FieldInfo>}):
-      Promise<{js: string}> {
-    throw new Error('Not implemented yet');
-  }
-
   async getFunctionInfo(_rawLocation: Chrome.DevTools.RawLocation): Promise<{
     frames: Array<Chrome.DevTools.FunctionInfo>,
     missingSymbolFiles?: Array<string>,

@@ -241,17 +241,6 @@ describeWithMockConnection('ObjectPropertiesSection', () => {
       debuggerModel,
     } as SDK.DebuggerModel.CallFrame;
     {
-      const valueNode = new Bindings.DebuggerLanguagePlugins.ValueNode(
-          callFrame, undefined, 'object', undefined, undefined, 2 /* inspectableAddress*/);
-
-      const div = document.createElement('div');
-      assert.isFalse(div.hasChildNodes());
-      ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(div, valueNode);
-      assert.isTrue(div.hasChildNodes());
-      const icon = div.getElementsByClassName('devtools-icon');
-      assert.isNotNull(icon);
-    }
-    {
       const extensionObject = {
         type: 'string' as Chrome.DevTools.RemoteObjectType,
         hasChildren: false,

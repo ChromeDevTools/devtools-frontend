@@ -132,49 +132,12 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
         Promise<Chrome.DevTools.RawLocationRange[]>;
   }
 
-  getTypeInfo(expression: string, context: Chrome.DevTools.RawLocation): Promise<{
-    typeInfos: Array<Chrome.DevTools.TypeInfo>,
-    base: Chrome.DevTools.EvalBase,
-  }|null> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetTypeInfo, {expression, context}) as
-        Promise<{
-             typeInfos: Array<Chrome.DevTools.TypeInfo>,
-             base: Chrome.DevTools.EvalBase,
-           }|null>;
-  }
-
-  getFormatter(
-      expressionOrField: string|{
-        base: Chrome.DevTools.EvalBase,
-        field: Array<Chrome.DevTools.FieldInfo>,
-      },
-      context: Chrome.DevTools.RawLocation): Promise<{
-    js: string,
-  }> {
-    return this.endpoint.sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.GetFormatter, {expressionOrField, context}) as Promise<{
-             js: string,
-           }>;
-  }
-
-  getInspectableAddress(field: {
-    base: Chrome.DevTools.EvalBase,
-    field: Array<Chrome.DevTools.FieldInfo>,
-  }): Promise<{
-    js: string,
-  }> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInspectableAddress, {field}) as
-        Promise<{
-             js: string,
-           }>;
-  }
-
   async getMappedLines(rawModuleId: string, sourceFileURL: string): Promise<number[]|undefined> {
     return this.endpoint.sendRequest(
         PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines, {rawModuleId, sourceFileURL});
   }
 
-  evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: number):
+  async evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: number):
       Promise<Chrome.DevTools.RemoteObject> {
     return this.endpoint.sendRequest(
         PrivateAPI.LanguageExtensionPluginCommands.FormatValue, {expression, context, stopId});

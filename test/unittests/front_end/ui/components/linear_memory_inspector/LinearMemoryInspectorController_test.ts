@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
-import * as Bindings from '../../../../../../front_end/models/bindings/bindings.js';
 import * as LinearMemoryInspector from '../../../../../../front_end/ui/components/linear_memory_inspector/linear_memory_inspector.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
@@ -30,20 +29,6 @@ function createWrapper(array: Uint8Array) {
   const mockRemoteObj = new MockRemoteObject(array.buffer);
   const mockRemoteArrayBuffer = new SDK.RemoteObject.RemoteArrayBuffer(mockRemoteObj);
   return new LinearMemoryInspectorController.RemoteArrayBufferWrapper(mockRemoteArrayBuffer);
-}
-
-function createFakeExtensionRemoteObjectFromValueNode(valueNode: Bindings.DebuggerLanguagePlugins.ValueNode) {
-  const {sourceType, inspectableAddress, description} = valueNode;
-  const {typeInfo} = sourceType ?? {};
-  const pointer = typeInfo?.members.find(m => m.name === '*');
-  const linearMemorySize = pointer ? sourceType.typeMap.get(pointer.typeId)?.typeInfo?.size : typeInfo?.size;
-  const instance = sinon.createStubInstance(Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject);
-
-  sinon.stub(instance, 'linearMemoryAddress').get(() => inspectableAddress);
-  sinon.stub(instance, 'linearMemorySize').get(() => linearMemorySize);
-  sinon.stub(instance, 'description').get(() => description);
-
-  return instance;
 }
 
 describeWithEnvironment('LinearMemoryInspectorController', () => {
@@ -119,164 +104,6 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
     assert.deepEqual(actualSettings, settings);
   });
 
-  it('retrieves size of non-pointer ValueNode', () => {
-    const expectedSize = 20;
-    const mockValueNode = {
-      sourceType: {
-        typeMap: new Map<number, object>([
-          [1, {}],
-        ]),
-        typeInfo: {
-          size: expectedSize,
-          members: [{name: 'not_a_pointer', typeId: 1}],
-        },
-      },
-    } as Bindings.DebuggerLanguagePlugins.ValueNode;
-
-    {
-      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(mockValueNode);
-      assert.strictEqual(size, expectedSize);
-    }
-    {
-      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(
-          createFakeExtensionRemoteObjectFromValueNode(mockValueNode));
-      assert.strictEqual(size, expectedSize);
-    }
-  });
-
-  it('retrieves object size for a pointer ValueNode', () => {
-    const expectedSize = 8;
-    const pointerSize = 4;
-    const nestedValueNode = {
-      sourceType: {
-        typeInfo: {
-          size: expectedSize,
-        },
-      },
-    } as Bindings.DebuggerLanguagePlugins.ValueNode;
-
-    const pointerValueNode = {
-      sourceType: {
-        typeMap: new Map<number, object>([
-          [1, nestedValueNode.sourceType],
-        ]),
-        typeInfo: {
-          size: pointerSize,
-          members: [{name: '*', typeId: 1}],
-        },
-      },
-    } as Bindings.DebuggerLanguagePlugins.ValueNode;
-
-    {
-      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(pointerValueNode);
-      assert.strictEqual(size, expectedSize);
-    }
-    {
-      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(
-          createFakeExtensionRemoteObjectFromValueNode(pointerValueNode));
-      assert.strictEqual(size, expectedSize);
-    }
-  });
-
-  it('retrieves pointer size for a pointer-to-pointer ValueNode', () => {
-    const expectedSize = 4;
-    const pointerSize = 4;
-    const nestedValueNode = {
-      sourceType: {
-        typeInfo: {
-          size: 8,
-        },
-      },
-    } as Bindings.DebuggerLanguagePlugins.ValueNode;
-
-    const nestedPointerValueNode = {
-      sourceType: {
-        typeInfo: {
-          size: expectedSize,
-          members: [{name: '*', typeId: 2}],
-        },
-      },
-    } as Bindings.DebuggerLanguagePlugins.ValueNode;
-
-    const pointerValueNode = {
-      sourceType: {
-        typeMap: new Map<number, object>([
-          [1, nestedPointerValueNode.sourceType],
-          [2, nestedValueNode.sourceType],
-        ]),
-        typeInfo: {
-          size: pointerSize,
-          members: [{name: '*', typeId: 1}],
-        },
-      },
-    } as Bindings.DebuggerLanguagePlugins.ValueNode;
-
-    {
-      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(pointerValueNode);
-      assert.strictEqual(size, expectedSize);
-    }
-    {
-      const size = LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(
-          createFakeExtensionRemoteObjectFromValueNode(pointerValueNode));
-      assert.strictEqual(size, expectedSize);
-    }
-  });
-
-  it('throws an error when retrieving size of non-conforming (multiple pointer members) ValueNode', () => {
-    const expectedSize = 8;
-    const pointerSize = 4;
-    const nestedValueNode = {
-      sourceType: {
-        typeInfo: {
-          size: expectedSize,
-        },
-      },
-    } as Bindings.DebuggerLanguagePlugins.ValueNode;
-
-    const pointerValueNode = {
-      sourceType: {
-        typeMap: new Map<number, object>([
-          [1, nestedValueNode.sourceType],
-          [2, nestedValueNode.sourceType],
-        ]),
-        typeInfo: {
-          size: pointerSize,
-          members: [{name: '*', typeId: 1}, {name: '*', typeId: 2}],
-        },
-      },
-    } as Bindings.DebuggerLanguagePlugins.ValueNode;
-
-    try {
-      LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(pointerValueNode);
-      throw new Error('Function did now throw an error.');
-    } catch (e) {
-      const error = e as Error;
-      assert.strictEqual(error.message, 'The number of pointers in typeInfo.members should not be greater than one.');
-    }
-  });
-
-  it('throws an error when retrieving size of non-conforming (typedId not in typeMap) ValueNode', () => {
-    const pointerValueNode = {
-      sourceType: {
-        typeMap: new Map<number, object>([
-          [42, {}],
-        ]),
-        typeInfo: {
-          size: 4,
-          members: [{name: '*', typeId: 1}],
-        },
-      },
-    } as Bindings.DebuggerLanguagePlugins.ValueNode;
-
-    try {
-      LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectSize(pointerValueNode);
-      throw new Error('Function did now throw an error.');
-    } catch (e) {
-      const error = e as Error;
-      assert.strictEqual(error.message, 'Cannot find the source type information for typeId 1.');
-    }
-  });
-
   it('returns undefined when error happens in evaluateExpression', async () => {
     const errorText = 'This is a test error';
     const callFrame = {
@@ -332,62 +159,6 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
     assert.deepEqual(result, expectedObj);
   });
 
-  it('extracts array type correctly', () => {
-    const obj = {description: 'int[]'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    {
-      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                                .extractObjectTypeDescription(obj);
-      assert.strictEqual(extractedType, 'int[]');
-    }
-    {
-      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                                .extractObjectTypeDescription(createFakeExtensionRemoteObjectFromValueNode(obj));
-      assert.strictEqual(extractedType, 'int[]');
-    }
-  });
-
-  it('extracts multi-level pointer correctly', () => {
-    const obj = {description: 'int **'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    {
-      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                                .extractObjectTypeDescription(obj);
-      assert.strictEqual(extractedType, 'int *');
-    }
-    {
-      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                                .extractObjectTypeDescription(createFakeExtensionRemoteObjectFromValueNode(obj));
-      assert.strictEqual(extractedType, 'int *');
-    }
-  });
-
-  it('extracts reference type correctly', () => {
-    const obj = {description: 'int &'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    {
-      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                                .extractObjectTypeDescription(obj);
-      assert.strictEqual(extractedType, 'int');
-    }
-    {
-      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                                .extractObjectTypeDescription(createFakeExtensionRemoteObjectFromValueNode(obj));
-      assert.strictEqual(extractedType, 'int');
-    }
-  });
-
-  it('extracts pointer type correctly', () => {
-    const obj = {description: 'int *'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    {
-      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                                .extractObjectTypeDescription(obj);
-      assert.strictEqual(extractedType, 'int');
-    }
-    {
-      const extractedType = LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController
-                                .extractObjectTypeDescription(createFakeExtensionRemoteObjectFromValueNode(obj));
-      assert.strictEqual(extractedType, 'int');
-    }
-  });
-
   it('removes the provided highlightInfo when it is stored in the Controller', () => {
     const highlightInfo = {startAddress: 0, size: 16, name: 'myNumbers', type: 'int[]'} as
         LinearMemoryInspector.LinearMemoryViewerUtils.HighlightInfo;
@@ -414,40 +185,6 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
 
     instance.removeHighlight(bufferId, differentHighlightInfo);
     assert.deepEqual(instance.getHighlightInfo(bufferId), highlightInfo);
-  });
-
-  it('extracts name unchanged when object is not pointer', () => {
-    const name = 'myNumbers';
-    const obj = {description: 'int[]'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    {
-      const extractedName =
-          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
-              obj, name);
-      assert.strictEqual(extractedName, name);
-    }
-    {
-      const extractedName =
-          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
-              createFakeExtensionRemoteObjectFromValueNode(obj), name);
-      assert.strictEqual(extractedName, name);
-    }
-  });
-
-  it('extracts name with preprended \'*\' when object is a pointer', () => {
-    const name = 'myPointerObject';
-    const obj = {description: 'int *'} as Bindings.DebuggerLanguagePlugins.ValueNode;
-    {
-      const extractedName =
-          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
-              obj, name);
-      assert.strictEqual(extractedName, '*' + name);
-    }
-    {
-      const extractedName =
-          LinearMemoryInspector.LinearMemoryInspectorController.LinearMemoryInspectorController.extractObjectName(
-              createFakeExtensionRemoteObjectFromValueNode(obj), name);
-      assert.strictEqual(extractedName, '*' + name);
-    }
   });
 });
 

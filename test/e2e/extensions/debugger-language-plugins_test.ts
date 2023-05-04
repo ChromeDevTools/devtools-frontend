@@ -241,9 +241,6 @@ describe('The Debugger Language Plugins', async () => {
     assert.isNotEmpty(await getNonBreakableLines());
 
     await locationLabels.setBreakpointInSourceAndRun('BREAK(return)', 'Module.instance.exports.Main();');
-
-    // FIXME(pfaffe) what was the point of this check?
-    // await waitForFunction(async () => !(await isBreakpointSet(4)));
   });
 
   it('shows top-level and nested variables', async () => {
@@ -589,170 +586,6 @@ describe('The Debugger Language Plugins', async () => {
     assert.deepEqual(title, `${incompleteMessage}\n${text}`);
   });
 
-  it('shows variable values with JS formatters', async () => {
-    const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
-    await extension.evaluate(() => {
-      class VariableListingPlugin {
-        private modules:
-            Map<string,
-                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
-        constructor() {
-          this.modules = new Map();
-        }
-
-        async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
-          const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
-          this.modules.set(rawModuleId, {
-            rawLocationRange: {rawModuleId, startOffset: 6, endOffset: 7},
-            sourceLocation: {rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: 2},
-          });
-          return [sourceFileURL];
-        }
-
-        async rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation) {
-          const {rawLocationRange, sourceLocation} = this.modules.get(rawLocation.rawModuleId) || {};
-          if (rawLocationRange && sourceLocation && rawLocationRange.startOffset <= rawLocation.codeOffset &&
-              rawLocation.codeOffset < rawLocationRange.endOffset) {
-            return [sourceLocation];
-          }
-          return [];
-        }
-
-        async listVariablesInScope(_rawLocation: Chrome.DevTools.RawLocation) {
-          return [{scope: 'LOCAL', name: 'local', type: 'TestType'}];
-        }
-
-        async getScopeInfo(type: string) {
-          return {type, typeName: type};
-        }
-
-        async getTypeInfo(expression: string, _context: Chrome.DevTools.RawLocation):
-            Promise<{typeInfos: Chrome.DevTools.TypeInfo[], base: Chrome.DevTools.EvalBase}|null> {
-          if (expression === 'local') {
-            const typeInfos = [
-              {
-                typeNames: ['TestType'],
-                typeId: 'TestType',
-                members: [{name: 'member', offset: 1, typeId: 'TestTypeMember'}],
-                alignment: 0,
-                arraySize: 0,
-                size: 4,
-                canExpand: true,
-                hasValue: false,
-              },
-              {
-                typeNames: ['TestTypeMember'],
-                typeId: 'TestTypeMember',
-                members: [{name: 'member2', offset: 1, typeId: 'TestTypeMember2'}],
-                alignment: 0,
-                arraySize: 0,
-                size: 3,
-                canExpand: true,
-                hasValue: false,
-              },
-              {
-                typeNames: ['TestTypeMember2'],
-                typeId: 'TestTypeMember2',
-                members: [],
-                alignment: 0,
-                arraySize: 0,
-                size: 2,
-                canExpand: false,
-                hasValue: true,
-              },
-              {
-                typeNames: ['int'],
-                typeId: 'int',
-                members: [],
-                alignment: 0,
-                arraySize: 0,
-                size: 4,
-                canExpand: false,
-                hasValue: true,
-              },
-            ];
-            const base = {rootType: typeInfos[0], payload: 28};
-
-            return {typeInfos, base};
-          }
-          return null;
-        }
-
-        async getFormatter(
-            expressionOrField: string|{base: Chrome.DevTools.EvalBase, field: Chrome.DevTools.FieldInfo[]},
-            _context: Chrome.DevTools.RawLocation): Promise<{js: string}|null> {
-          function formatWithDescription(description: string) {
-            const sym = Symbol('sym');
-            const tag = {className: '$tag', symbol: sym};
-            return {tag, value: 27, description};
-          }
-          function format(description?: string) {
-            const sym = Symbol('sym');
-            const tag = {className: '$tag', symbol: sym};
-
-            class $tag {
-              [sym]: Chrome.DevTools.EvalBase;
-              constructor(value: number) {
-                const rootType = {
-                  typeNames: ['int'],
-                  typeId: 'int',
-                  members: [],
-                  alignment: 0,
-                  arraySize: 0,
-                  size: 4,
-                  canExpand: false,
-                  hasValue: true,
-                };
-                this[sym] = {payload: {value}, rootType};
-              }
-            }
-
-            const value = {value: 26, recurse: new $tag(19), describe: new $tag(20)};
-            Object.setPrototypeOf(value, null);
-            return {tag, value, description};
-          }
-
-          if (typeof expressionOrField === 'string') {
-            return null;
-          }
-
-          const {base, field} = expressionOrField;
-          if (base.payload === 28 && field.length === 2 && field[0].name === 'member' && field[0].offset === 1 &&
-              field[0].typeId === 'TestTypeMember' && field[1].name === 'member2' && field[1].offset === 1 &&
-              field[1].typeId === 'TestTypeMember2') {
-            return {js: `(${format})()`};
-          }
-          if ((base.payload as {value: number}).value === 19 && field.length === 0) {
-            return {js: '27'};
-          }
-          if ((base.payload as {value: number}).value === 20 && field.length === 0) {
-            return {js: `(${formatWithDescription})('CustomLabel')`};
-          }
-          return null;
-        }
-      }
-
-      RegisterExtension(
-          new VariableListingPlugin(), 'Location Mapping', {language: 'WebAssembly', symbol_types: ['None']});
-    });
-
-    await openSourcesPanel();
-    await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
-    await goToResource('sources/wasm/unreachable.html');
-    await waitFor(RESUME_BUTTON);
-
-    const locals = await getValuesForScope('LOCAL', 3, 6);
-    assert.deepEqual(locals, [
-      'local: TestType',
-      'member: TestTypeMember',
-      'member2: TestTypeMember2',
-      'describe: CustomLabel',
-      'recurse: 27',
-      'value: 26',
-    ]);
-  });
-
   it('shows variable values with the evaluate API', async () => {
     const extension = await loadExtension(
         'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
@@ -789,58 +622,6 @@ describe('The Debugger Language Plugins', async () => {
 
         async getScopeInfo(type: string) {
           return {type, typeName: type};
-        }
-
-        async getTypeInfo(expression: string, _context: Chrome.DevTools.RawLocation):
-            Promise<{typeInfos: Chrome.DevTools.TypeInfo[], base: Chrome.DevTools.EvalBase}|null> {
-          if (expression === 'local') {
-            const typeInfos = [
-              {
-                typeNames: ['TestType'],
-                typeId: 'TestType',
-                members: [{name: 'member', offset: 1, typeId: 'TestTypeMember'}],
-                alignment: 0,
-                arraySize: 0,
-                size: 4,
-                canExpand: true,
-                hasValue: false,
-              },
-              {
-                typeNames: ['TestTypeMember'],
-                typeId: 'TestTypeMember',
-                members: [{name: 'member2', offset: 1, typeId: 'TestTypeMember2'}],
-                alignment: 0,
-                arraySize: 0,
-                size: 3,
-                canExpand: true,
-                hasValue: false,
-              },
-              {
-                typeNames: ['TestTypeMember2'],
-                typeId: 'TestTypeMember2',
-                members: [],
-                alignment: 0,
-                arraySize: 0,
-                size: 2,
-                canExpand: false,
-                hasValue: true,
-              },
-              {
-                typeNames: ['int'],
-                typeId: 'int',
-                members: [],
-                alignment: 0,
-                arraySize: 0,
-                size: 4,
-                canExpand: false,
-                hasValue: true,
-              },
-            ];
-            const base = {rootType: typeInfos[0], payload: undefined};
-
-            return {typeInfos, base};
-          }
-          return null;
         }
 
         async evaluate(expression: string, _context: Chrome.DevTools.RawLocation, _stopId: unknown):
@@ -978,30 +759,12 @@ describe('The Debugger Language Plugins', async () => {
           return [{scope: 'LOCAL', name: 'unreachable', type: 'int'}];
         }
 
-        async getTypeInfo(expression: string, _context: Chrome.DevTools.RawLocation):
-            Promise<{typeInfos: Chrome.DevTools.TypeInfo[], base: Chrome.DevTools.EvalBase}|null> {
+        evaluate(expression: string, _context: Chrome.DevTools.RawLocation, _stopId: unknown):
+            Promise<Chrome.DevTools.RemoteObject|null> {
           if (expression === 'unreachable') {
-            const typeInfos = [{
-              typeNames: ['int'],
-              typeId: 'int',
-              members: [],
-              alignment: 0,
-              arraySize: 0,
-              size: 4,
-              canExpand: false,
-              hasValue: true,
-            }];
-            const base = {rootType: typeInfos[0], payload: 28};
-
-            return {typeInfos, base};
+            return Promise.resolve({type: 'number', value: 23, description: '23', hasChildren: false});
           }
-          return null;
-        }
-
-        async getFormatter(
-            _expressionOrField: string|{base: Chrome.DevTools.EvalBase, field: Chrome.DevTools.FieldInfo[]},
-            _context: Chrome.DevTools.RawLocation): Promise<{js: string}|null> {
-          return {js: '23'};
+          return Promise.resolve(null);
         }
       }
 
@@ -1067,40 +830,19 @@ describe('The Debugger Language Plugins', async () => {
           const {codeOffset} = rawLocation;
           if (!rawLocationRange || rawLocationRange.startOffset > codeOffset ||
               rawLocationRange.endOffset <= codeOffset) {
+            console.error('foobar');
             return [];
           }
 
           return [{scope: 'LOCAL', name: 'unreachable', type: 'int'}];
         }
 
-        async getTypeInfo(expression: string, _context: Chrome.DevTools.RawLocation):
-            Promise<{typeInfos: Chrome.DevTools.TypeInfo[], base: Chrome.DevTools.EvalBase}|null> {
+        async evaluate(expression: string, _context: Chrome.DevTools.RawLocation, _stopId: unknown):
+            Promise<Chrome.DevTools.RemoteObject|null> {
           if (expression === 'foo') {
-            const typeInfos = [{
-              typeNames: ['int'],
-              typeId: 'int',
-              members: [],
-              alignment: 0,
-              arraySize: 0,
-              size: 4,
-              canExpand: false,
-              hasValue: true,
-            }];
-            const base = {rootType: typeInfos[0], payload: 28};
-
-            return {typeInfos, base};
+            return {type: 'number', value: 23, description: '23', hasChildren: false};
           }
           throw new Error(`No typeinfo for ${expression}`);
-        }
-
-        async getFormatter(
-            expressionOrField: string|{base: Chrome.DevTools.EvalBase, field: Chrome.DevTools.FieldInfo[]},
-            _context: Chrome.DevTools.RawLocation): Promise<{js: string}|null> {
-          if (typeof expressionOrField !== 'string' && expressionOrField.base.payload as number === 28 &&
-              expressionOrField.field.length === 0) {
-            return {js: '23'};
-          }
-          throw new Error(`cannot format ${expressionOrField}`);
         }
       }
 

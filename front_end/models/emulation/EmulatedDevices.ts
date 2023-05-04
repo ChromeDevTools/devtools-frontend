@@ -991,7 +991,7 @@ const emulatedDevices = [
     'user-agent':
         'Mozilla/5.0 (Linux; Android) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.109 Safari/537.36 CrKey/1.54.248666',
     'user-agent-metadata':
-        {'platform': 'Android', 'platformVersion': '', 'architecture': '', 'model': '', 'mobile': true},
+        {'platform': 'Android', 'platformVersion': '', 'architecture': '', 'model': '', 'mobile': false},
     'type': 'tablet',
     'modes': [{'title': 'default', 'orientation': 'horizontal'}],
   },

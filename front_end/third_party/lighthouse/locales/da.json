@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Med adgangsnøgler kan brugerne hurtigt fokusere på dele af siden. Hver nøgle skal være unik for at navigere korrekt. [Få flere oplysninger om adgangsnøgler](https://dequeuniversity.com/rules/axe/4.6/accesskeys)."
+    "message": "Med adgangsnøgler kan brugerne hurtigt fokusere på dele af siden. Hver nøgle skal være unik for at navigere korrekt. [Få flere oplysninger om adgangsnøgler](https://dequeuniversity.com/rules/axe/4.7/accesskeys)."
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "`[accesskey]`-værdierne er ikke unikke"
@@ -9,7 +9,7 @@
     "message": "`[accesskey]`-værdier er unikke"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Hver ARIA-`role` understøtter en bestemt delmængde af `aria-*`-attributter. Hvis der opstår uoverensstemmelser, gøres `aria-*`-attributterne ugyldige. [Få flere oplysninger om, hvordan du matcher ARIA-attributter med deres roller](https://dequeuniversity.com/rules/axe/4.6/aria-allowed-attr)."
+    "message": "Hver ARIA-`role` understøtter en bestemt delmængde af `aria-*`-attributter. Hvis der opstår uoverensstemmelser, gøres `aria-*`-attributterne ugyldige. [Få flere oplysninger om, hvordan du matcher ARIA-attributter med deres roller](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "`[aria-*]`-attributterne stemmer ikke overens med deres roller"
@@ -18,7 +18,7 @@
     "message": "`[aria-*]`-attributterne stemmer overens med deres roller"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Hvis et element ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om, hvordan du gør kommandoelementer mere tilgængelige](https://dequeuniversity.com/rules/axe/4.6/aria-command-name)."
+    "message": "Hvis et element ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om, hvordan du gør kommandoelementer mere tilgængelige](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Elementerne `button`, `link` og `menuitem` har ikke tilgængelige navne."
@@ -27,7 +27,7 @@
     "message": "Elementerne `button`, `link` og `menuitem` har tilgængelige navne"
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Hjælpeteknologier såsom skærmlæsere fungerer ikke optimalt, når `aria-hidden=\"true\"` er angivet for dokumentet `<body>`. [Få flere oplysninger om, hvordan `aria-hidden` påvirker dokumentets brødtekst](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-body)."
+    "message": "Hjælpeteknologier såsom skærmlæsere fungerer ikke optimalt, når `aria-hidden=\"true\"` er angivet for dokumentet `<body>`. [Få flere oplysninger om, hvordan `aria-hidden` påvirker dokumentets brødtekst](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` findes i dokumentet `<body>`"
@@ -36,7 +36,7 @@
     "message": "`[aria-hidden=\"true\"]` findes ikke i dokumentet `<body>`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "Faldende elementer, der kan fokuseres på, i et `[aria-hidden=\"true\"]`-element forhindrer sådanne interaktive elementer i at være tilgængelige for brugere, der anvender hjælpeteknologier såsom skærmlæsere. [Få flere oplysninger om, hvordan `aria-hidden` påvirker elementer, der kan fokuseres på](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-focus)."
+    "message": "Faldende elementer, der kan fokuseres på, i et `[aria-hidden=\"true\"]`-element forhindrer sådanne interaktive elementer i at være tilgængelige for brugere, der anvender hjælpeteknologier såsom skærmlæsere. [Få flere oplysninger om, hvordan `aria-hidden` påvirker elementer, der kan fokuseres på](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]`-elementerne indeholder faldende elementer, der kan fokuseres på"
@@ -45,7 +45,7 @@
     "message": "`[aria-hidden=\"true\"]`-elementerne indeholder ikke faldende elementer, der kan fokuseres på"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Hvis et indtastningsfelt ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om etiketter til indtastningsfelter](https://dequeuniversity.com/rules/axe/4.6/aria-input-field-name)."
+    "message": "Hvis et indtastningsfelt ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om etiketter til indtastningsfelter](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)."
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA-indtastningsfelterne har ikke et tilgængeligt navn"
@@ -54,7 +54,7 @@
     "message": "ARIA-indtastningsfelterne har tilgængelige navne"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Hvis et element af typen \"meter\" ikke har et tilgængeligt navn, giver skærmlæsere det et generisk navn, så det ikke er nyttigt for brugere, der får læst indhold op af skærmlæsere. [Se, hvordan du navngiver `meter`-elementer](https://dequeuniversity.com/rules/axe/4.6/aria-meter-name)."
+    "message": "Hvis et element af typen \"meter\" ikke har et tilgængeligt navn, giver skærmlæsere det et generisk navn, så det ikke er nyttigt for brugere, der får læst indhold op af skærmlæsere. [Se, hvordan du navngiver `meter`-elementer](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "\"ARIA `meter`\"-elementerne har ikke tilgængelige navne."
@@ -63,7 +63,7 @@
     "message": "\"ARIA `meter`\"-elementerne har tilgængelige navne"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Hvis et element med `progressbar` ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om, hvordan du føjer etiketter til `progressbar`-elementer](https://dequeuniversity.com/rules/axe/4.6/aria-progressbar-name)."
+    "message": "Hvis et element med `progressbar` ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om, hvordan du føjer etiketter til `progressbar`-elementer](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "\"ARIA `progressbar`\"-elementerne har ikke tilgængelige navne."
@@ -72,7 +72,7 @@
     "message": "\"ARIA `progressbar`\"-elementerne har tilgængelige navne"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "Nogle ARIA-roller har opnået attributter, der beskriver elementets tilstand for skærmlæsere. [Få flere oplysninger om roller og obligatoriske attributter](https://dequeuniversity.com/rules/axe/4.6/aria-required-attr)."
+    "message": "Nogle ARIA-roller har opnået attributter, der beskriver elementets tilstand for skærmlæsere. [Få flere oplysninger om roller og obligatoriske attributter](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)."
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "`[role]`-elementerne har ikke alle de obligatoriske `[aria-*]`-attributter"
@@ -81,7 +81,7 @@
     "message": "`[role]`-elementerne har alle obligatoriske `[aria-*]`-attributter"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Nogle overordnede ARIA-roller skal indeholde bestemte underordnede roller for at udføre deres tilsigtede hjælpefunktioner [Få flere oplysninger om roller og obligatoriske underordnede elementer](https://dequeuniversity.com/rules/axe/4.6/aria-required-children)."
+    "message": "Nogle overordnede ARIA-roller skal indeholde bestemte underordnede roller for at udføre deres tilsigtede hjælpefunktioner [Få flere oplysninger om roller og obligatoriske underordnede elementer](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)."
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "Elementer med ARIA-rollen `[role]`, der kræver underordnede elementer med en bestemt `[role]`, mangler nogle eller alle disse påkrævede underordnede elementer."
@@ -90,7 +90,7 @@
     "message": "Elementer med ARIA-rollen `[role]`, der kræver underordnede elementer med en bestemt `[role]`, har alle de påkrævede underordnede elementer."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Nogle underordnede ARIA-roller skal indgå i bestemte overordnede roller for at udføre deres tilsigtede hjælpefunktioner korrekt. [Få flere oplysninger om ARIA-roller og obligatoriske overordnede elementer](https://dequeuniversity.com/rules/axe/4.6/aria-required-parent)."
+    "message": "Nogle underordnede ARIA-roller skal indgå i bestemte overordnede roller for at udføre deres tilsigtede hjælpefunktioner korrekt. [Få flere oplysninger om ARIA-roller og obligatoriske overordnede elementer](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)."
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "`[role]`-elementerne indgår ikke i deres påkrævede overordnede element"
@@ -99,7 +99,7 @@
     "message": "`[role]`-elementerne indgår i deres påkrævede overordnede element"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "ARIA-roller skal have gyldige værdier for at udføre deres tilsigtede hjælpefunktioner. [Få flere oplysninger om gyldige ARIA-roller](https://dequeuniversity.com/rules/axe/4.6/aria-roles)."
+    "message": "ARIA-roller skal have gyldige værdier for at udføre deres tilsigtede hjælpefunktioner. [Få flere oplysninger om gyldige ARIA-roller](https://dequeuniversity.com/rules/axe/4.7/aria-roles)."
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "`[role]`-værdierne er ikke gyldige"
@@ -108,7 +108,7 @@
     "message": "`[role]`-værdierne er gyldige"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Hvis et felt med en til/fra-kontakt ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om felter med en til/fra-kontakt](https://dequeuniversity.com/rules/axe/4.6/aria-toggle-field-name)."
+    "message": "Hvis et felt med en til/fra-kontakt ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om felter med en til/fra-kontakt](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA-kontakterne har ikke tilgængelige navne"
@@ -117,7 +117,7 @@
     "message": "ARIA-kontakterne har tilgængelige navne"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Hvis et værktøjstip-element ikke har et tilgængelighedsnavn, giver skærmlæsere det et generisk navn, så det ikke er nyttigt for brugere, der får læst indhold op af skærmlæsere. [Se, hvordan du navngiver `tooltip`-elementer](https://dequeuniversity.com/rules/axe/4.6/aria-tooltip-name)."
+    "message": "Hvis et værktøjstip-element ikke har et tilgængelighedsnavn, giver skærmlæsere det et generisk navn, så det ikke er nyttigt for brugere, der får læst indhold op af skærmlæsere. [Se, hvordan du navngiver `tooltip`-elementer](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "\"ARIA `tooltip`\"-elementerne har ikke tilgængelige navne."
@@ -126,7 +126,7 @@
     "message": "\"ARIA `tooltip`\"-elementerne har tilgængelige navne"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Hvis et element med `treeitem` ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om etikettering af `treeitem`-elementer](https://dequeuniversity.com/rules/axe/4.6/aria-treeitem-name)."
+    "message": "Hvis et element med `treeitem` ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om etikettering af `treeitem`-elementer](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)."
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "\"ARIA `treeitem`\"-elementerne har ikke tilgængelige navne."
@@ -135,7 +135,7 @@
     "message": "\"ARIA `treeitem`\"-elementerne har tilgængelige navne"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Hjælpeteknologier som f.eks. skærmlæsere kan ikke fortolke ARIA-attributter med ugyldige værdier. [Få flere oplysninger om gyldige værdier for ARIA-attributter](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr-value)."
+    "message": "Hjælpeteknologier som f.eks. skærmlæsere kan ikke fortolke ARIA-attributter med ugyldige værdier. [Få flere oplysninger om gyldige værdier for ARIA-attributter](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)."
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "`[aria-*]`-attributterne har ikke gyldige værdier"
@@ -144,7 +144,7 @@
     "message": "`[aria-*]`-attributterne har gyldige værdier"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Hjælpeteknologier som f.eks. skærmlæsere kan ikke fortolke ARIA-attributter med ugyldige navne. [Få flere oplysninger om gyldige ARIA-attributter](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr)."
+    "message": "Hjælpeteknologier som f.eks. skærmlæsere kan ikke fortolke ARIA-attributter med ugyldige navne. [Få flere oplysninger om gyldige ARIA-attributter](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)."
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "`[aria-*]`-attributterne er ikke gyldige eller er stavet forkert"
@@ -156,7 +156,7 @@
     "message": "Elementer, der ikke bestod gennemgangen"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "Hvis en knap ikke har et tilgængeligt navn, oplæser skærmlæsere knappen som \"knap\", hvilket gør den ubrugelig for brugere, der anvender skærmlæsere. [Få flere oplysninger om, hvordan du gør knapperne mere tilgængelige](https://dequeuniversity.com/rules/axe/4.6/button-name)."
+    "message": "Hvis en knap ikke har et tilgængeligt navn, oplæser skærmlæsere knappen som \"knap\", hvilket gør den ubrugelig for brugere, der anvender skærmlæsere. [Få flere oplysninger om, hvordan du gør knapperne mere tilgængelige](https://dequeuniversity.com/rules/axe/4.7/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "Knapperne har ikke et tilgængeligt navn"
@@ -165,7 +165,7 @@
     "message": "Knapperne har et tilgængeligt navn"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Tastaturbrugere kan nemmere finde rundt på siden, når der tilføjes metoder til omgåelse af gentagelser. [Få flere oplysninger om omgåelsesblokke](https://dequeuniversity.com/rules/axe/4.6/bypass)."
+    "message": "Tastaturbrugere kan nemmere finde rundt på siden, når der tilføjes metoder til omgåelse af gentagelser. [Få flere oplysninger om omgåelsesblokke](https://dequeuniversity.com/rules/axe/4.7/bypass)."
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "Siden indeholder hverken en heading, et skip link eller en landmark region"
@@ -174,7 +174,7 @@
     "message": "Siden indeholder en heading, et skip link eller en landmark region"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "Tekst med lav kontrast er for mange brugere svær eller umulig at læse. [Få flere oplysninger om, hvordan du leverer tilstrækkelig farvekontrast](https://dequeuniversity.com/rules/axe/4.6/color-contrast)."
+    "message": "Tekst med lav kontrast er for mange brugere svær eller umulig at læse. [Få flere oplysninger om, hvordan du leverer tilstrækkelig farvekontrast](https://dequeuniversity.com/rules/axe/4.7/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "Farverne i baggrunden og forgrunden har ikke nok kontrastforhold."
@@ -183,7 +183,7 @@
     "message": "Farverne i baggrunden og forgrunden har nok kontrastforhold"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "Hvis lister over definitioner ikke opmærkes korrekt, kan skærmlæseres oplæsning være forvirrende og forkert. [Få flere oplysninger om, hvordan du strukturerer definitionslister korrekt](https://dequeuniversity.com/rules/axe/4.6/definition-list)."
+    "message": "Hvis lister over definitioner ikke opmærkes korrekt, kan skærmlæseres oplæsning være forvirrende og forkert. [Få flere oplysninger om, hvordan du strukturerer definitionslister korrekt](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "`<dl>`-elementerne indeholder ikke udelukkende korrekt organiserede `<dt>`- og `<dd>`-grupper, `<script>`-, `<template>`- eller `<div>`-elementer."
@@ -192,7 +192,7 @@
     "message": "`<dl>`-elementerne indeholder kun korrekt organiserede `<dt>`- og `<dd>`-grupper, `<script>`-, `<template>`- eller `<div>`-elementer."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "Elementer med lister over definitioner (`<dt>` og `<dd>`) skal indkapsles af et overordnet `<dl>`-element for at sikre, at skærmlæsere kan læse dem op korrekt. [Få flere oplysninger om, hvordan du strukturerer definitionslister korrekt](https://dequeuniversity.com/rules/axe/4.6/dlitem)."
+    "message": "Elementer med lister over definitioner (`<dt>` og `<dd>`) skal indkapsles af et overordnet `<dl>`-element for at sikre, at skærmlæsere kan læse dem op korrekt. [Få flere oplysninger om, hvordan du strukturerer definitionslister korrekt](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "Elementer med lister over definitioner er ikke indkapslet af `<dl>`-elementer"
@@ -201,7 +201,7 @@
     "message": "Elementer med lister over definitioner er indkapslet af `<dl>`-elementer"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "Titlen giver brugere af skærmlæsere et overblik over siden, og brugere af søgemaskiner skal bruge den til at afgøre, om en side er relevant for deres søgning. [Få flere oplysninger om dokumenttitler](https://dequeuniversity.com/rules/axe/4.6/document-title)."
+    "message": "Titlen giver brugere af skærmlæsere et overblik over siden, og brugere af søgemaskiner skal bruge den til at afgøre, om en side er relevant for deres søgning. [Få flere oplysninger om dokumenttitler](https://dequeuniversity.com/rules/axe/4.7/document-title)."
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "Dokumentet har ikke et `<title>`-element"
@@ -210,7 +210,7 @@
     "message": "Dokumentet har et `<title>`-element"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Alle elementer, der kan fokuseres på, skal have en unik `id` for at sikre, at de er synlige for hjælpeteknologier. [Få flere oplysninger om, hvordan du løser problemer med identiske `id`'er](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-active)."
+    "message": "Alle elementer, der kan fokuseres på, skal have en unik `id` for at sikre, at de er synlige for hjælpeteknologier. [Få flere oplysninger om, hvordan du løser problemer med identiske `id`'er](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "`[id]`-attributterne på aktive elementer, der kan fokuseres på, er ikke unikke"
@@ -219,7 +219,7 @@
     "message": "`[id]`-attributterne på aktive elementer, der kan fokuseres på, er unikke"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "Værdien af et ARIA-id skal være unik for at forhindre, at andre forekomster bliver overset af hjælpeteknologier. [Få flere oplysninger om, hvordan du løser problemer med identiske ARIA-id'er](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-aria)."
+    "message": "Værdien af et ARIA-id skal være unik for at forhindre, at andre forekomster bliver overset af hjælpeteknologier. [Få flere oplysninger om, hvordan du løser problemer med identiske ARIA-id'er](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "ARIA-id'erne er ikke unikke"
@@ -228,7 +228,7 @@
     "message": "ARIA-id'erne er unikke"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "Formularfelter med flere etiketter kan blive forvekslet og læst op af hjælpeteknologier såsom skærmlæsere, der anvender den første, den sidste eller alle etiketter. [Få flere oplysninger om, hvordan du bruger formularetiketter](https://dequeuniversity.com/rules/axe/4.6/form-field-multiple-labels)."
+    "message": "Formularfelter med flere etiketter kan blive forvekslet og læst op af hjælpeteknologier såsom skærmlæsere, der anvender den første, den sidste eller alle etiketter. [Få flere oplysninger om, hvordan du bruger formularetiketter](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "Formularfelterne har flere etiketter"
@@ -237,7 +237,7 @@
     "message": "Der er ingen formularfelter med flere etiketter"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Brugere af skærmlæsere har brug for skærmtitler, der beskriver indholdet på skærmen. [Få flere oplysninger om skærmtitler](https://dequeuniversity.com/rules/axe/4.6/frame-title)."
+    "message": "Brugere af skærmlæsere har brug for skærmtitler, der beskriver indholdet på skærmen. [Få flere oplysninger om skærmtitler](https://dequeuniversity.com/rules/axe/4.7/frame-title)."
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "`<frame>`- eller `<iframe>`-elementerne har ikke en titel"
@@ -246,7 +246,7 @@
     "message": "`<frame>`- eller `<iframe>`-elementerne har en titel"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "Overskrifter, der er sorteret korrekt og ikke springer niveauer over, gengiver sidens semantiske struktur, så den er nemmere at navigere i og forstå, når du anvender hjælpeteknologier. [Få flere oplysninger om rækkefølgen for overskrifter](https://dequeuniversity.com/rules/axe/4.6/heading-order)."
+    "message": "Overskrifter, der er sorteret korrekt og ikke springer niveauer over, gengiver sidens semantiske struktur, så den er nemmere at navigere i og forstå, når du anvender hjælpeteknologier. [Få flere oplysninger om rækkefølgen for overskrifter](https://dequeuniversity.com/rules/axe/4.7/heading-order)."
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "Overskriftselementerne vises ikke i en fortløbende faldende rækkefølge"
@@ -255,7 +255,7 @@
     "message": "Overskriftselementerne vises i en fortløbende faldende rækkefølge"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "Hvis siden ikke angiver en `lang`-attribut, antager en skærmlæser, at siden vises på det standardsprog, som brugeren valgte ved konfigurationen af sin skærmlæser. Hvis siden ikke vises på standardsproget, oplæser skærmlæseren muligvis ikke teksten på siden korrekt. [Få flere oplysninger om attributten `lang`](https://dequeuniversity.com/rules/axe/4.6/html-has-lang)."
+    "message": "Hvis siden ikke angiver en `lang`-attribut, antager en skærmlæser, at siden vises på det standardsprog, som brugeren valgte ved konfigurationen af sin skærmlæser. Hvis siden ikke vises på standardsproget, oplæser skærmlæseren muligvis ikke teksten på siden korrekt. [Få flere oplysninger om attributten `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)."
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "`<html>`-elementet har ikke en `[lang]`-attribut"
@@ -264,7 +264,7 @@
     "message": "`<html>`-elementet har en `[lang]`-attribut"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "Hjælp skærmlæsere med at oplæse tekst korrekt ved at angive et gyldigt [BCP 47-sprog](https://www.w3.org/International/questions/qa-choosing-language-tags#question). [Få flere oplysninger om, hvordan du bruger attributten `lang`](https://dequeuniversity.com/rules/axe/4.6/html-lang-valid)."
+    "message": "Hjælp skærmlæsere med at oplæse tekst korrekt ved at angive et gyldigt [BCP 47-sprog](https://www.w3.org/International/questions/qa-choosing-language-tags#question). [Få flere oplysninger om, hvordan du bruger attributten `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "`<html>`-elementet har ikke en gyldig værdi for sin `[lang]`-attribut."
@@ -273,7 +273,7 @@
     "message": "`<html>`-elementet har en gyldig værdi for `[lang]`-attributten"
   },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "Informative elementer bør anvende en kort, beskrivende alternativ tekst. Dekorative elementer kan ignoreres med en tom alt-attribut. [Få flere oplysninger om attributten `alt`](https://dequeuniversity.com/rules/axe/4.6/image-alt)."
+    "message": "Informative elementer bør anvende en kort, beskrivende alternativ tekst. Dekorative elementer kan ignoreres med en tom alt-attribut. [Få flere oplysninger om attributten `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Billedelementerne har ikke `[alt]`-attributter"
@@ -282,7 +282,7 @@
     "message": "Billedelementerne indeholder `[alt]`-attributter"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "Når et billede bruges som en `<input>`-knap, kan alternativ tekst hjælpe brugere af skærmlæsere med at forstå knappens formål. [Få flere oplysninger om alternativ tekst for inputbillede](https://dequeuniversity.com/rules/axe/4.6/input-image-alt)."
+    "message": "Når et billede bruges som en `<input>`-knap, kan alternativ tekst hjælpe brugere af skærmlæsere med at forstå knappens formål. [Få flere oplysninger om alternativ tekst for inputbillede](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "`<input type=\"image\">`-elementerne har ikke `[alt]`-tekst"
@@ -291,7 +291,7 @@
     "message": "`<input type=\"image\">`-elementerne har `[alt]`-tekst"
   },
   "core/audits/accessibility/label.js | description": {
-    "message": "Etiketter sikrer, at formularstyring oplæses korrekt af hjælpeteknologier som f.eks. skærmlæsere. [Få flere oplysninger om formularelementetiketter](https://dequeuniversity.com/rules/axe/4.6/label)."
+    "message": "Etiketter sikrer, at formularstyring oplæses korrekt af hjælpeteknologier som f.eks. skærmlæsere. [Få flere oplysninger om formularelementetiketter](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "Formularelementerne har ikke tilknyttede etiketter"
@@ -300,7 +300,7 @@
     "message": "Formularelementerne har tilknyttede etiketter"
   },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "Linktekst (og alternativ tekst til billeder, når de bruges som links), der er skelnelig, unik og fokuserbar, gør det nemmere for brugere af skærmlæsere at finde rundt. [Få flere oplysninger om, hvordan du gør links tilgængelige](https://dequeuniversity.com/rules/axe/4.6/link-name)."
+    "message": "Linktekst (og alternativ tekst til billeder, når de bruges som links), der er skelnelig, unik og fokuserbar, gør det nemmere for brugere af skærmlæsere at finde rundt. [Få flere oplysninger om, hvordan du gør links tilgængelige](https://dequeuniversity.com/rules/axe/4.7/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Linkene har ikke skelnelige navne"
@@ -309,7 +309,7 @@
     "message": "Linkene har skelnelige navne"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Skærmlæsere oplæser lister på en bestemt måde. Du kan forbedre skærmlæsernes output ved at angive en ordentlig listestruktur. [Få flere oplysninger om korrekt listestruktur](https://dequeuniversity.com/rules/axe/4.6/list)."
+    "message": "Skærmlæsere oplæser lister på en bestemt måde. Du kan forbedre skærmlæsernes output ved at angive en ordentlig listestruktur. [Få flere oplysninger om korrekt listestruktur](https://dequeuniversity.com/rules/axe/4.7/list)."
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "Listerne indeholder ikke kun `<li>`-elementer og elementer, der understøtter scripts (`<script>` og `<template>`)."
@@ -318,7 +318,7 @@
     "message": "Listerne indeholder kun `<li>`-elementer og elementer, der understøtter scripts (`<script>` og `<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Skærmlæsere kræver, at listeelementer (`<li>`) indgår i et overordnet `<ul>`-, `<ol>`- eller `<menu>`-element for at blive oplæst korrekt. [Få flere oplysninger om korrekt listestruktur](https://dequeuniversity.com/rules/axe/4.6/listitem)."
+    "message": "Skærmlæsere kræver, at listeelementer (`<li>`) indgår i et overordnet `<ul>`-, `<ol>`- eller `<menu>`-element for at blive oplæst korrekt. [Få flere oplysninger om korrekt listestruktur](https://dequeuniversity.com/rules/axe/4.7/listitem)."
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "Listeelementerne (`<li>`) indgår ikke i de overordnede `<ul>`-, `<ol>`- eller `<menu>`-elementer."
@@ -327,7 +327,7 @@
     "message": "Listeelementerne (`<li>`) indgår i de overordnede `<ul>`-, `<ol>`- eller `<menu>`-elementer"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "Brugere forventer ikke, at en side opdateres automatisk, og automatisk opdatering flytter fokus tilbage til toppen af siden. Dette kan være frustrerende og forvirrende for brugerne. [Få flere oplysninger om metatagget for opdatering](https://dequeuniversity.com/rules/axe/4.6/meta-refresh)."
+    "message": "Brugere forventer ikke, at en side opdateres automatisk, og automatisk opdatering flytter fokus tilbage til toppen af siden. Dette kan være frustrerende og forvirrende for brugerne. [Få flere oplysninger om metatagget for opdatering](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)."
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "Dokumentet bruger `<meta http-equiv=\"refresh\">`"
@@ -336,7 +336,7 @@
     "message": "Dokumentet bruger ikke `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Hvis zoom deaktiveres, kan det skabe problemer for svagtseende brugere, der har brug for skærmforstørrelse til at se indholdet på en webside. [Få flere oplysninger om viewport-metatagget](https://dequeuniversity.com/rules/axe/4.6/meta-viewport)."
+    "message": "Hvis zoom deaktiveres, kan det skabe problemer for svagtseende brugere, der har brug for skærmforstørrelse til at se indholdet på en webside. [Få flere oplysninger om viewport-metatagget](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)."
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`[user-scalable=\"no\"]` anvendes i elementet `<meta name=\"viewport\">`, eller attributten `[maximum-scale]` er mindre end 5."
@@ -345,7 +345,7 @@
     "message": "`[user-scalable=\"no\"]` anvendes ikke i `<meta name=\"viewport\">`-elementet, og attributten `[maximum-scale]` er ikke mindre end 5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "Skærmlæsere kan ikke oversætte indhold, som ikke er tekst Du kan føje alternativ tekst til `<object>`-elementer for at hjælpe skærmlæsere med at formidle meningen til brugerne. [Få flere oplysninger om alternativ tekst for `object`-elementer](https://dequeuniversity.com/rules/axe/4.6/object-alt)."
+    "message": "Skærmlæsere kan ikke oversætte indhold, som ikke er tekst Du kan føje alternativ tekst til `<object>`-elementer for at hjælpe skærmlæsere med at formidle meningen til brugerne. [Få flere oplysninger om alternativ tekst for `object`-elementer](https://dequeuniversity.com/rules/axe/4.7/object-alt)."
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "`<object>`-elementerne har ikke alternativ tekst"
@@ -354,7 +354,7 @@
     "message": "`<object>`-elementerne har alternativ tekst"
   },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "En værdi over 0 antyder en utvetydig sortering af navigation. Selvom dette teknisk er gyldigt, skaber det ofte en frustrerende oplevelse for brugere, der anvender hjælpeteknologier. [Få flere oplysninger om attributten `tabindex`](https://dequeuniversity.com/rules/axe/4.6/tabindex)."
+    "message": "En værdi over 0 antyder en utvetydig sortering af navigation. Selvom dette teknisk er gyldigt, skaber det ofte en frustrerende oplevelse for brugere, der anvender hjælpeteknologier. [Få flere oplysninger om attributten `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Nogle elementer har en `[tabindex]`-værdi, som er større end 0"
@@ -363,7 +363,7 @@
     "message": "Ingen af elementerne har en `[tabindex]`-værdi, der overstiger 0"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Skærmlæsere har funktioner, der gør det nemmere at finde rundt i tabeller. Du kan give brugere af skærmlæsere en bedre oplevelse ved at sikre, at `<td>`-celler, der anvender attributten `[headers]`, kun henviser til andre celler i samme tabel. [Få flere oplysninger om attributten `headers`](https://dequeuniversity.com/rules/axe/4.6/td-headers-attr)."
+    "message": "Skærmlæsere har funktioner, der gør det nemmere at finde rundt i tabeller. Du kan give brugere af skærmlæsere en bedre oplevelse ved at sikre, at `<td>`-celler, der anvender attributten `[headers]`, kun henviser til andre celler i samme tabel. [Få flere oplysninger om attributten `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Celler i et `<table>`-element, der anvender attributten `[headers]`, henviser til et element `id`, som ikke findes i samme tabel."
@@ -372,7 +372,7 @@
     "message": "Celler i et `<table>`-element, der anvender attributten `[headers]`, henviser til tabelceller i den samme tabel."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Skærmlæsere har funktioner, der gør det nemmere at finde rundt i tabeller. Du kan give brugere af skærmlæsere en bedre oplevelse ved at sikre, at tabeloverskrifter altid henviser til nogle cellesæt. [Få flere oplysninger om tabeloverskrifter](https://dequeuniversity.com/rules/axe/4.6/th-has-data-cells)."
+    "message": "Skærmlæsere har funktioner, der gør det nemmere at finde rundt i tabeller. Du kan give brugere af skærmlæsere en bedre oplevelse ved at sikre, at tabeloverskrifter altid henviser til nogle cellesæt. [Få flere oplysninger om tabeloverskrifter](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)."
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "`<th>`-elementerne og elementerne med `[role=\"columnheader\"/\"rowheader\"]` indeholder ikke de dataceller, de beskriver."
@@ -381,7 +381,7 @@
     "message": "`<th>`-elementerne og elementer med `[role=\"columnheader\"/\"rowheader\"]` indeholder de dataceller, de beskriver."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "Hjælp med at sikre, at tekst udtales korrekt af skærmlæsere, ved at angive et gyldigt [BCP 47-sprog](https://www.w3.org/International/questions/qa-choosing-language-tags#question) for elementer. [Få flere oplysninger om, hvordan du bruger attributten `lang`](https://dequeuniversity.com/rules/axe/4.6/valid-lang)."
+    "message": "Hjælp med at sikre, at tekst udtales korrekt af skærmlæsere, ved at angive et gyldigt [BCP 47-sprog](https://www.w3.org/International/questions/qa-choosing-language-tags#question) for elementer. [Få flere oplysninger om, hvordan du bruger attributten `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "`[lang]`-attributterne har ikke en gyldig værdi"
@@ -390,7 +390,7 @@
     "message": "`[lang]`-attributterne har en gyldig værdi"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "Det er nemmere for døve og hørehæmmede at få adgang til en videos oplysninger, hvis videoen tilbyder undertekster. [Få flere oplysninger om videoundertekster](https://dequeuniversity.com/rules/axe/4.6/video-caption)."
+    "message": "Det er nemmere for døve og hørehæmmede at få adgang til en videos oplysninger, hvis videoen tilbyder undertekster. [Få flere oplysninger om videoundertekster](https://dequeuniversity.com/rules/axe/4.7/video-caption)."
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "`<video>`-elementerne indeholder ikke et `<track>`-element med `[kind=\"captions\"]`."
@@ -765,13 +765,13 @@
     "message": "Undgår at anmode om tilladelse til notifikationer ved indlæsning af siden"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | description": {
-    "message": "Preventing input pasting is a UX anti-pattern, and undermines good security policy. [Learn more about user-friendly input fields](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
+    "message": "At forhindre indsættelse af input giver en dårligere brugeroplevelse og svækker sikkerheden ved at blokere adgangskodeadministratorer.[Få flere oplysninger om brugervenlige indtastningsfelter](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | failureTitle": {
-    "message": "Prevents users from pasting into input fields"
+    "message": "Forhindrer brugere i at indsætte indhold i indtastningsfelter"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | title": {
-    "message": "Allows users to paste into input fields"
+    "message": "Gør det muligt for brugere at indsætte indhold i indtastningsfelter"
   },
   "core/audits/dobetterweb/uses-http2.js | columnProtocol": {
     "message": "Protokol"
@@ -980,8 +980,29 @@
   "core/audits/is-on-https.js | warning": {
     "message": "Tilladt med advarsel"
   },
+  "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
+    "message": "% of LCP"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnPhase": {
+    "message": "Phase"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnTiming": {
+    "message": "Timing"
+  },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Dette element har den største udfyldning af indhold i det synlige område. [Få flere oplysninger om elementet med den største udfyldning af indhold](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
+    "message": "Load Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
+    "message": "Load Time"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
+    "message": "Render Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemTTFB": {
+    "message": "TTFB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "Element med størst udfyldning af indhold"
@@ -1323,7 +1344,7 @@
     "message": "robots.txt er gyldig"
   },
   "core/audits/seo/tap-targets.js | description": {
-    "message": "Interaktive elementer som f.eks. knapper og links skal være store nok (48 x 48 px) og have tilstrækkelig plads omkring sig for at gøre det let at trykke på dem uden at overlappe andre elementer. [Få flere oplysninger om trykbare elementer](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
+    "message": "Interaktive elementer som f.eks. knapper og links skal være store nok (48 x 48 px) eller have tilstrækkelig plads omkring sig for at gøre det let at trykke på dem uden at overlappe andre elementer. [Få flere oplysninger om trykbare elementer](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
   },
   "core/audits/seo/tap-targets.js | displayValue": {
     "message": "{decimalProportion, number, percent} trykbare elementer med passende størrelse"
@@ -1659,7 +1680,7 @@
     "message": "Disse tjek validerer aspekterne i en progressiv webapp. [Se, hvad der gør en progressiv webapp god](https://web.dev/pwa-checklist/)."
   },
   "core/config/default-config.js | pwaCategoryManualDescription": {
-    "message": "Disse tjek kræves af den grundlæggende [tjekliste til progressive webapps](https://web.dev/pwa-checklist/), men de udføres ikke automatisk af Lighthouse. De påvirker ikke dine resultater, men det er vigtigt, at du bekræfter dem manuelt."
+    "message": "Disse tjek kræves af den grundlæggende [tjekliste til progressive webapps](https://web.dev/pwa-checklist/), men de udføres ikke automatisk af Lighthouse. De påvirker ikke dine resultater, men det er vigtigt, at du verificerer dem manuelt."
   },
   "core/config/default-config.js | pwaCategoryTitle": {
     "message": "PWA"
@@ -1714,6 +1735,9 @@
   },
   "core/gather/driver/storage.js | warningOriginDataTimeout": {
     "message": "Rydningen af oprindelsesdata oplevede timeout. Prøv at gennemgå denne side igen, og rapportér en fejl, hvis problemet fortsætter."
+  },
+  "core/gather/gatherers/link-elements.js | headerParseWarning": {
+    "message": "Der opstod en fejl under parsing af headeren `link` ({error}): `{header}`"
   },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "Det er kun sider, der indlæses via en GET-anmodning, som er kvalificeret til back/forward-cachen."
@@ -2735,6 +2759,33 @@
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | uses-responsive-images": {
     "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Resize Images` for at tilpasse størrelsen på billeder til en størrelse, der er passende for en enhed, hvilket reducerer størrelsen på netværkets datapakker."
   },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
+    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
+    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
+    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
+    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
+    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Overvej at uploade din gif til en tjeneste, hvor den kan indlejres som en HTML5-video."
   },
@@ -2814,10 +2865,10 @@
     "message": "`<link rel=preload>`-tags kan tilføjes ved at [ændre layoutet for et tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Brug komponenten `next/image` i stedet for `<img>` til automatisk at optimere billedformatet. [Få flere oplysninger](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Brug komponenten `next/image` i stedet for `<img>` til automatisk at udføre lazy loading af billeder. [Få flere oplysninger](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Brug `next/image`-komponenten, og angiv \"prioritet\" som sand for at forudindlæse LCP-billedet [Få flere oplysninger](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2832,7 +2883,7 @@
     "message": "Overvej at konfigurere `PurgeCSS` i `Next.js`-konfigurationen for at fjerne ubrugte regler fra typografiark. [Få flere oplysninger](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Brug `Webpack Bundle Analyzer` for at registrere ubrugt JavaScript-kode. [Få flere oplysninger](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Overvej at bruge `Next.js Analytics` til at måle din apps ydeevne i den virkelige verden. [Få flere oplysninger](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2841,7 +2892,7 @@
     "message": "Konfigurer cachelagring for uforanderlige aktiver og SSR-sider (`Server-side Rendered`). [Få flere oplysninger](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Brug komponenten `next/image` i stedet for `<img>` til at justere billedkvaliteten. [Få flere oplysninger](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Brug komponenten `next/image` til at angive de rigtige `sizes`. [Få flere oplysninger](https://nextjs.org/docs/api-reference/next/image#sizes)."
@@ -3047,6 +3098,9 @@
   "report/renderer/report-utils.js | expandView": {
     "message": "Udvid visning"
   },
+  "report/renderer/report-utils.js | firstPartyChipLabel": {
+    "message": "Førstepart"
+  },
   "report/renderer/report-utils.js | footerIssue": {
     "message": "Indsend et problem"
   },
@@ -3064,6 +3118,9 @@
   },
   "report/renderer/report-utils.js | notApplicableAuditsGroupTitle": {
     "message": "Ikke relevant"
+  },
+  "report/renderer/report-utils.js | openInANewTabTooltip": {
+    "message": "Åbn på en ny fane"
   },
   "report/renderer/report-utils.js | opportunityResourceColumnLabel": {
     "message": "Mulighed"
@@ -3084,7 +3141,7 @@
     "message": "Emuleret computer"
   },
   "report/renderer/report-utils.js | runtimeMobileEmulation": {
-    "message": "Emulated Moto G Power"
+    "message": "Emuleret Moto G Power-enhed"
   },
   "report/renderer/report-utils.js | runtimeNoEmulation": {
     "message": "Ingen emulering"
@@ -3142,6 +3199,9 @@
   },
   "report/renderer/report-utils.js | toplevelWarningsMessage": {
     "message": "Der blev registreret problemer, som påvirkede denne kørsel af Lighthouse:"
+  },
+  "report/renderer/report-utils.js | unattributable": {
+    "message": "Kan ikke tilskrives"
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Værdierne er estimater og kan variere. [Resultatet beregnes](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) direkte på baggrund af disse metrics."

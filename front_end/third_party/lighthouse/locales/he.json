@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "מקשי גישה מאפשרים למשתמשים להתמקד במהירות בחלק מסוים בדף. כדי לאפשר ניווט תקין, כל מקש גישה צריך להיות ייחודי. [למידע נוסף על מקשי גישה](https://dequeuniversity.com/rules/axe/4.6/accesskeys)"
+    "message": "מקשי גישה מאפשרים למשתמשים להתמקד במהירות בחלק מסוים בדף. כדי לאפשר ניווט תקין, כל מקש גישה צריך להיות ייחודי. [למידע נוסף על מקשי גישה](https://dequeuniversity.com/rules/axe/4.7/accesskeys)"
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "יש ערכי `[accesskey]` שאינם ייחודיים"
@@ -9,7 +9,7 @@
     "message": "`[accesskey]` הערכים ייחודיים"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "כל `role` ARIA תומך בקבוצת משנה ספציפית של מאפייני `aria-*`. אי התאמה ביניהם מובילה לשלילת התוקף של מאפייני `aria-*`. [כך מתאימים מאפייני ARIA לתפקידים שלהם](https://dequeuniversity.com/rules/axe/4.6/aria-allowed-attr)."
+    "message": "כל `role` ARIA תומך בקבוצת משנה ספציפית של מאפייני `aria-*`. אי התאמה ביניהם מובילה לשלילת התוקף של מאפייני `aria-*`. [כך מתאימים מאפייני ARIA לתפקידים שלהם](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "יש מאפייני `[aria-*]` שלא תואמים לתפקידים שלהם"
@@ -18,7 +18,7 @@
     "message": "מאפייני ה-`[aria-*]`‎ תואמים לתפקידים שלהם"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "כשאין לרכיב תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה הרכיב לא שימושי לאנשים שמסתמכים על קוראי מסך. [איך לשפר את הנגישות של רכיבי פקודות](https://dequeuniversity.com/rules/axe/4.6/aria-command-name)?"
+    "message": "כשאין לרכיב תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה הרכיב לא שימושי לאנשים שמסתמכים על קוראי מסך. [איך לשפר את הנגישות של רכיבי פקודות](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)?"
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "לרכיבים `button`, `link` וגם `menuitem` אין שמות נגישים."
@@ -27,7 +27,7 @@
     "message": "לרכיבים `button`, `link` וגם `menuitem` יש שמות נגישים"
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "טכנולוגיות מסייעות, כמו קוראי מסך, פועלות באופן לא עקבי כשמוגדר `aria-hidden=\"true\"` ב-`<body>` של המסמך. [מה ההשפעה של `aria-hidden` על גוף המסמך](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-body)?"
+    "message": "טכנולוגיות מסייעות, כמו קוראי מסך, פועלות באופן לא עקבי כשמוגדר `aria-hidden=\"true\"` ב-`<body>` של המסמך. [מה ההשפעה של `aria-hidden` על גוף המסמך](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)?"
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "יש `[aria-hidden=\"true\"]` ב-`<body>` של המסמך"
@@ -36,7 +36,7 @@
     "message": "אין `[aria-hidden=\"true\"]` ב-`<body>` של המסמך"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "רכיבי צאצא הניתנים למיקוד וממוקמים בתוך רכיב `[aria-hidden=\"true\"]` גורמים לכך שהרכיבים האינטראקטיביים האלה לא יהיו זמינים למשתמשים בטכנולוגיות מסייעות, כמו קוראי מסך. [איך `aria-hidden` משפיע על רכיבים שניתנים למיקוד](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-focus)?"
+    "message": "רכיבי צאצא הניתנים למיקוד וממוקמים בתוך רכיב `[aria-hidden=\"true\"]` גורמים לכך שהרכיבים האינטראקטיביים האלה לא יהיו זמינים למשתמשים בטכנולוגיות מסייעות, כמו קוראי מסך. [איך `aria-hidden` משפיע על רכיבים שניתנים למיקוד](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)?"
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "רכיבי `[aria-hidden=\"true\"]` כוללים רכיבי צאצא שיכולים לקבל פוקוס"
@@ -45,7 +45,7 @@
     "message": "רכיבי `[aria-hidden=\"true\"]` אינם מכילים רכיבי צאצא שיכולים לקבל פוקוס"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "כשאין לשדה להזנת קלט תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [מידע נוסף על תוויות של שדות להזנת קלט](https://dequeuniversity.com/rules/axe/4.6/aria-input-field-name)"
+    "message": "כשאין לשדה להזנת קלט תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [מידע נוסף על תוויות של שדות להזנת קלט](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)"
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "לשדות הזנת קלט של ARIA אין שמות נגישים"
@@ -54,7 +54,7 @@
     "message": "לשדות ARIA להזנת קלט יש שמות נגישים"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "כשלרכיב מסוג מדד אין תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [כך נותנים שם לרכיבים מסוג `meter`](https://dequeuniversity.com/rules/axe/4.6/aria-meter-name)"
+    "message": "כשלרכיב מסוג מדד אין תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [כך נותנים שם לרכיבים מסוג `meter`](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)"
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "לרכיבי `meter` מסוג ARIA אין שמות נגישים."
@@ -63,7 +63,7 @@
     "message": "לרכיבי `meter` מסוג ARIA יש שמות נגישים"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "כשאין לרכיב `progressbar` תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש ברכיב. [כאן מוסבר איך להוסיף תוויות לרכיבי `progressbar`](https://dequeuniversity.com/rules/axe/4.6/aria-progressbar-name)."
+    "message": "כשאין לרכיב `progressbar` תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש ברכיב. [כאן מוסבר איך להוסיף תוויות לרכיבי `progressbar`](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "לרכיבי `progressbar` מסוג ARIA אין שמות נגישים."
@@ -72,7 +72,7 @@
     "message": "לרכיבי `progressbar` מסוג ARIA יש שמות נגישים"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "חלק מתפקידי ה-ARIA כוללים מאפיינים נדרשים שמתארים לקוראי המסך את מצב הרכיב. [מידע נוסף על תפקידים ומאפיינים נדרשים](https://dequeuniversity.com/rules/axe/4.6/aria-required-attr)"
+    "message": "חלק מתפקידי ה-ARIA כוללים מאפיינים נדרשים שמתארים לקוראי המסך את מצב הרכיב. [מידע נוסף על תפקידים ומאפיינים נדרשים](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)"
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "יש רכיבים מסוג `[role]` שאין להם את כל מאפייני ה-`[aria-*]` הנדרשים"
@@ -81,7 +81,7 @@
     "message": "לכל הרכיבים מסוג `[role]` יש את כל מאפייני ה-`[aria-*]` הדרושים"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "תפקידי הורה מסוימים של ARIA צריכים לכלול תפקידי צאצא ספציפיים כדי לבצע את פונקציות הנגישות שלהם. [מידע נוסף על תפקידים ורכיבי צאצא נדרשים](https://dequeuniversity.com/rules/axe/4.6/aria-required-children)"
+    "message": "תפקידי הורה מסוימים של ARIA צריכים לכלול תפקידי צאצא ספציפיים כדי לבצע את פונקציות הנגישות שלהם. [מידע נוסף על תפקידים ורכיבי צאצא נדרשים](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)"
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "ברכיבים עם `[role]` של ARIA שדורשים מצאצאים לכלול `[role]` ספציפי, חסרים חלק מהצאצאים הנדרשים האלה, או שכולם חסרים בהם."
@@ -90,7 +90,7 @@
     "message": "ברכיבים עם `[role]` של ARIA שדורשים מצאצאים לכלול `[role]` ספציפי, קיימים כל הצאצאים הנדרשים."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "חלק מתפקידי הצאצא ב-ARIA חייבים להיכלל בין תפקידי הורה ספציפיים כדי למלא באופן תקין את פונקציות הנגישות שלהם. [מידע נוסף על תפקידים ב-ARIA ועל רכיב הורה נדרש](https://dequeuniversity.com/rules/axe/4.6/aria-required-parent)"
+    "message": "חלק מתפקידי הצאצא ב-ARIA חייבים להיכלל בין תפקידי הורה ספציפיים כדי למלא באופן תקין את פונקציות הנגישות שלהם. [מידע נוסף על תפקידים ב-ARIA ועל רכיב הורה נדרש](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)"
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "מאפייני `[role]` לא נמצאים בתוך רכיב ההורה הנדרש שלהם"
@@ -99,7 +99,7 @@
     "message": "רכיבים מסוג `[role]` נמצאים בתוך רכיב ההורה הנדרש שלהם"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "תפקידי ARIA חייבים לכלול ערכים חוקיים כדי לבצע את פונקציות הנגישות שלהם. [מידע נוסף על תפקידי ARIA חוקיים](https://dequeuniversity.com/rules/axe/4.6/aria-roles)"
+    "message": "תפקידי ARIA חייבים לכלול ערכים חוקיים כדי לבצע את פונקציות הנגישות שלהם. [מידע נוסף על תפקידי ARIA חוקיים](https://dequeuniversity.com/rules/axe/4.7/aria-roles)"
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "יש ערכי `[role]` לא חוקיים"
@@ -108,7 +108,7 @@
     "message": "ערכי ה-`[role]` חוקיים"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "כשאין לשדה החלפת מצב תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה כזה. [מידע נוסף על שדות החלפת מצב](https://dequeuniversity.com/rules/axe/4.6/aria-toggle-field-name)"
+    "message": "כשאין לשדה החלפת מצב תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה כזה. [מידע נוסף על שדות החלפת מצב](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "לשדות החלפת מצב (toggle) של ARIA אין שמות נגישים"
@@ -117,7 +117,7 @@
     "message": "לשדות החלפת מצב (toggle) של ARIA יש שמות נגישים"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "כשלרכיב מסוג הסבר קצר אין תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [כך נותנים שם לרכיבים מסוג `tooltip`](https://dequeuniversity.com/rules/axe/4.6/aria-tooltip-name)"
+    "message": "כשלרכיב מסוג הסבר קצר אין תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בשדה. [כך נותנים שם לרכיבים מסוג `tooltip`](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)"
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "לרכיבי `tooltip` מסוג ARIA אין שמות נגישים."
@@ -126,7 +126,7 @@
     "message": "לרכיבי `tooltip` מסוג ARIA יש שמות נגישים"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "כשאין לרכיב `treeitem` תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש ברכיב. [מידע נוסף על יצירת תוויות לרכיבי `treeitem`](https://dequeuniversity.com/rules/axe/4.6/aria-treeitem-name)"
+    "message": "כשאין לרכיב `treeitem` תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש ברכיב. [מידע נוסף על יצירת תוויות לרכיבי `treeitem`](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)"
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "לרכיבי `treeitem` מסוג ARIA אין שמות נגישים."
@@ -135,7 +135,7 @@
     "message": "לרכיבי `treeitem` מסוג ARIA יש שמות נגישים"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "טכנולוגיות מסייעות, כמו קוראי מסך, לא יכולות לפרש מאפייני ARIA שהערכים שלהם לא חוקיים. [מידע נוסף על ערכים חוקיים במאפייני ARIA](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr-value)"
+    "message": "טכנולוגיות מסייעות, כמו קוראי מסך, לא יכולות לפרש מאפייני ARIA שהערכים שלהם לא חוקיים. [מידע נוסף על ערכים חוקיים במאפייני ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "למאפייני ‎`[aria-*]`‎ אין ערכים חוקיים"
@@ -144,7 +144,7 @@
     "message": "למאפייני ה-`[aria-*]` יש ערכים חוקיים"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "טכנולוגיות מסייעות, כמו קוראי מסך, לא יכולות לפרש מאפייני ARIA עם שמות לא חוקיים. [מידע נוסף על מאפייני ARIA חוקיים](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr)"
+    "message": "טכנולוגיות מסייעות, כמו קוראי מסך, לא יכולות לפרש מאפייני ARIA עם שמות לא חוקיים. [מידע נוסף על מאפייני ARIA חוקיים](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)"
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "יש מאפייני `[aria-*]` שאינם חוקיים או שכוללים שגיאות איות"
@@ -156,7 +156,7 @@
     "message": "רכיבים שנכשלו בבדיקה"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "כשאין ללחצן תווית נגישות, קוראי מסך אומרים את המילה 'לחצן', ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בלחצן. [איך לשפר את רמת הנגישות של הלחצנים](https://dequeuniversity.com/rules/axe/4.6/button-name)?"
+    "message": "כשאין ללחצן תווית נגישות, קוראי מסך אומרים את המילה 'לחצן', ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בלחצן. [איך לשפר את רמת הנגישות של הלחצנים](https://dequeuniversity.com/rules/axe/4.7/button-name)?"
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "ללחצנים אין שמות ייחודיים"
@@ -165,7 +165,7 @@
     "message": "ללחצנים יש שם נגיש"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "כשמוסיפים דרכים לעקיפת תוכן שחוזר על עצמו, אנשים שמשתמשים במקלדת יכולים לנווט בדף בצורה יעילה יותר. [מידע נוסף על שיטות לעקיפת בלוקים של תוכן](https://dequeuniversity.com/rules/axe/4.6/bypass)"
+    "message": "כשמוסיפים דרכים לעקיפת תוכן שחוזר על עצמו, אנשים שמשתמשים במקלדת יכולים לנווט בדף בצורה יעילה יותר. [מידע נוסף על שיטות לעקיפת בלוקים של תוכן](https://dequeuniversity.com/rules/axe/4.7/bypass)"
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "הדף לא כולל כותרת, קישור לדילוג או קטע שמסומן כ-landmark"
@@ -174,7 +174,7 @@
     "message": "הדף כולל כותרת, קישור לדילוג או קטע שמסומן כ-landmark"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "למשתמשים רבים קשה לקרוא טקסט עם ניגודיות נמוכה, או שהם לא יכולים לקרוא אותו. [איך להגדיר ניגודיות צבעים מספקת](https://dequeuniversity.com/rules/axe/4.6/color-contrast)?"
+    "message": "למשתמשים רבים קשה לקרוא טקסט עם ניגודיות נמוכה, או שהם לא יכולים לקרוא אותו. [איך להגדיר ניגודיות צבעים מספקת](https://dequeuniversity.com/rules/axe/4.7/color-contrast)?"
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "יחס הניגודיות של צבעי הרקע והחזית אינו מספיק."
@@ -183,7 +183,7 @@
     "message": "יש יחס ניגודיות מספיק בין צבעי הרקע והחזית"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "כשרשימות של הגדרות לא מסומנות כראוי, קוראי מסך עשויים לספק פלט מבלבל או לא מדויק. [כאן מוסבר איך ליצור מבנה תקין ברשימות של הגדרות](https://dequeuniversity.com/rules/axe/4.6/definition-list)."
+    "message": "כשרשימות של הגדרות לא מסומנות כראוי, קוראי מסך עשויים לספק פלט מבלבל או לא מדויק. [כאן מוסבר איך ליצור מבנה תקין ברשימות של הגדרות](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "יש רכיבי `<dl>` שלא מכילים רק קבוצות `<dt>` ו-`<dd>` עם סדר תקין, `<script>`, `<template>` או רכיבי `<div>`."
@@ -192,7 +192,7 @@
     "message": "רכיבי `<dl>` מכילים רק קבוצות `<dt>` ו-`<dd>` עם סדר תקין, `<script>`, `<template>` או רכיבי `<div>`."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "פריטים ברשימות של הגדרות (`<dt>` ו-`<dd>`) צריכים להיות תחומים בתוך רכיב הורה מסוג `<dl>` כדי שקוראי מסך יוכלו להקריא אותם בצורה נכונה. [כאן מוסבר איך ליצור מבנה תקין ברשימות של הגדרות](https://dequeuniversity.com/rules/axe/4.6/dlitem)."
+    "message": "פריטים ברשימות של הגדרות (`<dt>` ו-`<dd>`) צריכים להיות תחומים בתוך רכיב הורה מסוג `<dl>` כדי שקוראי מסך יוכלו להקריא אותם בצורה נכונה. [כאן מוסבר איך ליצור מבנה תקין ברשימות של הגדרות](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "יש פריטים ברשימות של הגדרות שלא תחומים בין רכיבי `<dl>`"
@@ -201,7 +201,7 @@
     "message": "פריטים ברשימות של הגדרות מוצבים בין רכיבי `<dl>`"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "הכותרת מספקת למשתמשים של קוראי מסך סקירה כללית של הדף. בנוסף, משתמשים של מנועי חיפוש מסתמכים במידה רבה על הכותרת כדי להבין אם הדף רלוונטי לחיפוש שלהם. [מידע נוסף על כותרות של מסמכים](https://dequeuniversity.com/rules/axe/4.6/document-title)"
+    "message": "הכותרת מספקת למשתמשים של קוראי מסך סקירה כללית של הדף. בנוסף, משתמשים של מנועי חיפוש מסתמכים במידה רבה על הכותרת כדי להבין אם הדף רלוונטי לחיפוש שלהם. [מידע נוסף על כותרות של מסמכים](https://dequeuniversity.com/rules/axe/4.7/document-title)"
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "למסמך אין רכיב `<title>`"
@@ -210,7 +210,7 @@
     "message": "המסמך מכיל רכיב `<title>`"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "כל הרכיבים הניתנים למיקוד חייבים לכלול `id` ייחודי כדי לוודא שטכנולוגיות מסייעות יוכלו לזהות אותם. [כך פותרים בעיות בכפילויות של `id`](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-active)."
+    "message": "כל הרכיבים הניתנים למיקוד חייבים לכלול `id` ייחודי כדי לוודא שטכנולוגיות מסייעות יוכלו לזהות אותם. [כך פותרים בעיות בכפילויות של `id`](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "נעשה שימוש במאפייני `[id]` לא ייחודיים ברכיבים פעילים שיכולים לקבל פוקוס"
@@ -219,7 +219,7 @@
     "message": "נעשה שימוש במאפייני `[id]` ייחודיים ברכיבים פעילים שיכולים לקבל פוקוס"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "הערך של מזהה ARIA חייב להיות ייחודי כדי למנוע מצבים שבהם טכנולוגיות מסייעות מתעלמות ממופעים אחרים. [כאן מוסבר איך לתקן מצבים של מזהי ARIA כפולים](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-aria)."
+    "message": "הערך של מזהה ARIA חייב להיות ייחודי כדי למנוע מצבים שבהם טכנולוגיות מסייעות מתעלמות ממופעים אחרים. [כאן מוסבר איך לתקן מצבים של מזהי ARIA כפולים](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "מזהי ה-ARIA אינם ייחודיים"
@@ -228,7 +228,7 @@
     "message": "מזהי ה-ARIA ייחודיים"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "טכנולוגיות מסייעות עלולות להקריא באופן מבלבל שדות טופס עם תוויות מרובות. קוראי מסך, למשל, מקריאים את התווית הראשונה, האחרונה או את כולן. [כאן מוסבר איך משתמשים בתוויות של טפסים](https://dequeuniversity.com/rules/axe/4.6/form-field-multiple-labels)."
+    "message": "טכנולוגיות מסייעות עלולות להקריא באופן מבלבל שדות טופס עם תוויות מרובות. קוראי מסך, למשל, מקריאים את התווית הראשונה, האחרונה או את כולן. [כאן מוסבר איך משתמשים בתוויות של טפסים](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "לשדות טופס יש תוויות מרובות"
@@ -237,7 +237,7 @@
     "message": "אין שדות טופס עם תוויות מרובות"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "משתמשים הנעזרים בקוראי מסך מסתמכים על כותרות של מסגרות כדי להבין מה תוכן המסגרות. [מידע נוסף על כותרות של מסגרות](https://dequeuniversity.com/rules/axe/4.6/frame-title)"
+    "message": "משתמשים הנעזרים בקוראי מסך מסתמכים על כותרות של מסגרות כדי להבין מה תוכן המסגרות. [מידע נוסף על כותרות של מסגרות](https://dequeuniversity.com/rules/axe/4.7/frame-title)"
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "לרכיבי `<frame>` או `<iframe>` אין מאפיין title"
@@ -246,7 +246,7 @@
     "message": "לרכיבי `<frame>` או `<iframe>` יש מאפיין title"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "כשהכותרות מופיעות בסדר הנכון ואינן מדלגות על רמות, הן מבהירות את המבנה הסמנטי של הדף. כך קל יותר לנווט ולהבין את הדף כשמשתמשים בטכנולוגיות מסייעות. [מידע נוסף על סדר של כותרות](https://dequeuniversity.com/rules/axe/4.6/heading-order)"
+    "message": "כשהכותרות מופיעות בסדר הנכון ואינן מדלגות על רמות, הן מבהירות את המבנה הסמנטי של הדף. כך קל יותר לנווט ולהבין את הדף כשמשתמשים בטכנולוגיות מסייעות. [מידע נוסף על סדר של כותרות](https://dequeuniversity.com/rules/axe/4.7/heading-order)"
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "רכיבי כותרת אינם מופיעים ברצף יורד"
@@ -255,7 +255,7 @@
     "message": "רכיבי כותרת מופיעים ברצף יורד"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "אם בדף לא מצוין מאפיין `lang`, קורא מסך יפעל כאילו שהדף כתוב בשפת ברירת המחדל שהמשתמש בחר במהלך ההגדרה של קורא המסך. אם שפת הדף שונה משפת ברירת המחדל, יכול להיות שקורא המסך לא יקרא בצורה נכונה את הטקסט שבדף. [מידע נוסף על המאפיין `lang`](https://dequeuniversity.com/rules/axe/4.6/html-has-lang)"
+    "message": "אם בדף לא מצוין מאפיין `lang`, קורא מסך יפעל כאילו שהדף כתוב בשפת ברירת המחדל שהמשתמש בחר במהלך ההגדרה של קורא המסך. אם שפת הדף שונה משפת ברירת המחדל, יכול להיות שקורא המסך לא יקרא בצורה נכונה את הטקסט שבדף. [מידע נוסף על המאפיין `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)"
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "לרכיב `<html>` אין רכיב `[lang]`"
@@ -264,7 +264,7 @@
     "message": "לרכיב `<html>` יש מאפיין `[lang]`"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "מומלץ לציין [שפת BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) חוקית, כי בעזרתה קוראי מסך יכולים להקריא טקסט בצורה נכונה. [כאן מוסבר איך להשתמש במאפיין `lang`](https://dequeuniversity.com/rules/axe/4.6/html-lang-valid)."
+    "message": "מומלץ לציין [שפת BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) חוקית, כי בעזרתה קוראי מסך יכולים להקריא טקסט בצורה נכונה. [כאן מוסבר איך להשתמש במאפיין `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "לרכיב `<html>` אין ערך חוקי עבור המאפיין `[lang]`."
@@ -273,7 +273,7 @@
     "message": "לרכיב `<html>` יש ערך חוקי עבור המאפיין `[lang]`"
   },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "רכיבים אינפורמטיביים צריכים לכלול טקסט חלופי קצר ותיאורי. אפשר להתעלם מרכיבי עיצוב עם מאפיין alt ריק. [מידע נוסף על המאפיין `alt`](https://dequeuniversity.com/rules/axe/4.6/image-alt)"
+    "message": "רכיבים אינפורמטיביים צריכים לכלול טקסט חלופי קצר ותיאורי. אפשר להתעלם מרכיבי עיצוב עם מאפיין alt ריק. [מידע נוסף על המאפיין `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "יש רכיבי תמונה ללא מאפייני `[alt]`"
@@ -282,7 +282,7 @@
     "message": "לרכיבי תמונה יש מאפייני `[alt]`"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "כשתמונה משמשת כלחצן `<input>`, הוספה של טקסט חלופי יכולה לעזור למשתמשים הנעזרים בקוראי מסך להבין מה מטרת הלחצן. [מידע על טקסט חלופי של תמונה בקלט](https://dequeuniversity.com/rules/axe/4.6/input-image-alt)"
+    "message": "כשתמונה משמשת כלחצן `<input>`, הוספה של טקסט חלופי יכולה לעזור למשתמשים הנעזרים בקוראי מסך להבין מה מטרת הלחצן. [מידע על טקסט חלופי של תמונה בקלט](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "יש רכיבי `<input type=\"image\">` שאין להם טקסט `[alt]`"
@@ -291,7 +291,7 @@
     "message": "לרכיבים מסוג `<input type=\"image\">` יש טקסט `[alt]`"
   },
   "core/audits/accessibility/label.js | description": {
-    "message": "בעזרת תוויות אפשר לוודא ששמות של פקדי טפסים מוקראים באופן תקין על-ידי טכנולוגיות מסייעות, כמו קוראי מסך. [מידע נוסף על תוויות של רכיבי טפסים](https://dequeuniversity.com/rules/axe/4.6/label)"
+    "message": "בעזרת תוויות אפשר לוודא ששמות של פקדי טפסים מוקראים באופן תקין על-ידי טכנולוגיות מסייעות, כמו קוראי מסך. [מידע נוסף על תוויות של רכיבי טפסים](https://dequeuniversity.com/rules/axe/4.7/label)"
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "לא שויכו תוויות אל רכיבי טופס"
@@ -300,7 +300,7 @@
     "message": "לרכיבי טופס יש תוויות המשויכות אליהם"
   },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "כשהטקסט של הקישור מובן וייחודי וניתן למיקוד, משתמשים שנעזרים בקורא מסך נהנים מחוויית ניווט משופרת. המצב הזה נכון גם לגבי טקסט חלופי של תמונות כשנעשה בהן שימוש כקישורים. [כך מגדירים קישורים נגישים](https://dequeuniversity.com/rules/axe/4.6/link-name)."
+    "message": "כשהטקסט של הקישור מובן וייחודי וניתן למיקוד, משתמשים שנעזרים בקורא מסך נהנים מחוויית ניווט משופרת. המצב הזה נכון גם לגבי טקסט חלופי של תמונות כשנעשה בהן שימוש כקישורים. [כך מגדירים קישורים נגישים](https://dequeuniversity.com/rules/axe/4.7/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "לקישורים אין שמות ייחודיים"
@@ -309,7 +309,7 @@
     "message": "לקישורים יש שמות ייחודיים"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "קוראי מסך מקריאים רשימות בצורה ספציפית. כשמבנה הרשימה תקין, מתאפשרת הקראה תקינה על-ידי קורא המסך. [מידע נוסף על מבנה רשימות תקין](https://dequeuniversity.com/rules/axe/4.6/list)"
+    "message": "קוראי מסך מקריאים רשימות בצורה ספציפית. כשמבנה הרשימה תקין, מתאפשרת הקראה תקינה על-ידי קורא המסך. [מידע נוסף על מבנה רשימות תקין](https://dequeuniversity.com/rules/axe/4.7/list)"
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "הרשימות לא מכילות רק רכיבי `<li>` ורכיבים שתומכים בסקריפט (`<script>` ו- `<template>`)."
@@ -318,7 +318,7 @@
     "message": "הרשימות מכילות רק רכיבי `<li>` ורכיבים שתומכים בסקריפט (`<script>` ו-`<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "כדי שקוראי מסך יוכלו להקריא כראוי פריטים ברשימות (`<li>`), הם צריכים להופיע בין רכיבי הורה מסוג `<ul>`,‏ `<ol>` או `<menu>`. [מידע נוסף על מבנה רשימות תקין](https://dequeuniversity.com/rules/axe/4.6/listitem)"
+    "message": "כדי שקוראי מסך יוכלו להקריא כראוי פריטים ברשימות (`<li>`), הם צריכים להופיע בין רכיבי הורה מסוג `<ul>`,‏ `<ol>` או `<menu>`. [מידע נוסף על מבנה רשימות תקין](https://dequeuniversity.com/rules/axe/4.7/listitem)"
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "יש פריטים ברשימות (`<li>`) שלא נמצאים בין רכיבי הורה מהסוגים `<ul>`, `<ol>` או `<menu>`."
@@ -327,7 +327,7 @@
     "message": "פריטים ברשימות (`<li>`) נמצאים בין רכיבי הורה מהסוגים `<ul>`, `<ol>` או `<menu>`."
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "משתמשים לא מצפים לרענון אוטומטי של הדף, ושימוש ברענון כזה יחזיר את המיקוד אל ראש הדף. מצב כזה יכול ליצור חוויה מתסכלת או מבלבלת. [מידע נוסף על מטא התג של רענון](https://dequeuniversity.com/rules/axe/4.6/meta-refresh)"
+    "message": "משתמשים לא מצפים לרענון אוטומטי של הדף, ושימוש ברענון כזה יחזיר את המיקוד אל ראש הדף. מצב כזה יכול ליצור חוויה מתסכלת או מבלבלת. [מידע נוסף על מטא התג של רענון](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)"
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "המסמך מכיל `<meta http-equiv=\"refresh\">`"
@@ -336,7 +336,7 @@
     "message": "המסמך לא כולל שימוש ב-`<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "השבתת האפשרות לשנות את מרחק התצוגה יוצרת בעיה בקרב משתמשים עם ליקויי ראייה, שנוהגים להגדיל את המסך כדי לראות היטב את התוכן של דפי אינטרנט. [מידע נוסף על המטא-תג של אזור התצוגה](https://dequeuniversity.com/rules/axe/4.6/meta-viewport)"
+    "message": "השבתת האפשרות לשנות את מרחק התצוגה יוצרת בעיה בקרב משתמשים עם ליקויי ראייה, שנוהגים להגדיל את המסך כדי לראות היטב את התוכן של דפי אינטרנט. [מידע נוסף על המטא-תג של אזור התצוגה](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)"
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "נעשה שימוש ב-`[user-scalable=\"no\"]` ברכיב `<meta name=\"viewport\">`, או שערך המאפיין `[maximum-scale]` קטן מ-5."
@@ -345,7 +345,7 @@
     "message": "לא נעשה שימוש ב-`[user-scalable=\"no\"]` ברכיב `<meta name=\"viewport\">` וערך המאפיין `[maximum-scale]` לא קטן מ-5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "קוראי מסך לא יכולים לתרגם תוכן שאינו טקסט. הוספה של טקסט חלופי לרכיבי `<object>` עוזרת להבהיר את המשמעות כשמשתמשים בקוראי מסך. [מידע נוסף על טקסט חלופי ברכיבי `object`](https://dequeuniversity.com/rules/axe/4.6/object-alt)"
+    "message": "קוראי מסך לא יכולים לתרגם תוכן שאינו טקסט. הוספה של טקסט חלופי לרכיבי `<object>` עוזרת להבהיר את המשמעות כשמשתמשים בקוראי מסך. [מידע נוסף על טקסט חלופי ברכיבי `object`](https://dequeuniversity.com/rules/axe/4.7/object-alt)"
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "לרכיבי `<object>` אין טקסט חלופי"
@@ -354,7 +354,7 @@
     "message": "לרכיבי `<object>` יש טקסט חלופי"
   },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "ערך גדול מ-0 מציין סדר ניווט מפורש. למרות שאפשרות זו תקינה מבחינה טכנית, במקרים רבים היא מובילה לחוויה מתסכלת בקרב משתמשים שמסתמכים על טכנולוגיות מסייעות. [מידע נוסף על המאפיין `tabindex`](https://dequeuniversity.com/rules/axe/4.6/tabindex)"
+    "message": "ערך גדול מ-0 מציין סדר ניווט מפורש. למרות שאפשרות זו תקינה מבחינה טכנית, במקרים רבים היא מובילה לחוויה מתסכלת בקרב משתמשים שמסתמכים על טכנולוגיות מסייעות. [מידע נוסף על המאפיין `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "לחלק מהרכיבים יש ערך `[tabindex]` גדול מ-0"
@@ -363,7 +363,7 @@
     "message": "לאף רכיב אין ערך `[tabindex]` גדול מ-0"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "קוראי מסך כוללים תכונות שעוזרות לנווט בטבלאות. כשתאי `<td>` שמשתמשים במאפיין `[headers]` מתייחסים רק לתאים אחרים באותה טבלה, משתמשים הנעזרים בקוראי מסך יכולים ליהנות מחוויה טובה יותר. [מידע נוסף על המאפיין `headers`](https://dequeuniversity.com/rules/axe/4.6/td-headers-attr)"
+    "message": "קוראי מסך כוללים תכונות שעוזרות לנווט בטבלאות. כשתאי `<td>` שמשתמשים במאפיין `[headers]` מתייחסים רק לתאים אחרים באותה טבלה, משתמשים הנעזרים בקוראי מסך יכולים ליהנות מחוויה טובה יותר. [מידע נוסף על המאפיין `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "תאים ברכיב `<table>` שמשתמשים במאפיין `[headers]`, מתייחסים לרכיב `id` שלא נמצא באותה טבלה."
@@ -372,7 +372,7 @@
     "message": "תאים ברכיב `<table>` שמשתמשים במאפיין `[headers]`, מתייחסים לתאים אחרים באותה הטבלה."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "קוראי מסך כוללים תכונות שעוזרות לנווט בטבלאות. מומלץ להקפיד שהכותרות של הטבלאות יתייחסו תמיד לקבוצה מסוימת של תאים כדי לשפר את החוויה של המשתמשים הנעזרים בקורא מסך. [למידע נוסף על כותרות של טבלאות](https://dequeuniversity.com/rules/axe/4.6/th-has-data-cells)"
+    "message": "קוראי מסך כוללים תכונות שעוזרות לנווט בטבלאות. מומלץ להקפיד שהכותרות של הטבלאות יתייחסו תמיד לקבוצה מסוימת של תאים כדי לשפר את החוויה של המשתמשים הנעזרים בקורא מסך. [למידע נוסף על כותרות של טבלאות](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)"
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "יש רכיבי `<th>` ורכיבים עם `[role=\"columnheader\"/\"rowheader\"]` שאין להם את תאי הנתונים שהם מתארים."
@@ -381,7 +381,7 @@
     "message": "לרכיבי `<th>` ולרכיבים עם `[role=\"columnheader\"/\"rowheader\"]` יש תאי נתונים שהם מתארים."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "מומלץ לציין [שפת BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) חוקית ברכיבים, כי בעזרתה קוראי מסך יכולים להקריא טקסט בצורה נכונה. [כאן מוסבר איך להשתמש במאפיין `lang`](https://dequeuniversity.com/rules/axe/4.6/valid-lang)."
+    "message": "מומלץ לציין [שפת BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question) חוקית ברכיבים, כי בעזרתה קוראי מסך יכולים להקריא טקסט בצורה נכונה. [כאן מוסבר איך להשתמש במאפיין `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "יש מאפייני `[lang]` שאין להם ערך חוקי"
@@ -390,7 +390,7 @@
     "message": "למאפייני `[lang]` יש ערך חוקי"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "כשסרטון כולל כתוביות, המידע שבו נגיש יותר למשתמשים חירשים ולקויי שמיעה. [מידע נוסף על כתוביות בסרטונים](https://dequeuniversity.com/rules/axe/4.6/video-caption)"
+    "message": "כשסרטון כולל כתוביות, המידע שבו נגיש יותר למשתמשים חירשים ולקויי שמיעה. [מידע נוסף על כתוביות בסרטונים](https://dequeuniversity.com/rules/axe/4.7/video-caption)"
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "יש רכיבי `<video>` שלא מכילים רכיב `<track>` עם `[kind=\"captions\"]`."
@@ -765,13 +765,13 @@
     "message": "הדף לא מבקש הרשאה להתראות במהלך טעינת הדף"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | description": {
-    "message": "Preventing input pasting is a UX anti-pattern, and undermines good security policy. [Learn more about user-friendly input fields](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
+    "message": "חסימת האפשרות להדביק קלט פוגעת בחוויית המשתמש וגם חוסמת מנהלי סיסמאות, מה שמחליש את האבטחה.[מידע נוסף על שדות ידידותיים למשתמש להזנת קלט](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | failureTitle": {
-    "message": "Prevents users from pasting into input fields"
+    "message": "משתמשים לא יכולים להדביק בשדות להזנת קלט"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | title": {
-    "message": "Allows users to paste into input fields"
+    "message": "משתמשים יכולים להדביק בשדות להזנת קלט"
   },
   "core/audits/dobetterweb/uses-http2.js | columnProtocol": {
     "message": "פרוטוקול"
@@ -891,7 +891,7 @@
     "message": "קובץ המניפסט אינו מכיל סמל מתאים. דרוש פורמט PNG‏, SVG או WebP ברזולוציה של ‎{value0}px לפחות, ויש להגדיר את מאפיין הגודל. אם הוגדר המאפיין 'שימוש', הוא חייב לציין \"הכול\"."
   },
   "core/audits/installable-manifest.js | no-acceptable-icon": {
-    "message": "לא סופק סמל ברזולוציה של {value0}px לפחות, בצורת ריבוע, בפורמט PNG‏, SVG או WebP, עם מאפיין מטרה לא מוגדר או מוגדר ל\"הכול\""
+    "message": "לא סיפקת סמל ריבועי באורך/רוחב של {value0} פיקסלים לפחות בפורמט PNG‏, SVG או WebP, עם מאפיין מטרה לא מוגדר או מוגדר ל\"הכול\""
   },
   "core/audits/installable-manifest.js | no-icon-available": {
     "message": "הסמל שהורד היה ריק או פגום"
@@ -980,8 +980,29 @@
   "core/audits/is-on-https.js | warning": {
     "message": "הכתובת אושרה עם אזהרה"
   },
+  "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
+    "message": "% of LCP"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnPhase": {
+    "message": "Phase"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnTiming": {
+    "message": "Timing"
+  },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "זהו הרכיב הגדול ביותר המכיל תוכן שמוצג בתוך אזור התצוגה. [מידע נוסף על הרכיב מסוג Largest Contentful Paint ‏(LCP)](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
+    "message": "Load Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
+    "message": "Load Time"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
+    "message": "Render Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemTTFB": {
+    "message": "TTFB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "רכיב ה-Largest Contentful Paint (‏LCP)"
@@ -1323,7 +1344,7 @@
     "message": "הקובץ robots.txt חוקי"
   },
   "core/audits/seo/tap-targets.js | description": {
-    "message": "כדי שיהיה קל להקיש על רכיבים אינטראקטיביים, כמו לחצנים וקישורים, בלי לגעת ברכיבים אחרים, הם צריכים להיות גדולים מספיק (48x48 פיקסלים) ועם ריווח גדול מספיק סביבם. [מידע נוסף על יעדי הקשה](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)"
+    "message": "כדי שיהיה קל להקיש על רכיבים אינטראקטיביים, כמו לחצנים וקישורים, בלי לגעת ברכיבים אחרים, הם צריכים להיות גדולים מספיק (48x48 פיקסלים) או עם ריווח גדול מספיק סביבם. [מידע נוסף על יעדי הקשה](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)"
   },
   "core/audits/seo/tap-targets.js | displayValue": {
     "message": "{decimalProportion, number, percent} מבין יעדי ההקשה הם בגודל תקין"
@@ -1714,6 +1735,9 @@
   },
   "core/gather/driver/storage.js | warningOriginDataTimeout": {
     "message": "פג הזמן הקצוב לניקוי של נתוני המקור. כדאי לבדוק שוב את הדף הזה ולדווח על באג אם הבעיה נמשכת."
+  },
+  "core/gather/gatherers/link-elements.js | headerParseWarning": {
+    "message": "שגיאה בניתוח הכותרת `link`‏ ({error}):‏ `{header}`"
   },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "רק דפים שנטענים באמצעות בקשת GET מתאימים לשמירה במטמון לדף הקודם/הבא."
@@ -2735,6 +2759,33 @@
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | uses-responsive-images": {
     "message": "שימוש ב-[Ezoic Leap‏](https://pubdash.ezoic.com/speed) והפעלת `Resize Images` כדי לשנות את הגודל של התמונות כך שיתאים למכשיר, תוך הפחתת גודלי המטען הייעודי (payload) של הרשת."
   },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
+    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
+    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
+    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
+    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
+    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "כדאי לשקול העלאה של ה-GIF לשירות שיאפשר להטמיע אותו כסרטון HTML5."
   },
@@ -2814,10 +2865,10 @@
     "message": "אפשר להוסיף תגי `<link rel=preload>` על-ידי [שינוי פריסה של עיצוב](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "כדי לבצע אופטימיזציה אוטומטית של פורמט התמונות, עליך להשתמש ברכיב `next/image` במקום ברכיב `<img>`. [מידע נוסף](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "כדי לבצע טעינה מדורגת של תמונות, עליך להשתמש ברכיב `next/image` במקום ברכיב `<img>`. [מידע נוסף](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "שימוש ברכיב `next/image` והגדרת ה'עדיפות' כ-true כדי לטעון מראש תמונה מסוג LCP. [מידע נוסף](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2832,7 +2883,7 @@
     "message": "כדאי לשקול להגדיר את `PurgeCSS` בהגדרות האישיות`Next.js`, כדי להסיר כללים שלא נמצאים בשימוש מגיליונות של סגנונות. [מידע נוסף](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "יש להשתמש בכלי `Webpack Bundle Analyzer` כדי לזהות קוד JavaScript שלא נמצא בשימוש. [מידע נוסף](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "כדאי להשתמש ב-`Next.js Analytics` כדי למדוד את ביצועי האפליקציה שלך בפועל. [מידע נוסף](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2841,7 +2892,7 @@
     "message": "צריך להגדיר שמירה במטמון לנכסים ולדפי `Server-side Rendered`‏ (SSR) שאינם משתנים. [מידע נוסף](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "כדי לשנות את איכות התמונה, יש להשתמש ברכיב `next/image` במקום ברכיב `<img>`. [מידע נוסף](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "עליך להשתמש ברכיב `next/image` כדי לבצע הגדרה מתאימה של `sizes`. [מידע נוסף](https://nextjs.org/docs/api-reference/next/image#sizes)."
@@ -3047,6 +3098,9 @@
   "report/renderer/report-utils.js | expandView": {
     "message": "הרחבת התצוגה"
   },
+  "report/renderer/report-utils.js | firstPartyChipLabel": {
+    "message": "צד ראשון"
+  },
   "report/renderer/report-utils.js | footerIssue": {
     "message": "דיווח על בעיה"
   },
@@ -3064,6 +3118,9 @@
   },
   "report/renderer/report-utils.js | notApplicableAuditsGroupTitle": {
     "message": "לא רלוונטי"
+  },
+  "report/renderer/report-utils.js | openInANewTabTooltip": {
+    "message": "פתיחה בכרטיסייה חדשה"
   },
   "report/renderer/report-utils.js | opportunityResourceColumnLabel": {
     "message": "הזדמנות"
@@ -3084,7 +3141,7 @@
     "message": "אמולציה של מחשב שולחני"
   },
   "report/renderer/report-utils.js | runtimeMobileEmulation": {
-    "message": "Emulated Moto G Power"
+    "message": "אמולציה של Moto G Power"
   },
   "report/renderer/report-utils.js | runtimeNoEmulation": {
     "message": "ללא אמולציה"
@@ -3142,6 +3199,9 @@
   },
   "report/renderer/report-utils.js | toplevelWarningsMessage": {
     "message": "היו בעיות שהשפיעו על ההרצה הזו של Lighthouse:"
+  },
+  "report/renderer/report-utils.js | unattributable": {
+    "message": "לא ניתנת לשיוך"
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "הערכים משוערים והם עשויים להשתנות. [ציון הביצועים מחושב](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) ישירות לפי הערכים האלה."

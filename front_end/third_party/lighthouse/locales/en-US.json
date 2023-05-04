@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Access keys let users quickly focus a part of the page. For proper navigation, each access key must be unique. [Learn more about access keys](https://dequeuniversity.com/rules/axe/4.6/accesskeys)."
+    "message": "Access keys let users quickly focus a part of the page. For proper navigation, each access key must be unique. [Learn more about access keys](https://dequeuniversity.com/rules/axe/4.7/accesskeys)."
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "`[accesskey]` values are not unique"
@@ -9,7 +9,7 @@
     "message": "`[accesskey]` values are unique"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Each ARIA `role` supports a specific subset of `aria-*` attributes. Mismatching these invalidates the `aria-*` attributes. [Learn how to match ARIA attributes to their roles](https://dequeuniversity.com/rules/axe/4.6/aria-allowed-attr)."
+    "message": "Each ARIA `role` supports a specific subset of `aria-*` attributes. Mismatching these invalidates the `aria-*` attributes. [Learn how to match ARIA attributes to their roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "`[aria-*]` attributes do not match their roles"
@@ -18,7 +18,7 @@
     "message": "`[aria-*]` attributes match their roles"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "When an element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn how to make command elements more accessible](https://dequeuniversity.com/rules/axe/4.6/aria-command-name)."
+    "message": "When an element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn how to make command elements more accessible](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "`button`, `link`, and `menuitem` elements do not have accessible names."
@@ -27,7 +27,7 @@
     "message": "`button`, `link`, and `menuitem` elements have accessible names"
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Assistive technologies, like screen readers, work inconsistently when `aria-hidden=\"true\"` is set on the document `<body>`. [Learn how `aria-hidden` affects the document body](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-body)."
+    "message": "Assistive technologies, like screen readers, work inconsistently when `aria-hidden=\"true\"` is set on the document `<body>`. [Learn how `aria-hidden` affects the document body](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` is present on the document `<body>`"
@@ -36,7 +36,7 @@
     "message": "`[aria-hidden=\"true\"]` is not present on the document `<body>`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "Focusable descendents within an `[aria-hidden=\"true\"]` element prevent those interactive elements from being available to users of assistive technologies like screen readers. [Learn how `aria-hidden` affects focusable elements](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-focus)."
+    "message": "Focusable descendents within an `[aria-hidden=\"true\"]` element prevent those interactive elements from being available to users of assistive technologies like screen readers. [Learn how `aria-hidden` affects focusable elements](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` elements contain focusable descendents"
@@ -45,7 +45,7 @@
     "message": "`[aria-hidden=\"true\"]` elements do not contain focusable descendents"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "When an input field doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn more about input field labels](https://dequeuniversity.com/rules/axe/4.6/aria-input-field-name)."
+    "message": "When an input field doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn more about input field labels](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)."
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA input fields do not have accessible names"
@@ -54,7 +54,7 @@
     "message": "ARIA input fields have accessible names"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "When a meter element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn how to name `meter` elements](https://dequeuniversity.com/rules/axe/4.6/aria-meter-name)."
+    "message": "When a meter element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn how to name `meter` elements](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "ARIA `meter` elements do not have accessible names."
@@ -63,7 +63,7 @@
     "message": "ARIA `meter` elements have accessible names"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "When a `progressbar` element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn how to label `progressbar` elements](https://dequeuniversity.com/rules/axe/4.6/aria-progressbar-name)."
+    "message": "When a `progressbar` element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn how to label `progressbar` elements](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` elements do not have accessible names."
@@ -72,7 +72,7 @@
     "message": "ARIA `progressbar` elements have accessible names"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "Some ARIA roles have required attributes that describe the state of the element to screen readers. [Learn more about roles and required attributes](https://dequeuniversity.com/rules/axe/4.6/aria-required-attr)."
+    "message": "Some ARIA roles have required attributes that describe the state of the element to screen readers. [Learn more about roles and required attributes](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)."
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "`[role]`s do not have all required `[aria-*]` attributes"
@@ -81,7 +81,7 @@
     "message": "`[role]`s have all required `[aria-*]` attributes"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Some ARIA parent roles must contain specific child roles to perform their intended accessibility functions. [Learn more about roles and required children elements](https://dequeuniversity.com/rules/axe/4.6/aria-required-children)."
+    "message": "Some ARIA parent roles must contain specific child roles to perform their intended accessibility functions. [Learn more about roles and required children elements](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)."
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` are missing some or all of those required children."
@@ -90,7 +90,7 @@
     "message": "Elements with an ARIA `[role]` that require children to contain a specific `[role]` have all required children."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Some ARIA child roles must be contained by specific parent roles to properly perform their intended accessibility functions. [Learn more about ARIA roles and required parent element](https://dequeuniversity.com/rules/axe/4.6/aria-required-parent)."
+    "message": "Some ARIA child roles must be contained by specific parent roles to properly perform their intended accessibility functions. [Learn more about ARIA roles and required parent element](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)."
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "`[role]`s are not contained by their required parent element"
@@ -99,7 +99,7 @@
     "message": "`[role]`s are contained by their required parent element"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "ARIA roles must have valid values in order to perform their intended accessibility functions. [Learn more about valid ARIA roles](https://dequeuniversity.com/rules/axe/4.6/aria-roles)."
+    "message": "ARIA roles must have valid values in order to perform their intended accessibility functions. [Learn more about valid ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-roles)."
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "`[role]` values are not valid"
@@ -108,7 +108,7 @@
     "message": "`[role]` values are valid"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "When a toggle field doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn more about toggle fields](https://dequeuniversity.com/rules/axe/4.6/aria-toggle-field-name)."
+    "message": "When a toggle field doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn more about toggle fields](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA toggle fields do not have accessible names"
@@ -117,7 +117,7 @@
     "message": "ARIA toggle fields have accessible names"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "When a tooltip element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn how to name `tooltip` elements](https://dequeuniversity.com/rules/axe/4.6/aria-tooltip-name)."
+    "message": "When a tooltip element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn how to name `tooltip` elements](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "ARIA `tooltip` elements do not have accessible names."
@@ -126,7 +126,7 @@
     "message": "ARIA `tooltip` elements have accessible names"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "When a `treeitem` element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn more about labeling `treeitem` elements](https://dequeuniversity.com/rules/axe/4.6/aria-treeitem-name)."
+    "message": "When a `treeitem` element doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn more about labeling `treeitem` elements](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)."
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "ARIA `treeitem` elements do not have accessible names."
@@ -135,7 +135,7 @@
     "message": "ARIA `treeitem` elements have accessible names"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Assistive technologies, like screen readers, can't interpret ARIA attributes with invalid values. [Learn more about valid values for ARIA attributes](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr-value)."
+    "message": "Assistive technologies, like screen readers, can't interpret ARIA attributes with invalid values. [Learn more about valid values for ARIA attributes](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)."
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "`[aria-*]` attributes do not have valid values"
@@ -144,7 +144,7 @@
     "message": "`[aria-*]` attributes have valid values"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Assistive technologies, like screen readers, can't interpret ARIA attributes with invalid names. [Learn more about valid ARIA attributes](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr)."
+    "message": "Assistive technologies, like screen readers, can't interpret ARIA attributes with invalid names. [Learn more about valid ARIA attributes](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)."
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "`[aria-*]` attributes are not valid or misspelled"
@@ -156,7 +156,7 @@
     "message": "Failing Elements"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "When a button doesn't have an accessible name, screen readers announce it as \"button\", making it unusable for users who rely on screen readers. [Learn how to make buttons more accessible](https://dequeuniversity.com/rules/axe/4.6/button-name)."
+    "message": "When a button doesn't have an accessible name, screen readers announce it as \"button\", making it unusable for users who rely on screen readers. [Learn how to make buttons more accessible](https://dequeuniversity.com/rules/axe/4.7/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "Buttons do not have an accessible name"
@@ -165,7 +165,7 @@
     "message": "Buttons have an accessible name"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Adding ways to bypass repetitive content lets keyboard users navigate the page more efficiently. [Learn more about bypass blocks](https://dequeuniversity.com/rules/axe/4.6/bypass)."
+    "message": "Adding ways to bypass repetitive content lets keyboard users navigate the page more efficiently. [Learn more about bypass blocks](https://dequeuniversity.com/rules/axe/4.7/bypass)."
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "The page does not contain a heading, skip link, or landmark region"
@@ -174,7 +174,7 @@
     "message": "The page contains a heading, skip link, or landmark region"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "Low-contrast text is difficult or impossible for many users to read. [Learn how to provide sufficient color contrast](https://dequeuniversity.com/rules/axe/4.6/color-contrast)."
+    "message": "Low-contrast text is difficult or impossible for many users to read. [Learn how to provide sufficient color contrast](https://dequeuniversity.com/rules/axe/4.7/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "Background and foreground colors do not have a sufficient contrast ratio."
@@ -183,7 +183,7 @@
     "message": "Background and foreground colors have a sufficient contrast ratio"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "When definition lists are not properly marked up, screen readers may produce confusing or inaccurate output. [Learn how to structure definition lists correctly](https://dequeuniversity.com/rules/axe/4.6/definition-list)."
+    "message": "When definition lists are not properly marked up, screen readers may produce confusing or inaccurate output. [Learn how to structure definition lists correctly](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "`<dl>`'s do not contain only properly-ordered `<dt>` and `<dd>` groups, `<script>`, `<template>` or `<div>` elements."
@@ -192,7 +192,7 @@
     "message": "`<dl>`'s contain only properly-ordered `<dt>` and `<dd>` groups, `<script>`, `<template>` or `<div>` elements."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "Definition list items (`<dt>` and `<dd>`) must be wrapped in a parent `<dl>` element to ensure that screen readers can properly announce them. [Learn how to structure definition lists correctly](https://dequeuniversity.com/rules/axe/4.6/dlitem)."
+    "message": "Definition list items (`<dt>` and `<dd>`) must be wrapped in a parent `<dl>` element to ensure that screen readers can properly announce them. [Learn how to structure definition lists correctly](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "Definition list items are not wrapped in `<dl>` elements"
@@ -201,7 +201,7 @@
     "message": "Definition list items are wrapped in `<dl>` elements"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "The title gives screen reader users an overview of the page, and search engine users rely on it heavily to determine if a page is relevant to their search. [Learn more about document titles](https://dequeuniversity.com/rules/axe/4.6/document-title)."
+    "message": "The title gives screen reader users an overview of the page, and search engine users rely on it heavily to determine if a page is relevant to their search. [Learn more about document titles](https://dequeuniversity.com/rules/axe/4.7/document-title)."
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "Document doesn't have a `<title>` element"
@@ -210,7 +210,7 @@
     "message": "Document has a `<title>` element"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "All focusable elements must have a unique `id` to ensure that they're visible to assistive technologies. [Learn how to fix duplicate `id`s](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-active)."
+    "message": "All focusable elements must have a unique `id` to ensure that they're visible to assistive technologies. [Learn how to fix duplicate `id`s](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "`[id]` attributes on active, focusable elements are not unique"
@@ -219,7 +219,7 @@
     "message": "`[id]` attributes on active, focusable elements are unique"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "The value of an ARIA ID must be unique to prevent other instances from being overlooked by assistive technologies. [Learn how to fix duplicate ARIA IDs](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-aria)."
+    "message": "The value of an ARIA ID must be unique to prevent other instances from being overlooked by assistive technologies. [Learn how to fix duplicate ARIA IDs](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "ARIA IDs are not unique"
@@ -228,7 +228,7 @@
     "message": "ARIA IDs are unique"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "Form fields with multiple labels can be confusingly announced by assistive technologies like screen readers which use either the first, the last, or all of the labels. [Learn how to use form labels](https://dequeuniversity.com/rules/axe/4.6/form-field-multiple-labels)."
+    "message": "Form fields with multiple labels can be confusingly announced by assistive technologies like screen readers which use either the first, the last, or all of the labels. [Learn how to use form labels](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "Form fields have multiple labels"
@@ -237,7 +237,7 @@
     "message": "No form fields have multiple labels"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Screen reader users rely on frame titles to describe the contents of frames. [Learn more about frame titles](https://dequeuniversity.com/rules/axe/4.6/frame-title)."
+    "message": "Screen reader users rely on frame titles to describe the contents of frames. [Learn more about frame titles](https://dequeuniversity.com/rules/axe/4.7/frame-title)."
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "`<frame>` or `<iframe>` elements do not have a title"
@@ -246,7 +246,7 @@
     "message": "`<frame>` or `<iframe>` elements have a title"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies. [Learn more about heading order](https://dequeuniversity.com/rules/axe/4.6/heading-order)."
+    "message": "Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies. [Learn more about heading order](https://dequeuniversity.com/rules/axe/4.7/heading-order)."
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "Heading elements are not in a sequentially-descending order"
@@ -255,7 +255,7 @@
     "message": "Heading elements appear in a sequentially-descending order"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "If a page doesn't specify a `lang` attribute, a screen reader assumes that the page is in the default language that the user chose when setting up the screen reader. If the page isn't actually in the default language, then the screen reader might not announce the page's text correctly. [Learn more about the `lang` attribute](https://dequeuniversity.com/rules/axe/4.6/html-has-lang)."
+    "message": "If a page doesn't specify a `lang` attribute, a screen reader assumes that the page is in the default language that the user chose when setting up the screen reader. If the page isn't actually in the default language, then the screen reader might not announce the page's text correctly. [Learn more about the `lang` attribute](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)."
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "`<html>` element does not have a `[lang]` attribute"
@@ -264,7 +264,7 @@
     "message": "`<html>` element has a `[lang]` attribute"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "Specifying a valid [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) helps screen readers announce text properly. [Learn how to use the `lang` attribute](https://dequeuniversity.com/rules/axe/4.6/html-lang-valid)."
+    "message": "Specifying a valid [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) helps screen readers announce text properly. [Learn how to use the `lang` attribute](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "`<html>` element does not have a valid value for its `[lang]` attribute."
@@ -273,7 +273,7 @@
     "message": "`<html>` element has a valid value for its `[lang]` attribute"
   },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternate text. Decorative elements can be ignored with an empty alt attribute. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.6/image-alt)."
+    "message": "Informative elements should aim for short, descriptive alternate text. Decorative elements can be ignored with an empty alt attribute. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Image elements do not have `[alt]` attributes"
@@ -282,7 +282,7 @@
     "message": "Image elements have `[alt]` attributes"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "When an image is being used as an `<input>` button, providing alternative text can help screen reader users understand the purpose of the button. [Learn about input image alt text](https://dequeuniversity.com/rules/axe/4.6/input-image-alt)."
+    "message": "When an image is being used as an `<input>` button, providing alternative text can help screen reader users understand the purpose of the button. [Learn about input image alt text](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "`<input type=\"image\">` elements do not have `[alt]` text"
@@ -291,7 +291,7 @@
     "message": "`<input type=\"image\">` elements have `[alt]` text"
   },
   "core/audits/accessibility/label.js | description": {
-    "message": "Labels ensure that form controls are announced properly by assistive technologies, like screen readers. [Learn more about form element labels](https://dequeuniversity.com/rules/axe/4.6/label)."
+    "message": "Labels ensure that form controls are announced properly by assistive technologies, like screen readers. [Learn more about form element labels](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "Form elements do not have associated labels"
@@ -300,7 +300,7 @@
     "message": "Form elements have associated labels"
   },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "Link text (and alternate text for images, when used as links) that is discernible, unique, and focusable improves the navigation experience for screen reader users. [Learn how to make links accessible](https://dequeuniversity.com/rules/axe/4.6/link-name)."
+    "message": "Link text (and alternate text for images, when used as links) that is discernible, unique, and focusable improves the navigation experience for screen reader users. [Learn how to make links accessible](https://dequeuniversity.com/rules/axe/4.7/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Links do not have a discernible name"
@@ -309,7 +309,7 @@
     "message": "Links have a discernible name"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Screen readers have a specific way of announcing lists. Ensuring proper list structure aids screen reader output. [Learn more about proper list structure](https://dequeuniversity.com/rules/axe/4.6/list)."
+    "message": "Screen readers have a specific way of announcing lists. Ensuring proper list structure aids screen reader output. [Learn more about proper list structure](https://dequeuniversity.com/rules/axe/4.7/list)."
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "Lists do not contain only `<li>` elements and script supporting elements (`<script>` and `<template>`)."
@@ -318,7 +318,7 @@
     "message": "Lists contain only `<li>` elements and script supporting elements (`<script>` and `<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Screen readers require list items (`<li>`) to be contained within a parent `<ul>`, `<ol>` or `<menu>` to be announced properly. [Learn more about proper list structure](https://dequeuniversity.com/rules/axe/4.6/listitem)."
+    "message": "Screen readers require list items (`<li>`) to be contained within a parent `<ul>`, `<ol>` or `<menu>` to be announced properly. [Learn more about proper list structure](https://dequeuniversity.com/rules/axe/4.7/listitem)."
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "List items (`<li>`) are not contained within `<ul>`, `<ol>` or `<menu>` parent elements."
@@ -327,7 +327,7 @@
     "message": "List items (`<li>`) are contained within `<ul>`, `<ol>` or `<menu>` parent elements"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "Users do not expect a page to refresh automatically, and doing so will move focus back to the top of the page. This may create a frustrating or confusing experience. [Learn more about the refresh meta tag](https://dequeuniversity.com/rules/axe/4.6/meta-refresh)."
+    "message": "Users do not expect a page to refresh automatically, and doing so will move focus back to the top of the page. This may create a frustrating or confusing experience. [Learn more about the refresh meta tag](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)."
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "The document uses `<meta http-equiv=\"refresh\">`"
@@ -336,7 +336,7 @@
     "message": "The document does not use `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Disabling zooming is problematic for users with low vision who rely on screen magnification to properly see the contents of a web page. [Learn more about the viewport meta tag](https://dequeuniversity.com/rules/axe/4.6/meta-viewport)."
+    "message": "Disabling zooming is problematic for users with low vision who rely on screen magnification to properly see the contents of a web page. [Learn more about the viewport meta tag](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)."
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`[user-scalable=\"no\"]` is used in the `<meta name=\"viewport\">` element or the `[maximum-scale]` attribute is less than 5."
@@ -345,7 +345,7 @@
     "message": "`[user-scalable=\"no\"]` is not used in the `<meta name=\"viewport\">` element and the `[maximum-scale]` attribute is not less than 5."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "Screen readers cannot translate non-text content. Adding alternate text to `<object>` elements helps screen readers convey meaning to users. [Learn more about alt text for `object` elements](https://dequeuniversity.com/rules/axe/4.6/object-alt)."
+    "message": "Screen readers cannot translate non-text content. Adding alternate text to `<object>` elements helps screen readers convey meaning to users. [Learn more about alt text for `object` elements](https://dequeuniversity.com/rules/axe/4.7/object-alt)."
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "`<object>` elements do not have alternate text"
@@ -354,7 +354,7 @@
     "message": "`<object>` elements have alternate text"
   },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "A value greater than 0 implies an explicit navigation ordering. Although technically valid, this often creates frustrating experiences for users who rely on assistive technologies. [Learn more about the `tabindex` attribute](https://dequeuniversity.com/rules/axe/4.6/tabindex)."
+    "message": "A value greater than 0 implies an explicit navigation ordering. Although technically valid, this often creates frustrating experiences for users who rely on assistive technologies. [Learn more about the `tabindex` attribute](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Some elements have a `[tabindex]` value greater than 0"
@@ -363,7 +363,7 @@
     "message": "No element has a `[tabindex]` value greater than 0"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Screen readers have features to make navigating tables easier. Ensuring `<td>` cells using the `[headers]` attribute only refer to other cells in the same table may improve the experience for screen reader users. [Learn more about the `headers` attribute](https://dequeuniversity.com/rules/axe/4.6/td-headers-attr)."
+    "message": "Screen readers have features to make navigating tables easier. Ensuring `<td>` cells using the `[headers]` attribute only refer to other cells in the same table may improve the experience for screen reader users. [Learn more about the `headers` attribute](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Cells in a `<table>` element that use the `[headers]` attribute refer to an element `id` not found within the same table."
@@ -372,7 +372,7 @@
     "message": "Cells in a `<table>` element that use the `[headers]` attribute refer to table cells within the same table."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Screen readers have features to make navigating tables easier. Ensuring table headers always refer to some set of cells may improve the experience for screen reader users. [Learn more about table headers](https://dequeuniversity.com/rules/axe/4.6/th-has-data-cells)."
+    "message": "Screen readers have features to make navigating tables easier. Ensuring table headers always refer to some set of cells may improve the experience for screen reader users. [Learn more about table headers](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)."
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "`<th>` elements and elements with `[role=\"columnheader\"/\"rowheader\"]` do not have data cells they describe."
@@ -381,7 +381,7 @@
     "message": "`<th>` elements and elements with `[role=\"columnheader\"/\"rowheader\"]` have data cells they describe."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "Specifying a valid [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) on elements helps ensure that text is pronounced correctly by a screen reader. [Learn how to use the `lang` attribute](https://dequeuniversity.com/rules/axe/4.6/valid-lang)."
+    "message": "Specifying a valid [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) on elements helps ensure that text is pronounced correctly by a screen reader. [Learn how to use the `lang` attribute](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "`[lang]` attributes do not have a valid value"
@@ -390,7 +390,7 @@
     "message": "`[lang]` attributes have a valid value"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "When a video provides a caption it is easier for deaf and hearing impaired users to access its information. [Learn more about video captions](https://dequeuniversity.com/rules/axe/4.6/video-caption)."
+    "message": "When a video provides a caption it is easier for deaf and hearing impaired users to access its information. [Learn more about video captions](https://dequeuniversity.com/rules/axe/4.7/video-caption)."
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "`<video>` elements do not contain a `<track>` element with `[kind=\"captions\"]`."
@@ -980,8 +980,29 @@
   "core/audits/is-on-https.js | warning": {
     "message": "Allowed with warning"
   },
+  "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
+    "message": "% of LCP"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnPhase": {
+    "message": "Phase"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnTiming": {
+    "message": "Timing"
+  },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "This is the largest contentful element painted within the viewport. [Learn more about the Largest Contentful Paint element](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
+    "message": "Load Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
+    "message": "Load Time"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
+    "message": "Render Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemTTFB": {
+    "message": "TTFB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "Largest Contentful Paint element"
@@ -2737,6 +2758,33 @@
   },
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | uses-responsive-images": {
     "message": "Use [Ezoic Leap](https://pubdash.ezoic.com/speed) and enable `Resize Images` to resize images to a device appropriate size, reducing network payload sizes."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
+    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
+    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
+    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
+    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
+    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Consider uploading your GIF to a service which will make it available to embed as an HTML5 video."

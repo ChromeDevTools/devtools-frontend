@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Клавиши доступа позволяют быстро перейти к нужной части страницы. Для удобства навигации на каждую клавишу должно быть назначено только одно действие. Подробнее [о клавишах доступа](https://dequeuniversity.com/rules/axe/4.6/accesskeys)…"
+    "message": "Клавиши доступа позволяют быстро перейти к нужной части страницы. Для удобства навигации на каждую клавишу должно быть назначено только одно действие. Подробнее [о клавишах доступа](https://dequeuniversity.com/rules/axe/4.7/accesskeys)…"
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "Значения атрибута `[accesskey]` не уникальны"
@@ -9,7 +9,7 @@
     "message": "`[accesskey]`: значения уникальны"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Каждая `role` ARIA поддерживает определенный набор атрибутов `aria-*`. Неверно присвоенные атрибуты `aria-*` будут недействительны. Подробнее о том, [как сопоставлять атрибуты ARIA с их ролями](https://dequeuniversity.com/rules/axe/4.6/aria-allowed-attr)…"
+    "message": "Каждая `role` ARIA поддерживает определенный набор атрибутов `aria-*`. Неверно присвоенные атрибуты `aria-*` будут недействительны. Подробнее о том, [как сопоставлять атрибуты ARIA с их ролями](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)…"
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "Атрибуты `[aria-*]` не соответствуют своим ролям"
@@ -18,7 +18,7 @@
     "message": "Атрибуты `[aria-*]` соответствуют своим ролям"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Если у элемента нет названия, доступного программам чтения с экрана, пользователи услышат его общее название и не поймут, для чего он нужен. Подробнее о том, [как сделать элементы команд более доступными](https://dequeuniversity.com/rules/axe/4.6/aria-command-name)…"
+    "message": "Если у элемента нет названия, доступного программам чтения с экрана, пользователи услышат его общее название и не поймут, для чего он нужен. Подробнее о том, [как сделать элементы команд более доступными](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)…"
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "У элементов `button`, `link` и `menuitem` нет названий, доступных программам чтения с экрана"
@@ -27,7 +27,7 @@
     "message": "У элементов `button`, `link` и `menuitem` есть названия, доступные программам чтения с экрана"
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Программы чтения с экрана и другие технологии специальных возможностей могут работать некорректно, если для `<body>` задан атрибут `aria-hidden=\"true\"`. Подробнее о том, [как `aria-hidden` влияет на элемент body](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-body)…"
+    "message": "Программы чтения с экрана и другие технологии специальных возможностей могут работать некорректно, если для `<body>` задан атрибут `aria-hidden=\"true\"`. Подробнее о том, [как `aria-hidden` влияет на элемент body](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)…"
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "Элемент `<body>` в документе содержит атрибут `[aria-hidden=\"true\"]`"
@@ -36,7 +36,7 @@
     "message": "Элемент `<body>` в документе не содержит атрибут `[aria-hidden=\"true\"]`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "Если для родительского элемента задан атрибут `[aria-hidden=\"true\"]`, то все его фокусируемые потомки становятся недоступны для программ чтения с экрана и других технологий специальных возможностей. Подробнее о том, [какое влияние `aria-hidden` оказывает на фокусируемые элементы](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-focus)…"
+    "message": "Если для родительского элемента задан атрибут `[aria-hidden=\"true\"]`, то все его фокусируемые потомки становятся недоступны для программ чтения с экрана и других технологий специальных возможностей. Подробнее о том, [какое влияние `aria-hidden` оказывает на фокусируемые элементы](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)…"
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "Элементы, к которым применен атрибут `[aria-hidden=\"true\"]`, содержат активные дочерние элементы"
@@ -45,7 +45,7 @@
     "message": "Элементы, к которым применен атрибут `[aria-hidden=\"true\"]`, не содержат активных дочерних элементов"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Если у поля ввода нет названия, доступного программам чтения с экрана, пользователи услышат его общее название и не поймут, для чего оно нужно. Подробнее [о ярлыках для полей ввода](https://dequeuniversity.com/rules/axe/4.6/aria-input-field-name)…"
+    "message": "Если у поля ввода нет названия, доступного программам чтения с экрана, пользователи услышат его общее название и не поймут, для чего оно нужно. Подробнее [о ярлыках для полей ввода](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)…"
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "У полей ввода ARIA нет доступных названий"
@@ -54,7 +54,7 @@
     "message": "У полей ввода ARIA есть доступные названия"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Если у элемента счетчика нет названия, доступного программам чтения с экрана, пользователи услышат только общее название и не поймут, для чего он нужен. Подробнее о том, [как присваивать названия элементам \"`meter`\"](https://dequeuniversity.com/rules/axe/4.6/aria-meter-name)…"
+    "message": "Если у элемента счетчика нет названия, доступного программам чтения с экрана, пользователи услышат только общее название и не поймут, для чего он нужен. Подробнее о том, [как присваивать названия элементам \"`meter`\"](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)…"
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "У элементов `meter` ARIA нет названий, доступных программам чтения с экрана"
@@ -63,7 +63,7 @@
     "message": "У элементов `meter` ARIA есть названия, доступные программам чтения с экрана"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Если у элемента `progressbar` нет названия, доступного программам чтения с экрана, пользователи услышат только его общее название и не поймут, для чего он нужен. Подробнее о том, [как присваивать ярлыки элементам `progressbar`](https://dequeuniversity.com/rules/axe/4.6/aria-progressbar-name)…"
+    "message": "Если у элемента `progressbar` нет названия, доступного программам чтения с экрана, пользователи услышат только его общее название и не поймут, для чего он нужен. Подробнее о том, [как присваивать ярлыки элементам `progressbar`](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)…"
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "У элементов `progressbar` ARIA нет названий, доступных программам чтения с экрана"
@@ -72,7 +72,7 @@
     "message": "У элементов `progressbar` ARIA есть названия, доступные программам чтения с экрана"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "К некоторым ролям ARIA необходимо добавлять атрибуты, описывающие состояние элемента для программ чтения с экрана. Подробнее [о ролях и необходимых атрибутах](https://dequeuniversity.com/rules/axe/4.6/aria-required-attr)…"
+    "message": "К некоторым ролям ARIA необходимо добавлять атрибуты, описывающие состояние элемента для программ чтения с экрана. Подробнее [о ролях и необходимых атрибутах](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)…"
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "Для элементов с атрибутом `[role]` заданы не все необходимые атрибуты `[aria-*]`"
@@ -81,7 +81,7 @@
     "message": "У элементов `[role]` есть все необходимые атрибуты `[aria-*]`"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Указав роль ARIA для родительского элемента, в некоторых случаях вы должны также задать определенные роли его дочерним элементам. Если этого не сделать, связанные с ARIA функции специальных возможностей будут работать неправильно. Подробнее [о ролях и необходимых дочерних элементах](https://dequeuniversity.com/rules/axe/4.6/aria-required-children)…"
+    "message": "Указав роль ARIA для родительского элемента, в некоторых случаях вы должны также задать определенные роли его дочерним элементам. Если этого не сделать, связанные с ARIA функции специальных возможностей будут работать неправильно. Подробнее [о ролях и необходимых дочерних элементах](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)…"
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "В элементах с ролью ARIA `[role]` отсутствуют некоторые или все обязательные дочерние элементы, которые должны содержать определенный элемент `[role]`."
@@ -90,7 +90,7 @@
     "message": "В элементах с ролью ARIA `[role]` присутствуют все обязательные дочерние элементы, которые должны содержать определенный элемент `[role]`."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Некоторые дочерние элементы с ролями ARIA должны содержаться внутри определенных родительских элементов, иначе связанные с ними функции специальных возможностей будут работать неправильно. Подробнее [о ролях ARIA и необходимых родительских элементах](https://dequeuniversity.com/rules/axe/4.6/aria-required-parent)…"
+    "message": "Некоторые дочерние элементы с ролями ARIA должны содержаться внутри определенных родительских элементов, иначе связанные с ними функции специальных возможностей будут работать неправильно. Подробнее [о ролях ARIA и необходимых родительских элементах](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)…"
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "Элементы с атрибутом `[role]` не содержатся в своих родительских элементах"
@@ -99,7 +99,7 @@
     "message": "Элементы с атрибутом `[role]` содержатся в своих родительских элементах"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "Значения ролей ARIA должны быть допустимыми, иначе связанные с ними функции специальных возможностей будут работать неправильно. Подробнее о том, [какие роли ARIA можно указывать](https://dequeuniversity.com/rules/axe/4.6/aria-roles)…"
+    "message": "Значения ролей ARIA должны быть допустимыми, иначе связанные с ними функции специальных возможностей будут работать неправильно. Подробнее о том, [какие роли ARIA можно указывать](https://dequeuniversity.com/rules/axe/4.7/aria-roles)…"
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "Присутствуют недействительные значения атрибутов `[role]`"
@@ -108,7 +108,7 @@
     "message": "Недействительные значения атрибутов `[role]` отсутствуют"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Если у переключателя нет названия, доступного программам чтения с экрана, пользователи услышат его общее название и не поймут, для чего он нужен. Подробнее [о переключателях](https://dequeuniversity.com/rules/axe/4.6/aria-toggle-field-name)…"
+    "message": "Если у переключателя нет названия, доступного программам чтения с экрана, пользователи услышат его общее название и не поймут, для чего он нужен. Подробнее [о переключателях](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)…"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "У переключателей ARIA нет доступных названий"
@@ -117,7 +117,7 @@
     "message": "У переключателей ARIA есть доступные названия"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Если у элемента подсказки нет названия, доступного программам чтения с экрана, пользователи услышат только его общее название и не поймут, для чего он нужен. Подробнее о том, [как присваивать названия элементам \"`tooltip`\"](https://dequeuniversity.com/rules/axe/4.6/aria-tooltip-name)…"
+    "message": "Если у элемента подсказки нет названия, доступного программам чтения с экрана, пользователи услышат только его общее название и не поймут, для чего он нужен. Подробнее о том, [как присваивать названия элементам \"`tooltip`\"](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)…"
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "У элементов `tooltip` ARIA нет названий, доступных программам чтения с экрана"
@@ -126,7 +126,7 @@
     "message": "У элементов `tooltip` ARIA есть названия, доступные программам чтения с экрана"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Если у элемента `treeitem` нет названия, доступного программам чтения с экрана, пользователи услышат только его общее название и не поймут, для чего он нужен. Подробнее [о присваивании ярлыков элементам `treeitem`](https://dequeuniversity.com/rules/axe/4.6/aria-treeitem-name)…"
+    "message": "Если у элемента `treeitem` нет названия, доступного программам чтения с экрана, пользователи услышат только его общее название и не поймут, для чего он нужен. Подробнее [о присваивании ярлыков элементам `treeitem`](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)…"
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "У элементов `treeitem` ARIA нет названий, доступных программам чтения с экрана"
@@ -135,7 +135,7 @@
     "message": "У элементов `treeitem` ARIA есть названия, доступные программам чтения с экрана"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Технологии специальных возможностей, например программы чтения с экрана, не могут распознавать атрибуты ARIA с недопустимыми значениями. Подробнее [о существующих значениях для атрибутов ARIA](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr-value)…"
+    "message": "Технологии специальных возможностей, например программы чтения с экрана, не могут распознавать атрибуты ARIA с недопустимыми значениями. Подробнее [о существующих значениях для атрибутов ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)…"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "У атрибутов `[aria-*]` недействительные значения"
@@ -144,7 +144,7 @@
     "message": "Недействительные значения атрибутов `[aria-*]` отсутствуют"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Технологии специальных возможностей, например программы чтения с экрана, не могут распознавать атрибуты ARIA с недопустимыми названиями. Подробнее [о существующих атрибутах ARIA](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr)…"
+    "message": "Технологии специальных возможностей, например программы чтения с экрана, не могут распознавать атрибуты ARIA с недопустимыми названиями. Подробнее [о существующих атрибутах ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)…"
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "Атрибуты `[aria-*]` недействительны или указаны с ошибками"
@@ -156,7 +156,7 @@
     "message": "Элементы, не прошедшие проверку"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "Если у кнопки нет названия, доступного программам чтения с экрана, пользователи услышат слово \"кнопка\", но не поймут, для чего она нужна. Подробнее о том, [как сделать кнопки более доступными](https://dequeuniversity.com/rules/axe/4.6/button-name)…"
+    "message": "Если у кнопки нет названия, доступного программам чтения с экрана, пользователи услышат слово \"кнопка\", но не поймут, для чего она нужна. Подробнее о том, [как сделать кнопки более доступными](https://dequeuniversity.com/rules/axe/4.7/button-name)…"
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "Названия кнопок недоступны программам чтения с экрана"
@@ -165,7 +165,7 @@
     "message": "Названия кнопок доступны программам чтения с экрана"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Чтобы пользователям было проще перемещаться по странице с помощью клавиатуры, добавьте возможность пропускать повторяющийся контент. Подробнее [о пропускаемых блоках данных](https://dequeuniversity.com/rules/axe/4.6/bypass)…"
+    "message": "Чтобы пользователям было проще перемещаться по странице с помощью клавиатуры, добавьте возможность пропускать повторяющийся контент. Подробнее [о пропускаемых блоках данных](https://dequeuniversity.com/rules/axe/4.7/bypass)…"
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "На странице отсутствует заголовок, ссылка для пропуска или указание региона"
@@ -174,7 +174,7 @@
     "message": "Страница содержит заголовок, ссылку для пропуска контента или указание региона"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "Многие пользователи не видят текст с низкой контрастностью, или им сложно его воспринимать. Подробнее о том, [как обеспечить достаточный цветовой контраст](https://dequeuniversity.com/rules/axe/4.6/color-contrast)…"
+    "message": "Многие пользователи не видят текст с низкой контрастностью, или им сложно его воспринимать. Подробнее о том, [как обеспечить достаточный цветовой контраст](https://dequeuniversity.com/rules/axe/4.7/color-contrast)…"
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "Цвета фона и переднего плана недостаточно контрастны"
@@ -183,7 +183,7 @@
     "message": "Цвета фона и переднего плана достаточно контрастны"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "Если списки определений размечены с ошибками, программы чтения с экрана могут озвучивать их некорректно. Подробнее о том, [как правильно создавать списки определений](https://dequeuniversity.com/rules/axe/4.6/definition-list)…"
+    "message": "Если списки определений размечены с ошибками, программы чтения с экрана могут озвучивать их некорректно. Подробнее о том, [как правильно создавать списки определений](https://dequeuniversity.com/rules/axe/4.7/definition-list)…"
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "Ошибка в элементах `<dl>`: они могут содержать только правильно размещенные группы `<dt>` и `<dd>` и элементы `<script>`, `<template>` или `<div>`."
@@ -192,7 +192,7 @@
     "message": "Элементы `<dl>` содержат только правильно размещенные группы `<dt>` и `<dd>` и элементы `<script>`, `<template>` или `<div>`."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "Чтобы программы чтения с экрана правильно озвучивали элементы списков определений `<dt>` и `<dd>`, они должны располагаться внутри родительского элемента `<dl>`. Подробнее о том, [как правильно создавать списки определений](https://dequeuniversity.com/rules/axe/4.6/dlitem)…"
+    "message": "Чтобы программы чтения с экрана правильно озвучивали элементы списков определений `<dt>` и `<dd>`, они должны располагаться внутри родительского элемента `<dl>`. Подробнее о том, [как правильно создавать списки определений](https://dequeuniversity.com/rules/axe/4.7/dlitem)…"
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "Элементы списков определений не расположены внутри элементов `<dl>`"
@@ -201,7 +201,7 @@
     "message": "Элементы списков определений расположены внутри элементов `<dl>`"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "Название (элемент title) нужно для того, чтобы программы чтения с экрана могли озвучивать название страницы. Также оно появляется в результатах поиска и позволяет определять, соответствует ли сайт запросу. Подробнее [о названиях документов](https://dequeuniversity.com/rules/axe/4.6/document-title)…"
+    "message": "Название (элемент title) нужно для того, чтобы программы чтения с экрана могли озвучивать название страницы. Также оно появляется в результатах поиска и позволяет определять, соответствует ли сайт запросу. Подробнее [о названиях документов](https://dequeuniversity.com/rules/axe/4.7/document-title)…"
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "В документе нет элемента `<title>`"
@@ -210,7 +210,7 @@
     "message": "Документ содержит элемент `<title>`"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Чтобы технологии специальных возможностей могли считывать все фокусируемые элементы, их атрибуты `id` должны быть уникальными. Подробнее о том, [как убрать копии атрибутов `id`](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-active)…"
+    "message": "Чтобы технологии специальных возможностей могли считывать все фокусируемые элементы, их атрибуты `id` должны быть уникальными. Подробнее о том, [как убрать копии атрибутов `id`](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)…"
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "У активных элементов есть неуникальные атрибуты `[id]`"
@@ -219,7 +219,7 @@
     "message": "Атрибуты `[id]` у активных элементов уникальны"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "Значение идентификатора ARIA должно быть уникальным, поскольку технологии специальных возможностей могут игнорировать повторяющиеся идентификаторы. Подробнее о том, [как убрать копии идентификаторов ARIA](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-aria)…"
+    "message": "Значение идентификатора ARIA должно быть уникальным, поскольку технологии специальных возможностей могут игнорировать повторяющиеся идентификаторы. Подробнее о том, [как убрать копии идентификаторов ARIA](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)…"
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "Идентификаторы ARIA не уникальны"
@@ -228,7 +228,7 @@
     "message": "Идентификаторы ARIA уникальны"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "Когда программы чтения с экрана или другие технологии специальных возможностей обнаруживают поля формы с несколькими ярлыками, они озвучивают только первый, последний или все ярлыки. Это может запутать пользователей. Подробнее о том, [как использовать ярлыки формы](https://dequeuniversity.com/rules/axe/4.6/form-field-multiple-labels)…"
+    "message": "Когда программы чтения с экрана или другие технологии специальных возможностей обнаруживают поля формы с несколькими ярлыками, они озвучивают только первый, последний или все ярлыки. Это может запутать пользователей. Подробнее о том, [как использовать ярлыки формы](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)…"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "В форме есть поля с несколькими ярлыками"
@@ -237,7 +237,7 @@
     "message": "В форме нет полей с несколькими ярлыками"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Чтобы программы чтения с экрана могли описывать содержимое фреймов, у каждого из них должно быть название (атрибут title). Подробнее [о названиях фреймов](https://dequeuniversity.com/rules/axe/4.6/frame-title)…"
+    "message": "Чтобы программы чтения с экрана могли описывать содержимое фреймов, у каждого из них должно быть название (атрибут title). Подробнее [о названиях фреймов](https://dequeuniversity.com/rules/axe/4.7/frame-title)…"
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "Для элементов `<frame>` или `<iframe>` не указан атрибут title"
@@ -246,7 +246,7 @@
     "message": "У элементов `<frame>` и `<iframe>` есть атрибут title"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "Когда заголовки расположены в правильном порядке и между их уровнями нет пропусков, они образуют семантическую структуру страницы. Благодаря этому навигация с помощью технологий специальных возможностей становится проще и понятнее. Подробнее [о расположении заголовков](https://dequeuniversity.com/rules/axe/4.6/heading-order)…"
+    "message": "Когда заголовки расположены в правильном порядке и между их уровнями нет пропусков, они образуют семантическую структуру страницы. Благодаря этому навигация с помощью технологий специальных возможностей становится проще и понятнее. Подробнее [о расположении заголовков](https://dequeuniversity.com/rules/axe/4.7/heading-order)…"
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "Элементы заголовков не расположены последовательно в порядке убывания"
@@ -255,7 +255,7 @@
     "message": "Элементы заголовков расположены последовательно в порядке убывания"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "Если для страницы не указан атрибут `lang`, программа чтения с экрана предполагает, что текст приведен на языке по умолчанию, выбранном пользователем при установке программы. Если текст написан на другом языке, он может озвучиваться некорректно. Подробнее [об атрибуте `lang`](https://dequeuniversity.com/rules/axe/4.6/html-has-lang)…"
+    "message": "Если для страницы не указан атрибут `lang`, программа чтения с экрана предполагает, что текст приведен на языке по умолчанию, выбранном пользователем при установке программы. Если текст написан на другом языке, он может озвучиваться некорректно. Подробнее [об атрибуте `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)…"
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "Для элемента `<html>` не задан атрибут `[lang]`"
@@ -264,7 +264,7 @@
     "message": "Элемент `<html>` содержит атрибут `[lang]`"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "Чтобы программы чтения с экрана правильно озвучивали текст, укажите допустимый [языковой тег BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question). Подробнее о том, [как использовать атрибут `lang`](https://dequeuniversity.com/rules/axe/4.6/html-lang-valid)…"
+    "message": "Чтобы программы чтения с экрана правильно озвучивали текст, укажите допустимый [языковой тег BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question). Подробнее о том, [как использовать атрибут `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)…"
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "В элементе `<html>` нет действительного значения для атрибута `[lang]`"
@@ -273,7 +273,7 @@
     "message": "Для элемента `<html>` указано действительное значение атрибута `[lang]`"
   },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "В информационных элементах должен содержаться короткий и ясный альтернативный текст. Если элемент декоративный, то атрибут alt для него можно оставить пустым. Подробнее [об атрибуте `alt`](https://dequeuniversity.com/rules/axe/4.6/image-alt)…"
+    "message": "В информационных элементах должен содержаться короткий и ясный альтернативный текст. Если элемент декоративный, то атрибут alt для него можно оставить пустым. Подробнее [об атрибуте `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)…"
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Для элементов изображений не заданы атрибуты `[alt]`"
@@ -282,7 +282,7 @@
     "message": "У элементов изображений есть атрибут `[alt]`"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "Если в элементе `<input>` в качестве кнопки используется изображение, добавьте альтернативный текст, описывающий назначение этой кнопки для программ чтения с экрана. Подробнее [об альтернативном тексте для изображения в элементе ввода](https://dequeuniversity.com/rules/axe/4.6/input-image-alt)…"
+    "message": "Если в элементе `<input>` в качестве кнопки используется изображение, добавьте альтернативный текст, описывающий назначение этой кнопки для программ чтения с экрана. Подробнее [об альтернативном тексте для изображения в элементе ввода](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)…"
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "Атрибут `[alt]` задан не для всех элементов `<input type=\"image\">`"
@@ -291,7 +291,7 @@
     "message": "Элементы `<input type=\"image\">` содержат атрибут `[alt]`"
   },
   "core/audits/accessibility/label.js | description": {
-    "message": "Ярлыки нужны для того, чтобы программы чтения с экрана и другие технологии специальных возможностей могли правильно озвучивать элементы управления формой. Подробнее [о ярлыках для элементов формы](https://dequeuniversity.com/rules/axe/4.6/label)…"
+    "message": "Ярлыки нужны для того, чтобы программы чтения с экрана и другие технологии специальных возможностей могли правильно озвучивать элементы управления формой. Подробнее [о ярлыках для элементов формы](https://dequeuniversity.com/rules/axe/4.7/label)…"
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "Элементам формы не присвоены соответствующие ярлыки"
@@ -300,7 +300,7 @@
     "message": "Элементам формы присвоены соответствующие ярлыки"
   },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "Текст ссылок (как и альтернативный текст для изображений, используемых в качестве ссылок) должен быть уникальным, фокусируемым и доступным для программ чтения с экрана. Подробнее о том, [как сделать ссылки доступными для программ с технологиями специальных возможностей](https://dequeuniversity.com/rules/axe/4.6/link-name)…"
+    "message": "Текст ссылок (как и альтернативный текст для изображений, используемых в качестве ссылок) должен быть уникальным, фокусируемым и доступным для программ чтения с экрана. Подробнее о том, [как сделать ссылки доступными для программ с технологиями специальных возможностей](https://dequeuniversity.com/rules/axe/4.7/link-name)…"
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Текст ссылок неразличим для программ чтения с экрана"
@@ -309,7 +309,7 @@
     "message": "Текст ссылок различим для программ чтения с экрана"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Используйте правильную структуру кода при верстке списков, иначе программы чтения с экрана будут некорректно их озвучивать. Подробнее [о правильной структуре списков](https://dequeuniversity.com/rules/axe/4.6/list)…"
+    "message": "Используйте правильную структуру кода при верстке списков, иначе программы чтения с экрана будут некорректно их озвучивать. Подробнее [о правильной структуре списков](https://dequeuniversity.com/rules/axe/4.7/list)…"
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "В списках содержатся другие элементы, помимо элементов `<li>` и элементов поддержки скрипта (`<script>` и `<template>`)"
@@ -318,7 +318,7 @@
     "message": "В списках содержатся только элементы `<li>` и элементы поддержки скрипта (`<script>` и `<template>`)"
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Чтобы программы чтения с экрана правильно озвучивали списки, элементы `<li>` должны располагаться внутри родительских элементов `<ul>`, `<ol>` или `<menu>`. Подробнее [о правильной структуре списков](https://dequeuniversity.com/rules/axe/4.6/listitem)…"
+    "message": "Чтобы программы чтения с экрана правильно озвучивали списки, элементы `<li>` должны располагаться внутри родительских элементов `<ul>`, `<ol>` или `<menu>`. Подробнее [о правильной структуре списков](https://dequeuniversity.com/rules/axe/4.7/listitem)…"
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "Элементы списка (`<li>`) не содержатся в родительских элементах `<ul>`, `<ol>` или `<menu>`"
@@ -327,7 +327,7 @@
     "message": "Элементы списка (`<li>`) расположены внутри родительских элементов `<ul>`, `<ol>` или `<menu>`"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "Когда страница обновляется автоматически, фокус, используемый программами для чтения с экрана, перемещается в верхнюю часть. Это может мешать работе пользователей и вызывать у них негативные эмоции. Подробнее [о метатеге refresh](https://dequeuniversity.com/rules/axe/4.6/meta-refresh)…"
+    "message": "Когда страница обновляется автоматически, фокус, используемый программами для чтения с экрана, перемещается в верхнюю часть. Это может мешать работе пользователей и вызывать у них негативные эмоции. Подробнее [о метатеге refresh](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)…"
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "В документе используется метатег `<meta http-equiv=\"refresh\">`"
@@ -336,7 +336,7 @@
     "message": "В документе не используется метатег `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Не отключайте масштабирование. Эта функция помогает слабовидящим пользователям читать информацию на веб-страницах. Подробнее [о метатеге viewport](https://dequeuniversity.com/rules/axe/4.6/meta-viewport)…"
+    "message": "Не отключайте масштабирование. Эта функция помогает слабовидящим пользователям читать информацию на веб-страницах. Подробнее [о метатеге viewport](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)…"
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "Атрибут `[user-scalable=\"no\"]` используется в элементе `<meta name=\"viewport\">` или значение атрибута `[maximum-scale]` меньше 5"
@@ -345,7 +345,7 @@
     "message": "Атрибут `[user-scalable=\"no\"]` не используется в элементе `<meta name=\"viewport\">`, и значение атрибута `[maximum-scale]` больше или равно 5"
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "Чтобы программы чтения с экрана могли зачитывать содержимое элементов `<object>`, добавьте к ним альтернативный текст. Подробнее [об альтернативном тексте для элементов `object`](https://dequeuniversity.com/rules/axe/4.6/object-alt)…"
+    "message": "Чтобы программы чтения с экрана могли зачитывать содержимое элементов `<object>`, добавьте к ним альтернативный текст. Подробнее [об альтернативном тексте для элементов `object`](https://dequeuniversity.com/rules/axe/4.7/object-alt)…"
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "У элементов `<object>` нет альтернативного текста"
@@ -354,7 +354,7 @@
     "message": "У элементов `<object>` есть альтернативный текст"
   },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "Значение больше 0 подразумевает явное указание порядка навигации. Это может создавать трудности для пользователей с ограниченными возможностями. Подробнее [об атрибуте `tabindex`](https://dequeuniversity.com/rules/axe/4.6/tabindex)…"
+    "message": "Значение больше 0 подразумевает явное указание порядка навигации. Это может создавать трудности для пользователей с ограниченными возможностями. Подробнее [об атрибуте `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)…"
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Для некоторых элементов значение `[tabindex]` больше 0"
@@ -363,7 +363,7 @@
     "message": "Нет элементов со значением атрибута `[tabindex]` выше 0"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Чтобы пользователям было проще перемещаться по таблицам с помощью программ чтения с экрана, убедитесь, что ячейки (элементы `<td>`) с атрибутом `[headers]` ссылаются только на другие ячейки в той же таблице. Подробнее [об атрибуте `headers`](https://dequeuniversity.com/rules/axe/4.6/td-headers-attr)…"
+    "message": "Чтобы пользователям было проще перемещаться по таблицам с помощью программ чтения с экрана, убедитесь, что ячейки (элементы `<td>`) с атрибутом `[headers]` ссылаются только на другие ячейки в той же таблице. Подробнее [об атрибуте `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)…"
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Ячейки внутри элемента `<table>`, в которых используется атрибут `[headers]`, ссылаются на элемент `id`, не найденный внутри той же таблицы."
@@ -372,7 +372,7 @@
     "message": "Ячейки внутри элемента `<table>`, в которых используется атрибут `[headers]`, ссылаются на ячейки той же таблицы."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Чтобы пользователям было проще перемещаться по таблицам с помощью программ чтения с экрана, убедитесь, что все заголовки в таблицах ссылаются на тот или иной набор ячеек. Подробнее [о заголовках таблиц](https://dequeuniversity.com/rules/axe/4.6/th-has-data-cells)…"
+    "message": "Чтобы пользователям было проще перемещаться по таблицам с помощью программ чтения с экрана, убедитесь, что все заголовки в таблицах ссылаются на тот или иной набор ячеек. Подробнее [о заголовках таблиц](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)…"
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "В элементах `<th>` и элементах с атрибутом `[role=\"columnheader\"/\"rowheader\"]` нет описываемых ими ячеек с данными"
@@ -381,7 +381,7 @@
     "message": "В элементах `<th>` и элементах с атрибутом `[role=\"columnheader\"/\"rowheader\"]` есть описываемые ими ячейки с данными"
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "Чтобы программы чтения с экрана правильно озвучивали текст, укажите для элементов допустимый [языковой тег BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question). Подробнее о том, [как использовать атрибут `lang`](https://dequeuniversity.com/rules/axe/4.6/valid-lang)…"
+    "message": "Чтобы программы чтения с экрана правильно озвучивали текст, укажите для элементов допустимый [языковой тег BCP 47](https://www.w3.org/International/questions/qa-choosing-language-tags#question). Подробнее о том, [как использовать атрибут `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)…"
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "Присутствуют недействительные значения атрибутов `[lang]`"
@@ -390,7 +390,7 @@
     "message": "Недействительные значения атрибутов `[lang]` отсутствуют"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "Чтобы информация, озвучиваемая в видео, была доступна людям с нарушениями слуха, добавьте субтитры. Подробнее [о субтитрах в видео](https://dequeuniversity.com/rules/axe/4.6/video-caption)…"
+    "message": "Чтобы информация, озвучиваемая в видео, была доступна людям с нарушениями слуха, добавьте субтитры. Подробнее [о субтитрах в видео](https://dequeuniversity.com/rules/axe/4.7/video-caption)…"
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "Элементы `<video>` не содержат элемент `<track>` с атрибутом `[kind=\"captions\"]`"
@@ -765,13 +765,13 @@
     "message": "Разрешение на отправку уведомлений не запрашивается при загрузке страницы"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | description": {
-    "message": "Preventing input pasting is a UX anti-pattern, and undermines good security policy. [Learn more about user-friendly input fields](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
+    "message": "Запрет на вставку информации в поле ввода негативно влияет на удобство использования и снижает безопасность, блокируя работу менеджеров паролей. Подробнее [об удобных полях ввода](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)…"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | failureTitle": {
-    "message": "Prevents users from pasting into input fields"
+    "message": "Вставка контента в поля ввода запрещена"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | title": {
-    "message": "Allows users to paste into input fields"
+    "message": "Вставка контента в поля ввода разрешена"
   },
   "core/audits/dobetterweb/uses-http2.js | columnProtocol": {
     "message": "Протокол"
@@ -980,8 +980,29 @@
   "core/audits/is-on-https.js | warning": {
     "message": "Разрешено (есть предупреждение)"
   },
+  "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
+    "message": "% of LCP"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnPhase": {
+    "message": "Phase"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnTiming": {
+    "message": "Timing"
+  },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Это самый большой элемент контента, отрисованный в области просмотра. Подробнее [об отрисовке самого крупного контента](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)…"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
+    "message": "Load Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
+    "message": "Load Time"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
+    "message": "Render Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemTTFB": {
+    "message": "TTFB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "Элемент \"Отрисовка самого крупного контента\""
@@ -1323,7 +1344,7 @@
     "message": "Файл robots.txt действителен"
   },
   "core/audits/seo/tap-targets.js | description": {
-    "message": "Интерактивные элементы, такие как кнопки и ссылки, должны быть достаточно крупными (48 x 48 пкс) и располагаться на достаточном расстоянии друг от друга. Тогда при нажатии пользователи не будут задевать соседние объекты. Подробнее [об оптимальных размерах интерактивных элементов](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)…"
+    "message": "Интерактивные элементы, такие как кнопки и ссылки, должны быть достаточно крупными (48 x 48 пкс) или располагаться на достаточном расстоянии друг от друга. Тогда при нажатии пользователи не будут задевать соседние объекты. Подробнее [об оптимальных размерах интерактивных элементов](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)…"
   },
   "core/audits/seo/tap-targets.js | displayValue": {
     "message": "Размеры {decimalProportion, number, percent} интерактивных элементов соответствуют требованиям."
@@ -1714,6 +1735,9 @@
   },
   "core/gather/driver/storage.js | warningOriginDataTimeout": {
     "message": "Превышено время ожидания для удаления исходных данных. Ещё раз проверьте эту страницу. Если проблема не исчезла, сообщите об ошибке."
+  },
+  "core/gather/gatherers/link-elements.js | headerParseWarning": {
+    "message": "Ошибка обработки заголовка `link` ({error}): `{header}`"
   },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "В возвратный кеш можно добавить только страницы, загруженные с помощью GET-запроса."
@@ -2735,6 +2759,33 @@
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | uses-responsive-images": {
     "message": "Воспользуйтесь [Ezoic Leap](https://pubdash.ezoic.com/speed) и включите настройку `Resize Images`, чтобы настраивать размер изображений в зависимости от устройств пользователей. Так вы снизите нагрузку на сеть."
   },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
+    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
+    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
+    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
+    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
+    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Используйте сервисы, которые позволяют встраивать GIF-файлы на страницы сайта в формате видео HTML5."
   },
@@ -2814,10 +2865,10 @@
     "message": "Чтобы добавить теги `<link rel=preload>`, [измените разметку темы](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Используйте компонент `next/image` вместо `<img>`, чтобы автоматически оптимизировать формат изображения. [Подробнее…](https://nextjs.org/docs/basic-features/image-optimization)"
+    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Используйте компонент `next/image` вместо `<img>`, чтобы включить автоматическую отложенную загрузку изображений. [Подробнее…](https://nextjs.org/docs/basic-features/image-optimization)"
+    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Используйте компонент `next/image` и установите для параметра priority значение True, чтобы выполнять предзагрузку изображения LCP. [Подробнее…](https://nextjs.org/docs/api-reference/next/image#priority)"
@@ -2832,7 +2883,7 @@
     "message": "Настройте плагин `PurgeCSS` в конфигурации `Next.js`, чтобы удалить неиспользуемые правила из таблицы стилей. [Подробнее…](https://purgecss.com/guides/next.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Используйте `Webpack Bundle Analyzer` для обнаружения неиспользуемого кода JavaScript. [Подробнее…](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Используйте `Next.js Analytics`, чтобы измерять фактическую эффективность приложения. [Подробнее…](https://nextjs.org/docs/advanced-features/measuring-performance)"
@@ -2841,7 +2892,7 @@
     "message": "Включите кеширование для неизменяемых объектов и страниц `Server-side Rendered` (SSR). [Подробнее…](https://nextjs.org/docs/going-to-production#caching)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Используйте компонент `next/image` вместо `<img>`, чтобы настроить качество изображения. [Подробнее…](https://nextjs.org/docs/basic-features/image-optimization)"
+    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Используйте компонент `next/image`, чтобы задавать подходящие размеры `sizes`. [Подробнее…](https://nextjs.org/docs/api-reference/next/image#sizes)"
@@ -3047,6 +3098,9 @@
   "report/renderer/report-utils.js | expandView": {
     "message": "Развернуть"
   },
+  "report/renderer/report-utils.js | firstPartyChipLabel": {
+    "message": "Собственные"
+  },
   "report/renderer/report-utils.js | footerIssue": {
     "message": "Сообщить о проблеме"
   },
@@ -3064,6 +3118,9 @@
   },
   "report/renderer/report-utils.js | notApplicableAuditsGroupTitle": {
     "message": "Неприменимо"
+  },
+  "report/renderer/report-utils.js | openInANewTabTooltip": {
+    "message": "Открыть в новой вкладке"
   },
   "report/renderer/report-utils.js | opportunityResourceColumnLabel": {
     "message": "Возможности"
@@ -3084,7 +3141,7 @@
     "message": "Эмуляция компьютера"
   },
   "report/renderer/report-utils.js | runtimeMobileEmulation": {
-    "message": "Emulated Moto G Power"
+    "message": "Эмуляция устройства Moto G Power"
   },
   "report/renderer/report-utils.js | runtimeNoEmulation": {
     "message": "Без эмуляции"
@@ -3142,6 +3199,9 @@
   },
   "report/renderer/report-utils.js | toplevelWarningsMessage": {
     "message": "Во время работы Lighthouse возникли следующие проблемы:"
+  },
+  "report/renderer/report-utils.js | unattributable": {
+    "message": "Несвязанные"
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Значения приблизительные и могут изменяться. [Уровень производительности рассчитывается](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) непосредственно на основании этих показателей."

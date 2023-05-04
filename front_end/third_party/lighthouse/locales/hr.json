@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "Pristupne tipke omogućuju korisnicima da brzo fokusiraju određeni dio stranice. Za pravilno kretanje svaka pristupna tipka mora biti jedinstvena. [Saznajte više o pristupnim tipkama](https://dequeuniversity.com/rules/axe/4.6/accesskeys)."
+    "message": "Pristupne tipke omogućuju korisnicima da brzo fokusiraju određeni dio stranice. Za pravilno kretanje svaka pristupna tipka mora biti jedinstvena. [Saznajte više o pristupnim tipkama](https://dequeuniversity.com/rules/axe/4.7/accesskeys)."
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "Vrijednosti `[accesskey]` nisu jedinstvene"
@@ -9,7 +9,7 @@
     "message": "`[accesskey]` vrijednosti su jedinstvene"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "Svaki ARIA `role` podržava određeni podskup `aria-*` atributa. Njihovo nepodudaranje poništava `aria-*` atribute. [Saznajte kako upariti atribute ARIA-e s njihovim ulogama](https://dequeuniversity.com/rules/axe/4.6/aria-allowed-attr)."
+    "message": "Svaki ARIA `role` podržava određeni podskup `aria-*` atributa. Njihovo nepodudaranje poništava `aria-*` atribute. [Saznajte kako upariti atribute ARIA-e s njihovim ulogama](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)."
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "Atributi `[aria-*]` ne podudaraju se sa svojim ulogama"
@@ -18,7 +18,7 @@
     "message": "Atributi `[aria-*]` podudaraju se sa svojim ulogama"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "Kad element nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako naredbene elemente učiniti pristupačnijima](https://dequeuniversity.com/rules/axe/4.6/aria-command-name)."
+    "message": "Kad element nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako naredbene elemente učiniti pristupačnijima](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "Elementi `button`, `link` i `menuitem` nemaju pristupačne nazive."
@@ -27,7 +27,7 @@
     "message": "Elementi `button`, `link` i `menuitem` imaju pristupačne nazive"
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "Asistivne tehnologije, poput čitača zaslona, ne funkcioniraju dosljedno kad je oznaka `aria-hidden=\"true\"` postavljena na `<body>` dokumenta. [Saznajte kako `aria-hidden` utječe na tijelo dokumenta](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-body)."
+    "message": "Asistivne tehnologije, poput čitača zaslona, ne funkcioniraju dosljedno kad je oznaka `aria-hidden=\"true\"` postavljena na `<body>` dokumenta. [Saznajte kako `aria-hidden` utječe na tijelo dokumenta](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "Element `<body>` dokumenta sadrži atribut `[aria-hidden=\"true\"]`"
@@ -36,7 +36,7 @@
     "message": "Element `<body>` dokumenta ne sadrži atribut `[aria-hidden=\"true\"]`"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "Podređeni elementi s mogućnošću fokusiranja unutar elementa `[aria-hidden=\"true\"]` onemogućuju dostupnost tih interaktivnih elemenata korisnicima asistivnih tehnologija kao što su čitači zaslona. [Saznajte kako `aria-hidden` utječe na elemente s mogućnošću fokusiranja](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-focus)."
+    "message": "Podređeni elementi s mogućnošću fokusiranja unutar elementa `[aria-hidden=\"true\"]` onemogućuju dostupnost tih interaktivnih elemenata korisnicima asistivnih tehnologija kao što su čitači zaslona. [Saznajte kako `aria-hidden` utječe na elemente s mogućnošću fokusiranja](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)."
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "Elementi `[aria-hidden=\"true\"]` sadržavaju podređene elemente koji se mogu fokusirati"
@@ -45,7 +45,7 @@
     "message": "Elementi `[aria-hidden=\"true\"]` ne sadrže podređene elemente koji se mogu fokusirati"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "Kad polje za unos nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više o oznakama polja za unos](https://dequeuniversity.com/rules/axe/4.6/aria-input-field-name)."
+    "message": "Kad polje za unos nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više o oznakama polja za unos](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)."
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA polja za unos nemaju pristupačne nazive"
@@ -54,7 +54,7 @@
     "message": "ARIA polja za unos imaju pristupačne nazive"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "Kad element meter nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako dodijeliti naziv elementima `meter`](https://dequeuniversity.com/rules/axe/4.6/aria-meter-name)."
+    "message": "Kad element meter nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako dodijeliti naziv elementima `meter`](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)."
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "ARIA elementi `meter` nemaju pristupačne nazive."
@@ -63,7 +63,7 @@
     "message": "ARIA elementi `meter` imaju pristupačne nazive"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "Kad element `progressbar` nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako označiti element `progressbar`](https://dequeuniversity.com/rules/axe/4.6/aria-progressbar-name)."
+    "message": "Kad element `progressbar` nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako označiti element `progressbar`](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)."
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA elementi `progressbar` nemaju pristupačne nazive."
@@ -72,7 +72,7 @@
     "message": "ARIA elementi `progressbar` imaju pristupačne nazive"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "Neke uloge ARIA-e zahtijevaju atribute koji opisuju stanje elementa čitačima zaslona. [Saznajte više o ulogama i obveznim atributima](https://dequeuniversity.com/rules/axe/4.6/aria-required-attr)."
+    "message": "Neke uloge ARIA-e zahtijevaju atribute koji opisuju stanje elementa čitačima zaslona. [Saznajte više o ulogama i obveznim atributima](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)."
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "Elementi `[role]` nemaju sve potrebne atribute `[aria-*]`"
@@ -81,7 +81,7 @@
     "message": "`[role]` imaju sve obavezne atribute`[aria-*]`"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "Neke nadređene uloge ARIA-e moraju sadržavati posebne podređene uloge za izvršavanje svojih predviđenih funkcija pristupačnosti. [Saznajte više o ulogama i obveznim podređenim elementima](https://dequeuniversity.com/rules/axe/4.6/aria-required-children)."
+    "message": "Neke nadređene uloge ARIA-e moraju sadržavati posebne podređene uloge za izvršavanje svojih predviđenih funkcija pristupačnosti. [Saznajte više o ulogama i obveznim podređenim elementima](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)."
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "Elementi s ARIA-om `[role]` koji zahtijevaju da podređeni elementi sadrže određenu ulogu `[role]` ne sadrže neke ili sve te obavezne podređene elemente."
@@ -90,7 +90,7 @@
     "message": "Elementi s ARIA-om `[role]` koji zahtijevaju da podređeni elementi sadrže određenu ulogu `[role]` imaju sve obavezne podređene elemente."
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "Određene nadređene uloge moraju sadržavati neke podređene uloge ARIA-e kako bi mogle pravilno izvršavati predviđene funkcije pristupačnosti. [Saznajte više o ulogama ARIA-e i obveznom nadređenom elementu](https://dequeuniversity.com/rules/axe/4.6/aria-required-parent)."
+    "message": "Određene nadređene uloge moraju sadržavati neke podređene uloge ARIA-e kako bi mogle pravilno izvršavati predviđene funkcije pristupačnosti. [Saznajte više o ulogama ARIA-e i obveznom nadređenom elementu](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)."
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "Potrebni nadređeni element ne sadrži `[role]`"
@@ -99,7 +99,7 @@
     "message": "Potrebni nadređeni element sadrži `[role]`."
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "Uloge ARIA-e moraju sadržavati valjane vrijednosti da bi se mogle izvršavati njihove predviđene funkcije pristupačnosti. [Saznajte više o važećim ulogama ARIA-e](https://dequeuniversity.com/rules/axe/4.6/aria-roles)."
+    "message": "Uloge ARIA-e moraju sadržavati valjane vrijednosti da bi se mogle izvršavati njihove predviđene funkcije pristupačnosti. [Saznajte više o važećim ulogama ARIA-e](https://dequeuniversity.com/rules/axe/4.7/aria-roles)."
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "Vrijednosti `[role]` nisu valjane"
@@ -108,7 +108,7 @@
     "message": "Vrijednosti `[role]` su valjane"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "Kad polje prekidača nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više o poljima prekidača](https://dequeuniversity.com/rules/axe/4.6/aria-toggle-field-name)."
+    "message": "Kad polje prekidača nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više o poljima prekidača](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA polja prekidača nemaju pristupačne nazive"
@@ -117,7 +117,7 @@
     "message": "ARIA polja prekidača imaju pristupačne nazive"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "Kad element tooltip nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako dodijeliti naziv elementima `tooltip`](https://dequeuniversity.com/rules/axe/4.6/aria-tooltip-name)."
+    "message": "Kad element tooltip nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako dodijeliti naziv elementima `tooltip`](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)."
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "ARIA elementi `tooltip` nemaju pristupačne nazive."
@@ -126,7 +126,7 @@
     "message": "ARIA elementi `tooltip` imaju pristupačne nazive"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "Kad element `treeitem` nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više o označavanju elemenata `treeitem`](https://dequeuniversity.com/rules/axe/4.6/aria-treeitem-name)."
+    "message": "Kad element `treeitem` nema pristupačni naziv, čitači zaslona najavljuju ga generičkim nazivom, što ga čini neupotrebljivim za korisnike koji se oslanjaju na čitače zaslona. [Saznajte više o označavanju elemenata `treeitem`](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)."
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "ARIA elementi `treeitem` nemaju pristupačne nazive."
@@ -135,7 +135,7 @@
     "message": "ARIA elementi `treeitem` imaju pristupačne nazive"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "Asistivne tehnologije, poput čitača zaslona, ne mogu tumačiti atribute ARIA-a s nevažećim vrijednostima. [Saznajte više o važećim vrijednostima za atribute ARIA-e](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr-value)."
+    "message": "Asistivne tehnologije, poput čitača zaslona, ne mogu tumačiti atribute ARIA-a s nevažećim vrijednostima. [Saznajte više o važećim vrijednostima za atribute ARIA-e](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)."
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "Atributi `[aria-*]` ne sadrže valjane vrijednosti"
@@ -144,7 +144,7 @@
     "message": "Atributi `[aria-*]` sadrže valjane vrijednosti"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "Asistivne tehnologije, poput čitača zaslona, ne mogu tumačiti atribute ARIA-e s nevažećim nazivima. [Saznajte više o važećim atributima ARIA-e](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr)."
+    "message": "Asistivne tehnologije, poput čitača zaslona, ne mogu tumačiti atribute ARIA-e s nevažećim nazivima. [Saznajte više o važećim atributima ARIA-e](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)."
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "Atributi `[aria-*]` nisu valjani ili su pogrešno napisani"
@@ -156,7 +156,7 @@
     "message": "Elementi koji nisu prošli provjeru"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "Kada gumb nema pristupačni naziv, čitači zaslona najavljuju ga kao \"gumb\" te je on neupotrebljiv za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako gumbe učiniti pristupačnijima](https://dequeuniversity.com/rules/axe/4.6/button-name)."
+    "message": "Kada gumb nema pristupačni naziv, čitači zaslona najavljuju ga kao \"gumb\" te je on neupotrebljiv za korisnike koji se oslanjaju na čitače zaslona. [Saznajte kako gumbe učiniti pristupačnijima](https://dequeuniversity.com/rules/axe/4.7/button-name)."
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "Gumbi nemaju pristupačan naziv"
@@ -165,7 +165,7 @@
     "message": "Gumbi imaju pristupačan naziv"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "Dodavanje načina za zaobilaženje repetitivnog sadržaja omogućuje korisnicima tipkovnice učinkovitije kretanje po stranici. [Saznajte više o zaobilaženju blokada](https://dequeuniversity.com/rules/axe/4.6/bypass)."
+    "message": "Dodavanje načina za zaobilaženje repetitivnog sadržaja omogućuje korisnicima tipkovnice učinkovitije kretanje po stranici. [Saznajte više o zaobilaženju blokada](https://dequeuniversity.com/rules/axe/4.7/bypass)."
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "Stranica ne sadrži naslov, vezu za preskakanje ili regiju kao orijentir"
@@ -174,7 +174,7 @@
     "message": "Stranica sadrži naslov, vezu za preskakanje ili regiju kao orijentir"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "Mnogim je korisnicima teško ili nemoguće čitati tekst niskog kontrasta. [Saznajte kako dodati dovoljan kontrast boja](https://dequeuniversity.com/rules/axe/4.6/color-contrast)."
+    "message": "Mnogim je korisnicima teško ili nemoguće čitati tekst niskog kontrasta. [Saznajte kako dodati dovoljan kontrast boja](https://dequeuniversity.com/rules/axe/4.7/color-contrast)."
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "Boje u pozadini i prednjem planu nemaju zadovoljavajući omjer kontrasta."
@@ -183,7 +183,7 @@
     "message": "Boje u pozadini i prednjem planu imaju zadovoljavajući omjer kontrasta"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "Kada popisi definicija nisu valjano označeni, čitači zaslona mogu proizvesti zbunjujuć ili netočan izlaz. [Saznajte kako pravilno strukturirati popise definicija](https://dequeuniversity.com/rules/axe/4.6/definition-list)."
+    "message": "Kada popisi definicija nisu valjano označeni, čitači zaslona mogu proizvesti zbunjujuć ili netočan izlaz. [Saznajte kako pravilno strukturirati popise definicija](https://dequeuniversity.com/rules/axe/4.7/definition-list)."
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "Elementi `<dl>` ne sadrže samo pravilno poredane grupe `<dt>` i `<dd>` i elemente `<script>`, `<template>` ili `<div>`."
@@ -192,7 +192,7 @@
     "message": "Elementi `<dl>` sadrže samo pravilno poredane grupe `<dt>` i `<dd>` i elemente `<script>`, `<template>` ili `<div>`."
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "Stavke na popisu definicija (`<dt>` i `<dd>`) moraju biti sadržane u nadređenom elementu `<dl>` da bi ih čitači zaslona mogli pravilno najaviti. [Saznajte kako pravilno strukturirati popise definicija](https://dequeuniversity.com/rules/axe/4.6/dlitem)."
+    "message": "Stavke na popisu definicija (`<dt>` i `<dd>`) moraju biti sadržane u nadređenom elementu `<dl>` da bi ih čitači zaslona mogli pravilno najaviti. [Saznajte kako pravilno strukturirati popise definicija](https://dequeuniversity.com/rules/axe/4.7/dlitem)."
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "Stavke na popisu definicija nisu upakirane u elemente `<dl>`"
@@ -201,7 +201,7 @@
     "message": "Stavke na popisu definicija upakirane su u elemente `<dl>`"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "Naslov korisnicima čitača zaslona pruža pregled stranice, a korisnici tražilice značajno se na njega oslanjaju kako bi odredili je li neka stranica relevantna za njihovo pretraživanje. [Saznajte više o naslovima dokumenata](https://dequeuniversity.com/rules/axe/4.6/document-title)."
+    "message": "Naslov korisnicima čitača zaslona pruža pregled stranice, a korisnici tražilice značajno se na njega oslanjaju kako bi odredili je li neka stranica relevantna za njihovo pretraživanje. [Saznajte više o naslovima dokumenata](https://dequeuniversity.com/rules/axe/4.7/document-title)."
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "Dokument ne sadrži element `<title>`"
@@ -210,7 +210,7 @@
     "message": "Dokument sadrži element `<title>`"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "Svi elementi s mogućnošću fokusiranja moraju imati jedinstveni `id` kako bi bili vidljivi asistivnim tehnologijama. [Saznajte kako ispraviti duplicirani `id`](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-active)."
+    "message": "Svi elementi s mogućnošću fokusiranja moraju imati jedinstveni `id` kako bi bili vidljivi asistivnim tehnologijama. [Saznajte kako ispraviti duplicirani `id`](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)."
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "Atributi `[id]` na aktivnim elementima koji se mogu fokusirati nisu jedinstveni"
@@ -219,7 +219,7 @@
     "message": "Atributi `[id]` na aktivnim elementima koji se mogu fokusirati jedinstveni su"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "Vrijednost ARIA ID-ja mora biti jedinstvena kako bi se spriječilo da asistivne tehnologije previde druge instance. [Saznajte kako ispraviti duplikate ARIA ID-jeva](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-aria)."
+    "message": "Vrijednost ARIA ID-ja mora biti jedinstvena kako bi se spriječilo da asistivne tehnologije previde druge instance. [Saznajte kako ispraviti duplikate ARIA ID-jeva](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)."
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "ARIA ID-jevi nisu jedinstveni"
@@ -228,7 +228,7 @@
     "message": "ARIA ID-jevi su jedinstveni"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "Ako polja obrasca imaju više oznaka, asistivne tehnologije kao što su čitači zaslona koji koriste prvu, zadnju ili sve oznake mogu ih najavljivati na zbunjujući način. [Saznajte kako upotrebljavati oznake obrasca](https://dequeuniversity.com/rules/axe/4.6/form-field-multiple-labels)."
+    "message": "Ako polja obrasca imaju više oznaka, asistivne tehnologije kao što su čitači zaslona koji koriste prvu, zadnju ili sve oznake mogu ih najavljivati na zbunjujući način. [Saznajte kako upotrebljavati oznake obrasca](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "Polja obrasca imaju više oznaka"
@@ -237,7 +237,7 @@
     "message": "Nijedno polje obrasca nema više oznaka"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "Korisnici čitača zaslona oslanjaju se na naslove okvira za opisivanje sadržaja okvira. [Saznajte više o naslovima okvira](https://dequeuniversity.com/rules/axe/4.6/frame-title)."
+    "message": "Korisnici čitača zaslona oslanjaju se na naslove okvira za opisivanje sadržaja okvira. [Saznajte više o naslovima okvira](https://dequeuniversity.com/rules/axe/4.7/frame-title)."
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "Elementi `<frame>` ili `<iframe>` nemaju naslov"
@@ -246,7 +246,7 @@
     "message": "Elementi `<frame>` ili `<iframe>` imaju naslov"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "Pravilno poredani naslovi koji ne preskaču razine otkrivaju semantičku strukturu stranice, što olakšava navigaciju i razumijevanje prilikom upotrebe asistivnih tehnologija. [Saznajte više o redoslijedu naslova](https://dequeuniversity.com/rules/axe/4.6/heading-order)."
+    "message": "Pravilno poredani naslovi koji ne preskaču razine otkrivaju semantičku strukturu stranice, što olakšava navigaciju i razumijevanje prilikom upotrebe asistivnih tehnologija. [Saznajte više o redoslijedu naslova](https://dequeuniversity.com/rules/axe/4.7/heading-order)."
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "Elementi naslova nisu u postupno silaznom redoslijedu"
@@ -255,7 +255,7 @@
     "message": "Elementi naslova pojavljuju se postupno silaznim redoslijedom"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "Ako za stranicu nije naveden atribut `lang`, čitač zaslona pretpostavlja da je stranica na zadanom jeziku koji je korisnik odabrao prilikom postavljanja čitača zaslona. Ako stranica nije stvarno na zadanom jeziku, čitač zaslona možda neće pravilno najavljivati tekst sa stranice. [Saznajte više o atributu `lang`](https://dequeuniversity.com/rules/axe/4.6/html-has-lang)."
+    "message": "Ako za stranicu nije naveden atribut `lang`, čitač zaslona pretpostavlja da je stranica na zadanom jeziku koji je korisnik odabrao prilikom postavljanja čitača zaslona. Ako stranica nije stvarno na zadanom jeziku, čitač zaslona možda neće pravilno najavljivati tekst sa stranice. [Saznajte više o atributu `lang`](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)."
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "Element `<html>` nema atribut `[lang]`"
@@ -264,7 +264,7 @@
     "message": "Element `<html>` ima atribut `[lang]`"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "Navođenje valjanog [BCP 47 jezika](https://www.w3.org/International/questions/qa-choosing-language-tags#question) pomaže čitačima zaslona u pravilnom najavljivanju teksta. [Saznajte kako upotrebljavati atribut `lang`](https://dequeuniversity.com/rules/axe/4.6/html-lang-valid)."
+    "message": "Navođenje valjanog [BCP 47 jezika](https://www.w3.org/International/questions/qa-choosing-language-tags#question) pomaže čitačima zaslona u pravilnom najavljivanju teksta. [Saznajte kako upotrebljavati atribut `lang`](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)."
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "Element `<html>` ne sadrži valjanu vrijednost za atribut `[lang]`."
@@ -273,7 +273,7 @@
     "message": "Element `<html>` ima valjanu vrijednost za svoj atribut `[lang]`"
   },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "Informativni elementi trebali bi sadržavati kratak, opisni zamjenski tekst. Ukrasni elementi mogu se zanemariti praznim atributom alt. [Saznajte više o atributu `alt`](https://dequeuniversity.com/rules/axe/4.6/image-alt)."
+    "message": "Informativni elementi trebali bi sadržavati kratak, opisni zamjenski tekst. Ukrasni elementi mogu se zanemariti praznim atributom alt. [Saznajte više o atributu `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "Elementi slike nemaju atribute `[alt]`"
@@ -282,7 +282,7 @@
     "message": "Elementi slike imaju `[alt]` atribute"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "Kada se slika upotrebljava kao gumb `<input>`, navođenje zamjenskog teksta može pomoći korisnicima čitača zaslona da shvate svrhu gumba. [Saznajte više o zamjenskom tekstu slike za unos](https://dequeuniversity.com/rules/axe/4.6/input-image-alt)."
+    "message": "Kada se slika upotrebljava kao gumb `<input>`, navođenje zamjenskog teksta može pomoći korisnicima čitača zaslona da shvate svrhu gumba. [Saznajte više o zamjenskom tekstu slike za unos](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "Elementi `<input type=\"image\">` nemaju `[alt]` tekst"
@@ -291,7 +291,7 @@
     "message": "Elementi `<input type=\"image\">` sadrže `[alt]` tekst"
   },
   "core/audits/accessibility/label.js | description": {
-    "message": "Oznake osiguravaju da asistivne tehnologije, poput čitača zaslona, pravilno najavljuju kontrole obrazaca. [Saznajte više o oznakama elemenata obrasca](https://dequeuniversity.com/rules/axe/4.6/label)."
+    "message": "Oznake osiguravaju da asistivne tehnologije, poput čitača zaslona, pravilno najavljuju kontrole obrazaca. [Saznajte više o oznakama elemenata obrasca](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "Elementi oblika ne sadrže povezane oznake"
@@ -300,7 +300,7 @@
     "message": "Elementi oblika imaju povezane oznake"
   },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "Tekst veze (i zamjenski tekst za slike kada se upotrebljavaju kao veze) koji je prepoznatljiv, jedinstven i može se fokusirati omogućuje lakše kretanje korisnicima čitača zaslona. [Saznajte kako veze učiniti pristupačnima](https://dequeuniversity.com/rules/axe/4.6/link-name)."
+    "message": "Tekst veze (i zamjenski tekst za slike kada se upotrebljavaju kao veze) koji je prepoznatljiv, jedinstven i može se fokusirati omogućuje lakše kretanje korisnicima čitača zaslona. [Saznajte kako veze učiniti pristupačnima](https://dequeuniversity.com/rules/axe/4.7/link-name)."
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "Veze nemaju naziv koji je moguće raspoznati"
@@ -309,7 +309,7 @@
     "message": "Veze imaju naziv koji je moguće raspoznati"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "Čitači zaslona imaju poseban način najavljivanja popisa. Osiguravanje pravilne strukture popisa pomaže izlazu čitača zaslona. [Saznajte više o pravilnoj strukturi popisa](https://dequeuniversity.com/rules/axe/4.6/list)."
+    "message": "Čitači zaslona imaju poseban način najavljivanja popisa. Osiguravanje pravilne strukture popisa pomaže izlazu čitača zaslona. [Saznajte više o pravilnoj strukturi popisa](https://dequeuniversity.com/rules/axe/4.7/list)."
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "Popisi ne sadrže samo elemente `<li>` i elemente koji podupiru skriptu (`<script>` i`<template>`)."
@@ -318,7 +318,7 @@
     "message": "Popisi sadrže samo elemente `<li>` i elemente koji podupiru skriptu (`<script>` i`<template>`)."
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "Za čitače zaslona stavke na popisu (`<li>`) moraju biti sadržane unutar nadređenog `<ul>`, `<ol>` ili `<menu>` kako bi ih se moglo pravilno najaviti. [Saznajte više o pravilnoj strukturi popisa](https://dequeuniversity.com/rules/axe/4.6/listitem)."
+    "message": "Za čitače zaslona stavke na popisu (`<li>`) moraju biti sadržane unutar nadređenog `<ul>`, `<ol>` ili `<menu>` kako bi ih se moglo pravilno najaviti. [Saznajte više o pravilnoj strukturi popisa](https://dequeuniversity.com/rules/axe/4.7/listitem)."
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "Stavke popisa (`<li>`) nisu sadržane unutar nadređenih elemenata `<ul>`, `<ol>` ili `<menu>`."
@@ -327,7 +327,7 @@
     "message": "Stavke popisa (`<li>`) sadržane su unutar nadređenih elemenata `<ul>`, `<ol>` ili `<menu>`"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "Korisnici ne očekuju automatsko osvježavanje stranice. Ako se to dogodi, fokus se vraća na vrh stranice. To može biti frustrirajuće i zbuniti korisnike. [Saznajte više o metaoznaci za osvježavanje](https://dequeuniversity.com/rules/axe/4.6/meta-refresh)."
+    "message": "Korisnici ne očekuju automatsko osvježavanje stranice. Ako se to dogodi, fokus se vraća na vrh stranice. To može biti frustrirajuće i zbuniti korisnike. [Saznajte više o metaoznaci za osvježavanje](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)."
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "Dokument upotrebljava `<meta http-equiv=\"refresh\">`"
@@ -336,7 +336,7 @@
     "message": "Dokument ne upotrebljava `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "Onemogućivanje zumiranja problematično je za slabovidne korisnike koji se oslanjaju na povećavanje zaslona kako bi dobro vidjeli sadržaj web-stranice. [Saznajte više o metaoznaci za vidljivi dio](https://dequeuniversity.com/rules/axe/4.6/meta-viewport)."
+    "message": "Onemogućivanje zumiranja problematično je za slabovidne korisnike koji se oslanjaju na povećavanje zaslona kako bi dobro vidjeli sadržaj web-stranice. [Saznajte više o metaoznaci za vidljivi dio](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)."
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`[user-scalable=\"no\"]` se upotrebljava u elementu `<meta name=\"viewport\">` ili je atribut `[maximum-scale]` manji od pet."
@@ -345,7 +345,7 @@
     "message": "`[user-scalable=\"no\"]` se ne upotrebljava u elementu `<meta name=\"viewport\">` i atribut `[maximum-scale]` nije manji od pet."
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "Čitači zaslona ne mogu prevesti netekstualni sadržaj. Dodavanje zamjenskog teksta elementima `<object>` pomaže čitačima zaslona u prenošenju značenja korisnicima. [Saznajte više o zamjenskom tekstu za element `object`](https://dequeuniversity.com/rules/axe/4.6/object-alt)."
+    "message": "Čitači zaslona ne mogu prevesti netekstualni sadržaj. Dodavanje zamjenskog teksta elementima `<object>` pomaže čitačima zaslona u prenošenju značenja korisnicima. [Saznajte više o zamjenskom tekstu za element `object`](https://dequeuniversity.com/rules/axe/4.7/object-alt)."
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "Elementi `<object>` nemaju zamjenski tekst"
@@ -354,7 +354,7 @@
     "message": "Elementi `<object>` imaju zamjenski tekst"
   },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "Vrijednost viša od 0 podrazumijeva eksplicitno naređivanje kretanja. Iako je tehnički valjano, to često frustrira korisnike koji se oslanjaju na asistivne tehnologije. [Saznajte više o atributu `tabindex`](https://dequeuniversity.com/rules/axe/4.6/tabindex)."
+    "message": "Vrijednost viša od 0 podrazumijeva eksplicitno naređivanje kretanja. Iako je tehnički valjano, to često frustrira korisnike koji se oslanjaju na asistivne tehnologije. [Saznajte više o atributu `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "Neki elementi imaju vrijednost `[tabindex]` višu od 0"
@@ -363,7 +363,7 @@
     "message": "Nijedan element nema vrijednost `[tabindex]` veću od 0"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "Čitači zaslona sadrže značajke za olakšavanje kretanja po tablicama. Potrebno je pripaziti da se ćelije `<td>` koje upotrebljavaju atribut `[headers]` odnose samo na druge ćelije u istoj tablici kako bi se korisnicima čitača zaslona omogućio bolji doživljaj. [Saznajte više o atributu `headers`](https://dequeuniversity.com/rules/axe/4.6/td-headers-attr)."
+    "message": "Čitači zaslona sadrže značajke za olakšavanje kretanja po tablicama. Potrebno je pripaziti da se ćelije `<td>` koje upotrebljavaju atribut `[headers]` odnose samo na druge ćelije u istoj tablici kako bi se korisnicima čitača zaslona omogućio bolji doživljaj. [Saznajte više o atributu `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "Ćelije u elementu `<table>` koje upotrebljavaju atribut `[headers]` odnose se na element `id` koji nije pronađen unutar iste tablice."
@@ -372,7 +372,7 @@
     "message": "Ćelije u elementu `<table>` koje upotrebljavaju atribut `[headers]` odnose se na ćelije tablice unutar iste tablice."
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "Čitači zaslona sadrže značajke za olakšavanje kretanja po tablicama. Osiguravanje da se zaglavlja tablice uvijek odnose na neki skup ćelija može poboljšati doživljaj za korisnike čitača zaslona. [Saznajte više o zaglavljima tablice](https://dequeuniversity.com/rules/axe/4.6/th-has-data-cells)."
+    "message": "Čitači zaslona sadrže značajke za olakšavanje kretanja po tablicama. Osiguravanje da se zaglavlja tablice uvijek odnose na neki skup ćelija može poboljšati doživljaj za korisnike čitača zaslona. [Saznajte više o zaglavljima tablice](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)."
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "Elementi `<th>` i elementi s`[role=\"columnheader\"/\"rowheader\"]` nemaju podatkovne ćelije koje oni opisuju."
@@ -381,7 +381,7 @@
     "message": "Elementi `<th>` i elementi s `[role=\"columnheader\"/\"rowheader\"]` imaju podatkovne ćelije koje opisuju."
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "Navođenje valjanog [BCP 47 jezika](https://www.w3.org/International/questions/qa-choosing-language-tags#question) u elementima pomaže osigurati da čitač zaslona pravilno izgovara tekst. [Saznajte kako upotrebljavati atribut `lang`](https://dequeuniversity.com/rules/axe/4.6/valid-lang)."
+    "message": "Navođenje valjanog [BCP 47 jezika](https://www.w3.org/International/questions/qa-choosing-language-tags#question) u elementima pomaže osigurati da čitač zaslona pravilno izgovara tekst. [Saznajte kako upotrebljavati atribut `lang`](https://dequeuniversity.com/rules/axe/4.7/valid-lang)."
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "Atributi `[lang]` ne sadrže valjanu vrijednost"
@@ -390,7 +390,7 @@
     "message": "Atributi `[lang]` imaju valjanu vrijednost"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "Kada videozapis sadrži titlove, gluhim i nagluhim osobama jednostavnije je pristupiti njegovim informacijama. [Saznajte više o titlovima za videozapise](https://dequeuniversity.com/rules/axe/4.6/video-caption)."
+    "message": "Kada videozapis sadrži titlove, gluhim i nagluhim osobama jednostavnije je pristupiti njegovim informacijama. [Saznajte više o titlovima za videozapise](https://dequeuniversity.com/rules/axe/4.7/video-caption)."
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "Elementi `<video>` ne sadrže element `<track>` s `[kind=\"captions\"]`."
@@ -765,13 +765,13 @@
     "message": "Izbjegava traženje dopuštenja za obavještavanje pri učitavanju stranice"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | description": {
-    "message": "Preventing input pasting is a UX anti-pattern, and undermines good security policy. [Learn more about user-friendly input fields](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
+    "message": "Sprječavanje lijepljenja unosa loša je praksa za UX i oslabljuje sigurnost blokiranjem upravitelja zaporki.[Saznajte više o poljima za unos prilagođenima korisnicima](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | failureTitle": {
-    "message": "Prevents users from pasting into input fields"
+    "message": "Onemogućuje korisnicima lijepljenje u polja za unos"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | title": {
-    "message": "Allows users to paste into input fields"
+    "message": "Omogućuje korisnicima lijepljenje u polja za unos"
   },
   "core/audits/dobetterweb/uses-http2.js | columnProtocol": {
     "message": "Protokol"
@@ -980,8 +980,29 @@
   "core/audits/is-on-https.js | warning": {
     "message": "Dopušteno uz upozorenje"
   },
+  "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
+    "message": "% of LCP"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnPhase": {
+    "message": "Phase"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnTiming": {
+    "message": "Timing"
+  },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Ovo je element s najvećim renderiranjem sadržaja unutar vidljivog dijela. [Saznajte više o elementu s najvećim renderiranjem sadržaja](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
+    "message": "Load Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
+    "message": "Load Time"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
+    "message": "Render Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemTTFB": {
+    "message": "TTFB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "Element s najvećim renderiranjem sadržaja"
@@ -1323,7 +1344,7 @@
     "message": "robots.txt je valjan"
   },
   "core/audits/seo/tap-targets.js | description": {
-    "message": "Interaktivni elementi kao što su gumbi i veze trebali bi biti dovoljno veliki (48 x 48 px) i oko njih bi trebalo biti dovoljno prostora da ih se može lako dodirnuti bez preklapanja s drugim elementima. [Saznajte više o ciljevima dodira](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
+    "message": "Interaktivni elementi kao što su gumbi i veze trebali bi biti dovoljno veliki (48 x 48 px) ili bi oko njih trebalo biti dovoljno prostora da ih se može lako dodirnuti bez preklapanja s drugim elementima. [Saznajte više o ciljevima dodira](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)."
   },
   "core/audits/seo/tap-targets.js | displayValue": {
     "message": "{decimalProportion, number, percent} ciljeva dodira odgovarajuće veličine"
@@ -1714,6 +1735,9 @@
   },
   "core/gather/driver/storage.js | warningOriginDataTimeout": {
     "message": "Isteklo je vrijeme za brisanje izvornih podataka. Pokušajte ponovno pregledati ovu stranicu i prijaviti pogrešku ako se problem nastavi."
+  },
+  "core/gather/gatherers/link-elements.js | headerParseWarning": {
+    "message": "Pogreška prilikom raščlambe zaglavlja `link` ({error}): `{header}`"
   },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "Samo stranice koje su učitane putem GET zahtjeva ispunjavaju kriterije za predmemoriranje cijele stranice."
@@ -2735,6 +2759,33 @@
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | uses-responsive-images": {
     "message": "Koristite [Ezoic Leap](https://pubdash.ezoic.com/speed) i omogućite `Resize Images` da bi se veličina slika promijenila ovisno o uređaju i time smanjila veličina mrežnih resursa."
   },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
+    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
+    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
+    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
+    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
+    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Savjetujemo vam da prenesete GIF na uslugu na kojoj će se kodirati za ugrađivanje kao HTML5 videozapis."
   },
@@ -2814,10 +2865,10 @@
     "message": "`<link rel=preload>` oznake mogu se dodati [promjenom izgleda tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Upotrijebite komponentu `next/image` umjesto komponente `<img>` da biste automatski optimizirali format slike. [Saznajte više](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Upotrijebite komponentu `next/image` umjesto komponente `<img>` da bi se slike automatski učitale s odgodom. [Saznajte više](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Koristite komponentu `next/image` i postavite \"priority\" na \"true\" kako bi se LCP slika predučitala. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2832,7 +2883,7 @@
     "message": "Savjetujemo vam da postavite `PurgeCSS` u `Next.js` konfiguraciji da biste uklonili nekorištena pravila s listova stilova. [Saznajte više](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Koristite `Webpack Bundle Analyzer` za otkrivanje nekorištenog JavaScript koda. [Saznajte više](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Savjetujemo vam da koristite `Next.js Analytics` radi mjerenja izvedbe aplikacije u stvarnom svijetu. [Saznajte više](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2841,7 +2892,7 @@
     "message": "Konfigurirajte predmemoriranje za nepromjenjive elemente i stranice `Server-side Rendered` (SSR). [Saznajte više](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Upotrijebite komponentu `next/image` umjesto komponente `<img>` da biste prilagodili kvalitetu slike. [Saznajte više](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Koristite komponentu `next/image` da biste postavili odgovarajuće `sizes`. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#sizes)."
@@ -3047,6 +3098,9 @@
   "report/renderer/report-utils.js | expandView": {
     "message": "Proširi prikaz"
   },
+  "report/renderer/report-utils.js | firstPartyChipLabel": {
+    "message": "Prva strana"
+  },
   "report/renderer/report-utils.js | footerIssue": {
     "message": "Prijavljivanje poteškoće"
   },
@@ -3064,6 +3118,9 @@
   },
   "report/renderer/report-utils.js | notApplicableAuditsGroupTitle": {
     "message": "Nije primjenjivo"
+  },
+  "report/renderer/report-utils.js | openInANewTabTooltip": {
+    "message": "Otvorite u novoj kartici"
   },
   "report/renderer/report-utils.js | opportunityResourceColumnLabel": {
     "message": "Prilika"
@@ -3084,7 +3141,7 @@
     "message": "Emulirana radna površina"
   },
   "report/renderer/report-utils.js | runtimeMobileEmulation": {
-    "message": "Emulated Moto G Power"
+    "message": "Emulirani Moto G Power"
   },
   "report/renderer/report-utils.js | runtimeNoEmulation": {
     "message": "Nema emulacije"
@@ -3142,6 +3199,9 @@
   },
   "report/renderer/report-utils.js | toplevelWarningsMessage": {
     "message": "Na ovo izvođenje Lighthousea utjecale su neke poteškoće:"
+  },
+  "report/renderer/report-utils.js | unattributable": {
+    "message": "Ne može se dodijeliti"
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Vrijednosti se procjenjuju i mogu se razlikovati. [Rezultat izvedbe računa se](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) izravno pomoću tih mjernih podataka."

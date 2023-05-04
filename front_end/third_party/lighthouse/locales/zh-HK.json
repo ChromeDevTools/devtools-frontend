@@ -1,6 +1,6 @@
 {
   "core/audits/accessibility/accesskeys.js | description": {
-    "message": "快速鍵可讓使用者快速聚焦網頁的特定部分。如要讓使用者正確瀏覽，每個快速鍵一律不可重複。[進一步瞭解快速鍵](https://dequeuniversity.com/rules/axe/4.6/accesskeys)。"
+    "message": "快速鍵可讓使用者快速聚焦網頁的特定部分。如要讓使用者正確瀏覽，每個快速鍵一律不可重複。[進一步瞭解快速鍵](https://dequeuniversity.com/rules/axe/4.7/accesskeys)。"
   },
   "core/audits/accessibility/accesskeys.js | failureTitle": {
     "message": "`[accesskey]` 的值重複"
@@ -9,7 +9,7 @@
     "message": "`[accesskey]` 值獨一無二"
   },
   "core/audits/accessibility/aria-allowed-attr.js | description": {
-    "message": "每個 ARIA「`role`」都支援一部分特定的「`aria-*`」屬性。配對錯誤會導致「`aria-*`」屬性無效。[瞭解如何讓 ARIA 屬性與其角色相符](https://dequeuniversity.com/rules/axe/4.6/aria-allowed-attr)。"
+    "message": "每個 ARIA「`role`」都支援一部分特定的「`aria-*`」屬性。配對錯誤會導致「`aria-*`」屬性無效。[瞭解如何讓 ARIA 屬性與其角色相符](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-attr)。"
   },
   "core/audits/accessibility/aria-allowed-attr.js | failureTitle": {
     "message": "`[aria-*]` 屬性與其角色不符"
@@ -18,7 +18,7 @@
     "message": "`[aria-*]` 屬性與其角色相符"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
-    "message": "如果元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解如何讓指令元素更容易使用](https://dequeuniversity.com/rules/axe/4.6/aria-command-name)。"
+    "message": "如果元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解如何讓指令元素更容易使用](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)。"
   },
   "core/audits/accessibility/aria-command-name.js | failureTitle": {
     "message": "`button`、`link` 和 `menuitem` 元素沒有無障礙名稱。"
@@ -27,7 +27,7 @@
     "message": "`button`、`link` 和 `menuitem` 元素具有無障礙名稱"
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
-    "message": "在 `<body>` 文件上設定 `aria-hidden=\"true\"` 時，輔助技術 (例如螢幕閱讀器) 的運作將無法保持一致。[瞭解 `aria-hidden` 如何影響文件內文](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-body)。"
+    "message": "在 `<body>` 文件上設定 `aria-hidden=\"true\"` 時，輔助技術 (例如螢幕閱讀器) 的運作將無法保持一致。[瞭解 `aria-hidden` 如何影響文件內文](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)。"
   },
   "core/audits/accessibility/aria-hidden-body.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` 有在文件 `<body>` 上顯示"
@@ -36,7 +36,7 @@
     "message": "`[aria-hidden=\"true\"]` 沒有在文件 `<body>` 上顯示"
   },
   "core/audits/accessibility/aria-hidden-focus.js | description": {
-    "message": "`[aria-hidden=\"true\"]` 元素中可聚焦的子代會禁止使用輔助技術 (例如螢幕閱讀器) 的使用者運用這些互動元素。[瞭解 `aria-hidden` 如何影響可聚焦的元素](https://dequeuniversity.com/rules/axe/4.6/aria-hidden-focus)。"
+    "message": "`[aria-hidden=\"true\"]` 元素中可聚焦的子代會禁止使用輔助技術 (例如螢幕閱讀器) 的使用者運用這些互動元素。[瞭解 `aria-hidden` 如何影響可聚焦的元素](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-focus)。"
   },
   "core/audits/accessibility/aria-hidden-focus.js | failureTitle": {
     "message": "`[aria-hidden=\"true\"]` 元素含有可聚焦的子代"
@@ -45,7 +45,7 @@
     "message": "`[aria-hidden=\"true\"]` 元素不含可聚焦的子代"
   },
   "core/audits/accessibility/aria-input-field-name.js | description": {
-    "message": "如果輸入欄位沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[進一步瞭解輸入欄位標籤](https://dequeuniversity.com/rules/axe/4.6/aria-input-field-name)。"
+    "message": "如果輸入欄位沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[進一步瞭解輸入欄位標籤](https://dequeuniversity.com/rules/axe/4.7/aria-input-field-name)。"
   },
   "core/audits/accessibility/aria-input-field-name.js | failureTitle": {
     "message": "ARIA 輸入欄位沒有輔助名稱"
@@ -54,7 +54,7 @@
     "message": "ARIA 輸入欄位有輔助名稱"
   },
   "core/audits/accessibility/aria-meter-name.js | description": {
-    "message": "如果計量器元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解如何命名`meter`元素](https://dequeuniversity.com/rules/axe/4.6/aria-meter-name)。"
+    "message": "如果計量器元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解如何命名`meter`元素](https://dequeuniversity.com/rules/axe/4.7/aria-meter-name)。"
   },
   "core/audits/accessibility/aria-meter-name.js | failureTitle": {
     "message": "ARIA `meter` 元素沒有無障礙名稱。"
@@ -63,7 +63,7 @@
     "message": "ARIA `meter` 元素具有無障礙名稱"
   },
   "core/audits/accessibility/aria-progressbar-name.js | description": {
-    "message": "如果 `progressbar` 元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該元素。[瞭解如何為 `progressbar` 元素加上標籤](https://dequeuniversity.com/rules/axe/4.6/aria-progressbar-name)。"
+    "message": "如果 `progressbar` 元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該元素。[瞭解如何為 `progressbar` 元素加上標籤](https://dequeuniversity.com/rules/axe/4.7/aria-progressbar-name)。"
   },
   "core/audits/accessibility/aria-progressbar-name.js | failureTitle": {
     "message": "ARIA `progressbar` 元素沒有無障礙名稱。"
@@ -72,7 +72,7 @@
     "message": "ARIA `progressbar` 元素具有無障礙名稱"
   },
   "core/audits/accessibility/aria-required-attr.js | description": {
-    "message": "部分 ARIA 角色的必要屬性會向螢幕閱讀器的使用者說明元素狀態。[進一步瞭解角色和必要屬性](https://dequeuniversity.com/rules/axe/4.6/aria-required-attr)。"
+    "message": "部分 ARIA 角色的必要屬性會向螢幕閱讀器的使用者說明元素狀態。[進一步瞭解角色和必要屬性](https://dequeuniversity.com/rules/axe/4.7/aria-required-attr)。"
   },
   "core/audits/accessibility/aria-required-attr.js | failureTitle": {
     "message": "`[role]` 未具備所有必要的 `[aria-*]` 屬性"
@@ -81,7 +81,7 @@
     "message": "`[role]` 具備所有必要的 `[aria-*]` 屬性"
   },
   "core/audits/accessibility/aria-required-children.js | description": {
-    "message": "部分 ARIA 父角色必須包含特定的子角色，才能正確執行無障礙功能。[進一步瞭解角色和需要的子元素](https://dequeuniversity.com/rules/axe/4.6/aria-required-children)。"
+    "message": "部分 ARIA 父角色必須包含特定的子角色，才能正確執行無障礙功能。[進一步瞭解角色和需要的子元素](https://dequeuniversity.com/rules/axe/4.7/aria-required-children)。"
   },
   "core/audits/accessibility/aria-required-children.js | failureTitle": {
     "message": "包含 ARIA `[role]` 且要求子元素包含特定 `[role]` 的元素缺少部分或全部的必要子元素。"
@@ -90,7 +90,7 @@
     "message": "包含 ARIA `[role]` 且要求子元素包含特定 `[role]` 的元素具有全部必要的子元素。"
   },
   "core/audits/accessibility/aria-required-parent.js | description": {
-    "message": "部分 ARIA 子角色必須包括在特定的父角色中，才能正確執行無障礙功能。[進一步瞭解 ARIA 角色和需要的父元素](https://dequeuniversity.com/rules/axe/4.6/aria-required-parent)。"
+    "message": "部分 ARIA 子角色必須包括在特定的父角色中，才能正確執行無障礙功能。[進一步瞭解 ARIA 角色和需要的父元素](https://dequeuniversity.com/rules/axe/4.7/aria-required-parent)。"
   },
   "core/audits/accessibility/aria-required-parent.js | failureTitle": {
     "message": "`[role]` 未包含在必要的父元素中"
@@ -99,7 +99,7 @@
     "message": "`[role]` 已包含在必要的父元素中"
   },
   "core/audits/accessibility/aria-roles.js | description": {
-    "message": "ARIA 角色必須具備有效的值，才能執行無障礙功能。[進一步瞭解有效的 ARIA 角色](https://dequeuniversity.com/rules/axe/4.6/aria-roles)。"
+    "message": "ARIA 角色必須具備有效的值，才能執行無障礙功能。[進一步瞭解有效的 ARIA 角色](https://dequeuniversity.com/rules/axe/4.7/aria-roles)。"
   },
   "core/audits/accessibility/aria-roles.js | failureTitle": {
     "message": "`[role]` 值無效"
@@ -108,7 +108,7 @@
     "message": "`[role]` 值有效"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
-    "message": "如果切換欄位沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[進一步瞭解切換欄位](https://dequeuniversity.com/rules/axe/4.6/aria-toggle-field-name)。"
+    "message": "如果切換欄位沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[進一步瞭解切換欄位](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)。"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | failureTitle": {
     "message": "ARIA 切換欄位沒有輔助名稱"
@@ -117,7 +117,7 @@
     "message": "ARIA 切換欄位有輔助名稱"
   },
   "core/audits/accessibility/aria-tooltip-name.js | description": {
-    "message": "如果提示元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解如何命名`tooltip`元素](https://dequeuniversity.com/rules/axe/4.6/aria-tooltip-name)。"
+    "message": "如果提示元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該欄位。[瞭解如何命名`tooltip`元素](https://dequeuniversity.com/rules/axe/4.7/aria-tooltip-name)。"
   },
   "core/audits/accessibility/aria-tooltip-name.js | failureTitle": {
     "message": "ARIA `tooltip` 元素沒有無障礙名稱。"
@@ -126,7 +126,7 @@
     "message": "ARIA `tooltip` 元素具有無障礙名稱"
   },
   "core/audits/accessibility/aria-treeitem-name.js | description": {
-    "message": "如果 `treeitem` 元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該元素。[進一步瞭解如何為 `treeitem` 元素加上標籤](https://dequeuniversity.com/rules/axe/4.6/aria-treeitem-name)。"
+    "message": "如果 `treeitem` 元素沒有無障礙名稱，螢幕閱讀器只會讀出一般名稱，導致依賴螢幕閱讀器的使用者無法使用該元素。[進一步瞭解如何為 `treeitem` 元素加上標籤](https://dequeuniversity.com/rules/axe/4.7/aria-treeitem-name)。"
   },
   "core/audits/accessibility/aria-treeitem-name.js | failureTitle": {
     "message": "ARIA `treeitem` 元素沒有無障礙名稱。"
@@ -135,7 +135,7 @@
     "message": "ARIA `treeitem` 元素具有無障礙名稱"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | description": {
-    "message": "輔助技術 (如螢幕閱讀器) 無法解讀具有無效值的 ARIA 屬性。[進一步瞭解 ARIA 屬性的有效值](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr-value)。"
+    "message": "輔助技術 (如螢幕閱讀器) 無法解讀具有無效值的 ARIA 屬性。[進一步瞭解 ARIA 屬性的有效值](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr-value)。"
   },
   "core/audits/accessibility/aria-valid-attr-value.js | failureTitle": {
     "message": "`[aria-*]` 屬性並無有效的值"
@@ -144,7 +144,7 @@
     "message": "`[aria-*]` 屬性具備有效的值"
   },
   "core/audits/accessibility/aria-valid-attr.js | description": {
-    "message": "輔助技術 (例如螢幕閱讀器) 無法解讀名稱無效的 ARIA 屬性。[進一步瞭解有效的 ARIA 屬性](https://dequeuniversity.com/rules/axe/4.6/aria-valid-attr)。"
+    "message": "輔助技術 (例如螢幕閱讀器) 無法解讀名稱無效的 ARIA 屬性。[進一步瞭解有效的 ARIA 屬性](https://dequeuniversity.com/rules/axe/4.7/aria-valid-attr)。"
   },
   "core/audits/accessibility/aria-valid-attr.js | failureTitle": {
     "message": "`[aria-*]` 屬性無效或拼字錯誤"
@@ -156,7 +156,7 @@
     "message": "審核失敗的元素"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "如果按鈕沒有無障礙名稱，螢幕閱讀器只會讀出「按鈕」，導致依賴螢幕閱讀器的使用者無法使用該按鈕。[瞭解如何讓使用者更容易使用按鈕](https://dequeuniversity.com/rules/axe/4.6/button-name)。"
+    "message": "如果按鈕沒有無障礙名稱，螢幕閱讀器只會讀出「按鈕」，導致依賴螢幕閱讀器的使用者無法使用該按鈕。[瞭解如何讓使用者更容易使用按鈕](https://dequeuniversity.com/rules/axe/4.7/button-name)。"
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
     "message": "按鈕沒有可存取的名稱"
@@ -165,7 +165,7 @@
     "message": "按鈕有可存取的名稱"
   },
   "core/audits/accessibility/bypass.js | description": {
-    "message": "為重複的內容新增略過選項，可提高鍵盤使用者的網頁瀏覽效率。[進一步瞭解如何繞過區塊](https://dequeuniversity.com/rules/axe/4.6/bypass)。"
+    "message": "為重複的內容新增略過選項，可提高鍵盤使用者的網頁瀏覽效率。[進一步瞭解如何繞過區塊](https://dequeuniversity.com/rules/axe/4.7/bypass)。"
   },
   "core/audits/accessibility/bypass.js | failureTitle": {
     "message": "網頁中沒有標題、略過連結或地標區域"
@@ -174,7 +174,7 @@
     "message": "網頁包含標題、略過連結或地標區域"
   },
   "core/audits/accessibility/color-contrast.js | description": {
-    "message": "很多使用者難以閱讀或無法閱讀低對比度的文字。[瞭解如何提供充足的顏色對比度](https://dequeuniversity.com/rules/axe/4.6/color-contrast)。"
+    "message": "很多使用者難以閱讀或無法閱讀低對比度的文字。[瞭解如何提供充足的顏色對比度](https://dequeuniversity.com/rules/axe/4.7/color-contrast)。"
   },
   "core/audits/accessibility/color-contrast.js | failureTitle": {
     "message": "背景和前景顏色沒有足夠的對比度。"
@@ -183,7 +183,7 @@
     "message": "背景和前景顏色有足夠的對比度"
   },
   "core/audits/accessibility/definition-list.js | description": {
-    "message": "如果定義清單的標記不正確，螢幕閱讀器可能會輸出令人混淆或不正確的內容。[瞭解如何正確建構定義清單](https://dequeuniversity.com/rules/axe/4.6/definition-list)。"
+    "message": "如果定義清單的標記不正確，螢幕閱讀器可能會輸出令人混淆或不正確的內容。[瞭解如何正確建構定義清單](https://dequeuniversity.com/rules/axe/4.7/definition-list)。"
   },
   "core/audits/accessibility/definition-list.js | failureTitle": {
     "message": "`<dl>` 並非只包含排序正確的 `<dt>` 和 `<dd>` 群組、`<script>`、`<template>` 或 `<div>` 元素。"
@@ -192,7 +192,7 @@
     "message": "`<dl>` 只包含排序正確的 `<dt>` 和 `<dd>` 群組、`<script>`、`<template>` 或 `<div>` 元素。"
   },
   "core/audits/accessibility/dlitem.js | description": {
-    "message": "定義清單項目 (`<dt>` 和 `<dd>`) 必須納入在父 `<dl>` 元素中，才能確保螢幕閱讀器正確朗讀這些項目。[瞭解如何正確建構定義清單](https://dequeuniversity.com/rules/axe/4.6/dlitem)。"
+    "message": "定義清單項目 (`<dt>` 和 `<dd>`) 必須納入在父 `<dl>` 元素中，才能確保螢幕閱讀器正確朗讀這些項目。[瞭解如何正確建構定義清單](https://dequeuniversity.com/rules/axe/4.7/dlitem)。"
   },
   "core/audits/accessibility/dlitem.js | failureTitle": {
     "message": "定義清單項目未納入在 `<dl>` 元素中"
@@ -201,7 +201,7 @@
     "message": "定義清單項目已納入在 `<dl>` 元素中"
   },
   "core/audits/accessibility/document-title.js | description": {
-    "message": "標題可讓螢幕閱讀器使用者概略瞭解網頁內容；搜尋引擎使用者經常需要使用此資料，判斷網頁內容是否與他們的搜尋查詢有關。[進一步瞭解文件標題](https://dequeuniversity.com/rules/axe/4.6/document-title)。"
+    "message": "標題可讓螢幕閱讀器使用者概略瞭解網頁內容；搜尋引擎使用者經常需要使用此資料，判斷網頁內容是否與他們的搜尋查詢有關。[進一步瞭解文件標題](https://dequeuniversity.com/rules/axe/4.7/document-title)。"
   },
   "core/audits/accessibility/document-title.js | failureTitle": {
     "message": "文件並無有效的 `<title>` 元素"
@@ -210,7 +210,7 @@
     "message": "文件具備 `<title>` 元素"
   },
   "core/audits/accessibility/duplicate-id-active.js | description": {
-    "message": "所有可聚焦元素都必須有不重複的 `id`，以確保輔助技術可以查看這些元素。[瞭解如何修正 `id` 重複的問題](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-active)。"
+    "message": "所有可聚焦元素都必須有不重複的 `id`，以確保輔助技術可以查看這些元素。[瞭解如何修正 `id` 重複的問題](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-active)。"
   },
   "core/audits/accessibility/duplicate-id-active.js | failureTitle": {
     "message": "已啟用且可聚焦的元素有重複的 `[id]` 屬性"
@@ -219,7 +219,7 @@
     "message": "已啟用且可聚焦的元素沒有重複的 `[id]` 屬性"
   },
   "core/audits/accessibility/duplicate-id-aria.js | description": {
-    "message": "ARIA ID 的值不可重複，以免輔助技術忽略其他例項。[瞭解如何修正重複的 ARIA ID](https://dequeuniversity.com/rules/axe/4.6/duplicate-id-aria)。"
+    "message": "ARIA ID 的值不可重複，以免輔助技術忽略其他例項。[瞭解如何修正重複的 ARIA ID](https://dequeuniversity.com/rules/axe/4.7/duplicate-id-aria)。"
   },
   "core/audits/accessibility/duplicate-id-aria.js | failureTitle": {
     "message": "ARIA ID 重複"
@@ -228,7 +228,7 @@
     "message": "ARIA ID 沒有重複"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
-    "message": "使用第一個、最後一個或所有標籤的螢幕閱讀器等輔助技術，可能無法將包含多個標籤的表格欄位正確讀出。[瞭解如何使用表格標籤](https://dequeuniversity.com/rules/axe/4.6/form-field-multiple-labels)。"
+    "message": "使用第一個、最後一個或所有標籤的螢幕閱讀器等輔助技術，可能無法將包含多個標籤的表格欄位正確讀出。[瞭解如何使用表格標籤](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)。"
   },
   "core/audits/accessibility/form-field-multiple-labels.js | failureTitle": {
     "message": "表格欄位含有多個標籤"
@@ -237,7 +237,7 @@
     "message": "沒有表格欄位含有多個標籤"
   },
   "core/audits/accessibility/frame-title.js | description": {
-    "message": "螢幕閱讀器使用者依賴頁框標題來瞭解頁框內容。[進一步瞭解頁框標題](https://dequeuniversity.com/rules/axe/4.6/frame-title)。"
+    "message": "螢幕閱讀器使用者依賴頁框標題來瞭解頁框內容。[進一步瞭解頁框標題](https://dequeuniversity.com/rules/axe/4.7/frame-title)。"
   },
   "core/audits/accessibility/frame-title.js | failureTitle": {
     "message": "`<frame>` 或 `<iframe>` 元素沒有標題"
@@ -246,7 +246,7 @@
     "message": "`<frame>` 或 `<iframe>` 元素包含名稱"
   },
   "core/audits/accessibility/heading-order.js | description": {
-    "message": "排序正確且未略過層級的標題可傳達網頁的語意結構，讓您在使用輔助技術時更容易瀏覽及理解。[進一步瞭解標題排序](https://dequeuniversity.com/rules/axe/4.6/heading-order)。"
+    "message": "排序正確且未略過層級的標題可傳達網頁的語意結構，讓您在使用輔助技術時更容易瀏覽及理解。[進一步瞭解標題排序](https://dequeuniversity.com/rules/axe/4.7/heading-order)。"
   },
   "core/audits/accessibility/heading-order.js | failureTitle": {
     "message": "標題元素未遞減排序"
@@ -255,7 +255,7 @@
     "message": "標題元素已遞減排序"
   },
   "core/audits/accessibility/html-has-lang.js | description": {
-    "message": "如果網頁未指定 `lang` 屬性，螢幕閱讀器會假設網頁採用使用者設定螢幕閱讀器時選擇的預設語言。如果網頁實際並非採用預設語言，螢幕閱讀器可能無法正確朗讀文字。[進一步瞭解 `lang` 屬性](https://dequeuniversity.com/rules/axe/4.6/html-has-lang)。"
+    "message": "如果網頁未指定 `lang` 屬性，螢幕閱讀器會假設網頁採用使用者設定螢幕閱讀器時選擇的預設語言。如果網頁實際並非採用預設語言，螢幕閱讀器可能無法正確朗讀文字。[進一步瞭解 `lang` 屬性](https://dequeuniversity.com/rules/axe/4.7/html-has-lang)。"
   },
   "core/audits/accessibility/html-has-lang.js | failureTitle": {
     "message": "`<html>` 元素並無 `[lang]` 屬性"
@@ -264,7 +264,7 @@
     "message": "`<html>` 元素具備 `[lang]` 屬性"
   },
   "core/audits/accessibility/html-lang-valid.js | description": {
-    "message": "指定有效的 [BCP 47 語言](https://www.w3.org/International/questions/qa-choosing-language-tags#question)可協助螢幕閱讀器正確朗讀文字。[瞭解如何使用 `lang` 屬性](https://dequeuniversity.com/rules/axe/4.6/html-lang-valid)。"
+    "message": "指定有效的 [BCP 47 語言](https://www.w3.org/International/questions/qa-choosing-language-tags#question)可協助螢幕閱讀器正確朗讀文字。[瞭解如何使用 `lang` 屬性](https://dequeuniversity.com/rules/axe/4.7/html-lang-valid)。"
   },
   "core/audits/accessibility/html-lang-valid.js | failureTitle": {
     "message": "`<html>` 元素的 `[lang]` 屬性並無有效的值。"
@@ -273,7 +273,7 @@
     "message": "`<html>` 元素的 `[lang]` 屬性具備有效的值"
   },
   "core/audits/accessibility/image-alt.js | description": {
-    "message": "資訊型元素應提供簡短貼切的替代文字。只要將 alt 屬性留空，系統便會忽略該裝飾元素。[進一步瞭解此 `alt` 屬性](https://dequeuniversity.com/rules/axe/4.6/image-alt)。"
+    "message": "資訊型元素應提供簡短貼切的替代文字。只要將 alt 屬性留空，系統便會忽略該裝飾元素。[進一步瞭解此 `alt` 屬性](https://dequeuniversity.com/rules/axe/4.7/image-alt)。"
   },
   "core/audits/accessibility/image-alt.js | failureTitle": {
     "message": "圖片元素並無 `[alt]` 屬性"
@@ -282,7 +282,7 @@
     "message": "圖片元素具有 `[alt]` 屬性"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "如果 `<input>` 按鈕是以圖片呈現，提供替代文字可協助螢幕閱讀器使用者瞭解該按鈕的用途。[瞭解輸入圖片說明文字](https://dequeuniversity.com/rules/axe/4.6/input-image-alt)。"
+    "message": "如果 `<input>` 按鈕是以圖片呈現，提供替代文字可協助螢幕閱讀器使用者瞭解該按鈕的用途。[瞭解輸入圖片說明文字](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)。"
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "`<input type=\"image\">` 元素未設定 `[alt]` 文字"
@@ -291,7 +291,7 @@
     "message": "`<input type=\"image\">` 元素具有 `[alt]` 文字"
   },
   "core/audits/accessibility/label.js | description": {
-    "message": "標籤可以確保輔助技術 (例如螢幕閱讀器) 正確朗讀表格控制項。[進一步瞭解表格元素標籤](https://dequeuniversity.com/rules/axe/4.6/label)。"
+    "message": "標籤可以確保輔助技術 (例如螢幕閱讀器) 正確朗讀表格控制項。[進一步瞭解表格元素標籤](https://dequeuniversity.com/rules/axe/4.7/label)。"
   },
   "core/audits/accessibility/label.js | failureTitle": {
     "message": "表格元素沒有相關聯的標籤"
@@ -300,7 +300,7 @@
     "message": "表格元素具有相關聯的標籤"
   },
   "core/audits/accessibility/link-name.js | description": {
-    "message": "使用可辨別、不重複且可聚焦的連結文字 (以及連結圖片的替代文字)，有助改善螢幕閱讀器使用者的瀏覽體驗。[瞭解如何讓連結更易用](https://dequeuniversity.com/rules/axe/4.6/link-name)。"
+    "message": "使用可辨別、不重複且可聚焦的連結文字 (以及連結圖片的替代文字)，有助改善螢幕閱讀器使用者的瀏覽體驗。[瞭解如何讓連結更易用](https://dequeuniversity.com/rules/axe/4.7/link-name)。"
   },
   "core/audits/accessibility/link-name.js | failureTitle": {
     "message": "連結並無可辨別的名稱"
@@ -309,7 +309,7 @@
     "message": "連結具有可辨別的名稱"
   },
   "core/audits/accessibility/list.js | description": {
-    "message": "螢幕閱讀器會以特定方式朗讀清單。確認清單採用正確的結構有助螢幕閱讀器順利輸出內容。[進一步瞭解正確的清單結構](https://dequeuniversity.com/rules/axe/4.6/list)。"
+    "message": "螢幕閱讀器會以特定方式朗讀清單。確認清單採用正確的結構有助螢幕閱讀器順利輸出內容。[進一步瞭解正確的清單結構](https://dequeuniversity.com/rules/axe/4.7/list)。"
   },
   "core/audits/accessibility/list.js | failureTitle": {
     "message": "清單中並非只包含 `<li>` 元素和指令碼支援元素 (`<script>` 和 `<template>`)。"
@@ -318,7 +318,7 @@
     "message": "清單只包含 `<li>` 元素和支援指令碼的元素 (`<script>` 和 `<template>`)。"
   },
   "core/audits/accessibility/listitem.js | description": {
-    "message": "清單項目 (`<li>`) 必須包含在父元素 `<ul>`、`<ol>` 或 `<menu>` 中，螢幕閱讀器才能正確朗讀這些項目。[進一步瞭解正確的清單結構](https://dequeuniversity.com/rules/axe/4.6/listitem)。"
+    "message": "清單項目 (`<li>`) 必須包含在父元素 `<ul>`、`<ol>` 或 `<menu>` 中，螢幕閱讀器才能正確朗讀這些項目。[進一步瞭解正確的清單結構](https://dequeuniversity.com/rules/axe/4.7/listitem)。"
   },
   "core/audits/accessibility/listitem.js | failureTitle": {
     "message": "清單項目 (`<li>`) 未包含在 `<ul>`、`<ol>` 或 `<menu>` 父元素中。"
@@ -327,7 +327,7 @@
     "message": "清單項目 (`<li>`) 已包含在 `<ul>`、`<ol>` 或 `<menu>` 父元素中"
   },
   "core/audits/accessibility/meta-refresh.js | description": {
-    "message": "使用者不會預期系統自動重新整理網頁，且執行此操作會將焦點移回網頁頂端。這可能會對使用者造成困擾或混淆。[進一步瞭解重新整理中繼標籤](https://dequeuniversity.com/rules/axe/4.6/meta-refresh)。"
+    "message": "使用者不會預期系統自動重新整理網頁，且執行此操作會將焦點移回網頁頂端。這可能會對使用者造成困擾或混淆。[進一步瞭解重新整理中繼標籤](https://dequeuniversity.com/rules/axe/4.7/meta-refresh)。"
   },
   "core/audits/accessibility/meta-refresh.js | failureTitle": {
     "message": "文件使用 `<meta http-equiv=\"refresh\">`"
@@ -336,7 +336,7 @@
     "message": "文件未使用 `<meta http-equiv=\"refresh\">`"
   },
   "core/audits/accessibility/meta-viewport.js | description": {
-    "message": "停用縮放功能會對低視力人士造成困擾，他們需要透過螢幕放大功能才能清楚看見網頁內容。[進一步瞭解檢視區中繼標記](https://dequeuniversity.com/rules/axe/4.6/meta-viewport)。"
+    "message": "停用縮放功能會對低視力人士造成困擾，他們需要透過螢幕放大功能才能清楚看見網頁內容。[進一步瞭解檢視區中繼標記](https://dequeuniversity.com/rules/axe/4.7/meta-viewport)。"
   },
   "core/audits/accessibility/meta-viewport.js | failureTitle": {
     "message": "`<meta name=\"viewport\">` 元素中使用了 `[user-scalable=\"no\"]`，或 `[maximum-scale]` 屬性少於 5。"
@@ -345,7 +345,7 @@
     "message": "`<meta name=\"viewport\">` 元素中未有使用 `[user-scalable=\"no\"]` 元素，而且 `[maximum-scale]` 屬性少於 5。"
   },
   "core/audits/accessibility/object-alt.js | description": {
-    "message": "螢幕閱讀器無法翻譯非文字內容。為 `<object>` 元素新增替代文字，可協助螢幕閱讀器向使用者傳達其意思。[進一步瞭解 `object` 元素的說明文字](https://dequeuniversity.com/rules/axe/4.6/object-alt)。"
+    "message": "螢幕閱讀器無法翻譯非文字內容。為 `<object>` 元素新增替代文字，可協助螢幕閱讀器向使用者傳達其意思。[進一步瞭解 `object` 元素的說明文字](https://dequeuniversity.com/rules/axe/4.7/object-alt)。"
   },
   "core/audits/accessibility/object-alt.js | failureTitle": {
     "message": "`<object>` 元素未設定替代文字"
@@ -354,7 +354,7 @@
     "message": "`<object>` 元素具有替代文字"
   },
   "core/audits/accessibility/tabindex.js | description": {
-    "message": "如果值大於 0，代表已採用明確的瀏覽排序。雖然此做法在技術上可行，但通常會對依賴輔助技術的使用者造成困擾。[進一步瞭解此 `tabindex` 屬性](https://dequeuniversity.com/rules/axe/4.6/tabindex)。"
+    "message": "如果值大於 0，代表已採用明確的瀏覽排序。雖然此做法在技術上可行，但通常會對依賴輔助技術的使用者造成困擾。[進一步瞭解此 `tabindex` 屬性](https://dequeuniversity.com/rules/axe/4.7/tabindex)。"
   },
   "core/audits/accessibility/tabindex.js | failureTitle": {
     "message": "部分元素的 `[tabindex]` 值大於 0"
@@ -363,7 +363,7 @@
     "message": "所有元素的 `[tabindex]` 值皆未超過 0"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
-    "message": "螢幕閱讀器的功能可讓使用者更輕鬆瀏覽表格。如能確保採用 `[headers]` 屬性的 `<td>` 儲存格只參照同一表格中的其他儲存格，或許能改善螢幕閱讀器的使用體驗。[進一步瞭解 `headers` 屬性](https://dequeuniversity.com/rules/axe/4.6/td-headers-attr)。"
+    "message": "螢幕閱讀器的功能可讓使用者更輕鬆瀏覽表格。如能確保採用 `[headers]` 屬性的 `<td>` 儲存格只參照同一表格中的其他儲存格，或許能改善螢幕閱讀器的使用體驗。[進一步瞭解 `headers` 屬性](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)。"
   },
   "core/audits/accessibility/td-headers-attr.js | failureTitle": {
     "message": "`<table>` 元素中採用 `[headers]` 屬性的儲存格參照了 `id`，無法在同一表格中找到此元素。"
@@ -372,7 +372,7 @@
     "message": "`<table>` 元素中採用 `[headers]` 屬性的儲存格，參照了同一表格中的其他儲存格。"
   },
   "core/audits/accessibility/th-has-data-cells.js | description": {
-    "message": "螢幕閱讀器的功能可讓使用者更輕鬆瀏覽表格。如能確保表格標題一律參照特定一組儲存格，或許能有助改善螢幕閱讀器使用者的體驗。[進一步瞭解表格標題](https://dequeuniversity.com/rules/axe/4.6/th-has-data-cells)。"
+    "message": "螢幕閱讀器的功能可讓使用者更輕鬆瀏覽表格。如能確保表格標題一律參照特定一組儲存格，或許能有助改善螢幕閱讀器使用者的體驗。[進一步瞭解表格標題](https://dequeuniversity.com/rules/axe/4.7/th-has-data-cells)。"
   },
   "core/audits/accessibility/th-has-data-cells.js | failureTitle": {
     "message": "`<th>` 元素及帶有 `[role=\"columnheader\"/\"rowheader\"]` 的元素沒有所描述的資料儲存格。"
@@ -381,7 +381,7 @@
     "message": "`<th>` 元素和帶有 `[role=\"columnheader\"/\"rowheader\"]` 的元素有其描述的資料儲存格。"
   },
   "core/audits/accessibility/valid-lang.js | description": {
-    "message": "為元素指定有效的 [BCP 47 語言](https://www.w3.org/International/questions/qa-choosing-language-tags#question)，可協助螢幕閱讀器正確朗讀文字。[瞭解如何使用 `lang` 屬性](https://dequeuniversity.com/rules/axe/4.6/valid-lang)。"
+    "message": "為元素指定有效的 [BCP 47 語言](https://www.w3.org/International/questions/qa-choosing-language-tags#question)，可協助螢幕閱讀器正確朗讀文字。[瞭解如何使用 `lang` 屬性](https://dequeuniversity.com/rules/axe/4.7/valid-lang)。"
   },
   "core/audits/accessibility/valid-lang.js | failureTitle": {
     "message": "`[lang]` 屬性並無有效的值"
@@ -390,7 +390,7 @@
     "message": "`[lang]` 屬性具備有效的值"
   },
   "core/audits/accessibility/video-caption.js | description": {
-    "message": "如果在影片中提供字幕，將有助於失聰或聽障使用者取得影片資料。[進一步瞭解影片字幕](https://dequeuniversity.com/rules/axe/4.6/video-caption)。"
+    "message": "如果在影片中提供字幕，將有助於失聰或聽障使用者取得影片資料。[進一步瞭解影片字幕](https://dequeuniversity.com/rules/axe/4.7/video-caption)。"
   },
   "core/audits/accessibility/video-caption.js | failureTitle": {
     "message": "`<video>` 元素不含任何帶有 `[kind=\"captions\"]` 的 `<track>` 元素"
@@ -765,13 +765,13 @@
     "message": "避免在載入網頁時要求使用者允許網站顯示通知"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | description": {
-    "message": "Preventing input pasting is a UX anti-pattern, and undermines good security policy. [Learn more about user-friendly input fields](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)."
+    "message": "禁止在輸入欄貼上內容不但會帶來負面的使用者體驗，也會封鎖密碼管理工具，導致安全性降低。[進一步瞭解容易使用的輸入欄位](https://developer.chrome.com/docs/lighthouse/best-practices/paste-preventing-inputs/)。"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | failureTitle": {
-    "message": "Prevents users from pasting into input fields"
+    "message": "防止使用者貼上至輸入欄位"
   },
   "core/audits/dobetterweb/paste-preventing-inputs.js | title": {
-    "message": "Allows users to paste into input fields"
+    "message": "允許使用者貼上至輸入欄位"
   },
   "core/audits/dobetterweb/uses-http2.js | columnProtocol": {
     "message": "通訊協定"
@@ -980,8 +980,29 @@
   "core/audits/is-on-https.js | warning": {
     "message": "允許 (附警告)"
   },
+  "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
+    "message": "% of LCP"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnPhase": {
+    "message": "Phase"
+  },
+  "core/audits/largest-contentful-paint-element.js | columnTiming": {
+    "message": "Timing"
+  },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "這是在檢視區中繪製的最大內容元素。[進一步瞭解「最大內容繪製」元素](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
+    "message": "Load Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
+    "message": "Load Time"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
+    "message": "Render Delay"
+  },
+  "core/audits/largest-contentful-paint-element.js | itemTTFB": {
+    "message": "TTFB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "「最大內容繪製」元素"
@@ -1323,7 +1344,7 @@
     "message": "robots.txt 有效"
   },
   "core/audits/seo/tap-targets.js | description": {
-    "message": "按鈕和連結等互動元素的大小應至少有 48x48 像素，且周圍應保留足夠空間以便使用者輕按，同時避免與其他元素重疊的情況。[進一步瞭解輕按目標](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)。"
+    "message": "按鈕和連結等互動元素的大小應至少有 48x48 像素，或周圍應保留足夠空間以便使用者輕按，同時避免與其他元素重疊的情況。[進一步瞭解輕按目標](https://developer.chrome.com/docs/lighthouse/seo/tap-targets/)。"
   },
   "core/audits/seo/tap-targets.js | displayValue": {
     "message": "{decimalProportion, number, percent} 的輕按目標大小適中"
@@ -1714,6 +1735,9 @@
   },
   "core/gather/driver/storage.js | warningOriginDataTimeout": {
     "message": "清除原始資料已逾時。請嘗試再次審核此頁面。如果問題仍未解決，請報告錯誤。"
+  },
+  "core/gather/gatherers/link-elements.js | headerParseWarning": {
+    "message": "剖析`link`標題 ({error}) 時發生錯誤：`{header}`"
   },
   "core/lib/bf-cache-strings.js | HTTPMethodNotGET": {
     "message": "只有透過 GET 要求載入的網頁才符合向前/返回快取的資格。"
@@ -2735,6 +2759,33 @@
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | uses-responsive-images": {
     "message": "使用 [Ezoic Leap](https://pubdash.ezoic.com/speed) 並啟用 `Resize Images` 以將圖片大小調整至適合裝置的尺寸，減少網絡負載大小。"
   },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
+    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
+    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
+    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
+    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
+    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
+    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+  },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "建議將 GIF 上載至可將 GIF 用作 HTML5 影片嵌入的伺服器。"
   },
@@ -2814,10 +2865,10 @@
     "message": "您可透過[修改主題版面配置](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)來新增 `<link rel=preload>` 標籤。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "請使用 `next/image` 組件讓系統自動優化圖片格式，而非 `<img>`。[瞭解詳情](https://nextjs.org/docs/basic-features/image-optimization)。"
+    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "如要自動延遲載入圖片，請使用 `next/image` 組件，而非 `<img>`。[瞭解詳情](https://nextjs.org/docs/basic-features/image-optimization)。"
+    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "使用 `next/image` 組件並將「priority」設定為 True 以預先載入 LCP 圖片。[瞭解詳情](https://nextjs.org/docs/api-reference/next/image#priority)。"
@@ -2832,7 +2883,7 @@
     "message": "建議您在 `Next.js` 設定中設定 `PurgeCSS` 以從樣式表中移除未使用的規則。[瞭解詳情](https://purgecss.com/guides/next.html)。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "使用 `Webpack Bundle Analyzer` 偵測未使用的 JavaScript 程式碼。[瞭解詳情](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "建議您使用 `Next.js Analytics` 評估應用程式的實際效能。[瞭解詳情](https://nextjs.org/docs/advanced-features/measuring-performance)。"
@@ -2841,7 +2892,7 @@
     "message": "請設定不可變動資產和 `Server-side Rendered` (SSR) 頁面的快取。[瞭解詳情](https://nextjs.org/docs/going-to-production#caching)。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "請使用 `next/image` 組件調整圖片品質，而非 `<img>`。[瞭解詳情](https://nextjs.org/docs/basic-features/image-optimization)。"
+    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "請使用 `next/image` 組件設定適當的 `sizes`。[瞭解詳情](https://nextjs.org/docs/api-reference/next/image#sizes)。"
@@ -3047,6 +3098,9 @@
   "report/renderer/report-utils.js | expandView": {
     "message": "展開檢視"
   },
+  "report/renderer/report-utils.js | firstPartyChipLabel": {
+    "message": "第一方"
+  },
   "report/renderer/report-utils.js | footerIssue": {
     "message": "報告問題"
   },
@@ -3064,6 +3118,9 @@
   },
   "report/renderer/report-utils.js | notApplicableAuditsGroupTitle": {
     "message": "不適用"
+  },
+  "report/renderer/report-utils.js | openInANewTabTooltip": {
+    "message": "在新分頁中開啟"
   },
   "report/renderer/report-utils.js | opportunityResourceColumnLabel": {
     "message": "優化建議"
@@ -3084,7 +3141,7 @@
     "message": "模擬桌面電腦"
   },
   "report/renderer/report-utils.js | runtimeMobileEmulation": {
-    "message": "Emulated Moto G Power"
+    "message": "已模擬 Moto G Power"
   },
   "report/renderer/report-utils.js | runtimeNoEmulation": {
     "message": "沒有任何模擬的裝置"
@@ -3142,6 +3199,9 @@
   },
   "report/renderer/report-utils.js | toplevelWarningsMessage": {
     "message": "導致這次 Lighthouse 無法順利執行的問題："
+  },
+  "report/renderer/report-utils.js | unattributable": {
+    "message": "無法歸因"
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "此為預計值，可能與實際值有所不同。[效能分數將利用這些數據直接計算](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/)。"

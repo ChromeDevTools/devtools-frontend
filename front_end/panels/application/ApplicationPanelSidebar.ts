@@ -47,6 +47,7 @@ import {AppManifestView} from './AppManifestView.js';
 import {BackForwardCacheTreeElement} from './BackForwardCacheTreeElement.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
+import {BounceTrackingMitigationsTreeElement} from './BounceTrackingMitigationsTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
 import {PreloadingTreeElement} from './PreloadingTreeElement.js';
 import resourcesSidebarStyles from './resourcesSidebar.css.js';
@@ -256,6 +257,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   private backForwardCacheListTreeElement?: BackForwardCacheTreeElement;
   backgroundFetchTreeElement: BackgroundServiceTreeElement;
   backgroundSyncTreeElement: BackgroundServiceTreeElement;
+  bounceTrackingMitigationsTreeElement: BounceTrackingMitigationsTreeElement;
   notificationsTreeElement: BackgroundServiceTreeElement;
   paymentHandlerTreeElement: BackgroundServiceTreeElement;
   periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement;
@@ -374,6 +376,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.backgroundSyncTreeElement =
         new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundSync);
     backgroundServiceTreeElement.appendChild(this.backgroundSyncTreeElement);
+
+    this.bounceTrackingMitigationsTreeElement = new BounceTrackingMitigationsTreeElement(panel);
+    backgroundServiceTreeElement.appendChild(this.bounceTrackingMitigationsTreeElement);
 
     this.notificationsTreeElement =
         new BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.Notifications);

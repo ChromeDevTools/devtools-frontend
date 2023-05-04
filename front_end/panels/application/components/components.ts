@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as BackForwardCacheView from './BackForwardCacheView.js';
+import * as BounceTrackingMitigationsView from './BounceTrackingMitigationsView.js';
 import * as EndpointsGrid from './EndpointsGrid.js';
 import * as FrameDetailsView from './FrameDetailsView.js';
 import * as InterestGroupAccessGrid from './InterestGroupAccessGrid.js';
@@ -16,6 +17,7 @@ import * as TrustTokensView from './TrustTokensView.js';
 
 export {
   BackForwardCacheView,
+  BounceTrackingMitigationsView,
   EndpointsGrid,
   FrameDetailsView,
   InterestGroupAccessGrid,

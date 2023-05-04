@@ -6,6 +6,7 @@ import * as ApplicationPanelSidebar from './ApplicationPanelSidebar.js';
 import * as AppManifestView from './AppManifestView.js';
 import * as BackgroundServiceModel from './BackgroundServiceModel.js';
 import * as BackgroundServiceView from './BackgroundServiceView.js';
+import * as BounceTrackingMitigationsTreeElement from './BounceTrackingMitigationsTreeElement.js';
 import * as CookieItemsView from './CookieItemsView.js';
 import * as DatabaseModel from './DatabaseModel.js';
 import * as DatabaseQueryView from './DatabaseQueryView.js';
@@ -40,6 +41,7 @@ export {
   AppManifestView,
   BackgroundServiceModel,
   BackgroundServiceView,
+  BounceTrackingMitigationsTreeElement,
   CookieItemsView,
   DatabaseModel,
   DatabaseQueryView,

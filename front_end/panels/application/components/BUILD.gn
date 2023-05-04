@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "backForwardCacheView.css",
     "badge.css",
+    "bounceTrackingMitigationsView.css",
     "frameDetailsReportView.css",
     "interestGroupAccessGrid.css",
     "originTrialTokenRows.css",
@@ -31,6 +32,7 @@ devtools_module("components") {
   sources = [
     "BackForwardCacheStrings.ts",
     "BackForwardCacheView.ts",
+    "BounceTrackingMitigationsView.ts",
     "EndpointsGrid.ts",
     "FrameDetailsView.ts",
     "InterestGroupAccessGrid.ts",

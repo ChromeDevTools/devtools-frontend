@@ -519,7 +519,8 @@ export enum PanelCodes {
   'web_sql' = 62,
   'performance_insights' = 63,
   'preloading' = 64,
-  MaxValue = 65,
+  'bounce_tracking_mitigations' = 65,
+  MaxValue = 66,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

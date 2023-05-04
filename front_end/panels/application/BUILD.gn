@@ -35,6 +35,7 @@ devtools_module("application") {
     "BackForwardCacheTreeElement.ts",
     "BackgroundServiceModel.ts",
     "BackgroundServiceView.ts",
+    "BounceTrackingMitigationsTreeElement.ts",
     "CookieItemsView.ts",
     "DOMStorageItemsView.ts",
     "DOMStorageModel.ts",

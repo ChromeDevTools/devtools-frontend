@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as AnimationTimingModel from './AnimationTimingModel.js';
+import * as AnimationTimingUI from './AnimationTimingUI.js';
 import * as BezierEditor from './BezierEditor.js';
 import * as BezierUI from './BezierUI.js';
 import * as ColorMixModel from './ColorMixModel.js';
@@ -26,6 +27,7 @@ import * as SwatchPopoverHelper from './SwatchPopoverHelper.js';
 
 export {
   AnimationTimingModel,
+  AnimationTimingUI,
   BezierEditor,
   BezierUI,
   ColorMixModel,

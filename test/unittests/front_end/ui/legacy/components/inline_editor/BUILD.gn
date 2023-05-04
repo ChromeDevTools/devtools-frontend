@@ -7,6 +7,8 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 ts_library("inline_editor") {
   testonly = true
   sources = [
+    "AnimationTimingModel_test.ts",
+    "AnimationTimingUI_test.ts",
     "BezierUI_test.ts",
     "CSSAngle_test.ts",
     "CSSAnimationModel_test.ts",

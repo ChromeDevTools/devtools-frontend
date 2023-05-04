@@ -6,9 +6,8 @@ import * as Common from '../../../../core/common/common.js';
 import * as UI from '../../legacy.js';
 
 import {AnimationTimingModel} from './AnimationTimingModel.js';
-import {AnimationTimingUI} from './AnimationTimingUI.js';
+import {AnimationTimingUI, PresetUI} from './AnimationTimingUI.js';
 import bezierEditorStyles from './bezierEditor.css.js';
-import {BezierUI} from './BezierUI.js';
 
 const PREVIEW_ANIMATION_DEBOUNCE_DELAY = 300;
 
@@ -19,7 +18,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private readonly outerContainer: HTMLElement;
   private selectedCategory: PresetCategory|null;
   private readonly presetsContainer: HTMLElement;
-  private readonly presetUI: BezierUI;
+  private readonly presetUI: PresetUI;
   private readonly presetCategories: PresetCategory[];
   private animationTimingUI?: AnimationTimingUI;
   private readonly header: HTMLElement;
@@ -33,6 +32,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.model = model;
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
+    this.element.style.overflowY = 'auto';
 
     // Preview UI
     this.previewElement = this.contentElement.createChild('div', 'bezier-preview-container');
@@ -46,17 +46,16 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     // Presets UI
     this.selectedCategory = null;
     this.presetsContainer = this.outerContainer.createChild('div', 'bezier-presets');
-    this.presetUI = new BezierUI({
-      width: 40,
-      height: 40,
-      marginTop: 0,
-      controlPointRadius: 2,
-      shouldDrawLine: false,
-    });
+    this.presetUI = new PresetUI();
 
     this.presetCategories = [];
     for (let i = 0; i < Presets.length; i++) {
-      this.presetCategories[i] = this.createCategory(Presets[i]);
+      const category = this.createCategory(Presets[i]);
+      if (!category) {
+        continue;
+      }
+
+      this.presetCategories[i] = category;
       this.presetsContainer.appendChild(this.presetCategories[i].icon);
     }
 
@@ -120,12 +119,17 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private createCategory(presetGroup: {
     name: string,
     value: string,
-  }[]): PresetCategory {
+  }[]): PresetCategory|null {
+    const pivot = AnimationTimingModel.parse(presetGroup[0].value);
+    if (!pivot) {
+      return null;
+    }
+
     const presetElement = document.createElement('div');
     presetElement.classList.add('bezier-preset-category');
     const iconElement = UI.UIUtils.createSVGChild(presetElement, 'svg', 'bezier-preset monospace');
     const category = {presets: presetGroup, presetIndex: 0, icon: presetElement};
-    this.presetUI.drawCurve(UI.Geometry.CubicBezier.parse(category.presets[0].value), iconElement);
+    this.presetUI.draw(pivot, iconElement);
     iconElement.addEventListener('click', this.presetCategorySelected.bind(this, category));
     return category;
   }
@@ -193,11 +197,13 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     const numberOnionSlices = 20;
 
     const keyframes = [
-      {offset: 0, transform: 'translateX(0px)', easing: this.model.asCSSText(), opacity: 1},
-      {offset: 0.9, transform: 'translateX(218px)', opacity: 1},
-      {offset: 1, transform: 'translateX(218px)', opacity: 0},
+      {offset: 0, transform: 'translateX(0px)', opacity: 1},
+      {offset: 1, transform: 'translateX(218px)', opacity: 1},
     ];
-    this.previewAnimation = this.previewElement.animate(keyframes, animationDuration);
+    this.previewAnimation = this.previewElement.animate(keyframes, {
+      easing: this.model.asCSSText(),
+      duration: animationDuration,
+    });
     this.previewOnion.removeChildren();
     for (let i = 0; i <= numberOnionSlices; i++) {
       const slice = this.previewOnion.createChild('div', 'bezier-preview-animation');
@@ -221,6 +227,24 @@ export type EventTypes = {
 };
 
 export const Presets = [
+  [
+    {name: 'linear', value: 'linear(0, 1)'},
+    {
+      name: 'elastic',
+      value:
+          'linear(0 0%, 0.22 2.1%, 0.86 6.5%, 1.11 8.6%, 1.3 10.7%, 1.35 11.8%, 1.37 12.9%, 1.37 13.7%, 1.36 14.5%, 1.32 16.2%, 1.03 21.8%, 0.94 24%, 0.89 25.9%, 0.88 26.85%, 0.87 27.8%, 0.87 29.25%, 0.88 30.7%, 0.91 32.4%, 0.98 36.4%, 1.01 38.3%, 1.04 40.5%, 1.05 42.7%, 1.05 44.1%, 1.04 45.7%, 1 53.3%, 0.99 55.4%, 0.98 57.5%, 0.99 60.7%, 1 68.1%, 1.01 72.2%, 1 86.7%, 1 100%)',
+    },
+    {
+      name: 'bounce',
+      value:
+          'linear(0 0%, 0 2.27%, 0.02 4.53%, 0.04 6.8%, 0.06 9.07%, 0.1 11.33%, 0.14 13.6%, 0.25 18.15%, 0.39 22.7%, 0.56 27.25%, 0.77 31.8%, 1 36.35%, 0.89 40.9%, 0.85 43.18%, 0.81 45.45%, 0.79 47.72%, 0.77 50%, 0.75 52.27%, 0.75 54.55%, 0.75 56.82%, 0.77 59.1%, 0.79 61.38%, 0.81 63.65%, 0.85 65.93%, 0.89 68.2%, 1 72.7%, 0.97 74.98%, 0.95 77.25%, 0.94 79.53%, 0.94 81.8%, 0.94 84.08%, 0.95 86.35%, 0.97 88.63%, 1 90.9%, 0.99 93.18%, 0.98 95.45%, 0.99 97.73%, 1 100%)',
+    },
+    {
+      name: 'emphasized',
+      value:
+          'linear(0 0%, 0 1.8%, 0.01 3.6%, 0.03 6.35%, 0.07 9.1%, 0.13 11.4%, 0.19 13.4%, 0.27 15%, 0.34 16.1%, 0.54 18.35%, 0.66 20.6%, 0.72 22.4%, 0.77 24.6%, 0.81 27.3%, 0.85 30.4%, 0.88 35.1%, 0.92 40.6%, 0.94 47.2%, 0.96 55%, 0.98 64%, 0.99 74.4%, 1 86.4%, 1 100%)',
+    },
+  ],
   [
     {name: 'ease-in-out', value: 'ease-in-out'},
     {name: 'In Out · Sine', value: 'cubic-bezier(0.45, 0.05, 0.55, 0.95)'},

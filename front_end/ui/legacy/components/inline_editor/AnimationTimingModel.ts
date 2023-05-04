@@ -4,6 +4,8 @@
 
 import * as UI from '../../legacy.js';
 
+import {CSSLinearEasingModel} from './CSSLinearEasingModel.js';
+
 // Provides a unified interface for both linear easing and cubic bezier
 // models and handles the parsing for animation-timing texts.
 export abstract class AnimationTimingModel {
@@ -15,7 +17,7 @@ export abstract class AnimationTimingModel {
       return bezierModel;
     }
 
-    return null;
+    return CSSLinearEasingModel.parse(text) || null;
   }
 }
 

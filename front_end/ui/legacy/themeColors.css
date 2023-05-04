@@ -15,6 +15,7 @@
   --color-primary-variant: rgb(66 133 244);
   --color-background: rgb(255 255 255);
   --color-background-inverted: rgb(0 0 0);
+  --color-background-inverted-opacity-0: rgb(0 0 0 / 0%);
   --color-background-inverted-opacity-2: rgb(0 0 0 / 2%);
   --color-background-inverted-opacity-30: rgb(0 0 0 / 30%);
   --color-background-inverted-opacity-50: rgb(0 0 0 / 50%);

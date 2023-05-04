@@ -86,15 +86,29 @@ Open DevTools via F12 or Ctrl+Shift+J on Windows/Linux or Cmd+Option+I on Mac.
 
 ##### Running in hosted mode
 
-Serve the content of `out/Default/gen/front_end` on a web server, e.g. via `python -m http.server`.
+Serve the content of `out/Default/gen/front_end` on a web server, e.g. via `python3 -m http.server 8000`.
 
-Then point to that web server when starting Chromium, for example:
+Then start Chromium, allowing for accesses from the web server:
 
 ```bash
-<path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --custom-devtools-frontend=http://localhost:8000/ --remote-debugging-port=9222
+$ <path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --remote-debugging-port=9222 --remote-allow-origins=http://localhost:8000 about:blank
 ```
 
-In a regular Chrome tab, go to the URL `http://localhost:9222#custom=true`. It lists URLs that can be copied to new Chrome tabs to inspect individual debug targets.
+Get the list of pages together with their DevTools frontend URLs:
+```bash
+$ curl http://localhost:9222/json -s | grep '\(url\|devtoolsFrontend\)'
+   "devtoolsFrontendUrl": "/devtools/inspector.html?ws=localhost:9222/devtools/page/BADADD4E55BADADD4E55BADADD4E5511",
+   "url": "about:blank",
+```
+
+In a regular Chrome tab, go to the URL `http://localhost:8000/inspector.html?ws=<web-socket-url>`, where `<web-socket-url>` should be replaced by
+your desired DevTools web socket URL (from `devtoolsFrontendUrl`). For example, for
+`"devtoolsFrontendUrl": "/devtools/inspector.html?ws=localhost:9222/devtools/page/BADADD4E55BADADD4E55BADADD4E5511"`,
+you could run the hosted DevTools with the following command:
+
+```
+$ google-chrome http://localhost:8000/inspector.html?ws=localhost:9222/devtools/page/BADADD4E55BADADD4E55BADADD4E5511
+```
 
 ### Integrated checkout
 

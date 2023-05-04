@@ -25,6 +25,7 @@ export interface RegisteredAdorner {
 // eslint-disable-next-line rulesdir/const_enum
 export enum RegisteredAdorners {
   GRID = 'grid',
+  SUBGRID = 'subgrid',
   FLEX = 'flex',
   AD = 'ad',
   SCROLL_SNAP = 'scroll-snap',
@@ -41,6 +42,12 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
     case RegisteredAdorners.GRID:
       return {
         name: 'grid',
+        category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    case RegisteredAdorners.SUBGRID:
+      return {
+        name: 'subgrid',
         category: AdornerCategories.LAYOUT,
         enabledByDefault: true,
       };

@@ -2127,6 +2127,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const display = styles.get('display');
     const isGrid = display === 'grid' || display === 'inline-grid';
     const isFlex = display === 'flex' || display === 'inline-flex';
+    const isSubgrid = (isGrid &&
+                       (styles.get('grid-template-columns')?.startsWith('subgrid') ||
+                        styles.get('grid-template-rows')?.startsWith('subgrid'))) ??
+        false;
 
     const containerType = styles.get('container-type');
     const contain = styles.get('contain');
@@ -2134,7 +2138,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         SDK.CSSContainerQuery.getQueryAxis(`${containerType} ${contain}`) !== SDK.CSSContainerQuery.QueryAxis.None;
 
     if (isGrid) {
-      this.pushGridAdorner(this.tagTypeContext);
+      this.pushGridAdorner(this.tagTypeContext, isSubgrid);
     }
     if (isFlex) {
       this.pushFlexAdorner(this.tagTypeContext);
@@ -2147,7 +2151,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  pushGridAdorner(context: OpeningTagContext): void {
+  pushGridAdorner(context: OpeningTagContext, isSubgrid: boolean): void {
     const node = this.node();
     const nodeId = node.id;
     if (!nodeId) {
@@ -2155,7 +2159,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
-        ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
+        isSubgrid ? ElementsComponents.AdornerManager.RegisteredAdorners.SUBGRID :
+                    ElementsComponents.AdornerManager.RegisteredAdorners.GRID);
     const adorner = this.adorn(config);
     adorner.classList.add('grid');
 

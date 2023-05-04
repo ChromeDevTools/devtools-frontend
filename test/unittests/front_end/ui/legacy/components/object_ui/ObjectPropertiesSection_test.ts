@@ -73,7 +73,8 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
     assert.strictEqual(VALUE, propertiesSection.valueElement.innerHTML);
   });
 
-  it('visually distinguishes important DOM properties for checkbox inputs', async () => {
+  // Flaky / Blocking tree
+  it.skip('[crbug.com/1442599] visually distinguishes important DOM properties for checkbox inputs', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
     const treeOutline = await setupTreeOutline(
         `(() => {
@@ -110,7 +111,8 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
     assert.strictEqual(notExpected.size, 3, 'Unexpected properties were found');
   });
 
-  it('visually distinguishes important DOM properties for file inputs', async () => {
+  // Flaky / Blocking tree
+  it.skip('[crbug.com/1442599] visually distinguishes important DOM properties for file inputs', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
     const treeOutline = await setupTreeOutline(
         `(() => {
@@ -147,7 +149,8 @@ describeWithRealConnection('ObjectPropertiesSection', () => {
     assert.strictEqual(notExpected.size, 3, 'Unexpected properties were found');
   });
 
-  it('visually distinguishes important DOM properties for anchors', async () => {
+  // Flaky / Blocking tree
+  it.skip('[crbug.com/1442599] visually distinguishes important DOM properties for anchors', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
     const treeOutline = await setupTreeOutline(
         `(() => {

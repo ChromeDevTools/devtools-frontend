@@ -226,8 +226,6 @@ const resolveScope =
   const sourceMap = script.debuggerModel.sourceMapManager().sourceMapForClient(script);
 
   if (!cachedScopeMap || cachedScopeMap.sourceMap !== sourceMap) {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const identifiersPromise =
         (async(): Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
           const variableMapping = new Map<string, string>();
@@ -747,17 +745,13 @@ export async function resolveProfileFrameFunctionName(
 }
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-explicit-any
-let _scopeResolvedForTest: (...arg0: any[]) => void = function(): void {};
+// eslint-disable-next-line @typescript-eslint/naming-convention
+let _scopeResolvedForTest: (...arg0: unknown[]) => void = function(): void {};
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-explicit-any
-export const getScopeResolvedForTest = (): (...arg0: any[]) => void => {
+export const getScopeResolvedForTest = (): (...arg0: unknown[]) => void => {
   return _scopeResolvedForTest;
 };
 
-// TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-// eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-explicit-any
-export const setScopeResolvedForTest = (scope: (...arg0: any[]) => void): void => {
+export const setScopeResolvedForTest = (scope: (...arg0: unknown[]) => void): void => {
   _scopeResolvedForTest = scope;
 };

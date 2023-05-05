@@ -1517,7 +1517,7 @@ const emulatedDevices = [
     'user-agent':
         'Mozilla/5.0 (Linux; Android 8.1.0; SM-T837A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.80 Safari/537.36',
     'user-agent-metadata':
-        {'platform': 'Android', 'platformVersion': '8.1.0', 'architecture': '', 'model': 'SM-T837A', 'mobile': true},
+        {'platform': 'Android', 'platformVersion': '8.1.0', 'architecture': '', 'model': 'SM-T837A', 'mobile': false},
     'type': 'phone',
   },
   {

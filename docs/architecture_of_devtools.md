@@ -157,7 +157,7 @@ devtools_entrypoint("meta") {
 ```
 
 Below is an example implementation of a `<module>-meta.ts` (using [front_end/network/network-meta.ts](front_end/network/network-meta.ts) as running example).
-For information about the localization system, please see the documentation in [docs/localization/](docs/localization/).
+For information about the localization system, please see [l10n.md](l10n.md).
 
 ```ts
 // Any static imports on core modules

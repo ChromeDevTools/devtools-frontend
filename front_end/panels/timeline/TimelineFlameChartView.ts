@@ -68,7 +68,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly onMainEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly onNetworkEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly boundRefresh: () => void;
-  private selectedTrack: TimelineModel.TimelineModel.Track|null;
+  #selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly groupBySetting: Common.Settings.Setting<any>;
@@ -146,7 +146,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this.onEntryHighlighted, this);
 
     this.boundRefresh = this.refresh.bind(this);
-    this.selectedTrack = null;
+    this.#selectedEvents = null;
 
     this.mainDataProvider.setEventColorMapping(TimelineUIUtils.eventColor);
     this.groupBySetting = Common.Settings.Settings.instance().createSetting(
@@ -186,7 +186,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       return;
     }
     const track = group ? this.mainDataProvider.groupTrack(group) : null;
-    this.selectedTrack = track;
+    this.#selectedEvents = track ? track.eventsForTreeView() : null;
     this.updateTrack();
   }
 
@@ -199,7 +199,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#traceEngineData = newTraceEngineData;
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.model = model;
-    this.selectedTrack = null;
+    this.#selectedEvents = null;
     this.mainDataProvider.setModel(this.model, newTraceEngineData);
     this.networkDataProvider.setModel(this.model);
     if (this.model) {
@@ -218,8 +218,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   private updateTrack(): void {
-    this.countersView.setModel(this.model, this.selectedTrack);
-    this.detailsView.setModel(this.model, this.#traceEngineData, this.selectedTrack);
+    this.countersView.setModel(this.model, this.#selectedEvents);
+    this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
   }
 
   private refresh(): void {

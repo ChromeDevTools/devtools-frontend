@@ -156,7 +156,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableView.Searchable {
   modelInternal: PerformanceModel|null;
-  private track: TimelineModel.TimelineModel.Track|null;
+  #selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null;
   private searchResults: TimelineModel.TimelineProfileTree.Node[];
   linkifier!: Components.Linkifier.Linkifier;
   dataGrid!: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
@@ -181,7 +181,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   constructor() {
     super();
     this.modelInternal = null;
-    this.track = null;
+    this.#selectedEvents = null;
     this.element.classList.add('timeline-tree-view');
 
     this.searchResults = [];
@@ -199,15 +199,27 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     this.searchableView = searchableView;
   }
 
-  setModel(
+  setModelWithEvents(
       model: PerformanceModel|null,
-      track: TimelineModel.TimelineModel.Track|null,
+      selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null,
       traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
       ): void {
     this.modelInternal = model;
     this.#traceParseData = traceParseData;
-    this.track = track;
+    this.#selectedEvents = selectedEvents;
     this.refreshTree();
+  }
+
+  /**
+   * This method is included only for preventing layout test failures.
+   * TODO(crbug.com/1433692): Port problematic layout tests to unit
+   * tests.
+   */
+  setModel(
+      model: PerformanceModel|null,
+      track: TimelineModel.TimelineModel.Track|null,
+      ): void {
+    this.setModelWithEvents(model, track?.eventsForTreeView() || null);
   }
 
   getToolbarInputAccessiblePlaceHolder(): string {
@@ -309,8 +321,8 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     toolbar.appendToolbarItem(textFilterUI);
   }
 
-  modelEvents(): SDK.TracingModel.Event[]|TraceEngine.Types.TraceEvents.TraceEventData[] {
-    return this.track ? this.track.eventsForTreeView() : [];
+  modelEvents(): SDK.TracingModel.CompatibleTraceEvent[] {
+    return this.#selectedEvents || [];
   }
 
   onHover(_node: TimelineModel.TimelineProfileTree.Node|null): void {
@@ -718,12 +730,24 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.stackView.addEventListener(TimelineStackView.Events.SelectionChanged, this.onStackViewSelectionChanged, this);
   }
 
+  override setModelWithEvents(
+      model: PerformanceModel|null,
+      selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null,
+      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
+      ): void {
+    super.setModelWithEvents(model, selectedEvents, traceParseData);
+  }
+
+  /**
+   * This method is included only for preventing layout test failures.
+   * TODO(crbug.com/1433692): Port problematic layout tests to unit
+   * tests.
+   */
   override setModel(
       model: PerformanceModel|null,
       track: TimelineModel.TimelineModel.Track|null,
-      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
       ): void {
-    super.setModel(model, track, traceParseData);
+    super.setModel(model, track);
   }
 
   override updateContents(selection: TimelineSelection): void {

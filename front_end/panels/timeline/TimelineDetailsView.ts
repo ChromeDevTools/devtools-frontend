@@ -79,7 +79,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private rangeDetailViews: Map<string, TimelineTreeView>;
   private readonly additionalMetricsToolbar: UI.Toolbar.Toolbar;
   private model!: PerformanceModel;
-  private track?: TimelineModel.TimelineModel.Track|null;
+  #selectedEvents?: SDK.TracingModel.CompatibleTraceEvent[]|null;
   private lazyPaintProfilerView?: TimelinePaintProfilerView|null;
   private lazyLayersView?: TimelineLayersView|null;
   private preferredTabId?: string;
@@ -124,7 +124,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
   setModel(
       model: PerformanceModel|null, traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
-      track: TimelineModel.TimelineModel.Track|null): void {
+      selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null): void {
     if (this.model !== model) {
       if (this.model) {
         this.model.removeEventListener(Events.WindowChanged, this.onWindowChanged, this);
@@ -135,10 +135,10 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       }
     }
     this.#traceEngineData = traceEngineData;
-    this.track = track;
+    this.#selectedEvents = selectedEvents;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
-      view.setModel(model, track, traceEngineData);
+      view.setModelWithEvents(model, selectedEvents, traceEngineData);
     }
     this.lazyPaintProfilerView = null;
     this.lazyLayersView = null;
@@ -313,10 +313,10 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   }
 
   private updateSelectedRangeStats(startTime: number, endTime: number): void {
-    if (!this.model || !this.track) {
+    if (!this.model || !this.#selectedEvents) {
       return;
     }
-    const aggregatedStats = TimelineUIUtils.statsForTimeRange(this.track.eventsForTreeView(), startTime, endTime);
+    const aggregatedStats = TimelineUIUtils.statsForTimeRange(this.#selectedEvents, startTime, endTime);
     const startOffset = startTime - this.model.timelineModel().minimumRecordTime();
     const endOffset = endTime - this.model.timelineModel().minimumRecordTime();
 

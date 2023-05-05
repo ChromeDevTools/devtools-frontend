@@ -313,7 +313,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   groupTreeEvents(group: PerfUI.FlameChart.Group): SDK.TracingModel.CompatibleTraceEvent[]|null {
-    const eventsFromAppenderSystem = this.compatibilityTracksAppenderInstance().groupEventsForTreeView(group);
+    const eventsFromAppenderSystem = this.compatibilityTracksAppender?.groupEventsForTreeView(group);
     return eventsFromAppenderSystem || group.track?.eventsForTreeView() || null;
   }
 

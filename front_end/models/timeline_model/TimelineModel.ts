@@ -191,6 +191,9 @@ export class TimelineModelImpl {
    * 7. Start D
    * 8. End D
    * 9. End A
+   *
+   * By default, async events are filtered. This behaviour can be
+   * overriden making use of the filterAsyncEvents parameter.
    */
   static forEachEvent(
       events: SDK.TracingModel.CompatibleTraceEvent[],
@@ -198,7 +201,8 @@ export class TimelineModelImpl {
       onEndEvent: (arg0: SDK.TracingModel.CompatibleTraceEvent) => void,
       onInstantEvent?:
           ((arg0: SDK.TracingModel.CompatibleTraceEvent, arg1: SDK.TracingModel.CompatibleTraceEvent|null) => void),
-      startTime?: number, endTime?: number, filter?: ((arg0: SDK.TracingModel.CompatibleTraceEvent) => boolean)): void {
+      startTime?: number, endTime?: number, filter?: ((arg0: SDK.TracingModel.CompatibleTraceEvent) => boolean),
+      ignoreAsyncEvents = true): void {
     startTime = startTime || 0;
     endTime = endTime || Infinity;
     const stack: SDK.TracingModel.CompatibleTraceEvent[] = [];
@@ -214,8 +218,8 @@ export class TimelineModelImpl {
       if (eventStartTime >= endTime) {
         break;
       }
-      if (TraceEngine.Types.TraceEvents.isAsyncPhase(eventPhase) ||
-          TraceEngine.Types.TraceEvents.isFlowPhase(eventPhase)) {
+      const canIgnoreAsyncEvent = ignoreAsyncEvents && TraceEngine.Types.TraceEvents.isAsyncPhase(eventPhase);
+      if (canIgnoreAsyncEvent || TraceEngine.Types.TraceEvents.isFlowPhase(eventPhase)) {
         continue;
       }
       let last = stack[stack.length - 1];

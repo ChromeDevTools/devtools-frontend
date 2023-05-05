@@ -31,6 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -83,7 +84,7 @@ export class CountersGraph extends UI.Widget.VBox {
   private readonly counterUI: CounterUI[];
   private readonly countersByName: Map<string, Counter>;
   private readonly gpuMemoryCounter: Counter;
-  private track?: TimelineModel.TimelineModel.Track|null;
+  #events: SDK.TracingModel.CompatibleTraceEvent[]|null = null;
   currentValuesBar?: HTMLElement;
   private markerXPosition?: number;
 
@@ -137,7 +138,11 @@ export class CountersGraph extends UI.Widget.VBox {
     this.countersByName.set('gpuMemoryUsedKB', this.gpuMemoryCounter);
   }
 
-  setModel(model: PerformanceModel|null, track: TimelineModel.TimelineModel.Track|null): void {
+  setModel(model: PerformanceModel|null, events: SDK.TracingModel.CompatibleTraceEvent[]|null): void {
+    this.#events = events;
+    if (!events) {
+      return;
+    }
     if (this.model !== model) {
       if (this.model) {
         this.model.removeEventListener(Events.WindowChanged, this.onWindowChanged, this);
@@ -153,11 +158,6 @@ export class CountersGraph extends UI.Widget.VBox {
       this.counterUI[i].reset();
     }
     this.scheduleRefresh();
-    this.track = track;
-    if (!track) {
-      return;
-    }
-    const events = track.eventsForTreeView();
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
       if (event.name !== TimelineModel.TimelineModel.RecordType.UpdateCounters) {
@@ -171,7 +171,8 @@ export class CountersGraph extends UI.Widget.VBox {
       for (const name in counters) {
         const counter = this.countersByName.get(name);
         if (counter) {
-          counter.appendSample(event.startTime, counters[name]);
+          const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
+          counter.appendSample(startTime, counters[name]);
         }
       }
 
@@ -242,8 +243,8 @@ export class CountersGraph extends UI.Widget.VBox {
         bestTime = counterUI.counter.times[index];
       }
     }
-    if (bestTime !== undefined && this.track) {
-      this.delegate.selectEntryAtTime(this.track.events.length ? this.track.events : this.track.asyncEvents, bestTime);
+    if (bestTime !== undefined && this.#events) {
+      this.delegate.selectEntryAtTime(this.#events, bestTime);
     }
   }
 

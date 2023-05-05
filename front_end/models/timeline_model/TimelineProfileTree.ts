@@ -116,7 +116,7 @@ export class TopDownNode extends Node {
 
     // Walk on the full event tree to find this node's children.
     TimelineModelImpl.forEachEvent(
-        root.events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime, root.filter);
+        root.events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime, root.filter, false);
 
     function onStartEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       const {startTime: currentStartTime, endTime: currentEndTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
@@ -337,7 +337,8 @@ export class BottomUpRootNode extends Node {
     const selfTimeStack: number[] = [endTime - startTime];
     const firstNodeStack: boolean[] = [];
     const totalTimeById = new Map<string, number>();
-    TimelineModelImpl.forEachEvent(this.events, onStartEvent, onEndEvent, undefined, startTime, endTime, this.filter);
+    TimelineModelImpl.forEachEvent(
+        this.events, onStartEvent, onEndEvent, undefined, startTime, endTime, this.filter, false);
 
     function onStartEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       const {startTime: currentStartTime, endTime: currentEndTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
@@ -464,7 +465,7 @@ export class BottomUpNode extends Node {
     let lastTimeMarker: number = startTime;
     const self = this;
     TimelineModelImpl.forEachEvent(
-        this.root.events, onStartEvent, onEndEvent, undefined, startTime, endTime, this.root.filter);
+        this.root.events, onStartEvent, onEndEvent, undefined, startTime, endTime, this.root.filter, false);
 
     function onStartEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
       const {startTime: currentStartTime, endTime: currentEndTime} = SDK.TracingModel.timesForEventInMilliseconds(e);

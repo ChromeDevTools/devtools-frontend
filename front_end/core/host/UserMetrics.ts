@@ -545,7 +545,6 @@ export enum SidebarPaneCodes {
 // eslint-disable-next-line rulesdir/const_enum
 export enum MediaTypes {
   Unknown = 0,
-  'text/javascript' = 1,
   'text/css' = 2,
   'text/html' = 3,
   'application/xml' = 4,
@@ -575,7 +574,12 @@ export enum MediaTypes {
   'text/x-kotlin' = 28,
   'text/x-scala' = 29,
   'text/x.svelte' = 30,
-  MaxValue = 31,
+  'text/javascript+plain' = 31,
+  'text/javascript+minified' = 32,
+  'text/javascript+sourcemapped' = 33,
+  'text/x.angular' = 34,
+  'text/x.vue' = 35,
+  MaxValue = 36,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

@@ -99,9 +99,20 @@ describe('SourcesView', () => {
       const {uiSourceCode} = createFileSystemUISourceCode({
         url: 'file:///path/to/project/example.ts' as Platform.DevToolsPath.UrlString,
         mimeType: 'text/typescript',
+        content: 'export class Foo {}',
       });
       const sourcesPanelFileOpenedSpy = sinon.spy(Host.userMetrics, 'sourcesPanelFileOpened');
-      sourcesView.viewForFile(uiSourceCode);
+      const contentLoadedPromise = new Promise(res => window.addEventListener('source-file-loaded', res));
+      const widget = sourcesView.viewForFile(uiSourceCode);
+      assert.instanceOf(widget, Sources.UISourceCodeFrame.UISourceCodeFrame);
+      const uiSourceCodeFrame = widget as Sources.UISourceCodeFrame.UISourceCodeFrame;
+
+      // Skip creating the DebuggerPlugin, which times out and simulate DOM attach/showing.
+      sinon.stub(uiSourceCodeFrame, 'loadPlugins' as keyof typeof uiSourceCodeFrame).callsFake(() => {});
+      uiSourceCodeFrame.wasShown();
+
+      await contentLoadedPromise;
+
       assert.isTrue(sourcesPanelFileOpenedSpy.calledWithExactly('text/typescript'));
     });
   });

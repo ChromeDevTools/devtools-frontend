@@ -34,6 +34,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -93,11 +94,13 @@ export class RequestResponseView extends UI.Widget.VBox {
       return null;
     }
 
-    const mediaType = request.resourceType().canonicalMimeType() || request.mimeType;
+    const mimeType = request.resourceType().canonicalMimeType() || request.mimeType;
+    const mediaType = Common.ResourceType.ResourceType.mediaTypeForMetrics(
+        mimeType, request.resourceType().isFromSourceMap(), TextUtils.TextUtils.isMinified(contentData.content ?? ''));
     Host.userMetrics.networkPanelResponsePreviewOpened(mediaType);
     const autoPrettyPrint = Root.Runtime.experiments.isEnabled('sourcesPrettyPrint');
     sourceView =
-        SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mediaType, autoPrettyPrint);
+        SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mimeType, autoPrettyPrint);
     requestToSourceView.set(request, sourceView);
     return sourceView;
   }

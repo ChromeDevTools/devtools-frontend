@@ -29,11 +29,12 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Persistence from '../../models/persistence/persistence.js';
-import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -77,6 +78,7 @@ export class UISourceCodeFrame extends
   // recreated when the binding changes
   private plugins: Plugin[] = [];
   private readonly errorPopoverHelper: UI.PopoverHelper.PopoverHelper;
+  #sourcesPanelOpenedMetricsRecorded = false;
 
   constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode) {
     super(() => this.workingCopy());
@@ -277,6 +279,7 @@ export class UISourceCodeFrame extends
     for (const plugin of this.plugins) {
       plugin.editorInitialized(this.textEditor);
     }
+    this.#recordSourcesPanelOpenedMetrics();
     Common.EventTarget.fireEvent('source-file-loaded', this.uiSourceCodeInternal.displayName(true));
   }
 
@@ -504,6 +507,23 @@ export class UISourceCodeFrame extends
         return true;
       },
     };
+  }
+
+  /**
+   * Only records metrics once per UISourceCodeFrame instance and must only be
+   * called once the content of the UISourceCode is available.
+   */
+  #recordSourcesPanelOpenedMetrics(): void {
+    if (this.#sourcesPanelOpenedMetricsRecorded) {
+      return;
+    }
+    this.#sourcesPanelOpenedMetricsRecorded = true;
+
+    const mimeType = Common.ResourceType.ResourceType.mimeFromURL(this.uiSourceCodeInternal.url());
+    const mediaType = Common.ResourceType.ResourceType.mediaTypeForMetrics(
+        mimeType ?? '', this.uiSourceCodeInternal.contentType().isFromSourceMap(),
+        TextUtils.TextUtils.isMinified(this.uiSourceCodeInternal.content()));
+    Host.userMetrics.sourcesPanelFileOpened(mediaType);
   }
 }
 

@@ -10,6 +10,7 @@ ts_library("timeline") {
     "EventTypeHelpers_test.ts",
     "SaveFileFormatter_test.ts",
     "SourceMaps_test.ts",
+    "TimelineFlameChartDataProvider_test.ts",
     "TimelineFlameChartView_test.ts",
     "TimelineHistoryManager_test.ts",
     "TimelineSelection_test.ts",

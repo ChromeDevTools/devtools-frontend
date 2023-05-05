@@ -714,9 +714,7 @@ export class TreeGridNode extends GridNode {
 const profileNodeToTreeGridNode = new WeakMap<TimelineModel.TimelineProfileTree.Node, TreeGridNode>();
 
 export class AggregatedTimelineTreeView extends TimelineTreeView {
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected readonly groupBySetting: Common.Settings.Setting<any>;
+  protected readonly groupBySetting: Common.Settings.Setting<AggregatedTimelineTreeView.GroupBy>;
   private readonly stackView: TimelineStackView;
   private executionContextNamesByOrigin = new Map<Platform.DevToolsPath.UrlString, string>();
 
@@ -730,6 +728,9 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.stackView.addEventListener(TimelineStackView.Events.SelectionChanged, this.onStackViewSelectionChanged, this);
   }
 
+  setGroupBySettingForTests(groupBy: AggregatedTimelineTreeView.GroupBy): void {
+    this.groupBySetting.set(groupBy);
+  }
   override setModelWithEvents(
       model: PerformanceModel|null,
       selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null,

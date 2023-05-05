@@ -82,15 +82,15 @@ describeWithEnvironment('TimelineTreeView', () => {
   describe('CallTreeTimelineTreeView', () => {
     it('Creates a call tree from nestable events', async () => {
       const data = await allModelsFromFile('sync-like-timings.json.gz');
-      const CallTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+      const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       const startTime =
           TraceEngine.Helpers.Timing.microSecondsToMilliseconds(data.traceParsedData.Meta.traceBounds.min);
       const endTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(data.traceParsedData.Meta.traceBounds.max);
-      CallTreeView.setRange(startTime, endTime);
-      CallTreeView.setModelWithEvents(data.performanceModel, consoleTimings, data.traceParsedData);
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.setModelWithEvents(data.performanceModel, consoleTimings, data.traceParsedData);
 
-      const tree = CallTreeView.buildTree();
+      const tree = callTreeView.buildTree();
       const topNodesIterator = tree.children().values();
       const firstNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
       assert.strictEqual(firstNode.event?.name, 'first console time');
@@ -100,6 +100,47 @@ describeWithEnvironment('TimelineTreeView', () => {
 
       const childNode = firstNode.children().values().next().value as TimelineModel.TimelineProfileTree.Node;
       assert.strictEqual(childNode.event?.name, 'second console time');
+    });
+  });
+  describe('event groupping', () => {
+    it('groups events by category in the Call Tree view', async () => {
+      const data = await allModelsFromFile('sync-like-timings.json.gz');
+      const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
+      const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
+      const startTime =
+          TraceEngine.Helpers.Timing.microSecondsToMilliseconds(data.traceParsedData.Meta.traceBounds.min);
+      const endTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(data.traceParsedData.Meta.traceBounds.max);
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Category);
+      callTreeView.setModelWithEvents(data.performanceModel, consoleTimings, data.traceParsedData);
+      const tree = callTreeView.buildTree();
+      const treeEntries = tree.children().entries();
+      const groupEntry = treeEntries.next();
+      assert.strictEqual(groupEntry.value[0], 'scripting');
+      assert.isTrue(groupEntry.value[1].isGroupNode());
+      const children = groupEntry.value[1].children().values();
+      assert.strictEqual(children.next().value.event.name, 'first console time');
+      assert.strictEqual(children.next().value.event.name, 'third console time');
+    });
+    it('groups events by category in the Call Tree view', async () => {
+      const data = await allModelsFromFile('sync-like-timings.json.gz');
+      const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
+      const startTime =
+          TraceEngine.Helpers.Timing.microSecondsToMilliseconds(data.traceParsedData.Meta.traceBounds.min);
+      const endTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(data.traceParsedData.Meta.traceBounds.max);
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Category);
+      callTreeView.setModelWithEvents(data.performanceModel, consoleTimings, data.traceParsedData);
+      const tree = callTreeView.buildTree();
+      const treeEntries = tree.children().entries();
+      const groupEntry = treeEntries.next();
+      assert.strictEqual(groupEntry.value[0], 'scripting');
+      assert.isTrue(groupEntry.value[1].isGroupNode());
+      const children = groupEntry.value[1].children().values();
+      assert.strictEqual(children.next().value.event.name, 'second console time');
+      assert.strictEqual(children.next().value.event.name, 'first console time');
+      assert.strictEqual(children.next().value.event.name, 'third console time');
     });
   });
 });

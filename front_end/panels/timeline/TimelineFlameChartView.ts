@@ -185,8 +185,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (flameChart !== this.mainFlameChart) {
       return;
     }
-    const track = group ? this.mainDataProvider.groupTrack(group) : null;
-    this.#selectedEvents = track ? track.eventsForTreeView() : null;
+    this.#selectedEvents = group ? this.mainDataProvider.groupTreeEvents(group) : null;
     this.updateTrack();
   }
 

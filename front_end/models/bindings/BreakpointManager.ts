@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -1158,6 +1159,7 @@ class Storage {
     for (const breakpoint of this.setting.get()) {
       this.breakpoints.set(Storage.computeId(breakpoint), breakpoint);
     }
+    Host.userMetrics.breakpointsRestoredFromStorage(this.breakpoints.size);
   }
 
   mute(): void {
@@ -1230,7 +1232,7 @@ export const NEVER_PAUSE_HERE_CONDITION = 'false' as UserCondition;
  * All the data for a single `Breakpoint` thats stored in the settings.
  * Whenever any of these change, we need to update the settings.
  */
-interface BreakpointStorageState {
+export interface BreakpointStorageState {
   readonly url: Platform.DevToolsPath.UrlString;
   readonly resourceTypeName: string;
   readonly lineNumber: number;

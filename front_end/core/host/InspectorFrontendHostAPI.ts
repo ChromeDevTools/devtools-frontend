@@ -390,4 +390,5 @@ export enum EnumeratedHistogram {
   CSSPropertyDocumentation = 'DevTools.CSSPropertyDocumentation',
   InlineScriptParsed = 'DevTools.InlineScriptParsed',
   VMInlineScriptTypeShown = 'DevTools.VMInlineScriptShown',
+  BreakpointsRestoredFromStorageCount = 'DevTools.BreakpointsRestoredFromStorageCount',
 }

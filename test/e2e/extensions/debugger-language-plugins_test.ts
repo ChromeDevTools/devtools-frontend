@@ -1278,6 +1278,33 @@ describe('The Debugger Language Plugins', async () => {
     }
   });
 
+  it('does not auto-step for modules without a plugin', async () => {
+    const {frontend} = getBrowserAndPages();
+    const locationLabels = WasmLocationLabels.load('extensions/stepping.wat', 'extensions/stepping.wasm');
+
+    await goToWasmResource('stepping.wasm', {autoLoadModule: true});
+    await openSourcesPanel();
+
+    await locationLabels.setBreakpointInWasmAndRun('FIRST_PAUSE', 'window.Module.instance.exports.Main(16)');
+    await waitFor('.paused-status');
+    await locationLabels.checkLocationForLabel('FIRST_PAUSE');
+    const beforeStepCallFrame = (await retrieveTopCallFrameWithoutResuming())?.split(':');
+    assertNotNullOrUndefined(beforeStepCallFrame);
+    const beforeStepFunctionNames = await getCallFrameNames();
+
+    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+    await stepOver();
+    const afterStepCallFrame = (await retrieveTopCallFrameWithoutResuming())?.split(':');
+    assertNotNullOrUndefined(afterStepCallFrame);
+    const afterStepFunctionNames = await getCallFrameNames();
+    // still in the same function:
+    assert.deepStrictEqual(beforeStepFunctionNames, afterStepFunctionNames);
+    // still in the same module:
+    assert.deepStrictEqual(beforeStepCallFrame[0], afterStepCallFrame[0]);
+    // moved one instruction:
+    assert.deepStrictEqual(parseInt(beforeStepCallFrame[1], 16) + 2, parseInt(afterStepCallFrame[1], 16));
+  });
+
   it('auto-steps over unmapped code correctly', async () => {
     const {frontend} = getBrowserAndPages();
     const extension = await loadExtension(

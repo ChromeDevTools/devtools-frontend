@@ -57,7 +57,7 @@ export class InteractionsTrackAppender implements TrackAppender {
           max: 55,
           count: undefined,
         },
-        {min: 70, max: 100, count: 6}, 90, 0.7);
+        {min: 70, max: 100, count: 6}, 50, 0.7);
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
     this.#entryData = entryData;

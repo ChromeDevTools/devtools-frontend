@@ -500,7 +500,8 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     const functionLocation = frame.functionLocation();
     if (!autoSteppingContext || debuggerPausedDetails.reason !== Protocol.Debugger.PausedEventReason.Step ||
         !functionLocation || !this.pluginManager || !frame.script.isWasm() ||
-        !Common.Settings.moduleSetting('wasmAutoStepping').get()) {
+        !Common.Settings.moduleSetting('wasmAutoStepping').get() ||
+        !this.pluginManager.hasPluginForScript(frame.script)) {
       return true;
     }
     const uiLocation = await this.pluginManager.rawLocationToUILocation(frame.location());

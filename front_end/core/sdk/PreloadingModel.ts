@@ -216,11 +216,6 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.ModelUpdated);
   }
 
-  onPreloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
-    this.preloadEnabledState = event.state;
-    this.dispatchEventToListeners(Events.ModelUpdated);
-  }
-
   onPreloadingAttemptSourcesUpdated(event: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void {
     const loaderId = event.loaderId;
     this.ensureDocumentPreloadingData(loaderId);
@@ -256,6 +251,11 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     this.documents.get(loaderId)?.preloadingAttempts.upsert(attempt);
     this.dispatchEventToListeners(Events.ModelUpdated);
   }
+
+  onPreloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
+    this.preloadEnabledState = event.state;
+    this.dispatchEventToListeners(Events.ModelUpdated);
+  }
 }
 
 SDKModel.register(PreloadingModel, {capabilities: Capability.DOM, autostart: false});
@@ -285,10 +285,6 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
     this.model.onRuleSetRemoved(event);
   }
 
-  preloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
-    this.model.onPreloadEnabledStateUpdated(event);
-  }
-
   preloadingAttemptSourcesUpdated(event: Protocol.Preload.PreloadingAttemptSourcesUpdatedEvent): void {
     this.model.onPreloadingAttemptSourcesUpdated(event);
   }
@@ -302,6 +298,10 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
 
   prerenderStatusUpdated(event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
     this.model.onPrerenderStatusUpdated(event);
+  }
+
+  preloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
+    this.model.onPreloadEnabledStateUpdated(event);
   }
 }
 

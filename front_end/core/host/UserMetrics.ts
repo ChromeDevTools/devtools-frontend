@@ -449,7 +449,13 @@ export enum Action {
   BreakpointsInFileCheckboxToggled = 71,
   BreakpointsInFileEnabledDisabledFromContextMenu = 72,
   BreakpointConditionEditedFromSidebar = 73,
-  MaxValue = 74,
+  AddFileSystemToWorkspace = 74,
+  RemoveFileSystemFromWorkspace = 75,
+  AddFileSystemForOverrides = 76,
+  RemoveFileSystemForOverrides = 77,
+  FileSystemSourceSelected = 78,
+  OverridesSourceSelected = 79,
+  MaxValue = 80,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -536,7 +542,12 @@ export enum SidebarPaneCodes {
   'elements.domBreakpoints' = 5,
   'elements.domProperties' = 6,
   'accessibility.view' = 7,
-  MaxValue = 8,
+  'navigator-network' = 8,
+  'navigator-files' = 9,
+  'navigator-overrides' = 10,
+  'navigator-contentScripts' = 11,
+  'navigator-snippets' = 12,
+  MaxValue = 13,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

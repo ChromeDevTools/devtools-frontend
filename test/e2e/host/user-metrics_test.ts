@@ -413,6 +413,18 @@ describe('User Metrics for sidebar panes', () => {
 
     assert.notInclude(eventNames, 'DevTools.SidebarPaneShown');
   });
+
+  it('dispatches sidebar panes events for switching to \'Filesystem\' tab in the \'Sources\' panel', async () => {
+    await click('#tab-sources');
+    await navigateToSidePane('Filesystem');
+
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.SidebarPaneShown',
+        actionCode: 9,  // navigator-files
+      },
+    ]);
+  });
 });
 
 describe('User Metrics for Issue Panel', () => {

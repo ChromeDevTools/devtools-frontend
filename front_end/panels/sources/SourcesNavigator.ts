@@ -206,6 +206,11 @@ export class FilesNavigatorView extends NavigatorView {
     return filesNavigatorViewInstance;
   }
 
+  override sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSystemSourceSelected);
+    super.sourceSelected(uiSourceCode, focusSource);
+  }
+
   override acceptProject(project: Workspace.Workspace.Project): boolean {
     return project.type() === Workspace.Workspace.projectTypes.FileSystem &&
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides' &&
@@ -305,6 +310,11 @@ export class OverridesNavigatorView extends NavigatorView {
       return;
     }
     Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(true);
+  }
+
+  override sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverridesSourceSelected);
+    super.sourceSelected(uiSourceCode, focusSource);
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {

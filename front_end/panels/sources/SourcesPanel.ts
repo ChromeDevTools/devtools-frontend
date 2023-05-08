@@ -257,6 +257,10 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     const navigatorMenuButton = new UI.Toolbar.ToolbarMenuButton(this.populateNavigatorMenu.bind(this), true);
     navigatorMenuButton.setTitle(i18nString(UIStrings.moreOptions));
     tabbedPane.rightToolbar().appendToolbarItem(navigatorMenuButton);
+    tabbedPane.addEventListener(
+        UI.TabbedPane.Events.TabSelected,
+        ({data: {tabId}}: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void =>
+            Host.userMetrics.sidebarPaneShown(tabId));
 
     if (UI.ViewManager.ViewManager.instance().hasViewsForLocation('run-view-sidebar')) {
       const navigatorSplitWidget =

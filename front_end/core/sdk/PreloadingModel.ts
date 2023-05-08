@@ -258,7 +258,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   }
 }
 
-SDKModel.register(PreloadingModel, {capabilities: Capability.Target, autostart: false});
+SDKModel.register(PreloadingModel, {capabilities: Capability.DOM, autostart: false});
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

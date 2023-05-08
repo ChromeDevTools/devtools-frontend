@@ -51,7 +51,7 @@ const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector
 const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-text';
 const STYLE_PROPERTIES_SELECTOR = '.tree-outline-disclosure [role="treeitem"]';
 const CSS_AUTHORING_HINTS_ICON_SELECTOR = '.hint';
-const SEARCH_BOX_SELECTOR = '.search-bar';
+export const SEARCH_BOX_SELECTOR = '.search-bar';
 const SEARCH_RESULTS_MATCHES = '.search-results-matches';
 
 export const openLayoutPane = async () => {

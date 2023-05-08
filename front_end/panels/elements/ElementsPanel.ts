@@ -551,7 +551,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private documentUpdated(domModel: SDK.DOMModel.DOMModel): void {
-    this.searchableViewInternal.resetSearch();
+    this.searchableViewInternal.cancelSearch();
 
     if (!domModel.existingDocument()) {
       if (this.isShowing()) {

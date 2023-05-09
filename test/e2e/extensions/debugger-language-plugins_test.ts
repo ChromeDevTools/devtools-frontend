@@ -1027,6 +1027,7 @@ describe('The Debugger Language Plugins', async () => {
     await goToWasmResource('stepping.wasm', {autoLoadModule: true});
     await openSourcesPanel();
 
+    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
     await locationLabels.setBreakpointInWasmAndRun('FIRST_PAUSE', 'window.Module.instance.exports.Main(16)');
     await waitFor('.paused-status');
     await locationLabels.checkLocationForLabel('FIRST_PAUSE');
@@ -1034,10 +1035,14 @@ describe('The Debugger Language Plugins', async () => {
     assertNotNullOrUndefined(beforeStepCallFrame);
     const beforeStepFunctionNames = await getCallFrameNames();
 
-    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
     await stepOver();
-    const afterStepCallFrame = (await retrieveTopCallFrameWithoutResuming())?.split(':');
-    assertNotNullOrUndefined(afterStepCallFrame);
+    const afterStepCallFrame = await waitForFunction(async () => {
+      const callFrame = (await retrieveTopCallFrameWithoutResuming())?.split(':');
+      if (callFrame && (callFrame[0] !== beforeStepCallFrame[0] || callFrame[1] !== beforeStepCallFrame[1])) {
+        return callFrame;
+      }
+      return undefined;
+    });
     const afterStepFunctionNames = await getCallFrameNames();
     // still in the same function:
     assert.deepStrictEqual(beforeStepFunctionNames, afterStepFunctionNames);

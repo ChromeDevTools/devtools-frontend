@@ -431,7 +431,8 @@ describe('Recorder', function() {
     assert.isTrue(Boolean(screenshot));
   });
 
-  it('should record interactions with popups', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1443423]: should record interactions with popups', async () => {
     await startRecording('recorder/recorder.html', {untrustedEvents: true});
 
     const {target, browser} = getBrowserAndPages();

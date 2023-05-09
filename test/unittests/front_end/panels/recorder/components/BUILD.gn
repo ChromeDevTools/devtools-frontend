@@ -2,8 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import(
-    "../../../../../../third_party/typescript/typescript.gni")
+import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("components") {
   testonly = true
@@ -19,10 +18,10 @@ ts_library("components") {
   ]
 
   deps = [
-    "../../../../../../front_end/ui/components/text_editor:bundle",
-    "../../../../../../test/unittests/front_end/helpers",
     "../../../../../../front_end/panels/recorder/components:bundle",
     "../../../../../../front_end/panels/recorder/models:bundle",
+    "../../../../../../front_end/ui/components/text_editor:bundle",
     "../../../helpers",
+    "../helpers",
   ]
 }

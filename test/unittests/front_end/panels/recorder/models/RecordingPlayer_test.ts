@@ -7,7 +7,7 @@ const {assert} = chai;
 import * as Models from '../../../../../../front_end/panels/recorder/models/models.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
-import * as RecorderHelpers from '../../../helpers/RecorderHelpers.js';
+import * as RecorderHelpers from '../helpers/RecorderHelpers.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';

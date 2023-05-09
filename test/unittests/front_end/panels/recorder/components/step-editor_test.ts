@@ -11,7 +11,7 @@ import * as EnvironmentHelpers from '../../../../../../test/unittests/front_end/
 import type * as Components from '../../../../../../front_end/panels/recorder/components/components.js';
 import * as Models from '../../../../../../front_end/panels/recorder/models/models.js';
 // eslint-disable-next-line rulesdir/es_modules_import
-import * as RecorderHelpers from '../../../helpers/RecorderHelpers.js';
+import * as RecorderHelpers from '../helpers/RecorderHelpers.js';
 
 const {describeWithLocale} = EnvironmentHelpers;
 

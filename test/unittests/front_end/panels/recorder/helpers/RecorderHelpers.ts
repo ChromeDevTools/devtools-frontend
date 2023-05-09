@@ -3,9 +3,8 @@
 // found in the LICENSE file.
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import * as SDK from '../../../../front_end/core/sdk/sdk.js';
-import * as Recorder from '../../../../front_end/panels/recorder/models/models.js';
-import * as Models from '../../../../front_end/panels/recorder/models/models.js';
+import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
+import * as Models from '../../../../../../front_end/panels/recorder/models/models.js';
 
 export interface ClientMock {
   send(): sinon.SinonStub;
@@ -36,7 +35,7 @@ export const installMocksForRecordingPlayer = (): void => {
       disconnect: () => sinon.stub().resolves(),
     },
   };
-  sinon.stub(Recorder.RecordingPlayer.RecordingPlayer, 'connectPuppeteer').resolves(mock as never);
+  sinon.stub(Models.RecordingPlayer.RecordingPlayer, 'connectPuppeteer').resolves(mock as never);
 };
 
 export const installMocksForTargetManager = (): void => {

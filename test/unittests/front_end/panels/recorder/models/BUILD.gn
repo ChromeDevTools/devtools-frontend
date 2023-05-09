@@ -2,8 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import(
-    "../../../../../../third_party/typescript/typescript.gni")
+import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("models") {
   testonly = true
@@ -20,8 +19,9 @@ ts_library("models") {
 
   deps = [
     "../../../../../../front_end/generated:protocol",
-    "../../../../../../test/unittests/front_end/helpers",
     "../../../../../../front_end/panels/recorder/models:bundle",
+    "../../../../../../test/unittests/front_end/helpers",
     "../../../helpers",
+    "../helpers",
   ]
 }

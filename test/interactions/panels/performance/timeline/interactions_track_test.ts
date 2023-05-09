@@ -7,8 +7,7 @@ import {describe} from '../../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged, itScreenshot} from '../../../../shared/screenshots.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
-// Temporarily skipped to avoid back merge conflicts
-describe.skip('[crbug.com/1442577] Interactions track', () => {
+describe('Interactions track', () => {
   preloadForCodeCoverage('performance_panel/track_example.html');
 
   itScreenshot('renders the interactions track correctly', async () => {

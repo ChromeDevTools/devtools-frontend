@@ -6,8 +6,6 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {
   EntryType,
-  InstantEventVisibleDurationMs,
-  type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
 import {
   type CompatibilityTracksAppender,
@@ -42,7 +40,6 @@ export class TimingsTrackAppender implements TrackAppender {
   #compatibilityBuilder: CompatibilityTracksAppender;
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
-  #entryData: TimelineFlameChartEntry[];
   // TODO(crbug.com/1416533)
   // This is used only for compatibility with the legacy flame chart
   // architecture of the panel. Once all tracks have been migrated to
@@ -53,7 +50,7 @@ export class TimingsTrackAppender implements TrackAppender {
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
       traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[]) {
+      legacyEntryTypeByLevel: EntryType[]) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = new Common.Color.Generator(
         {
@@ -64,7 +61,6 @@ export class TimingsTrackAppender implements TrackAppender {
         {min: 70, max: 100, count: 6}, 50, 0.7);
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
-    this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
   }
 
@@ -163,8 +159,8 @@ export class TimingsTrackAppender implements TrackAppender {
    */
   #appendConsoleTimings(currentLevel: number): number {
     let newLevel = currentLevel;
-    for (const timestamp of this.#traceParsedData.UserTimings.timestampEvents) {
-      this.#appendEventAtLevel(timestamp, newLevel);
+    for (const timestampEvent of this.#traceParsedData.UserTimings.timestampEvents) {
+      this.#appendEventAtLevel(timestampEvent, newLevel);
     }
     if (this.#traceParsedData.UserTimings.timestampEvents.length !== 0) {
       // Add console.time events on the next level, but only if the
@@ -221,17 +217,7 @@ export class TimingsTrackAppender implements TrackAppender {
    * array, which contains all the events in the timeline.
    */
   #appendEventAtLevel(event: TraceEngine.Types.TraceEvents.TraceEventData, level: number): number {
-    this.#compatibilityBuilder.registerTrackForLevel(level, this);
-    const index = this.#entryData.length;
-    this.#entryData.push(event);
-    this.#legacyEntryTypeByLevel[level] = EntryType.TrackAppender;
-    this.#flameChartData.entryLevels[index] = level;
-    this.#flameChartData.entryStartTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
-    const msDuration = event.dur ||
-        TraceEngine.Helpers.Timing.millisecondsToMicroseconds(
-            InstantEventVisibleDurationMs as TraceEngine.Types.Timing.MilliSeconds);
-    this.#flameChartData.entryTotalTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(msDuration);
-    return index;
+    return this.#compatibilityBuilder.appendEventAtLevel(event, level, this);
   }
 
   /*

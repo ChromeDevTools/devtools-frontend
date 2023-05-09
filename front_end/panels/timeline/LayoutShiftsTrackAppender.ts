@@ -6,7 +6,6 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {
   EntryType,
-  type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
 import {
   type CompatibilityTracksAppender,
@@ -33,7 +32,6 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   #compatibilityBuilder: CompatibilityTracksAppender;
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
-  #entryData: TimelineFlameChartEntry[];
   // TODO(crbug.com/1416533)
   // This is used only for compatibility with the legacy flame chart
   // architecture of the panel. Once all tracks have been migrated to
@@ -44,11 +42,10 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
       traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[]) {
+      legacyEntryTypeByLevel: EntryType[]) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
-    this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
   }
 
@@ -121,13 +118,8 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * @returns the position occupied by the new event in the entryData
    * array, which contains all the events in the timeline.
    */
-  #appendEventAtLevel(event: TraceEngine.Types.TraceEvents.TraceEventData, level: number): number {
-    this.#compatibilityBuilder.registerTrackForLevel(level, this);
-    const index = this.#entryData.length;
-    this.#entryData.push(event);
-    this.#legacyEntryTypeByLevel[level] = EntryType.TrackAppender;
-    this.#flameChartData.entryLevels[index] = level;
-    this.#flameChartData.entryStartTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
+  #appendEventAtLevel(event: TraceEngine.Types.TraceEvents.TraceEventData, level: number): void {
+    const index = this.#compatibilityBuilder.appendEventAtLevel(event, level, this);
     // Bit of a hack: LayoutShifts are instant events, so have no duration. But
     // OPP doesn't do well at making tiny events easy to spot and click. So we
     // set it to a small duration so that the user is able to see and click
@@ -135,7 +127,6 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
     // allow us to do this properly and not hack around it.
     const msDuration = TraceEngine.Types.Timing.MicroSeconds(5_000);
     this.#flameChartData.entryTotalTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(msDuration);
-    return index;
   }
 
   /*

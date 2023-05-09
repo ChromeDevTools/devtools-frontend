@@ -1,9 +1,8 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as TraceEngine from '../../models/trace/trace.js';
-import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 
 import {
   type TrackAppender,
@@ -13,8 +12,6 @@ import {
 } from './CompatibilityTracksAppender.js';
 import {
   EntryType,
-  InstantEventVisibleDurationMs,
-  type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
 import {buildGroupStyle, buildTrackHeader, getFormattedTime, getSyncEventLevel} from './AppenderUtils.js';
 
@@ -32,9 +29,7 @@ export class GPUTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'GPU';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
-  #entryData: TimelineFlameChartEntry[];
   // TODO(crbug.com/1416533)
   // This is used only for compatibility with the legacy flame chart
   // architecture of the panel. Once all tracks have been migrated to
@@ -43,13 +38,11 @@ export class GPUTrackAppender implements TrackAppender {
   #legacyEntryTypeByLevel: EntryType[];
 
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
+      compatibilityBuilder: CompatibilityTracksAppender,
       traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[]) {
+      legacyEntryTypeByLevel: EntryType[]) {
     this.#compatibilityBuilder = compatibilityBuilder;
-    this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
-    this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
   }
 
@@ -108,6 +101,7 @@ export class GPUTrackAppender implements TrackAppender {
 
     this.#legacyEntryTypeByLevel.length = trackStartLevel + maxStackDepth;
     this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, trackStartLevel);
+
     return trackStartLevel + maxStackDepth;
   }
 
@@ -117,17 +111,7 @@ export class GPUTrackAppender implements TrackAppender {
    * array, which contains all the events in the timeline.
    */
   #appendEventAtLevel(event: TraceEngine.Types.TraceEvents.TraceEventData, level: number): number {
-    this.#compatibilityBuilder.registerTrackForLevel(level, this);
-    const index = this.#entryData.length;
-    this.#entryData.push(event);
-    this.#legacyEntryTypeByLevel[level] = EntryType.TrackAppender;
-    this.#flameChartData.entryLevels[index] = level;
-    this.#flameChartData.entryStartTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
-    const msDuration = event.dur ||
-        TraceEngine.Helpers.Timing.millisecondsToMicroseconds(
-            InstantEventVisibleDurationMs as TraceEngine.Types.Timing.MilliSeconds);
-    this.#flameChartData.entryTotalTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(msDuration);
-    return index;
+    return this.#compatibilityBuilder.appendEventAtLevel(event, level, this);
   }
 
   /*

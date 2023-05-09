@@ -6,7 +6,6 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {
   EntryType,
-  type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
 import {
   type CompatibilityTracksAppender,
@@ -38,7 +37,6 @@ export class InteractionsTrackAppender implements TrackAppender {
   #compatibilityBuilder: CompatibilityTracksAppender;
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
-  #entryData: TimelineFlameChartEntry[];
   // TODO(crbug.com/1416533)
   // This is used only for compatibility with the legacy flame chart
   // architecture of the panel. Once all tracks have been migrated to
@@ -49,7 +47,7 @@ export class InteractionsTrackAppender implements TrackAppender {
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
       traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[]) {
+      legacyEntryTypeByLevel: EntryType[]) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = new Common.Color.Generator(
         {
@@ -60,7 +58,6 @@ export class InteractionsTrackAppender implements TrackAppender {
         {min: 70, max: 100, count: 6}, 50, 0.7);
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
-    this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
   }
 
@@ -127,26 +124,12 @@ export class InteractionsTrackAppender implements TrackAppender {
    * @returns the position occupied by the new event in the entryData
    * array, which contains all the events in the timeline.
    */
-  #appendEventAtLevel(syntheticEvent: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, level: number): number {
-    this.#compatibilityBuilder.registerTrackForLevel(level, this);
-    const index = this.#entryData.length;
-
-    // Although the event is a SyntheticInteractionEvent, it extends
-    // TraceEventData, so we can safely push it onto entryData.
-    this.#entryData.push(syntheticEvent);
-    this.#legacyEntryTypeByLevel[level] = EntryType.TrackAppender;
-    this.#flameChartData.entryLevels[index] = level;
-    this.#flameChartData.entryStartTimes[index] =
-        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(syntheticEvent.ts);
+  #appendEventAtLevel(syntheticEvent: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, level: number): void {
+    const index = this.#compatibilityBuilder.appendEventAtLevel(syntheticEvent, level, this);
     const eventDurationMicroSeconds = syntheticEvent.dur || TraceEngine.Types.Timing.MicroSeconds(0);
-
     if (eventDurationMicroSeconds > LONG_INTERACTION_THRESHOLD) {
       this.#addCandyStripingForLongInteraction(index);
     }
-
-    this.#flameChartData.entryTotalTimes[index] =
-        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(eventDurationMicroSeconds);
-    return index;
   }
 
   #addCandyStripingForLongInteraction(eventIndex: number): void {

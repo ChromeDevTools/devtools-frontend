@@ -13,6 +13,6 @@ describe('Layout shifts track', () => {
   itScreenshot('renders the layout shifts track correctly', async () => {
     await loadComponentDocExample('performance_panel/track_example.html?track=LayoutShifts&fileName=cls-single-frame');
     const flameChart = await waitFor('.flame-chart-main-pane');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/layout_shifts_track.png', 3);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/layout_shifts_track.png', 2);
   });
 });

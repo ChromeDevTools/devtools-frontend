@@ -6,7 +6,11 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import {type TimelineFlameChartEntry, type EntryType} from './TimelineFlameChartDataProvider.js';
+import {
+  type TimelineFlameChartEntry,
+  EntryType,
+  InstantEventVisibleDurationMs,
+} from './TimelineFlameChartDataProvider.js';
 import {TimingsTrackAppender} from './TimingsTrackAppender.js';
 import {InteractionsTrackAppender} from './InteractionsTrackAppender.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
@@ -33,7 +37,7 @@ export type HighlightedEntryInfo = {
  * removed. This processes of doing this for a track is referred to as
  * "migrating the track" to the new system.
  *
- * The migration implementation will result benefitial among other
+ * The migration implementation will result beneficial among other
  * things because the complexity of rendering the details of each track
  * is distributed among multiple standalone modules.
  * Read more at go/rpp-flamechart-arch
@@ -118,22 +122,21 @@ export class CompatibilityTracksAppender {
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
     this.#legacyTimelineModel = legacyTimelineModel;
 
-    this.#timingsTrackAppender = new TimingsTrackAppender(
-        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel);
+    this.#timingsTrackAppender =
+        new TimingsTrackAppender(this, this.#flameChartData, this.#traceParsedData, this.#legacyEntryTypeByLevel);
     this.#allTrackAppenders.push(this.#timingsTrackAppender);
 
-    this.#interactionsTrackAppender = new InteractionsTrackAppender(
-        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel);
+    this.#interactionsTrackAppender =
+        new InteractionsTrackAppender(this, this.#flameChartData, this.#traceParsedData, this.#legacyEntryTypeByLevel);
     this.#allTrackAppenders.push(this.#interactionsTrackAppender);
 
-    this.#gpuTrackAppender = new GPUTrackAppender(
-        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel);
+    this.#gpuTrackAppender = new GPUTrackAppender(this, this.#traceParsedData, this.#legacyEntryTypeByLevel);
     this.#allTrackAppenders.push(this.#gpuTrackAppender);
 
     // Layout Shifts track in OPP was called the "Experience" track even though
     // all it shows are layout shifts.
-    this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(
-        this, this.#flameChartData, this.#traceParsedData, this.#entryData, this.#legacyEntryTypeByLevel);
+    this.#layoutShiftsTrackAppender =
+        new LayoutShiftsTrackAppender(this, this.#flameChartData, this.#traceParsedData, this.#legacyEntryTypeByLevel);
     this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
   }
 
@@ -306,7 +309,32 @@ export class CompatibilityTracksAppender {
    * style, title, etc.) is needed.
    */
   registerTrackForLevel(level: number, appender: TrackAppender): void {
+    // TODO(crbug.com/1442454) Figure out how to avoid the circular calls.
     this.#trackForLevel.set(level, appender);
+  }
+
+  /**
+   * Adds an event to the flame chart data at a defined level.
+   * @param event the event to be appended,
+   * @param level the level to append the event,
+   * @param appender the track which the event belongs to.
+   * @returns the index of the event in all events to be rendered in the flamechart.
+   */
+  appendEventAtLevel(event: TraceEngine.Types.TraceEvents.TraceEventData, level: number, appender: TrackAppender):
+      number {
+    // TODO(crbug.com/1442454) Figure out how to avoid the circular calls.
+    this.#trackForLevel.set(level, appender);
+
+    const index = this.#entryData.length;
+    this.#entryData.push(event);
+    this.#legacyEntryTypeByLevel[level] = EntryType.TrackAppender;
+    this.#flameChartData.entryLevels[index] = level;
+    this.#flameChartData.entryStartTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
+    const msDuration = event.dur ||
+        TraceEngine.Helpers.Timing.millisecondsToMicroseconds(
+            InstantEventVisibleDurationMs as TraceEngine.Types.Timing.MilliSeconds);
+    this.#flameChartData.entryTotalTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(msDuration);
+    return index;
   }
 
   /**

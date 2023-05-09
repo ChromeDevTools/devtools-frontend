@@ -1600,6 +1600,7 @@ export class DebuggerPlugin extends Plugin {
 
     this.popoverHelper?.hidePopover();
     this.popoverHelper?.dispose();
+    this.setExecutionLocation(null);
 
     this.breakpointManager.removeEventListener(
         Bindings.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);

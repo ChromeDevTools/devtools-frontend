@@ -79,7 +79,7 @@ export interface SelectMenuData {
 }
 type TitleCallback = () => LitHtml.TemplateResult;
 
-const deployMenuArrow = new URL('../../../Images/select-arrow-icon.svg', import.meta.url).toString();
+const deployMenuArrow = new URL('../../../Images/triangle-down.svg', import.meta.url).toString();
 
 export class SelectMenu extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-select-menu`;

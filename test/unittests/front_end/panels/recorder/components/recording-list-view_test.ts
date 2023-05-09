@@ -45,7 +45,7 @@ describeWithEnvironment('RecordingListView', () => {
     await coordinator.done();
     const deleteButton = view.shadowRoot?.querySelector(
                              '.delete-recording-button',
-                             ) as HTMLDivElement;
+                             ) as HTMLButtonElement;
     assert.ok(deleteButton);
     const eventSent = new Promise<Components.RecordingListView.DeleteRecordingEvent>(
         resolve => {

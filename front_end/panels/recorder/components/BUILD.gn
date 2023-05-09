@@ -2,8 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import(
-    "../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
 
@@ -49,27 +48,23 @@ devtools_module("components") {
     "../../../core/sdk:bundle",
     "../../../models/extensions:bundle",
     "../../../third_party/codemirror.next:bundle",
+    "../../../third_party/puppeteer-replay:bundle",
     "../../../ui/components/buttons:bundle",
+    "../../../ui/components/dialogs:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/icon_button:bundle",
     "../../../ui/components/input:bundle",
+    "../../../ui/components/menus:bundle",
     "../../../ui/components/panel_feedback:bundle",
     "../../../ui/components/panel_introduction_steps:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/components/text_editor:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
-    "../../../third_party/puppeteer-replay:bundle",
-    "../../../ui/components/dialogs:bundle",
-    "../../../ui/components/menus:bundle",
     "../controllers:bundle",
     "../converters:bundle",
     "../extensions:bundle",
     "../models:bundle",
-  ]
-
-  public_deps = [
-    "../images",
   ]
 }
 

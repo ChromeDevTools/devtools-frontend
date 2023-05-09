@@ -84,21 +84,6 @@ interface Recording {
   name: string;
 }
 
-const pathIconUrl = new URL(
-                        '../images/path_icon.svg',
-                        import.meta.url,
-                        )
-                        .toString();
-const playIconUrl = new URL(
-                        '../images/play_icon.svg',
-                        import.meta.url,
-                        )
-                        .toString();
-const deleteIconUrl = new URL(
-                          '../images/delete_icon.svg',
-                          import.meta.url,
-                          )
-                          .toString();
 export class RecordingListView extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-recording-list-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -181,48 +166,47 @@ export class RecordingListView extends HTMLElement {
               )} @click=${this.#onOpenClick.bind(this, recording.storageName)}>
                     <div class="icon">
                       <${IconButton.Icon.Icon.litTagName} .data=${
-                {
-                  iconPath: pathIconUrl,
-                  color: 'var(--color-primary-old)',
-                } as IconButton.Icon.IconData
-              }>
+                        {
+                          iconName: 'flow',
+                          color: 'var(--color-primary-old)',
+                        } as IconButton.Icon.IconData
+                      }>
                       </${IconButton.Icon.Icon.litTagName}>
                     </div>
                     <div class="title">${recording.name}</div>
                     <div class="actions">
                       ${
                         this.#props.replayAllowed
-                          ? LitHtml.html`<button title=${i18nString(
-                              UIStrings.playRecording,
-                            )} @keydown=${
-                              this.#stopPropagation
-                            } @click=${this.#onPlayRecordingClick.bind(
-                              this,
-                              recording.storageName,
-                            )}>
-                        <${IconButton.Icon.Icon.litTagName} .data=${
-                              {
-                                iconPath: playIconUrl,
-                                color: 'var(--color-text-primary)',
-                              } as IconButton.Icon.IconData
-                            }>
-                        </${IconButton.Icon.Icon.litTagName}>
-                      </button><div class="divider"></div>`
+                          ? LitHtml.html`
+                              <${Buttons.Button.Button.litTagName}
+                                title=${i18nString(UIStrings.playRecording)}
+                                .data=${
+                                  {
+                                    variant: Buttons.Button.Variant.ROUND,
+                                    iconName: 'play',
+                                  } as Buttons.Button.ButtonData
+                                }
+                                @click=${this.#onPlayRecordingClick.bind(
+                                  this,
+                                  recording.storageName,
+                                )}
+                                @keydown=${this.#stopPropagation}
+                              ></${Buttons.Button.Button.litTagName}>
+                              <div class="divider"></div>`
                           : ''
                       }
-                      <button class="delete-recording-button" title=${i18nString(
-                        UIStrings.deleteRecording,
-                      )} @keydown=${
-                this.#stopPropagation
-              } @click=${this.#onDeleteClick.bind(this, recording.storageName)}>
-                        <${IconButton.Icon.Icon.litTagName} .data=${
-                {
-                  iconPath: deleteIconUrl,
-                  color: 'var(--color-text-primary)',
-                } as IconButton.Icon.IconData
-              }>
-                        </${IconButton.Icon.Icon.litTagName}>
-                      </button>
+                      <${Buttons.Button.Button.litTagName}
+                        class="delete-recording-button"
+                        title=${i18nString(UIStrings.deleteRecording)}
+                        .data=${
+                          {
+                            variant: Buttons.Button.Variant.ROUND,
+                            iconName: 'bin',
+                          } as Buttons.Button.ButtonData
+                        }
+                        @click=${this.#onDeleteClick.bind(this, recording.storageName)}
+                        @keydown=${this.#stopPropagation}
+                      ></${Buttons.Button.Button.litTagName}>
                     </div>
                   </div>
                 `;

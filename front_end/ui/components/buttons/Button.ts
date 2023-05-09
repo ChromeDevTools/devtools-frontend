@@ -132,6 +132,11 @@ export class Button extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  set iconName(iconName: string|undefined) {
+    this.#props.iconName = iconName;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
   set variant(variant: Variant) {
     this.#props.variant = variant;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);

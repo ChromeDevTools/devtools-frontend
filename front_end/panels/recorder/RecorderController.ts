@@ -151,13 +151,6 @@ const CONVERTER_ID_TO_METRIC: Record<string, Host.UserMetrics.RecordingExported|
   [Models.ConverterIds.ConverterIds.Lighthouse]: Host.UserMetrics.RecordingExported.ToLighthouse,
 };
 
-const plusIconUrl = new URL('./images/plus_icon.svg', import.meta.url).toString();
-const deleteIconUrl = new URL('./images/delete_icon.svg', import.meta.url).toString();
-const importIconUrl = new URL('./images/import_icon.svg', import.meta.url).toString();
-const exportIconUrl = new URL('./images/export_icon.svg', import.meta.url).toString();
-const continueIconUrl = new URL('./images/advance_icon.svg', import.meta.url).toString();
-const stepOverIconUrl = new URL('./images/step_icon.svg', import.meta.url).toString();
-
 @customElement('devtools-recorder-controller')
 export class RecorderController extends LitElement {
   static override readonly styles = [recorderControllerStyles];
@@ -1204,7 +1197,7 @@ export class RecorderController extends LitElement {
               .data=${
                 {
                   variant: Buttons.Button.Variant.TOOLBAR,
-                  iconUrl: plusIconUrl,
+                  iconName: 'plus',
                   disabled:
                     this.#replayState.isPlaying ||
                     this.isRecording ||
@@ -1241,7 +1234,7 @@ export class RecorderController extends LitElement {
               .data=${
                 {
                   variant: Buttons.Button.Variant.TOOLBAR,
-                  iconUrl: importIconUrl,
+                  iconName: 'import',
                   title: i18nString(UIStrings.importRecording),
                 } as Buttons.Button.ButtonData
               }
@@ -1257,7 +1250,7 @@ export class RecorderController extends LitElement {
               .data=${
                 {
                   variant: Buttons.Button.Variant.TOOLBAR,
-                  iconUrl: exportIconUrl,
+                  iconName: 'download',
                   title: i18nString(UIStrings.exportRecording),
                   disabled: !this.currentRecording,
                 } as Buttons.Button.ButtonData
@@ -1315,7 +1308,7 @@ export class RecorderController extends LitElement {
               .data=${
                 {
                   variant: Buttons.Button.Variant.TOOLBAR,
-                  iconUrl: deleteIconUrl,
+                  iconName: 'bin',
                   disabled:
                     !this.currentRecording ||
                     this.#replayState.isPlaying ||
@@ -1336,7 +1329,7 @@ export class RecorderController extends LitElement {
                 <${IconButton.Icon.Icon.litTagName}
                   .data=${
                     {
-                      iconPath: continueIconUrl,
+                      iconName: 'resume',
                       color: 'var(--icon-color)',
                     } as IconButton.Icon.IconData
                   }
@@ -1347,7 +1340,7 @@ export class RecorderController extends LitElement {
               .data=${
                 {
                   variant: Buttons.Button.Variant.TOOLBAR,
-                  iconUrl: stepOverIconUrl,
+                  iconName: 'step-over',
                   disabled:
                     !this.recordingPlayer ||
                     !this.#replayState.isPausedOnBreakpoint,

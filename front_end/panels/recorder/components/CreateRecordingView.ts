@@ -95,11 +95,6 @@ const str_ = i18n.i18n.registerUIStrings(
     UIStrings,
 );
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const closeIcon = new URL(
-                      '../images/close_icon.svg',
-                      import.meta.url,
-                      )
-                      .toString();
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -269,7 +264,7 @@ export class CreateRecordingView extends HTMLElement {
                 {
                   variant: Buttons.Button.Variant.ROUND,
                   size: Buttons.Button.Size.SMALL,
-                  iconUrl: closeIcon,
+                  iconName: 'cross',
                 } as Buttons.Button.ButtonData
               }
               @click=${this.#dispatchRecordingCancelled}

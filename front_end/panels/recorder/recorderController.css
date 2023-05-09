@@ -148,7 +148,7 @@ devtools-recording-list-view {
 }
 
 .continue-button:disabled devtools-icon {
-  --icon-color: var(--color-text-disabled);
+  --icon-color: var(--icon-disabled);
 }
 
 devtools-shortcut-dialog {

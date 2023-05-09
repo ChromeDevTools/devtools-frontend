@@ -35,14 +35,10 @@ h1 {
   font-weight: normal;
 }
 
-devtools-icon {
-  width: 24px;
-  height: 24px;
-}
-
-.icon {
-  width: 24px;
-  height: 24px;
+.icon,
+.icon devtools-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .table {
@@ -94,16 +90,6 @@ devtools-icon {
 .actions button:hover,
 .actions button:focus-visible {
   background-color: var(--override-background-color);
-}
-
-.actions button devtools-icon {
-  width: 24px;
-  height: 24px;
-}
-
-.actions button:hover devtools-icon,
-.actions button:focus-visible devtools-icon {
-  --icon-color: var(--color-primary-old);
 }
 
 .actions .divider {

@@ -19,12 +19,6 @@ import {
   type SelectButtonClickEvent,
 } from './SelectButton.js';
 
-const playIconUrl = new URL(
-                        '../images/play_icon.svg',
-                        import.meta.url,
-                        )
-                        .toString();
-
 const UIStrings = {
   /**
    * @description Button label for the normal speed replay option
@@ -71,25 +65,25 @@ const UIStrings = {
 const items: SelectButtonItem[] = [
   {
     value: PlayRecordingSpeed.Normal,
-    buttonIconUrl: playIconUrl,
+    buttonIconName: 'play',
     buttonLabel: (): string => i18nString(UIStrings.ReplayNormalButtonLabel),
     label: (): string => i18nString(UIStrings.ReplayNormalItemLabel),
   },
   {
     value: PlayRecordingSpeed.Slow,
-    buttonIconUrl: playIconUrl,
+    buttonIconName: 'play',
     buttonLabel: (): string => i18nString(UIStrings.ReplaySlowButtonLabel),
     label: (): string => i18nString(UIStrings.ReplaySlowItemLabel),
   },
   {
     value: PlayRecordingSpeed.VerySlow,
-    buttonIconUrl: playIconUrl,
+    buttonIconName: 'play',
     buttonLabel: (): string => i18nString(UIStrings.ReplayVerySlowButtonLabel),
     label: (): string => i18nString(UIStrings.ReplayVerySlowItemLabel),
   },
   {
     value: PlayRecordingSpeed.ExtremelySlow,
-    buttonIconUrl: playIconUrl,
+    buttonIconName: 'play',
     buttonLabel: (): string => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
     label: (): string => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
   },
@@ -208,7 +202,7 @@ export class ReplayButton extends HTMLElement {
         items: this.#replayExtensions.map((extension, idx) => {
           return {
             value: REPLAY_EXTENSION_PREFIX + idx,
-            buttonIconUrl: playIconUrl,
+            buttonIconName: 'play',
             buttonLabel: (): string => extension.getName(),
             label: (): string => extension.getName(),
           };

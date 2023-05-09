@@ -274,11 +274,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/recorder/components/StepEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const deleteIconUrl = new URL('../images/delete_icon.svg', import.meta.url).toString();
-const plusIconUrl = new URL('../images/plus_icon.svg', import.meta.url).toString();
-const selectIconUrl = new URL('../images/select_icon.svg', import.meta.url).toString();
-const minusIconUrl = new URL('../images/minus_icon.svg', import.meta.url).toString();
-
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-recorder-step-editor': StepEditor;
@@ -499,7 +494,7 @@ class RecorderSelectorPickerButton extends LitElement {
       .title=${i18nString(UIStrings.selectorPicker)}
       class="selector-picker"
       .size=${Buttons.Button.Size.SMALL}
-      .iconUrl=${selectIconUrl}
+      .iconName=${'select-element'}
       .active=${this.#picker.active}
       .variant=${Buttons.Button.Variant.SECONDARY}
     ></devtools-button>`;
@@ -654,7 +649,7 @@ export class StepEditor extends LitElement {
     this.#ensureFocus(`[data-attribute=${attribute}].attribute devtools-recorder-input`);
   };
 
-  #renderInlineButton(opts: {class: string, title: string, iconUrl: string, onClick: (event: MouseEvent) => void}):
+  #renderInlineButton(opts: {class: string, title: string, iconName: string, onClick: (event: MouseEvent) => void}):
       LitHtml.TemplateResult|undefined {
     if (this.disabled) {
       return;
@@ -663,7 +658,7 @@ export class StepEditor extends LitElement {
       <devtools-button
         title=${opts.title}
         .size=${Buttons.Button.Size.SMALL}
-        .iconUrl=${opts.iconUrl}
+        .iconName=${opts.iconName}
         .variant=${Buttons.Button.Variant.SECONDARY}
         class="inline-button ${opts.class}"
         @click=${opts.onClick}
@@ -685,7 +680,7 @@ export class StepEditor extends LitElement {
     // clang-format off
     return html`<devtools-button
       .size=${Buttons.Button.Size.SMALL}
-      .iconUrl=${deleteIconUrl}
+      .iconName=${'bin'}
       .variant=${Buttons.Button.Variant.SECONDARY}
       .title=${i18nString(UIStrings.deleteRow)}
       class="inline-button delete-row"
@@ -798,7 +793,7 @@ export class StepEditor extends LitElement {
               ${this.#renderInlineButton({
                 class: 'add-frame',
                 title: i18nString(UIStrings.addFrameIndex),
-                iconUrl: plusIconUrl,
+                iconName: 'plus',
                 onClick: this.#handleAddOrRemoveClick(
                   {
                     frame: new ArrayAssignments({
@@ -814,7 +809,7 @@ export class StepEditor extends LitElement {
               ${this.#renderInlineButton({
                 class: 'remove-frame',
                 title: i18nString(UIStrings.removeFrameIndex),
-                iconUrl: minusIconUrl,
+                iconName: 'minus',
                 onClick: this.#handleAddOrRemoveClick(
                   {
                     frame: new ArrayAssignments({ [index]: undefined }),
@@ -855,7 +850,7 @@ export class StepEditor extends LitElement {
             ${this.#renderInlineButton({
               class: 'add-selector',
               title: i18nString(UIStrings.addSelector),
-              iconUrl: plusIconUrl,
+              iconName: 'plus',
               onClick: this.#handleAddOrRemoveClick(
                 {
                   selectors: new ArrayAssignments({
@@ -871,7 +866,7 @@ export class StepEditor extends LitElement {
             ${this.#renderInlineButton({
               class: 'remove-selector',
               title: i18nString(UIStrings.removeSelector),
-              iconUrl: minusIconUrl,
+              iconName: 'minus',
               onClick: this.#handleAddOrRemoveClick(
                 { selectors: new ArrayAssignments({ [index]: undefined }) },
                 `devtools-recorder-input[data-path="selectors.${Math.min(
@@ -914,7 +909,7 @@ export class StepEditor extends LitElement {
               ${this.#renderInlineButton({
                 class: 'add-selector-part',
                 title: i18nString(UIStrings.addSelectorPart),
-                iconUrl: plusIconUrl,
+                iconName: 'plus',
                 onClick: this.#handleAddOrRemoveClick(
                   {
                     selectors: new ArrayAssignments({
@@ -934,7 +929,7 @@ export class StepEditor extends LitElement {
               ${this.#renderInlineButton({
                 class: 'remove-selector-part',
                 title: i18nString(UIStrings.removeSelectorPart),
-                iconUrl: minusIconUrl,
+                iconName: 'minus',
                 onClick: this.#handleAddOrRemoveClick(
                   {
                     selectors: new ArrayAssignments({
@@ -1081,7 +1076,7 @@ export class StepEditor extends LitElement {
           ${this.#renderInlineButton({
             class: 'add-attribute-assertion',
             title: i18nString(UIStrings.addSelectorPart),
-            iconUrl: plusIconUrl,
+            iconName: 'plus',
             onClick: this.#handleAddOrRemoveClick(
               {
                 attributes: new ArrayAssignments({
@@ -1114,7 +1109,7 @@ export class StepEditor extends LitElement {
           ${this.#renderInlineButton({
             class: 'remove-attribute-assertion',
             title: i18nString(UIStrings.removeSelectorPart),
-            iconUrl: minusIconUrl,
+            iconName: 'minus',
             onClick: this.#handleAddOrRemoveClick(
               { attributes: new ArrayAssignments({ [index]: undefined }) },
               `devtools-recorder-input[data-path="attributes.${Math.min(

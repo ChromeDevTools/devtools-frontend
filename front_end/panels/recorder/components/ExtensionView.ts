@@ -31,12 +31,6 @@ const str_ = i18n.i18n.registerUIStrings(
 );
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const closeIcon = new URL(
-                      '../images/close_icon.svg',
-                      import.meta.url,
-                      )
-                      .toString();
-
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-recorder-extension-view': ExtensionView;
@@ -117,7 +111,7 @@ export class ExtensionView extends HTMLElement {
                 {
                   variant: Buttons.Button.Variant.ROUND,
                   size: Buttons.Button.Size.TINY,
-                  iconUrl: closeIcon,
+                  iconName: 'bin',
                 } as Buttons.Button.ButtonData
               }
               @click=${this.#closeView}

@@ -140,8 +140,8 @@
 }
 
 .chevron {
-  width: 10px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   transition: 200ms;
   position: absolute;
   top: 18px;
@@ -208,8 +208,6 @@ devtools-recorder-step-editor:hover {
 }
 
 .step-actions {
-  width: 18px;
-  height: 18px;
   border: none;
   border-radius: 0;
 

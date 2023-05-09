@@ -152,22 +152,6 @@ const str_ = i18n.i18n.registerUIStrings(
 );
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const deployMenuArrow = new URL(
-                            '../images/select-arrow-icon.svg',
-                            import.meta.url,
-                            )
-                            .toString();
-const abortIconUrl = new URL(
-                         '../images/abort_icon.svg',
-                         import.meta.url,
-                         )
-                         .toString();
-const closeIcon = new URL(
-                      '../images/close_icon.svg',
-                      import.meta.url,
-                      )
-                      .toString();
-
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-recording-view': RecordingView;
@@ -284,17 +268,6 @@ export class TimeoutChanged extends Event {
     this.data = data;
   }
 }
-
-const editIconUrl = new URL(
-                        '../images/edit_icon.svg',
-                        import.meta.url,
-                        )
-                        .toString();
-const throttlingIconUrl = new URL(
-                              '../images/throttling_icon.svg',
-                              import.meta.url,
-                              )
-                              .toString();
 
 const networkConditionPresets = [
   SDK.NetworkManager.NoThrottlingConditions,
@@ -857,14 +830,14 @@ export class RecordingView extends HTMLElement {
             ${
               isEditable
                 ? LitHtml.html`<${IconButton.Icon.Icon.litTagName}
-              class="chevron"
-              .data=${
-                {
-                  iconPath: deployMenuArrow,
-                  color: 'var(--color-text-primary)',
-                } as IconButton.Icon.IconData
-              }>
-            </${IconButton.Icon.Icon.litTagName}>`
+                    class="chevron"
+                    .data=${
+                      {
+                        iconName: 'triangle-down',
+                        color: 'var(--color-text-primary)',
+                      } as IconButton.Icon.IconData
+                    }>
+                  </${IconButton.Icon.Icon.litTagName}>`
                 : ''
             }
           </div>
@@ -959,7 +932,7 @@ export class RecordingView extends HTMLElement {
                   {
                     variant: Buttons.Button.Variant.ROUND,
                     size: Buttons.Button.Size.SMALL,
-                    iconUrl: closeIcon,
+                    iconName: 'cross',
                   } as Buttons.Button.ButtonData
                 }
                 @click=${this.showCodeToggle}
@@ -995,7 +968,7 @@ export class RecordingView extends HTMLElement {
   #renderReplayOrAbortButton(): LitHtml.TemplateResult {
     if (this.#replayState.isPlaying) {
       return LitHtml.html`
-        <${Buttons.Button.Button.litTagName} @click=${this.#handleAbortReplay} .iconUrl=${abortIconUrl} .variant=${
+        <${Buttons.Button.Button.litTagName} @click=${this.#handleAbortReplay} .iconName=${'pause'} .variant=${
           Buttons.Button.Variant.SECONDARY}>
           ${i18nString(UIStrings.cancelReplay)}
         </${Buttons.Button.Button.litTagName}>`;
@@ -1250,7 +1223,7 @@ export class RecordingView extends HTMLElement {
                   {
                     disabled: this.#replayState.isPlaying || this.#isRecording,
                     variant: Buttons.Button.Variant.TOOLBAR,
-                    iconUrl: editIconUrl,
+                    iconName: 'edit',
                     title: i18nString(UIStrings.editTitle),
                   } as Buttons.Button.ButtonData
                 }
@@ -1278,7 +1251,7 @@ export class RecordingView extends HTMLElement {
                     {
                       disabled: this.#replayState.isPlaying,
                       variant: Buttons.Button.Variant.SECONDARY,
-                      iconUrl: throttlingIconUrl,
+                      iconName: 'performance',
                       title: i18nString(UIStrings.performancePanel),
                     } as Buttons.Button.ButtonData
                   }
@@ -1290,7 +1263,7 @@ export class RecordingView extends HTMLElement {
             : ''
         }
       </div>`;
-            // clang-format on
+    // clang-format on
   }
 
   #renderFooter(): LitHtml.LitTemplate|string {

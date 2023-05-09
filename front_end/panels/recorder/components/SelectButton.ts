@@ -61,7 +61,7 @@ export interface SelectButtonItem {
   /**
    * `icon` to be shown on the button
    */
-  buttonIconUrl?: string;
+  buttonIconName?: string;
   /**
    * Text to be shown in the select menu
    */
@@ -215,7 +215,7 @@ export class SelectButton extends HTMLElement {
         <${Buttons.Button.Button.litTagName}
             .disabled=${this.#props.disabled}
             .variant=${buttonVariant}
-            .iconUrl=${selectedItem.buttonIconUrl}
+            .iconName=${selectedItem.buttonIconName}
             @click=${this.#handleClick}>
             ${label}
         </${Buttons.Button.Button.litTagName}>`

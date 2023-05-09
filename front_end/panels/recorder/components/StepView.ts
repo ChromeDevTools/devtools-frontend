@@ -22,12 +22,6 @@ import {
   type TimelineSectionData,
 } from './TimelineSection.js';
 
-const deployMenuArrow = new URL(
-                            '../images/select-arrow-icon.svg',
-                            import.meta.url,
-                            )
-                            .toString();
-
 const UIStrings = {
   /**
    *@description Title for the step type that configures the viewport
@@ -270,11 +264,6 @@ export class RemoveBreakpointEvent extends Event {
   }
 }
 
-const actionsMenuIconUrl = new URL(
-                               '../images/more_icon.svg',
-                               import.meta.url,
-                               )
-                               .toString();
 const COPY_ACTION_PREFIX = 'copy-step-as-';
 
 type Action = {
@@ -655,8 +644,7 @@ export class StepView extends HTMLElement {
         .data=${
           {
             variant: Buttons.Button.Variant.TOOLBAR,
-            iconUrl: actionsMenuIconUrl,
-            size: Buttons.Button.Size.SMALL,
+            iconName: 'dots-vertical',
             title: i18nString(UIStrings.openStepActions),
           } as Buttons.Button.ButtonData
         }
@@ -812,14 +800,14 @@ export class StepView extends HTMLElement {
             ${
               isExpandable
                 ? LitHtml.html`<${IconButton.Icon.Icon.litTagName}
-              class="chevron"
-              .data=${
-                {
-                  iconPath: deployMenuArrow,
-                  color: 'var(--color-text-primary)',
-                } as IconButton.Icon.IconData
-              }>
-            </${IconButton.Icon.Icon.litTagName}>`
+                    class="chevron"
+                    .data=${
+                      {
+                        iconName: 'triangle-down',
+                        color: 'var(--color-text-primary)',
+                      } as IconButton.Icon.IconData
+                    }>
+                  </${IconButton.Icon.Icon.litTagName}>`
                 : ''
             }
             <div class="title">

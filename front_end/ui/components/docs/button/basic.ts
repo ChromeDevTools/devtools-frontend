@@ -12,7 +12,7 @@ await FrontendHelpers.initializeGlobalVars();
 const testIcon = '/front_end/Images/file-image.svg';
 const fileIcon = '/front_end/Images/document.svg';
 const plusIcon = '/front_end/Images/plus.svg';
-const minusIcon = '/front_end/Images/minus_icon.svg';
+const minusIcon = '/front_end/Images/minus.svg';
 const trashBinIcon = '/front_end/Images/bin.svg';
 const closeIcon = '/front_end/Images/cross.svg';
 

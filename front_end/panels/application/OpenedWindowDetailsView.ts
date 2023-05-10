@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
+import openedWindowDetailsViewStyles from './openedWindowDetailsView.css.js';
 
 const UIStrings = {
   /**
@@ -167,7 +167,8 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
     this.reportView.element.classList.add('frame-details-report-container');
 
     this.documentSection = this.reportView.appendSection(i18nString(UIStrings.document));
-    this.URLFieldValue = this.documentSection.appendField(i18nString(UIStrings.url));
+    this.URLFieldValue =
+        this.documentSection.appendField(i18nString(UIStrings.url)).createChild('div', 'text-ellipsis');
 
     this.securitySection = this.reportView.appendSection(i18nString(UIStrings.security));
     this.openerElementField = this.securitySection.appendField(i18nString(UIStrings.openerFrame));
@@ -180,6 +181,7 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
   override async doUpdate(): Promise<void> {
     this.reportView.setTitle(this.buildTitle());
     this.URLFieldValue.textContent = this.targetInfo.url;
+    this.URLFieldValue.title = this.targetInfo.url;
     this.hasDOMAccessValue.textContent = booleanToYesNo(this.targetInfo.canAccessOpener);
     void this.maybeDisplayOpenerFrame();
   }
@@ -212,8 +214,8 @@ export class OpenedWindowDetailsView extends UI.ThrottledWidget.ThrottledWidget 
   }
   override wasShown(): void {
     super.wasShown();
-    this.reportView.registerCSSFiles([frameDetailsReportViewStyles]);
-    this.registerCSSFiles([frameDetailsReportViewStyles]);
+    this.reportView.registerCSSFiles([openedWindowDetailsViewStyles]);
+    this.registerCSSFiles([openedWindowDetailsViewStyles]);
   }
 }
 
@@ -223,7 +225,6 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   private readonly documentSection: UI.ReportView.Section;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  private readonly URLFieldValue: HTMLElement;
   private readonly isolationSection: UI.ReportView.Section;
   private readonly coepPolicy: HTMLElement;
 
@@ -240,8 +241,10 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
     this.reportView.element.classList.add('frame-details-report-container');
 
     this.documentSection = this.reportView.appendSection(i18nString(UIStrings.document));
-    this.URLFieldValue = this.documentSection.appendField(i18nString(UIStrings.url));
-    this.URLFieldValue.textContent = this.targetInfo.url;
+    const URLFieldValue =
+        this.documentSection.appendField(i18nString(UIStrings.url)).createChild('div', 'text-ellipsis');
+    URLFieldValue.textContent = this.targetInfo.url;
+    URLFieldValue.title = this.targetInfo.url;
     const workerType = this.documentSection.appendField(i18nString(UIStrings.type));
     workerType.textContent = this.workerTypeToString(this.targetInfo.type);
 
@@ -308,7 +311,7 @@ export class WorkerDetailsView extends UI.ThrottledWidget.ThrottledWidget {
   }
   override wasShown(): void {
     super.wasShown();
-    this.reportView.registerCSSFiles([frameDetailsReportViewStyles]);
-    this.registerCSSFiles([frameDetailsReportViewStyles]);
+    this.reportView.registerCSSFiles([openedWindowDetailsViewStyles]);
+    this.registerCSSFiles([openedWindowDetailsViewStyles]);
   }
 }

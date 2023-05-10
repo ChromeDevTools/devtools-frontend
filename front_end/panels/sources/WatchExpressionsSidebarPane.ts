@@ -354,11 +354,6 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           silent: true,
           returnByValue: false,
           generatePreview: false,
-          allowUnsafeEvalBlockedByCSP: undefined,
-          disableBreaks: undefined,
-          replMode: undefined,
-          throwOnSideEffect: undefined,
-          timeout: undefined,
         },
         /* userGesture */ false,
         /* awaitPromise */ false);

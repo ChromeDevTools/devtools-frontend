@@ -89,11 +89,6 @@ export class ObjectEventListenersSidebarPane extends UI.Widget.VBox implements U
               silent: true,
               returnByValue: false,
               generatePreview: false,
-              timeout: undefined,
-              throwOnSideEffect: undefined,
-              disableBreaks: undefined,
-              replMode: undefined,
-              allowUnsafeEvalBlockedByCSP: undefined,
             },
             /* userGesture */ false,
             /* awaitPromise */ false)

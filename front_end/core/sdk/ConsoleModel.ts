@@ -178,7 +178,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
       useCommandLineAPI: boolean): Promise<void> {
     const result = await executionContext.evaluate(
         {
-          expression: expression,
+          expression,
           objectGroup: 'console',
           includeCommandLineAPI: useCommandLineAPI,
           silent: false,
@@ -186,9 +186,6 @@ export class ConsoleModel extends SDKModel<EventTypes> {
           generatePreview: true,
           replMode: true,
           allowUnsafeEvalBlockedByCSP: false,
-          disableBreaks: undefined,
-          throwOnSideEffect: undefined,
-          timeout: undefined,
         },
         Common.Settings.Settings.instance().moduleSetting('consoleUserActivationEval').get(), /* awaitPromise */ false);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);

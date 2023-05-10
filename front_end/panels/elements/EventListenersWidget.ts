@@ -209,11 +209,6 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
               silent: true,
               returnByValue: false,
               generatePreview: false,
-              throwOnSideEffect: undefined,
-              timeout: undefined,
-              disableBreaks: undefined,
-              replMode: undefined,
-              allowUnsafeEvalBlockedByCSP: undefined,
             },
             /* userGesture */ false,
             /* awaitPromise */ false)

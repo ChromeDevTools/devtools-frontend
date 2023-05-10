@@ -148,16 +148,13 @@ function findHtmlNode(selectedNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOM
 
 const widthEvaluateParams = {
   expression: 'window.innerWidth',
-  objectGroup: undefined,
   includeCommandLineAPI: false,
   silent: true,
-  contextId: undefined,
   returnByValue: false,
   generatePreview: false,
   userGesture: false,
   awaitPromise: true,
   throwOnSideEffect: false,
-  timeout: undefined,
   disableBreaks: true,
   replMode: false,
   allowUnsafeEvalBlockedByCSP: false,
@@ -165,16 +162,13 @@ const widthEvaluateParams = {
 
 const heightEvaluateParams = {
   expression: 'window.innerHeight',
-  objectGroup: undefined,
   includeCommandLineAPI: false,
   silent: true,
-  contextId: undefined,
   returnByValue: false,
   generatePreview: false,
   userGesture: false,
   awaitPromise: true,
   throwOnSideEffect: false,
-  timeout: undefined,
   disableBreaks: true,
   replMode: false,
   allowUnsafeEvalBlockedByCSP: false,

@@ -54,17 +54,15 @@ export class JavaScriptREPL {
 
     const expression = JavaScriptREPL.wrapObjectLiteral(text);
     const options = {
-      expression: expression,
+      expression,
       generatePreview: true,
       includeCommandLineAPI: true,
-      throwOnSideEffect: throwOnSideEffect,
-      timeout: timeout,
-      objectGroup: objectGroup,
+      throwOnSideEffect,
+      timeout,
+      objectGroup,
       disableBreaks: true,
-      replMode: replMode,
-      silent: silent,
-      returnByValue: undefined,
-      allowUnsafeEvalBlockedByCSP: undefined,
+      replMode,
+      silent,
     };
     const result = await executionContext.evaluate(options, false /* userGesture */, awaitPromise);
     const preview = JavaScriptREPL.buildEvaluationPreview(result, allowErrors);

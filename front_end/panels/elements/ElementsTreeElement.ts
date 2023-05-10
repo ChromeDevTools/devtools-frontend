@@ -920,8 +920,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
-    const attributeValue =
-        attributeName && attributeValueElement ? this.nodeInternal.getAttribute(attributeName) : undefined;
+    const attributeValue = attributeName && attributeValueElement ?
+        this.nodeInternal.getAttribute(attributeName)?.replaceAll('"', '&quot;') :
+        undefined;
     if (attributeValue !== undefined) {
       attributeValueElement.setTextContentTruncatedIfNeeded(
           attributeValue, i18nString(UIStrings.valueIsTooLargeToEdit));
@@ -1540,14 +1541,19 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     function setValueWithEntities(this: ElementsTreeElement, element: Element, value: string): void {
       const result = this.convertWhitespaceToEntities(value);
       highlightCount = result.entityRanges.length;
-      value = result.text.replace(closingPunctuationRegex, (match, replaceOffset) => {
-        while (highlightIndex < highlightCount && result.entityRanges[highlightIndex].offset < replaceOffset) {
-          result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
-          ++highlightIndex;
-        }
-        additionalHighlightOffset += 1;
-        return match + '\u200B';
-      });
+      value = result.text
+                  .replace(
+                      closingPunctuationRegex,
+                      (match, replaceOffset) => {
+                        while (highlightIndex < highlightCount &&
+                               result.entityRanges[highlightIndex].offset < replaceOffset) {
+                          result.entityRanges[highlightIndex].offset += additionalHighlightOffset;
+                          ++highlightIndex;
+                        }
+                        additionalHighlightOffset += 1;
+                        return match + '\u200B';
+                      })
+                  .replaceAll('"', '&quot;');
 
       while (highlightIndex < highlightCount) {
         result.entityRanges[highlightIndex].offset += additionalHighlightOffset;

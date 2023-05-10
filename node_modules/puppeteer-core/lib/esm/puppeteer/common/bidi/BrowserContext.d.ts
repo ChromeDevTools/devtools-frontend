@@ -15,14 +15,19 @@
  */
 import { BrowserContext as BrowserContextBase } from '../../api/BrowserContext.js';
 import { Page as PageBase } from '../../api/Page.js';
+import { Viewport } from '../PuppeteerViewport.js';
 import { Connection } from './Connection.js';
+interface BrowserContextOptions {
+    defaultViewport: Viewport | null;
+}
 /**
  * @internal
  */
 export declare class BrowserContext extends BrowserContextBase {
     #private;
-    constructor(connection: Connection);
+    constructor(connection: Connection, options: BrowserContextOptions);
     newPage(): Promise<PageBase>;
     close(): Promise<void>;
 }
+export {};
 //# sourceMappingURL=BrowserContext.d.ts.map

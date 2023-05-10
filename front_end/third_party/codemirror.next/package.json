@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "@codemirror/autocomplete": "6.4.1",
-    "@codemirror/commands": "6.2.1",
+    "@codemirror/commands": "6.2.4",
     "@codemirror/lang-angular": "0.1.0",
     "@codemirror/lang-cpp": "6.0.2",
     "@codemirror/lang-css": "6.1.1",

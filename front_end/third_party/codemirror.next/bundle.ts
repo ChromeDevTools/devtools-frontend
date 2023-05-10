@@ -13,10 +13,10 @@ export {
   moveCompletionSelection, selectedCompletion, selectedCompletionIndex, startCompletion
 } from '@codemirror/autocomplete';
 export {
-  cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward,
+  cursorMatchingBracket, cursorSubwordBackward, cursorSubwordForward, cursorSyntaxLeft, cursorSyntaxRight,
   history, historyKeymap,
   indentLess, indentMore, insertNewlineAndIndent, redo, redoSelection, selectMatchingBracket,
-  selectSubwordBackward, selectSubwordForward,
+  selectSubwordBackward, selectSubwordForward, selectSyntaxLeft, selectSyntaxRight,
   standardKeymap, toggleComment, undo, undoSelection
 } from '@codemirror/commands';
 export * as css from '@codemirror/lang-css';

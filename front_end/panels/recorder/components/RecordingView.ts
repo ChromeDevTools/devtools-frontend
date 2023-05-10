@@ -314,10 +314,7 @@ export class RecordingView extends HTMLElement {
   #userFlow: Models.Schema.UserFlow|null = null;
   #isRecording: boolean = false;
   #recordingTogglingInProgress: boolean = false;
-  #titleInputFocused: boolean = false;
-  #titleInputChanged: boolean = true;
-  #titleInputWidth: number = 0;
-  #titleInput?: HTMLInputElement;
+  #isTitleInvalid = false;
   #currentStep?: Models.Schema.Step;
   #steps: Models.Schema.Step[] = [];
   #currentError?: Error;
@@ -357,7 +354,7 @@ export class RecordingView extends HTMLElement {
     this.#currentError = data.currentError;
     this.#lastReplayResult = data.lastReplayResult;
     this.#replayAllowed = data.replayAllowed;
-    this.#titleInputChanged = true;
+    this.#isTitleInvalid = false;
     this.#breakpointIndexes = data.breakpointIndexes;
     this.#builtInConverters = data.builtInConverters;
     this.#extensionConverters = data.extensionConverters;
@@ -389,14 +386,6 @@ export class RecordingView extends HTMLElement {
       return;
     }
     wrapper.scrollTop = wrapper.scrollHeight;
-  }
-
-  #measureTitleInput(): void {
-    const calculator = (this.shadowRoot as ShadowRoot)
-                           .getElementById(
-                               'title-input-label',
-                               ) as HTMLDivElement;
-    this.#titleInputWidth = calculator.offsetWidth;
   }
 
   #dispatchAddAssertionEvent(): void {
@@ -577,46 +566,36 @@ export class RecordingView extends HTMLElement {
     this.dispatchEvent(new TimeoutChanged(Number(target.value)));
   }
 
-  #onTitleInput = (event: InputEvent): void => {
-    const target = event.target as HTMLInputElement;
-    if (!target.value) {
+  #onTitleBlur = (event: Event): void => {
+    const target = event.target as HTMLElement;
+    const title = target.innerText.trim();
+    if (!title) {
+      this.#isTitleInvalid = true;
+      this.#render();
       return;
     }
-    target.setCustomValidity('');
-    this.#titleInputChanged = true;
-    this.dispatchEvent(new RecordingTitleChangedEvent(target.value));
+    this.dispatchEvent(new RecordingTitleChangedEvent(title));
   };
 
   #onTitleInputKeyDown = (event: KeyboardEvent): void => {
     switch (event.code) {
       case 'Escape':
       case 'Enter':
-        (event.target as HTMLInputElement).blur();
+        (event.target as HTMLElement).blur();
         event.stopPropagation();
         break;
     }
   };
 
-  #onTitleInputFocus = (): void => {
-    this.#titleInputFocused = true;
-    this.#render();
-  };
-
-  #onTitleInputBlur = (event: Event): void => {
-    const target = event.target as HTMLInputElement;
-    if (!target.checkValidity()) {
-      this.#titleInput = target;
-    }
-    this.#titleInputFocused = false;
-    this.#render();
-  };
-
   #onEditTitleButtonClick = (): void => {
-    (this.#shadow.getElementById('title-input') as HTMLInputElement).focus();
-  };
-
-  #isTitleInputValid = (): boolean => {
-    return !this.#titleInput || this.#titleInput.validity.valid;
+    const input = this.#shadow.getElementById('title-input') as HTMLElement;
+    input.focus();
+    const range = document.createRange();
+    range.selectNodeContents(input);
+    range.collapse(false);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
   };
 
   #onSelectMenuLabelClick = (event: Event): void => {
@@ -1191,37 +1170,27 @@ export class RecordingView extends HTMLElement {
       return '';
     }
     const {title} = this.#userFlow;
-    const titleInputWidth = this.#titleInputWidth + (this.#titleInputFocused ? 16 : 0);
-
+    const isTitleEditable = !this.#replayState.isPlaying && !this.#isRecording;
     // clang-format off
     return LitHtml.html`
       <div class="header">
         <div class="header-title-wrapper">
           <div class="header-title">
-            <span id="title-input-label">${title}</span>
-            <input @focus=${this.#onTitleInputFocus}
-                  @blur=${this.#onTitleInputBlur}
-                  @input=${this.#onTitleInput}
+            <span @blur=${this.#onTitleBlur}
                   @keydown=${this.#onTitleInputKeyDown}
                   id="title-input"
-                  type="text"
-                  required
+                  .contentEditable=${isTitleEditable ? 'true' : 'false'}
                   class=${LitHtml.Directives.classMap({
-                    'has-error': !this.#isTitleInputValid(),
+                    'has-error': this.#isTitleInvalid,
+                    'disabled': !isTitleEditable,
                   })}
-                  style=${LitHtml.Directives.styleMap({
-                    width: this.#isTitleInputValid()
-                      ? `${titleInputWidth}px`
-                      : undefined,
-                  })}
-                  .value=${title}
-                  .disabled=${this.#replayState.isPlaying || this.#isRecording}>
+                  .innerText=${LitHtml.Directives.live(title)}></span>
             <div class="title-button-bar">
               <${Buttons.Button.Button.litTagName}
                 @click=${this.#onEditTitleButtonClick}
                 .data=${
                   {
-                    disabled: this.#replayState.isPlaying || this.#isRecording,
+                    disabled: !isTitleEditable,
                     variant: Buttons.Button.Variant.TOOLBAR,
                     iconName: 'edit',
                     title: i18nString(UIStrings.editTitle),
@@ -1231,12 +1200,10 @@ export class RecordingView extends HTMLElement {
             </div>
           </div>
           ${
-            !this.#isTitleInputValid()
+            this.#isTitleInvalid
               ? LitHtml.html`<div class="title-input-error-text">
             ${
-              this.#titleInput?.validity.valueMissing
-                ? i18nString(UIStrings.requiredTitleError)
-                : ''
+              i18nString(UIStrings.requiredTitleError)
             }
           </div>`
               : ''
@@ -1331,14 +1298,6 @@ export class RecordingView extends HTMLElement {
       { host: this },
     );
     // clang-format on
-
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, () => {
-      if (this.#titleInputChanged) {
-        this.#titleInputChanged = false;
-        this.#measureTitleInput();
-        this.#render();
-      }
-    });
   }
 }
 

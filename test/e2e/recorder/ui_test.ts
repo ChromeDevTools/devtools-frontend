@@ -144,6 +144,9 @@ describe('Recorder', function() {
                           'pierce/#title-input',
                           )) as ElementHandle<HTMLInputElement>;
         await input.type(' with Hello world', {delay: 50});
+        await input.evaluate(input => {
+          input.blur();
+        });
 
         const recording = await getCurrentRecording();
         assertRecordingMatchesSnapshot(recording);

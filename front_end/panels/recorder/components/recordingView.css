@@ -108,21 +108,6 @@
   letter-spacing: 0.03em;
 }
 
-.title {
-  font-size: 13px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--color-text-primary);
-  letter-spacing: 0.03em;
-  font-weight: bold;
-  margin: 0;
-}
-
-.title .fallback {
-  color: var(--color-text-secondary);
-}
-
 .recording {
   color: var(--color-primary-old);
   font-style: italic;
@@ -193,6 +178,7 @@
   padding: 1px 4px;
   border: 1px solid transparent;
   border-radius: 1px;
+  word-break: break-all;
 }
 
 #title-input:hover {
@@ -203,14 +189,8 @@
   border-color: var(--color-input-outline-error);
 }
 
-#title-input-label {
-  font-family: inherit;
-  font-size: 18px;
-  line-height: 22px;
-  letter-spacing: 0.02em;
-  position: absolute;
-  white-space: pre;
-  visibility: hidden;
+#title-input.disabled {
+  color: var(--color-input-text-disabled);
 }
 
 .title-input-error-text {

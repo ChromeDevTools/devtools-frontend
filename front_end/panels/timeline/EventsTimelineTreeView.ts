@@ -8,7 +8,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 
 import {Category, IsLong} from './TimelineFilters.js';
 
@@ -86,8 +86,12 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private findNodeWithEvent(event: SDK.TracingModel.Event|
-                            TraceEngine.Types.TraceEvents.TraceEventData): TimelineModel.TimelineProfileTree.Node|null {
+  private findNodeWithEvent(event: SDK.TracingModel.CompatibleTraceEvent): TimelineModel.TimelineProfileTree.Node|null {
+    if (event.name === TraceEngine.Handlers.Types.KnownEventName.RunTask) {
+      // No node is ever created for the top level RunTask event, so
+      // bail out preemptively
+      return null;
+    }
     const iterators = [this.currentTree.children().values()];
     while (iterators.length) {
       const {done, value: child} = iterators[iterators.length - 1].next();

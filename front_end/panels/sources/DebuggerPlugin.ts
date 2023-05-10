@@ -209,6 +209,7 @@ export class DebuggerPlugin extends Plugin {
   #activeBreakpointEditRequest?: BreakpointEditRequest = undefined;
   #scheduledFinishingActiveDialog = false;
   private missingDebugInfoBar: UI.Infobar.Infobar|null = null;
+  #sourcesPanelDebuggedMetricsRecorded = false;
 
   private readonly ignoreListCallback: () => void;
 
@@ -1520,6 +1521,7 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
+    this.#recordSourcesPanelDebuggedMetrics();
     const origin = this.transformer.editorLocationToUILocation(line.number - 1);
     await this.setBreakpoint(origin.lineNumber, origin.columnNumber, condition, enabled, isLogpoint);
   }
@@ -1551,6 +1553,9 @@ export class DebuggerPlugin extends Plugin {
             if (uiLocation && uiLocation.uiSourceCode === this.uiSourceCode) {
               this.setExecutionLocation(uiLocation);
               this.updateMissingDebugInfoInfobar(callFrame.missingDebugInfoDetails);
+              // We are paused and the user is specifically looking at this UISourceCode either because
+              // this file is on top of stack, or the user explicitly selected a stack frame for this UISourceCode.
+              this.#recordSourcesPanelDebuggedMetrics();
             } else {
               this.setExecutionLocation(null);
             }
@@ -1623,6 +1628,23 @@ export class DebuggerPlugin extends Plugin {
 
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.callFrameChanged, this);
     this.liveLocationPool.disposeAll();
+  }
+
+  /**
+   * Only records metrics once per DebuggerPlugin instance and must only be
+   * called once the content of the UISourceCode is available.
+   */
+  #recordSourcesPanelDebuggedMetrics(): void {
+    if (this.#sourcesPanelDebuggedMetricsRecorded) {
+      return;
+    }
+    this.#sourcesPanelDebuggedMetricsRecorded = true;
+
+    const mimeType = Common.ResourceType.ResourceType.mimeFromURL(this.uiSourceCode.url());
+    const mediaType = Common.ResourceType.ResourceType.mediaTypeForMetrics(
+        mimeType ?? '', this.uiSourceCode.contentType().isFromSourceMap(),
+        TextUtils.TextUtils.isMinified(this.uiSourceCode.content()));
+    Host.userMetrics.sourcesPanelFileDebugged(mediaType);
   }
 }
 

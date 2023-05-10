@@ -86,6 +86,12 @@ export class UserMetrics {
     this.panelShown('settings-' + settingsViewId);
   }
 
+  sourcesPanelFileDebugged(mediaType?: string): void {
+    const code = (mediaType && MediaTypes[mediaType as keyof typeof MediaTypes]) || MediaTypes.Unknown;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.SourcesPanelFileDebugged, code, MediaTypes.MaxValue);
+  }
+
   sourcesPanelFileOpened(mediaType?: string): void {
     const code = (mediaType && MediaTypes[mediaType as keyof typeof MediaTypes]) || MediaTypes.Unknown;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(

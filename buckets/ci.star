@@ -119,6 +119,7 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             recipe_name = "devtools/devtools-frontend",
             dims = dimensions.mac,
             consoles = ["ci"],
+            execution_timeout = time.hour * 3 / 2,
         ),
         builder_descriptor(
             name = "Stand-alone Parallel Mac",

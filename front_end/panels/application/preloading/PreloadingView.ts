@@ -141,6 +141,19 @@ class PreloadingUIUtils {
         return i18nString(UIStrings.validitySomeRulesInvalid);
     }
   }
+
+  // Where a rule set came from, shown in grid.
+  static location(ruleSet: Protocol.Preload.RuleSet): string {
+    if (ruleSet.backendNodeId !== undefined) {
+      return i18n.i18n.lockedString('<script>');
+    }
+
+    if (ruleSet.url !== undefined) {
+      return ruleSet.url;
+    }
+
+    throw Error('unreachable');
+  }
 }
 
 interface FeatureFlags {
@@ -383,6 +396,7 @@ export class PreloadingView extends UI.Widget.VBox {
     const ruleSetRows = this.modelProxy.model.getAllRuleSets().map(({id, value}) => ({
                                                                      id,
                                                                      validity: PreloadingUIUtils.validity(value),
+                                                                     location: PreloadingUIUtils.location(value),
                                                                    }));
     this.ruleSetGrid.update(ruleSetRows);
 

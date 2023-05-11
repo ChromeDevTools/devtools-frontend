@@ -4,24 +4,17 @@
  * found in the LICENSE file.
  */
 
-.preloading-noselected {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: auto;
-  width: 100%;
-  background-color: var(--color-background);
-  color: var(--color-text-secondary);
-  font-size: 13px;
+button.link {
+  color: var(--color-link);
+  text-decoration: underline;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  height: 16px;
 }
 
-.preloading-noselected > div {
-  display: block;
-  width: 100%;
-  text-align: center;
-}
-
-.preloading-noselected > div > p {
-  white-space: pre-line;
+button.link devtools-icon {
+  vertical-align: sub;
 }

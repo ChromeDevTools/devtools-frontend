@@ -35,6 +35,7 @@ describeWithEnvironment('RuleSetGrid', async () => {
     const rows = [{
       id: 'ruleSetId:1',
       validity: 'Valid',
+      location: '<script>',
     }];
 
     const grid = await renderRuleSetsGrid(rows);
@@ -46,8 +47,8 @@ describeWithEnvironment('RuleSetGrid', async () => {
     });
     const bodyRows = getValuesOfAllBodyRows(grid.shadowRoot);
     assert.deepEqual([header, bodyRows], [
-      ['Validity'],
-      [['Valid']],
+      ['Validity', 'Location'],
+      [['Valid', '<script>']],
     ]);
   });
 });

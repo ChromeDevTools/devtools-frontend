@@ -11,9 +11,13 @@ import ruleSetGridStyles from './ruleSetGrid.css.js';
 
 const UIStrings = {
   /**
-   *@description Column header for a table displaying rule sets.
+   *@description Column header for a table displaying rule sets: Indicates a rule set contains errors.
    */
   validity: 'Validity',
+  /**
+   *@description Column header for a table displaying rule sets: Where a rule set came from.
+   */
+  location: 'Location',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -21,6 +25,7 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface RuleSetGridRow {
   id: string;
   validity: string;
+  location: string;
 }
 
 // Grid component to show SpeculationRules rule sets.
@@ -50,6 +55,13 @@ export class RuleSetGrid extends HTMLElement {
           hideable: false,
           visible: true,
         },
+        {
+          id: 'location',
+          title: i18nString(UIStrings.location),
+          widthWeighting: 80,
+          hideable: false,
+          visible: true,
+        },
       ],
       rows: this.#buildReportRows(),
     };
@@ -71,6 +83,7 @@ export class RuleSetGrid extends HTMLElement {
                             cells: [
                               {columnId: 'id', value: row.id},
                               {columnId: 'validity', value: row.validity},
+                              {columnId: 'location', value: row.location},
                             ],
                           }));
   }

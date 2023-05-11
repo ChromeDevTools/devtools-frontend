@@ -354,17 +354,16 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
       condition: UserCondition, enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin): Breakpoint {
     const url = BreakpointManager.getScriptForInlineUiSourceCode(uiSourceCode)?.sourceURL ?? uiSourceCode.url();
     const resourceTypeName = uiSourceCode.contentType().name();
-    const storageId =
-        Storage.computeId({url, resourceTypeName, lineNumber, columnNumber, condition, enabled, isLogpoint});
+    const storageState = {url, resourceTypeName, lineNumber, columnNumber, condition, enabled, isLogpoint};
+    const storageId = Storage.computeId(storageState);
     let breakpoint = this.#breakpointByStorageId.get(storageId);
     if (breakpoint) {
-      breakpoint.updateState({...breakpoint.storageState, condition, enabled, isLogpoint});
+      breakpoint.updateState(storageState);
       breakpoint.addUISourceCode(uiSourceCode);
       void breakpoint.updateBreakpoint();
       return breakpoint;
     }
-    breakpoint =
-        new Breakpoint(this, uiSourceCode, url, lineNumber, columnNumber, condition, enabled, isLogpoint, origin);
+    breakpoint = new Breakpoint(this, uiSourceCode, storageState, origin);
     this.#breakpointByStorageId.set(storageId, breakpoint);
     return breakpoint;
   }
@@ -520,13 +519,12 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   #storageState!: BreakpointStorageState;
   #origin: BreakpointOrigin;
   isRemoved = false;
-  currentState: Breakpoint.State|null;
+  currentState: Breakpoint.State|null = null;
   readonly #modelBreakpoints: Map<SDK.DebuggerModel.DebuggerModel, ModelBreakpoint>;
 
   constructor(
       breakpointManager: BreakpointManager, primaryUISourceCode: Workspace.UISourceCode.UISourceCode,
-      url: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number|undefined,
-      condition: UserCondition, enabled: boolean, isLogpoint: boolean, origin: BreakpointOrigin) {
+      storageState: BreakpointStorageState, origin: BreakpointOrigin) {
     this.breakpointManager = breakpointManager;
     this.#origin = origin;
 
@@ -534,12 +532,11 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     this.uiSourceCodes = new Set();  // All known UISourceCodes with this url. This also includes uiSourceCodes
                                      // for the inline scripts embedded in a resource with this URL.
 
-    this.currentState = null;
-
     this.#modelBreakpoints = new Map();
-    const resourceTypeName = primaryUISourceCode.contentType().name();
-    this.updateState({url, resourceTypeName, lineNumber, columnNumber, condition, enabled, isLogpoint});
+    this.updateState(storageState);
+    console.assert(primaryUISourceCode.contentType().name() === storageState.resourceTypeName);
     this.addUISourceCode(primaryUISourceCode);
+
     this.breakpointManager.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }
 

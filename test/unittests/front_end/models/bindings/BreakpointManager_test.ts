@@ -233,9 +233,16 @@ describeWithMockConnection('BreakpointManager', () => {
   describe('Breakpoint#backendCondition()', () => {
     function createBreakpoint(condition: string, isLogpoint: boolean): Bindings.BreakpointManager.Breakpoint {
       const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
+      const storageState = {
+        url: URL,
+        resourceTypeName: uiSourceCode.contentType().name(),
+        lineNumber: 5,
+        condition: condition as Bindings.BreakpointManager.UserCondition,
+        enabled: true,
+        isLogpoint,
+      };
       return new Bindings.BreakpointManager.Breakpoint(
-          breakpointManager, uiSourceCode, URL, 5, undefined, condition as Bindings.BreakpointManager.UserCondition,
-          /* enabled */ true, isLogpoint, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+          breakpointManager, uiSourceCode, storageState, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
     }
 
     it('wraps logpoints in console.log', () => {

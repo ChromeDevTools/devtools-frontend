@@ -168,8 +168,7 @@ export class PreloadingDetailsReportView extends HTMLElement {
             ${detailedStatus}
           </${ReportView.ReportView.ReportValue.litTagName}>
 
-${this.#data.ruleSets.map(ruleSet => this.#renderRuleSet(ruleSet))}
-          }
+          ${this.#data.ruleSets.map(ruleSet => this.#renderRuleSet(ruleSet))}
         </${ReportView.ReportView.Report.litTagName}>
       `, this.#shadow, {host: this});
       // clang-format on

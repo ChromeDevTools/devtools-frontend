@@ -323,8 +323,7 @@ export class MainImpl {
         'wasmDWARFDebugging', 'WebAssembly Debugging: Enable DWARF support', undefined,
         'https://developer.chrome.com/blog/wasm-debugging-2020/');
     Root.Runtime.experiments.register(
-        'evaluateExpressionsWithSourceMaps', 'Console: Resolve variable names in expressions using source maps',
-        undefined);
+        'evaluateExpressionsWithSourceMaps', 'Resolve variable names in expressions using source maps', undefined);
     Root.Runtime.experiments.register('instrumentationBreakpoints', 'Enable instrumentation breakpoints', true);
 
     // Dual-screen

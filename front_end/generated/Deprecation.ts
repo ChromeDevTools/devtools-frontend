@@ -57,7 +57,7 @@ export const UIStrings = {
   /**
    * @description This message is shown when the deprecated Expect-CT header is present.
    */
-  ExpectCTHeader: "The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
+  ExpectCTHeader: "The `Expect-CT` header is no longer supported. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
   /**
    * @description Warning displayed to developers when the Geolocation API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
    */

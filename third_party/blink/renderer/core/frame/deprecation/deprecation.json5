@@ -173,7 +173,7 @@
     },
     {
       name: "ExpectCTHeader",
-      message: "The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
+      message: "The `Expect-CT` header is no longer supported. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
       translation_note: "This message is shown when the deprecated Expect-CT header is present.",
       web_features: [
         "kExpectCTHeader",

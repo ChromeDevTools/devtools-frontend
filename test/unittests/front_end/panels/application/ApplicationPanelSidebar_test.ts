@@ -278,6 +278,26 @@ describeWithMockConnection('IndexedDBTreeElement', () => {
   it('does not add element on out of scope event', addsElement(false));
 });
 
+describeWithMockConnection('IDBDatabaseTreeElement', () => {
+  beforeEach(() => {
+    stubNoopSettings();
+    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, '', false);
+  });
+
+  it('only becomes selectable after database is updated', () => {
+    const target = createTarget();
+    const model = target.model(Application.IndexedDBModel.IndexedDBModel);
+    assertNotNullOrUndefined(model);
+    const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    const databaseId = new Application.IndexedDBModel.DatabaseId('', '');
+    const treeElement = new Application.ApplicationPanelSidebar.IDBDatabaseTreeElement(panel, model, databaseId);
+
+    assert.isFalse(treeElement.selectable);
+    treeElement.update(new Application.IndexedDBModel.Database(databaseId, 1), false);
+    assert.isTrue(treeElement.selectable);
+  });
+});
+
 describeWithMockConnection('ResourcesSection', () => {
   const tests = (inScope: boolean) => () => {
     let target: SDK.Target.Target;

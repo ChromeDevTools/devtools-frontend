@@ -978,6 +978,13 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
     return `background-service://${this.serviceName}` as Platform.DevToolsPath.UrlString;
   }
 
+  override get selectable(): boolean {
+    if (!this.model) {
+      return false;
+    }
+    return super.selectable;
+  }
+
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     this.selectedInternal = true;
@@ -1400,6 +1407,13 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
     } else {
       this.tooltip = i18nString(UIStrings.versionS, {PH1: version});
     }
+  }
+
+  override get selectable(): boolean {
+    if (!this.database) {
+      return false;
+    }
+    return super.selectable;
   }
 
   override onselect(selectedByUser?: boolean): boolean {

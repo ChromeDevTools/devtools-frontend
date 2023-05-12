@@ -23,9 +23,11 @@ devtools_module("text_editor") {
   deps = [
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
+    "../../../core/root:bundle",
     "../../../core/sdk:bundle",
     "../../../models/formatter:bundle",
     "../../../models/javascript_metadata:bundle",
+    "../../../models/source_map_scopes:bundle",
     "../../../services/window_bounds:bundle",
     "../../legacy:bundle",
     "../../lit-html:bundle",

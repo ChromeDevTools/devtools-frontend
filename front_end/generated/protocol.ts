@@ -945,7 +945,6 @@ export namespace Audits {
     InsecureContext = 'InsecureContext',
     InvalidHeader = 'InvalidHeader',
     InvalidRegisterTriggerHeader = 'InvalidRegisterTriggerHeader',
-    InvalidEligibleHeader = 'InvalidEligibleHeader',
     SourceAndTriggerHeaders = 'SourceAndTriggerHeaders',
     SourceIgnored = 'SourceIgnored',
     TriggerIgnored = 'TriggerIgnored',
@@ -1216,6 +1215,46 @@ export namespace Audits {
 
   export interface IssueAddedEvent {
     issue: InspectorIssue;
+  }
+}
+
+/**
+ * Defines commands and events for Autofill.
+ */
+export namespace Autofill {
+
+  export interface CreditCard {
+    /**
+     * 16-digit credit card number.
+     */
+    number: string;
+    /**
+     * Name of the credit card owner.
+     */
+    name: string;
+    /**
+     * 2-digit expiry month.
+     */
+    expiryMonth: string;
+    /**
+     * 4-digit expiry year.
+     */
+    expiryYear: string;
+    /**
+     * 3-digit card verification code.
+     */
+    cvc: string;
+  }
+
+  export interface TriggerRequest {
+    /**
+     * Identifies a field that serves as an anchor for autofill.
+     */
+    fieldId: DOM.BackendNodeId;
+    /**
+     * Credit card information to fill out the form. Credit card data is not saved.
+     */
+    card: CreditCard;
   }
 }
 
@@ -5913,7 +5952,7 @@ export namespace IndexedDB {
 
   export interface ClearObjectStoreRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -5921,6 +5960,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -5933,7 +5976,7 @@ export namespace IndexedDB {
 
   export interface DeleteDatabaseRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -5941,6 +5984,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -5949,7 +5996,7 @@ export namespace IndexedDB {
 
   export interface DeleteObjectStoreEntriesRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -5957,6 +6004,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     databaseName: string;
     objectStoreName: string;
     /**
@@ -5967,7 +6018,7 @@ export namespace IndexedDB {
 
   export interface RequestDataRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -5975,6 +6026,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -6014,7 +6069,7 @@ export namespace IndexedDB {
 
   export interface GetMetadataRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -6022,6 +6077,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -6047,7 +6106,7 @@ export namespace IndexedDB {
 
   export interface RequestDatabaseRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -6055,6 +6114,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
     /**
      * Database name.
      */
@@ -6070,7 +6133,7 @@ export namespace IndexedDB {
 
   export interface RequestDatabaseNamesRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, or storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -6078,6 +6141,10 @@ export namespace IndexedDB {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
   }
 
   export interface RequestDatabaseNamesResponse extends ProtocolResponseWithError {
@@ -13107,11 +13174,17 @@ export namespace Storage {
     Strict = 'strict',
   }
 
-  export interface StorageBucketInfo {
+  export interface StorageBucket {
     storageKey: SerializedStorageKey;
+    /**
+     * If not specified, it is the default bucket of the storageKey.
+     */
+    name?: string;
+  }
+
+  export interface StorageBucketInfo {
+    bucket: StorageBucket;
     id: string;
-    name: string;
-    isDefault: boolean;
     expiration: Network.TimeSinceEpoch;
     /**
      * Storage quota (bytes).
@@ -13360,8 +13433,7 @@ export namespace Storage {
   }
 
   export interface DeleteStorageBucketRequest {
-    storageKey: string;
-    bucketName: string;
+    bucket: StorageBucket;
   }
 
   export interface RunBounceTrackingMitigationsResponse extends ProtocolResponseWithError {
@@ -13413,6 +13485,10 @@ export namespace Storage {
      */
     storageKey: string;
     /**
+     * Storage bucket to update.
+     */
+    bucketId: string;
+    /**
      * Database to update.
      */
     databaseName: string;
@@ -13434,6 +13510,10 @@ export namespace Storage {
      * Storage key to update.
      */
     storageKey: string;
+    /**
+     * Storage bucket to update.
+     */
+    bucketId: string;
   }
 
   /**
@@ -13475,7 +13555,7 @@ export namespace Storage {
   }
 
   export interface StorageBucketCreatedOrUpdatedEvent {
-    bucket: StorageBucketInfo;
+    bucketInfo: StorageBucketInfo;
   }
 
   export interface StorageBucketDeletedEvent {
@@ -15647,6 +15727,14 @@ export namespace FedCm {
   }
 
   /**
+   * Whether the dialog shown is an account chooser or an auto re-authentication dialog.
+   */
+  export const enum DialogType {
+    AccountChooser = 'AccountChooser',
+    AutoReauthn = 'AutoReauthn',
+  }
+
+  /**
    * Corresponds to IdentityRequestAccount
    */
   export interface Account {
@@ -15686,6 +15774,7 @@ export namespace FedCm {
 
   export interface DialogShownEvent {
     dialogId: string;
+    dialogType: DialogType;
     accounts: Account[];
     /**
      * These exist primarily so that the caller can verify the

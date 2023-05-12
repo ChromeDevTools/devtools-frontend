@@ -901,6 +901,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Trigger autofill on a form identified by the fieldId.
+     * If the field and related form cannot be autofilled, returns an error.
+     */
+    'Autofill.trigger': {
+      paramsType: [Protocol.Autofill.TriggerRequest];
+      returnType: void;
+    };
+    /**
      * Enables event updates for the service.
      */
     'BackgroundService.startObserving': {

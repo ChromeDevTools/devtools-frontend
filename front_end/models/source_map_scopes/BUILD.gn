@@ -32,6 +32,7 @@ devtools_entrypoint("bundle") {
     "../../panels/sources/*",
     "../../panels/timeline/*",
     "../../ui/components/text_editor/*",
+    "../../ui/legacy/components/object_ui/*",
   ]
 
   visibility += devtools_models_visibility

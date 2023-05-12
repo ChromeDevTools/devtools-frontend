@@ -164,15 +164,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   private async requestPreview(): Promise<void> {
     const id = ++this.requestPreviewCurrent;
-    let text = TextEditor.Config.contentIncludingHint(this.editor.editor).trim();
+    const text = TextEditor.Config.contentIncludingHint(this.editor.editor).trim();
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
-    if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps') && executionContext) {
-      const callFrame = executionContext.debuggerModel.selectedCallFrame();
-      if (callFrame) {
-        const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
-        text = await this.substituteNames(text, nameMap);
-      }
-    }
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
         text, true /* throwOnSideEffect */, true /* replMode */, 500 /* timeout */);
     if (this.requestPreviewCurrent !== id) {

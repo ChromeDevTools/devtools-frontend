@@ -15527,6 +15527,40 @@ export namespace Preload {
   }
 
   /**
+   * TODO(https://crbug.com/1384419): revisit the list of PrefetchStatus and
+   * filter out the ones that aren't necessary to the developers.
+   */
+  export const enum PrefetchStatus {
+    PrefetchAllowed = 'PrefetchAllowed',
+    PrefetchFailedIneligibleRedirect = 'PrefetchFailedIneligibleRedirect',
+    PrefetchFailedInvalidRedirect = 'PrefetchFailedInvalidRedirect',
+    PrefetchFailedMIMENotSupported = 'PrefetchFailedMIMENotSupported',
+    PrefetchFailedNetError = 'PrefetchFailedNetError',
+    PrefetchFailedNon2XX = 'PrefetchFailedNon2XX',
+    PrefetchFailedPerPageLimitExceeded = 'PrefetchFailedPerPageLimitExceeded',
+    PrefetchHeldback = 'PrefetchHeldback',
+    PrefetchIneligibleRetryAfter = 'PrefetchIneligibleRetryAfter',
+    PrefetchIsPrivacyDecoy = 'PrefetchIsPrivacyDecoy',
+    PrefetchIsStale = 'PrefetchIsStale',
+    PrefetchNotEligibleBrowserContextOffTheRecord = 'PrefetchNotEligibleBrowserContextOffTheRecord',
+    PrefetchNotEligibleDataSaverEnabled = 'PrefetchNotEligibleDataSaverEnabled',
+    PrefetchNotEligibleExistingProxy = 'PrefetchNotEligibleExistingProxy',
+    PrefetchNotEligibleHostIsNonUnique = 'PrefetchNotEligibleHostIsNonUnique',
+    PrefetchNotEligibleNonDefaultStoragePartition = 'PrefetchNotEligibleNonDefaultStoragePartition',
+    PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy = 'PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy',
+    PrefetchNotEligibleSchemeIsNotHttps = 'PrefetchNotEligibleSchemeIsNotHttps',
+    PrefetchNotEligibleUserHasCookies = 'PrefetchNotEligibleUserHasCookies',
+    PrefetchNotEligibleUserHasServiceWorker = 'PrefetchNotEligibleUserHasServiceWorker',
+    PrefetchNotFinishedInTime = 'PrefetchNotFinishedInTime',
+    PrefetchNotStarted = 'PrefetchNotStarted',
+    PrefetchNotUsedCookiesChanged = 'PrefetchNotUsedCookiesChanged',
+    PrefetchProxyNotAvailable = 'PrefetchProxyNotAvailable',
+    PrefetchResponseUsed = 'PrefetchResponseUsed',
+    PrefetchSuccessfulButNotUsed = 'PrefetchSuccessfulButNotUsed',
+    PrefetchNotUsedProbeFailed = 'PrefetchNotUsedProbeFailed',
+  }
+
+  /**
    * Upsert. Currently, it is only emitted when a rule set added.
    */
   export interface RuleSetUpdatedEvent {
@@ -15573,6 +15607,7 @@ export namespace Preload {
     initiatingFrameId: Page.FrameId;
     prefetchUrl: string;
     status: PreloadingStatus;
+    prefetchStatus: PrefetchStatus;
   }
 
   /**

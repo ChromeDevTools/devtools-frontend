@@ -23150,6 +23150,40 @@
                         "Failure",
                         "NotSupported"
                     ]
+                },
+                {
+                    "id": "PrefetchStatus",
+                    "description": "TODO(https://crbug.com/1384419): revisit the list of PrefetchStatus and\nfilter out the ones that aren't necessary to the developers.",
+                    "type": "string",
+                    "enum": [
+                        "PrefetchAllowed",
+                        "PrefetchFailedIneligibleRedirect",
+                        "PrefetchFailedInvalidRedirect",
+                        "PrefetchFailedMIMENotSupported",
+                        "PrefetchFailedNetError",
+                        "PrefetchFailedNon2XX",
+                        "PrefetchFailedPerPageLimitExceeded",
+                        "PrefetchHeldback",
+                        "PrefetchIneligibleRetryAfter",
+                        "PrefetchIsPrivacyDecoy",
+                        "PrefetchIsStale",
+                        "PrefetchNotEligibleBrowserContextOffTheRecord",
+                        "PrefetchNotEligibleDataSaverEnabled",
+                        "PrefetchNotEligibleExistingProxy",
+                        "PrefetchNotEligibleHostIsNonUnique",
+                        "PrefetchNotEligibleNonDefaultStoragePartition",
+                        "PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy",
+                        "PrefetchNotEligibleSchemeIsNotHttps",
+                        "PrefetchNotEligibleUserHasCookies",
+                        "PrefetchNotEligibleUserHasServiceWorker",
+                        "PrefetchNotFinishedInTime",
+                        "PrefetchNotStarted",
+                        "PrefetchNotUsedCookiesChanged",
+                        "PrefetchProxyNotAvailable",
+                        "PrefetchResponseUsed",
+                        "PrefetchSuccessfulButNotUsed",
+                        "PrefetchNotUsedProbeFailed"
+                    ]
                 }
             ],
             "commands": [
@@ -23239,6 +23273,10 @@
                         {
                             "name": "status",
                             "$ref": "PreloadingStatus"
+                        },
+                        {
+                            "name": "prefetchStatus",
+                            "$ref": "PrefetchStatus"
                         }
                     ]
                 },

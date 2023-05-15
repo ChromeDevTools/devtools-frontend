@@ -28,19 +28,9 @@ hooks = [
 import argparse
 import os
 import sys
-import subprocess
+import shutil
 
 DEVTOOLS_FRONTEND_CHROMIUM_LOCATION = './third_party/devtools-frontend/src'
-
-
-def symlink(src, dst):
-    os_symlink = getattr(os, 'symlink', None)
-    if callable(os_symlink):
-        # symlink is only available on Unix
-        os_symlink(src, dst)
-    else:
-        # use mklink on windows
-        subprocess.check_call(['mklink', '/D', dst, src], shell=True)
 
 
 def parse_options(cli_args):
@@ -55,8 +45,13 @@ def ensure_symlink(options):
     chromium_devtools_path = os.path.normpath(
         os.path.join(options.chromium_dir,
                      DEVTOOLS_FRONTEND_CHROMIUM_LOCATION))
-    if not os.path.exists(chromium_devtools_path):
-        symlink(os.path.normpath(options.devtools_dir), chromium_devtools_path)
+    devtools_path = os.path.abspath(options.devtools_dir)
+    if os.path.exists(chromium_devtools_path):
+        if not os.path.islink(chromium_devtools_path):
+            shutil.rmtree(chromium_devtools_path, ignore_errors=True)
+        else:
+            os.remove(chromium_devtools_path)
+    os.symlink(devtools_path, chromium_devtools_path, True)
 
 
 if __name__ == '__main__':

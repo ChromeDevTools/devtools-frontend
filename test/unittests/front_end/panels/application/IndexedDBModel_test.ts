@@ -4,7 +4,6 @@
 
 const {assert} = chai;
 
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Resources from '../../../../../front_end/panels/application/application.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
@@ -150,8 +149,7 @@ describeWithMockConnection('IndexedDBModel', () => {
 
     // TODO(memmott): Add bucketId and remove `as`.
     indexedDBModel.indexedDBContentUpdated(
-        {origin: '', storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store'} as
-        Protocol.Storage.IndexedDBContentUpdatedEvent);
+        {origin: '', storageKey: testKey, bucketId: '0', databaseName: 'test-database', objectStoreName: 'test-store'});
 
     assert.isTrue(dispatcherSpy.calledOnceWithExactly(
         Resources.IndexedDBModel.Events.IndexedDBContentUpdated as unknown as sinon.SinonMatcher,
@@ -172,9 +170,7 @@ describeWithMockConnection('IndexedDBModel', () => {
     indexedDBModel.enable();
     manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
 
-    // TODO(memmott): Add bucketId and remove `as`.
-    indexedDBModel.indexedDBListUpdated(
-        {origin: '', storageKey: testKey} as Protocol.Storage.IndexedDBListUpdatedEvent);
+    indexedDBModel.indexedDBListUpdated({origin: '', storageKey: testKey, bucketId: '0'});
 
     assert.isTrue(requestDBNamesSpy.calledWithExactly({storageKey: testKey}));
     await databaseLoadedPromise;
@@ -219,10 +215,13 @@ describeWithMockConnection('IndexedDBModel', () => {
   it('dispatches event with storage key on indexedDBContentUpdated when both storage key and origin are set', () => {
     const dispatcherSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');
 
-    // TODO(memmott): Add bucketId and remove `as`.
-    indexedDBModel.indexedDBContentUpdated(
-        {origin: 'test-origin', storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store'} as
-        Protocol.Storage.IndexedDBContentUpdatedEvent);
+    indexedDBModel.indexedDBContentUpdated({
+      origin: 'test-origin',
+      storageKey: testKey,
+      bucketId: '0',
+      databaseName: 'test-database',
+      objectStoreName: 'test-store',
+    });
 
     assert.isTrue(dispatcherSpy.calledOnceWithExactly(
         Resources.IndexedDBModel.Events.IndexedDBContentUpdated as unknown as sinon.SinonMatcher,

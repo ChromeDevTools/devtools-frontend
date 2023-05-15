@@ -32,6 +32,10 @@
   overflow-wrap: break-word;
 }
 
+.header-name.pseudo-header {
+  text-transform: none;
+}
+
 .header-editable .header-name {
   color: var(--color-syntax-1);
 }

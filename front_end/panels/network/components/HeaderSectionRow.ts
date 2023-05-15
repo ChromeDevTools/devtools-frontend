@@ -152,6 +152,11 @@ export class HeaderSectionRow extends HTMLElement {
       'header-deleted': Boolean(this.#header.isDeleted),
     });
 
+    const headerNameClasses = LitHtml.Directives.classMap({
+      'header-name': true,
+      'pseudo-header': this.#header.name.startsWith(':'),
+    });
+
     // The header name is only editable when the header value is editable as well.
     // This ensures the header name's editability reacts correctly to enabling or
     // disabling local overrides.
@@ -168,7 +173,7 @@ export class HeaderSectionRow extends HTMLElement {
     // clang-format off
     render(html`
       <div class=${rowClasses}>
-        <div class="header-name">
+        <div class=${headerNameClasses}>
           ${this.#header.headerNotSet ?
             html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div> ` :
             LitHtml.nothing

@@ -75,6 +75,7 @@ import * as ServiceWorkerCacheModel from './ServiceWorkerCacheModel.js';
 import * as ServiceWorkerManager from './ServiceWorkerManager.js';
 import * as SourceMap from './SourceMap.js';
 import * as SourceMapManager from './SourceMapManager.js';
+import * as StorageBucketsModel from './StorageBucketsModel.js';
 import * as StorageKeyManager from './StorageKeyManager.js';
 import * as Target from './Target.js';
 import * as TargetManager from './TargetManager.js';
@@ -149,6 +150,7 @@ export {
   ServiceWorkerManager,
   SourceMap,
   SourceMapManager,
+  StorageBucketsModel,
   StorageKeyManager,
   Target,
   TargetManager,

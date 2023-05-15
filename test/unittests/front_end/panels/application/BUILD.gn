@@ -25,6 +25,7 @@ ts_library("application") {
     "SharedStorageListTreeElement_test.ts",
     "SharedStorageModel_test.ts",
     "SharedStorageTreeElement_test.ts",
+    "StorageBucketsModel_test.ts",
     "StorageView_test.ts",
     "TrustTokensTreeElement_test.ts",
     "preloading/PreloadingView_test.ts",

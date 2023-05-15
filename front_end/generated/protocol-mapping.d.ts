@@ -901,6 +901,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Runs the form issues check for the target page. Found issues are reported
+     * using Audits.issueAdded event.
+     */
+    'Audits.checkFormsIssues': {
+      paramsType: [];
+      returnType: Protocol.Audits.CheckFormsIssuesResponse;
+    };
+    /**
      * Trigger autofill on a form identified by the fieldId.
      * If the field and related form cannot be autofilled, returns an error.
      */

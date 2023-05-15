@@ -1037,6 +1037,11 @@ export const NativeFunctions = [
     receivers: ['AudioNode']
   },
   {
+    name: 'connect',
+    signatures: [['accessMode','?preferredProtocols']],
+    receivers: ['SmartCardReader']
+  },
+  {
     name: 'disconnect',
     signatures: [['?output'],['destinationNode','?output','?input'],['destinationParam','?output'],['destination','?output','?input']],
     receivers: ['AudioNode']
@@ -2398,6 +2403,11 @@ export const NativeFunctions = [
     name: 'resolve',
     signatures: [['?value']],
     receivers: ['PromiseConstructor']
+  },
+  {
+    name: 'resolve',
+    signatures: [['token']],
+    receivers: ['IdentityProvider']
   },
   {
     name: 'readEntries',
@@ -3826,7 +3836,8 @@ export const NativeFunctions = [
   },
   {
     name: 'encode',
-    signatures: [['?input']]
+    signatures: [['?input']],
+    receivers: ['TextEncoder']
   },
   {
     name: 'encodeInto',
@@ -6061,7 +6072,7 @@ export const NativeFunctions = [
   },
   {
     name: 'hasPrivateToken',
-    signatures: [['issuer','type']]
+    signatures: [['issuer']]
   },
   {
     name: 'hasRedemptionRecord',
@@ -6740,6 +6751,10 @@ export const NativeFunctions = [
     signatures: [['privateToken']]
   },
   {
+    name: 'setAttributionReporting',
+    signatures: [['attributionReporting']]
+  },
+  {
     name: 'joinAdInterestGroup',
     signatures: [['group','durationSeconds']]
   },
@@ -6915,6 +6930,10 @@ export const NativeFunctions = [
     signatures: [['init']]
   },
   {
+    name: 'beginLayer',
+    signatures: [['?filter']]
+  },
+  {
     name: 'scrollPathIntoView',
     signatures: [['?path']]
   },
@@ -7027,6 +7046,10 @@ export const NativeFunctions = [
   {
     name: 'getStatusForPolicy',
     signatures: [['policy']]
+  },
+  {
+    name: 'getEnvironmentIntegrity',
+    signatures: [['contentBinding']]
   },
   {
     name: 'EventSource',
@@ -7284,10 +7307,6 @@ export const NativeFunctions = [
     signatures: [['element']]
   },
   {
-    name: 'getDisplayMediaSet',
-    signatures: [['?constraints']]
-  },
-  {
     name: 'setCaptureHandleConfig',
     signatures: [['?config']]
   },
@@ -7360,6 +7379,14 @@ export const NativeFunctions = [
   {
     name: 'convTranspose2d',
     signatures: [['input','filter','?options']]
+  },
+  {
+    name: 'neg',
+    signatures: [['x']]
+  },
+  {
+    name: 'elu',
+    signatures: [['?options'],['x','?options']]
   },
   {
     name: 'gemm',
@@ -7610,6 +7637,10 @@ export const NativeFunctions = [
     signatures: [['id']]
   },
   {
+    name: 'getEncryptedMatchKey',
+    signatures: [['reportCollector','options']]
+  },
+  {
     name: 'PushEvent',
     signatures: [['type','?eventInitDict']]
   },
@@ -7748,6 +7779,10 @@ export const NativeFunctions = [
   {
     name: 'enableDebugMode',
     signatures: [['?options']]
+  },
+  {
+    name: 'transmit',
+    signatures: [['sendBuffer']]
   },
   {
     name: 'SmartCardError',

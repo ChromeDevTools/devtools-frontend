@@ -1496,7 +1496,9 @@ export const generatedProperties = [
    "inline-grid",
    "contents",
    "flow-root",
-   "none"
+   "none",
+   "flow",
+   "math"
   ],
   "name": "display"
  },
@@ -1525,9 +1527,6 @@ export const generatedProperties = [
    "hide"
   ],
   "name": "empty-cells"
- },
- {
-  "name": "end"
  },
  {
   "name": "fallback"
@@ -1704,7 +1703,11 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
-   "none"
+   "none",
+   "ex-height",
+   "cap-height",
+   "ch-width",
+   "ic-width"
   ],
   "name": "font-size-adjust"
  },
@@ -2746,6 +2749,12 @@ export const generatedProperties = [
   "name": "pointer-events"
  },
  {
+  "name": "popover-hide-delay"
+ },
+ {
+  "name": "popover-show-delay"
+ },
+ {
   "keywords": [
    "static",
    "relative",
@@ -2982,6 +2991,80 @@ export const generatedProperties = [
  },
  {
   "longhands": [
+   "scroll-start-block",
+   "scroll-start-inline"
+  ],
+  "name": "scroll-start"
+ },
+ {
+  "keywords": [
+   "auto",
+   "start",
+   "end",
+   "center",
+   "top",
+   "bottom",
+   "left",
+   "right"
+  ],
+  "name": "scroll-start-block"
+ },
+ {
+  "keywords": [
+   "auto",
+   "start",
+   "end",
+   "center",
+   "top",
+   "bottom",
+   "left",
+   "right"
+  ],
+  "name": "scroll-start-inline"
+ },
+ {
+  "longhands": [
+   "scroll-start-target-block",
+   "scroll-start-target-inline"
+  ],
+  "name": "scroll-start-target"
+ },
+ {
+  "keywords": [
+   "none",
+   "auto"
+  ],
+  "name": "scroll-start-target-block"
+ },
+ {
+  "keywords": [
+   "none",
+   "auto"
+  ],
+  "name": "scroll-start-target-inline"
+ },
+ {
+  "keywords": [
+   "none",
+   "auto"
+  ],
+  "name": "scroll-start-target-x"
+ },
+ {
+  "keywords": [
+   "none",
+   "auto"
+  ],
+  "name": "scroll-start-target-y"
+ },
+ {
+  "name": "scroll-start-x"
+ },
+ {
+  "name": "scroll-start-y"
+ },
+ {
+  "longhands": [
    "scroll-timeline-name",
    "scroll-timeline-axis",
    "scroll-timeline-attachment"
@@ -3047,9 +3130,6 @@ export const generatedProperties = [
   "name": "size-adjust"
  },
  {
-  "name": "source"
- },
- {
   "inherited": true,
   "keywords": [
    "none",
@@ -3066,9 +3146,6 @@ export const generatedProperties = [
  },
  {
   "name": "src"
- },
- {
-  "name": "start"
  },
  {
   "keywords": [
@@ -3356,7 +3433,8 @@ export const generatedProperties = [
   "keywords": [
    "wrap",
    "nowrap",
-   "balance"
+   "balance",
+   "pretty"
   ],
   "name": "text-wrap"
  },
@@ -4363,7 +4441,9 @@ export const generatedPropertyValues = {
    "inline-grid",
    "contents",
    "flow-root",
-   "none"
+   "none",
+   "flow",
+   "math"
   ]
  },
  "dominant-baseline": {
@@ -4479,7 +4559,11 @@ export const generatedPropertyValues = {
  },
  "font-size-adjust": {
   "values": [
-   "none"
+   "none",
+   "ex-height",
+   "cap-height",
+   "ch-width",
+   "ic-width"
   ]
  },
  "font-stretch": {
@@ -5154,6 +5238,54 @@ export const generatedPropertyValues = {
    "proximity"
   ]
  },
+ "scroll-start-block": {
+  "values": [
+   "auto",
+   "start",
+   "end",
+   "center",
+   "top",
+   "bottom",
+   "left",
+   "right"
+  ]
+ },
+ "scroll-start-inline": {
+  "values": [
+   "auto",
+   "start",
+   "end",
+   "center",
+   "top",
+   "bottom",
+   "left",
+   "right"
+  ]
+ },
+ "scroll-start-target-block": {
+  "values": [
+   "none",
+   "auto"
+  ]
+ },
+ "scroll-start-target-inline": {
+  "values": [
+   "none",
+   "auto"
+  ]
+ },
+ "scroll-start-target-x": {
+  "values": [
+   "none",
+   "auto"
+  ]
+ },
+ "scroll-start-target-y": {
+  "values": [
+   "none",
+   "auto"
+  ]
+ },
  "scrollbar-gutter": {
   "values": [
    "auto",
@@ -5372,7 +5504,8 @@ export const generatedPropertyValues = {
   "values": [
    "wrap",
    "nowrap",
-   "balance"
+   "balance",
+   "pretty"
   ]
  },
  "toggle-group": {

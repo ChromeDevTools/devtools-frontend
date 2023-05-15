@@ -919,6 +919,12 @@ experimental domain Audits
       # Whether to report WCAG AAA level issues. Default is false.
       optional boolean reportAAA
 
+  # Runs the form issues check for the target page. Found issues are reported
+  # using Audits.issueAdded event.
+  command checkFormsIssues
+    returns
+      array of GenericIssueDetails formIssues
+
   event issueAdded
     parameters
       InspectorIssue issue
@@ -944,6 +950,8 @@ experimental domain Autofill
     parameters
       # Identifies a field that serves as an anchor for autofill.
       DOM.BackendNodeId fieldId
+      # Identifies the frame that field belongs to.
+      optional Page.FrameId frameId
       # Credit card information to fill out the form. Credit card data is not saved.
       CreditCard card
 
@@ -10996,6 +11004,9 @@ experimental domain Preload
       SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation
       MemoryPressureOnTrigger
       MemoryPressureAfterTriggered
+      SpeculationRuleRemoved
+      TriggerPageNavigated
+      OtherPrerenderedPageActivated
 
   # Fired when a prerender attempt is completed.
   event prerenderAttemptCompleted
@@ -11035,7 +11046,7 @@ experimental domain Preload
       # PreloadingTriggeringOutcome which not used by prefetch nor prerender.
       NotSupported
 
-# TODO(https://crbug.com/1384419): revisit the list of PrefetchStatus and
+  # TODO(https://crbug.com/1384419): revisit the list of PrefetchStatus and
   # filter out the ones that aren't necessary to the developers.
   type PrefetchStatus extends string
     enum

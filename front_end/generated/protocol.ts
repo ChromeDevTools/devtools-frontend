@@ -1213,6 +1213,10 @@ export namespace Audits {
     reportAAA?: boolean;
   }
 
+  export interface CheckFormsIssuesResponse extends ProtocolResponseWithError {
+    formIssues: GenericIssueDetails[];
+  }
+
   export interface IssueAddedEvent {
     issue: InspectorIssue;
   }
@@ -1251,6 +1255,10 @@ export namespace Autofill {
      * Identifies a field that serves as an anchor for autofill.
      */
     fieldId: DOM.BackendNodeId;
+    /**
+     * Identifies the frame that field belongs to.
+     */
+    frameId?: Page.FrameId;
     /**
      * Credit card information to fill out the form. Credit card data is not saved.
      */
@@ -15583,6 +15591,9 @@ export namespace Preload {
     SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation = 'SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation',
     MemoryPressureOnTrigger = 'MemoryPressureOnTrigger',
     MemoryPressureAfterTriggered = 'MemoryPressureAfterTriggered',
+    SpeculationRuleRemoved = 'SpeculationRuleRemoved',
+    TriggerPageNavigated = 'TriggerPageNavigated',
+    OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
   }
 
   export const enum PreloadEnabledState {
@@ -16616,7 +16627,7 @@ export namespace Debugger {
      */
     hash: string;
     /**
-     * Embedder-specific auxiliary data.
+     * Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}
      */
     executionContextAuxData?: any;
     /**
@@ -16691,7 +16702,7 @@ export namespace Debugger {
      */
     hash: string;
     /**
-     * Embedder-specific auxiliary data.
+     * Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}
      */
     executionContextAuxData?: any;
     /**
@@ -17194,7 +17205,25 @@ export namespace Runtime {
    */
   export type ScriptId = OpaqueIdentifier<string, 'Protocol.Runtime.ScriptId'>;
 
-  export const enum WebDriverValueType {
+  export const enum SerializationOptionsSerialization {
+    Deep = 'deep',
+    Json = 'json',
+    IdOnly = 'idOnly',
+  }
+
+  /**
+   * Represents options for serialization. Overrides `generatePreview`, `returnByValue` and
+   * `generateWebDriverValue`.
+   */
+  export interface SerializationOptions {
+    serialization: SerializationOptionsSerialization;
+    /**
+     * Deep serialization depth. Default is full depth. Respected only in `deep` serialization mode.
+     */
+    maxDepth?: integer;
+  }
+
+  export const enum DeepSerializedValueType {
     Undefined = 'undefined',
     Null = 'null',
     String = 'string',
@@ -17221,13 +17250,18 @@ export namespace Runtime {
   }
 
   /**
-   * Represents the value serialiazed by the WebDriver BiDi specification
-   * https://w3c.github.io/webdriver-bidi.
+   * Represents deep serialized value.
    */
-  export interface WebDriverValue {
-    type: WebDriverValueType;
+  export interface DeepSerializedValue {
+    type: DeepSerializedValueType;
     value?: any;
     objectId?: string;
+    /**
+     * Set if value reference met more then once during serialization. In such
+     * case, value is provided only to one of the serialized values. Unique
+     * per value in the scope of one CDP call.
+     */
+    weakLocalObjectReference?: integer;
   }
 
   /**
@@ -17306,9 +17340,13 @@ export namespace Runtime {
      */
     description?: string;
     /**
-     * WebDriver BiDi representation of the value.
+     * Deprecated. Use `deepSerializedValue` instead. WebDriver BiDi representation of the value.
      */
-    webDriverValue?: WebDriverValue;
+    webDriverValue?: DeepSerializedValue;
+    /**
+     * Deep serialized value.
+     */
+    deepSerializedValue?: DeepSerializedValue;
     /**
      * Unique object identifier (for non-primitive values).
      */
@@ -17601,7 +17639,7 @@ export namespace Runtime {
      */
     uniqueId: string;
     /**
-     * Embedder-specific auxiliary data.
+     * Embedder-specific auxiliary data likely matching {isDefault: boolean, type: 'default'|'isolated'|'worker', frameId: string}
      */
     auxData?: any;
   }
@@ -17776,6 +17814,7 @@ export namespace Runtime {
     silent?: boolean;
     /**
      * Whether the result is expected to be a JSON object which should be sent by value.
+     * Can be overriden by `serializationOptions`.
      */
     returnByValue?: boolean;
     /**
@@ -17815,11 +17854,17 @@ export namespace Runtime {
      */
     uniqueContextId?: string;
     /**
+     * Deprecated. Use `serializationOptions: {serialization:"deep"}` instead.
      * Whether the result should contain `webDriverValue`, serialized according to
      * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
      * resulting `objectId` is still provided.
      */
     generateWebDriverValue?: boolean;
+    /**
+     * Specifies the result serialization. If provided, overrides
+     * `returnByValue` and `generateWebDriverValue`.
+     */
+    serializationOptions?: SerializationOptions;
   }
 
   export interface CallFunctionOnResponse extends ProtocolResponseWithError {
@@ -17943,9 +17988,18 @@ export namespace Runtime {
      */
     uniqueContextId?: string;
     /**
-     * Whether the result should be serialized according to https://w3c.github.io/webdriver-bidi.
+     * Deprecated. Use `serializationOptions: {serialization:"deep"}` instead.
+     * Whether the result should contain `webDriverValue`, serialized
+     * according to
+     * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
+     * resulting `objectId` is still provided.
      */
     generateWebDriverValue?: boolean;
+    /**
+     * Specifies the result serialization. If provided, overrides
+     * `returnByValue` and `generateWebDriverValue`.
+     */
+    serializationOptions?: SerializationOptions;
   }
 
   export interface EvaluateResponse extends ProtocolResponseWithError {

@@ -729,7 +729,47 @@ describeWithMockConnection('PreloadingView', async () => {
     const view = createView(emulator.primaryTarget);
 
     dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
-      state: 'DisabledByPreference',
+      state: Protocol.Preload.PreloadEnabledState.DisabledByPreference,
+    });
+
+    const infobarContainer = view.getInfobarContainerForTest();
+    const infoTexts = Array.from(infobarContainer.children).map(infobarElement => {
+      assertShadowRoot(infobarElement.shadowRoot);
+      const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
+      assertNotNullOrUndefined(infoText);
+      return infoText.textContent;
+    });
+    assert.deepEqual(infoTexts, ['Preloading is disabled']);
+  });
+
+  it('shows an warning if Preloading is disabled by DataSaver', async () => {
+    const emulator = new NavigationEmulator();
+
+    await emulator.openDevTools();
+    const view = createView(emulator.primaryTarget);
+
+    dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
+      state: Protocol.Preload.PreloadEnabledState.DisabledByDataSaver,
+    });
+
+    const infobarContainer = view.getInfobarContainerForTest();
+    const infoTexts = Array.from(infobarContainer.children).map(infobarElement => {
+      assertShadowRoot(infobarElement.shadowRoot);
+      const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
+      assertNotNullOrUndefined(infoText);
+      return infoText.textContent;
+    });
+    assert.deepEqual(infoTexts, ['Preloading is disabled']);
+  });
+
+  it('shows an warning if Preloading is disabled by BatterySaver', async () => {
+    const emulator = new NavigationEmulator();
+
+    await emulator.openDevTools();
+    const view = createView(emulator.primaryTarget);
+
+    dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
+      state: Protocol.Preload.PreloadEnabledState.DisabledByBatterySaver,
     });
 
     const infobarContainer = view.getInfobarContainerForTest();

@@ -10,21 +10,21 @@ import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/
 describe('Performance panel', () => {
   preloadForCodeCoverage('performance_panel/basic.html');
 
-  itScreenshot('renders the timeline correctly', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=animation');
+  itScreenshot('loads a trace file and renders it in the timeline', async () => {
+    await loadComponentDocExample('performance_panel/basic.html?trace=basic');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
     await assertElementScreenshotUnchanged(panel, 'performance/timeline.png', 3);
   });
 
-  itScreenshot('renders the CPU profile correctly in non-node mode', async () => {
+  itScreenshot('loads a cpuprofile and renders it in non-node mode', async () => {
     await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
     await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile.png', 3);
   });
 
-  itScreenshot('renders the CPU profile correctly in node mode', async () => {
+  itScreenshot('loads a cpuprofile and renders it in node mode', async () => {
     await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
@@ -35,6 +35,6 @@ describe('Performance panel', () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png', 3);
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png', 2);
   });
 });

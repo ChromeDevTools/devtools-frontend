@@ -188,6 +188,27 @@ describeWithLocale('StackTrace', () => {
     assert.deepEqual(openedStackTraceText, [
       'function1\xA0@\xA0www.example.com/script.js',
       'function2\xA0@\xA0www.example.com/hidden.js',
+      'Show less',
+    ]);
+
+    const newStackTraceLinkButton = getElementWithinComponent(
+        expandableList, 'devtools-stack-trace-link-button', ApplicationComponents.StackTrace.StackTraceLinkButton);
+    assertShadowRoot(newStackTraceLinkButton.shadowRoot);
+    const showLessButton = newStackTraceLinkButton.shadowRoot.querySelector('.stack-trace-row button.link');
+    assertElement(showLessButton, HTMLButtonElement);
+    dispatchClickEvent(showLessButton);
+
+    const reclosedStackTraceRows = Array.from(expandableList.shadowRoot.querySelectorAll('[data-stack-trace-row]'));
+    stackTraceText = [];
+
+    reclosedStackTraceRows.forEach(row => {
+      assertShadowRoot(row.shadowRoot);
+      stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
+    });
+
+    assert.deepEqual(stackTraceText, [
+      'function1\xA0@\xA0www.example.com/script.js',
+      'Show 1 more frame',
     ]);
   });
 });

@@ -22,6 +22,7 @@ import {
   getTrimmedTextContent,
   navigateToApplicationTab,
 } from '../helpers/application-helpers.js';
+import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 
 const TOP_FRAME_SELECTOR = '[aria-label="top"]';
 const WEB_WORKERS_SELECTOR = '[aria-label="Web Workers"]';
@@ -32,6 +33,7 @@ const MAIN_FRAME_SELECTOR = '[aria-label="frameId (main-frame.html)"]';
 const IFRAME_SELECTOR = '[aria-label="iframe.html"]';
 const EXPAND_STACKTRACE_BUTTON_SELECTOR = '.arrow-icon-button';
 const STACKTRACE_ROW_SELECTOR = '.stack-trace-row';
+const STACKTRACE_ROW_LINK_SELECTOR = '.stack-trace-row .link';
 const APPLICATION_PANEL_SELECTED_SELECTOR = '.tabbed-pane-header-tab.selected[aria-label="Application"]';
 
 const getTrailingURL = (text: string): string => {
@@ -47,11 +49,13 @@ const ensureApplicationPanel = async () => {
     });
   }
 };
+
 declare global {
   interface Window {
     iFrameWindow: Window|null|undefined;
   }
 }
+
 describe('The Application Tab', async () => {
   afterEach(async () => {
     const {target} = getBrowserAndPages();
@@ -120,11 +124,68 @@ describe('The Application Tab', async () => {
       return undefined;
     });
     const expected = [
-      'second\xA0@\xA0js-oopif.html:17',
-      'first\xA0@\xA0js-oopif.html:11',
-      '(anonymous)\xA0@\xA0js-oopif.html:20',
+      'second\xA0@\xA0js-oopif.html:13',
+      'first\xA0@\xA0js-oopif.js:3',
+      '(anonymous)\xA0@\xA0js-oopif.js:6',
     ];
     assert.deepEqual(stackTraceRowsTextContent, expected);
+  });
+
+  it('stack traces for OOPIF with ignore listed frames can be expanded and collapsed', async () => {
+    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
+    await setIgnoreListPattern('js-oopif.js');
+    await goToResource('application/js-oopif.html');
+    await ensureApplicationPanel();
+    await waitForFunction(async () => {
+      await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
+      await doubleClickSourceTreeItem(IFRAME_SELECTOR);
+      return (await $$(EXPAND_STACKTRACE_BUTTON_SELECTOR)).length === 1;
+    });
+    let stackTraceRowsTextContent = await waitForFunction(async () => {
+      await ensureApplicationPanel();
+      await click(EXPAND_STACKTRACE_BUTTON_SELECTOR);
+      const stackTraceRows = await getTrimmedTextContent(STACKTRACE_ROW_SELECTOR);
+      // Make sure the length is equivalent to the expected value below
+      if (stackTraceRows.length === 2) {
+        return stackTraceRows;
+      }
+      return undefined;
+    });
+    const expectedCollapsed = [
+      'second\xA0@\xA0js-oopif.html:13',
+      'Show 2 more frames',
+    ];
+    assert.deepEqual(stackTraceRowsTextContent, expectedCollapsed);
+
+    // Expand all frames
+    await click(STACKTRACE_ROW_LINK_SELECTOR);
+    stackTraceRowsTextContent = await waitForFunction(async () => {
+      const stackTraceRows = await getTrimmedTextContent(STACKTRACE_ROW_SELECTOR);
+      // Make sure the length is equivalent to the expected value below
+      if (stackTraceRows.length === 4) {
+        return stackTraceRows;
+      }
+      return undefined;
+    });
+
+    const expectedFull = [
+      'second\xA0@\xA0js-oopif.html:13',
+      'first\xA0@\xA0js-oopif.js:3',
+      '(anonymous)\xA0@\xA0js-oopif.js:6',
+      'Show less',
+    ];
+    assert.deepEqual(stackTraceRowsTextContent, expectedFull);
+
+    await click(STACKTRACE_ROW_LINK_SELECTOR);
+    stackTraceRowsTextContent = await waitForFunction(async () => {
+      const stackTraceRows = await getTrimmedTextContent(STACKTRACE_ROW_SELECTOR);
+      // Make sure the length is equivalent to the expected value below
+      if (stackTraceRows.length === 2) {
+        return stackTraceRows;
+      }
+      return undefined;
+    });
+    assert.deepEqual(stackTraceRowsTextContent, expectedCollapsed);
   });
 
   it('shows details for opened windows in the frame tree', async () => {

@@ -37,10 +37,15 @@
   display: none;
 }
 
-.stack-preview-container > tr.show-all-link {
+.stack-preview-container > tr.show-all-link,
+.stack-preview-container > tr.show-less-link {
   font-style: italic;
 }
 
 .stack-preview-container.show-hidden-rows > tr.show-all-link {
+  display: none;
+}
+
+.stack-preview-container:not(.show-hidden-rows) > tr.show-less-link {
   display: none;
 }

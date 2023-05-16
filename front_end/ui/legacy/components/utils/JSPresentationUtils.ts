@@ -53,9 +53,13 @@ const UIStrings = {
    */
   addToIgnore: 'Add script to ignore list',
   /**
-   * @description A context menu item to show more frames when they are available. Never 0.
+   * @description A link to show more frames when they are available. Never 0.
    */
   showSMoreFrames: '{n, plural, =1 {Show # more frame} other {Show # more frames}}',
+  /**
+   * @description A link to rehide frames that are by default hidden.
+   */
+  showLess: 'Show less',
   /**
    *@description Text indicating that source url of a link is currently unknown
    */
@@ -266,6 +270,15 @@ function renderStackTraceTable(
     showAllLink.textContent = i18nString(UIStrings.showSMoreFrames, {n: hiddenCallFramesCount});
     showAllLink.addEventListener('click', () => {
       container.classList.add('show-hidden-rows');
+    }, false);
+    const showLessRow = container.createChild('tr', 'show-less-link');
+    showLessRow.createChild('td').textContent = '\n';
+    const showLesscell = showLessRow.createChild('td') as HTMLTableCellElement;
+    showLesscell.colSpan = 4;
+    const showLessLink = showLesscell.createChild('span', 'link');
+    showLessLink.textContent = i18nString(UIStrings.showLess);
+    showLessLink.addEventListener('click', () => {
+      container.classList.remove('show-hidden-rows');
     }, false);
   }
   return links;

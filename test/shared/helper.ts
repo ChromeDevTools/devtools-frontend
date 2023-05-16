@@ -247,11 +247,34 @@ export const getTextContent = async<ElementType extends Element = Element>(selec
   return text ?? undefined;
 };
 
+/**
+ * Match multiple elements based on a selector and return their textContents, but only for those
+ * elements that are visible.
+ *
+ * @param selector jquery selector to match
+ * @returns array containing text contents from visible elements
+ */
+export const getVisibleTextContents = async (selector: string) => {
+  const allElements = await $$(selector);
+  const texts = await Promise.all(
+      allElements.map(el => el.evaluate(node => node.checkVisibility() ? node.textContent?.trim() : undefined)));
+  return texts.filter(content => typeof (content) === 'string');
+};
+
 export const waitFor = async<ElementType extends Element = Element>(
     selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
                                  const element = await $<ElementType>(selector, root, handler);
                                  return (element || undefined);
+                               }, asyncScope));
+};
+
+export const waitForVisible = async<ElementType extends Element = Element>(
+    selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
+  return await asyncScope.exec(() => waitForFunction(async () => {
+                                 const element = await $<ElementType>(selector, root, handler);
+                                 const visible = await element.evaluate(node => node.checkVisibility());
+                                 return visible ? element : undefined;
                                }, asyncScope));
 };
 

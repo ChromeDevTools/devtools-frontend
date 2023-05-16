@@ -14,6 +14,7 @@ const ADD_FILENAME_PATTERN_BUTTON = 'button[aria-label="Add filename pattern"]';
 const ADD_BUTTON = '.editor-buttons .primary-button';
 const CLOSE_SETTINGS_BUTTON = '.close-button[aria-label="Close"]';
 const SHOW_MORE_LINK = '.show-all-link .link';
+const SHOW_LESS_LINK = '.show-less-link .link';
 
 describe('The Console Tab', async () => {
   it('shows messages with stack traces', async () => {
@@ -75,6 +76,7 @@ describe('The Console Tab', async () => {
       {text: '\nignoreListed1 @ ignoreMe.js:8', classes: {'0': 'hidden-row'}},
       {text: '\n(anonymous) @ ignoreMe.js:5', classes: {'0': 'hidden-row'}},
       {text: '\nShow 6 more frames', classes: {'0': 'show-all-link'}},
+      {text: '\nShow less', classes: {'0': 'show-less-link'}},
     ];
 
     await waitForFunction(async () => {
@@ -93,5 +95,10 @@ describe('The Console Tab', async () => {
     await click(SHOW_MORE_LINK);
     showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
     assert.strictEqual(showHidden, true);
+
+    // assert that after clicking 'show less'-button, hidden rows are hidden again
+    await click(SHOW_LESS_LINK);
+    showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
+    assert.strictEqual(showHidden, false);
   });
 });

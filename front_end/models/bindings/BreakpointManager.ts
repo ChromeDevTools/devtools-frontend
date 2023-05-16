@@ -909,14 +909,18 @@ export class ModelBreakpoint {
             scriptHash: script.hash,
             lineNumber: loc.lineNumber,
             columnNumber: loc.columnNumber,
+            // TODO(crbug.com/1444349): Translate variables in `condition` in terms of this concrete raw location.
+            condition,
           };
         });
-        newState = new Breakpoint.State(positions, condition);
+        newState = new Breakpoint.State(positions);
       } else if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
         // Use this fallback if we do not have instrumentation breakpoints enabled yet. This currently makes
         // sure that v8 knows about the breakpoint and is able to restore it whenever the script is parsed.
         if (this.#breakpoint.currentState) {
-          newState = new Breakpoint.State(this.#breakpoint.currentState.positions, condition);
+          // Re-use position information from fallback but use up-to-date condition.
+          newState =
+              new Breakpoint.State(this.#breakpoint.currentState.positions.map(position => ({...position, condition})));
         } else {
           // TODO(bmeurer): This fallback doesn't make a whole lot of sense, we should
           // at least signal a warning to the developer that this #breakpoint wasn't
@@ -926,8 +930,9 @@ export class ModelBreakpoint {
             scriptHash: '',
             lineNumber,
             columnNumber,
+            condition,
           };
-          newState = new Breakpoint.State([position], condition);
+          newState = new Breakpoint.State([position]);
         }
       }
     }
@@ -994,17 +999,17 @@ export class ModelBreakpoint {
     return DebuggerUpdateResult.OK;
   }
 
-  async #setBreakpointOnBackend({positions, condition}: Breakpoint.State): Promise<{
+  async #setBreakpointOnBackend({positions}: Breakpoint.State): Promise<{
     breakpointIds: Protocol.Debugger.BreakpointId[],
     locations: SDK.DebuggerModel.Location[],
     serverError: boolean,
   }> {
     const results = await Promise.all(positions.map(pos => {
       if (pos.url) {
-        return this.#debuggerModel.setBreakpointByURL(pos.url, pos.lineNumber, pos.columnNumber, condition);
+        return this.#debuggerModel.setBreakpointByURL(pos.url, pos.lineNumber, pos.columnNumber, pos.condition);
       }
       return this.#debuggerModel.setBreakpointInAnonymousScript(
-          pos.scriptHash as string, pos.lineNumber, pos.columnNumber, condition);
+          pos.scriptHash as string, pos.lineNumber, pos.columnNumber, pos.condition);
     }));
     const breakpointIds: Protocol.Debugger.BreakpointId[] = [];
     let locations: SDK.DebuggerModel.Location[] = [];
@@ -1096,6 +1101,7 @@ interface Position {
   scriptHash: string;
   lineNumber: number;
   columnNumber?: number;
+  condition: SDK.DebuggerModel.BackendCondition;
 }
 
 export const enum BreakpointOrigin {
@@ -1106,18 +1112,13 @@ export const enum BreakpointOrigin {
 export namespace Breakpoint {
   export class State {
     positions: Position[];
-    condition: SDK.DebuggerModel.BackendCondition;
 
-    constructor(positions: Position[], condition: SDK.DebuggerModel.BackendCondition) {
+    constructor(positions: Position[]) {
       this.positions = positions;
-      this.condition = condition;
     }
 
     static equals(stateA?: State|null, stateB?: State|null): boolean {
       if (!stateA || !stateB) {
-        return false;
-      }
-      if (stateA.condition !== stateB.condition) {
         return false;
       }
       if (stateA.positions.length !== stateB.positions.length) {
@@ -1136,6 +1137,9 @@ export namespace Breakpoint {
           return false;
         }
         if (positionA.columnNumber !== positionB.columnNumber) {
+          return false;
+        }
+        if (positionA.condition !== positionB.condition) {
           return false;
         }
       }

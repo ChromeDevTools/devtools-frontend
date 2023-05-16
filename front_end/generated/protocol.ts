@@ -15712,6 +15712,7 @@ export namespace Preload {
     initiatingFrameId: Page.FrameId;
     prerenderingUrl: string;
     status: PreloadingStatus;
+    prerenderStatus?: PrerenderFinalStatus;
   }
 
   /**

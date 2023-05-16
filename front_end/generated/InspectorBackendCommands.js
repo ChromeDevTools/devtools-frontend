@@ -902,7 +902,7 @@ inspectorBackend.registerEvent("Preload.ruleSetRemoved", ["id"]);
 inspectorBackend.registerEvent("Preload.prerenderAttemptCompleted", ["key", "initiatingFrameId", "prerenderingUrl", "finalStatus", "disallowedApiMethod"]);
 inspectorBackend.registerEvent("Preload.preloadEnabledStateUpdated", ["state"]);
 inspectorBackend.registerEvent("Preload.prefetchStatusUpdated", ["key", "initiatingFrameId", "prefetchUrl", "status", "prefetchStatus"]);
-inspectorBackend.registerEvent("Preload.prerenderStatusUpdated", ["key", "initiatingFrameId", "prerenderingUrl", "status"]);
+inspectorBackend.registerEvent("Preload.prerenderStatusUpdated", ["key", "initiatingFrameId", "prerenderingUrl", "status", "prerenderStatus"]);
 inspectorBackend.registerEvent("Preload.preloadingAttemptSourcesUpdated", ["loaderId", "preloadingAttemptSources"]);
 inspectorBackend.registerCommand("Preload.enable", [], []);
 inspectorBackend.registerCommand("Preload.disable", [], []);

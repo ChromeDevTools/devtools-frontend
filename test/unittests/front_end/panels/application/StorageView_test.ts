@@ -11,6 +11,10 @@ import * as Resources from '../../../../../front_end/panels/application/applicat
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConnection.js';
+import {assertElement, assertShadowRoot, dispatchFocusOutEvent} from '../../helpers/DOMHelpers.js';
+import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('StorageView', () => {
   const tests = (targetFactory: () => SDK.Target.Target) => {
@@ -58,6 +62,34 @@ describeWithMockConnection('StorageView', () => {
       const subtitle =
           view.element.shadowRoot?.querySelector('div.flex-auto')?.shadowRoot?.querySelector('div.report-subtitle');
       assert.strictEqual(subtitle?.textContent, testKey);
+    });
+
+    it('shows a warning message when entering a too big custom quota', async () => {
+      assertNotNullOrUndefined(domStorageModel);
+      assertNotNullOrUndefined(storageKeyManager);
+      const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
+      assertNotNullOrUndefined(securityOriginManager);
+      sinon.stub(securityOriginManager, 'mainSecurityOrigin').returns(testOrigin);
+
+      const view = new Resources.StorageView.StorageView();
+      const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
+      assertElement(container, HTMLDivElement);
+      assertShadowRoot(container.shadowRoot);
+      const customQuotaCheckbox = container.shadowRoot.querySelector('.quota-override-row span')
+                                      ?.shadowRoot?.querySelector('[aria-label="Simulate custom storage quota"]') ||
+          null;
+      assertElement(customQuotaCheckbox, HTMLInputElement);
+      customQuotaCheckbox.checked = true;
+      const errorDiv = container.shadowRoot.querySelector('.quota-override-error');
+      assertElement(errorDiv, HTMLDivElement);
+      assert.strictEqual(errorDiv.textContent, '');
+
+      const editor = container.shadowRoot.querySelector('.quota-override-notification-editor');
+      assertElement(editor, HTMLInputElement);
+      editor.value = '9999999999999';
+      dispatchFocusOutEvent(editor);
+      await coordinator.done();
+      assert.strictEqual(errorDiv.textContent, 'Number must be smaller than 9,000,000,000,000');
     });
 
     it('also clears cookies on clear', () => {

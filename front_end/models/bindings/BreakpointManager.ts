@@ -913,14 +913,13 @@ export class ModelBreakpoint {
             condition,
           };
         });
-        newState = new Breakpoint.State(positions);
+        newState = positions.slice(0);  // Create a copy
       } else if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
         // Use this fallback if we do not have instrumentation breakpoints enabled yet. This currently makes
         // sure that v8 knows about the breakpoint and is able to restore it whenever the script is parsed.
         if (this.#breakpoint.currentState) {
           // Re-use position information from fallback but use up-to-date condition.
-          newState =
-              new Breakpoint.State(this.#breakpoint.currentState.positions.map(position => ({...position, condition})));
+          newState = this.#breakpoint.currentState.map(position => ({...position, condition}));
         } else {
           // TODO(bmeurer): This fallback doesn't make a whole lot of sense, we should
           // at least signal a warning to the developer that this #breakpoint wasn't
@@ -932,7 +931,7 @@ export class ModelBreakpoint {
             columnNumber,
             condition,
           };
-          newState = new Breakpoint.State([position]);
+          newState = [position];
         }
       }
     }
@@ -999,7 +998,7 @@ export class ModelBreakpoint {
     return DebuggerUpdateResult.OK;
   }
 
-  async #setBreakpointOnBackend({positions}: Breakpoint.State): Promise<{
+  async #setBreakpointOnBackend(positions: Breakpoint.State): Promise<{
     breakpointIds: Protocol.Debugger.BreakpointId[],
     locations: SDK.DebuggerModel.Location[],
     serverError: boolean,
@@ -1110,23 +1109,20 @@ export const enum BreakpointOrigin {
 }
 
 export namespace Breakpoint {
-  export class State {
-    positions: Position[];
 
-    constructor(positions: Position[]) {
-      this.positions = positions;
-    }
+  export type State = Position[];
+  export namespace State {
 
-    static equals(stateA?: State|null, stateB?: State|null): boolean {
+    export function equals(stateA?: State|null, stateB?: State|null): boolean {
       if (!stateA || !stateB) {
         return false;
       }
-      if (stateA.positions.length !== stateB.positions.length) {
+      if (stateA.length !== stateB.length) {
         return false;
       }
-      for (let i = 0; i < stateA.positions.length; i++) {
-        const positionA = stateA.positions[i];
-        const positionB = stateB.positions[i];
+      for (let i = 0; i < stateA.length; i++) {
+        const positionA = stateA[i];
+        const positionB = stateB[i];
         if (positionA.url !== positionB.url) {
           return false;
         }

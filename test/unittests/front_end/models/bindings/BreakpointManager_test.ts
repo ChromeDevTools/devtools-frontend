@@ -316,8 +316,8 @@ describeWithMockConnection('BreakpointManager', () => {
     // is available).
     await breakpointManager.restoreBreakpointsForScript(script);
     assertNotNullOrUndefined(modelBreakpoint.currentState);
-    assert.lengthOf(modelBreakpoint.currentState.positions, 1);
-    assert.strictEqual(modelBreakpoint.currentState.positions[0].url, URL);
+    assert.lengthOf(modelBreakpoint.currentState, 1);
+    assert.strictEqual(modelBreakpoint.currentState[0].url, URL);
 
     // Clean up.
     await breakpoint.remove(false);
@@ -361,7 +361,7 @@ describeWithMockConnection('BreakpointManager', () => {
     const result = await update;
     // Make sure that no error occurred.
     assert.isTrue(result === Bindings.BreakpointManager.DebuggerUpdateResult.OK);
-    assert.strictEqual(breakpoint.currentState?.positions[0]?.lineNumber, 13);
+    assert.strictEqual(breakpoint.currentState?.[0].lineNumber, 13);
     await breakpoint.remove(false);
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
   });

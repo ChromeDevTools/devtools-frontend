@@ -28,7 +28,6 @@
 
 .ignore-list-option devtools-icon {
   margin-bottom: -1px;
-  margin-left: 6px;
 }
 
 .ignore-list-option-group {
@@ -114,4 +113,8 @@
 
 .ignore-list.list-editing ~ .add-button {
   display: none;
+}
+
+.devtools-link:has(devtools-icon) {
+  margin-left: 6px;
 }

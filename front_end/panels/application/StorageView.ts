@@ -55,6 +55,10 @@ const UIStrings = {
    */
   clearSiteData: 'Clear site data',
   /**
+   * @description Annouce message when the "clear site data" task is complete
+   */
+  SiteDataCleared: 'Site data cleared',
+  /**
    * @description Category description in the Clear Storage section of the Storage View of the Application panel
    */
   application: 'Application',
@@ -419,6 +423,8 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       this.clearButton.textContent = label;
       this.clearButton.focus();
     }, 500);
+
+    UI.ARIAUtils.alert(i18nString(UIStrings.SiteDataCleared));
   }
 
   static clear(

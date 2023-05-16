@@ -206,16 +206,19 @@ export class DOMStorageItemsView extends StorageItemsView {
     const storageData = event.data;
     const childNode = this.dataGrid.rootNode().children.find(
         (child: DataGrid.DataGrid.DataGridNode<unknown>) => child.data.key === storageData.key);
-    if (!childNode || childNode.data.value === storageData.value) {
+    if (!childNode) {
       return;
     }
-
-    childNode.data.value = storageData.value;
-    childNode.refresh();
+    if (childNode.data.value !== storageData.value) {
+      childNode.data.value = storageData.value;
+      childNode.refresh();
+    }
     if (!childNode.selected) {
       return;
     }
-    void this.previewEntry(childNode);
+    if (this.previewValue !== storageData.value) {
+      void this.previewEntry(childNode);
+    }
     this.setCanDeleteSelected(true);
   }
 

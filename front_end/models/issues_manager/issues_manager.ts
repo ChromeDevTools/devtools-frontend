@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as AttributionReportingIssue from './AttributionReportingIssue.js';
+import * as CheckFormsIssuesTrigger from './CheckFormsIssuesTrigger.js';
 import * as ClientHintIssue from './ClientHintIssue.js';
 import * as ContentSecurityPolicyIssue from './ContentSecurityPolicyIssue.js';
 import * as ContrastCheckTrigger from './ContrastCheckTrigger.js';
@@ -26,6 +27,7 @@ import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 
 export {
   AttributionReportingIssue,
+  CheckFormsIssuesTrigger,
   ClientHintIssue,
   ContentSecurityPolicyIssue,
   ContrastCheckTrigger,

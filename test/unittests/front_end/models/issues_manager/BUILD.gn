@@ -7,6 +7,7 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("issues_manager") {
   testonly = true
   sources = [
+    "CheckFormsIssuesTrigger_test.ts",
     "IssueResolver_test.ts",
     "Issue_test.ts",
     "IssuesManager_test.ts",

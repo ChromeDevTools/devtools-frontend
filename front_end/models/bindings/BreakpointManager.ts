@@ -519,6 +519,15 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   #storageState!: BreakpointStorageState;
   #origin: BreakpointOrigin;
   isRemoved = false;
+  /**
+   * Fallback positions in case a target doesn't have a script where this breakpoint would fit.
+   * The `ModelBreakpoint` sends this optimistically to a target in case a matching script is
+   * loaded later.
+   *
+   * Since every `ModelBreakpoint` can read/write this variable, it's slightly arbitrary. In
+   * general `currentState` contains the state of the last `ModelBreakpoint` that attempted
+   * to update the breakpoint(s) in the backend.
+   */
   currentState: Breakpoint.State|null = null;
   readonly #modelBreakpoints: Map<SDK.DebuggerModel.DebuggerModel, ModelBreakpoint>;
 
@@ -815,6 +824,18 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   }
 }
 
+/**
+ * Represents a single `Breakpoint` for a specific target.
+ *
+ * The `BreakpointManager` unconditionally creates a `ModelBreakpoint` instance
+ * for each target since any target could load a matching script after the fact.
+ *
+ * Each `ModelBreakpoint` can represent multiple actual breakpoints in V8. E.g.
+ * inlining in WASM or multiple bundles containing the same utility function.
+ *
+ * This means each `Modelbreakpoint` represents 0 to n actual breakpoints in
+ * for it's specific target.
+ */
 export class ModelBreakpoint {
   #debuggerModel: SDK.DebuggerModel.DebuggerModel;
   #breakpoint: Breakpoint;
@@ -1095,6 +1116,13 @@ export class ModelBreakpoint {
   }
 }
 
+/**
+ * A concrete breakpoint position in a specific target. Each `ModelBreakpoint`
+ * consists of multiple of these.
+ *
+ * Note that a `Position` only denotes where we *want* to set a breakpoint, not
+ * where it was actually set by V8 after the fact.
+ */
 interface Position {
   url: Platform.DevToolsPath.UrlString;
   scriptHash: string;

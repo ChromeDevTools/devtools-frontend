@@ -105,13 +105,7 @@ export class PuppeteerConnectionHelper {
       browserPromise,
     ]);
 
-    // TODO: replace this with browser.pages() once the Puppeteer version is rolled.
-    const pages =
-        await Promise.all(browser.browserContexts()
-                              .map(ctx => ctx.targets())
-                              .flat()
-                              .filter(target => target.type() === 'page' || target.url().startsWith('devtools://'))
-                              .map(target => target.page()));
+    const pages = await browser.pages();
     const page =
         pages.filter((p): p is puppeteer.Page => p !== null).find(p => p.mainFrame()._id === mainFrameId) || null;
 

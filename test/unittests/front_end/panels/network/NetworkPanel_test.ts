@@ -5,9 +5,11 @@
 import * as Common from '../../../../../front_end/core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Logs from '../../../../../front_end/models/logs/logs.js';
 import * as Network from '../../../../../front_end/panels/network/network.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import {assertElement, assertShadowRoot} from '../../helpers/DOMHelpers.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
@@ -19,8 +21,11 @@ describeWithMockConnection('NetworkPanel', () => {
 
   beforeEach(async () => {
     UI.ActionRegistration.maybeRemoveActionExtension('network.toggle-recording');
+    UI.ActionRegistration.maybeRemoveActionExtension('network.clear');
     UI.ActionRegistration.registerActionExtension(
         {actionId: 'network.toggle-recording', category: UI.ActionRegistration.ActionCategory.NETWORK});
+    UI.ActionRegistration.registerActionExtension(
+        {actionId: 'network.clear', category: UI.ActionRegistration.ActionCategory.NETWORK});
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
 
@@ -83,4 +88,46 @@ describeWithMockConnection('NetworkPanel', () => {
 
   describe('in scope', tracingTests(true));
   describe('out of scpe', tracingTests(false));
+});
+
+describeWithMockConnection('NetworkPanel', () => {
+  let networkPanel: Network.NetworkPanel.NetworkPanel;
+
+  beforeEach(async () => {
+    UI.ActionRegistration.maybeRemoveActionExtension('network.toggle-recording');
+    UI.ActionRegistration.maybeRemoveActionExtension('network.clear');
+    await import('../../../../../front_end/panels/network/network-meta.js');
+    createTarget();
+    const dummyStorage = new Common.Settings.SettingsStorage({});
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: dummyStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+    });
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+
+    networkPanel = Network.NetworkPanel.NetworkPanel.instance({forceNew: true, displayScreenshotDelay: 0});
+    networkPanel.markAsRoot();
+    networkPanel.show(document.body);
+    await coordinator.done();
+  });
+
+  afterEach(async () => {
+    await coordinator.done();
+    networkPanel.detach();
+  });
+
+  it('clears network log on button click', async () => {
+    const networkLogResetSpy = sinon.spy(Logs.NetworkLog.NetworkLog.instance(), 'reset');
+    const toolbar = networkPanel.element.querySelector('.network-toolbar-container .toolbar');
+    assertElement(toolbar, HTMLDivElement);
+    assertShadowRoot(toolbar.shadowRoot);
+    const button = toolbar.shadowRoot.querySelector('[aria-label="Clear network log"]');
+    assertElement(button, HTMLButtonElement);
+    button.click();
+    await coordinator.done({waitForWork: true});
+    assert.isTrue(networkLogResetSpy.called);
+  });
 });

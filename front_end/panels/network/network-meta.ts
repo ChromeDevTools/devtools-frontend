@@ -108,6 +108,10 @@ const UIStrings = {
    *@description Title of a setting under the Network category that can be invoked through the Command Menu
    */
   dontGroupNetworkLogItemsByFrame: 'Don\'t group network log items by frame',
+  /**
+   *@description Title of a button for clearing the network log
+   */
+  clear: 'Clear network log',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/network-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -215,6 +219,29 @@ UI.ActionRegistration.registerActionExtension({
     },
     {
       shortcut: 'Meta+E',
+      platform: UI.ActionRegistration.Platforms.Mac,
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'network.clear',
+  category: UI.ActionRegistration.ActionCategory.NETWORK,
+  title: i18nLazyString(UIStrings.clear),
+  iconClass: UI.ActionRegistration.IconClass.CLEAR,
+  async loadActionDelegate() {
+    const Network = await loadNetworkModule();
+    return Network.NetworkPanel.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
+  },
+  bindings: [
+    {
+      shortcut: 'Ctrl+L',
+    },
+    {
+      shortcut: 'Meta+K',
       platform: UI.ActionRegistration.Platforms.Mac,
     },
   ],

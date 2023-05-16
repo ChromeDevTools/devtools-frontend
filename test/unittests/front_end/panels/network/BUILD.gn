@@ -20,6 +20,7 @@ ts_library("network") {
 
   deps = [
     "../../../../../front_end/panels/network:bundle",
+    "../../../../../front_end/panels/network:meta",
     "../../helpers",
   ]
 }

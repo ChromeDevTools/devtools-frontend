@@ -68,10 +68,6 @@ const UIStrings = {
    */
   search: 'Search',
   /**
-   *@description Text to clear content
-   */
-  clear: 'Clear',
-  /**
    *@description Tooltip text that appears on the setting to preserve log when hovering over the item
    */
   doNotClearLogOnPageReload: 'Do not clear log on page reload / navigation',
@@ -395,10 +391,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       }
     }
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear');
-    clearButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.Click, () => Logs.NetworkLog.NetworkLog.instance().reset(true), this);
-    this.panelToolbar.appendToolbarItem(clearButton);
+    this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(
+        (UI.ActionRegistry.ActionRegistry.instance().action('network.clear') as UI.ActionRegistration.Action)));
     this.panelToolbar.appendSeparator();
 
     this.panelToolbar.appendToolbarItem(this.filterBar.filterButton());
@@ -996,14 +990,19 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       }
       case 'network.search': {
         const selection = UI.InspectorView.InspectorView.instance().element.window().getSelection();
-        if (selection) {
-          let queryCandidate = '';
-          if (selection.rangeCount) {
-            queryCandidate = selection.toString().replace(/\r?\n.*/, '');
-          }
-          void SearchNetworkView.openSearch(queryCandidate);
-          return true;
+        if (!selection) {
+          return false;
         }
+        let queryCandidate = '';
+        if (selection.rangeCount) {
+          queryCandidate = selection.toString().replace(/\r?\n.*/, '');
+        }
+        void SearchNetworkView.openSearch(queryCandidate);
+        return true;
+      }
+      case 'network.clear': {
+        Logs.NetworkLog.NetworkLog.instance().reset(true);
+        return true;
       }
     }
     return false;

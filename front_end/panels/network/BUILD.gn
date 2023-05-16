@@ -138,5 +138,8 @@ devtools_entrypoint("meta") {
     "./forward:bundle",
   ]
 
-  visibility = [ "../../entrypoints/*" ]
+  visibility = [
+    "../../../test/unittests/front_end/panels/network/*",
+    "../../entrypoints/*",
+  ]
 }

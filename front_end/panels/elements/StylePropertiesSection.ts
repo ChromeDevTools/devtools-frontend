@@ -152,6 +152,9 @@ export class StylePropertiesSection {
   nextEditorTriggerButtonIdx = 1;
   private sectionIdx = 0;
 
+  // Used to keep track of Specificity Information
+  static #nodeElementToSpecificity: WeakMap<Element, Protocol.CSS.Specificity> = new WeakMap();
+
   constructor(
       parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, computedStyles: Map<string, string>|null,
@@ -1026,9 +1029,8 @@ export class StylePropertiesSection {
 
     this.queryListElement.classList.toggle('query-matches', this.matchedStyles.queryMatches(this.styleInternal));
 
-    const selectorTexts = rule.selectors.map(selector => selector.text);
     const matchingSelectorIndexes = this.matchedStyles.getMatchingSelectors(rule);
-    const matchingSelectors = (new Array(selectorTexts.length).fill(false) as boolean[]);
+    const matchingSelectors = (new Array(rule.selectors.length).fill(false) as boolean[]);
     for (const matchingIndex of matchingSelectorIndexes) {
       matchingSelectors[matchingIndex] = true;
     }
@@ -1038,15 +1040,19 @@ export class StylePropertiesSection {
     }
 
     const fragment = StylePropertiesSection.renderSelectors(
-        selectorTexts, matchingSelectors, this.elementToSelectorIndex, rule.nestingSelectors);
+        rule.selectors, matchingSelectors, this.elementToSelectorIndex, rule.nestingSelectors);
     this.selectorElement.removeChildren();
     this.selectorElement.appendChild(fragment);
     this.markSelectorHighlights();
   }
 
+  static getSpecificityStoredForNodeElement(element: Element): Protocol.CSS.Specificity|undefined {
+    return StylePropertiesSection.#nodeElementToSpecificity.get(element);
+  }
+
   static renderSelectors(
-      selectors: string[], matchingSelectors: boolean[], elementToSelectorIndex: WeakMap<Element, number>,
-      nestingSelectors?: string[]): DocumentFragment {
+      selectors: {text: string, specificity: Protocol.CSS.Specificity|undefined}[], matchingSelectors: boolean[],
+      elementToSelectorIndex: WeakMap<Element, number>, nestingSelectors?: string[]): DocumentFragment {
     const fragment = document.createDocumentFragment();
     let hasNestingSymbol = false;
     for (const [i, selector] of selectors.entries()) {
@@ -1056,11 +1062,14 @@ export class StylePropertiesSection {
       const selectorElement = document.createElement('span');
       selectorElement.classList.add('simple-selector');
       selectorElement.classList.toggle('selector-matches', matchingSelectors[i]);
+      if (selector.specificity) {
+        StylePropertiesSection.#nodeElementToSpecificity.set(selectorElement, selector.specificity);
+      }
       elementToSelectorIndex.set(selectorElement, i);
 
-      if (nestingSelectors && selector.includes('&')) {
+      if (nestingSelectors && selector.text.includes('&')) {
         hasNestingSymbol = true;
-        const segments = selector.split('&');
+        const segments = selector.text.split('&');
         for (const [segmentIndex, segment] of segments.entries()) {
           if (segment) {
             selectorElement.append(segment);
@@ -1070,7 +1079,7 @@ export class StylePropertiesSection {
           }
         }
       } else {
-        selectorElement.textContent = selectors[i];
+        selectorElement.textContent = selectors[i].text;
       }
 
       fragment.append(selectorElement);

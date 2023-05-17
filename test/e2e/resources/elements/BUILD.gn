@@ -24,6 +24,7 @@ copy_to_gen("elements") {
     "css-override.html",
     "css-scopes.html",
     "css-shorthand-override.html",
+    "css-specificity.html",
     "css-styles-variables.html",
     "css-supports.html",
     "css-variables-many.html",

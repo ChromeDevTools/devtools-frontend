@@ -171,6 +171,11 @@ const UIStrings = {
    *@description Tooltip text for the link in the sidebar pane layer separators that reveals the layer in the layer tree view.
    */
   clickToRevealLayer: 'Click to reveal layer in layer tree',
+  /**
+   *@description Text displayed in tooltip that shows specificity information.
+   *@example {(0,0,1)} PH1
+   */
+  specificity: 'Specificity: {PH1}',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylesSidebarPane.ts', UIStrings);
@@ -373,6 +378,22 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
             popover.setIgnoreLeftMargin(true);
             const element = document.createElement('span');
             element.textContent = (hoveredNode as HTMLElement).dataset.nestingSelectors || '';
+            popover.contentElement.appendChild(element);
+            return true;
+          },
+        };
+      }
+
+      if (hoveredNode.matches('.simple-selector')) {
+        const specificity = StylePropertiesSection.getSpecificityStoredForNodeElement(hoveredNode);
+        return {
+          box: hoveredNode.boxInWindow(),
+          show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+            popover.setIgnoreLeftMargin(true);
+            const element = document.createElement('span');
+            element.textContent = i18nString(
+                UIStrings.specificity,
+                {PH1: specificity ? `(${specificity.a},${specificity.b},${specificity.c})` : '(?,?,?)'});
             popover.contentElement.appendChild(element);
             return true;
           },

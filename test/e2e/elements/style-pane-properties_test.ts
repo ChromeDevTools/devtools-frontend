@@ -13,6 +13,7 @@ import {
   waitFor,
   clickElement,
   waitForFunction,
+  hover,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -1070,6 +1071,27 @@ describe('The Styles pane', async () => {
     const scopeQuery = await waitFor('.query.editable', rule1PropertiesSection);
     const scopeQueryText = await scopeQuery.evaluate(node => (node as HTMLElement).innerText as string);
     assert.deepEqual(scopeQueryText, '@scope (body)', 'incorrectly displayed @supports rule');
+  });
+
+  it('shows an infobox with specificity information when hovering a selector', async () => {
+    await goToResourceAndWaitForStyleSection('elements/css-specificity.html');
+
+    // Select the child that has a style rule attached
+    await waitForAndClickTreeElementWithPartialText('properties-to-inspect');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
+
+    // Hover the selector in the Styles pane
+    const testElementRule = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR);
+    await hover('.selector-matches', {root: testElementRule});
+
+    // Check if an infobox is shown or not. If not, this will throw
+    const infobox = await waitFor('body > .vbox.flex-auto');
+
+    // Make sure it’s the specificity infobox
+    const innerText = await infobox.evaluate(node => {
+      return node.shadowRoot?.querySelector('span')?.innerText;
+    });
+    assert.strictEqual(innerText?.toLowerCase().startsWith('specificity'), true);
   });
 
   describe('Editing', () => {

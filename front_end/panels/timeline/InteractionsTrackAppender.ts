@@ -5,9 +5,6 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {
-  EntryType,
-} from './TimelineFlameChartDataProvider.js';
-import {
   type CompatibilityTracksAppender,
   type TrackAppender,
   type HighlightedEntryInfo,
@@ -15,7 +12,7 @@ import {
 } from './CompatibilityTracksAppender.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Common from '../../core/common/common.js';
-import {buildGroupStyle, buildTrackHeader, getAsyncEventLevel, getFormattedTime} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
   /**
@@ -37,17 +34,10 @@ export class InteractionsTrackAppender implements TrackAppender {
   #compatibilityBuilder: CompatibilityTracksAppender;
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
-  // TODO(crbug.com/1416533)
-  // This is used only for compatibility with the legacy flame chart
-  // architecture of the panel. Once all tracks have been migrated to
-  // use the new engine and flame chart architecture, the reference can
-  // be removed.
-  #legacyEntryTypeByLevel: EntryType[];
 
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      legacyEntryTypeByLevel: EntryType[]) {
+      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = new Common.Color.Generator(
         {
@@ -58,7 +48,6 @@ export class InteractionsTrackAppender implements TrackAppender {
         {min: 70, max: 100, count: 6}, 50, 0.7);
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
-    this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
   }
 
   /**
@@ -104,32 +93,20 @@ export class InteractionsTrackAppender implements TrackAppender {
    * @returns the next level after the last occupied by the appended
    * interactions (the first available level to append more data).
    */
-
   #appendInteractionsAtLevel(trackStartLevel: number): number {
     const interactions = this.#traceParsedData.UserInteractions.interactionEventsWithNoNesting;
-    const lastUsedTimeByLevel: number[] = [];
+    const newLevel = this.#compatibilityBuilder.appendAsyncEventsAtLevel(interactions, trackStartLevel, this);
     for (let i = 0; i < interactions.length; ++i) {
-      const event = interactions[i];
-      const level = getAsyncEventLevel(event, lastUsedTimeByLevel);
-      this.#appendEventAtLevel(event, trackStartLevel + level);
+      const eventDurationMicroSeconds = interactions[i].dur || TraceEngine.Types.Timing.MicroSeconds(0);
+      if (eventDurationMicroSeconds <= LONG_INTERACTION_THRESHOLD) {
+        continue;
+      }
+      const index = this.#compatibilityBuilder.indexForEvent(interactions[i]);
+      if (index !== undefined) {
+        this.#addCandyStripingForLongInteraction(index);
+      }
     }
-    this.#legacyEntryTypeByLevel.length = trackStartLevel + lastUsedTimeByLevel.length;
-    // Set the entry type to TrackAppender for all the levels occupied by the appended timings.
-    this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, trackStartLevel);
-    return trackStartLevel + lastUsedTimeByLevel.length;
-  }
-
-  /**
-   * Adds an event to the flame chart data at a defined level.
-   * @returns the position occupied by the new event in the entryData
-   * array, which contains all the events in the timeline.
-   */
-  #appendEventAtLevel(syntheticEvent: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, level: number): void {
-    const index = this.#compatibilityBuilder.appendEventAtLevel(syntheticEvent, level, this);
-    const eventDurationMicroSeconds = syntheticEvent.dur || TraceEngine.Types.Timing.MicroSeconds(0);
-    if (eventDurationMicroSeconds > LONG_INTERACTION_THRESHOLD) {
-      this.#addCandyStripingForLongInteraction(index);
-    }
+    return newLevel;
   }
 
   #addCandyStripingForLongInteraction(eventIndex: number): void {

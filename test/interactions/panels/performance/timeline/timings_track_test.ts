@@ -10,9 +10,16 @@ import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/
 describe('Timings track', () => {
   preloadForCodeCoverage('performance_panel/track_example.html');
 
-  itScreenshot('renders the timings track correctly', async () => {
-    await loadComponentDocExample('performance_panel/track_example.html?track=Timings&fileName=timings-track');
+  itScreenshot('renders the expanded timings track correctly', async () => {
+    await loadComponentDocExample(
+        'performance_panel/track_example.html?track=Timings&fileName=timings-track&expanded=true');
     const flameChart = await waitFor('.flame-chart-main-pane');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/timings_track.png', 3);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/timings_track_expanded.png', 3);
+  });
+  itScreenshot('renders the collapsed timings track correctly', async () => {
+    await loadComponentDocExample(
+        'performance_panel/track_example.html?track=Timings&fileName=timings-track&expanded=false');
+    const flameChart = await waitFor('.flame-chart-main-pane');
+    await assertElementScreenshotUnchanged(flameChart, 'performance/timings_track_collapsed.png', 3);
   });
 });

@@ -490,8 +490,9 @@ export function createElementDescription(elementInfo: ElementInfo, colorFormat: 
 
   const fontFamily = style['font-family'];
   const fontSize = style['font-size'];
-  if (fontFamily && fontSize !== '0px') {
-    addTextRow('Font', `${fontSize} ${fontFamily}`);
+  const fontWeight = style['font-weight'];
+  if (fontFamily && fontWeight && fontSize !== '0px') {
+    addTextRow('Font', `${fontSize} ${fontWeight} ${fontFamily}`);
   }
 
   const bgColor = style['background-color'];

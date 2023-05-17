@@ -2818,6 +2818,36 @@
                             "description": "Value range in the underlying resource (if available).",
                             "optional": true,
                             "$ref": "SourceRange"
+                        },
+                        {
+                            "name": "specificity",
+                            "description": "Specificity of the selector.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "Specificity"
+                        }
+                    ]
+                },
+                {
+                    "id": "Specificity",
+                    "description": "Specificity:\nhttps://drafts.csswg.org/selectors/#specificity-rules",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "a",
+                            "description": "The a component, which represents the number of ID selectors.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "b",
+                            "description": "The b component, which represents the number of class selectors, attributes selectors, and\npseudo-classes.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "c",
+                            "description": "The c component, which represents the number of type selectors and pseudo-elements.",
+                            "type": "integer"
                         }
                     ]
                 },

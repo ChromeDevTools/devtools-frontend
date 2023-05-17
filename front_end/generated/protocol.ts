@@ -1867,6 +1867,30 @@ export namespace CSS {
      * Value range in the underlying resource (if available).
      */
     range?: SourceRange;
+    /**
+     * Specificity of the selector.
+     */
+    specificity?: Specificity;
+  }
+
+  /**
+   * Specificity:
+   * https://drafts.csswg.org/selectors/#specificity-rules
+   */
+  export interface Specificity {
+    /**
+     * The a component, which represents the number of ID selectors.
+     */
+    a: integer;
+    /**
+     * The b component, which represents the number of class selectors, attributes selectors, and
+     * pseudo-classes.
+     */
+    b: integer;
+    /**
+     * The c component, which represents the number of type selectors and pseudo-elements.
+     */
+    c: integer;
   }
 
   /**

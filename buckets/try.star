@@ -29,11 +29,17 @@ luci.bucket(
 
 try_builders = []
 
-def try_builder(**kwargs):
+def try_builder(properties = None, **kwargs):
+    properties = properties or {}
+    properties["$build/reclient"] = {
+        "instance": "rbe-chromium-untrusted",
+        "metrics_project": "chromium-reclient-metrics",
+    }
     builder(
         bucket = BUCKET_NAME,
         builder_group = "tryserver.devtools-frontend",
         service_account = SERVICE_ACCOUNT,
+        properties = properties,
         **kwargs
     )
     try_builders.append(kwargs["name"])

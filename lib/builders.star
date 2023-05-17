@@ -24,13 +24,6 @@ goma_rbe_prod_default = {
     },
 }
 
-reclient_prod_default = {
-    "$build/reclient": {
-        "instance": "rbe-chromium-trusted",
-        "metrics_project": "chromium-reclient-metrics",
-    },
-}
-
 acls = struct(
     readers = acl.entry(
         roles = acl.BUILDBUCKET_READER,
@@ -86,7 +79,6 @@ def builder(
     if builder_group:
         properties.update(builder_group = builder_group)
     properties.update(goma_rbe_prod_default)
-    properties.update(reclient_prod_default)
     properties["$recipe_engine/isolated"] = {
         "server": "https://isolateserver.appspot.com",
     }
@@ -201,7 +193,10 @@ def generate_ci_configs(configurations, builders):
             category = kwargs.pop("console_category")
             properties = kwargs.pop("properties")
             properties.update(goma_rbe_prod_default)
-            properties.update(reclient_prod_default)
+            properties["$build/reclient"] = {
+                "instance": "rbe-chromium-trusted",
+                "metrics_project": "chromium-reclient-metrics",
+            }
             builder(
                 bucket = "ci",
                 builder_group = c.builder_group,

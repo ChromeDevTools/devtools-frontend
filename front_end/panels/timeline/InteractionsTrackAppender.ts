@@ -95,7 +95,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    */
   #appendInteractionsAtLevel(trackStartLevel: number): number {
     const interactions = this.#traceParsedData.UserInteractions.interactionEventsWithNoNesting;
-    const newLevel = this.#compatibilityBuilder.appendAsyncEventsAtLevel(interactions, trackStartLevel, this);
+    const newLevel = this.#compatibilityBuilder.appendEventsAtLevel(interactions, trackStartLevel, this);
     for (let i = 0; i < interactions.length; ++i) {
       const eventDurationMicroSeconds = interactions[i].dur || TraceEngine.Types.Timing.MicroSeconds(0);
       if (eventDurationMicroSeconds <= LONG_INTERACTION_THRESHOLD) {

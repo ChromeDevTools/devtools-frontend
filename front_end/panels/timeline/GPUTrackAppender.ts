@@ -50,7 +50,7 @@ export class GPUTrackAppender implements TrackAppender {
       return currentLevel;
     }
     this.#appendTrackHeaderAtLevel(currentLevel, expanded);
-    return this.#compatibilityBuilder.appendSyncEventsAtLevel(gpuEvents, currentLevel, this);
+    return this.#compatibilityBuilder.appendEventsAtLevel(gpuEvents, currentLevel, this);
   }
 
   /**

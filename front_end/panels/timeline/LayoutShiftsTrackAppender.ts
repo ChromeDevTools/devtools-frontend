@@ -82,7 +82,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    */
   #appendLayoutShiftsAtLevel(currentLevel: number): number {
     const allLayoutShifts = this.#traceParsedData.LayoutShifts.clusters.flatMap(cluster => cluster.events);
-    const newLevel = this.#compatibilityBuilder.appendAsyncEventsAtLevel(allLayoutShifts, currentLevel, this);
+    const newLevel = this.#compatibilityBuilder.appendEventsAtLevel(allLayoutShifts, currentLevel, this);
 
     // Bit of a hack: LayoutShifts are instant events, so have no duration. But
     // OPP doesn't do well at making tiny events easy to spot and click. So we

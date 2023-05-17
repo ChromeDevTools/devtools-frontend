@@ -88,12 +88,12 @@ export function getFormattedTime(
 }
 
 /**
- * Returns the first level that is available for an async event.
- * @param event the async event.
+ * Returns the first level that is available for an event.
+ * @param event the event.
  * @param lastUsedTimeByLevel the array that stores the last timestamp that is used by a level.
  * @returns the first available level for the event.
  */
-export function getAsyncEventLevel(
+export function getEventLevel(
     event: TraceEngine.Types.TraceEvents.TraceEventData, lastUsedTimeByLevel: number[]): number {
   let level = 0;
   const startTime = event.ts;
@@ -101,35 +101,10 @@ export function getAsyncEventLevel(
   // Look vertically for the first level where this event fits,
   // that is, where it wouldn't overlap with other events.
   while (level < lastUsedTimeByLevel.length && startTime < lastUsedTimeByLevel[level]) {
-    // For async event, we look each level from beginning, and see if start timestamp of this
+    // For each event, we look each level from top, and see if start timestamp of this
     // event is used by current level already. If yes, we will go to check next level.
     ++level;
   }
   lastUsedTimeByLevel[level] = endTime;
-  return level;
-}
-
-/**
- * Returns the level that the sync event should be appended at.
- * @param event the sync event.
- * @param openEvents the array of all open events. An open event means an event that still has possibility to have
- * child events.
- * @returns the level to append this event.
- */
-export function getSyncEventLevel(
-    event: TraceEngine.Types.TraceEvents.TraceEventData,
-    openEvents: TraceEngine.Types.TraceEvents.TraceEventData[]): number {
-  while (openEvents.length) {
-    const lastOpenEvent = openEvents[openEvents.length - 1];
-    const lastOpenEventEndTime = lastOpenEvent.ts + (lastOpenEvent.dur || 0);
-    if (lastOpenEventEndTime <= event.ts) {
-      openEvents.pop();
-    } else {
-      break;
-    }
-  }
-  const level = openEvents.length;
-  openEvents.push(event);
-
   return level;
 }

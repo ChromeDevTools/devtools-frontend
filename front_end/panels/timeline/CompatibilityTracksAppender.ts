@@ -15,7 +15,7 @@ import {TimingsTrackAppender} from './TimingsTrackAppender.js';
 import {InteractionsTrackAppender} from './InteractionsTrackAppender.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
 import {LayoutShiftsTrackAppender} from './LayoutShiftsTrackAppender.js';
-import {getAsyncEventLevel, getSyncEventLevel} from './AppenderUtils.js';
+import {getEventLevel} from './AppenderUtils.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export type HighlightedEntryInfo = {
@@ -348,44 +348,18 @@ export class CompatibilityTracksAppender {
   }
 
   /**
-   * Adds into the flame chart data the trace events corresponding to sync
-   * events. The events should be taken straight from the trace handlers.
+   * Adds into the flame chart data a list of trace events.
    * @param events the trace events that will be appended to the flame chart.
+   * The events should be taken straight from the trace handlers. The handlers
+   * should sort the events by start time, and the parent event is before the
+   * child.
    * @param trackStartLevel the flame chart level from which the events will
    * be appended.
    * @param appender the track that the trace events belong to.
    * @returns the next level after the last occupied by the appended these
    * trace events (the first available level to append next track).
    */
-  appendSyncEventsAtLevel(
-      events: readonly TraceEngine.Types.TraceEvents.TraceEventData[], trackStartLevel: number,
-      appender: TrackAppender): number {
-    const openEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
-    let maxStackDepth = 0;
-    for (let i = 0; i < events.length; ++i) {
-      const event = events[i];
-      const level = getSyncEventLevel(event, openEvents);
-      maxStackDepth = Math.max(maxStackDepth, level + 1);
-      this.appendEventAtLevel(event, trackStartLevel + level, appender);
-    }
-
-    this.#legacyEntryTypeByLevel.length = trackStartLevel + maxStackDepth;
-    this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, trackStartLevel);
-
-    return trackStartLevel + maxStackDepth;
-  }
-
-  /**
-   * Adds into the flame chart data the trace events corresponding to async
-   * events. The events should be taken straight from the trace handlers.
-   * @param events the trace events that will be appended to the flame chart.
-   * @param trackStartLevel the flame chart level from which the events will
-   * be appended.
-   * @param appender the track that the trace events belong to.
-   * @returns the next level after the last occupied by the appended these
-   * trace events (the first available level to append next track).
-   */
-  appendAsyncEventsAtLevel(
+  appendEventsAtLevel(
       events: readonly TraceEngine.Types.TraceEvents.TraceEventData[], trackStartLevel: number,
       appender: TrackAppender): number {
     const lastUsedTimeByLevel: number[] = [];
@@ -401,7 +375,7 @@ export class CompatibilityTracksAppender {
         continue;
       }
 
-      const level = getAsyncEventLevel(event, lastUsedTimeByLevel);
+      const level = getEventLevel(event, lastUsedTimeByLevel);
       this.appendEventAtLevel(event, trackStartLevel + level, appender);
     }
 

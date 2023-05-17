@@ -76,12 +76,26 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.#breakpointsForHomeUISourceCode = new Map();
     this.#breakpointByStorageId = new Map();
 
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY)) {
+      this.storage.mute();
+      this.#setInitialBreakpoints();
+      this.storage.unmute();
+    }
+
     this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemoved, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
 
     this.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
     this.#updateBindingsCallbacks = [];
+  }
+
+  #setInitialBreakpoints(): void {
+    for (const storageState of this.storage.breakpoints.values()) {
+      const storageId = Storage.computeId(storageState);
+      const breakpoint = new Breakpoint(this, null, storageState, BreakpointOrigin.OTHER);
+      this.#breakpointByStorageId.set(storageId, breakpoint);
+    }
   }
 
   static instance(opts: {
@@ -527,12 +541,16 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
    * Since every `ModelBreakpoint` can read/write this variable, it's slightly arbitrary. In
    * general `currentState` contains the state of the last `ModelBreakpoint` that attempted
    * to update the breakpoint(s) in the backend.
+   *
+   * The current state gets populated from the storage if/when we set all breakpoints eagerly
+   * on debugger startup so that the backend sets the breakpoints as soon as possible
+   * (crbug.com/1442232, under a flag).
    */
   currentState: Breakpoint.State|null = null;
   readonly #modelBreakpoints: Map<SDK.DebuggerModel.DebuggerModel, ModelBreakpoint>;
 
   constructor(
-      breakpointManager: BreakpointManager, primaryUISourceCode: Workspace.UISourceCode.UISourceCode,
+      breakpointManager: BreakpointManager, primaryUISourceCode: Workspace.UISourceCode.UISourceCode|null,
       storageState: BreakpointStorageState, origin: BreakpointOrigin) {
     this.breakpointManager = breakpointManager;
     this.#origin = origin;
@@ -543,8 +561,21 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
 
     this.#modelBreakpoints = new Map();
     this.updateState(storageState);
-    console.assert(primaryUISourceCode.contentType().name() === storageState.resourceTypeName);
-    this.addUISourceCode(primaryUISourceCode);
+    if (primaryUISourceCode) {
+      console.assert(primaryUISourceCode.contentType().name() === storageState.resourceTypeName);
+      this.addUISourceCode(primaryUISourceCode);
+    } else if (storageState.resourceTypeName === Common.ResourceType.resourceTypes.Script.name()) {
+      // If we are setting the breakpoint from storage (i.e., primaryUISourceCode is null),
+      // and the location is not source mapped, then set the last known state to
+      // the state from storage so that the breakpoints are pre-set into the backend eagerly.
+      this.currentState = [{
+        url: storageState.url,
+        lineNumber: storageState.lineNumber,
+        columnNumber: storageState.columnNumber,
+        scriptHash: '',
+        condition: this.backendCondition(),
+      }];
+    }
 
     this.breakpointManager.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
   }

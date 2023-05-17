@@ -312,6 +312,7 @@ export enum ExperimentName {
   OUTERMOST_TARGET_SELECTOR = 'outermostTargetSelector',
   JS_PROFILER_TEMP_ENABLE = 'jsProfilerTemporarilyEnable',
   HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlightErrorsElementsPanel',
+  SET_ALL_BREAKPOINTS_EAGERLY = 'setAllBreakpointsEagerly',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

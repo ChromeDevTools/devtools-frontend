@@ -83,9 +83,11 @@ describeWithMockConnection('BreakpointManager', () => {
   let backend: MockProtocolBackend;
   let breakpointManager: Bindings.BreakpointManager.BreakpointManager;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+  let targetManager: SDK.TargetManager.TargetManager;
+  let workspace: Workspace.Workspace.WorkspaceImpl;
   beforeEach(async () => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
+    workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    targetManager = SDK.TargetManager.TargetManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
     debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
@@ -579,6 +581,41 @@ describeWithMockConnection('BreakpointManager', () => {
     assert.strictEqual(1, boundLocations.length);
     assert.strictEqual(1, boundLocations[0].uiLocation.lineNumber);
     assert.strictEqual(5, boundLocations[0].uiLocation.columnNumber);
+  });
+
+  it('eagarely restores breakpoints in a new target', async () => {
+    // Remove the default target so that we can simulate starting the debugger afresh.
+    targetManager.removeTarget(target);
+
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
+
+    // Set the breakpoint storage to contain a breakpoint and re-initialize
+    // the breakpoint manager from that storage. This should create a breakpoint instance
+    // in the breakpoint manager.
+    const url = 'http://example.com/script.js' as Platform.DevToolsPath.UrlString;
+    const lineNumber = 1;
+    const breakpoints: Bindings.BreakpointManager.BreakpointStorageState[] = [{
+      url,
+      resourceTypeName: 'script',
+      lineNumber,
+      condition: '' as Bindings.BreakpointManager.UserCondition,
+      enabled: true,
+      isLogpoint: false,
+    }];
+    Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints).set(breakpoints);
+    Bindings.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+
+    // Create a new target and make sure that the backend receives setBreakpointByUrl request
+    // from breakpoint manager.
+    const breakpointSetPromise = backend.responderToBreakpointByUrlRequest(url, lineNumber)({
+      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+      locations: [],
+    });
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(createTarget());
+    await breakpointSetPromise;
+
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
   });
 
   describe('with instrumentation breakpoints turned on', () => {
@@ -1565,7 +1602,7 @@ describeWithMockConnection('BreakpointManager storage', () => {
         isLogpoint: false,
       });
     }
-    Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints);
+    Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints).set(breakpoints);
 
     assert.isFalse(recordedMetricsContain(
         Host.InspectorFrontendHostAPI.EnumeratedHistogram.BreakpointsRestoredFromStorageCount,

@@ -5,7 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import * as UI from '../../../ui/legacy/legacy.js';
+import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -23,7 +23,12 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/WebBundleInfoView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class WebBundleInfoView extends UI.Widget.VBox {
+
+export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
+  static readonly litTagName = LitHtml.literal`devtools-web-bundle-info`;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #webBundleInfo: Readonly<SDK.NetworkRequest.WebBundleInfo>;
+  #webBundleName: Readonly<string>;
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
     const webBundleInfo = request.webBundleInfo();
@@ -31,28 +36,15 @@ export class WebBundleInfoView extends UI.Widget.VBox {
       throw new Error('Trying to render a Web Bundle info without providing data');
     }
 
-    const webBundleInfoElement = new WebBundleInfoElement(webBundleInfo, request.parsedURL.lastPathComponent);
-    this.contentElement.appendChild(webBundleInfoElement);
-    webBundleInfoElement.render();
-  }
-}
-
-export class WebBundleInfoElement extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-web-bundle-info`;
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #webBundleInfo: Readonly<SDK.NetworkRequest.WebBundleInfo>;
-  #webBundleName: Readonly<string>;
-  constructor(webBundleInfo: SDK.NetworkRequest.WebBundleInfo, webBundleName: string) {
-    super();
     this.#webBundleInfo = webBundleInfo;
-    this.#webBundleName = webBundleName;
+    this.#webBundleName = request.parsedURL.lastPathComponent;
   }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [webBundleInfoViewStyles];
   }
 
-  render(): void {
+  override async render(): Promise<void> {
     const rows = this.#webBundleInfo.resourceUrls?.map(url => {
       const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) || null;
       const resourceType = Common.ResourceType.ResourceType.fromMimeTypeOverride(mimeType) ||
@@ -110,11 +102,11 @@ export class WebBundleInfoElement extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('devtools-web-bundle-info', WebBundleInfoElement);
+ComponentHelpers.CustomElements.defineComponent('devtools-web-bundle-info', WebBundleInfoView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
-    'devtools-web-bundle-info': WebBundleInfoElement;
+    'devtools-web-bundle-info': WebBundleInfoView;
   }
 }

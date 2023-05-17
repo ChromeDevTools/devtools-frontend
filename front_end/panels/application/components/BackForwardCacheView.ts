@@ -9,7 +9,8 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Root from '../../../core/root/root.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
-import * as UI from '../../../ui/legacy/legacy.js';
+import type * as UI from '../../../ui/legacy/legacy.js';
+import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -143,23 +144,27 @@ const enum ScreenStatusType {
   Result = 'Result',
 }
 
-export class BackForwardCacheViewWrapper extends UI.ThrottledWidget.ThrottledWidget {
-  readonly #bfcacheView: BackForwardCacheView;
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-  constructor(bfcacheView: BackForwardCacheView) {
-    super(true, 1000);
-    this.#bfcacheView = bfcacheView;
+export class BackForwardCacheView extends
+    LegacyWrapper.LegacyWrapper.WrappableComponent<UI.ThrottledWidget.ThrottledWidget> {
+  static readonly litTagName = LitHtml.literal`devtools-resources-back-forward-cache-view`;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #screenStatus = ScreenStatusType.Result;
+  #nextNodeId = 0;
+  #historyIndex = 0;
+
+  constructor() {
+    super();
     this.#getMainResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.update, this);
     this.#getMainResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.update, this);
-    this.contentElement.classList.add('overflow-auto');
-    this.contentElement.appendChild(this.#bfcacheView);
-    this.update();
+    this.classList.add('overflow-auto');
   }
 
-  override async doUpdate(): Promise<void> {
-    this.#bfcacheView.data = {frame: this.#getMainFrame()};
+  update(): void {
+    this.wrapper?.update();
   }
 
   #getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {
@@ -170,32 +175,11 @@ export class BackForwardCacheViewWrapper extends UI.ThrottledWidget.ThrottledWid
   #getMainFrame(): SDK.ResourceTreeModel.ResourceTreeFrame|null {
     return this.#getMainResourceTreeModel()?.mainFrame || null;
   }
-}
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
-export interface BackForwardCacheViewData {
-  frame: SDK.ResourceTreeModel.ResourceTreeFrame|null;
-}
-
-export class BackForwardCacheView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-resources-back-forward-cache-view`;
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #frame: SDK.ResourceTreeModel.ResourceTreeFrame|null = null;
-  #screenStatus = ScreenStatusType.Result;
-  #nextNodeId = 0;
-  #historyIndex = 0;
-
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [backForwardCacheViewStyles];
   }
 
-  set data(data: BackForwardCacheViewData) {
-    this.#frame = data.frame;
-    void this.#render();
-  }
-
-  async #render(): Promise<void> {
+  override async render(): Promise<void> {
     await coordinator.write('BackForwardCacheView render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -215,7 +199,7 @@ export class BackForwardCacheView extends HTMLElement {
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
         this.#renderBackForwardCacheTestResult, this);
     this.#screenStatus = ScreenStatusType.Result;
-    void this.#render();
+    void this.render();
   }
 
   async #onNavigatedAway(): Promise<void> {
@@ -257,7 +241,7 @@ export class BackForwardCacheView extends HTMLElement {
     }
     this.#historyIndex = historyResults.currentIndex;
     this.#screenStatus = ScreenStatusType.Running;
-    void this.#render();
+    void this.render();
 
     // This event listener is removed inside of onNavigatedAway().
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -272,7 +256,8 @@ export class BackForwardCacheView extends HTMLElement {
   }
 
   #renderMainFrameInformation(): LitHtml.TemplateResult {
-    if (!this.#frame) {
+    const frame = this.#getMainFrame();
+    if (!frame) {
       // clang-format off
       return LitHtml.html`
         <${ReportView.ReportView.ReportKey.litTagName}>
@@ -286,19 +271,19 @@ export class BackForwardCacheView extends HTMLElement {
     }
     const isTestRunning = (this.#screenStatus === ScreenStatusType.Running);
     // Prevent running BFCache test on the DevTools window itself via DevTools on DevTools
-    const isTestingForbidden = this.#frame.url.startsWith('devtools://');
+    const isTestingForbidden = frame.url.startsWith('devtools://');
     // clang-format off
     return LitHtml.html`
-      ${this.#renderBackForwardCacheStatus(this.#frame.backForwardCacheDetails.restoredFromCache)}
+      ${this.#renderBackForwardCacheStatus(frame.backForwardCacheDetails.restoredFromCache)}
       <div class="report-line">
         <div class="report-key">
           ${i18nString(UIStrings.url)}
         </div>
-        <div class="report-value" title=${this.#frame.url}>
-          ${this.#frame.url}
+        <div class="report-value" title=${frame.url}>
+          ${frame.url}
         </div>
       </div>
-      ${this.#maybeRenderFrameTree(this.#frame.backForwardCacheDetails.explanationsTree)}
+      ${this.#maybeRenderFrameTree(frame.backForwardCacheDetails.explanationsTree)}
       <${ReportView.ReportView.ReportSection.litTagName}>
         <${Buttons.Button.Button.litTagName}
           aria-label=${i18nString(UIStrings.runTest)}
@@ -314,8 +299,8 @@ export class BackForwardCacheView extends HTMLElement {
       </${ReportView.ReportView.ReportSection.litTagName}>
       <${ReportView.ReportView.ReportSectionDivider.litTagName}>
       </${ReportView.ReportView.ReportSectionDivider.litTagName}>
-      ${this.#maybeRenderExplanations(this.#frame.backForwardCacheDetails.explanations,
-          this.#frame.backForwardCacheDetails.explanationsTree)}
+      ${this.#maybeRenderExplanations(frame.backForwardCacheDetails.explanations,
+          frame.backForwardCacheDetails.explanationsTree)}
       <${ReportView.ReportView.ReportSection.litTagName}>
         <x-link href="https://web.dev/bfcache/" class="link">
           ${i18nString(UIStrings.learnMore)}

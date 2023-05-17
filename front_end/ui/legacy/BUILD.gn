@@ -165,6 +165,7 @@ devtools_entrypoint("bundle") {
     "../../models/extensions:*",
     "../../models/persistence:*",
     "../components/data_grid:*",
+    "../components/legacy_wrapper:*",
     "../components/linear_memory_inspector:*",
     "../components/markdown_view:*",
 

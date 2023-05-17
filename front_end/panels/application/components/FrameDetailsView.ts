@@ -21,7 +21,8 @@ import * as ExpandableList from '../../../ui/components/expandable_list/expandab
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as UI from '../../../ui/legacy/legacy.js';
+import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import type * as UI from '../../../ui/legacy/legacy.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as Protocol from '../../../generated/protocol.js';
@@ -259,44 +260,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class FrameDetailsView extends UI.ThrottledWidget.ThrottledWidget {
-  readonly #reportView = new FrameDetailsReportView();
-  readonly #frame: SDK.ResourceTreeModel.ResourceTreeFrame;
-  #prerenderedUrl: string;
-
-  constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
-    super();
-    this.#frame = frame;
-    this.#prerenderedUrl = '';
-    this.contentElement.classList.add('overflow-auto');
-    this.contentElement.appendChild(this.#reportView);
-    this.update();
-
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetInfoChanged, this.targetChanged,
-        this);
-    frame.resourceTreeModel().addEventListener(
-        SDK.ResourceTreeModel.Events.PrerenderingStatusUpdated, this.update, this);
-  }
-
-  targetChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>): void {
-    const targetInfo = event.data;
-    if (targetInfo.subtype === 'prerender') {
-      this.#prerenderedUrl = targetInfo.url;
-      this.update();
-    }
-  }
-
-  override async doUpdate(): Promise<void> {
-    const adScriptId = await this.#frame?.parentFrame()?.getAdScriptId(this.#frame?.id);
-    const debuggerModel = adScriptId?.debuggerId ?
-        await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(adScriptId?.debuggerId) :
-        null;
-    const target = debuggerModel?.target();
-    this.#reportView
-        .data = {frame: this.#frame, target, prerenderedUrl: this.#prerenderedUrl, adScriptId: adScriptId || null};
-  }
-}
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -307,7 +270,8 @@ export interface FrameDetailsReportViewData {
   adScriptId: Protocol.Page.AdScriptId|null;
 }
 
-export class FrameDetailsReportView extends HTMLElement {
+export class FrameDetailsReportView extends
+    LegacyWrapper.LegacyWrapper.WrappableComponent<UI.ThrottledWidget.ThrottledWidget> {
   static readonly litTagName = LitHtml.literal`devtools-resources-frame-details-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
@@ -320,24 +284,46 @@ export class FrameDetailsReportView extends HTMLElement {
   #linkifier = new Components.Linkifier.Linkifier();
   #adScriptId: Protocol.Page.AdScriptId|null = null;
 
+  constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
+    super();
+    this.#frame = frame;
+    this.#prerenderedUrl = '';
+    this.classList.add('overflow-auto');
+    this.update();
+
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetInfoChanged, this.targetChanged,
+        this);
+    frame.resourceTreeModel().addEventListener(
+        SDK.ResourceTreeModel.Events.PrerenderingStatusUpdated, this.update, this);
+  }
+
+  update(): void {
+    this.wrapper?.update();
+  }
+
+  targetChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>): void {
+    const targetInfo = event.data;
+    if (targetInfo.subtype === 'prerender') {
+      this.#prerenderedUrl = targetInfo.url;
+      this.update();
+    }
+  }
+
   connectedCallback(): void {
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
     this.#shadow.adoptedStyleSheets = [frameDetailsReportViewStyles];
   }
 
-  set data(data: FrameDetailsReportViewData) {
-    this.#frame = data.frame;
-    this.#adScriptId = data.adScriptId;
-    this.#target = data.target;
-
-    this.#prerenderedUrl = data.prerenderedUrl;
+  override async render(): Promise<void> {
+    this.#adScriptId = (await this.#frame?.parentFrame()?.getAdScriptId(this.#frame?.id)) || null;
+    const debuggerModel = this.#adScriptId?.debuggerId ?
+        await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(this.#adScriptId?.debuggerId) :
+        null;
+    this.#target = debuggerModel?.target();
     if (!this.#permissionsPolicies && this.#frame) {
       this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
     }
-    void this.#render();
-  }
-
-  async #render(): Promise<void> {
     await coordinator.write('FrameDetailsView render', () => {
       if (!this.#frame) {
         return;

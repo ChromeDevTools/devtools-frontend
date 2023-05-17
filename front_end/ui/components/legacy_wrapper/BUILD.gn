@@ -1,0 +1,25 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
+
+devtools_module("legacy_wrapper") {
+  sources = [ "LegacyWrapper.ts" ]
+  deps = [
+    "../../../ui/legacy:bundle",
+    "../../../ui/lit-html:bundle",
+  ]
+
+  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "legacy_wrapper.ts"
+
+  deps = [ ":legacy_wrapper" ]
+
+  visibility = default_components_visibility
+}

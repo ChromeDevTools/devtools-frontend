@@ -39,6 +39,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -2003,7 +2004,9 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   private readonly treeElementForResource: Map<string, FrameResourceTreeElement>;
   private treeElementForWindow: Map<Protocol.Target.TargetID, FrameWindowTreeElement>;
   private treeElementForWorker: Map<Protocol.Target.TargetID, WorkerTreeElement>;
-  private view: ApplicationComponents.FrameDetailsView.FrameDetailsView|null;
+  private view: LegacyWrapper.LegacyWrapper
+      .LegacyWrapper<UI.ThrottledWidget.ThrottledWidget, ApplicationComponents.FrameDetailsView.FrameDetailsReportView>|
+      null;
 
   constructor(section: ResourcesSection, frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(section.panel, '', false);
@@ -2050,7 +2053,9 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     this.treeElementForWorker.clear();
 
     if (this.selected) {
-      this.view = new ApplicationComponents.FrameDetailsView.FrameDetailsView(this.frame);
+      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
+          UI.ThrottledWidget.ThrottledWidget,
+          new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
       this.showView(this.view);
     } else {
       this.view = null;
@@ -2087,7 +2092,9 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = new ApplicationComponents.FrameDetailsView.FrameDetailsView(this.frame);
+      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
+          UI.ThrottledWidget.ThrottledWidget,
+          new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
     } else {
       this.view.update();
     }

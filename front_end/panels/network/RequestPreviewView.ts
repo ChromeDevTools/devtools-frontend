@@ -33,6 +33,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 
 import {RequestHTMLView} from './RequestHTMLView.js';
 import {RequestResponseView} from './RequestResponseView.js';
@@ -98,7 +99,7 @@ export class RequestPreviewView extends RequestResponseView {
     }
 
     if (this.request.webBundleInfo()) {
-      return new WebBundleInfoView(this.request);
+      return LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, new WebBundleInfoView(this.request));
     }
 
     const htmlErrorPreview = await this.htmlPreview();

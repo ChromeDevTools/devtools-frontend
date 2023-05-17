@@ -48,6 +48,7 @@ devtools_module("components") {
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/icon_button:bundle",
     "../../../ui/components/input:bundle",
+    "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/components/report_view:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",

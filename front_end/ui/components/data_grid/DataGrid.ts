@@ -566,7 +566,8 @@ export class DataGrid extends HTMLElement {
    * data grid.
    */
   #onHeaderContextMenu(event: MouseEvent): void {
-    if (event.button !== 2) {
+    if (event.button !== 2 && event.button !== -1) {
+      // -1 = right click invoked by keyboard, for example 'Shift + F10'.
       // 2 = secondary button = right click. We only show context menus if the
       // user has right clicked.
       return;
@@ -589,7 +590,8 @@ export class DataGrid extends HTMLElement {
   }
 
   #onBodyRowContextMenu(event: MouseEvent): void {
-    if (event.button !== 2) {
+    if (event.button !== 2 && event.button !== -1) {
+      // -1 = right click invoked by keyboard, for example 'Shift + F10'.
       // 2 = secondary button = right click. We only show context menus if the
       // user has right clicked.
       return;

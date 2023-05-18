@@ -69,7 +69,6 @@ ruleTester.run('check_e2e_tests', rule, {
       });
       `,
       filename: 'test/e2e/folder/file.ts',
-      errors: [{message: rule.meta.messages.missingBugId}],
     },
     {
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
@@ -78,7 +77,11 @@ ruleTester.run('check_e2e_tests', rule, {
       });
       `,
       filename: 'test/e2e/folder/file.ts',
-      errors: [{message: rule.meta.messages.missingBugId}],
+    },
+    {
+      // Not complete, don't attempt to validate this yet.
+      code: 'it()',
+      filename: 'test/unittest/folder/file.ts',
     },
   ],
 

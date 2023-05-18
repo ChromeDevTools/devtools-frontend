@@ -16,7 +16,8 @@ const {getTestRunnerConfigSetting} = require('../test/test_config_helpers.js');
 
 const match = require('minimatch');
 
-const serverPort = parseInt(process.env.PORT, 10) || 8090;
+const tracesMode = argv.traces;
+const serverPort = parseInt(process.env.PORT, 10) || tracesMode ? 11010 : 8090;
 const target = argv.target || process.env.TARGET || 'Default';
 
 /**
@@ -246,7 +247,7 @@ async function requestHandler(request, response) {
     return;
   }
 
-  if (filePath === '/' || filePath === '/index.html') {
+  if (['/', '/index.html'].includes(filePath) && tracesMode === false) {
     const components =
         await fs.promises.readdir(path.join(componentDocsBaseFolder, 'front_end', 'ui', 'components', 'docs'));
     const html = createServerIndexFile(components.filter(filePath => {
@@ -260,6 +261,8 @@ async function requestHandler(request, response) {
     const componentHtml = await getExamplesForPath(filePath);
     respondWithHtml(response, componentHtml);
     return;
+  } else if (tracesMode) {
+    return handleTracesModeRequest(request, response, filePath);
   } else if (/ui\/components\/docs\/(.+)\/(.+)\.html/.test(filePath)) {
     /** This conditional checks if we are viewing an individual example's HTML
      *  file. e.g. localhost:8090/front_end/ui/components/docs/data_grid/basic.html For each
@@ -314,7 +317,6 @@ async function requestHandler(request, response) {
       }
       fullPath = path.join(prefix, 'front_end', 'core', 'i18n', 'locales', 'en-US.json');
     }
-
     if (!fullPath.startsWith(devtoolsRootFolder) && !fileIsInTestFolder) {
       console.error(`Path ${fullPath} is outside the DevTools Frontend root dir.`);
       process.exit(1);
@@ -395,5 +397,136 @@ async function requestHandler(request, response) {
     response.writeHead(200);
     response.write(fileContents, encoding);
     response.end();
+  }
+}
+
+function createTracesIndexFile(traceFilenames) {
+  function pageFunction() {
+    const origin = new URL(location.href).origin;
+
+    document.body.addEventListener('click', async e => {
+      if (!e.target.matches('button')) {
+        return;
+      }
+      const filename = e.target.textContent;
+      const traceUrl = `${origin}/t/${filename}`;
+      const devtoolsLoadingTraceUrl = `devtools://devtools/bundled/devtools_app.html?loadTimelineFromURL=${traceUrl}`;
+
+      try {
+        await navigator.clipboard.writeText(devtoolsLoadingTraceUrl);
+        e.target.classList.add('clicked');
+        setTimeout(() => e.target.classList.remove('clicked'), 1000);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }
+
+  // clang-format off
+  return `<!doctype html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width" />
+      <title>Traces</title>
+      <style>
+        button {
+          appearance: none;
+          border: 0;
+          background: transparent;
+          font-size: 18px;
+          padding: 5px;
+          text-align: left;
+        }
+        button:hover {
+          background: aliceblue;
+          cursor: pointer;
+        }
+        button:active {cursor: copy;}
+        button.clicked {animation: 600ms cubic-bezier(0.65, 0.05, 0.36, 1) bam;}
+        button.clicked::after {
+          content: "Copied URL";
+          background-color: #e0e0e0;
+          margin-left: 6px;
+          font-size: 70%;
+          padding: 1px 3px;
+          animation: 500ms fadeOut ease 700ms forwards;
+        }
+        form {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 5px;
+        }
+        @keyframes bam {
+          from {background-color: #66bb6a;}
+          to {background-color: aliceblue;}
+        }
+        @keyframes fadeOut {
+          from {opacity: 1;}
+          to {opacity: 0;}
+        }
+      </style>
+    </head>
+    <body id="traces-page">
+      <h1>First</h1>
+      <p><textarea cols=100>devtools://devtools/bundled/devtools_app.html</textarea>
+      <h1>Load OPP with fixture traces:</h1>
+
+      <form>
+        ${traceFilenames.map(filename => {
+          return `<button type=button>${filename}</button>`;
+        }).join('\n')}
+      </form>
+
+      <script>
+        (${pageFunction.toString()})();
+      </script>
+    </body>
+  </html>`;
+  // clang-format on
+}
+
+/**
+ * @param {http.IncomingMessage} request
+ * @param {http.ServerResponse} response
+ * @param {string|null} filePath
+ */
+async function handleTracesModeRequest(request, response, filePath) {
+  const traceFolder = path.resolve(path.join(process.cwd(), 'test/unittests/fixtures/traces/'));
+  if (filePath === '/') {
+    const traceFilenames = fs.readdirSync(traceFolder).filter(f => f.includes('json'));
+    const html = createTracesIndexFile(traceFilenames);
+    respondWithHtml(response, html);
+  } else if (filePath.startsWith('/t/')) {
+    const fileName = filePath.replace('/t/', '');
+    const fullPath = path.resolve(path.join(traceFolder, fileName));
+
+    if (!fullPath.startsWith(traceFolder)) {
+      console.error(`Path ${fullPath} is outside trace fixtures folder.`);
+      process.exit(1);
+    }
+
+    const fileExists = await checkFileExists(fullPath);
+    if (!fileExists) {
+      return send404(response, '404, File not found');
+    }
+
+    let encoding = 'utf8';
+    if (fullPath.endsWith('.json')) {
+      response.setHeader('Content-Type', 'application/json');
+    } else if (fullPath.endsWith('.gz')) {
+      response.setHeader('Content-Type', 'application/gzip');
+      encoding = 'binary';
+    }
+    // Traces need CORS to be loaded by devtools:// origin
+    response.setHeader('Access-Control-Allow-Origin', '*');
+
+    const fileContents = await fs.promises.readFile(fullPath, encoding);
+    response.writeHead(200);
+    response.write(fileContents, encoding);
+    response.end();
+  } else {
+    console.error(`Unhandled traces mode request: ${filePath}`);
+    process.exit(1);
   }
 }

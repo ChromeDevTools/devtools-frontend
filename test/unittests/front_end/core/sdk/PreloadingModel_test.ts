@@ -98,6 +98,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prefetch:https://example.com/subresource.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -199,6 +200,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prefetch:https://example.com/subresource.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -212,12 +214,14 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prerender:https://example.com/page.html:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prerender,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prerender,
             url: 'https://example.com/page.html' as Platform.DevToolsPath.UrlString,
           },
           status: SDK.PreloadingModel.PreloadingStatus.Running,
+          prerenderStatus: null,
           ruleSetIds: ['ruleSetId:2'] as Protocol.Preload.RuleSetId[],
           nodeIds: [2] as Protocol.DOM.BackendNodeId[],
         },
@@ -273,6 +277,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prefetch:https://example.com/subresource.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -293,12 +298,14 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prerender:https://example.com/page.html:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prerender,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prerender,
             url: 'https://example.com/page.html' as Platform.DevToolsPath.UrlString,
           },
           status: SDK.PreloadingModel.PreloadingStatus.Running,
+          prerenderStatus: null,
           ruleSetIds: ['ruleSetId:2'] as Protocol.Preload.RuleSetId[],
           nodeIds: [2] as Protocol.DOM.BackendNodeId[],
         },
@@ -362,6 +369,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prefetch:https://example.com/subresource.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -512,6 +520,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:2:Prefetch:https://example.com/subresource2.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:2' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -583,6 +592,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       loaderId: 'loaderId:1',
       preloadingAttemptSources: [
         {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1',
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -592,6 +602,7 @@ describeWithMockConnection('PreloadingModel', async () => {
           nodeIds: [1, 2],
         },
         {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1',
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -623,6 +634,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prefetch:https://example.com/subresource12.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -636,6 +648,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prefetch:https://example.com/subresource2.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -652,6 +665,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prefetch:https://example.com/subresource12.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -668,6 +682,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prefetch:https://example.com/subresource12.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -681,6 +696,7 @@ describeWithMockConnection('PreloadingModel', async () => {
       {
         id: 'loaderId:1:Prefetch:https://example.com/subresource2.js:undefined',
         value: {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
           key: {
             loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
             action: Protocol.Preload.SpeculationAction.Prefetch,

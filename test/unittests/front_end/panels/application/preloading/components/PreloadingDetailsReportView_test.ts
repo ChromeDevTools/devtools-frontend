@@ -53,6 +53,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     const url = 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString;
     const data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData = {
       preloadingAttempt: {
+        action: Protocol.Preload.SpeculationAction.Prerender,
         key: {
           loaderId: 'loaderId' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prerender,
@@ -60,6 +61,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
           targetHint: undefined,
         },
         status: SDK.PreloadingModel.PreloadingStatus.Running,
+        prerenderStatus: null,
         ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -100,6 +102,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     const url = 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString;
     const data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData = {
       preloadingAttempt: {
+        action: Protocol.Preload.SpeculationAction.Prerender,
         key: {
           loaderId: 'loaderId' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prerender,
@@ -107,6 +110,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
           targetHint: undefined,
         },
         status: SDK.PreloadingModel.PreloadingStatus.Failure,
+        prerenderStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
         ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -137,6 +141,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
       ['URL', url],
       ['Action', 'prerender'],
       ['Status', 'Preloading failed.'],
+      ['Failure reason', 'The prerendered page used a forbidden JavaScript API that is currently not supported.'],
       ['Rule set', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
     ]);
   });

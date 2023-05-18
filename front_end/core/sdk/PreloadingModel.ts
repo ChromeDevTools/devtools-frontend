@@ -233,7 +233,8 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   onPrefetchStatusUpdated(event: Protocol.Preload.PrefetchStatusUpdatedEvent): void {
     const loaderId = event.key.loaderId;
     this.ensureDocumentPreloadingData(loaderId);
-    const attempt = {
+    const attempt: PrefetchAttemptInternal = {
+      action: Protocol.Preload.SpeculationAction.Prefetch,
       key: event.key,
       status: convertPreloadingStatus(event.status),
     };
@@ -244,9 +245,11 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   onPrerenderStatusUpdated(event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
     const loaderId = event.key.loaderId;
     this.ensureDocumentPreloadingData(loaderId);
-    const attempt = {
+    const attempt: PrerenderAttemptInternal = {
+      action: Protocol.Preload.SpeculationAction.Prerender,
       key: event.key,
       status: convertPreloadingStatus(event.status),
+      prerenderStatus: event.prerenderStatus || null,
     };
     this.documents.get(loaderId)?.preloadingAttempts.upsert(attempt);
     this.dispatchEventToListeners(Events.ModelUpdated);
@@ -399,16 +402,39 @@ function convertPreloadingStatus(status: Protocol.Preload.PreloadingStatus): Pre
 
 export type PreloadingAttemptId = string;
 
-export interface PreloadingAttempt {
+export type PreloadingAttempt = PrefetchAttempt|PrerenderAttempt;
+
+// TODO(robertlin): Add prefetchStatus.
+export interface PrefetchAttempt {
+  action: Protocol.Preload.SpeculationAction.Prefetch;
   key: Protocol.Preload.PreloadingAttemptKey;
   status: PreloadingStatus;
   ruleSetIds: Protocol.Preload.RuleSetId[];
   nodeIds: Protocol.DOM.BackendNodeId[];
 }
 
-export interface PreloadingAttemptInternal {
+export interface PrerenderAttempt {
+  action: Protocol.Preload.SpeculationAction.Prerender;
   key: Protocol.Preload.PreloadingAttemptKey;
   status: PreloadingStatus;
+  prerenderStatus: Protocol.Preload.PrerenderFinalStatus|null;
+  ruleSetIds: Protocol.Preload.RuleSetId[];
+  nodeIds: Protocol.DOM.BackendNodeId[];
+}
+
+export type PreloadingAttemptInternal = PrefetchAttemptInternal|PrerenderAttemptInternal;
+
+export interface PrefetchAttemptInternal {
+  action: Protocol.Preload.SpeculationAction.Prefetch;
+  key: Protocol.Preload.PreloadingAttemptKey;
+  status: PreloadingStatus;
+}
+
+export interface PrerenderAttemptInternal {
+  action: Protocol.Preload.SpeculationAction.Prerender;
+  key: Protocol.Preload.PreloadingAttemptKey;
+  status: PreloadingStatus;
+  prerenderStatus: Protocol.Preload.PrerenderFinalStatus|null;
 }
 
 function makePreloadingAttemptId(key: Protocol.Preload.PreloadingAttemptKey): PreloadingAttemptId {
@@ -493,10 +519,24 @@ class PreloadingAttemptRegistry {
         continue;
       }
 
-      const attempt = {
-        key,
-        status: PreloadingStatus.NotTriggered,
-      };
+      let attempt: PreloadingAttemptInternal;
+      switch (key.action) {
+        case Protocol.Preload.SpeculationAction.Prefetch:
+          attempt = {
+            action: Protocol.Preload.SpeculationAction.Prefetch,
+            key,
+            status: PreloadingStatus.NotTriggered,
+          };
+          break;
+        case Protocol.Preload.SpeculationAction.Prerender:
+          attempt = {
+            action: Protocol.Preload.SpeculationAction.Prerender,
+            key,
+            status: PreloadingStatus.NotTriggered,
+            prerenderStatus: null,
+          };
+          break;
+      }
       this.map.set(id, attempt);
     }
   }

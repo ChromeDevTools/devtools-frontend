@@ -32,6 +32,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
   it('renderes no preloading attempts used', async () => {
     const data: SDK.PreloadingModel.PreloadingAttempt[] = [
       {
+        action: Protocol.Preload.SpeculationAction.Prefetch,
         key: {
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -42,6 +43,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
       {
+        action: Protocol.Preload.SpeculationAction.Prefetch,
         key: {
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -52,12 +54,14 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
       {
+        action: Protocol.Preload.SpeculationAction.Prerender,
         key: {
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prerender,
           url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
         },
         status: SDK.PreloadingModel.PreloadingStatus.Ready,
+        prerenderStatus: null,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -72,6 +76,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
   it('renderes prefetch used', async () => {
     const data: SDK.PreloadingModel.PreloadingAttempt[] = [
       {
+        action: Protocol.Preload.SpeculationAction.Prefetch,
         key: {
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -82,6 +87,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
       {
+        action: Protocol.Preload.SpeculationAction.Prefetch,
         key: {
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -92,12 +98,14 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
       {
+        action: Protocol.Preload.SpeculationAction.Prerender,
         key: {
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prerender,
           url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
         },
         status: SDK.PreloadingModel.PreloadingStatus.Ready,
+        prerenderStatus: null,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -112,6 +120,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
   it('renderes prerender used', async () => {
     const data: SDK.PreloadingModel.PreloadingAttempt[] = [
       {
+        action: Protocol.Preload.SpeculationAction.Prefetch,
         key: {
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -122,6 +131,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
       {
+        action: Protocol.Preload.SpeculationAction.Prefetch,
         key: {
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -132,12 +142,14 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
       {
+        action: Protocol.Preload.SpeculationAction.Prerender,
         key: {
           loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
           action: Protocol.Preload.SpeculationAction.Prerender,
           url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
         },
         status: SDK.PreloadingModel.PreloadingStatus.Success,
+        prerenderStatus: null,
         ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },

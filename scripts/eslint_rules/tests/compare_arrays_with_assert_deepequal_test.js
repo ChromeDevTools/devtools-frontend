@@ -41,6 +41,15 @@ ruleTester.run('compare_arrays_with_assert_deepequal', rule, {
       code: `import {assert} from 'chai';
 
       it('normal test', async () => {
+        assert.includeMembers(someResult, [2]);
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+    },
+    {
+      code: `import {assert} from 'chai';
+
+      it('normal test', async () => {
         assert.strictEqual(false, false);
       });
       `,

@@ -52,27 +52,33 @@ export class TimingsTrackAppender implements TrackAppender {
   /**
    * Appends into the flame chart data the data corresponding to the
    * timings track.
-   * @param level the horizontal level of the flame chart events where
+   * @param trackStartLevel the horizontal level of the flame chart events where
    * the track's events will start being appended.
    * @param expanded wether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
-  appendTrackAtLevel(currentLevel: number, expanded?: boolean): number {
-    this.#appendTrackHeaderAtLevel(currentLevel, expanded);
-    let newLevel = this.#appendMarkersAtLevel(currentLevel);
+  appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
+    const allMarkerEvents = this.#traceParsedData.PageLoadMetrics.allMarkerEvents;
+    const performanceMarks = this.#traceParsedData.UserTimings.performanceMarks;
+    const performanceMeasures = this.#traceParsedData.UserTimings.performanceMeasures;
+    const timestampEvents = this.#traceParsedData.UserTimings.timestampEvents;
+    const consoleTimings = this.#traceParsedData.UserTimings.consoleTimings;
+
+    if (allMarkerEvents.length === 0 && performanceMarks.length === 0 && performanceMeasures.length === 0 &&
+        timestampEvents.length === 0 && consoleTimings.length === 0) {
+      return trackStartLevel;
+    }
+    this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
+    let newLevel = this.#appendMarkersAtLevel(trackStartLevel);
     // Add some vertical space between page load markers and user
     // timings by appending timings 2 levels after the markers' level.
     newLevel++;
 
-    newLevel = this.#compatibilityBuilder.appendEventsAtLevel(
-        this.#traceParsedData.UserTimings.performanceMarks, newLevel, this);
-    newLevel = this.#compatibilityBuilder.appendEventsAtLevel(
-        this.#traceParsedData.UserTimings.performanceMeasures, newLevel, this);
-    newLevel = this.#compatibilityBuilder.appendEventsAtLevel(
-        this.#traceParsedData.UserTimings.timestampEvents, newLevel, this);
-    return this.#compatibilityBuilder.appendEventsAtLevel(
-        this.#traceParsedData.UserTimings.consoleTimings, newLevel, this);
+    newLevel = this.#compatibilityBuilder.appendEventsAtLevel(performanceMarks, newLevel, this);
+    newLevel = this.#compatibilityBuilder.appendEventsAtLevel(performanceMeasures, newLevel, this);
+    newLevel = this.#compatibilityBuilder.appendEventsAtLevel(timestampEvents, newLevel, this);
+    return this.#compatibilityBuilder.appendEventsAtLevel(consoleTimings, newLevel, this);
   }
 
   /**

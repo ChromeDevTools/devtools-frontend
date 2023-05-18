@@ -41,18 +41,18 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   /**
    * Appends into the flame chart data the data corresponding to the
    * layout shifts track.
-   * @param level the horizontal level of the flame chart events where
+   * @param trackStartLevel the horizontal level of the flame chart events where
    * the track's events will start being appended.
    * @param expanded wether the track should be rendered expanded.
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
-  appendTrackAtLevel(currentLevel: number, expanded?: boolean): number {
+  appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
     if (this.#traceParsedData.LayoutShifts.clusters.length === 0) {
-      return currentLevel;
+      return trackStartLevel;
     }
-    this.#appendTrackHeaderAtLevel(currentLevel, expanded);
-    return this.#appendLayoutShiftsAtLevel(currentLevel);
+    this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
+    return this.#appendLayoutShiftsAtLevel(trackStartLevel);
   }
 
   /**

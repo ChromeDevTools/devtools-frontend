@@ -15,15 +15,6 @@ defaults = struct(
     **{a: getattr(luci.builder.defaults, a) for a in dir(luci.builder.defaults)}
 )
 
-# TODO(b/283033746): remove this after reclient migration.
-goma_rbe_prod_default = {
-    "$build/goma": {
-        "server_host": "goma.chromium.org",
-        "rpc_extra_params": "?prod",
-        "use_luci_auth": True,
-    },
-}
-
 acls = struct(
     readers = acl.entry(
         roles = acl.BUILDBUCKET_READER,
@@ -78,7 +69,6 @@ def builder(
     properties = dict(kwargs.pop("properties", {}))
     if builder_group:
         properties.update(builder_group = builder_group)
-    properties.update(goma_rbe_prod_default)
     properties["$recipe_engine/isolated"] = {
         "server": "https://isolateserver.appspot.com",
     }
@@ -192,7 +182,6 @@ def generate_ci_configs(configurations, builders):
         def ci_builder(**kwargs):
             category = kwargs.pop("console_category")
             properties = kwargs.pop("properties")
-            properties.update(goma_rbe_prod_default)
             properties["$build/reclient"] = {
                 "instance": "rbe-chromium-trusted",
                 "metrics_project": "chromium-reclient-metrics",

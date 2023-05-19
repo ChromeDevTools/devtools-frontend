@@ -991,7 +991,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     for (const [color, {indexes}] of colorBuckets) {
       this.drawGenericEvents(context, timelineData, color, indexes);
-      this.drawLongTaskRegions(context, timelineData, color, indexes);
       this.#drawDecorations(context, timelineData, indexes);
     }
 
@@ -1073,9 +1072,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    */
   #drawDecorations(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, indexes: number[]): void {
     context.save();
+    context.beginPath();
     const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
 
     let hasDrawnCandyStripe = false;
+
     for (let i = 0; i < indexes.length; ++i) {
       const entryIndex = indexes[i];
       const decorationsForEvent = timelineData.entryDecorations.at(entryIndex);
@@ -1114,60 +1115,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         context.fillStyle = candyStripePattern;
         context.fill();
       }
-    }
-    context.restore();
-  }
-
-  /**
-   * Marks the portion of long tasks where the 50ms threshold was exceeded.
-   */
-  private drawLongTaskRegions(
-      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, color: string, indexes: number[]): void {
-    const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
-    let mainThreadTopLevel = -1;
-
-    // Find the main thread so that we can mark tasks longer than 50ms.
-    if ('groups' in timelineData && Array.isArray(timelineData.groups)) {
-      const mainThread = timelineData.groups.find(group => {
-        if (!group.track) {
-          return false;
-        }
-        return group.track.name === 'CrRendererMain';
-      });
-
-      if (mainThread) {
-        mainThreadTopLevel = mainThread.startLevel;
-      }
-    }
-
-    context.save();
-    context.beginPath();
-    for (let i = 0; i < indexes.length; ++i) {
-      const entryIndex = indexes[i];
-      const duration = entryTotalTimes[entryIndex];
-      const showLongDurations = entryLevels[entryIndex] === mainThreadTopLevel;
-
-      if (!showLongDurations) {
-        continue;
-      }
-
-      if (isNaN(duration) || duration < 50) {
-        continue;
-      }
-      const entryStartTime = entryStartTimes[entryIndex];
-      const barX = this.timeToPositionClipped(entryStartTime + 50);
-      const barLevel = entryLevels[entryIndex];
-      const barHeight = this.levelHeight(barLevel);
-      const barY = this.levelToOffset(barLevel);
-      const barRight = this.timeToPositionClipped(entryStartTime + duration);
-      const barWidth = Math.max(barRight - barX, 1);
-      context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
-    }
-    const candyStripePattern = context.createPattern(this.candyStripeCanvas, 'repeat');
-
-    if (candyStripePattern) {
-      context.fillStyle = candyStripePattern;
-      context.fill();
     }
     context.restore();
   }

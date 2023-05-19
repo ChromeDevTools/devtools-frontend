@@ -518,4 +518,28 @@ describeWithMockConnection('CompilerScriptMapping', () => {
           originalLibUISourceCode.uiLocation(0, 0));
     });
   });
+
+  it('assumes UTF-8 encoding for source files embedded in source maps', async () => {
+    const target = createTarget();
+
+    const sourceRoot = 'http://example.com';
+    const sourceContent = 'console.log("Ahoj světe!");';
+    const scriptInfo = {
+      url: `${sourceRoot}/script.min.js`,
+      content: sourceContent,
+    };
+    const sourceMapInfo = {
+      url: `${scriptInfo.url}.map`,
+      content: {version: 3, mappings: '', sources: ['script.js'], sourcesContent: [sourceContent], sourceRoot},
+    };
+    const [uiSourceCode] = await Promise.all([
+      waitForUISourceCodeAdded(`${sourceRoot}/script.js`, target),
+      backend.addScript(target, scriptInfo, sourceMapInfo),
+    ]);
+
+    const metadata = await uiSourceCode.requestMetadata();
+    assert.notStrictEqual(metadata?.contentSize, sourceContent.length);
+    const sourceUTF8 = new TextEncoder().encode(sourceContent);
+    assert.strictEqual(metadata?.contentSize, sourceUTF8.length);
+  });
 });

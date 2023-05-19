@@ -66,4 +66,8 @@ When you need to update a screenshot because you have purposefully changed the U
 FORCE_UPDATE_ALL_GOLDENS=1 npm run auto-interactionstest
 ```
 
-This tells the test runner to update any screenshots that fail. Once you've done this, the process is identical to when you add a new screenshot: commit the changes for your platform locally, trigger a CQ run, and then pull down the new screenshots once the bots are done.
+This tells the test runner to update any screenshots that fail. Once you've done this, the process is identical to when you add a new screenshot:
+
+1. Commit the changes for your platform locally.
+2. Trigger a CQ run and wait for it to finish.
+3. Fetch the new screenshots from the bots by using `./scripts/tools/update_goldens_v2.py`.

@@ -276,26 +276,26 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     return this.#fileSystem;
   }
 
-  // Read the first 3 bytes looking for the gzip signature in the file header
-  private isGzip(ab: ArrayBuffer): boolean {
-    const buf = new Uint8Array(ab);
-    if (!buf || buf.length < 3) {
-      return false;
-    }
-    // https://www.rfc-editor.org/rfc/rfc1952#page-6
-    return buf[0] === 0x1F && buf[1] === 0x8B && buf[2] === 0x08;
-  }
-
   loadNetworkResource(
       url: string, headers: string, streamId: number, callback: (arg0: LoadNetworkResourceResult) => void): void {
+    // Read the first 3 bytes looking for the gzip signature in the file header
+    function isGzip(ab: ArrayBuffer): boolean {
+      const buf = new Uint8Array(ab);
+      if (!buf || buf.length < 3) {
+        return false;
+      }
+
+      // https://www.rfc-editor.org/rfc/rfc1952#page-6
+      return buf[0] === 0x1F && buf[1] === 0x8B && buf[2] === 0x08;
+    }
     fetch(url)
         .then(async result => {
-          const ab = await result.arrayBuffer();
-          let decoded: ReadableStream|ArrayBuffer = ab;
-          if (this.isGzip(ab)) {
+          const resultArrayBuf = await result.arrayBuffer();
+          let decoded: ReadableStream|ArrayBuffer = resultArrayBuf;
+          if (isGzip(resultArrayBuf)) {
             const ds = new DecompressionStream('gzip');
             const writer = ds.writable.getWriter();
-            void writer.write(ab);
+            void writer.write(resultArrayBuf);
             void writer.close();
             decoded = ds.readable;
           }

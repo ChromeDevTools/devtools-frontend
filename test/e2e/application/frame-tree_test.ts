@@ -74,7 +74,6 @@ describe('The Application Tab', async () => {
 
     const fieldValuesTextContent = await waitForFunction(async () => {
       const fieldValues = await getTrimmedTextContent('devtools-report-value');
-      console.error(JSON.stringify(fieldValues));
       if (fieldValues[0]) {
         // This contains some CSS from the svg icon link being rendered. It's
         // system-specific, so we get rid of it and only look at the (URL) text.
@@ -288,7 +287,6 @@ describe('The Application Tab', async () => {
     // check iframe's URL after pageload
     const fieldValuesTextContent = await waitForFunction(async () => {
       const fieldValues = await getTrimmedTextContent('devtools-report-value');
-      console.error(JSON.stringify(fieldValues));
       if (fieldValues[0]) {
         // This contains some CSS from the svg icon link being rendered. It's
         // system-specific, so we get rid of it and only look at the (URL) text.

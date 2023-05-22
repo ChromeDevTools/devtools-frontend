@@ -1,3 +1,34 @@
+2.0.0 / 2021-12-17
+==================
+
+  * Drop support for Node.js 0.6
+  * Remove `I'mateapot` export; use `ImATeapot` instead
+  * Remove support for status being non-first argument
+  * Rename `UnorderedCollection` constructor to `TooEarly`
+  * deps: depd@2.0.0
+    - Replace internal `eval` usage with `Function` constructor
+    - Use instance methods on `process` to check for listeners
+  * deps: statuses@2.0.1
+    - Fix messaging casing of `418 I'm a Teapot`
+    - Remove code 306
+    - Rename `425 Unordered Collection` to standard `425 Too Early`
+
+2021-11-14 / 1.8.1
+==================
+
+  * deps: toidentifier@1.0.1
+
+2020-06-29 / 1.8.0
+==================
+
+  * Add `isHttpError` export to determine if value is an HTTP error
+  * deps: setprototypeof@1.2.0
+
+2019-06-24 / 1.7.3
+==================
+
+  * deps: inherits@2.0.4
+
 2019-02-18 / 1.7.2
 ==================
 

@@ -3,7 +3,7 @@
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Node.js Version][node-version-image]][node-version-url]
-[![Build status][travis-image]][travis-url]
+[![Build status][github-actions-ci-image]][github-actions-ci-url]
 [![Test coverage][coveralls-image]][coveralls-url]
 
 Gets the entire buffer of a stream either as a `Buffer` or a string.
@@ -33,8 +33,6 @@ $ npm install @types/node
 
 ## API
 
-<!-- eslint-disable no-unused-vars -->
-
 ```js
 var getRawBody = require('raw-body')
 ```
@@ -63,8 +61,10 @@ You can also pass a string in place of options to just specify the encoding.
 
 If an error occurs, the stream will be paused, everything unpiped,
 and you are responsible for correctly disposing the stream.
-For HTTP requests, no handling is required if you send a response.
-For streams that use file descriptors, you should `stream.destroy()` or `stream.close()` to prevent leaks.
+For HTTP requests, you may need to finish consuming the stream if
+you want to keep the socket open for future requests. For streams
+that use file descriptors, you should `stream.destroy()` or
+`stream.close()` to prevent leaks.
 
 ## Errors
 
@@ -81,7 +81,7 @@ otherwise an error created by this module, which has the following attributes:
 
 ### Types
 
-The errors from this module have a `type` property which allows for the progamatic
+The errors from this module have a `type` property which allows for the programmatic
 determination of the type of error returned.
 
 #### encoding.unsupported
@@ -110,6 +110,10 @@ emitted more bytes.
 This error will occur when the given stream has an encoding set on it, making it
 a decoded stream. The stream should not have an encoding set and is expected to
 emit `Buffer` objects.
+
+#### stream.not.readable
+
+This error will occur when the given stream is not readable.
 
 ## Examples
 
@@ -211,9 +215,9 @@ server.listen(3000);
 [npm-url]: https://npmjs.org/package/raw-body
 [node-version-image]: https://img.shields.io/node/v/raw-body.svg
 [node-version-url]: https://nodejs.org/en/download/
-[travis-image]: https://img.shields.io/travis/stream-utils/raw-body/master.svg
-[travis-url]: https://travis-ci.org/stream-utils/raw-body
 [coveralls-image]: https://img.shields.io/coveralls/stream-utils/raw-body/master.svg
 [coveralls-url]: https://coveralls.io/r/stream-utils/raw-body?branch=master
 [downloads-image]: https://img.shields.io/npm/dm/raw-body.svg
 [downloads-url]: https://npmjs.org/package/raw-body
+[github-actions-ci-image]: https://img.shields.io/github/actions/workflow/status/stream-utils/raw-body/ci.yml?branch=master&label=ci
+[github-actions-ci-url]: https://github.com/jshttp/stream-utils/raw-body?query=workflow%3Aci

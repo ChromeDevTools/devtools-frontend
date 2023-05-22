@@ -117,7 +117,11 @@ function format(value, options) {
   }
 
   if (thousandsSeparator) {
-    str = str.replace(formatThousandsRegExp, thousandsSeparator);
+    str = str.split('.').map(function (s, i) {
+      return i === 0
+        ? s.replace(formatThousandsRegExp, thousandsSeparator)
+        : s
+    }).join('.');
   }
 
   return str + unitSeparator + unit;
@@ -156,6 +160,10 @@ function parse(val) {
     // Retrieve the value and the unit
     floatValue = parseFloat(results[1]);
     unit = results[4].toLowerCase();
+  }
+
+  if (isNaN(floatValue)) {
+    return null;
   }
 
   return Math.floor(map[unit] * floatValue);

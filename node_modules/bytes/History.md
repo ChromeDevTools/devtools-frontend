@@ -1,3 +1,13 @@
+3.1.2 / 2022-01-27
+==================
+
+  * Fix return value for un-parsable strings
+
+3.1.1 / 2021-11-15
+==================
+
+  * Fix "thousandsSeparator" incorrecting formatting fractional part
+
 3.1.0 / 2019-01-22
 ==================
 

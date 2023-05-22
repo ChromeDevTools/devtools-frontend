@@ -15,6 +15,8 @@ Files were exported from https://github.com/DefinitelyTyped/DefinitelyTyped/tree
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
+/// <reference types="node" />
+
 import { IncomingHttpHeaders } from 'http';
 
 type StaticOrigin = boolean | string | RegExp | (boolean | string | RegExp)[];
@@ -70,8 +72,8 @@ export = e;
 ````
 
 ### Additional Details
- * Last updated: Fri, 09 Jul 2021 07:31:29 GMT
- * Dependencies: none
+ * Last updated: Mon, 05 Dec 2022 07:33:01 GMT
+ * Dependencies: [@types/node](https://npmjs.com/package/@types/node)
  * Global values: none
 
 # Credits

@@ -267,14 +267,14 @@ deprecate.property(exports, 'oldprop', 'oldprop >= 0.10')
 
 [MIT](LICENSE)
 
-[npm-version-image]: https://img.shields.io/npm/v/depd.svg
-[npm-downloads-image]: https://img.shields.io/npm/dm/depd.svg
-[npm-url]: https://npmjs.org/package/depd
-[travis-image]: https://img.shields.io/travis/dougwilson/nodejs-depd/master.svg?label=linux
-[travis-url]: https://travis-ci.org/dougwilson/nodejs-depd
-[appveyor-image]: https://img.shields.io/appveyor/ci/dougwilson/nodejs-depd/master.svg?label=windows
+[appveyor-image]: https://badgen.net/appveyor/ci/dougwilson/nodejs-depd/master?label=windows
 [appveyor-url]: https://ci.appveyor.com/project/dougwilson/nodejs-depd
-[coveralls-image]: https://img.shields.io/coveralls/dougwilson/nodejs-depd/master.svg
+[coveralls-image]: https://badgen.net/coveralls/c/github/dougwilson/nodejs-depd/master
 [coveralls-url]: https://coveralls.io/r/dougwilson/nodejs-depd?branch=master
-[node-image]: https://img.shields.io/node/v/depd.svg
+[node-image]: https://badgen.net/npm/node/depd
 [node-url]: https://nodejs.org/en/download/
+[npm-downloads-image]: https://badgen.net/npm/dm/depd
+[npm-url]: https://npmjs.org/package/depd
+[npm-version-image]: https://badgen.net/npm/v/depd
+[travis-image]: https://badgen.net/travis/dougwilson/nodejs-depd/master?label=linux
+[travis-url]: https://travis-ci.org/dougwilson/nodejs-depd

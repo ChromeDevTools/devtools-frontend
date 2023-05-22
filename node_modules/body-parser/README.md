@@ -1,8 +1,8 @@
 # body-parser
 
-[![NPM Version][npm-image]][npm-url]
-[![NPM Downloads][downloads-image]][downloads-url]
-[![Build Status][travis-image]][travis-url]
+[![NPM Version][npm-version-image]][npm-url]
+[![NPM Downloads][npm-downloads-image]][npm-url]
+[![Build Status][ci-image]][ci-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 
 Node.js body parsing middleware.
@@ -48,8 +48,6 @@ $ npm install body-parser
 ```
 
 ## API
-
-<!-- eslint-disable no-unused-vars -->
 
 ```js
 var bodyParser = require('body-parser')
@@ -281,14 +279,15 @@ encoding of the request. The parsing can be aborted by throwing an error.
 
 ## Errors
 
-The middlewares provided by this module create errors depending on the error
-condition during parsing. The errors will typically have a `status`/`statusCode`
-property that contains the suggested HTTP response code, an `expose` property
-to determine if the `message` property should be displayed to the client, a
-`type` property to determine the type of error without matching against the
-`message`, and a `body` property containing the read body, if available.
+The middlewares provided by this module create errors using the
+[`http-errors` module](https://www.npmjs.com/package/http-errors). The errors
+will typically have a `status`/`statusCode` property that contains the suggested
+HTTP response code, an `expose` property to determine if the `message` property
+should be displayed to the client, a `type` property to determine the type of
+error without matching against the `message`, and a `body` property containing
+the read body, if available.
 
-The following are the common errors emitted, though any error can come through
+The following are the common errors created, though any error can come through
 for various reasons.
 
 ### content encoding unsupported
@@ -298,6 +297,20 @@ contained an encoding but the "inflation" option was set to `false`. The
 `status` property is set to `415`, the `type` property is set to
 `'encoding.unsupported'`, and the `charset` property will be set to the
 encoding that is unsupported.
+
+### entity parse failed
+
+This error will occur when the request contained an entity that could not be
+parsed by the middleware. The `status` property is set to `400`, the `type`
+property is set to `'entity.parse.failed'`, and the `body` property is set to
+the entity value that failed parsing.
+
+### entity verify failed
+
+This error will occur when the request contained an entity that could not be
+failed verification by the defined `verify` option. The `status` property is
+set to `403`, the `type` property is set to `'entity.verify.failed'`, and the
+`body` property is set to the entity value that failed verification.
 
 ### request aborted
 
@@ -328,6 +341,14 @@ This error will occur when something called the `req.setEncoding` method prior
 to this middleware. This module operates directly on bytes only and you cannot
 call `req.setEncoding` when using this module. The `status` property is set to
 `500` and the `type` property is set to `'stream.encoding.set'`.
+
+### stream is not readable
+
+This error will occur when the request is no longer readable when this middleware
+attempts to read it. This typically means something other than a middleware from
+this module read the request body already and the middleware was also configured to
+read the same request. The `status` property is set to `500` and the `type`
+property is set to `'stream.not.readable'`.
 
 ### too many parameters
 
@@ -433,11 +454,12 @@ app.use(bodyParser.text({ type: 'text/html' }))
 
 [MIT](LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/body-parser.svg
-[npm-url]: https://npmjs.org/package/body-parser
-[travis-image]: https://img.shields.io/travis/expressjs/body-parser/master.svg
-[travis-url]: https://travis-ci.org/expressjs/body-parser
-[coveralls-image]: https://img.shields.io/coveralls/expressjs/body-parser/master.svg
+[ci-image]: https://badgen.net/github/checks/expressjs/body-parser/master?label=ci
+[ci-url]: https://github.com/expressjs/body-parser/actions/workflows/ci.yml
+[coveralls-image]: https://badgen.net/coveralls/c/github/expressjs/body-parser/master
 [coveralls-url]: https://coveralls.io/r/expressjs/body-parser?branch=master
-[downloads-image]: https://img.shields.io/npm/dm/body-parser.svg
-[downloads-url]: https://npmjs.org/package/body-parser
+[node-version-image]: https://badgen.net/npm/node/body-parser
+[node-version-url]: https://nodejs.org/en/download
+[npm-downloads-image]: https://badgen.net/npm/dm/body-parser
+[npm-url]: https://npmjs.org/package/body-parser
+[npm-version-image]: https://badgen.net/npm/v/body-parser

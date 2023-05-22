@@ -25,6 +25,7 @@ var toIdentifier = require('toidentifier')
 
 module.exports = createError
 module.exports.HttpError = createHttpErrorConstructor()
+module.exports.isHttpError = createIsHttpErrorFunction(module.exports.HttpError)
 
 // Populate exports for all constructors
 populateConstructorExports(module.exports, statuses.codes, module.exports.HttpError)
@@ -53,24 +54,18 @@ function createError () {
   var props = {}
   for (var i = 0; i < arguments.length; i++) {
     var arg = arguments[i]
-    if (arg instanceof Error) {
+    var type = typeof arg
+    if (type === 'object' && arg instanceof Error) {
       err = arg
       status = err.status || err.statusCode || status
-      continue
-    }
-    switch (typeof arg) {
-      case 'string':
-        msg = arg
-        break
-      case 'number':
-        status = arg
-        if (i !== 0) {
-          deprecate('non-first-argument status code; replace with createError(' + arg + ', ...)')
-        }
-        break
-      case 'object':
-        props = arg
-        break
+    } else if (type === 'number' && i === 0) {
+      status = arg
+    } else if (type === 'string') {
+      msg = arg
+    } else if (type === 'object') {
+      props = arg
+    } else {
+      throw new TypeError('argument #' + (i + 1) + ' unsupported type ' + type)
     }
   }
 
@@ -79,7 +74,7 @@ function createError () {
   }
 
   if (typeof status !== 'number' ||
-    (!statuses[status] && (status < 400 || status >= 600))) {
+    (!statuses.message[status] && (status < 400 || status >= 600))) {
     status = 500
   }
 
@@ -90,7 +85,7 @@ function createError () {
     // create error
     err = HttpError
       ? new HttpError(msg)
-      : new Error(msg || statuses[status])
+      : new Error(msg || statuses.message[status])
     Error.captureStackTrace(err, createError)
   }
 
@@ -130,11 +125,11 @@ function createHttpErrorConstructor () {
  */
 
 function createClientErrorConstructor (HttpError, name, code) {
-  var className = name.match(/Error$/) ? name : name + 'Error'
+  var className = toClassName(name)
 
   function ClientError (message) {
     // create the error object
-    var msg = message != null ? message : statuses[code]
+    var msg = message != null ? message : statuses.message[code]
     var err = new Error(msg)
 
     // capture a stack trace to the construction point
@@ -173,16 +168,37 @@ function createClientErrorConstructor (HttpError, name, code) {
 }
 
 /**
+ * Create function to test is a value is a HttpError.
+ * @private
+ */
+
+function createIsHttpErrorFunction (HttpError) {
+  return function isHttpError (val) {
+    if (!val || typeof val !== 'object') {
+      return false
+    }
+
+    if (val instanceof HttpError) {
+      return true
+    }
+
+    return val instanceof Error &&
+      typeof val.expose === 'boolean' &&
+      typeof val.statusCode === 'number' && val.status === val.statusCode
+  }
+}
+
+/**
  * Create a constructor for a server error.
  * @private
  */
 
 function createServerErrorConstructor (HttpError, name, code) {
-  var className = name.match(/Error$/) ? name : name + 'Error'
+  var className = toClassName(name)
 
   function ServerError (message) {
     // create the error object
-    var msg = message != null ? message : statuses[code]
+    var msg = message != null ? message : statuses.message[code]
     var err = new Error(msg)
 
     // capture a stack trace to the construction point
@@ -242,7 +258,7 @@ function nameFunc (func, name) {
 function populateConstructorExports (exports, codes, HttpError) {
   codes.forEach(function forEachCode (code) {
     var CodeError
-    var name = toIdentifier(statuses[code])
+    var name = toIdentifier(statuses.message[code])
 
     switch (codeClass(code)) {
       case 400:
@@ -259,8 +275,15 @@ function populateConstructorExports (exports, codes, HttpError) {
       exports[name] = CodeError
     }
   })
+}
 
-  // backwards-compatibility
-  exports["I'mateapot"] = deprecate.function(exports.ImATeapot,
-    '"I\'mateapot"; use "ImATeapot" instead')
+/**
+ * Get a class name from a name identifier.
+ * @private
+ */
+
+function toClassName (name) {
+  return name.substr(-5) !== 'Error'
+    ? name + 'Error'
+    : name
 }

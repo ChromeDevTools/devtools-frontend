@@ -192,16 +192,13 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     this.continuousRepaintSetting = Common.Settings.Settings.instance().moduleSetting('continuousRepaint');
 
     this.contentElement.classList.add('cohtml-panel-base');
-    this.controlsPanel = this.contentElement.createChild('div');
-    this.controlsPanel.classList.add('cohtml-panel', 'controls-panel');
+    this.controlsPanel = this.contentElement.createChild('div', 'cohtml-panel controls-panel');
     this.controlsPanel.style.width = `${this.currentControlsWidth}%`;
 
-    this.sidebar = this.contentElement.createChild('div');
-    this.sidebar.classList.add('cohtml-sider');
+    this.sidebar = this.contentElement.createChild('div', 'cohtml-sider');
     this.addSidebarEvents();
 
-    this.contentPanel = this.contentElement.createChild('div');
-    this.contentPanel.classList.add('cohtml-panel', 'content-panel');
+    this.contentPanel = this.contentElement.createChild('div', 'cohtml-panel content-panel');
 
     this.createToggleSettingsSection();
     this.createActionsSection();
@@ -224,12 +221,13 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     });
   }
 
-  private fetchCacheStates() {
-    const cacheStats = this.cohtmlDebugModel?.getRenoirCahcesState();
-    cacheStats?.then((stats) => {
-      // update the HTML elements displaying the currenet capacity count and bytes
-      this.updateReniorCachesUI(stats);
-    });
+  private async fetchCacheStates() {
+    if (!this.cohtmlDebugModel) return;
+
+    const stats = await this.cohtmlDebugModel.getRenoirCahcesState();
+
+    // update the HTML elements displaying the currenet capacity count and bytes
+    this.updateReniorCachesUI(stats);
   }
 
   private updateCacheUI(state: Protocol.CohtmlDebug.RenoirCache | undefined) {
@@ -273,7 +271,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
       entryName.innerText = UIStrings.capacityStr;
 
       // input field where the user enters the desired cache size
-      let entryInput = capacityWrapper.createChild('input');
+      let entryInput = capacityWrapper.createChild('input') as HTMLInputElement;
       entryInput.setAttribute('type', 'number');
 
       const unitsWrapper = firstRow.createChild('div', 'cache-option');
@@ -283,13 +281,18 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
       let types: string[] = ["Count", "Bytes", "KBs", "MBs"];
       let unitSelect = this.appendSelect("Type", types, unitsWrapper);
 
-      const buttonWrapper = firstRow.createChild('div', 'cache-option');
+      const buttonWrapper = firstRow.createChild('div', 'cache-option button-wrapper');
       // button for updating the corresponding cache.
       const entryButton = UI.UIUtils.createTextButton(i18nString(UIStrings.updateCacheStr), void 0, 'cohtml-button margin-top-0');
       UI.ARIAUtils.markAsLink(entryButton);
+      entryButton.disabled = !entryInput.value;
+      //@ts-ignore
+      entryInput.addEventListener('input', (event) => entryButton.disabled = !event.target.value)
       buttonWrapper.appendChild(entryButton);
 
-      entryButton.onclick = () => {
+      buttonWrapper.createChild('div', 'icon');
+
+      entryButton.onclick = async (event: Event) => {
         let inputElement = (entryInput as HTMLInputElement);
         if (inputElement.value.length == 0) {
           return;
@@ -318,15 +321,18 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
             capacityCount: setCount ? newSize : -1
           };
 
+          const button = event.currentTarget;
+          this.toggleButtonLoadingIndicator(button, true);
           // send the data to the backend (the C++ code)
-          this.cohtmlDebugModel?.setRenoirCacheState(state);
+          await this.cohtmlDebugModel?.setRenoirCacheState(state);
 
           // Cohtml does not update the caches immediatly but rather on the
           // next frame. Hence we can't request the new cache state immediatly but
           // have to "wait a little bit". 100ms is plenty of time but still keeps the
           // updating feeling interactive
-          setTimeout(() => {
-            this.fetchCacheStates();
+          setTimeout(async () => {
+            await this.fetchCacheStates();
+            this.toggleButtonLoadingIndicator(button, false);
           }, 100);
         }
       };
@@ -349,7 +355,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     // create the entry in the frontend map for the caches state
     this.renoirCachesUIState.set(id, newCacheUIEntry);
-    parent.createChild('div').classList.add('panel-section-separator');
+    parent.createChild('div', 'panel-section-separator')
   }
 
   static instance(opts: {
@@ -417,7 +423,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
       this.controlsPanel
     );
 
-    this.controlsPanel.createChild('div').classList.add('panel-section-separator');
+    this.controlsPanel.createChild('div', 'panel-section-separator')
   }
 
   private createActionsSection() {
@@ -429,7 +435,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     this.createSimpleButton(UIStrings.captureBackendTitle, UIStrings.captureBackendDesc, 'captureBackend', this.controlsPanel, UIStrings.captureBackendSubDesc);
     this.createSimpleButton(UIStrings.captureRendTitle, UIStrings.captureRendDesc, 'captureRend', this.controlsPanel, UIStrings.captureRendSubDesc);
     this.createSimpleButton(UIStrings.capturePageTitle, UIStrings.capturePageDesc, 'capturePage', this.controlsPanel, UIStrings.capturePageSubDesc);
-    this.controlsPanel.createChild('div').classList.add('panel-section-separator');
+    this.controlsPanel.createChild('div', 'panel-section-separator');
   }
 
   private createRenderingCachesSection() {
@@ -438,7 +444,7 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     this.renoirCachesWrapper = this.controlsPanel.createChild('div');
 
-    this.controlsPanel.createChild('div').classList.add('panel-section-separator');
+    this.controlsPanel.createChild('div', 'panel-section-separator');
   }
 
   private createCacheControlsSection() {
@@ -446,29 +452,30 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
     this.createSimpleButton(UIStrings.clearCachedUnusedImagesTitle, UIStrings.clearCachedUnusedImagesDesc, 'clearCachedUnusedImages', this.controlsPanel);
 
-    this.createButton(UIStrings.getSystemCacheTitle, UIStrings.getSystemCacheDesc, this.controlsPanel, () => {
+    this.createButton(UIStrings.getSystemCacheTitle, UIStrings.getSystemCacheDesc, this.controlsPanel, async (event: Event) => {
       if (this.cohtmlDebugModel) {
+        const button = event.currentTarget;
+        this.toggleButtonLoadingIndicator(button, true, true);
         const cacheStats = this.cohtmlDebugModel.getSystemCacheStats();
         cacheStats?.then((obj) => {
           if (obj) {
             this.displayImagesInContentPanel(obj);
+            this.toggleButtonLoadingIndicator(button, false, true);
           }
         });
       }
     });
 
-    this.controlsPanel.createChild('div').classList.add('panel-section-separator');
+    this.controlsPanel.createChild('div', 'panel-section-separator');
   }
 
   private createSectionHeader(parentElement: HTMLElement, title: string) {
-    const header = parentElement.createChild('div');
-    header.classList.add('cohtml-section-header');
+    const header = parentElement.createChild('div', 'cohtml-section-header');
     header.innerText = title;
   }
 
   private createSubSectionHeader(parentElement: HTMLElement, title: string) {
-    const header = parentElement.createChild('div');
-    header.classList.add('cohtml-sub-section-header');
+    const header = parentElement.createChild('div', 'cohtml-sub-section-header');
     header.innerText = title;
   }
 
@@ -494,25 +501,50 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
       });
     }
 
-    this.contentPanel.createChild('div').classList.add('panel-section-separator');
+    this.contentPanel.createChild('div', 'panel-section-separator');
     this.createSectionHeader(this.contentPanel, 'Alive Images List');
     displayImagesAsUl(imagesList.stats.aliveImages, this.contentPanel);
-    this.contentPanel.createChild('div').classList.add('panel-section-separator');
+    this.contentPanel.createChild('div', 'panel-section-separator')
     this.createSectionHeader(this.contentPanel, 'Orphen Images List');
     displayImagesAsUl(imagesList.stats.orphanedImages, this.contentPanel);
   }
 
+  private toggleButtonLoadingIndicator(button: EventTarget | null, spinnerVisible: boolean, displayReadyMessage: boolean = false) {
+    if (!button) return;
+    //@ts-ignore
+    const buttonBlock = button.parentElement as HTMLElement;
+    if (!buttonBlock) return;
+
+    const loadingIndicator = buttonBlock.querySelector('.icon');
+    loadingIndicator?.classList.toggle('hidden', !spinnerVisible);
+    loadingIndicator?.classList.toggle('spinner', spinnerVisible);
+    if (displayReadyMessage) {
+      const readyMessage = buttonBlock.querySelector('.ready-message');
+
+      if (!spinnerVisible) {
+        readyMessage?.classList.toggle('visibility-hidden', false);
+        readyMessage?.classList.toggle('fade-out', true);
+      } else {
+        readyMessage?.classList.toggle('visibility-hidden', true);
+        readyMessage?.classList.toggle('fade-out', false);
+      }
+    }
+  }
+
   private createSimpleButton(title: string, description: string, method: any, parent: HTMLElement, subDescription?: string) {
-    this.createButton(title, description, parent, () => {
+    this.createButton(title, description, parent, async (event: Event) => {
       if (this.cohtmlDebugModel && this.cohtmlDebugModel[method]) {
-        this.cohtmlDebugModel[method]();
+        const button = event.currentTarget;
+        this.toggleButtonLoadingIndicator(button, true, true);
+        const res = await this.cohtmlDebugModel[method]();
+        this.toggleButtonLoadingIndicator(button, false, true);
       }
     }, subDescription);
   }
 
   private appendSelect(name: string, options: string[], element: HTMLElement): HTMLSelectElement {
-    const select = element.createChild('select');
-    select.classList.add('chrome-select');
+    const select = element.createChild('select', 'chrome-select');
+
     for (let index = 0; index < options.length; ++index) {
       const option = (select.createChild('option') as HTMLOptionElement);
       option.value = options[index];
@@ -521,26 +553,27 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     return select as HTMLSelectElement;
   }
 
-  private createButton(label: string, desc: string, parent: HTMLElement, click: () => void, subDescription?: string) {
-    const newButtonBlock = parent.createChild('div');
-    newButtonBlock.classList.add('button-block');
-
+  private createButton(label: string, desc: string, parent: HTMLElement, click: (event: Event) => void, subDescription?: string) {
+    const newButtonBlock = parent.createChild('div', 'button-block');
     const buttonItem = UI.UIUtils.createTextButton(i18nString(label), click, 'cohtml-button');
     UI.ARIAUtils.markAsLink(buttonItem);
 
-    const descItem = newButtonBlock.createChild('div');
-    descItem.classList.add('button-desc');
+    const descItem = newButtonBlock.createChild('div', 'button-desc');
     descItem.innerText = desc;
     newButtonBlock.appendChild(descItem);
 
     if (subDescription) {
-      const subDescItem = newButtonBlock.createChild('div');
-      subDescItem.classList.add('button-sub-desc');
+      const subDescItem = newButtonBlock.createChild('div', 'button-sub-desc');
       subDescItem.innerText = subDescription;
       newButtonBlock.appendChild(subDescItem);
     }
+    const buttonWithLoader = newButtonBlock.createChild('div', 'button-wrapper');
+    buttonWithLoader.appendChild(buttonItem);
+    buttonWithLoader.createChild('div', 'icon hidden');
 
-    newButtonBlock.appendChild(buttonItem);
+    const readyIndicator = buttonWithLoader.createChild('div', 'ready-message visibility-hidden');
+    readyIndicator.textContent = 'Ready!';
+
   }
 
   private createCheckbox(label: string, subtitle: string, setting: Common.Settings.Setting<boolean>):

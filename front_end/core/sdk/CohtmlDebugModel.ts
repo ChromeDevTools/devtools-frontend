@@ -67,32 +67,32 @@ export class CohtmlDebugModel extends SDKModel<void> implements ProtocolProxyApi
     await this.cohtmlDebugAgent.invoke_enable();
   }
 
-  dumpDOM(): void {
-    this.cohtmlDebugAgent.invoke_dumpDOM();
+  dumpDOM(): Promise<Protocol.ProtocolResponseWithError> {
+    return this.cohtmlDebugAgent.invoke_dumpDOM();
   }
 
-  dumpStackingContext(): void {
-    this.cohtmlDebugAgent.invoke_dumpStackingContext();
+  dumpStackingContext(): Promise<Protocol.ProtocolResponseWithError> {
+    return this.cohtmlDebugAgent.invoke_dumpStackingContext();
   }
 
-  dumpUsedImages(): void {
-    this.cohtmlDebugAgent.invoke_dumpUsedImages();
+  dumpUsedImages(): Promise<Protocol.ProtocolResponseWithError> {
+    return this.cohtmlDebugAgent.invoke_dumpUsedImages();
   }
 
-  captureBackend(): void {
-    this.cohtmlDebugAgent.invoke_captureBackendBuffers();
+  captureBackend(): Promise<Protocol.ProtocolResponseWithError> {
+    return this.cohtmlDebugAgent.invoke_captureBackendBuffers();
   }
 
-  captureRend(): void {
-    this.cohtmlDebugAgent.invoke_captureRendFile();
+  captureRend(): Promise<Protocol.ProtocolResponseWithError> {
+    return this.cohtmlDebugAgent.invoke_captureRendFile();
   }
 
-  capturePage(): void {
-    this.cohtmlDebugAgent.invoke_captureFullPage();
+  capturePage(): Promise<Protocol.ProtocolResponseWithError> {
+    return this.cohtmlDebugAgent.invoke_captureFullPage();
   }
 
-  clearCachedUnusedImages(): void {
-    this.cohtmlDebugAgent.invoke_clearCachedUnusedImages();
+  clearCachedUnusedImages(): Promise<Protocol.ProtocolResponseWithError> {
+    return this.cohtmlDebugAgent.invoke_clearCachedUnusedImages();
   }
 
   async getAvailableRenoirCahces() : Promise<Protocol.CohtmlDebug.RenoirCache[]|null> {
@@ -120,11 +120,11 @@ export class CohtmlDebugModel extends SDKModel<void> implements ProtocolProxyApi
     return response.stats;
   }
 
-  setRenoirCacheState(stateToSet: Protocol.CohtmlDebug.RenoirCache): void {
+  async setRenoirCacheState(stateToSet: Protocol.CohtmlDebug.RenoirCache): Promise<void> {
     const param: Protocol.CohtmlDebug.SetRenoirCachesStateRequest = {
       state : stateToSet
     };
-    this.cohtmlDebugAgent.invoke_setRenoirCachesState(param);
+    await this.cohtmlDebugAgent.invoke_setRenoirCachesState(param);
   }
 
 }

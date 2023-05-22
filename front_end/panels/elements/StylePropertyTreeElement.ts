@@ -252,6 +252,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       void this.applyStyleText(this.renderedPropertyText(), false);
     };
 
+    swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, () => {
+      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Color);
+    });
     swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);
 
     if (this.editable()) {
@@ -289,7 +292,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       swatch.data = {
         text: animationName,
         isDefined,
-        onLinkActivate: () => this.parentPaneInternal.jumpToSectionBlock(`@keyframes ${animationName}`),
+        onLinkActivate: (): void => {
+          Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.AnimationNameLink);
+          this.parentPaneInternal.jumpToSectionBlock(`@keyframes ${animationName}`);
+        },
       };
       contentChild.appendChild(swatch);
 
@@ -346,7 +352,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     swatch.data = {
       text: propertyText,
       isDefined,
-      onLinkActivate: () => this.parentPaneInternal.jumpToSectionBlock(`@position-fallback ${propertyText}`),
+      onLinkActivate: (): void => {
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.PositionFallbackLink);
+        this.parentPaneInternal.jumpToSectionBlock(`@position-fallback ${propertyText}`);
+      },
     };
     contentChild.appendChild(swatch);
 
@@ -495,6 +504,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   private handleVarDefinitionActivate(variableName: string): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
+    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VarLink);
     this.parentPaneInternal.jumpToProperty(variableName);
   }
 
@@ -523,6 +533,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     const swatchPopoverHelper = this.parentPaneInternal.swatchPopoverHelper();
     const swatch = InlineEditor.Swatches.BezierSwatch.create();
+    swatch.iconElement().addEventListener('click', () => {
+      Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.AnimationTiming);
+    });
     swatch.setBezierText(text);
     new BezierPopoverIcon({treeElement: this, swatchPopoverHelper, swatch});
     return swatch;
@@ -558,9 +571,15 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       // TODO(flandy): editing the property value should use the original value with all spaces.
       const cssShadowSwatch = InlineEditor.Swatches.CSSShadowSwatch.create();
       cssShadowSwatch.setCSSShadow(shadows[i]);
+      cssShadowSwatch.iconElement().addEventListener('click', () => {
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Shadow);
+      });
       new ShadowSwatchPopoverHelper(this, swatchPopoverHelper, cssShadowSwatch);
       const colorSwatch = cssShadowSwatch.colorSwatch();
       if (colorSwatch) {
+        colorSwatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, () => {
+          Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Color);
+        });
         const swatchIcon = new ColorSwatchPopoverIcon(this, swatchPopoverHelper, colorSwatch);
         swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.ColorChanged, ev => {
           // TODO(crbug.com/1402233): Is it really okay to dispatch an event from `Swatch` here?
@@ -622,6 +641,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       if (data.open) {
         this.parentPaneInternal.hideAllPopovers();
         this.parentPaneInternal.activeCSSAngle = cssAngle;
+        Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Angle);
       }
 
       section.element.classList.toggle('has-open-popover', data.open);
@@ -932,6 +952,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             this.parentPaneInternal, section, isFlex ? FlexboxEditor : GridEditor,
             isFlex ? i18nString(UIStrings.flexboxEditorButton) : i18nString(UIStrings.gridEditorButton), key);
         section.nextEditorTriggerButtonIdx++;
+        button.addEventListener('click', () => {
+          Host.userMetrics.swatchActivated(
+              isFlex ? Host.UserMetrics.SwatchType.Flex : Host.UserMetrics.SwatchType.Grid);
+        });
         this.listItemElement.appendChild(button);
         const helper = this.parentPaneInternal.swatchPopoverHelper();
         if (helper.isShowing(StyleEditorWidget.instance()) && StyleEditorWidget.instance().getTriggerKey() === key) {

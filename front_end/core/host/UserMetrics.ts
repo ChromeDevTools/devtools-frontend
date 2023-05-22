@@ -364,6 +364,11 @@ export class UserMetrics {
         EnumeratedHistogram.CSSPropertyDocumentation, type, CSSPropertyDocumentation.MaxValue);
   }
 
+  swatchActivated(swatch: SwatchType): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.SwatchActivated, swatch, SwatchType.MaxValue);
+  }
+
   breakpointsRestoredFromStorage(count: number): void {
     const countBucket = this.#breakpointCountToBucket(count);
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
@@ -1316,3 +1321,16 @@ export enum LighthouseModeRun {
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */
+export const enum SwatchType {
+  VarLink = 0,
+  AnimationNameLink = 1,
+  Color = 2,
+  AnimationTiming = 3,
+  Shadow = 4,
+  Grid = 5,
+  Flex = 6,
+  Angle = 7,
+  Length = 8,
+  PositionFallbackLink = 9,
+  MaxValue = 10,
+}

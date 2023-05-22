@@ -434,6 +434,10 @@ const EnumeratedHistogram = {
   ColorConvertedFrom: 'DevTools.ColorConvertedFrom',
   ColorPickerOpenedFrom: 'DevTools.ColorPickerOpenedFrom',
   CSSPropertyDocumentation: 'DevTools.CSSPropertyDocumentation',
+  InlineScriptParsed: 'DevTools.InlineScriptParsed',
+  VMInlineScriptTypeShown: 'DevTools.VMInlineScriptShown',
+  BreakpointsRestoredFromStorageCount: 'DevTools.BreakpointsRestoredFromStorageCount',
+  SwatchActivated: 'DevTools.SwatchActivated',
 };
 
 /**

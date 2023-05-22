@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../../core/host/host.js';
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
+
 import cssLengthStyles from './cssLength.css.js';
 
 import {LengthUnit, LENGTH_UNITS, parseText, type Length} from './CSSLengthUtils.js';
@@ -119,6 +121,8 @@ export class CSSLength extends HTMLElement {
   private onUnitMouseup(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
+
+    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Length);
   }
 
   private render(): void {

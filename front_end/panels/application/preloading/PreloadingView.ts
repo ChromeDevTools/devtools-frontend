@@ -219,8 +219,8 @@ class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.Pre
     this.view.render();
   }
 
-  modelRemoved(_model: SDK.PreloadingModel.PreloadingModel): void {
-    this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
+  modelRemoved(model: SDK.PreloadingModel.PreloadingModel): void {
+    model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
   }
 }
 

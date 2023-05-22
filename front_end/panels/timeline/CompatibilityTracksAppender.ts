@@ -6,6 +6,7 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as Common from '../../core/common/common.js';
 import {
   type TimelineFlameChartEntry,
   EntryType,
@@ -85,6 +86,7 @@ export class CompatibilityTracksAppender {
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration;
   #entryData: TimelineFlameChartEntry[];
+  #colorGenerator: Common.Color.Generator;
   #indexForEvent = new WeakMap<TraceEngine.Types.TraceEvents.TraceEventData, number>();
   #allTrackAppenders: TrackAppender[] = [];
   #visibleTrackNames: Set<TrackAppenderName> = new Set([...TrackNames]);
@@ -122,13 +124,20 @@ export class CompatibilityTracksAppender {
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
     this.#entryData = entryData;
+    this.#colorGenerator = new Common.Color.Generator(
+        /* hueSpace= */ {min: 30, max: 55, count: undefined},
+        /* satSpace= */ {min: 70, max: 100, count: 6},
+        /* lightnessSpace= */ 50,
+        /* alphaSpace= */ 0.7);
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
     this.#legacyTimelineModel = legacyTimelineModel;
 
-    this.#timingsTrackAppender = new TimingsTrackAppender(this, this.#flameChartData, this.#traceParsedData);
+    this.#timingsTrackAppender =
+        new TimingsTrackAppender(this, this.#flameChartData, this.#traceParsedData, this.#colorGenerator);
     this.#allTrackAppenders.push(this.#timingsTrackAppender);
 
-    this.#interactionsTrackAppender = new InteractionsTrackAppender(this, this.#flameChartData, this.#traceParsedData);
+    this.#interactionsTrackAppender =
+        new InteractionsTrackAppender(this, this.#flameChartData, this.#traceParsedData, this.#colorGenerator);
     this.#allTrackAppenders.push(this.#interactionsTrackAppender);
 
     this.#gpuTrackAppender = new GPUTrackAppender(this, this.#traceParsedData);

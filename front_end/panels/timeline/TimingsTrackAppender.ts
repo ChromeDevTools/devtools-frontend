@@ -13,7 +13,7 @@ import {
 import * as i18n from '../../core/i18n/i18n.js';
 import {TimelineFlameChartMarker} from './TimelineFlameChartView.js';
 import {type TimelineMarkerStyle} from './TimelineUIUtils.js';
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 
 const UIStrings = {
@@ -36,15 +36,10 @@ export class TimingsTrackAppender implements TrackAppender {
 
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration) {
+      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
+      colorGenerator: Common.Color.Generator) {
     this.#compatibilityBuilder = compatibilityBuilder;
-    this.#colorGenerator = new Common.Color.Generator(
-        {
-          min: 30,
-          max: 55,
-          count: undefined,
-        },
-        {min: 70, max: 100, count: 6}, 50, 0.7);
+    this.#colorGenerator = colorGenerator;
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
   }

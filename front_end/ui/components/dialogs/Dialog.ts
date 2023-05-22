@@ -87,7 +87,7 @@ export class Dialog extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-dialog`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
-  readonly #forceDialogCloseInDevToolsBound = this.#forceDialogCloseInDevTools.bind(this);
+  readonly #forceDialogCloseInDevToolsBound = this.#forceDialogCloseInDevToolsMutation.bind(this);
   readonly #handleScrollAttemptBound = this.#handleScrollAttempt.bind(this);
   readonly #props: DialogData = {
     origin: MODAL,
@@ -606,7 +606,16 @@ export class Dialog extends HTMLElement {
     this.dispatchEvent(new ForcedDialogClose());
   }
 
-  #forceDialogCloseInDevTools(): void {
+  #onCancel(event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    if (!this.#getDialog().hasAttribute('open') || !this.#props.closeOnESC) {
+      return;
+    }
+    this.dispatchEvent(new ForcedDialogClose());
+  }
+
+  #forceDialogCloseInDevToolsMutation(): void {
     if (!this.#dialog?.hasAttribute('open')) {
       return;
     }
@@ -614,8 +623,8 @@ export class Dialog extends HTMLElement {
       // Do not close if running in test environment.
       return;
     }
-    this.dispatchEvent(new ForcedDialogClose());
     this.#closeDialog();
+    this.dispatchEvent(new ForcedDialogClose());
   }
 
   #closeDialog(): void {
@@ -654,7 +663,7 @@ export class Dialog extends HTMLElement {
 
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent}>
+      <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel}>
         <div id="content-wrap">
           <div id="content">
             <slot></slot>

@@ -7,10 +7,12 @@ import {assert} from 'chai';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../../test/interactions/helpers/shared.js';
 import {
   $,
+  activeElement,
   click,
   clickElement,
   getBrowserAndPages,
   waitFor,
+  waitForFunction,
   waitForNone,
 } from '../../../../test/shared/helper.js';
 import {describe, it} from '../../../../test/shared/mocha-extensions.js';
@@ -195,6 +197,31 @@ describe('SelectMenu', () => {
     await frontend.keyboard.press('Tab');
     await frontend.keyboard.press('Tab');
     await frontend.keyboard.press('ArrowUp');
+    await waitFor('dialog[open]');
+  });
+
+  it('can close a menu with ESC and open it again using the keyboard', async () => {
+    const {frontend} = getBrowserAndPages();
+    await loadComponentDocExample('select_menu/basic.html');
+
+    // Focus the first select menu, which deploys downwards and open it using the
+    // down arrow key.
+    await frontend.keyboard.press('Tab');
+    await frontend.keyboard.press('ArrowDown');
+    const placeHolder1 = await waitFor('#place-holder-1');
+    await waitFor('dialog[open]', placeHolder1);
+
+    await frontend.keyboard.press('Escape');
+    await waitFor('dialog:not([open])', placeHolder1);
+
+    await frontend.keyboard.press('Tab');
+    // Wait until the focus is set on the button that opens the menu.
+    await waitForFunction(async () => {
+      const activeElementHandle = await activeElement();
+      const activeElementName = await activeElementHandle.evaluate(e => e.tagName);
+      return activeElementName === 'BUTTON';
+    });
+    await frontend.keyboard.press('ArrowDown');
     await waitFor('dialog[open]');
   });
 

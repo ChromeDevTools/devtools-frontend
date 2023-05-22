@@ -193,6 +193,7 @@ describe('SelectMenu', () => {
     // Focus the second select menu, which deploys upwards and open it using the
     // up arrow key.
     await frontend.keyboard.press('Tab');
+    await frontend.keyboard.press('Tab');
     await frontend.keyboard.press('ArrowUp');
     await waitFor('dialog[open]');
   });

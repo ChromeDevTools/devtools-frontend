@@ -175,3 +175,7 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
 .flex-right {
   margin-left: auto;
 }
+
+.flex-columns {
+  flex-direction: column;
+}

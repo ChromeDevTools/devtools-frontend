@@ -136,6 +136,10 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assertElement(headerName, HTMLDivElement);
     assert.strictEqual(headerName.textContent?.trim(), 'x-client-data:');
 
+    const headerValue = component.shadowRoot.querySelector('.header-value');
+    assertElement(headerValue, HTMLDivElement);
+    assert.isTrue(headerValue.classList.contains('flex-columns'));
+
     assert.isTrue(
         (getCleanTextContentFromElements(component.shadowRoot, '.header-value')[0]).startsWith('CJa2yQEIpLbJAQiTocsB'));
 

@@ -359,7 +359,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assert.strictEqual(primaryPageChangedEvents.length, 1);
   });
 
-  it('rebuilds the resource tree from scratch upon bfcache-navigation', async () => {
+  it('rebuilds the resource tree upon bfcache-navigation', async () => {
     const target = createTarget();
     const frameManager = SDK.FrameManager.FrameManager.instance();
     const removedFromFrameManagerSpy = sinon.spy(frameManager, 'modelRemoved');
@@ -368,6 +368,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     await resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
     const cachedResourcesLoaded = resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
     const processPendingEventsSpy = sinon.spy(resourceTreeModel, 'processPendingEvents');
+    const initialFrame = resourceTreeModel.frames()[0];
 
     dispatchEvent(
         target, 'Page.frameNavigated',
@@ -377,5 +378,10 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assert.isTrue(removedFromFrameManagerSpy.calledOnce);
     assert.isTrue(addedToFrameManagerSpy.calledOnce);
     assert.isTrue(processPendingEventsSpy.calledTwice);
+
+    const frameAfterNav = resourceTreeModel.frames()[0];
+    assert.strictEqual(
+        initialFrame, frameAfterNav,
+        'Instead of keeping the existing frame, a new frame was created upon bfcache-navigation');
   });
 });

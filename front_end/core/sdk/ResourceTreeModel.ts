@@ -369,7 +369,10 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   private addFramesRecursively(
       sameTargetParentFrame: ResourceTreeFrame|null, frameTreePayload: Protocol.Page.FrameResourceTree): void {
     const framePayload = frameTreePayload.frame;
-    const frame = new ResourceTreeFrame(this, sameTargetParentFrame, framePayload.id, framePayload, null);
+    let frame = this.framesInternal.get(framePayload.id);
+    if (!frame) {
+      frame = new ResourceTreeFrame(this, sameTargetParentFrame, framePayload.id, framePayload, null);
+    }
     if (!sameTargetParentFrame && framePayload.parentId) {
       frame.crossTargetParentFrameId = framePayload.parentId;
     }

@@ -2175,6 +2175,8 @@ export interface GroupStyle {
   backgroundColor: string;
   nestingLevel: number;
   itemsHeight?: number;
+  /** Allow entries to be placed on the same horizontal level as the text heading */
+  // TODO(paulirish): Attempt to remove with this behavior always true
   shareHeaderLine?: boolean;
   useFirstLineForOverview?: boolean;
   useDecoratorsForOverview?: boolean;

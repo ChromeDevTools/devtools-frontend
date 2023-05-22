@@ -48,12 +48,11 @@ describeWithEnvironment('TimingTrackAppender', function() {
     it('marks all levels used by the track with the `TrackAppender` type', () => {
       // 8 levels should be taken:
       //   * 1 for page load marks.
-      //   * 1 added for spacing between page load marks and user timings.
       //   * 1 performance.marks.
       //   * 3 used by performance.measures.
       //   * 1 used by console timestamps.
       //   * 1 used by console.time calls.
-      const levelCount = 8;
+      const levelCount = 7;
       assert.strictEqual(entryTypeByLevel.length, levelCount);
       const allEntriesAreTrackAppender =
           entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender);

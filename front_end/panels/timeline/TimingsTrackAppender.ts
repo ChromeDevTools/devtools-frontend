@@ -71,10 +71,6 @@ export class TimingsTrackAppender implements TrackAppender {
     }
     this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
     let newLevel = this.#appendMarkersAtLevel(trackStartLevel);
-    // Add some vertical space between page load markers and user
-    // timings by appending timings 2 levels after the markers' level.
-    newLevel++;
-
     newLevel = this.#compatibilityBuilder.appendEventsAtLevel(performanceMarks, newLevel, this);
     newLevel = this.#compatibilityBuilder.appendEventsAtLevel(performanceMeasures, newLevel, this);
     newLevel = this.#compatibilityBuilder.appendEventsAtLevel(timestampEvents, newLevel, this);

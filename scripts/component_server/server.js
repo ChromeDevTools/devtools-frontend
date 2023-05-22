@@ -16,7 +16,7 @@ const {getTestRunnerConfigSetting} = require('../test/test_config_helpers.js');
 
 const match = require('minimatch');
 
-const tracesMode = argv.traces;
+const tracesMode = argv.traces || false;
 const serverPort = parseInt(process.env.PORT, 10) || tracesMode ? 11010 : 8090;
 const target = argv.target || process.env.TARGET || 'Default';
 
@@ -246,7 +246,6 @@ async function requestHandler(request, response) {
     send404(response, '404, no favicon');
     return;
   }
-
   if (['/', '/index.html'].includes(filePath) && tracesMode === false) {
     const components =
         await fs.promises.readdir(path.join(componentDocsBaseFolder, 'front_end', 'ui', 'components', 'docs'));

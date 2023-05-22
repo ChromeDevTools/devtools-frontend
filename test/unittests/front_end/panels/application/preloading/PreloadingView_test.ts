@@ -313,7 +313,7 @@ describeWithMockConnection('PreloadingView', async () => {
         ['URL', 'Action', 'Status'],
         [
           [
-            'https://example.com/prerendered.html',
+            '/prerendered.html',
             'prerender',
             'Running',
           ],
@@ -323,6 +323,45 @@ describeWithMockConnection('PreloadingView', async () => {
     const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
 
     assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+  });
+
+  it('shows full URL in attempts grid if cross-domain', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["https://different-domain.example.com/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    await coordinator.done();
+
+    const ruleSetGridComponent = view.getRuleSetGridForTest();
+    assertShadowRoot(ruleSetGridComponent.shadowRoot);
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            'https://different-domain.example.com/prerendered.html',
+            'prerender',
+            'Running',
+          ],
+        ],
+    );
   });
 
   it('shows error of rule set', async () => {
@@ -500,7 +539,7 @@ describeWithMockConnection('PreloadingView', async () => {
         ['URL', 'Action', 'Status'],
         [
           [
-            'https://example.com/prerendered.html',
+            '/prerendered.html',
             'prerender',
             'Running',
           ],
@@ -584,12 +623,12 @@ describeWithMockConnection('PreloadingView', async () => {
         ['URL', 'Action', 'Status'],
         [
           [
-            'https://example.com/subresource2.js',
+            '/subresource2.js',
             'prefetch',
             'Running',
           ],
           [
-            'https://example.com/prerendered3.html',
+            '/prerendered3.html',
             'prerender',
             'Running',
           ],
@@ -611,7 +650,7 @@ describeWithMockConnection('PreloadingView', async () => {
         ['URL', 'Action', 'Status'],
         [
           [
-            'https://example.com/subresource2.js',
+            '/subresource2.js',
             'prefetch',
             'Running',
           ],
@@ -628,12 +667,12 @@ describeWithMockConnection('PreloadingView', async () => {
         ['URL', 'Action', 'Status'],
         [
           [
-            'https://example.com/subresource2.js',
+            '/subresource2.js',
             'prefetch',
             'Running',
           ],
           [
-            'https://example.com/prerendered3.html',
+            '/prerendered3.html',
             'prerender',
             'Running',
           ],

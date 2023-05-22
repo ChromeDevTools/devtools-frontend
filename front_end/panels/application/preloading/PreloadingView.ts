@@ -4,6 +4,7 @@
 
 import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 
+import * as Common from '../../../core/common/common.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -445,13 +446,20 @@ export class PreloadingView extends UI.Widget.VBox {
 
     // Update preloaidng grid
     const filteringRuleSetId = this.checkboxFilterBySelectedRuleSet.checked() ? this.focusedRuleSetId : null;
-    const preloadingAttemptRows =
-        this.modelProxy.model.getPreloadingAttempts(filteringRuleSetId).map(({id, value}) => ({
-                                                                              id,
-                                                                              action: PreloadingUIUtils.action(value),
-                                                                              url: value.key.url,
-                                                                              status: PreloadingUIUtils.status(value),
-                                                                            }));
+    const url = SDK.TargetManager.TargetManager.instance().inspectedURL();
+    const securityOrigin = url ? (new Common.ParsedURL.ParsedURL(url)).securityOrigin() : null;
+    const preloadingAttemptRows = this.modelProxy.model.getPreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
+      // Shorten URL if a preloading attempt is same-origin.
+      const orig = value.key.url;
+      const url = securityOrigin && orig.startsWith(securityOrigin) ? orig.slice(securityOrigin.length) : orig;
+
+      return {
+        id,
+        url,
+        action: PreloadingUIUtils.action(value),
+        status: PreloadingUIUtils.status(value),
+      };
+    });
     this.preloadingGrid.update(preloadingAttemptRows);
 
     this.updatePreloadingDetails();

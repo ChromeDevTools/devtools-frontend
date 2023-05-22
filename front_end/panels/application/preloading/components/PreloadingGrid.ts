@@ -61,14 +61,14 @@ export class PreloadingGrid extends HTMLElement {
         {
           id: 'action',
           title: i18nString(UIStrings.action),
-          widthWeighting: 10,
+          widthWeighting: 15,
           hideable: false,
           visible: true,
         },
         {
           id: 'status',
           title: i18nString(UIStrings.status),
-          widthWeighting: 20,
+          widthWeighting: 15,
           hideable: false,
           visible: true,
         },

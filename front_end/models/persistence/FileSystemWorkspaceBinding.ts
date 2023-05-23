@@ -29,6 +29,7 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -326,8 +327,13 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   }
 
   populate(): void {
-    const chunkSize = 1000;
     const filePaths = this.fileSystemInternal.initialFilePaths();
+    if (filePaths.length === 0) {
+      return;
+    }
+
+    const chunkSize = 1000;
+    const startTime = performance.now();
     reportFileChunk.call(this, 0);
 
     function reportFileChunk(this: FileSystem, from: number): void {
@@ -337,6 +343,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
       }
       if (to < filePaths.length) {
         window.setTimeout(reportFileChunk.bind(this, to), 100);
+      } else if (this.type() === 'filesystem') {
+        Host.userMetrics.workspacesPopulated(performance.now() - startTime);
       }
     }
   }

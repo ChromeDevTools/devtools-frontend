@@ -406,6 +406,11 @@ export class UserMetrics {
     }
     return BreakpointsRestoredFromStorageCount.Above1000000;
   }
+
+  workspacesPopulated(wallClockTimeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+        'DevTools.Workspaces.PopulateWallClocktime', wallClockTimeInMilliseconds);
+  }
 }
 
 /**

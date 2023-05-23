@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../test_runner/test_runner.js';
 import '../../third_party/axe-core/axe.js';
 
-self.AxeCoreTestRunner = self.AxeCoreTestRunner || {};
+import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -138,6 +137,8 @@ const DEFAULT_CONFIG = {
   runOnly: {type: 'tags', values: {include: ['wcag2a', 'best-practice'], exclude: ['experimental']}}
 };
 
+export const AxeCoreTestRunner = {};
+
 AxeCoreTestRunner.processAxeResult = function(violations) {
   const result = violations.map(function(rule) {
     return {
@@ -173,6 +174,3 @@ AxeCoreTestRunner.runValidation = async function(element, rules, config) {
     TestRunner.addResult(`aXe threw an error: '${e}'`);
   }
 };
-
-const globalTestRunner = self.AxeCoreTestRunner;
-export {globalTestRunner as AxeCoreTestRunner};

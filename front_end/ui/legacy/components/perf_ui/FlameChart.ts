@@ -965,15 +965,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (!timelineData) {
       return;
     }
-    const width = this.offsetWidth;
-    const height = this.offsetHeight;
+    const canvasWidth = this.offsetWidth;
+    const canvasHeight = this.offsetHeight;
     const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
     context.save();
     const ratio = window.devicePixelRatio;
     const top = this.chartViewport.scrollOffset();
     context.scale(ratio, ratio);
     context.fillStyle = 'rgba(0, 0, 0, 0)';
-    context.fillRect(0, 0, width, height);
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
     context.translate(0, -top);
     context.font = this.#font;
 
@@ -984,7 +984,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       if (this.isGroupFocused(index)) {
         context.fillStyle =
             ThemeSupport.ThemeSupport.instance().getComputedValue('--selected-group-background', this.contentElement);
-        context.fillRect(0, offset, width, groupHeight - group.style.padding);
+        context.fillRect(0, offset, canvasWidth, groupHeight - group.style.padding);
       }
     });
     context.restore();
@@ -996,11 +996,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.drawMarkers(context, timelineData, markerIndices);
 
-    this.drawEventTitles(context, timelineData, titleIndices, width);
+    this.drawEventTitles(context, timelineData, titleIndices, canvasWidth);
     context.restore();
 
-    this.drawGroupHeaders(width, height);
-    this.drawFlowEvents(context, width, height);
+    this.drawGroupHeaders(canvasWidth, canvasHeight);
+    this.drawFlowEvents(context, canvasWidth, canvasHeight);
     this.drawMarkerLines();
     const dividersData = TimelineGrid.calculateGridOffsets(this);
     const navStartTimes = Array.from(this.dataProvider.navStartTimes().values());
@@ -1406,10 +1406,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * Draws the titles of trace events in the timeline. Also calls `decorateEntry` on the data
    * provider, which can do any custom drawing on the corresponding entry's area (e.g. draw screenshots
    * in the Performance Panel timeline).
+   *
+   * Takes in the width of the entire canvas so that we know if an event does
+   * not fit into the viewport entirely, the max width we can draw is that
+   * width, not the width of the event itself.
    */
   private drawEventTitles(
       context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, titleIndices: number[],
-      width: number): void {
+      canvasWidth: number): void {
     const timeToPixel = this.chartViewport.timeToPixel();
     const textPadding = this.textPadding;
     context.save();
@@ -1419,14 +1423,19 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const entryIndex = titleIndices[i];
       const entryStartTime = entryStartTimes[entryIndex];
       const barX = this.timeToPositionClipped(entryStartTime);
-      const barRight = Math.min(this.timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]), width) + 1;
+      const barRight =
+          Math.min(this.timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]), canvasWidth) + 1;
       const barWidth = barRight - barX;
       const barLevel = entryLevels[entryIndex];
       const barY = this.levelToOffset(barLevel);
       let text = this.dataProvider.entryTitle(entryIndex);
       if (text && text.length) {
         context.font = this.#font;
-        text = UI.UIUtils.trimTextMiddle(context, text, barWidth - 2 * textPadding);
+        text = UI.UIUtils.trimTextMiddle(
+            context,
+            text,
+            barWidth - 2 * textPadding,  // Set the max width to be the width of the bar plus some padding
+        );
       }
       const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
       const barHeight = this.levelHeight(barLevel);

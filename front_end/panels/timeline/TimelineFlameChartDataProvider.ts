@@ -1105,7 +1105,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     function paintWarningDecoration(x: number, width: number): void {
-      const /** @const */ triangleSize = 8;
+      const triangleSize = 8;
       context.save();
       context.beginPath();
       context.rect(x, barY, width, barHeight);

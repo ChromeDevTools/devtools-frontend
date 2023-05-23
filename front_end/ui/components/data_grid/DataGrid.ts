@@ -811,7 +811,6 @@ export class DataGrid extends HTMLElement {
                   }}
                   title=${col.title}
                   aria-sort=${LitHtml.Directives.ifDefined(this.#ariaSortForHeader(col))}
-                  role=${col.sortable ? 'button' : 'columnheader'}
                   aria-colindex=${columnIndex + 1}
                   data-row-index='0'
                   data-col-index=${columnIndex}

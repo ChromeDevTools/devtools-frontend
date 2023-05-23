@@ -48,33 +48,29 @@ let breakpointManagerInstance: BreakpointManager;
 
 export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
-  readonly storage: Storage;
+  readonly storage = new Storage();
   readonly #workspace: Workspace.Workspace.WorkspaceImpl;
   readonly targetManager: SDK.TargetManager.TargetManager;
   readonly debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
   // For each source code, we remember the list or breakpoints that refer to that UI source code as
   // their home UI source code. This is necessary to correctly remove the UI source code from
   // breakpoints upon receiving the UISourceCodeRemoved event.
-  readonly #breakpointsForHomeUISourceCode: Map<Workspace.UISourceCode.UISourceCode, Set<Breakpoint>>;
+  readonly #breakpointsForHomeUISourceCode = new Map<Workspace.UISourceCode.UISourceCode, Set<Breakpoint>>();
   // Mapping of UI source codes to all the current breakpoint UI locations. For bound breakpoints,
   // this is all the locations where the breakpoints was bound. For the unbound breakpoints,
   // this is the default locations in the home UI source codes.
-  readonly #breakpointsForUISourceCode: Map<Workspace.UISourceCode.UISourceCode, Map<string, BreakpointLocation>>;
-  readonly #breakpointByStorageId: Map<string, Breakpoint>;
-  #updateBindingsCallbacks: ((uiSourceCode: Workspace.UISourceCode.UISourceCode) => Promise<void>)[];
+  readonly #breakpointsForUISourceCode =
+      new Map<Workspace.UISourceCode.UISourceCode, Map<string, BreakpointLocation>>();
+  readonly #breakpointByStorageId = new Map<string, Breakpoint>();
+  #updateBindingsCallbacks: ((uiSourceCode: Workspace.UISourceCode.UISourceCode) => Promise<void>)[] = [];
 
   private constructor(
       targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl,
       debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
     super();
-    this.storage = new Storage();
     this.#workspace = workspace;
     this.targetManager = targetManager;
     this.debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-
-    this.#breakpointsForUISourceCode = new Map();
-    this.#breakpointsForHomeUISourceCode = new Map();
-    this.#breakpointByStorageId = new Map();
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY)) {
       this.storage.mute();
@@ -87,7 +83,6 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
 
     this.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
-    this.#updateBindingsCallbacks = [];
   }
 
   #setInitialBreakpoints(): void {
@@ -528,8 +523,10 @@ const enum ResolveLocationResult {
 
 export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly breakpointManager: BreakpointManager;
-  readonly #uiLocations: Set<Workspace.UISourceCode.UILocation>;
-  uiSourceCodes: Set<Workspace.UISourceCode.UISourceCode>;
+  /** Bound locations */
+  readonly #uiLocations = new Set<Workspace.UISourceCode.UILocation>();
+  /** All known UISourceCodes with this url. This also includes UISourceCodes for the inline scripts embedded in a resource with this URL. */
+  readonly uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
   #storageState!: BreakpointStorageState;
   #origin: BreakpointOrigin;
   isRemoved = false;
@@ -547,7 +544,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
    * (crbug.com/1442232, under a flag).
    */
   currentState: Breakpoint.State|null = null;
-  readonly #modelBreakpoints: Map<SDK.DebuggerModel.DebuggerModel, ModelBreakpoint>;
+  readonly #modelBreakpoints = new Map<SDK.DebuggerModel.DebuggerModel, ModelBreakpoint>();
 
   constructor(
       breakpointManager: BreakpointManager, primaryUISourceCode: Workspace.UISourceCode.UISourceCode|null,
@@ -555,11 +552,6 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     this.breakpointManager = breakpointManager;
     this.#origin = origin;
 
-    this.#uiLocations = new Set();   // Bound locations
-    this.uiSourceCodes = new Set();  // All known UISourceCodes with this url. This also includes uiSourceCodes
-                                     // for the inline scripts embedded in a resource with this URL.
-
-    this.#modelBreakpoints = new Map();
     this.updateState(storageState);
     if (primaryUISourceCode) {
       console.assert(primaryUISourceCode.contentType().name() === storageState.resourceTypeName);
@@ -871,12 +863,12 @@ export class ModelBreakpoint {
   #debuggerModel: SDK.DebuggerModel.DebuggerModel;
   #breakpoint: Breakpoint;
   readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
-  readonly #liveLocations: LiveLocationPool;
-  readonly #uiLocations: Map<LiveLocation, Workspace.UISourceCode.UILocation>;
+  readonly #liveLocations = new LiveLocationPool();
+  readonly #uiLocations = new Map<LiveLocation, Workspace.UISourceCode.UILocation>();
   #updateMutex = new Common.Mutex.Mutex();
-  #cancelCallback: boolean;
-  #currentState: Breakpoint.State|null;
-  #breakpointIds: Protocol.Debugger.BreakpointId[];
+  #cancelCallback = false;
+  #currentState: Breakpoint.State|null = null;
+  #breakpointIds: Protocol.Debugger.BreakpointId[] = [];
 
   constructor(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, breakpoint: Breakpoint,
@@ -884,13 +876,6 @@ export class ModelBreakpoint {
     this.#debuggerModel = debuggerModel;
     this.#breakpoint = breakpoint;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-
-    this.#liveLocations = new LiveLocationPool();
-
-    this.#uiLocations = new Map();
-    this.#cancelCallback = false;
-    this.#currentState = null;
-    this.#breakpointIds = [];
   }
 
   get currentState(): Breakpoint.State|null {

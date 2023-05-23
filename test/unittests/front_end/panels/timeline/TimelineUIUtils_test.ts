@@ -272,14 +272,15 @@ describeWithMockConnection('TimelineUIUtils', () => {
     });
   });
 
+  function getRowDataForDetailsElement(details: DocumentFragment) {
+    return Array.from(details.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
+      const title = row.querySelector<HTMLDivElement>('.timeline-details-view-row-title')?.innerText;
+      const value = row.querySelector<HTMLDivElement>('.timeline-details-view-row-value')?.innerText;
+      return {title, value};
+    });
+  }
+
   describe('traceEventDetails', () => {
-    function getRowDataForDetailsElement(details: DocumentFragment) {
-      return Array.from(details.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
-        const title = row.querySelector<HTMLDivElement>('.timeline-details-view-row-title')?.innerText;
-        const value = row.querySelector<HTMLDivElement>('.timeline-details-view-row-value')?.innerText;
-        return {title, value};
-      });
-    }
     it('shows the interaction ID for EventTiming events that have an interaction ID', async () => {
       const data = await allModelsFromFile('slow-interaction-button-click.json.gz');
       const interactionEvent = data.traceParsedData.UserInteractions.interactionEventsWithNoNesting[0];
@@ -339,6 +340,40 @@ describeWithMockConnection('TimelineUIUtils', () => {
       );
     });
   });
+
+  describe('buildNetworkRequestDetails', () => {
+    it('renders the right details for a network event', async () => {
+      const data = await allModelsFromFile('lcp-web-font.json.gz');
+      const networkRequests = data.timelineModel.networkRequests();
+      const cssRequest = networkRequests.find(request => {
+        return request.url === 'http://localhost:3000/app.css';
+      });
+      if (!cssRequest) {
+        throw new Error('Could not find expected network request.');
+      }
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildNetworkRequestDetails(
+          cssRequest,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+      );
+
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(
+          rowData,
+          [
+            {title: 'URL', value: 'localhost:3000/app.css'},
+            {title: 'Duration', value: '4.07 ms (3.08 ms network transfer + 1.00 ms resource loading)'},
+            {title: 'Request Method', value: 'GET'},
+            {title: 'Priority', value: 'Highest'},
+            {title: 'Mime Type', value: 'text/css'},
+            {title: 'Encoded Data', value: '402 B'},
+            {title: 'Decoded Body', value: '96 B'},
+          ],
+      );
+    });
+  });
+
   describe('eventTitle', () => {
     it('renders the correct title for an EventTiming interaction event', async () => {
       const data = await allModelsFromFile('slow-interaction-button-click.json.gz');

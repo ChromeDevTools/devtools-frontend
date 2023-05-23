@@ -378,7 +378,8 @@ export class DebuggerPlugin extends Plugin {
       return;
     }
     const projectType = uiSourceCode.project().type();
-    if (!Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiSourceCode.url())) {
+    if (!Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+            uiSourceCode)) {
       this.hideIgnoreListInfobar();
       return;
     }

@@ -536,14 +536,14 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
    * loaded later.
    *
    * Since every `ModelBreakpoint` can read/write this variable, it's slightly arbitrary. In
-   * general `currentState` contains the state of the last `ModelBreakpoint` that attempted
+   * general `lastResolvedState` contains the state of the last `ModelBreakpoint` that attempted
    * to update the breakpoint(s) in the backend.
    *
-   * The current state gets populated from the storage if/when we set all breakpoints eagerly
+   * The state gets populated from the storage if/when we set all breakpoints eagerly
    * on debugger startup so that the backend sets the breakpoints as soon as possible
    * (crbug.com/1442232, under a flag).
    */
-  currentState: Breakpoint.State|null = null;
+  #lastResolvedState: Breakpoint.State|null = null;
   readonly #modelBreakpoints = new Map<SDK.DebuggerModel.DebuggerModel, ModelBreakpoint>();
 
   constructor(
@@ -554,13 +554,25 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
 
     this.updateState(storageState);
     if (primaryUISourceCode) {
+      // User is setting the breakpoint in an existing source.
       console.assert(primaryUISourceCode.contentType().name() === storageState.resourceTypeName);
       this.addUISourceCode(primaryUISourceCode);
+    } else {
+      // We are setting the breakpoint from storage.
+      this.#setLastResolvedStateFromStorage(storageState);
+    }
+
+    this.breakpointManager.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
+  }
+
+  #setLastResolvedStateFromStorage(storageState: BreakpointStorageState): void {
+    if (storageState.resolvedState) {
+      this.#lastResolvedState = storageState.resolvedState.map(s => ({...s, scriptHash: ''}));
     } else if (storageState.resourceTypeName === Common.ResourceType.resourceTypes.Script.name()) {
       // If we are setting the breakpoint from storage (i.e., primaryUISourceCode is null),
       // and the location is not source mapped, then set the last known state to
       // the state from storage so that the breakpoints are pre-set into the backend eagerly.
-      this.currentState = [{
+      this.#lastResolvedState = [{
         url: storageState.url,
         lineNumber: storageState.lineNumber,
         columnNumber: storageState.columnNumber,
@@ -568,8 +580,30 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
         condition: this.backendCondition(),
       }];
     }
+  }
 
-    this.breakpointManager.targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
+  getLastResolvedState(): Breakpoint.State|null {
+    return this.#lastResolvedState;
+  }
+
+  updateLastResolvedState(locations: Position[]|null): void {
+    this.#lastResolvedState = locations;
+
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY)) {
+      return;
+    }
+
+    let locationsOrUndefined: ScriptBreakpointLocation[]|undefined = undefined;
+    if (locations) {
+      locationsOrUndefined = locations.map(
+          p => ({url: p.url, lineNumber: p.lineNumber, columnNumber: p.columnNumber, condition: p.condition}));
+    }
+
+    if (resolvedStateEqual(this.#storageState.resolvedState, locationsOrUndefined)) {
+      return;
+    }
+    this.#storageState = {...this.#storageState, resolvedState: locationsOrUndefined};
+    this.breakpointManager.storage.updateBreakpoint(this.#storageState);
   }
 
   get origin(): BreakpointOrigin {
@@ -954,9 +988,10 @@ export class ModelBreakpoint {
       } else if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
         // Use this fallback if we do not have instrumentation breakpoints enabled yet. This currently makes
         // sure that v8 knows about the breakpoint and is able to restore it whenever the script is parsed.
-        if (this.#breakpoint.currentState) {
+        const lastResolvedState = this.#breakpoint.getLastResolvedState();
+        if (lastResolvedState) {
           // Re-use position information from fallback but use up-to-date condition.
-          newState = this.#breakpoint.currentState.map(position => ({...position, condition}));
+          newState = lastResolvedState.map(position => ({...position, condition}));
         } else {
           // TODO(bmeurer): This fallback doesn't make a whole lot of sense, we should
           // at least signal a warning to the developer that this #breakpoint wasn't
@@ -980,7 +1015,7 @@ export class ModelBreakpoint {
       return DebuggerUpdateResult.OK;
     }
 
-    this.#breakpoint.currentState = newState;
+    this.#breakpoint.updateLastResolvedState(newState);
 
     // Case 2: State has changed, and the back-end has outdated information on old
     // breakpoints.
@@ -1158,6 +1193,9 @@ export namespace Breakpoint {
   export namespace State {
 
     export function equals(stateA?: State|null, stateB?: State|null): boolean {
+      if (stateA === stateB) {
+        return true;
+      }
       if (!stateA || !stateB) {
         return false;
       }
@@ -1261,6 +1299,25 @@ class Storage {
   }
 }
 
+function resolvedStateEqual(
+    lhs: ScriptBreakpointLocation[]|undefined, rhs: ScriptBreakpointLocation[]|undefined): boolean {
+  if (lhs === rhs) {
+    return true;
+  }
+  if (!lhs || !rhs || lhs.length !== rhs.length) {
+    return false;
+  }
+  for (let i = 0; i < lhs.length; i++) {
+    const lhsLoc = lhs[i];
+    const rhsLoc = rhs[i];
+    if (lhsLoc.url !== rhsLoc.url || lhsLoc.lineNumber !== rhsLoc.lineNumber ||
+        lhsLoc.columnNumber !== rhsLoc.columnNumber || lhsLoc.condition !== rhsLoc.condition) {
+      return false;
+    }
+  }
+  return true;
+}
+
 /**
  * A breakpoint condition as entered by the user. We use the type to
  * distinguish from {@link SDK.DebuggerModel.BackendCondition}.
@@ -1268,6 +1325,13 @@ class Storage {
 export type UserCondition = Platform.Brand.Brand<string, 'UserCondition'>;
 export const EMPTY_BREAKPOINT_CONDITION = '' as UserCondition;
 export const NEVER_PAUSE_HERE_CONDITION = 'false' as UserCondition;
+
+export interface ScriptBreakpointLocation {
+  readonly url: Platform.DevToolsPath.UrlString;
+  readonly lineNumber: number;
+  readonly columnNumber?: number;
+  readonly condition: SDK.DebuggerModel.BackendCondition;
+}
 
 /**
  * All the data for a single `Breakpoint` thats stored in the settings.
@@ -1281,6 +1345,7 @@ export interface BreakpointStorageState {
   readonly condition: UserCondition;
   readonly enabled: boolean;
   readonly isLogpoint: boolean;
+  readonly resolvedState?: ScriptBreakpointLocation[];
 }
 
 export class BreakpointLocation {

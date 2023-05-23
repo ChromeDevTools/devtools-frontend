@@ -357,13 +357,13 @@ describeWithMockConnection('BreakpointManager', () => {
     const modelBreakpoint = breakpoint.modelBreakpoint(debuggerModel);
     assertNotNullOrUndefined(modelBreakpoint);
 
-    assert.isNull(breakpoint.currentState);
+    assert.isNull(breakpoint.getLastResolvedState());
     const update = modelBreakpoint.scheduleUpdateInDebugger();
-    assert.isNull(breakpoint.currentState);
+    assert.isNull(breakpoint.getLastResolvedState());
     const result = await update;
     // Make sure that no error occurred.
     assert.isTrue(result === Bindings.BreakpointManager.DebuggerUpdateResult.OK);
-    assert.strictEqual(breakpoint.currentState?.[0].lineNumber, 13);
+    assert.strictEqual(breakpoint.getLastResolvedState()?.[0].lineNumber, 13);
     await breakpoint.remove(false);
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
   });
@@ -583,7 +583,7 @@ describeWithMockConnection('BreakpointManager', () => {
     assert.strictEqual(5, boundLocations[0].uiLocation.columnNumber);
   });
 
-  it('eagarely restores breakpoints in a new target', async () => {
+  it('eagerly restores JavaScript breakpoints in a new target', async () => {
     // Remove the default target so that we can simulate starting the debugger afresh.
     targetManager.removeTarget(target);
 
@@ -614,6 +614,104 @@ describeWithMockConnection('BreakpointManager', () => {
     });
     SDK.TargetManager.TargetManager.instance().setScopeTarget(createTarget());
     await breakpointSetPromise;
+
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
+  });
+
+  it('eagerly restores TypeScript breakpoints in a new target', async () => {
+    // Remove the default target so that we can simulate starting the debugger afresh.
+    targetManager.removeTarget(target);
+
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
+
+    // Set the breakpoint storage to contain a source-mapped breakpoint and re-initialize
+    // the breakpoint manager from that storage. This should create a breakpoint instance
+    // in the breakpoint manager (for the resolved location!).
+    const compiledUrl = 'http://example.com/compiled.js' as Platform.DevToolsPath.UrlString;
+    const compiledLineNumber = 2;
+    const breakpoints: Bindings.BreakpointManager.BreakpointStorageState[] = [{
+      url: 'http://example.com/src/script.ts' as Platform.DevToolsPath.UrlString,
+      resourceTypeName: 'sm-script',
+      lineNumber: 1,
+      condition: '' as Bindings.BreakpointManager.UserCondition,
+      enabled: true,
+      isLogpoint: false,
+      resolvedState: [{
+        url: compiledUrl,
+        lineNumber: compiledLineNumber,
+        columnNumber: 0,
+        condition: '' as SDK.DebuggerModel.BackendCondition,
+      }],
+    }];
+    Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints).set(breakpoints);
+    Bindings.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+
+    // Create a new target and make sure that the backend receives setBreakpointByUrl request
+    // from breakpoint manager.
+    const breakpointSetPromise = backend.responderToBreakpointByUrlRequest(compiledUrl, compiledLineNumber)({
+      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+      locations: [],
+    });
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(createTarget());
+    await breakpointSetPromise;
+
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
+  });
+
+  it('saves generated location into storage', async () => {
+    // Remove the default target so that we can simulate starting the debugger afresh.
+    targetManager.removeTarget(target);
+
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
+
+    // Re-create a target and breakpoint manager.
+    target = createTarget();
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+    const breakpoints: Bindings.BreakpointManager.BreakpointStorageState[] = [];
+    const setting = Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints);
+    Bindings.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+
+    // Add script with source map.
+    setupPageResourceLoaderForSourceMap(sourceMapContent);
+    const scriptInfo = {url: URL, content: COMPILED_SCRIPT_SOURCES_CONTENT};
+    const sourceMapInfo = {url: SOURCE_MAP_URL, content: sourceMapContent};
+    const script = await backend.addScript(target, scriptInfo, sourceMapInfo);
+
+    // Get the uiSourceCode for the original source.
+    const uiSourceCode = await debuggerWorkspaceBinding.uiSourceCodeForSourceMapSourceURLPromise(
+        debuggerModel, ORIGINAL_SCRIPT_SOURCE_URL, script.isContentScript());
+    assertNotNullOrUndefined(uiSourceCode);
+
+    // Set the breakpoint on the front-end/model side.
+    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 1, 0, ...DEFAULT_BREAKPOINT);
+    assertNotNullOrUndefined(breakpoint);
+
+    // Set the breakpoint response for our upcoming request.
+    void backend.responderToBreakpointByUrlRequest(URL, 0)({
+      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+      locations: [
+        {
+          scriptId: script.scriptId,
+          lineNumber: 0,
+          columnNumber: 15,
+        },
+      ],
+    });
+    // Ensure the breakpoint is fully set.
+    await breakpoint.refreshInDebugger();
+
+    // Check that the storage contains the resolved breakpoint location.
+    assert.lengthOf(setting.get(), 1);
+    assert.deepEqual(setting.get()[0].resolvedState, [{
+                       url: URL,
+                       lineNumber: 0,
+                       columnNumber: 15,
+                       condition: '' as SDK.DebuggerModel.BackendCondition,
+                     }]);
 
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
   });

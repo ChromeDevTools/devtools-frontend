@@ -4,6 +4,8 @@
 
 import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import * as Common from '../common/common.js';
+import type * as Platform from '../platform/platform.js';
 
 export class StorageKeyManager extends SDKModel<EventTypes> {
   #mainStorageKeyInternal: string;
@@ -46,6 +48,33 @@ export class StorageKeyManager extends SDKModel<EventTypes> {
       mainStorageKey: this.#mainStorageKeyInternal,
     });
   }
+}
+
+export function parseStorageKey(storageKeyString: string): StorageKey {
+  // Based on the canonical implementation of StorageKey::Deserialize in
+  // third_party/blink/common/storage_key/storage_key.cc
+  const components = storageKeyString.split('^');
+  const origin = Common.ParsedURL.ParsedURL.extractOrigin(components[0] as Platform.DevToolsPath.UrlString);
+  const storageKey = {origin, components: new Map<StorageKeyComponent, string>()};
+  for (let i = 1; i < components.length; ++i) {
+    storageKey.components.set(components[i].charAt(0) as StorageKeyComponent, components[i].substring(1));
+  }
+  return storageKey;
+}
+
+export const enum StorageKeyComponent {
+  TOP_LEVEL_SITE = '0',
+  NONCE_HIGH = '1',
+  NONCE_LOW = '2',
+  ANCESTOR_CHAIN_BIT = '3',
+  TOP_LEVEL_SITE_OPAQUE_NONCE_HIGH = '4',
+  TOP_LEVEL_SITE_OPAQUE_NONCE_LOW = '5',
+  TOP_LEVEL_SITE_OPAQUE_NONCE_PRECURSOR = '6',
+}
+
+export interface StorageKey {
+  origin: Platform.DevToolsPath.UrlString;
+  components: Map<StorageKeyComponent, string>;
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

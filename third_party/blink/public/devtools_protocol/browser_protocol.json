@@ -23292,17 +23292,6 @@
                     ]
                 },
                 {
-                    "id": "PreloadEnabledState",
-                    "type": "string",
-                    "enum": [
-                        "Enabled",
-                        "DisabledByDataSaver",
-                        "DisabledByBatterySaver",
-                        "DisabledByPreference",
-                        "NotSupported"
-                    ]
-                },
-                {
                     "id": "PreloadingStatus",
                     "description": "Preloading status values, see also PreloadingTriggeringOutcome. This\nstatus is shared by prefetchStatusUpdated and prerenderStatusUpdated.",
                     "type": "string",
@@ -23412,8 +23401,16 @@
                     "description": "Fired when a preload enabled state is updated.",
                     "parameters": [
                         {
-                            "name": "state",
-                            "$ref": "PreloadEnabledState"
+                            "name": "disabledByPreference",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "disabledByDataSaver",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "disabledByBatterySaver",
+                            "type": "boolean"
                         }
                     ]
                 },

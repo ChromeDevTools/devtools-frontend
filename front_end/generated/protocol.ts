@@ -15620,14 +15620,6 @@ export namespace Preload {
     OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
   }
 
-  export const enum PreloadEnabledState {
-    Enabled = 'Enabled',
-    DisabledByDataSaver = 'DisabledByDataSaver',
-    DisabledByBatterySaver = 'DisabledByBatterySaver',
-    DisabledByPreference = 'DisabledByPreference',
-    NotSupported = 'NotSupported',
-  }
-
   /**
    * Preloading status values, see also PreloadingTriggeringOutcome. This
    * status is shared by prefetchStatusUpdated and prerenderStatusUpdated.
@@ -15708,7 +15700,9 @@ export namespace Preload {
    * Fired when a preload enabled state is updated.
    */
   export interface PreloadEnabledStateUpdatedEvent {
-    state: PreloadEnabledState;
+    disabledByPreference: boolean;
+    disabledByDataSaver: boolean;
+    disabledByBatterySaver: boolean;
   }
 
   /**

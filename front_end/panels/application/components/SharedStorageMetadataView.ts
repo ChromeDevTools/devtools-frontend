@@ -20,10 +20,6 @@ const UIStrings = {
    */
   sharedStorage: 'Shared Storage',
   /**
-   *@description Section header for Metadata
-   */
-  metadata: 'Metadata',
-  /**
    *@description The origin of a URL (https://web.dev/same-site-same-origin/#origin)
    *(for a lot of languages this does not need to be translated, please translate only where necessary)
    */
@@ -52,10 +48,6 @@ const UIStrings = {
    *@description Label for a button which when clicked causes the budget to be reset to the max.
    */
   resetBudget: 'Reset Budget',
-  /**
-   *@description Section header above Entries
-   */
-  entries: 'Entries',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/SharedStorageMetadataView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -170,39 +162,28 @@ export class SharedStorageMetadataReportView extends HTMLElement {
       // clang-format off
       LitHtml.render(LitHtml.html`
         <${ReportView.ReportView.Report.litTagName} .data=${titleForReport as ReportView.ReportView.ReportData}>
-          ${this.#renderMetadataSection()}
-          ${this.#renderEntriesSection()}
+          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.origin)}</${
+            ReportView.ReportView.ReportKey.litTagName}>
+          <${ReportView.ReportView.ReportValue.litTagName}>
+              <div class="text-ellipsis" title=${this.#origin}>${this.#origin}</div>
+          </${ReportView.ReportView.ReportValue.litTagName}>
+         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.creation)}</${
+            ReportView.ReportView.ReportKey.litTagName}>
+         <${ReportView.ReportView.ReportValue.litTagName}>
+         ${this.#renderDateForCreationTime()}</${ReportView.ReportView.ReportValue.litTagName}>
+         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.numEntries)}
+         </${ReportView.ReportView.ReportKey.litTagName}>
+         <${ReportView.ReportView.ReportValue.litTagName}>${this.#length}</${ReportView.ReportView.ReportValue.litTagName}>
+         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.entropyBudget)}<${
+            IconButton.Icon.Icon.litTagName} class="info-icon" title=${i18nString(UIStrings.budgetExplanation)}
+              .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'} as IconButton.Icon.IconWithName}>
+            </${IconButton.Icon.Icon.litTagName}></${ReportView.ReportView.ReportKey.litTagName}><${
+            ReportView.ReportView.ReportValue.litTagName}>${this.#remainingBudget}${this.#renderResetBudgetButton()}
+            </${ReportView.ReportView.ReportValue.litTagName}>
         </${ReportView.ReportView.Report.litTagName}>
       `, this.#shadow, {host: this});
       // clang-format on
     });
-  }
-
-  #renderMetadataSection(): LitHtml.LitTemplate {
-    return LitHtml.html`
-      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.metadata)}</${
-        ReportView.ReportView.ReportSectionHeader.litTagName}>
-      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.origin)}</${
-        ReportView.ReportView.ReportKey.litTagName}>
-      <${ReportView.ReportView.ReportValue.litTagName}>
-          <div class="text-ellipsis" title=${this.#origin}>${this.#origin}</div>
-      </${ReportView.ReportView.ReportValue.litTagName}>
-     <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.creation)}</${
-        ReportView.ReportView.ReportKey.litTagName}>
-     <${ReportView.ReportView.ReportValue.litTagName}>
-     ${this.#renderDateForCreationTime()}</${ReportView.ReportView.ReportValue.litTagName}>
-     <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.numEntries)}
-     </${ReportView.ReportView.ReportKey.litTagName}>
-     <${ReportView.ReportView.ReportValue.litTagName}>${this.#length}</${ReportView.ReportView.ReportValue.litTagName}>
-     <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.entropyBudget)}<${
-        IconButton.Icon.Icon.litTagName} class="info-icon" title=${i18nString(UIStrings.budgetExplanation)}
-          .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'} as IconButton.Icon.IconWithName}>
-        </${IconButton.Icon.Icon.litTagName}></${ReportView.ReportView.ReportKey.litTagName}><${
-        ReportView.ReportView.ReportValue.litTagName}>${this.#remainingBudget}${this.#renderResetBudgetButton()}
-        </${ReportView.ReportView.ReportValue.litTagName}>
-      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
-        ReportView.ReportView.ReportSectionDivider.litTagName}>
-    `;
   }
 
   #renderDateForCreationTime(): LitHtml.LitTemplate {
@@ -219,13 +200,6 @@ export class SharedStorageMetadataReportView extends HTMLElement {
      .data=${{resetBudgetHandler: this.resetBudgetHandler} as SharedStorageResetBudgetButtonData}
     ></${SharedStorageResetBudgetButton.litTagName}>`;
     // clang-format on
-  }
-
-  #renderEntriesSection(): LitHtml.LitTemplate {
-    return LitHtml.html`
-      <${ReportView.ReportView.ReportSectionHeader.litTagName} title=${i18nString(UIStrings.entries)}>
-        ${i18nString(UIStrings.entries)}</${ReportView.ReportView.ReportSectionHeader.litTagName}>
-    `;
   }
 }
 

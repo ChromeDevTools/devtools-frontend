@@ -21,7 +21,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 const {assert} = chai;
 
 describeWithLocale('SharedStorageMetadataView', () => {
-  it('renders with a title and section headers', async () => {
+  it('renders with a title', async () => {
     const component = new ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataReportView();
     renderElementIntoDOM(component);
     component.data = {
@@ -37,12 +37,6 @@ describeWithLocale('SharedStorageMetadataView', () => {
 
     const titleElement = report.shadowRoot.querySelector('.report-title');
     assert.strictEqual(titleElement?.textContent, 'Shared Storage');
-
-    const headers = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-section-header');
-    assert.deepEqual(headers, [
-      'Metadata',
-      'Entries',
-    ]);
   });
 
   it('renders report keys and values', async () => {

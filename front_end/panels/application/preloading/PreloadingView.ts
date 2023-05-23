@@ -88,10 +88,18 @@ const UIStrings = {
   warningDetailPreloadingStateDisabled:
       'Preloading is disabled because of user settings or an extension. Go to {PH1} to learn more, or go to {PH2} to disable the extension.',
   /**
+   *@description Title in infobar when preloading is disabled by data saver.
+   */
+  warningTitlePreloadingDisabledByDatasaver: 'Preloading is disabled',
+  /**
    *@description Detail in infobar when preloading is disabled by data saver.
    */
   warningDetailPreloadingDisabledByDatasaver:
       'Preloading is disabled because of the operating system\'s Data Saver mode.',
+  /**
+   *@description Title in infobar when preloading is disabled by battery saver.
+   */
+  warningTitlePreloadingDisabledByBatterysaver: 'Preloading is disabled',
   /**
    *@description Detail in infobar when preloading is disabled by data saver.
    */
@@ -391,41 +399,34 @@ export class PreloadingView extends UI.Widget.VBox {
     // TODO(crbug.com/1384419): Add more information in PreloadEnabledState from
     // backend to distinguish the details of the reasons why preloading is
     // disabled.
-    const detailsMessage = document.createElement('div');
-    let shouldWarningBeShown = false;
-
-    if (this.modelProxy.model.isPreloadDisabledByPreference()) {
-      const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-      preloadingSettingLink.href = 'chrome://settings/cookies';
-      preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPageSettings);
-      const extensionSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-      extensionSettingLink.href = 'chrome://extensions';
-      extensionSettingLink.textContent = i18nString(UIStrings.extensionSettings);
-      detailsMessage.appendChild(i18n.i18n.getFormatLocalizedString(
-          str_, UIStrings.warningDetailPreloadingStateDisabled,
-          {PH1: preloadingSettingLink, PH2: extensionSettingLink}));
-      shouldWarningBeShown = true;
-    }
-
-    if (this.modelProxy.model.isPreloadDisabledByDatasaver()) {
-      const element = document.createElement('div');
-      element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByDatasaver));
-      detailsMessage.appendChild(element);
-      shouldWarningBeShown = true;
-    }
-
-    if (this.modelProxy.model.isPreloadDisabledByBatterysaver()) {
-      const element = document.createElement('div');
-      element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByBatterysaver));
-      detailsMessage.appendChild(element);
-      shouldWarningBeShown = true;
-    }
-
-    if (shouldWarningBeShown) {
-      // Clear infobarContainer if there is other warning, such as holdback
-      // related warnings.
-      this.infobarContainer.removeChildren();
-      this.showInfobar(i18nString(UIStrings.warningTitlePreloadingStateDisabled), detailsMessage);
+    switch (this.modelProxy.model.getPreloadEnabledState()) {
+      case Protocol.Preload.PreloadEnabledState.DisabledByPreference: {
+        const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
+        preloadingSettingLink.href = 'chrome://settings/cookies';
+        preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPageSettings);
+        const extensionSettingLink = new ChromeLink.ChromeLink.ChromeLink();
+        extensionSettingLink.href = 'chrome://extensions';
+        extensionSettingLink.textContent = i18nString(UIStrings.extensionSettings);
+        const detailsMessage = i18n.i18n.getFormatLocalizedString(
+            str_, UIStrings.warningDetailPreloadingStateDisabled,
+            {PH1: preloadingSettingLink, PH2: extensionSettingLink});
+        this.showInfobar(i18nString(UIStrings.warningTitlePreloadingStateDisabled), detailsMessage);
+        break;
+      }
+      case Protocol.Preload.PreloadEnabledState.DisabledByDataSaver: {
+        this.showInfobar(
+            i18nString(UIStrings.warningTitlePreloadingDisabledByDatasaver),
+            i18nString(UIStrings.warningDetailPreloadingDisabledByDatasaver));
+        break;
+      }
+      case Protocol.Preload.PreloadEnabledState.DisabledByBatterySaver: {
+        this.showInfobar(
+            i18nString(UIStrings.warningTitlePreloadingDisabledByBatterysaver),
+            i18nString(UIStrings.warningDetailPreloadingDisabledByBatterysaver));
+        break;
+      }
+      default:
+        break;
     }
   }
 

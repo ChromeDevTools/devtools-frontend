@@ -767,9 +767,7 @@ describeWithMockConnection('PreloadingView', async () => {
     const view = createView(emulator.primaryTarget);
 
     dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
-      disabledByPreference: true,
-      disabledByDataSaver: false,
-      disabledByBatterySaver: false,
+      state: Protocol.Preload.PreloadEnabledState.DisabledByPreference,
     });
 
     const infobarContainer = view.getInfobarContainerForTest();
@@ -789,9 +787,7 @@ describeWithMockConnection('PreloadingView', async () => {
     const view = createView(emulator.primaryTarget);
 
     dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
-      disabledByPreference: false,
-      disabledByDataSaver: true,
-      disabledByBatterySaver: false,
+      state: Protocol.Preload.PreloadEnabledState.DisabledByDataSaver,
     });
 
     const infobarContainer = view.getInfobarContainerForTest();
@@ -811,9 +807,7 @@ describeWithMockConnection('PreloadingView', async () => {
     const view = createView(emulator.primaryTarget);
 
     dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
-      disabledByPreference: false,
-      disabledByDataSaver: false,
-      disabledByBatterySaver: true,
+      state: Protocol.Preload.PreloadEnabledState.DisabledByBatterySaver,
     });
 
     const infobarContainer = view.getInfobarContainerForTest();

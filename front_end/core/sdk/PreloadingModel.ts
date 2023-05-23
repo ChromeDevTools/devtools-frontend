@@ -33,9 +33,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   private lastPrimaryPageModel: PreloadingModel|null = null;
   private documents: Map<Protocol.Network.LoaderId, DocumentPreloadingData> =
       new Map<Protocol.Network.LoaderId, DocumentPreloadingData>();
-  private preloadIsDisabledByPreference: boolean|null = null;
-  private preloadIsDisabledByDatasaver: boolean|null = null;
-  private preloadIsDisabledByBatterysaver: boolean|null = null;
+  private preloadEnabledState: Protocol.Preload.PreloadEnabledState|null = null;
 
   constructor(target: Target) {
     super(target);
@@ -147,16 +145,8 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     return document.preloadingAttempts.getAll(null, document.sources);
   }
 
-  isPreloadDisabledByPreference(): boolean|null {
-    return this.preloadIsDisabledByPreference;
-  }
-
-  isPreloadDisabledByDatasaver(): boolean|null {
-    return this.preloadIsDisabledByDatasaver;
-  }
-
-  isPreloadDisabledByBatterysaver(): boolean|null {
-    return this.preloadIsDisabledByBatterysaver;
+  getPreloadEnabledState(): Protocol.Preload.PreloadEnabledState|null {
+    return this.preloadEnabledState;
   }
 
   private onPrimaryPageChanged(
@@ -266,9 +256,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   }
 
   onPreloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
-    this.preloadIsDisabledByPreference = event.disabledByPreference;
-    this.preloadIsDisabledByDatasaver = event.disabledByDataSaver;
-    this.preloadIsDisabledByBatterysaver = event.disabledByBatterySaver;
+    this.preloadEnabledState = event.state;
     this.dispatchEventToListeners(Events.ModelUpdated);
   }
 }

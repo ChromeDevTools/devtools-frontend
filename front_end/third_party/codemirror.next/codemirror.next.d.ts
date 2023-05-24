@@ -378,6 +378,11 @@ declare abstract class Text implements Iterable<string> {
     */
     iterLines(from?: number, to?: number): TextIterator;
     /**
+    Return the document as a string, using newline characters to
+    separate lines.
+    */
+    toString(): string;
+    /**
     Convert the document to an array of lines (which can be
     deserialized again via [`Text.of`](https://codemirror.net/6/docs/ref/#state.Text^of)).
     */
@@ -545,7 +550,7 @@ plain object describing a change (a deletion, insertion, or
 replacement, depending on which fields are present), a [change
 set](https://codemirror.net/6/docs/ref/#state.ChangeSet), or an array of change specs.
 */
-declare type ChangeSpec = {
+type ChangeSpec = {
     from: number;
     to?: number;
     insert?: string | Text;
@@ -772,7 +777,7 @@ declare class EditorSelection {
     static range(anchor: number, head: number, goalColumn?: number, bidiLevel?: number): SelectionRange;
 }
 
-declare type FacetConfig<Input, Output> = {
+type FacetConfig<Input, Output> = {
     /**
     How to combine the input values into a single output value. When
     not given, the array of input values becomes the output. This
@@ -852,8 +857,8 @@ declare class Facet<Input, Output = readonly Input[]> {
     from<T extends Input>(field: StateField<T>): Extension;
     from<T>(field: StateField<T>, get: (value: T) => Input): Extension;
 }
-declare type Slot<T> = Facet<any, T> | StateField<T> | "doc" | "selection";
-declare type StateFieldSpec<Value> = {
+type Slot<T> = Facet<any, T> | StateField<T> | "doc" | "selection";
+type StateFieldSpec<Value> = {
     /**
     Creates the initial value for the field when a state is created.
     */
@@ -928,7 +933,7 @@ providers](https://codemirror.net/6/docs/ref/#state.Facet.of), or objects with a
 `extension` property. Extensions can be nested in arrays
 arbitrarily deep—they will be flattened when processed.
 */
-declare type Extension = {
+type Extension = {
     extension: Extension;
 } | readonly Extension[];
 /**
@@ -1073,7 +1078,10 @@ declare class StateEffect<Value> {
     is<T>(type: StateEffectType<T>): this is StateEffect<T>;
     /**
     Define a new effect type. The type parameter indicates the type
-    of values that his effect holds.
+    of values that his effect holds. It should be a type that
+    doesn't include `undefined`, since that is used in
+    [mapping](https://codemirror.net/6/docs/ref/#state.StateEffect.map) to indicate that an effect is
+    removed.
     */
     static define<Value = null>(spec?: StateEffectSpec<Value>): StateEffectType<Value>;
     /**
@@ -1610,7 +1618,7 @@ Subtype of [`Command`](https://codemirror.net/6/docs/ref/#view.Command) that doe
 to the actual editor view. Mostly useful to define commands that
 can be run and tested outside of a browser environment.
 */
-declare type StateCommand = (target: {
+type StateCommand = (target: {
     state: EditorState;
     dispatch: (transaction: Transaction) => void;
 }) => boolean;
@@ -1738,7 +1746,7 @@ interface RangeCursor<T> {
     */
     to: number;
 }
-declare type RangeSetUpdate<T extends RangeValue> = {
+type RangeSetUpdate<T extends RangeValue> = {
     /**
     An array of ranges to add. If given, this should be sorted by
     `from` position and `startSide` unless
@@ -1817,8 +1825,7 @@ declare class RangeSet<T extends RangeValue> {
     static compare<T extends RangeValue>(oldSets: readonly RangeSet<T>[], newSets: readonly RangeSet<T>[],
     /**
     This indicates how the underlying data changed between these
-    ranges, and is needed to synchronize the iteration. `from` and
-    `to` are coordinates in the _new_ space, after these changes.
+    ranges, and is needed to synchronize the iteration.
     */
     textDiff: ChangeDesc, comparator: RangeComparator<T>,
     /**
@@ -1905,9 +1912,20 @@ type StyleSpec = {
   [propOrSelector: string]: string | number | StyleSpec | null
 }
 
-declare type Attrs = {
+type Attrs = {
     [name: string]: string;
 };
+
+/**
+Basic rectangle type.
+*/
+interface Rect {
+    readonly left: number;
+    readonly right: number;
+    readonly top: number;
+    readonly bottom: number;
+}
+type ScrollStrategy = "nearest" | "start" | "end" | "center";
 
 interface MarkDecorationSpec {
     /**
@@ -2072,6 +2090,14 @@ declare abstract class WidgetType {
     */
     ignoreEvent(event: Event): boolean;
     /**
+    Override the way screen coordinates for positions at/in the
+    widget are found. `pos` will be the offset into the widget, and
+    `side` the side of the position that is being queried—less than
+    zero for before, greater than zero for after, and zero for
+    directly at that position.
+    */
+    coordsAt(dom: HTMLElement, pos: number, side: number): Rect | null;
+    /**
     This is called when the an instance of the widget is removed
     from the editor view.
     */
@@ -2082,7 +2108,7 @@ A decoration set represents a collection of decorated ranges,
 organized for efficient access and mapping. See
 [`RangeSet`](https://codemirror.net/6/docs/ref/#state.RangeSet) for its methods.
 */
-declare type DecorationSet = RangeSet<Decoration>;
+type DecorationSet = RangeSet<Decoration>;
 /**
 The different types of blocks that can occur in an editor view.
 */
@@ -2175,24 +2201,13 @@ declare abstract class Decoration extends RangeValue {
 }
 
 /**
-Basic rectangle type.
-*/
-interface Rect {
-    readonly left: number;
-    readonly right: number;
-    readonly top: number;
-    readonly bottom: number;
-}
-declare type ScrollStrategy = "nearest" | "start" | "end" | "center";
-
-/**
 Command functions are used in key bindings and other types of user
 actions. Given an editor view, they check whether their effect can
 apply to the editor, and if it can, perform it as a side effect
 (which usually means [dispatching](https://codemirror.net/6/docs/ref/#view.EditorView.dispatch) a
 transaction) and return `true`.
 */
-declare type Command = (target: EditorView) => boolean;
+type Command = (target: EditorView) => boolean;
 /**
 This is the interface plugin objects conform to.
 */
@@ -2281,7 +2296,7 @@ interface MeasureRequest<T> {
     */
     key?: any;
 }
-declare type AttrSource = Attrs | ((view: EditorView) => Attrs | null);
+type AttrSource = Attrs | ((view: EditorView) => Attrs | null);
 /**
 View [plugins](https://codemirror.net/6/docs/ref/#view.ViewPlugin) are given instances of this
 class, which describe what happened, whenever the view is updated.
@@ -2370,7 +2385,7 @@ interface MouseSelectionStyle {
     */
     update: (update: ViewUpdate) => boolean | void;
 }
-declare type MakeSelectionStyle = (view: EditorView, event: MouseEvent) => MouseSelectionStyle | null;
+type MakeSelectionStyle = (view: EditorView, event: MouseEvent) => MouseSelectionStyle | null;
 
 /**
 Record used to represent information about a block-level element
@@ -2398,7 +2413,12 @@ declare class BlockInfo {
     The type of element this is. When querying lines, this may be
     an array of all the blocks that make up the line.
     */
-    readonly type: BlockType | readonly BlockInfo[];
+    get type(): BlockType | readonly BlockInfo[];
+    /**
+    If this is a widget block, this will return the widget
+    associated with it.
+    */
+    get widget(): WidgetType | null;
     /**
     The end of the element as a document position.
     */
@@ -2482,7 +2502,7 @@ interface EditorViewConfig extends EditorStateConfig {
     if provided, should probably call the view's [`update`
     method](https://codemirror.net/6/docs/ref/#view.EditorView.update).
     */
-    dispatch?: (tr: Transaction) => void;
+    dispatch?: (tr: Transaction, view: EditorView) => void;
 }
 /**
 An editor view represents the editor's user interface. It holds
@@ -2885,6 +2905,11 @@ declare class EditorView {
     */
     static inputHandler: Facet<(view: EditorView, from: number, to: number, text: string) => boolean, readonly ((view: EditorView, from: number, to: number, text: string) => boolean)[]>;
     /**
+    This facet can be used to provide functions that create effects
+    to be dispatched when the editor's focus state changes.
+    */
+    static focusChangeEffect: Facet<(state: EditorState, focusing: boolean) => StateEffect<any> | null, readonly ((state: EditorState, focusing: boolean) => StateEffect<any> | null)[]>;
+    /**
     By default, the editor assumes all its content has the same
     [text direction](https://codemirror.net/6/docs/ref/#view.Direction). Configure this with a `true`
     value to make it read the text direction of every (rendered)
@@ -3055,7 +3080,7 @@ to hold the appropriate event object type. For unknown events, it
 is inferred to `any`, and should be explicitly set if you want type
 checking.
 */
-declare type DOMEventHandlers<This> = {
+type DOMEventHandlers<This> = {
     [event in keyof DOMEventMap]?: (this: This, event: DOMEventMap[event], view: EditorView) => boolean | void;
 };
 
@@ -3151,7 +3176,7 @@ for a given key, no further handlers are called.
 */
 declare const keymap: Facet<readonly KeyBinding[], readonly (readonly KeyBinding[])[]>;
 
-declare type SelectionConfig = {
+type SelectionConfig = {
     /**
     The length of a full cursor blink cycle, in milliseconds.
     Defaults to 1200. Can be set to 0 to disable blinking.
@@ -3481,7 +3506,7 @@ interface Panel {
 A function that initializes a panel. Used in
 [`showPanel`](https://codemirror.net/6/docs/ref/#view.showPanel).
 */
-declare type PanelConstructor = (view: EditorView) => Panel;
+type PanelConstructor = (view: EditorView) => Panel;
 /**
 Opening a panel is done by providing a constructor function for
 the panel through this facet. (The panel is closed again when its
@@ -3514,7 +3539,7 @@ declare abstract class GutterMarker extends RangeValue {
     */
     destroy(dom: Node): void;
 }
-declare type Handlers$1 = {
+type Handlers$1 = {
     [event: string]: (view: EditorView, line: BlockInfo, event: Event) => boolean;
 };
 interface GutterConfig {
@@ -3537,8 +3562,12 @@ interface GutterConfig {
     */
     lineMarker?: (view: EditorView, line: BlockInfo, otherMarkers: readonly GutterMarker[]) => GutterMarker | null;
     /**
-    If line markers depend on additional state, and should be
-    updated when that changes, pass a predicate here that checks
+    Associate markers with block widgets in the document.
+    */
+    widgetMarker?: (view: EditorView, widget: WidgetType, block: BlockInfo) => GutterMarker | null;
+    /**
+    If line or widget markers depend on additional state, and should
+    be updated when that changes, pass a predicate here that checks
     whether a given view update might change the line markers.
     */
     lineMarkerChange?: null | ((update: ViewUpdate) => boolean);
@@ -4450,7 +4479,7 @@ interface FoldConfig {
 Create an extension that configures code folding.
 */
 declare function codeFolding(config?: FoldConfig): Extension;
-declare type Handlers = {
+type Handlers = {
     [event: string]: (view: EditorView, line: BlockInfo, event: Event) => boolean;
 };
 interface FoldGutterConfig {

@@ -52,8 +52,8 @@ export class TextEditor extends HTMLElement {
       state: this.state,
       parent: this.#shadow,
       root: this.#shadow,
-      dispatch: (tr: CodeMirror.Transaction): void => {
-        this.editor.update([tr]);
+      dispatch: (tr: CodeMirror.Transaction, view: CodeMirror.EditorView): void => {
+        view.update([tr]);
         if (tr.reconfigured) {
           this.#ensureSettingListeners();
         }

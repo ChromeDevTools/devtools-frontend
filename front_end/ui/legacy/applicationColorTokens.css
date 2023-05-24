@@ -27,7 +27,7 @@
   --icon-folder-deployed: var(--color-primary-bright);
   --icon-folder-workspace: var(--color-orange);
   --icon-force-white: var(--color-on-primary);
-  --icon-gap-default: var(--color-on-primary);
+  --icon-gap-default: var(--color-background);
   --icon-gap-force-white: var(--legacy-selection-bg-color);
   --icon-gap-inactive: var(--legacy-selection-inactive-bg-color);
   --icon-gap-toolbar: var(--color-background-elevation-1);

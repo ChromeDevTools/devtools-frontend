@@ -19,6 +19,7 @@ describeWithLocale('AccessibilityTreeNode', () => {
       role: 'NodeRole',
       ignored: false,
       properties: [],
+      id: 'NodeId',
     };
 
     await coordinator.done();
@@ -36,6 +37,7 @@ describeWithLocale('AccessibilityTreeNode', () => {
       role: 'NodeRole',
       ignored: true,
       properties: [],
+      id: 'NodeId',
     };
     await coordinator.done();
 

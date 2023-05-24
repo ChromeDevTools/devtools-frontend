@@ -167,6 +167,7 @@ export class RenderCoordinator extends EventTarget {
   }
 
   #enqueueHandler<T = unknown>(callback: CoordinatorCallback, action: ACTION, label: string): Promise<T> {
+    const hasName = ![UNNAMED_READ, UNNAMED_WRITE, UNNAMED_SCROLL].includes(label);
     label = `${action === ACTION.READ ? '[Read]' : '[Write]'}: ${label}`;
     if (this.#pendingWorkFrames.length === 0) {
       this.#pendingWorkFrames.push({
@@ -194,15 +195,23 @@ export class RenderCoordinator extends EventTarget {
         throw new Error(`Unknown action: ${action}`);
     }
 
-    const newWorkItem = {label, handler: callback} as WorkItem;
-    newWorkItem.promise = (new Promise<void>((resolve, reject) => {
-                            newWorkItem.trigger = resolve;
-                            newWorkItem.cancel = reject;
-                          })).then(() => newWorkItem.handler());
-    workItems.push(newWorkItem);
+    let workItem = hasName ? workItems.find(w => w.label === label) : null;
+    if (!workItem) {
+      const newWorkItem = {label} as WorkItem;
+      newWorkItem.promise = (new Promise<void>((resolve, reject) => {
+                              newWorkItem.trigger = resolve;
+                              newWorkItem.cancel = reject;
+                            })).then(() => newWorkItem.handler());
+      workItem = newWorkItem;
+      workItems.push(workItem);
+    }
+    // We are always using the latest handler, so that we don't end up with a
+    // stale results. We are reusing the promise to avoid blocking the first invocation, when
+    // it is being "overridden" by another one.
+    workItem.handler = callback;
 
     this.#scheduleWork();
-    return newWorkItem.promise as Promise<T>;
+    return workItem.promise as Promise<T>;
   }
 
   #scheduleWork(): void {

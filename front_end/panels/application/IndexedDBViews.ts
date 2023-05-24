@@ -29,6 +29,8 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
+import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import indexedDBViewsStyles from './indexedDBViews.css.js';
 
@@ -37,6 +39,9 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as ReportView from '../../ui/components/report_view/report_view.js';
+import * as ApplicationComponents from './components/components.js';
 
 import {
   type Database,
@@ -49,14 +54,6 @@ import {
 } from './IndexedDBModel.js';
 
 const UIStrings = {
-  /**
-   *@description Text when something is loading
-   */
-  loading: 'Loading…',
-  /**
-   *@description Text in Indexed DBViews of the Application panel
-   */
-  securityOrigin: 'Security origin',
   /**
    *@description Text in Indexed DBViews of the Application panel
    */
@@ -155,56 +152,50 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/IndexedDBViews.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class IDBDatabaseView extends UI.Widget.VBox {
+
+export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.StorageMetadataView {
   private readonly model: IndexedDBModel;
   private database!: Database;
-  private readonly reportView: UI.ReportView.ReportView;
-  private securityOriginElement: HTMLElement;
-  private versionElement: HTMLElement;
-  private objectStoreCountElement: HTMLElement;
-  private readonly clearButton: HTMLButtonElement;
-  private readonly refreshButton: HTMLButtonElement;
   constructor(model: IndexedDBModel, database: Database|null) {
     super();
 
     this.model = model;
-    const databaseName = database ? database.databaseId.name : i18nString(UIStrings.loading);
-
-    this.contentElement.classList.add('indexed-db-container');
-
-    // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this.reportView = new UI.ReportView.ReportView(databaseName);
-    this.reportView.show(this.contentElement);
-
-    this.reportView.element.classList.add('indexed-db-header');
-
-    const bodySection = this.reportView.appendSection('');
-    this.securityOriginElement = bodySection.appendField(i18nString(UIStrings.securityOrigin));
-    this.versionElement = bodySection.appendField(i18nString(UIStrings.version));
-    this.objectStoreCountElement = bodySection.appendField(i18nString(UIStrings.objectStores));
-
-    const footer = this.reportView.appendSection('').appendRow();
-    this.clearButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.deleteDatabase), () => this.deleteDatabase(), i18nString(UIStrings.deleteDatabase));
-    footer.appendChild(this.clearButton);
-
-    this.refreshButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.refreshDatabase), () => this.refreshDatabaseButtonClicked(),
-        i18nString(UIStrings.refreshDatabase));
-    footer.appendChild(this.refreshButton);
-
     if (database) {
       this.update(database);
     }
   }
 
-  private refreshDatabase(): void {
-    this.securityOriginElement.textContent = this.database.databaseId.storageKey;
-    if (this.versionElement) {
-      this.versionElement.textContent = this.database.version.toString();
-    }
+  override getTitle(): string|undefined {
+    return this.database?.databaseId.name;
+  }
 
-    this.objectStoreCountElement.textContent = this.database.objectStores.size.toString();
+  override async renderReportContent(): Promise<LitHtml.LitTemplate> {
+    if (!this.database) {
+      return LitHtml.nothing;
+    }
+    return LitHtml.html`
+      ${await super.renderReportContent()}
+      ${this.key(i18nString(UIStrings.version))}
+      ${this.value(this.database.version.toString())}
+      ${this.key(i18nString(UIStrings.objectStores))}
+      ${this.value(this.database.objectStores.size.toString())}
+      <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
+        ReportView.ReportView.ReportSectionDivider.litTagName}>
+      <${ReportView.ReportView.ReportSection.litTagName}>
+      <${Buttons.Button.Button.litTagName}
+          aria-label=${i18nString(UIStrings.deleteDatabase)}
+          .variant=${Buttons.Button.Variant.SECONDARY}
+          @click=${this.deleteDatabase}>
+        ${i18nString(UIStrings.deleteDatabase)}
+      </${Buttons.Button.Button.litTagName}>&nbsp;
+      <${Buttons.Button.Button.litTagName}
+          aria-label=${i18nString(UIStrings.refreshDatabase)}
+          .variant=${Buttons.Button.Variant.SECONDARY}
+          @click=${this.refreshDatabaseButtonClicked}>
+        ${i18nString(UIStrings.refreshDatabase)}
+      </${Buttons.Button.Button.litTagName}>
+      </${ReportView.ReportView.ReportSection.litTagName}>
+      `;
   }
 
   private refreshDatabaseButtonClicked(): void {
@@ -213,9 +204,10 @@ export class IDBDatabaseView extends UI.Widget.VBox {
 
   update(database: Database): void {
     this.database = database;
-    this.reportView.setTitle(this.database.databaseId.name);
-    this.refreshDatabase();
-    this.updatedForTests();
+    if (database.databaseId.storageKey) {
+      this.setStorageKey(database.databaseId.storageKey);
+    }
+    void this.render().then(() => this.updatedForTests());
   }
 
   private updatedForTests(): void {
@@ -224,18 +216,24 @@ export class IDBDatabaseView extends UI.Widget.VBox {
 
   private async deleteDatabase(): Promise<void> {
     const ok = await UI.UIUtils.ConfirmDialog.show(
-        i18nString(UIStrings.pleaseConfirmDeleteOfSDatabase, {PH1: this.database.databaseId.name}), this.element);
+        i18nString(UIStrings.pleaseConfirmDeleteOfSDatabase, {PH1: this.database.databaseId.name}), this);
     if (ok) {
       void this.model.deleteDatabase(this.database.databaseId);
     }
   }
   override wasShown(): void {
     super.wasShown();
-    this.reportView.registerCSSFiles([indexedDBViewsStyles]);
-    this.registerCSSFiles([indexedDBViewsStyles]);
   }
 }
 
+ComponentHelpers.CustomElements.defineComponent('devtools-idb-database-view', IDBDatabaseView);
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface HTMLElementTagNameMap {
+    'devtools-idb-database-view': IDBDatabaseView;
+  }
+}
 export class IDBDataView extends UI.View.SimpleView {
   private readonly model: IndexedDBModel;
   private readonly databaseId: DatabaseId;

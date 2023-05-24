@@ -311,6 +311,7 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
   #isDivergingFromVMInternal?: boolean;
   #hasDivergedFromVMInternal?: boolean;
   #isMergingToVMInternal?: boolean;
+  #updateMutex = new Common.Mutex.Mutex();
   constructor(
       resourceScriptMapping: ResourceScriptMapping, uiSourceCode: Workspace.UISourceCode.UISourceCode,
       script: SDK.Script.Script) {
@@ -416,11 +417,14 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
   }
 
   private async update(): Promise<void> {
+    // Do not interleave "divergeFromVM" with "mergeToVM" calls.
+    const release = await this.#updateMutex.acquire();
     if (this.isDiverged() && !this.#hasDivergedFromVMInternal) {
       await this.divergeFromVM();
     } else if (!this.isDiverged() && this.#hasDivergedFromVMInternal) {
       await this.mergeToVM();
     }
+    release();
   }
 
   private async divergeFromVM(): Promise<void> {

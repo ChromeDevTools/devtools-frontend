@@ -13,6 +13,7 @@ import * as ReportsGrid from './ReportsGrid.js';
 import * as SharedStorageAccessGrid from './SharedStorageAccessGrid.js';
 import * as SharedStorageMetadataView from './SharedStorageMetadataView.js';
 import * as StackTrace from './StackTrace.js';
+import * as StorageMetadataView from './StorageMetadataView.js';
 import * as TrustTokensView from './TrustTokensView.js';
 
 export {
@@ -27,5 +28,6 @@ export {
   SharedStorageAccessGrid,
   SharedStorageMetadataView,
   StackTrace,
+  StorageMetadataView,
   TrustTokensView,
 };

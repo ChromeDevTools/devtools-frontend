@@ -44,6 +44,7 @@ devtools_module("components") {
     "SharedStorageAccessGrid.ts",
     "SharedStorageMetadataView.ts",
     "StackTrace.ts",
+    "StorageMetadataView.ts",
     "TrustTokensView.ts",
   ]
 

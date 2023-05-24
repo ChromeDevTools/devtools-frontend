@@ -77,7 +77,7 @@ console.log("foo");
       });
 
       const script = model.scriptForId(scriptId) as SDKModule.Script.Script;
-      return {script, target};
+      return {script, target, model};
     }
 
     it('does not invoke the backend when new content and old content match', async () => {
@@ -133,6 +133,23 @@ console.log("foo");
             assert.fail('expected "editSource" to throw an exception!');
           })
           .catch(() => done());
+    });
+
+    it('fires an event on the DebuggerModel after returning from the backend', async () => {
+      const {script, model} = setupEditTest('1', 'console.log("foo")');
+      setMockConnectionResponseHandler('Debugger.setScriptSource', () => {
+        return {
+          status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok,
+        };
+      });
+      const newContent = 'console.log("bar")';
+      const eventPromise = model.once(SDK.DebuggerModel.Events.ScriptSourceWasEdited);
+
+      void script.editSource(newContent);
+
+      const {script: eventScript, status} = await eventPromise;
+      assert.strictEqual(eventScript, script);
+      assert.strictEqual(status, Protocol.Debugger.SetScriptSourceResponseStatus.Ok);
     });
   });
 });

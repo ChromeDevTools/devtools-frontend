@@ -959,6 +959,7 @@ export enum Events {
   GlobalObjectCleared = 'GlobalObjectCleared',
   CallFrameSelected = 'CallFrameSelected',
   DebuggerIsReadyToPause = 'DebuggerIsReadyToPause',
+  ScriptSourceWasEdited = 'ScriptSourceWasEdited',
 }
 
 export type EventTypes = {
@@ -972,6 +973,10 @@ export type EventTypes = {
   [Events.CallFrameSelected]: DebuggerModel,
   [Events.DebuggerIsReadyToPause]: DebuggerModel,
   [Events.DebugInfoAttached]: Script,
+  [Events.ScriptSourceWasEdited]: {
+    script: Script,
+    status: Protocol.Debugger.SetScriptSourceResponseStatus,
+  },
 };
 
 class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {

@@ -33,7 +33,13 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 
-import {Location, type DebuggerModel, COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL} from './DebuggerModel.js';
+import {
+  Location,
+  type DebuggerModel,
+  COND_BREAKPOINT_SOURCE_URL,
+  LOGPOINT_SOURCE_URL,
+  Events,
+} from './DebuggerModel.js';
 import {type FrameAssociated} from './FrameAssociated.js';
 import {type PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
@@ -351,6 +357,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       this.#contentPromise = Promise.resolve({content: newSource, isEncoded: false});
     }
 
+    this.debuggerModel.dispatchEventToListeners(Events.ScriptSourceWasEdited, {script: this, status: response.status});
     return {changed: true, status: response.status, exceptionDetails: response.exceptionDetails};
   }
 

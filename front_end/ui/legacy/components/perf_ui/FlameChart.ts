@@ -990,7 +990,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.restore();
 
     for (const [color, {indexes}] of colorBuckets) {
-      this.drawGenericEvents(context, timelineData, color, indexes);
+      this.#drawGenericEvents(context, timelineData, color, indexes);
       this.#drawDecorations(context, timelineData, indexes);
     }
 
@@ -1042,25 +1042,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * in the timeline like the Main Thread flamechart and the timings track.
    * Drawn on a color by color basis to minimize the amount of times context.style is switched.
    */
-  private drawGenericEvents(
+  #drawGenericEvents(
       context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, color: string, indexes: number[]): void {
-    const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
     context.save();
     context.beginPath();
     for (let i = 0; i < indexes.length; ++i) {
       const entryIndex = indexes[i];
-      const duration = entryTotalTimes[entryIndex];
-      if (isNaN(duration)) {
-        continue;
-      }
-      const entryStartTime = entryStartTimes[entryIndex];
-      const barX = this.timeToPositionClipped(entryStartTime);
-      const barLevel = entryLevels[entryIndex];
-      const barHeight = this.levelHeight(barLevel);
-      const barY = this.levelToOffset(barLevel);
-      const barRight = this.timeToPositionClipped(entryStartTime + duration);
-      const barWidth = Math.max(barRight - barX, 1);
-      context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
+      this.#drawEventRect(context, timelineData, entryIndex);
     }
     context.fillStyle = color;
     context.fill();
@@ -1073,7 +1061,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #drawDecorations(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, indexes: number[]): void {
     context.save();
     context.beginPath();
-    const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
+    const {entryTotalTimes, entryStartTimes} = timelineData;
 
     let hasDrawnCandyStripe = false;
 
@@ -1097,13 +1085,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
           // Draw a rectangle over the event, starting at the X value of the
           // event's start time + the startDuration of the candy striping.
-          const barX = this.timeToPositionClipped(entryStartTime + candyStripeStartTime);
-          const barLevel = entryLevels[entryIndex];
-          const barHeight = this.levelHeight(barLevel);
-          const barY = this.levelToOffset(barLevel);
-          const barRight = this.timeToPositionClipped(entryStartTime + duration);
-          const barWidth = Math.max(barRight - barX, 1);
-          context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
+          const barXStart = this.timeToPositionClipped(entryStartTime + candyStripeStartTime);
+          const barXEnd = this.timeToPositionClipped(entryStartTime + duration);
+          this.#drawEventRect(context, timelineData, entryIndex, {
+            startX: barXStart,
+            width: barXEnd - barXStart,
+          });
         }
       }
     }
@@ -1117,6 +1104,53 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       }
     }
     context.restore();
+  }
+
+  /**
+   * Draws (but does not fill) a rectangle for a given event onto the provided
+   * context. Because sometimes we need to draw a portion of the rect, it
+   * optionally allows the start X and width of the rect to be overriden by
+   * custom pixel values. It currently does not allow the start Y and height to
+   * be changed because we have no need to do so, but this can be extended in
+   * the future if required.
+   **/
+  #drawEventRect(
+      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, entryIndex: number, overrides?: {
+        startX?: number,
+        width?: number,
+      }): void {
+    const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
+    const duration = entryTotalTimes[entryIndex];
+    if (isNaN(duration)) {
+      return;
+    }
+    const entryStartTime = entryStartTimes[entryIndex];
+    const barX = overrides?.startX || this.timeToPositionClipped(entryStartTime);
+    const barLevel = entryLevels[entryIndex];
+    const barHeight = this.#eventBarHeight(timelineData, entryIndex);
+    const barY = this.levelToOffset(barLevel);
+    const barWidth = overrides?.width || this.#eventBarWidth(timelineData, entryIndex);
+    // We purposefully leave a 1px gap off the height so there is a small gap
+    // visually between events vertically in the panel.
+    context.rect(barX, barY, barWidth, barHeight - 1);
+  }
+
+  #eventBarHeight(timelineData: FlameChartTimelineData, entryIndex: number): number {
+    const {entryLevels} = timelineData;
+    const barLevel = entryLevels[entryIndex];
+    const barHeight = this.levelHeight(barLevel);
+    return barHeight;
+  }
+
+  #eventBarWidth(timelineData: FlameChartTimelineData, entryIndex: number): number {
+    const {entryTotalTimes, entryStartTimes} = timelineData;
+    const duration = entryTotalTimes[entryIndex];
+    const entryStartTime = entryStartTimes[entryIndex];
+    const barXStart = this.timeToPositionClipped(entryStartTime);
+    const barXEnd = this.timeToPositionClipped(entryStartTime + duration);
+    // Ensure that the width of the bar is at least one pixel.
+    const barWidth = Math.max(barXEnd - barXStart, 1);
+    return barWidth;
   }
 
   /**
@@ -1418,14 +1452,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const textPadding = this.textPadding;
     context.save();
     context.beginPath();
-    const {entryStartTimes, entryLevels, entryTotalTimes} = timelineData;
+    const {entryStartTimes, entryLevels} = timelineData;
     for (let i = 0; i < titleIndices.length; ++i) {
       const entryIndex = titleIndices[i];
       const entryStartTime = entryStartTimes[entryIndex];
       const barX = this.timeToPositionClipped(entryStartTime);
-      const barRight =
-          Math.min(this.timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]), canvasWidth) + 1;
-      const barWidth = barRight - barX;
+      // Ensure that the title does not go off screen, if the width of the
+      // event is wider than the width of the canvas, use the canvas width as
+      // our maximum width.
+      const barWidth = Math.min(this.#eventBarWidth(timelineData, entryIndex), canvasWidth);
       const barLevel = entryLevels[entryIndex];
       const barY = this.levelToOffset(barLevel);
       let text = this.dataProvider.entryTitle(entryIndex);
@@ -1438,7 +1473,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         );
       }
       const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
-      const barHeight = this.levelHeight(barLevel);
+      const barHeight = this.#eventBarHeight(timelineData, entryIndex);
       if (this.dataProvider.decorateEntry(
               entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixel)) {
         continue;
@@ -1519,7 +1554,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const timeWindowLeft = this.chartViewport.windowLeftTime();
     const timeWindowRight = this.chartViewport.windowRightTime();
     const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
-    const barHeight = group.style.height;
+    const groupBarHeight = group.style.height;
     if (!this.rawTimelineData) {
       return;
     }
@@ -1551,12 +1586,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         const endBarX = this.timeToPositionClipped(entryEndTime);
         if (group.style.useDecoratorsForOverview && this.dataProvider.forceDecoration(entryIndex)) {
           const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
-          const barWidth = endBarX - barX;
+          const barWidth = this.#eventBarWidth(this.rawTimelineData, entryIndex);
+
           context.beginPath();
           context.fillStyle = color;
-          context.fillRect(barX, y, barWidth, barHeight - 1);
+          context.fillRect(barX, y, barWidth, groupBarHeight - 1);
           this.dataProvider.decorateEntry(
-              entryIndex, context, '', barX, y, barWidth, barHeight, unclippedBarX, timeToPixel);
+              entryIndex, context, '', barX, y, barWidth, groupBarHeight, unclippedBarX, timeToPixel);
           continue;
         }
         range.append(new Common.SegmentedRange.Segment(barX, endBarX, color));
@@ -1574,7 +1610,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         lastColor = segments[i].data;
         context.fillStyle = lastColor;
       }
-      context.rect(segment.begin, y, segment.end - segment.begin, barHeight);
+      context.rect(segment.begin, y, segment.end - segment.begin, groupBarHeight);
     }
     context.fill();
 

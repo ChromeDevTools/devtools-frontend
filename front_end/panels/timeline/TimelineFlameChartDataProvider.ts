@@ -1100,7 +1100,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (entryType === entryTypes.Event) {
       const event = (data as SDK.TracingModel.Event);
       if (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning) {
-        paintWarningDecoration(barX, barWidth - 1.5);
+        paintWarningDecoration(barX, barWidth);
       }
     }
 

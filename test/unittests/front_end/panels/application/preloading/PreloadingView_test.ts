@@ -225,8 +225,6 @@ class NavigationEmulator {
         action: Protocol.Preload.SpeculationAction.Prerender,
         url: prerenderUrl,
       },
-      initiatingFrameId: this.frameId,
-      prerenderingUrl: prerenderUrl,
       status: Protocol.Preload.PreloadingStatus.Running,
     };
     dispatchEvent(this.primaryTarget, 'Preload.prerenderStatusUpdated', this.prerenderStatusUpdatedEvent);

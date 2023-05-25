@@ -817,6 +817,7 @@ experimental domain Audits
       ErrorIdToken
       Canceled
       RpPageNotVisible
+      SilentMediationFailure
 
   # This issue tracks client hints related issues. It's used to deprecate old
   # features, encourage the use of new ones, and provide general guidance.
@@ -1313,6 +1314,12 @@ domain Browser
   experimental command executeBrowserCommand
     parameters
       BrowserCommandId commandId
+
+  # Allows a site to use privacy sandbox features that require enrollment
+  # without the site actually being enrolled. Only supported on page targets.
+  command addPrivacySandboxEnrollmentOverride
+    parameters
+      string url
 
 # This domain exposes CSS read/write operations. All CSS objects (stylesheets, rules, and styles)
 # have an associated `id` used in subsequent operations on the related object. Each object type has
@@ -2054,6 +2061,7 @@ experimental domain CSS
       StyleSheetId styleSheetId
 
 experimental domain CacheStorage
+  depends on Storage
 
   # Unique identifier of the Cache object.
   type CacheId extends string
@@ -2097,6 +2105,8 @@ experimental domain CacheStorage
       string securityOrigin
       # Storage key of the cache.
       string storageKey
+      # Storage bucket of the cache.
+      optional Storage.StorageBucket storageBucket
       # The name of the cache.
       string cacheName
 
@@ -2128,11 +2138,13 @@ experimental domain CacheStorage
   # Requests cache names.
   command requestCacheNames
     parameters
-      # At least and at most one of securityOrigin, storageKey must be specified.
+      # At least and at most one of securityOrigin, storageKey, storageBucket must be specified.
       # Security origin.
       optional string securityOrigin
       # Storage key.
       optional string storageKey
+      # Storage bucket. If not specified, it uses the default bucket.
+      optional Storage.StorageBucket storageBucket
     returns
       # Caches for the security origin.
       array of Cache caches
@@ -8617,6 +8629,17 @@ domain Page
       # Base64-encoded data
       binary data
 
+  # Enable/disable prerendering manually.
+  #
+  # This command is a short-term solution for https://crbug.com/1440085.
+  # See https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA
+  # for more details.
+  #
+  # TODO(https://crbug.com/1440085): Remove this once Puppeteer supports tab targets.
+  experimental command setPrerenderingAllowed
+    parameters
+      boolean isAllowed
+
 domain Performance
 
   # Run-time execution metric.
@@ -11018,9 +11041,7 @@ experimental domain Preload
       SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation
       MemoryPressureOnTrigger
       MemoryPressureAfterTriggered
-      SpeculationRuleRemoved
-      TriggerPageNavigated
-      OtherPrerenderedPageActivated
+      PrerenderingDisabledByDevTools
 
   # Fired when a prerender attempt is completed.
   event prerenderAttemptCompleted
@@ -11065,6 +11086,7 @@ experimental domain Preload
       PrefetchFailedNetError
       PrefetchFailedNon2XX
       PrefetchFailedPerPageLimitExceeded
+      PrefetchEvicted
       PrefetchHeldback
       # A previous prefetch to the origin got a HTTP 503 response with an
       # Retry-After header that has no elapsed yet.
@@ -11080,6 +11102,8 @@ experimental domain Preload
       PrefetchNotEligibleSchemeIsNotHttps
       PrefetchNotEligibleUserHasCookies
       PrefetchNotEligibleUserHasServiceWorker
+      PrefetchNotEligibleBatterySaverEnabled
+      PrefetchNotEligiblePreloadingDisabled
       PrefetchNotFinishedInTime
       PrefetchNotStarted
       PrefetchNotUsedCookiesChanged
@@ -11105,9 +11129,6 @@ experimental domain Preload
   event prerenderStatusUpdated
     parameters
       PreloadingAttemptKey key
-      # The frame id of the frame initiating prerender.
-      Page.FrameId initiatingFrameId
-      string prerenderingUrl
       PreloadingStatus status
       optional PrerenderFinalStatus prerenderStatus
 
@@ -11179,4 +11200,3 @@ experimental domain FedCm
   # Resets the cooldown time, if any, to allow the next FedCM call to show
   # a dialog even if one was recently dismissed by the user.
   command resetCooldown
-

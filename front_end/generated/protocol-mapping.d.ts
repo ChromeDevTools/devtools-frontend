@@ -1065,6 +1065,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Allows a site to use privacy sandbox features that require enrollment
+     * without the site actually being enrolled. Only supported on page targets.
+     */
+    'Browser.addPrivacySandboxEnrollmentOverride': {
+      paramsType: [Protocol.Browser.AddPrivacySandboxEnrollmentOverrideRequest];
+      returnType: void;
+    };
+    /**
      * Inserts a new rule with the given `ruleText` in a stylesheet with given `styleSheetId`, at the
      * position specified by `location`.
      */
@@ -3345,6 +3353,19 @@ export namespace ProtocolMapping {
      */
     'Page.setInterceptFileChooserDialog': {
       paramsType: [Protocol.Page.SetInterceptFileChooserDialogRequest];
+      returnType: void;
+    };
+    /**
+     * Enable/disable prerendering manually.
+     *
+     * This command is a short-term solution for https://crbug.com/1440085.
+     * See https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA
+     * for more details.
+     *
+     * TODO(https://crbug.com/1440085): Remove this once Puppeteer supports tab targets.
+     */
+    'Page.setPrerenderingAllowed': {
+      paramsType: [Protocol.Page.SetPrerenderingAllowedRequest];
       returnType: void;
     };
     /**

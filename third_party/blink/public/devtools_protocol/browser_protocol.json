@@ -1626,7 +1626,8 @@
                         "IdTokenInvalidContentType",
                         "ErrorIdToken",
                         "Canceled",
-                        "RpPageNotVisible"
+                        "RpPageNotVisible",
+                        "SilentMediationFailure"
                     ]
                 },
                 {
@@ -2631,6 +2632,16 @@
                         {
                             "name": "commandId",
                             "$ref": "BrowserCommandId"
+                        }
+                    ]
+                },
+                {
+                    "name": "addPrivacySandboxEnrollmentOverride",
+                    "description": "Allows a site to use privacy sandbox features that require enrollment\nwithout the site actually being enrolled. Only supported on page targets.",
+                    "parameters": [
+                        {
+                            "name": "url",
+                            "type": "string"
                         }
                     ]
                 }
@@ -4409,6 +4420,9 @@
         {
             "domain": "CacheStorage",
             "experimental": true,
+            "dependencies": [
+                "Storage"
+            ],
             "types": [
                 {
                     "id": "CacheId",
@@ -4502,6 +4516,12 @@
                             "type": "string"
                         },
                         {
+                            "name": "storageBucket",
+                            "description": "Storage bucket of the cache.",
+                            "optional": true,
+                            "$ref": "Storage.StorageBucket"
+                        },
+                        {
                             "name": "cacheName",
                             "description": "The name of the cache.",
                             "type": "string"
@@ -4569,7 +4589,7 @@
                     "parameters": [
                         {
                             "name": "securityOrigin",
-                            "description": "At least and at most one of securityOrigin, storageKey must be specified.\nSecurity origin.",
+                            "description": "At least and at most one of securityOrigin, storageKey, storageBucket must be specified.\nSecurity origin.",
                             "optional": true,
                             "type": "string"
                         },
@@ -4578,6 +4598,12 @@
                             "description": "Storage key.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "storageBucket",
+                            "description": "Storage bucket. If not specified, it uses the default bucket.",
+                            "optional": true,
+                            "$ref": "Storage.StorageBucket"
                         }
                     ],
                     "returns": [
@@ -17774,6 +17800,17 @@
                             "type": "boolean"
                         }
                     ]
+                },
+                {
+                    "name": "setPrerenderingAllowed",
+                    "description": "Enable/disable prerendering manually.\n\nThis command is a short-term solution for https://crbug.com/1440085.\nSee https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA\nfor more details.\n\nTODO(https://crbug.com/1440085): Remove this once Puppeteer supports tab targets.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "isAllowed",
+                            "type": "boolean"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -23286,9 +23323,7 @@
                         "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation",
                         "MemoryPressureOnTrigger",
                         "MemoryPressureAfterTriggered",
-                        "SpeculationRuleRemoved",
-                        "TriggerPageNavigated",
-                        "OtherPrerenderedPageActivated"
+                        "PrerenderingDisabledByDevTools"
                     ]
                 },
                 {
@@ -23316,6 +23351,7 @@
                         "PrefetchFailedNetError",
                         "PrefetchFailedNon2XX",
                         "PrefetchFailedPerPageLimitExceeded",
+                        "PrefetchEvicted",
                         "PrefetchHeldback",
                         "PrefetchIneligibleRetryAfter",
                         "PrefetchIsPrivacyDecoy",
@@ -23329,6 +23365,8 @@
                         "PrefetchNotEligibleSchemeIsNotHttps",
                         "PrefetchNotEligibleUserHasCookies",
                         "PrefetchNotEligibleUserHasServiceWorker",
+                        "PrefetchNotEligibleBatterySaverEnabled",
+                        "PrefetchNotEligiblePreloadingDisabled",
                         "PrefetchNotFinishedInTime",
                         "PrefetchNotStarted",
                         "PrefetchNotUsedCookiesChanged",
@@ -23448,15 +23486,6 @@
                         {
                             "name": "key",
                             "$ref": "PreloadingAttemptKey"
-                        },
-                        {
-                            "name": "initiatingFrameId",
-                            "description": "The frame id of the frame initiating prerender.",
-                            "$ref": "Page.FrameId"
-                        },
-                        {
-                            "name": "prerenderingUrl",
-                            "type": "string"
                         },
                         {
                             "name": "status",

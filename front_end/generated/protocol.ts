@@ -1088,6 +1088,7 @@ export namespace Audits {
     ErrorIdToken = 'ErrorIdToken',
     Canceled = 'Canceled',
     RpPageNotVisible = 'RpPageNotVisible',
+    SilentMediationFailure = 'SilentMediationFailure',
   }
 
   /**
@@ -1722,6 +1723,10 @@ export namespace Browser {
 
   export interface ExecuteBrowserCommandRequest {
     commandId: BrowserCommandId;
+  }
+
+  export interface AddPrivacySandboxEnrollmentOverrideRequest {
+    url: string;
   }
 
   /**
@@ -2994,6 +2999,10 @@ export namespace CacheStorage {
      */
     storageKey: string;
     /**
+     * Storage bucket of the cache.
+     */
+    storageBucket?: Storage.StorageBucket;
+    /**
      * The name of the cache.
      */
     cacheName: string;
@@ -3034,7 +3043,7 @@ export namespace CacheStorage {
 
   export interface RequestCacheNamesRequest {
     /**
-     * At least and at most one of securityOrigin, storageKey must be specified.
+     * At least and at most one of securityOrigin, storageKey, storageBucket must be specified.
      * Security origin.
      */
     securityOrigin?: string;
@@ -3042,6 +3051,10 @@ export namespace CacheStorage {
      * Storage key.
      */
     storageKey?: string;
+    /**
+     * Storage bucket. If not specified, it uses the default bucket.
+     */
+    storageBucket?: Storage.StorageBucket;
   }
 
   export interface RequestCacheNamesResponse extends ProtocolResponseWithError {
@@ -12039,6 +12052,10 @@ export namespace Page {
     enabled: boolean;
   }
 
+  export interface SetPrerenderingAllowedRequest {
+    isAllowed: boolean;
+  }
+
   export interface DomContentEventFiredEvent {
     timestamp: Network.MonotonicTime;
   }
@@ -15615,9 +15632,7 @@ export namespace Preload {
     SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation = 'SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation',
     MemoryPressureOnTrigger = 'MemoryPressureOnTrigger',
     MemoryPressureAfterTriggered = 'MemoryPressureAfterTriggered',
-    SpeculationRuleRemoved = 'SpeculationRuleRemoved',
-    TriggerPageNavigated = 'TriggerPageNavigated',
-    OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
+    PrerenderingDisabledByDevTools = 'PrerenderingDisabledByDevTools',
   }
 
   /**
@@ -15645,6 +15660,7 @@ export namespace Preload {
     PrefetchFailedNetError = 'PrefetchFailedNetError',
     PrefetchFailedNon2XX = 'PrefetchFailedNon2XX',
     PrefetchFailedPerPageLimitExceeded = 'PrefetchFailedPerPageLimitExceeded',
+    PrefetchEvicted = 'PrefetchEvicted',
     PrefetchHeldback = 'PrefetchHeldback',
     PrefetchIneligibleRetryAfter = 'PrefetchIneligibleRetryAfter',
     PrefetchIsPrivacyDecoy = 'PrefetchIsPrivacyDecoy',
@@ -15658,6 +15674,8 @@ export namespace Preload {
     PrefetchNotEligibleSchemeIsNotHttps = 'PrefetchNotEligibleSchemeIsNotHttps',
     PrefetchNotEligibleUserHasCookies = 'PrefetchNotEligibleUserHasCookies',
     PrefetchNotEligibleUserHasServiceWorker = 'PrefetchNotEligibleUserHasServiceWorker',
+    PrefetchNotEligibleBatterySaverEnabled = 'PrefetchNotEligibleBatterySaverEnabled',
+    PrefetchNotEligiblePreloadingDisabled = 'PrefetchNotEligiblePreloadingDisabled',
     PrefetchNotFinishedInTime = 'PrefetchNotFinishedInTime',
     PrefetchNotStarted = 'PrefetchNotStarted',
     PrefetchNotUsedCookiesChanged = 'PrefetchNotUsedCookiesChanged',
@@ -15724,11 +15742,6 @@ export namespace Preload {
    */
   export interface PrerenderStatusUpdatedEvent {
     key: PreloadingAttemptKey;
-    /**
-     * The frame id of the frame initiating prerender.
-     */
-    initiatingFrameId: Page.FrameId;
-    prerenderingUrl: string;
     status: PreloadingStatus;
     prerenderStatus?: PrerenderFinalStatus;
   }

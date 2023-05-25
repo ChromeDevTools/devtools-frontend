@@ -524,6 +524,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_executeBrowserCommand(params: Protocol.Browser.ExecuteBrowserCommandRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Allows a site to use privacy sandbox features that require enrollment
+     * without the site actually being enrolled. Only supported on page targets.
+     */
+    invoke_addPrivacySandboxEnrollmentOverride(params: Protocol.Browser.AddPrivacySandboxEnrollmentOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface BrowserDispatcher {
     /**
@@ -2632,6 +2638,17 @@ declare namespace ProtocolProxyApi {
      * Instead, a protocol event `Page.fileChooserOpened` is emitted.
      */
     invoke_setInterceptFileChooserDialog(params: Protocol.Page.SetInterceptFileChooserDialogRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Enable/disable prerendering manually.
+     *
+     * This command is a short-term solution for https://crbug.com/1440085.
+     * See https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA
+     * for more details.
+     *
+     * TODO(https://crbug.com/1440085): Remove this once Puppeteer supports tab targets.
+     */
+    invoke_setPrerenderingAllowed(params: Protocol.Page.SetPrerenderingAllowedRequest): Promise<Protocol.ProtocolResponseWithError>;
 
   }
   export interface PageDispatcher {

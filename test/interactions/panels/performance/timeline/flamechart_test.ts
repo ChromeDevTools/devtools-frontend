@@ -26,12 +26,12 @@ describe('FlameChart', () => {
   itScreenshot('renders some events onto the timeline', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#container1');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_1.png', 3);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_1.png', 1);
   });
 
   itScreenshot('can add candy striping to events', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#container2');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_candystripe.png', 3);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_candystripe.png', 0.5);
   });
 });

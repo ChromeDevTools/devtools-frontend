@@ -1100,23 +1100,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (entryType === entryTypes.Event) {
       const event = (data as SDK.TracingModel.Event);
       if (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning) {
-        paintWarningDecoration(barX, barWidth);
+        this.#addDecorationToEvent(entryIndex, {type: 'WARNING_TRIANGLE'});
       }
-    }
-
-    function paintWarningDecoration(x: number, width: number): void {
-      const triangleSize = 8;
-      context.save();
-      context.beginPath();
-      context.rect(x, barY, width, barHeight);
-      context.clip();
-      context.beginPath();
-      context.fillStyle = 'red';
-      context.moveTo(x + width - triangleSize, barY);
-      context.lineTo(x + width, barY);
-      context.lineTo(x + width, barY + triangleSize);
-      context.fill();
-      context.restore();
     }
 
     return false;

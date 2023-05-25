@@ -50,7 +50,7 @@ vars = {
 allowed_hosts = [ 'chromium.googlesource.com', 'chrome-infra-packages.appspot.com' ]
 
 deps = {
-  'buildtools/clang_format/script': {
+  'third_party/clang-format/script': {
     'url': Var('clang_format_url') + '@' + Var('clang_format_revision'),
     'condition': 'build_with_chromium == False',
   },

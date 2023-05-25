@@ -228,7 +228,7 @@ export type EventTypes = {
 
 export const Presets = [
   [
-    {name: 'linear', value: 'linear(0, 1)'},
+    {name: 'linear', value: 'linear'},
     {
       name: 'elastic',
       value:

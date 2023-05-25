@@ -21,14 +21,14 @@ function testInvalidCase(input: string): void {
 describe('CSSLinearEasingModel', () => {
   describe('valid WPT cases', () => {
     it('should parse valid cases from WPT', () => {
-      testValidCase('linear(0 0%, 1 100%)', 'linear(0 0%, 1 100%)');
+      testValidCase('linear(0 0%, 1 100%)', 'linear');
       testValidCase('linear(0 0% 50%, 1 50% 100%)', 'linear(0 0%, 0 50%, 1 50%, 1 100%)');
       testValidCase('linear(0, 0.5 25% 75%, 1 100% 100%)', 'linear(0 0%, 0.5 25%, 0.5 75%, 1 100%, 1 100%)');
       testValidCase(
           'linear(0, 1.3, 1, 0.92, 1, 0.99, 1, 1.004, 0.998, 1 100% 100%)',
           'linear(0 0%, 1.3 11.11%, 1 22.22%, 0.92 33.33%, 1 44.44%, 0.99 55.56%, 1 66.67%, 1 77.78%, 1 88.89%, 1 100%, 1 100%)');
 
-      testValidCase('linear(0, 1)', 'linear(0 0%, 1 100%)');
+      testValidCase('linear(0, 1)', 'linear');
       testValidCase('linear(0 0% 50%, 1 50% 100%)', 'linear(0 0%, 0 50%, 1 50%, 1 100%)');
       testValidCase('linear(0, 0.5 25% 75%, 1 100% 100%)', 'linear(0 0%, 0.5 25%, 0.5 75%, 1 100%, 1 100%)');
       testValidCase(
@@ -54,5 +54,23 @@ describe('CSSLinearEasingModel', () => {
     testInvalidCase('linear(0% 100% 0)');
     testInvalidCase('linear(0 calc(50px - 50%), 0 calc(50em + 50em))');
     testInvalidCase('linear(0 calc(50%, 50%), 0 calc(50% + 50%))');
+  });
+
+  it('should parse "linear" as linear(0 0%, 1 100%) function', () => {
+    const model = InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel.parse('linear');
+
+    assertNotNullOrUndefined(model);
+
+    assert.strictEqual(model.points().length, 2);
+    assert.deepEqual({input: 0, output: 0}, model.points()[0]);
+    assert.deepEqual({input: 100, output: 1}, model.points()[1]);
+  });
+
+  it('linear(0 0%, 1 100%) is stringified as "linear"', () => {
+    const model = InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel.parse('linear(0 0%, 1 100%)');
+
+    assertNotNullOrUndefined(model);
+
+    assert.strictEqual(model.asCSSText(), 'linear');
   });
 });

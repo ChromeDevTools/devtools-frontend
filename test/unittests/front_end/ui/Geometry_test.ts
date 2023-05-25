@@ -130,11 +130,11 @@ describe('CubicBezier', () => {
   });
 
   it('is able to be represented as CSS text with a keyword value', () => {
-    const p1 = new UI.Geometry.Point(0, 0);
-    const p2 = new UI.Geometry.Point(1, 1);
+    const p1 = new UI.Geometry.Point(0.25, 0.1);
+    const p2 = new UI.Geometry.Point(0.25, 1);
     const cubicBezier = new UI.Geometry.CubicBezier(p1, p2);
     const cssText = cubicBezier.asCSSText();
-    assert.strictEqual(cssText, 'linear', 'cubic bezier was not represented correctly as CSS text');
+    assert.strictEqual(cssText, 'ease', 'cubic bezier was not represented correctly as CSS text');
   });
 });
 

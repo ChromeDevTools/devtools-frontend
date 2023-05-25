@@ -12,12 +12,16 @@ export abstract class AnimationTimingModel {
   abstract asCSSText(): string;
 
   static parse(text: string): AnimationTimingModel|null {
-    const bezierModel = UI.Geometry.CubicBezier.parse(text);
-    if (bezierModel) {
-      return bezierModel;
+    // Try to parse as a CSSLinearEasingModel first.
+    // The reason is: `linear` keyword is valid in both
+    // models, however we want to treat it as a `CSSLinearEasingModel`
+    // for visualizing in animation timing tool.
+    const cssLinearEasingModel = CSSLinearEasingModel.parse(text);
+    if (cssLinearEasingModel) {
+      return cssLinearEasingModel;
     }
 
-    return CSSLinearEasingModel.parse(text) || null;
+    return UI.Geometry.CubicBezier.parse(text) || null;
   }
 }
 

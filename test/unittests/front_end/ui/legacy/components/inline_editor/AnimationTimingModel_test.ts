@@ -8,9 +8,11 @@ import * as InlineEditor from '../../../../../../../front_end/ui/legacy/componen
 const {assert} = chai;
 
 describe('AnimationTimingModel', () => {
-  it('should parse `linear` as `linear` cubic bezier curve', () => {
+  it('should parse `linear` as linear easing function', () => {
     const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse('linear');
     assertNotNullOrUndefined(model);
+
+    assert.instanceOf(model, InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel);
     assert.strictEqual(model.asCSSText(), 'linear');
   });
 
@@ -23,6 +25,6 @@ describe('AnimationTimingModel', () => {
   it('should parse a valid linear easing function', () => {
     const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse('linear(0, 1)');
     assertNotNullOrUndefined(model);
-    assert.strictEqual(model.asCSSText(), 'linear(0 0%, 1 100%)');
+    assert.strictEqual(model.asCSSText(), 'linear');
   });
 });

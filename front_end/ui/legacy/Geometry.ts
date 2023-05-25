@@ -124,7 +124,12 @@ export class CubicBezier {
     const raw = 'cubic-bezier(' + this.controlPoints.join(', ') + ')';
     const keywordValues = CubicBezier.KeywordValues;
     for (const [keyword, value] of keywordValues) {
-      if (raw === value) {
+      // We special case `linear` in here as we
+      // treat `linear` keyword as a CSSLinearEasingModel.
+      // We return its full value instead of the keyword
+      // since otherwise it will be parsed as a CSSLinearEasingModel
+      // instead of a cubic bezier.
+      if (raw === value && keyword !== 'linear') {
         return keyword;
       }
     }

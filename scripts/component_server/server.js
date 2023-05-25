@@ -17,7 +17,7 @@ const {getTestRunnerConfigSetting} = require('../test/test_config_helpers.js');
 const match = require('minimatch');
 
 const tracesMode = argv.traces || false;
-const serverPort = parseInt(process.env.PORT, 10) || tracesMode ? 11010 : 8090;
+const serverPort = parseInt(process.env.PORT, 10) || (tracesMode ? 11010 : 8090);
 const target = argv.target || process.env.TARGET || 'Default';
 
 /**

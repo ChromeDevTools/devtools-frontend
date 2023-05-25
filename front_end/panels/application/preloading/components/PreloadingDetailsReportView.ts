@@ -261,6 +261,11 @@ const UIStrings = {
    */
   prerenderFinalStatusMemoryPressureAfterTriggered:
       'The prerendered page was unloaded because the browser came under critical memory pressure.',
+  /**
+   *  Description text for PrerenderFinalStatus::kPrerenderingDisabledByDevTools.
+   */
+  prerenderFinalStatusPrerenderingDisabledByDevTools:
+      'The prerender was not performed because DevTools has been used to disable prerendering.',
 };
 const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingDetailsReportView.ts', UIStrings);
@@ -452,12 +457,15 @@ class PreloadingUIUtils {
         return i18nString(UIStrings.prerenderFinalStatusMemoryPressureOnTrigger);
       case Protocol.Preload.PrerenderFinalStatus.MemoryPressureAfterTriggered:
         return i18nString(UIStrings.prerenderFinalStatusMemoryPressureAfterTriggered);
+      case Protocol.Preload.PrerenderFinalStatus.PrerenderingDisabledByDevTools:
+        return i18nString(UIStrings.prerenderFinalStatusPrerenderingDisabledByDevTools);
+      default:
+        // Note that we use switch and exhaustiveness check to prevent to
+        // forget updating these strings, but allow to handle unknown
+        // PrerenderFinalStatus at runtime.
+        return i18n.i18n.lockedString(`Unknown failure reason: ${
+            prerenderStatus as 'See https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk'}`);
     }
-
-    // Note that we use switch and exhaustiveness check to prevent to
-    // forget updating these strings, but allow to handle unknown
-    // PrerenderFinalStatus at runtime.
-    return i18n.i18n.lockedString('Unknown');
   }
 }
 

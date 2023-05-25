@@ -121,6 +121,10 @@ export interface LogMessage {
   type: 'send'|'recv';
 }
 
+interface ProtocolDomain {
+  readonly domain: string;
+}
+
 let protocolMonitorImplInstance: ProtocolMonitorImpl;
 export class ProtocolMonitorImpl extends UI.Widget.VBox {
   private started: boolean;
@@ -552,6 +556,8 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
 export class HistoryAutocompleteDataProvider {
   #maxHistorySize = 200;
   #commandHistory = new Set<string>();
+  #protocolMethods =
+      this.buildProtocolCommands(ProtocolClient.InspectorBackend.inspectorBackend.agentPrototypes.values());
 
   constructor(maxHistorySize?: number) {
     if (maxHistorySize !== undefined) {
@@ -565,10 +571,26 @@ export class HistoryAutocompleteDataProvider {
       return [];
     }
     const newestToOldest = [...this.#commandHistory].reverse();
+    newestToOldest.push(...this.#protocolMethods);
     return newestToOldest.filter(cmd => cmd.startsWith(prefix)).map(text => ({
                                                                       text,
                                                                     }));
   };
+
+  buildProtocolCommands(iterator: Iterable<ProtocolDomain>): Set<string> {
+    const commands: Set<string> = new Set();
+    for (const agentPrototype of iterator) {
+      const domain = agentPrototype.domain;
+      const prefix = 'invoke_';
+      for (const func in agentPrototype) {
+        if (func.startsWith(prefix) && func !== prefix) {
+          const command = `${domain}.${func.substring(prefix.length)}`;  // Remove "invoke" prefix
+          commands.add(command);
+        }
+      }
+    }
+    return commands;
+  }
 
   addEntry(value: string): void {
     if (this.#commandHistory.has(value)) {

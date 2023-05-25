@@ -101,5 +101,28 @@ describe('ProtocolMonitor', () => {
         {text: 'test2'},
       ]);
     });
+
+    it('should correctly creates a set of CDP commands', async () => {
+      const provider = new ProtocolMonitor.ProtocolMonitor.HistoryAutocompleteDataProvider(2);
+      const domains = [
+        {
+          domain: 'Test',
+          invoke_test: () => {},
+        },
+        {
+          domain: 'Test2',
+          invoke_test2: () => {},
+          invoke_test3: () => {},
+        },
+      ];
+
+      const expectedCommands = new Set([
+        'Test.test',
+        'Test2.test2',
+        'Test2.test3',
+      ]);
+
+      assert.deepStrictEqual(provider.buildProtocolCommands(domains), expectedCommands);
+    });
   });
 });

@@ -204,7 +204,8 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       const expectedCall = parseExpectedCall(expectedCallString, sidebar);
       const model = target.model(modelClass);
       assertNotNullOrUndefined(model);
-      const data = [{addEventListener: () => {}}] as Common.EventTarget.EventPayloadToRestParameters<Events, T>;
+      const data = [{addEventListener: () => {}, securityOrigin: 'https://example.com'}] as
+          Common.EventTarget.EventPayloadToRestParameters<Events, T>;
       model.dispatchEventToListeners(event as Platform.TypeScriptUtilities.NoUnion<T>, ...data);
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(expectedCall.called, inScope);

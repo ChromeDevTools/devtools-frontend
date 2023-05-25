@@ -20,15 +20,23 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
+function makeView(origin: string, metadata: Protocol.Storage.SharedStorageMetadata, resetBudget?: () => Promise<void>) {
+  return new ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView(
+      {
+        getMetadata: async () => metadata,
+        resetBudget: resetBudget || (async () => {}),
+      },
+      origin);
+}
+
 describeWithLocale('SharedStorageMetadataView', () => {
   it('renders with a title', async () => {
-    const component = new ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataReportView();
-    renderElementIntoDOM(component);
-    component.data = {
+    const component = makeView('https://a.test', {
       creationTime: 10 as Protocol.Network.TimeSinceEpoch,
       length: 4,
       remainingBudget: 8.3,
-    };
+    });
+    renderElementIntoDOM(component);
 
     assertShadowRoot(component.shadowRoot);
     await coordinator.done();
@@ -40,14 +48,12 @@ describeWithLocale('SharedStorageMetadataView', () => {
   });
 
   it('renders report keys and values', async () => {
-    const component = new ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataReportView();
-    renderElementIntoDOM(component);
-    component.origin = 'a.test';
-    component.data = {
+    const component = makeView('https://a.test', {
       creationTime: 10 as Protocol.Network.TimeSinceEpoch,
       length: 4,
       remainingBudget: 8.3,
-    };
+    });
+    renderElementIntoDOM(component);
 
     assertShadowRoot(component.shadowRoot);
     await coordinator.done({waitForWork: true});
@@ -62,7 +68,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
     assert.deepEqual(values, [
-      'a.test',
+      'https://a.test',
       (new Date(10 * 1e3)).toLocaleString(),
       '4',
       '8.3',
@@ -70,9 +76,8 @@ describeWithLocale('SharedStorageMetadataView', () => {
   });
 
   it('renders default view when data is empty', async () => {
-    const component = new ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataReportView();
+    const component = makeView('', {} as Protocol.Storage.SharedStorageMetadata);
     renderElementIntoDOM(component);
-    component.data = {} as ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataViewData;
 
     assertShadowRoot(component.shadowRoot);
     await coordinator.done({waitForWork: true});
@@ -95,16 +100,15 @@ describeWithLocale('SharedStorageMetadataView', () => {
   });
 
   it('renders reset budget button', async () => {
-    const component = new ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataReportView();
-    renderElementIntoDOM(component);
-    component.origin = 'a.test';
-    component.data = {
-      creationTime: 10 as Protocol.Network.TimeSinceEpoch,
-      length: 4,
-      remainingBudget: 8.3,
-    };
     const resetBudgetHandlerSpy = sinon.spy();
-    component.resetBudgetHandler = resetBudgetHandlerSpy;
+    const component = makeView(
+        'https://a.test', {
+          creationTime: 10 as Protocol.Network.TimeSinceEpoch,
+          length: 4,
+          remainingBudget: 8.3,
+        },
+        resetBudgetHandlerSpy);
+    renderElementIntoDOM(component);
 
     assertShadowRoot(component.shadowRoot);
     await coordinator.done({waitForWork: true});

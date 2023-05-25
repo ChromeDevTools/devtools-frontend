@@ -304,7 +304,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
 
     const metadataView = view.innerSplitWidget.sidebarWidget()?.contentElement.firstChild as
-        ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataReportView;
+        ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView;
     assertNotNullOrUndefined(metadataView);
 
     assertShadowRoot(metadataView.shadowRoot);
@@ -351,7 +351,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.strictEqual(view.getEntriesForTesting().length, 0);
 
     const metadataView = view.innerSplitWidget.sidebarWidget()?.contentElement.firstChild as
-        ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataReportView;
+        ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView;
     assertNotNullOrUndefined(metadataView);
 
     assertShadowRoot(metadataView.shadowRoot);
@@ -452,6 +452,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Creating will cause `getMetadata()` to be called.
     const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    await coordinator.done({waitForWork: true});
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
@@ -515,6 +516,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Creating will cause `getMetadata()` to be called.
     const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    await coordinator.done({waitForWork: true});
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
@@ -594,6 +596,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Creating will cause `getMetadata()` to be called.
     const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    await coordinator.done({waitForWork: true});
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
@@ -687,6 +690,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Creating will cause `getMetadata()` to be called.
     const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    await coordinator.done({waitForWork: true});
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
@@ -758,6 +762,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Creating will cause `getMetadata()` to be called.
     const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    await coordinator.done({waitForWork: true});
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
@@ -841,6 +846,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Creating will cause `getMetadata()` to be called.
     const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    await coordinator.done({waitForWork: true});
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
@@ -927,6 +933,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Creating will cause `getMetadata()` to be called.
     const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    await coordinator.done({waitForWork: true});
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
@@ -1013,6 +1020,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Creating will cause `getMetadata()` to be called.
     const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    await coordinator.done({waitForWork: true});
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
@@ -1085,6 +1093,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Creating will cause `getMetadata()` to be called.
     const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    await coordinator.done({waitForWork: true});
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);

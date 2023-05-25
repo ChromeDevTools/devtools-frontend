@@ -4,6 +4,7 @@
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Application from '../../../../../front_end/panels/application/application.js';
+import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import type * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
@@ -48,6 +49,8 @@ class SharedStorageItemsListener {
     this.#refreshed = false;
   }
 }
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('SharedStorageTreeElement', function() {
   const tests = (targetFactory: () => SDK.Target.Target) => {
@@ -110,6 +113,7 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
       treeElement =
           await Application.SharedStorageTreeElement.SharedStorageTreeElement.createElement(panel, sharedStorage);
 
+      await coordinator.done({waitForWork: true});
       assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
       const view = treeElement.view;

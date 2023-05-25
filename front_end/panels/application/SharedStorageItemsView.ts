@@ -8,6 +8,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as ApplicationComponents from './components/components.js';
 
 import {SharedStorageForOrigin} from './SharedStorageModel.js';
@@ -104,7 +105,8 @@ export class SharedStorageItemsView extends StorageItemsView {
   #sharedStorage: SharedStorageForOrigin;
   readonly outerSplitWidget: UI.SplitWidget.SplitWidget;
   readonly innerSplitWidget: UI.SplitWidget.SplitWidget;
-  #metadataView: ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView;
+  #metadataView: LegacyWrapper.LegacyWrapper
+      .LegacyWrapper<UI.Widget.VBox, ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView>;
   readonly dataGrid: DataGrid.DataGrid.DataGridImpl<Protocol.Storage.SharedStorageEntry>;
   #noDisplayView: UI.Widget.VBox;
   #eventListeners: Common.EventTarget.EventDescriptor[];
@@ -140,8 +142,10 @@ export class SharedStorageItemsView extends StorageItemsView {
     const dataGridWidget = this.dataGrid.asWidget();
     dataGridWidget.setMinimumSize(0, 100);
 
-    this.#metadataView = new ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView(
-        sharedStorage, sharedStorage.securityOrigin);
+    this.#metadataView = LegacyWrapper.LegacyWrapper.legacyWrapper(
+        UI.Widget.VBox,
+        new ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView(
+            sharedStorage, sharedStorage.securityOrigin));
     this.#metadataView.setMinimumSize(0, 275);
     const innerResizer = this.#metadataView.element.createChild('div', 'metadata-view-resizer');
 
@@ -203,7 +207,7 @@ export class SharedStorageItemsView extends StorageItemsView {
     if (!this.isShowing()) {
       return;
     }
-    await this.#metadataView.doUpdate();
+    await this.#metadataView.getComponent().render();
     await this.updateEntriesOnly();
     this.sharedStorageItemsDispatcher.dispatchEventToListeners(SharedStorageItemsDispatcher.Events.ItemsRefreshed);
   }

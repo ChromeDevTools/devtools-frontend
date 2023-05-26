@@ -8,6 +8,7 @@ ts_library("coverage") {
   testonly = true
   sources = [
     "CoverageInfo_test.ts",
+    "CoverageView_test.ts",
     "Segments_test.ts",
   ]
 

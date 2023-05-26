@@ -68,7 +68,8 @@ used when committed.
 *   [Localization](l10n.md)
 *   [V8 debugger support checklist for new language features](https://goo.gle/v8-checklist)
 *   [Chrome DevTools Protocol](devtools-protocol.md)
-*   [Add UMA metrics in DevTools frontend](uma_metrics.md)
+*   [UMA metrics in DevTools](uma_metrics.md)
+    *   [How to add UMA metrics in DevTools frontend](add_uma_metrics.md)
 
 ### Testing
 *   [E2E test guide](../test/e2e/README.md)

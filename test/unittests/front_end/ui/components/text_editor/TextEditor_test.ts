@@ -71,7 +71,7 @@ describeWithEnvironment('TextEditor', () => {
       let resolveEventPromise: Function;
       const dispatchSpy = sinon.spy(CodeMirror.EditorView.prototype, 'dispatch');
       const editor = new TextEditor.TextEditor.TextEditor(makeState(
-          'line1\nline2\nline3\nline4\nline5\line6',
+          'line1\nline2\nline3\nline4\nline5\nline6andthisisalonglinesothatwehaveenoughspacetoscrollhorizontally',
           [CodeMirror.EditorView.theme(
               {'&.cm-editor': {height: '50px', width: '50px'}, '.cm-scroller': {overflow: 'auto'}})]));
       const waitForFirstScrollPromise = new Promise(r => {

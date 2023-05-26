@@ -454,6 +454,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
           modelRemoved: (model: SharedStorageModel): void => this.sharedStorageModelRemoved(model),
         },
         {scoped: true});
+    SDK.TargetManager.TargetManager.instance().observeModels(
+        SDK.StorageBucketsModel.StorageBucketsModel, {modelAdded: model => model.enable(), modelRemoved: () => {}},
+        {scoped: true});
 
     this.sharedStorageTreeElementDispatcher =
         new Common.ObjectWrapper.ObjectWrapper<SharedStorageTreeElementDispatcher.EventTypes>();

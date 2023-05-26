@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../../../front_end/ui/components/report_view/report_view.js';
@@ -17,10 +18,14 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
-async function makeView(storageKey: string) {
+async function makeView(storageKeyOrBucketInfo: string|Protocol.Storage.StorageBucketInfo) {
   const component = new ApplicationComponents.StorageMetadataView.StorageMetadataView();
   renderElementIntoDOM(component);
-  component.setStorageKey(storageKey);
+  if (typeof storageKeyOrBucketInfo === 'string') {
+    component.setStorageKey(storageKeyOrBucketInfo);
+  } else {
+    component.setStorageBucket(storageKeyOrBucketInfo);
+  }
   await coordinator.done();
   return component;
 }
@@ -125,5 +130,39 @@ describeWithLocale('SharedStorageMetadataView', () => {
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
     assert.deepEqual(values, ['https://example.com', 'Yes, because the ancestry chain contains a third-party origin']);
+  });
+
+  it('renders with a bucket', async () => {
+    const component = await makeView({
+      bucket: {storageKey: 'https://example.com/^31', name: 'My Bucket'},
+      id: 'BUCKET_ID',
+      persistent: true,
+      durability: Protocol.Storage.StorageBucketsDurability.Relaxed,
+      quota: 4096,
+      expiration: 42,
+    });
+
+    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    assertShadowRoot(report.shadowRoot);
+
+    const titleElement = report.shadowRoot.querySelector('.report-title');
+    assert.strictEqual(titleElement?.textContent, 'https://example.com');
+
+    assertShadowRoot(component.shadowRoot);
+
+    const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
+    assert.deepEqual(
+        keys, ['Origin', 'Is third-party', 'Bucket name', 'Is persistent', 'Durability', 'Quota', 'Expiration']);
+
+    const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
+    assert.deepEqual(values, [
+      'https://example.com',
+      'Yes, because the ancestry chain contains a third-party origin',
+      'My Bucket',
+      'Yes',
+      'relaxed',
+      '4.1 kB',
+      (new Date(42000)).toLocaleString(),
+    ]);
   });
 });

@@ -106,7 +106,8 @@ describe('The Application Tab', async () => {
     });
   });
 
-  it('shows Shared Storage keys and values', async () => {
+  // Flaky test.
+  it.skip('[crbug.com/1449830]: shows Shared Storage keys and values', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to shared-storage resource and open Application tab', async () => {

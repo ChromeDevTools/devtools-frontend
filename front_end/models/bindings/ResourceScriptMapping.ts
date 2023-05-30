@@ -377,6 +377,10 @@ export class ResourceScriptFile extends Common.ObjectWrapper.ObjectWrapper<Resou
     }
     await this.update();
 
+    if (status === Protocol.Debugger.SetScriptSourceResponseStatus.Ok) {
+      return;
+    }
+
     if (!exceptionDetails) {
       // TODO(crbug.com/1334484): Instead of to the console, report these errors in an "info bar" at the bottom
       //                          of the text editor, similar to e.g. source mapping errors.

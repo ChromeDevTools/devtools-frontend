@@ -1014,7 +1014,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
           this.handleContextMenuCreate(project, path, undefined);
         });
       }
-    } else {
+    } else if (node.origin && node.folderPath) {
       const url = Common.ParsedURL.ParsedURL.concatenate(node.origin, '/', node.folderPath);
       for (const {text, callback} of Bindings.IgnoreListManager.IgnoreListManager.instance()
                .getIgnoreListFolderContextMenuItems(url)) {

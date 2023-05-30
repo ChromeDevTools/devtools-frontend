@@ -691,7 +691,7 @@ export class TimelineModelImpl {
 
     // Check for legacy CpuProfile event format first.
     // 'CpuProfile' is currently used by https://webpack.js.org/plugins/profiling-plugin/ and our createFakeTraceFromCpuProfile
-    let cpuProfileEvent: (SDK.TracingModel.Event|undefined)|SDK.TracingModel.Event = events[events.length - 1];
+    let cpuProfileEvent = events.at(-1);
     if (cpuProfileEvent && cpuProfileEvent.name === RecordType.CpuProfile) {
       const eventData = cpuProfileEvent.args['data'];
       cpuProfile = (eventData && eventData['cpuProfile'] as Protocol.Profiler.Profile | null);
@@ -704,6 +704,13 @@ export class TimelineModelImpl {
         return null;
       }
       target = this.targetByEvent(cpuProfileEvent);
+      // Profile groups are created right after a trace is loaded (in
+      // tracing model).
+      // They are created using events with the "P" phase (samples),
+      // which includes ProfileChunks with the samples themselves but
+      // also "Profile" events with metadata of the profile.
+      // A group is created for each unique profile in each unique
+      // thread.
       const profileGroup = tracingModel.profileGroup(cpuProfileEvent);
       if (!profileGroup) {
         Common.Console.Console.instance().error('Invalid CPU profile format.');

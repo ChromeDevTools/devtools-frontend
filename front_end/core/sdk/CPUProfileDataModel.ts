@@ -52,7 +52,12 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   lines: any;
   totalHitCount: number;
   profileHead: CPUProfileNode;
-  #idToNode!: Map<number, CPUProfileNode>;
+  /**
+   * A cache for the nodes we have parsed.
+   * Note: "Parsed" nodes are different from the "Protocol" nodes, the
+   * latter being the raw data we receive from the backend.
+   */
+  #idToParsedNode!: Map<number, CPUProfileNode>;
   gcNode!: CPUProfileNode;
   programNode?: ProfileNode;
   idleNode?: ProfileNode;
@@ -83,7 +88,6 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     this.initialize(this.profileHead);
     this.extractMetaNodes();
     if (this.samples) {
-      this.buildIdToNodeMap();
       this.sortSamples();
       this.normalizeTimestamps();
       this.fixMissingSamples();
@@ -113,15 +117,24 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     if (!profile.timeDeltas) {
       return [];
     }
-    let lastTimeUsec = profile.startTime;
+    let lastTimeMicroSec = profile.startTime;
     const timestamps = new Array(profile.timeDeltas.length);
     for (let i = 0; i < profile.timeDeltas.length; ++i) {
-      lastTimeUsec += profile.timeDeltas[i];
-      timestamps[i] = lastTimeUsec;
+      lastTimeMicroSec += profile.timeDeltas[i];
+      timestamps[i] = lastTimeMicroSec;
     }
     return timestamps;
   }
 
+  /**
+   * Creates a Tree of CPUProfileNodes using the Protocol.Profiler.ProfileNodes.
+   * As the tree is built, samples of native code (prefixed with "native ") are
+   * filtered out. Samples of filtered nodes are replaced with the parent of the
+   * node being filtered.
+   *
+   * This function supports legacy and new definitions of the CDP Profiler.Profile
+   * type as well as the type of a CPU profile contained in trace events.
+   */
   private translateProfileTree(nodes: Protocol.Profiler.ProfileNode[]): CPUProfileNode {
     function isNativeNode(node: Protocol.Profiler.ProfileNode): boolean {
       if (node.callFrame) {
@@ -139,7 +152,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       for (let i = 1; i < nodes.length; ++i) {
         const node = nodes[i];
         // @ts-ignore Legacy types
-        const parentNode = nodeByIdMap.get(node.parent);
+        const parentNode = protocolNodeById.get(node.parent);
         // @ts-ignore Legacy types
         if (parentNode.children) {
           // @ts-ignore Legacy types
@@ -151,7 +164,13 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       }
     }
 
+    /**
+     * Calculate how many times each node was sampled in the profile, if
+     * not available in the profile data.
+     */
     function buildHitCountFromSamples(nodes: Protocol.Profiler.ProfileNode[], samples: number[]|undefined): void {
+      // If hit count is available, this profile has the new format, so
+      // no need to continue.`
       if (typeof (nodes[0].hitCount) === 'number') {
         return;
       }
@@ -162,16 +181,19 @@ export class CPUProfileDataModel extends ProfileTreeModel {
         nodes[i].hitCount = 0;
       }
       for (let i = 0; i < samples.length; ++i) {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // @ts-expect-error
-        ++((nodeByIdMap.get(samples[i]) as Protocol.Profiler.ProfileNode).hitCount);
+        const node = protocolNodeById.get(samples[i]);
+        if (!node || node.hitCount === undefined) {
+          continue;
+        }
+        node.hitCount++;
       }
     }
 
-    const nodeByIdMap = new Map<number, Protocol.Profiler.ProfileNode>();
+    // A cache for the raw nodes received from the traces / CDP.
+    const protocolNodeById = new Map<number, Protocol.Profiler.ProfileNode>();
     for (let i = 0; i < nodes.length; ++i) {
       const node = nodes[i];
-      nodeByIdMap.set(node.id, node);
+      protocolNodeById.set(node.id, node);
     }
 
     buildHitCountFromSamples(nodes, this.samples);
@@ -181,13 +203,18 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     const keepNatives =
         Boolean(Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get());
     const root = nodes[0];
-    const idMap = new Map<number, number>([[root.id, root.id]]);
+    // If a node is filtered out, its samples are replaced with its parent,
+    // so we keep track of the which id to use in the samples data.
+    const idToUseForRemovedNode = new Map<number, number>([[root.id, root.id]]);
+    this.#idToParsedNode = new Map();
+
     const resultRoot = new CPUProfileNode(root, sampleTime, this.target());
+    this.#idToParsedNode.set(root.id, resultRoot);
     if (!root.children) {
       throw new Error('Missing children for root');
     }
     const parentNodeStack = root.children.map(() => resultRoot);
-    const sourceNodeStack = root.children.map(id => nodeByIdMap.get(id));
+    const sourceNodeStack = root.children.map(id => protocolNodeById.get(id));
     while (sourceNodeStack.length) {
       let parentNode = parentNodeStack.pop();
       const sourceNode = sourceNodeStack.pop();
@@ -204,48 +231,46 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       } else {
         parentNode.self += targetNode.self;
       }
-      idMap.set(sourceNode.id, parentNode.id);
+
+      idToUseForRemovedNode.set(sourceNode.id, parentNode.id);
       parentNodeStack.push.apply(parentNodeStack, sourceNode.children.map(() => parentNode as CPUProfileNode));
-      sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children.map(id => nodeByIdMap.get(id)));
+      sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children.map(id => protocolNodeById.get(id)));
+      this.#idToParsedNode.set(sourceNode.id, targetNode);
     }
     if (this.samples) {
-      this.samples = this.samples.map(id => idMap.get(id) as number);
+      this.samples = this.samples.map(id => idToUseForRemovedNode.get(id) as number);
     }
     return resultRoot;
   }
 
+  /**
+   * Sorts the samples array using the timestamps array (there is a one
+   * to one matching by index between the two).
+   */
   private sortSamples(): void {
+    if (!this.timestamps || !this.samples) {
+      return;
+    }
+
     const timestamps = this.timestamps;
-    if (!timestamps) {
-      return;
-    }
     const samples = this.samples;
-    if (!samples) {
-      return;
-    }
-    const indices = timestamps.map((x, index) => index);
-    indices.sort((a, b) => timestamps[a] - timestamps[b]);
-    for (let i = 0; i < timestamps.length; ++i) {
-      let index: number = indices[i];
-      if (index === i) {
-        continue;
-      }
-      // Move items in a cycle.
-      const savedTimestamp = timestamps[i];
-      const savedSample = samples[i];
-      let currentIndex: number = i;
-      while (index !== i) {
-        samples[currentIndex] = samples[index];
-        timestamps[currentIndex] = timestamps[index];
-        currentIndex = index;
-        index = indices[index];
-        indices[currentIndex] = currentIndex;
-      }
-      samples[currentIndex] = savedSample;
-      timestamps[currentIndex] = savedTimestamp;
+    const orderedIndices = timestamps.map((_x, index) => index);
+    orderedIndices.sort((a, b) => timestamps[a] - timestamps[b]);
+
+    this.timestamps = [];
+    this.samples = [];
+
+    for (let i = 0; i < orderedIndices.length; i++) {
+      const orderedIndex = orderedIndices[i];
+      this.timestamps.push(timestamps[orderedIndex]);
+      this.samples.push(samples[orderedIndex]);
     }
   }
 
+  /**
+   * Fills in timestamps and/or time deltas from legacy profiles where
+   * they could be missing.
+   */
   private normalizeTimestamps(): void {
     if (!this.samples) {
       return;
@@ -266,30 +291,19 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       return;
     }
 
-    // Convert samples from usec to msec
+    // Convert samples from micro to milliseconds
     for (let i = 0; i < timestamps.length; ++i) {
       timestamps[i] /= 1000;
     }
     if (this.samples.length === timestamps.length) {
-      // Support for a legacy format where were no timeDeltas.
+      // Support for a legacy format where there are no timeDeltas.
       // Add an extra timestamp used to calculate the last sample duration.
-      const averageSample = ((timestamps[timestamps.length - 1] || 0) - timestamps[0]) / (timestamps.length - 1);
-      this.timestamps.push((timestamps[timestamps.length - 1] || 0) + averageSample);
+      const lastTimestamp = timestamps.at(-1) || 0;
+      const averageIntervalTime = (lastTimestamp - timestamps[0]) / (timestamps.length - 1);
+      this.timestamps.push(lastTimestamp + averageIntervalTime);
     }
-    this.profileStartTime = timestamps[0];
-    this.profileEndTime = (timestamps[timestamps.length - 1] as number);
-  }
-
-  private buildIdToNodeMap(): void {
-    this.#idToNode = new Map();
-    const idToNode = this.#idToNode;
-    const stack = [this.profileHead];
-    while (stack.length) {
-      const node = (stack.pop() as CPUProfileNode);
-      idToNode.set(node.id, node);
-      // @ts-ignore Legacy types
-      stack.push.apply(stack, node.children);
-    }
+    this.profileStartTime = timestamps.at(0) || this.profileStartTime;
+    this.profileEndTime = timestamps.at(-1) || this.profileEndTime;
   }
 
   private extractMetaNodes(): void {
@@ -321,7 +335,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     if (!this.programNode || samplesCount < 3) {
       return;
     }
-    const idToNode = this.#idToNode;
+    const idToNode = this.#idToParsedNode;
     const programNodeId = this.programNode.id;
     const gcNodeId = this.gcNode ? this.gcNode.id : -1;
     const idleNodeId = this.idleNode ? this.idleNode.id : -1;
@@ -360,7 +374,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     stopTime = stopTime || Infinity;
     const samples = this.samples;
     const timestamps = this.timestamps;
-    const idToNode = this.#idToNode;
+    const idToNode = this.#idToParsedNode;
     const gcNode = this.gcNode;
     const samplesCount = samples.length;
     const startIndex =
@@ -471,14 +485,17 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     }
   }
 
+  /**
+   * Returns the node that corresponds to a given index of a sample.
+   */
   nodeByIndex(index: number): CPUProfileNode|null {
-    return this.samples && this.#idToNode.get(this.samples[index]) || null;
+    return this.samples && this.#idToParsedNode.get(this.samples[index]) || null;
   }
 
   nodes(): CPUProfileNode[]|null {
-    if (!this.#idToNode) {
+    if (!this.#idToParsedNode) {
       return null;
     }
-    return [...this.#idToNode.values()];
+    return [...this.#idToParsedNode.values()];
   }
 }

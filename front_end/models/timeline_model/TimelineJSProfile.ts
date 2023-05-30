@@ -21,6 +21,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/timeline_model/TimelineJSProfile.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineJSProfileProcessor {
+  /**
+   * Creates a synthetic instant trace event for each sample in a
+   * profile.
+   * Each sample contains its stack trace under its args.data property.
+   * The stack trace is extracted from a CPUProfileModel instance
+   * which contains the call hierarchy.
+   */
   static generateConstructedEventsFromCpuProfileDataModel(
       jsProfileModel: SDK.CPUProfileDataModel.CPUProfileDataModel,
       thread: SDK.TracingModel.Thread): SDK.TracingModel.Event[] {
@@ -31,6 +38,7 @@ export class TimelineJSProfileProcessor {
 
     let prevNode: SDK.ProfileTreeModel.ProfileNode = jsProfileModel.root;
     let prevCallFrames: Protocol.Runtime.CallFrame[] = [];
+    // Adds call stacks to fake trace events using the tree in CPUProfileDataModel
     for (let i = 0; i < samples.length; ++i) {
       const node: SDK.ProfileTreeModel.ProfileNode|null = jsProfileModel.nodeByIndex(i);
       if (!node) {
@@ -75,6 +83,24 @@ export class TimelineJSProfileProcessor {
     return jsEvents;
   }
 
+  static isJSSampleEvent(e: SDK.TracingModel.Event): boolean {
+    return e.name === RecordType.JSSample || e.name === RecordType.JSSystemSample || e.name === RecordType.JSIdleSample;
+  }
+
+  /**
+   * Creates the full call hierarchy, with durations, composed of trace
+   * events and JavaScript function calls.
+   *
+   * Because JavaScript profiles come in the shape of samples with no
+   * duration, JS function call durations are deduced using the timings
+   * of subsequent equal samples and surrounding trace events.
+   *
+   * @param events merged ordered array of trace events and synthetic
+   * "instant" events representing samples.
+   * @param config flags to customize the shown events.
+   * @returns the input event array with the new synthetic events
+   * representing call frames.
+   */
   static generateJSFrameEvents(events: SDK.TracingModel.Event[], config: {
     showAllEvents: boolean,
     showRuntimeCallStats: boolean,
@@ -144,9 +170,8 @@ export class TimelineJSProfileProcessor {
       if ((parent && isJSInvocationEvent(parent)) || fakeJSInvocation) {
         extractStackTrace(e);
       } else if (
-          (e.name === RecordType.JSSample || e.name === RecordType.JSSystemSample ||
-           e.name === RecordType.JSIdleSample) &&
-          e.args?.data?.stackTrace?.length && jsFramesStack.length === 0) {
+          TimelineJSProfileProcessor.isJSSampleEvent(e) && e.args?.data?.stackTrace?.length &&
+          jsFramesStack.length === 0) {
         // Force JS Samples to show up even if we are not inside a JS invocation event, because we
         // can be missing the start of JS invocation events if we start tracing half-way through.
         // Pretend we have a top-level JS invocation event.
@@ -166,13 +191,20 @@ export class TimelineJSProfileProcessor {
     }
 
     /**
-     * Set an explicit endTime for all active JSFrames.
-     * Basically, terminate them by defining their right edge.
+     * When a call stack that differs from the one we are tracking has
+     * been detected in the samples, the latter is "truncated" by
+     * setting the ending time of its call frames and removing the top
+     * call frames that aren't shared with the new call stack. This way,
+     * we can update the tracked stack with the new call frames on top.
+     * @param depth the amount of call frames from bottom to top that
+     * should be kept in the tracking stack trace. AKA amount of shared
+     * call frames between two stacks.
+     * @param time the new end of the call frames in the stack.
      */
     function truncateJSStack(depth: number, time: number): void {
       if (lockedJsStackDepth.length) {
-        const lockedDepth = (lockedJsStackDepth[lockedJsStackDepth.length - 1] as number);
-        if (depth < lockedDepth) {
+        const lockedDepth = lockedJsStackDepth.at(-1);
+        if (lockedDepth && depth < lockedDepth) {
           console.error(`Child stack is shallower (${depth}) than the parent stack (${lockedDepth}) at ${time}`);
           depth = lockedDepth;
         }
@@ -219,17 +251,35 @@ export class TimelineJSProfileProcessor {
       stack.length = j;
     }
 
+    /**
+     * Update tracked stack using this event's call stack.
+     */
     function extractStackTrace(e: SDK.TracingModel.Event): void {
-      const callFrames: Protocol.Runtime.CallFrame[] =
-          (e.name === RecordType.JSSample || e.name === RecordType.JSSystemSample ||
-           e.name === RecordType.JSIdleSample) ?
+      const callFrames: Protocol.Runtime.CallFrame[] = TimelineJSProfileProcessor.isJSSampleEvent(e) ?
           e.args['data']['stackTrace'].slice().reverse() :
           jsFramesStack.map(frameEvent => frameEvent.args['data']);
       filterStackFrames(callFrames);
       const endTime = e.endTime || e.startTime;
       const minFrames = Math.min(callFrames.length, jsFramesStack.length);
       let i;
-      for (i = lockedJsStackDepth[lockedJsStackDepth.length - 1] || 0; i < minFrames; ++i) {
+
+      // Merge a sample's stack frames with the stack frames we have
+      // so far if we detect they are equivalent.
+      // Graphically
+      // This:
+      // Current stack trace       Sample
+      // [-------A------]          [A]
+      // [-------B------]          [B]
+      // [-------C------]          [C]
+      //                ^ t = x1    ^ t = x2
+
+      // Becomes this:
+      // New stack trace after merge
+      // [--------A-------]
+      // [--------B-------]
+      // [--------C-------]
+      //                  ^ t = x2
+      for (i = lockedJsStackDepth.at(-1) || 0; i < minFrames; ++i) {
         const newFrame = callFrames[i];
         const oldFrame = jsFramesStack[i].args['data'];
         if (!equalFrames(newFrame, oldFrame)) {
@@ -238,6 +288,24 @@ export class TimelineJSProfileProcessor {
         // Scoot the right edge of this callFrame to the right
         jsFramesStack[i].setEndTime(Math.max((jsFramesStack[i].endTime as number), endTime));
       }
+
+      // If there are call frames in the sample that differ with the stack
+      // we have, update the stack, but keeping the common frames in place
+      // Graphically
+      // This:
+      // Current stack trace       Sample
+      // [-------A------]          [A]
+      // [-------B------]          [B]
+      // [-------C------]          [C]
+      // [-------D------]          [E]
+      //                ^ t = x1    ^ t = x2
+      // Becomes this:
+      // New stack trace after merge
+      // [--------A-------]
+      // [--------B-------]
+      // [--------C-------]
+      //                [E]
+      //                  ^ t = x2
       truncateJSStack(i, e.startTime);
       for (; i < callFrames.length; ++i) {
         const frame = callFrames[i];

@@ -215,7 +215,7 @@ export function buildHierarchy(
       const boundariesOptions = {filter: KNOWN_BOUNDARIES};
       const boundaries = thread.boundaries = collectBoundaries(events, pid, tid, boundariesOptions);
 
-      // Step 2. Collect all the complete stack traces into a tree.
+      // Step 2. Collect all the complete stack traces into a tree. (Extract tree structure from profile)
       const tree = thread.tree = collectStackTraces(thread.profile.chunks);
 
       // Step 3. Collect all the individual samples into a list.
@@ -223,7 +223,7 @@ export function buildHierarchy(
       const samplesOptions = {filterCodeTypes: true, filterUrls: true};
       const samples = thread.samples = collectSamples(pid, tid, startTime, tree, thread.profile.chunks, samplesOptions);
 
-      // Step 4. Coalesce samples.
+      // Step 4. Coalesce samples. (Apply tree to samples, turn them into calls, and merge where appropriate).
       const merge = mergeCalls(samples.map(sample => buildProfileCallFromSample(tree, sample)), boundaries);
       thread.calls = merge.calls;
       thread.dur = merge.dur;
@@ -519,7 +519,10 @@ export function mergeCalls(calls: ProfileCall[], boundaries: Types.Timing.MicroS
 
     // Otherwise, start a new merge if the call is a different stack frame, or
     // it was sampled too far into the future from the previous call.
-    const previous = out.calls[out.calls.length - 1];
+    const previous = out.calls.at(-1);
+    if (!previous) {
+      continue;
+    }
     const isSameStackFrame = call.stackFrame.nodeId === previous.stackFrame.nodeId;
     const isSampledConsecutively = call.ts - (previous.ts + previous.dur) < SAMPLING_INTERVAL;
     if (!isSameStackFrame || !isSampledConsecutively) {
@@ -558,7 +561,7 @@ export function isAllowedCallFrame(
 }
 
 /**
- * Walks the stack traces tree until it finds a call frame that is allowed.
+ * Walks the stack traces tree from top to bottom until it finds a call frame that is allowed.
  */
 export function findTopmostAllowedCallFrame(
     nodeId: Types.TraceEvents.CallFrameID|null, tree: ProfileTree,

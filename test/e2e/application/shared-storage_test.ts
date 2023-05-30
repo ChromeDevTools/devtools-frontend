@@ -11,6 +11,7 @@ import {
   getBrowserAndPages,
   getTestServerPort,
   goToResource,
+  renderCoordinatorQueueEmpty,
   step,
   waitFor,
 } from '../../shared/helper.js';
@@ -106,8 +107,7 @@ describe('The Application Tab', async () => {
     });
   });
 
-  // Flaky test.
-  it.skip('[crbug.com/1449830]: shows Shared Storage keys and values', async () => {
+  it('shows Shared Storage keys and values', async () => {
     const {target} = getBrowserAndPages();
 
     await step('navigate to shared-storage resource and open Application tab', async () => {
@@ -117,6 +117,7 @@ describe('The Application Tab', async () => {
     await step('open the domain storage', async () => {
       await doubleClickSourceTreeItem(SHARED_STORAGE_SELECTOR);
       await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+      await renderCoordinatorQueueEmpty();
     });
 
     await step('check that storage data values are correct', async () => {

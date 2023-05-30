@@ -1669,7 +1669,11 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
 export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
   private readonly domStorage: DOMStorage;
   constructor(storagePanel: ResourcesPanel, domStorage: DOMStorage) {
-    super(storagePanel, domStorage.storageKey ? domStorage.storageKey : i18nString(UIStrings.localFiles), false);
+    super(
+        storagePanel,
+        domStorage.storageKey ? SDK.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin :
+                                i18nString(UIStrings.localFiles),
+        false);
     this.domStorage = domStorage;
     const icon = UI.Icon.Icon.create('table', 'resource-tree-item');
     this.setLeadingIcons([icon]);

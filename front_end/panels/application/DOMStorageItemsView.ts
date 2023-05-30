@@ -90,6 +90,9 @@ export class DOMStorageItemsView extends StorageItemsView {
     super(i18nString(UIStrings.domStorage), 'domStoragePanel');
 
     this.domStorage = domStorage;
+    if (domStorage.storageKey) {
+      this.setStorageKey(domStorage.storageKey);
+    }
 
     this.element.classList.add('storage-view', 'table');
 
@@ -138,6 +141,9 @@ export class DOMStorageItemsView extends StorageItemsView {
   setStorage(domStorage: DOMStorage): void {
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.domStorage = domStorage;
+    if (domStorage.storageKey) {
+      this.setStorageKey(domStorage.storageKey);
+    }
     this.eventListeners = [
       this.domStorage.addEventListener(DOMStorage.Events.DOMStorageItemsCleared, this.domStorageItemsCleared, this),
       this.domStorage.addEventListener(DOMStorage.Events.DOMStorageItemRemoved, this.domStorageItemRemoved, this),

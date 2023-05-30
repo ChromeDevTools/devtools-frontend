@@ -1368,7 +1368,8 @@ export function waitForUISourceCodeRemoved(callback) {
  * @return {string}
  */
 export function url(url = '') {
-  const testScriptURL = /** @type {string} */ (Root.Runtime.Runtime.queryParam('test'));
+  const testScriptURL = /** @type {string} */ (
+      Root.Runtime.Runtime.queryParam('inspected_test') || Root.Runtime.Runtime.queryParam('test'));
 
   // This handles relative (e.g. "../file"), root (e.g. "/resource"),
   // absolute (e.g. "http://", "data:") and empty (e.g. "") paths

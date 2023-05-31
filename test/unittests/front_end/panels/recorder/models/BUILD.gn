@@ -10,6 +10,7 @@ ts_library("models") {
     "RecorderSettings_test.ts",
     "RecorderShorcutHelper_test.ts",
     "RecordingPlayer_test.ts",
+    "RecordingSession_test.ts",
     "SchemaUtils_test.ts",
     "ScreenshotUtils_test.ts",
     "Section_test.ts",

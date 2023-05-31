@@ -14,14 +14,49 @@ import type * as Protocol from '../../../../../../front_end/generated/protocol.j
 
 describe('RecordingPlayer', () => {
   let recordingPlayer: Models.RecordingPlayer.RecordingPlayer;
+  let setPrerenderingAllowedStub: ReturnType<typeof sinon.stub>;
 
   beforeEach(() => {
-    RecorderHelpers.installMocksForTargetManager();
+    const stubs = RecorderHelpers.installMocksForTargetManager();
+    setPrerenderingAllowedStub = stubs.setPrerenderingAllowedStub;
     RecorderHelpers.installMocksForRecordingPlayer();
   });
 
   afterEach(() => {
     recordingPlayer.disposeForTesting();
+  });
+
+  it('should call setPrerenderingAllowed before and after replay', async () => {
+    recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
+        {
+          title: 'test',
+          steps: [
+            RecorderHelpers.createCustomStep(),
+          ],
+        },
+        {
+          speed: Models.RecordingPlayer.PlayRecordingSpeed.Normal,
+          breakpointIndexes: new Set(),
+        },
+    );
+
+    // Auto-continue steps.
+    const stepEventHandlerStub = sinon.stub().callsFake(async ({data: {resolve}}) => {
+      resolve();
+    });
+    recordingPlayer.addEventListener(
+        Models.RecordingPlayer.Events.Step,
+        stepEventHandlerStub,
+    );
+
+    await recordingPlayer.play();
+
+    assert.deepStrictEqual(setPrerenderingAllowedStub.getCalls().map(call => call.args[0]), [
+      {
+        isAllowed: false,
+      },
+      {isAllowed: true},
+    ] as unknown[]);
   });
 
   it('should emit `Step` event before executing in every step', async () => {

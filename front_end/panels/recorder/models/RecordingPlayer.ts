@@ -228,6 +228,12 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   async play(): Promise<void> {
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (mainTarget) {
+      await mainTarget.pageAgent().invoke_setPrerenderingAllowed({
+        isAllowed: false,
+      });
+    }
     const {page, browser} = await RecordingPlayer.connectPuppeteer();
     this.aborted = false;
 
@@ -304,6 +310,12 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       error = err;
       console.error('Replay error', err.message);
     } finally {
+      const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      if (mainTarget) {
+        await mainTarget.pageAgent().invoke_setPrerenderingAllowed({
+          isAllowed: true,
+        });
+      }
       await RecordingPlayer.disconnectPuppeteer(browser);
     }
     if (this.aborted) {

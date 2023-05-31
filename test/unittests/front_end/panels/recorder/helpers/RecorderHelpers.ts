@@ -38,11 +38,23 @@ export const installMocksForRecordingPlayer = (): void => {
   sinon.stub(Models.RecordingPlayer.RecordingPlayer, 'connectPuppeteer').resolves(mock as never);
 };
 
-export const installMocksForTargetManager = (): void => {
+export const installMocksForTargetManager = (): {
+  setPrerenderingAllowedStub: ReturnType<typeof sinon.stub>,
+} => {
+  const setPrerenderingAllowedStub = sinon.stub().resolves(undefined);
   const stub = {
     suspendAllTargets: sinon.stub().resolves(),
     resumeAllTargets: sinon.stub().resolves(),
+    primaryPageTarget: sinon.stub().returns({
+      pageAgent: sinon.stub().returns({
+        invoke_setPrerenderingAllowed: setPrerenderingAllowedStub,
+      }),
+      targetAgent: sinon.stub().returns({}),
+    }),
   };
   sinon.stub(SDK.TargetManager.TargetManager, 'instance')
       .callsFake(() => stub as unknown as SDK.TargetManager.TargetManager);
+  return {
+    setPrerenderingAllowedStub,
+  };
 };

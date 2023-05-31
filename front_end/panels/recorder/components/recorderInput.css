@@ -75,6 +75,6 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
 }
 
 .suggestions > li.selected {
-  background-color: var(--color-primary-old);
+  background-color: var(--color-primary);
   color: var(--color-background);
 }

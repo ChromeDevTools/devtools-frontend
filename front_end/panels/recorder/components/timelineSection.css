@@ -83,7 +83,7 @@
 }
 
 .bar .line {
-  fill: var(--color-primary-old);
+  fill: var(--color-primary);
 }
 
 .is-first-section .bar {

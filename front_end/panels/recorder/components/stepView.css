@@ -45,13 +45,13 @@
   visibility: hidden;
   cursor: pointer;
   opacity: 0%;
-  fill: var(--color-primary-old);
+  fill: var(--color-primary);
   stroke: #1a73e8; /* stylelint-disable-line plugin/use_theme_colors */
   transform: translate(-1.92px, -3px);
 }
 
 .circle-icon {
-  fill: var(--color-primary-old);
+  fill: var(--color-primary);
   stroke: var(--color-background);
   stroke-width: 4px;
   r: 5px;
@@ -62,20 +62,20 @@
 .is-start-of-group .circle-icon {
   r: 7px;
   fill: var(--color-background);
-  stroke: var(--color-primary-old);
+  stroke: var(--color-primary);
   stroke-width: 2px;
 }
 
 .step.is-success .circle-icon {
-  fill: var(--color-primary-old);
-  stroke: var(--color-primary-old);
+  fill: var(--color-primary);
+  stroke: var(--color-primary);
 }
 
 .step.is-current .circle-icon {
   stroke-dasharray: 24 10;
   animation: rotate 1s linear infinite;
   fill: var(--color-background);
-  stroke: var(--color-primary-old);
+  stroke: var(--color-primary);
   stroke-width: 2px;
 }
 
@@ -179,7 +179,7 @@ devtools-recorder-step-editor {
 }
 
 devtools-recorder-step-editor:hover {
-  border: 1px solid var(--color-primary-old);
+  border: 1px solid var(--color-primary);
 }
 
 .summary {

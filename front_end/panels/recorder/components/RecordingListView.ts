@@ -168,7 +168,7 @@ export class RecordingListView extends HTMLElement {
                       <${IconButton.Icon.Icon.litTagName} .data=${
                         {
                           iconName: 'flow',
-                          color: 'var(--color-primary-old)',
+                          color: 'var(--color-primary)',
                         } as IconButton.Icon.IconData
                       }>
                       </${IconButton.Icon.Icon.litTagName}>

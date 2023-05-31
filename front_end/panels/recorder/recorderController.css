@@ -133,7 +133,7 @@ devtools-recording-list-view {
   width: 24px;
   height: 24px;
 
-  --icon-color: var(--color-primary-old);
+  --icon-color: var(--color-primary);
 }
 
 .continue-button:hover,

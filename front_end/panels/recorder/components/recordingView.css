@@ -109,7 +109,7 @@
 }
 
 .recording {
-  color: var(--color-primary-old);
+  color: var(--color-primary);
   font-style: italic;
   margin-top: 8px;
   margin-bottom: 0;
@@ -164,7 +164,7 @@
   min-width: 12px;
   height: 12px;
   display: inline-block;
-  background: var(--color-primary-old);
+  background: var(--color-primary);
   border-radius: 50%;
   margin-right: 7px;
 }

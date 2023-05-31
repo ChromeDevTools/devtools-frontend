@@ -5,10 +5,11 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import {loadTraceEventsLegacyEventPayload} from '../../helpers/TraceHelpers.js';
+import {loadTraceEventsLegacyEventPayload, allModelsFromFile} from '../../helpers/TraceHelpers.js';
 import {FakeStorage, StubbedThread} from '../../helpers/TimelineHelpers.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
-describe('TracingModel', () => {
+describeWithEnvironment('TracingModel', () => {
   it('can create events from an EventPayload[] and finds the correct number of processes', async () => {
     const events = await loadTraceEventsLegacyEventPayload('basic.json.gz');
     const model = new SDK.TracingModel.TracingModel(new FakeStorage());
@@ -140,5 +141,12 @@ describe('TracingModel', () => {
           // The number 1 here is the timestamp divided by 1000.
           'Unexpected id2 field at 1, one and only one of \'local\' and \'global\' should be present.'));
     });
+  });
+
+  it('finds the browser main thread from the tracing model', async () => {
+    const {tracingModel} = await allModelsFromFile('web-dev.json.gz');
+    const mainThread = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
+    assert.strictEqual(mainThread?.id(), 775);
+    assert.strictEqual(mainThread?.name(), 'CrBrowserMain');
   });
 });

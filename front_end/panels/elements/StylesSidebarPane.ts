@@ -158,7 +158,7 @@ const UIStrings = {
   /**
    *@description Tooltip text that appears when hovering over the css changes button in the Styles Sidebar Pane of the Elements panel
    */
-  copyAllCSSChanges: 'Copy all the CSS changes',
+  copyAllCSSChanges: 'Copy CSS changes',
   /**
    *@description Tooltip text that appears after clicking on the copy CSS changes button
    */

@@ -175,6 +175,8 @@ export class BounceTrackingMitigationsView extends HTMLElement {
     this.#seenButtonClick = true;
     this.#screenStatus = ScreenStatusType.Running;
 
+    this.#render();
+
     const response = await mainTarget.storageAgent().invoke_runBounceTrackingMitigations();
     this.#trackingSites = [];
     response.deletedSites.forEach(element => {

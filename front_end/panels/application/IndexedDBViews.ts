@@ -29,19 +29,18 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
-
-import indexedDBViewsStyles from './indexedDBViews.css.js';
-
-import type * as SDK from '../../core/sdk/sdk.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as ReportView from '../../ui/components/report_view/report_view.js';
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as ReportView from '../../ui/components/report_view/report_view.js';
+import * as LitHtml from '../../ui/lit-html/lit-html.js';
+
 import * as ApplicationComponents from './components/components.js';
+import indexedDBViewsStyles from './indexedDBViews.css.js';
 
 import {
   type Database,
@@ -204,9 +203,16 @@ export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.S
 
   update(database: Database): void {
     this.database = database;
-    if (database.databaseId.storageKey) {
-      this.setStorageKey(database.databaseId.storageKey);
+    const bucketInfo =
+        this.model.target()
+            .model(SDK.StorageBucketsModel.StorageBucketsModel)
+            ?.getBucketByName(database.databaseId.storageBucket.storageKey, database.databaseId.storageBucket.name);
+    if (bucketInfo) {
+      this.setStorageBucket(bucketInfo);
+    } else {
+      this.setStorageKey(database.databaseId.storageBucket.storageKey);
     }
+
     void this.render().then(() => this.updatedForTests());
   }
 

@@ -1349,7 +1349,8 @@ export class IDBDatabaseTreeElement extends ApplicationPanelTreeElement {
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'indexedDB://' + this.databaseId.storageKey + '/' + this.databaseId.name as Platform.DevToolsPath.UrlString;
+    return 'indexedDB://' + this.databaseId.storageBucket.storageKey + '/' +
+        (this.databaseId.storageBucket.name ?? '') + '/' + this.databaseId.name as Platform.DevToolsPath.UrlString;
   }
 
   override onattach(): void {
@@ -1471,8 +1472,9 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'indexedDB://' + this.databaseId.storageKey + '/' + this.databaseId.name + '/' + this.objectStore.name as
-        Platform.DevToolsPath.UrlString;
+    return 'indexedDB://' + this.databaseId.storageBucket.storageKey + '/' +
+        (this.databaseId.storageBucket.name ?? '') + '/' + this.databaseId.name + '/' +
+        this.objectStore.name as Platform.DevToolsPath.UrlString;
   }
 
   override onattach(): void {
@@ -1608,8 +1610,9 @@ export class IDBIndexTreeElement extends ApplicationPanelTreeElement {
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'indexedDB://' + this.databaseId.storageKey + '/' + this.databaseId.name + '/' + this.objectStore.name +
-        '/' + this.index.name as Platform.DevToolsPath.UrlString;
+    return 'indexedDB://' + this.databaseId.storageBucket.storageKey + '/' +
+        (this.databaseId.storageBucket.name ?? '') + '/' + this.databaseId.name + '/' + this.objectStore.name + '/' +
+        this.index.name as Platform.DevToolsPath.UrlString;
   }
 
   markNeedsRefresh(): void {

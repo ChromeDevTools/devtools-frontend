@@ -194,6 +194,9 @@ SDK.Script = SDKModule.Script.Script;
 SDK.SecurityOriginManager = SDKModule.SecurityOriginManager.SecurityOriginManager;
 
 /** @constructor */
+SDK.StorageBucketsModel = SDKModule.StorageBucketsModel.StorageBucketsModel;
+
+/** @constructor */
 SDK.StorageKeyManager = SDKModule.StorageKeyManager.StorageKeyManager;
 
 /** @enum {symbol} */

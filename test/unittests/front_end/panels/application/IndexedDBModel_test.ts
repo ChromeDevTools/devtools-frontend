@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Resources from '../../../../../front_end/panels/application/application.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {
@@ -18,15 +19,27 @@ describeWithMockConnection('IndexedDBModel', () => {
   let indexedDBModel: Resources.IndexedDBModel.IndexedDBModel;
   let target: SDK.Target.Target;
   let indexedDBAgent: ProtocolProxyApi.IndexedDBApi;
-  let manager: SDK.StorageKeyManager.StorageKeyManager|null;
+  let manager: SDK.StorageBucketsModel.StorageBucketsModel|null;
   const testKey = 'test-storage-key/';
-  const testDBId = new Resources.IndexedDBModel.DatabaseId(testKey, 'test-database');
+  const testStorageBucket = {
+    storageKey: testKey,
+    name: 'inbox',
+  };
+  const testStorageBucketInfo = {
+    id: '0',
+    bucket: testStorageBucket,
+    expiration: 0,
+    quota: 0,
+    persistent: false,
+    durability: Protocol.Storage.StorageBucketsDurability.Strict,
+  };
+  const testDBId = new Resources.IndexedDBModel.DatabaseId(testStorageBucket, 'test-database');
 
   beforeEach(async () => {
     target = createTarget();
     indexedDBModel = new Resources.IndexedDBModel.IndexedDBModel(target);
     indexedDBAgent = target.indexedDBAgent();
-    manager = target.model(SDK.StorageKeyManager.StorageKeyManager);
+    manager = target.model(SDK.StorageBucketsModel.StorageBucketsModel);
   });
 
   describe('StorageKeyAdded', () => {
@@ -39,13 +52,13 @@ describeWithMockConnection('IndexedDBModel', () => {
       });
       setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
 
-      manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+      manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
       assert.isFalse(databaseAdeddSpy.calledWithExactly(
           Resources.IndexedDBModel.Events.DatabaseAdded as unknown as sinon.SinonMatcher,
           {model: indexedDBModel, databaseId: testDBId}));
 
       indexedDBModel.enable();
-      manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+      manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
       assert.strictEqual(await dbNamePromise, 'test-database');
     });
 
@@ -53,7 +66,7 @@ describeWithMockConnection('IndexedDBModel', () => {
       const trackIndexedDBSpy = sinon.spy(target.storageAgent(), 'invoke_trackIndexedDBForStorageKey' as never);
 
       indexedDBModel.enable();
-      manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+      manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
 
       assert.isTrue(trackIndexedDBSpy.calledOnceWithExactly({storageKey: testKey}));
     });
@@ -64,8 +77,8 @@ describeWithMockConnection('IndexedDBModel', () => {
       const untrackIndexedDBSpy = sinon.spy(target.storageAgent(), 'invoke_untrackIndexedDBForStorageKey' as never);
 
       indexedDBModel.enable();
-      manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
-      manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyRemoved, testKey);
+      manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
+      manager?.storageBucketDeleted({bucketId: testStorageBucketInfo.id});
 
       assert.isTrue(untrackIndexedDBSpy.calledOnceWithExactly({storageKey: testKey}));
     });
@@ -77,7 +90,7 @@ describeWithMockConnection('IndexedDBModel', () => {
     indexedDBModel.enable();
     void indexedDBModel.clearObjectStore(testDBId, 'test-store');
     assert.isTrue(clearObjectStoreSpy.calledOnceWithExactly(
-        {storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store'}));
+        {storageBucket: testStorageBucket, databaseName: 'test-database', objectStoreName: 'test-store'}));
   });
 
   it('calls protocol method on deleteEntries', () => {
@@ -86,8 +99,12 @@ describeWithMockConnection('IndexedDBModel', () => {
 
     indexedDBModel.enable();
     void indexedDBModel.deleteEntries(testDBId, 'test-store', testKeyRange);
-    assert.isTrue(deleteEntriesSpy.calledOnceWithExactly(
-        {storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store', keyRange: testKeyRange}));
+    assert.isTrue(deleteEntriesSpy.calledOnceWithExactly({
+      storageBucket: testStorageBucket,
+      databaseName: 'test-database',
+      objectStoreName: 'test-store',
+      keyRange: testKeyRange,
+    }));
   });
 
   it('calls protocol method on refreshDatabaseNames and dispatches event', async () => {
@@ -99,11 +116,11 @@ describeWithMockConnection('IndexedDBModel', () => {
     });
     setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
     indexedDBModel.enable();
-    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+    manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
 
     void indexedDBModel.refreshDatabaseNames();
 
-    assert.isTrue(requestDBNamesSpy.calledWithExactly({storageKey: testKey}));
+    assert.isTrue(requestDBNamesSpy.calledWithExactly({storageBucket: testStorageBucket}));
     await dbRefreshedPromise;
   });
 
@@ -113,7 +130,8 @@ describeWithMockConnection('IndexedDBModel', () => {
 
     void indexedDBModel.refreshDatabase(testDBId);
 
-    assert.isTrue(requestDatabaseSpy.calledOnceWithExactly({storageKey: testKey, databaseName: 'test-database'}));
+    assert.isTrue(
+        requestDatabaseSpy.calledOnceWithExactly({storageBucket: testStorageBucket, databaseName: 'test-database'}));
   });
 
   it('requests data with storage key on loadObjectStoreData', () => {
@@ -123,7 +141,7 @@ describeWithMockConnection('IndexedDBModel', () => {
     indexedDBModel.loadObjectStoreData(testDBId, 'test-store', null, 0, 50, () => {});
 
     assert.isTrue(requestDataSpy.calledOnceWithExactly({
-      storageKey: testKey,
+      storageBucket: testStorageBucket,
       databaseName: 'test-database',
       objectStoreName: 'test-store',
       indexName: '',
@@ -141,13 +159,14 @@ describeWithMockConnection('IndexedDBModel', () => {
     await indexedDBModel.getMetadata(testDBId, new Resources.IndexedDBModel.ObjectStore('test-store', null, false));
 
     assert.isTrue(getMetadataSpy.calledOnceWithExactly(
-        {storageKey: testKey, databaseName: 'test-database', objectStoreName: 'test-store'}));
+        {storageBucket: testStorageBucket, databaseName: 'test-database', objectStoreName: 'test-store'}));
   });
 
   it('dispatches event on indexedDBContentUpdated', () => {
     const dispatcherSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');
 
-    // TODO(memmott): Add bucketId and remove `as`.
+    manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
+
     indexedDBModel.indexedDBContentUpdated(
         {origin: '', storageKey: testKey, bucketId: '0', databaseName: 'test-database', objectStoreName: 'test-store'});
 
@@ -168,11 +187,11 @@ describeWithMockConnection('IndexedDBModel', () => {
         'IndexedDB.requestDatabase',
         () => ({databaseWithObjectStores: {name: 'test-database', version: '1', objectStores: []}}));
     indexedDBModel.enable();
-    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+    manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
 
     indexedDBModel.indexedDBListUpdated({origin: '', storageKey: testKey, bucketId: '0'});
 
-    assert.isTrue(requestDBNamesSpy.calledWithExactly({storageKey: testKey}));
+    assert.isTrue(requestDBNamesSpy.calledWithExactly({storageBucket: testStorageBucket}));
     await databaseLoadedPromise;
   });
 
@@ -180,7 +199,7 @@ describeWithMockConnection('IndexedDBModel', () => {
     const dbNames = ['test-database1', 'test-database2'];
     setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: dbNames}));
     indexedDBModel.enable();
-    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+    manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
     await indexedDBModel.refreshDatabaseNames();
 
     const databases = indexedDBModel.databases();
@@ -192,18 +211,18 @@ describeWithMockConnection('IndexedDBModel', () => {
     const deleteDBSpy = sinon.spy(indexedDBAgent, 'invoke_deleteDatabase');
     setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: ['test-database']}));
     indexedDBModel.enable();
-    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+    manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
 
     void indexedDBModel.deleteDatabase(testDBId);
 
-    assert.isTrue(deleteDBSpy.calledOnceWithExactly({storageKey: testKey, databaseName: 'test-database'}));
+    assert.isTrue(deleteDBSpy.calledOnceWithExactly({storageBucket: testStorageBucket, databaseName: 'test-database'}));
   });
 
   it('removes databases for storage key on clearForStorageKey', async () => {
     const dbNames = ['test-database1', 'test-database-2'];
     setMockConnectionResponseHandler('IndexedDB.requestDatabaseNames', () => ({databaseNames: dbNames}));
     indexedDBModel.enable();
-    manager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+    manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
     await indexedDBModel.refreshDatabaseNames();
     clearMockConnectionResponseHandler('IndexedDB.requestDatabaseNames');
 
@@ -214,6 +233,8 @@ describeWithMockConnection('IndexedDBModel', () => {
 
   it('dispatches event with storage key on indexedDBContentUpdated when both storage key and origin are set', () => {
     const dispatcherSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');
+
+    manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
 
     indexedDBModel.indexedDBContentUpdated({
       origin: 'test-origin',

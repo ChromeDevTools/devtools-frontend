@@ -45,6 +45,10 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
           // This matches backend exposing certain capabilities only for the main frame.
           this.#capabilitiesMask |=
               Capability.DeviceEmulation | Capability.ScreenCapture | Capability.Security | Capability.ServiceWorker;
+          if (targetInfo?.url.startsWith('chrome-extension://')) {
+            this.#capabilitiesMask &= ~Capability.Security;
+          }
+
           // TODO(dgozman): we report service workers for the whole frame tree on the main frame,
           // while we should be able to only cover the subtree corresponding to the target.
         }

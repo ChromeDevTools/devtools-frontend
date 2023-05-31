@@ -12,6 +12,7 @@ import * as ReportView from '../../../../ui/components/report_view/report_view.j
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css.js';
+import {PrefetchReasonDescription} from './PreloadingString.js';
 
 const UIStrings = {
   /**
@@ -467,6 +468,87 @@ class PreloadingUIUtils {
             prerenderStatus as 'See https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk'}`);
     }
   }
+
+  // Decoding PrefetchFinalStatus prefetchAttempt to failure description.
+  static prefetchAttemptToFailureDescription({prefetchStatus}: SDK.PreloadingModel.PrefetchAttempt): string|null {
+    // If you face an error on rolling CDP changes, see
+    // https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk
+    switch (prefetchStatus) {
+      case null:
+        return null;
+      // PrefetchNotStarted is mapped to Pending.
+      case Protocol.Preload.PrefetchStatus.PrefetchNotStarted:
+        return null;
+      // PrefetchNotFinishedInTime is mapped to Running.
+      case Protocol.Preload.PrefetchStatus.PrefetchNotFinishedInTime:
+        return null;
+      // PrefetchResponseUsed is mapped to Success.
+      case Protocol.Preload.PrefetchStatus.PrefetchResponseUsed:
+        return null;
+      // Holdback related status is expected to be overridden when DevTools is
+      // opened.
+      case Protocol.Preload.PrefetchStatus.PrefetchAllowed:
+      case Protocol.Preload.PrefetchStatus.PrefetchHeldback:
+        return null;
+      // TODO(https://crbug.com/1410709): deprecate PrefetchSuccessfulButNotUsed in the protocol.
+      case Protocol.Preload.PrefetchStatus.PrefetchSuccessfulButNotUsed:
+        return null;
+      case Protocol.Preload.PrefetchStatus.PrefetchFailedIneligibleRedirect:
+        return PrefetchReasonDescription['PrefetchFailedIneligibleRedirect'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchFailedInvalidRedirect:
+        return PrefetchReasonDescription['PrefetchFailedInvalidRedirect'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchFailedMIMENotSupported:
+        return PrefetchReasonDescription['PrefetchFailedMIMENotSupported'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchFailedNetError:
+        return PrefetchReasonDescription['PrefetchFailedNetError'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchFailedNon2XX:
+        return PrefetchReasonDescription['PrefetchFailedNon2XX'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchFailedPerPageLimitExceeded:
+        return PrefetchReasonDescription['PrefetchFailedPerPageLimitExceeded'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchIneligibleRetryAfter:
+        return PrefetchReasonDescription['PrefetchIneligibleRetryAfter'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchEvicted:
+        return PrefetchReasonDescription['PrefetchEvicted'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchIsPrivacyDecoy:
+        return PrefetchReasonDescription['PrefetchIsPrivacyDecoy'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchIsStale:
+        return PrefetchReasonDescription['PrefetchIsStale'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleBrowserContextOffTheRecord:
+        return PrefetchReasonDescription['PrefetchNotEligibleBrowserContextOffTheRecord'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleDataSaverEnabled:
+        return PrefetchReasonDescription['PrefetchNotEligibleDataSaverEnabled'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleExistingProxy:
+        return PrefetchReasonDescription['PrefetchNotEligibleExistingProxy'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleHostIsNonUnique:
+        return PrefetchReasonDescription['PrefetchNotEligibleHostIsNonUnique'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleNonDefaultStoragePartition:
+        return PrefetchReasonDescription['PrefetchNotEligibleNonDefaultStoragePartition'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy:
+        return PrefetchReasonDescription['PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleSchemeIsNotHttps:
+        return PrefetchReasonDescription['PrefetchNotEligibleSchemeIsNotHttps'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleUserHasCookies:
+        return PrefetchReasonDescription['PrefetchNotEligibleUserHasCookies'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleUserHasServiceWorker:
+        return PrefetchReasonDescription['PrefetchNotEligibleUserHasServiceWorker'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotUsedCookiesChanged:
+        return PrefetchReasonDescription['PrefetchNotUsedCookiesChanged'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchProxyNotAvailable:
+        return PrefetchReasonDescription['PrefetchProxyNotAvailable'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotUsedProbeFailed:
+        return PrefetchReasonDescription['PrefetchNotUsedProbeFailed'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleBatterySaverEnabled:
+        return PrefetchReasonDescription['PrefetchNotEligibleBatterySaverEnabled'].name();
+      case Protocol.Preload.PrefetchStatus.PrefetchNotEligiblePreloadingDisabled:
+        return PrefetchReasonDescription['PrefetchNotEligiblePreloadingDisabled'].name();
+      default:
+        // Note that we use switch and exhaustiveness check to prevent to
+        // forget updating these strings, but allow to handle unknown
+        // PrefetchStatus at runtime.
+        return i18n.i18n.lockedString(`Unknown failure reason: ${
+            prefetchStatus as 'See https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk'}`);
+    }
+  }
 }
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -538,6 +620,7 @@ export class PreloadingDetailsReportView extends HTMLElement {
             ${detailedStatus}
           </${ReportView.ReportView.ReportValue.litTagName}>
 
+          ${this.#maybePrefetchFailureReason()}
           ${this.#maybePrerenderFailureReason()}
 
           ${this.#data.ruleSets.map(ruleSet => this.#renderRuleSet(ruleSet))}
@@ -545,6 +628,28 @@ export class PreloadingDetailsReportView extends HTMLElement {
       `, this.#shadow, {host: this});
       // clang-format on
     });
+  }
+
+  #maybePrefetchFailureReason(): LitHtml.LitTemplate {
+    assertNotNullOrUndefined(this.#data);
+    const attempt = this.#data.preloadingAttempt;
+
+    if (attempt.action !== Protocol.Preload.SpeculationAction.Prefetch) {
+      return LitHtml.nothing;
+    }
+
+    const failureDescription = PreloadingUIUtils.prefetchAttemptToFailureDescription(attempt);
+    if (failureDescription === null) {
+      return LitHtml.nothing;
+    }
+
+    return LitHtml.html`
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsFailureReason)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName}>
+          ${failureDescription}
+        </${ReportView.ReportView.ReportValue.litTagName}>
+    `;
   }
 
   #maybePrerenderFailureReason(): LitHtml.LitTemplate {

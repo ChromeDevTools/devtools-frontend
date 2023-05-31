@@ -145,4 +145,52 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
       ['Rule set', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
     ]);
   });
+
+  it('renders prefetch details with cancelled reason', async () => {
+    const url = 'https://example.com/prefetch.html' as Platform.DevToolsPath.UrlString;
+    const data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData = {
+      preloadingAttempt: {
+        action: Protocol.Preload.SpeculationAction.Prefetch,
+        key: {
+          loaderId: 'loaderId' as Protocol.Network.LoaderId,
+          action: Protocol.Preload.SpeculationAction.Prefetch,
+          url,
+          targetHint: undefined,
+        },
+        status: SDK.PreloadingModel.PreloadingStatus.Failure,
+        prefetchStatus: Protocol.Preload.PrefetchStatus.PrefetchFailedNon2XX,
+        ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
+        nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+      },
+      ruleSets: [
+        {
+          id: 'ruleSetId' as Protocol.Preload.RuleSetId,
+          loaderId: 'loaderId' as Protocol.Network.LoaderId,
+          sourceText: `
+{
+  "prefetch": [
+    {
+      "source": "list",
+      "urls": ["/subresource.js"]
+    }
+  ]
+}
+`,
+        },
+      ],
+    };
+
+    const component = await renderPreloadingDetailsReportView(data);
+    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+
+    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
+    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
+    assert.deepEqual(zip2(keys, values), [
+      ['URL', url],
+      ['Action', 'prefetch'],
+      ['Status', 'Preloading failed.'],
+      ['Failure reason', 'The prefetch failed because of a non-2xx HTTP response status code.'],
+      ['Rule set', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
+    ]);
+  });
 });

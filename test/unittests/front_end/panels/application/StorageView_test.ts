@@ -153,17 +153,35 @@ describeWithMockConnection('StorageView', () => {
     it('clears cache on clear', async () => {
       const cacheStorageModel = target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       assertNotNullOrUndefined(cacheStorageModel);
+
+      const storageBucketModel = target.model(SDK.StorageBucketsModel.StorageBucketsModel);
+      assertNotNullOrUndefined(storageBucketModel);
+
+      const testStorageBucket = {
+        storageKey: testKey,
+        name: 'inbox',
+      };
+      const testStorageBucketInfo = {
+        bucket: testStorageBucket,
+        id: '0',
+        expiration: 0,
+        quota: 0,
+        persistent: false,
+        durability: Protocol.Storage.StorageBucketsDurability.Strict,
+      };
       let caches = [
         {
           cacheId: 'id1' as Protocol.CacheStorage.CacheId,
           securityOrigin: '',
-          storageKey: testKey,
+          storageKey: testStorageBucket.storageKey,
+          storageBucket: testStorageBucket,
           cacheName: 'test-cache-1',
         },
         {
           cacheId: 'id2' as Protocol.CacheStorage.CacheId,
           securityOrigin: '',
-          storageKey: testKey,
+          storageKey: testStorageBucket.storageKey,
+          storageBucket: testStorageBucket,
           cacheName: 'test-cache-2',
         },
       ];
@@ -174,7 +192,7 @@ describeWithMockConnection('StorageView', () => {
           resolve();
         });
       });
-      storageKeyManager?.dispatchEventToListeners(SDK.StorageKeyManager.Events.StorageKeyAdded, testKey);
+      storageBucketModel?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
       await cacheAddedPromise;
       caches = [];
 

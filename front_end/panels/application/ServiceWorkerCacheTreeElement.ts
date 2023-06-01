@@ -5,6 +5,7 @@
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Host from '../../core/host/host.js';
@@ -32,8 +33,9 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTreeElement {
   private swCacheModels: Set<SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel>;
   private swCacheTreeElements: Set<SWCacheTreeElement>;
+  private storageBucket?: Protocol.Storage.StorageBucket;
 
-  constructor(resourcesPanel: ResourcesPanel) {
+  constructor(resourcesPanel: ResourcesPanel, storageBucket?: Protocol.Storage.StorageBucket) {
     super(resourcesPanel, i18nString(UIStrings.cacheStorage), 'CacheStorage');
     const icon = UI.Icon.Icon.create('database', 'resource-tree-item');
     this.setLink(
@@ -42,6 +44,7 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
     this.setLeadingIcons([icon]);
     this.swCacheModels = new Set();
     this.swCacheTreeElements = new Set();
+    this.storageBucket = storageBucket;
   }
 
   initialize(): void {
@@ -98,7 +101,8 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
 
   private addCache(
       model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache): void {
-    const swCacheTreeElement = new SWCacheTreeElement(this.resourcesPanel, model, cache);
+    const swCacheTreeElement =
+        new SWCacheTreeElement(this.resourcesPanel, model, cache, this.storageBucket === undefined);
     this.swCacheTreeElements.add(swCacheTreeElement);
     this.appendChild(swCacheTreeElement);
   }
@@ -139,8 +143,14 @@ export class SWCacheTreeElement extends ApplicationPanelTreeElement {
 
   constructor(
       resourcesPanel: ResourcesPanel, model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel,
-      cache: SDK.ServiceWorkerCacheModel.Cache) {
-    super(resourcesPanel, cache.cacheName + ' - ' + cache.storageKey, false);
+      cache: SDK.ServiceWorkerCacheModel.Cache, appendStorageKey: boolean) {
+    let cacheName;
+    if (appendStorageKey) {
+      cacheName = cache.cacheName + ' - ' + cache.storageKey;
+    } else {
+      cacheName = cache.cacheName;
+    }
+    super(resourcesPanel, cacheName, false);
     this.model = model;
     this.cache = cache;
     this.view = null;

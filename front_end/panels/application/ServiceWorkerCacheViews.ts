@@ -115,7 +115,12 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     this.preview = null;
 
     this.cache = cache;
-    if (cache.storageKey) {
+    const bucketInfo = this.model.target()
+                           .model(SDK.StorageBucketsModel.StorageBucketsModel)
+                           ?.getBucketByName(cache.storageBucket.storageKey, cache.storageBucket.name);
+    if (bucketInfo) {
+      this.metadataView.setStorageBucket(bucketInfo);
+    } else if (cache.storageKey) {
       this.metadataView.setStorageKey(cache.storageKey);
     }
     this.dataGrid = null;
@@ -366,8 +371,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
   private cacheContentUpdated(
       event: Common.EventTarget.EventTargetEvent<SDK.ServiceWorkerCacheModel.CacheStorageContentUpdatedEvent>): void {
-    const {cacheName, storageKey} = event.data;
-    if ((this.cache.storageKey !== storageKey || this.cache.cacheName !== cacheName)) {
+    const {cacheName, storageBucket} = event.data;
+    if ((!this.cache.inBucket(storageBucket) || this.cache.cacheName !== cacheName)) {
       return;
     }
     void this.refreshThrottler.schedule(() => Promise.resolve(this.updateData(true)), true);

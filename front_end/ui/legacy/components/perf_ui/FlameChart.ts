@@ -1059,18 +1059,20 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * Draws decorations onto events. {@see FlameChartDecoration}.
    */
   #drawDecorations(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, indexes: number[]): void {
+    const {entryTotalTimes, entryStartTimes, entryLevels} = timelineData;
     context.save();
-    context.beginPath();
-    const {entryTotalTimes, entryStartTimes} = timelineData;
-
-    let hasDrawnCandyStripe = false;
-
     for (let i = 0; i < indexes.length; ++i) {
       const entryIndex = indexes[i];
       const decorationsForEvent = timelineData.entryDecorations.at(entryIndex);
       if (!decorationsForEvent || decorationsForEvent.length < 1) {
         continue;
       }
+      if (decorationsForEvent.length > 1) {
+        sortDecorationsForRenderingOrder(decorationsForEvent);
+      }
+      const entryStartTime = entryStartTimes[entryIndex];
+      const candyStripePattern = context.createPattern(this.candyStripeCanvas, 'repeat');
+
       for (const decoration of decorationsForEvent) {
         const duration = entryTotalTimes[entryIndex];
         if (decoration.type === 'CANDY') {
@@ -1079,10 +1081,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             // If the duration of the event is less than the start time to draw the candy stripes, then we have no stripes to draw.
             continue;
           }
-          hasDrawnCandyStripe = true;
 
-          const entryStartTime = entryStartTimes[entryIndex];
-
+          context.save();
+          context.beginPath();
           // Draw a rectangle over the event, starting at the X value of the
           // event's start time + the startDuration of the candy striping.
           const barXStart = this.timeToPositionClipped(entryStartTime + candyStripeStartTime);
@@ -1091,16 +1092,31 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             startX: barXStart,
             width: barXEnd - barXStart,
           });
-        }
-      }
-    }
+          if (candyStripePattern) {
+            context.fillStyle = candyStripePattern;
+            context.fill();
+          }
+          context.restore();
 
-    // We draw all the rectangles and then fill them all in at the end with the pattern.
-    if (hasDrawnCandyStripe) {
-      const candyStripePattern = context.createPattern(this.candyStripeCanvas, 'repeat');
-      if (candyStripePattern) {
-        context.fillStyle = candyStripePattern;
-        context.fill();
+        } else if (decoration.type === 'WARNING_TRIANGLE') {
+          const barX = this.timeToPositionClipped(entryStartTime);
+          const barLevel = entryLevels[entryIndex];
+          const barHeight = this.#eventBarHeight(timelineData, entryIndex);
+          const barY = this.levelToOffset(barLevel);
+          const barWidth = this.#eventBarWidth(timelineData, entryIndex);
+          const triangleSize = 8;
+          context.save();
+          context.beginPath();
+          context.rect(barX, barY, barWidth, barHeight);
+          context.clip();
+          context.beginPath();
+          context.fillStyle = 'red';
+          context.moveTo(barX + barWidth - triangleSize, barY);
+          context.lineTo(barX + barWidth, barY);
+          context.lineTo(barX + barWidth, barY + triangleSize);
+          context.fill();
+          context.restore();
+        }
       }
     }
     context.restore();
@@ -2054,8 +2070,6 @@ export const MinimalTimeWindowMs = 0.5;
  * Represents a decoration that can be added to event. Each event can have as
  * many decorations as required.
  *
- * Currently only one type is supported to represent adding candy striping to an event.
- *
  * It is anticipated in the future that we will add to this as we want to
  * annotate events in more ways.
  *
@@ -2067,7 +2081,22 @@ export type FlameChartDecoration = {
   // the minimum time at which the candystriping will start. If you want to
   // candystripe the entire event, set this to 0.
   startAtTime: TraceEngine.Types.Timing.MicroSeconds,
+}|{
+  type: 'WARNING_TRIANGLE',
 };
+
+// We have to ensure we draw the decorations in a particular order; warning
+// triangles always go on top of any candy stripes.
+const decorationDrawOrder: Record<FlameChartDecoration['type'], number> = {
+  CANDY: 1,
+  WARNING_TRIANGLE: 2,
+};
+
+export function sortDecorationsForRenderingOrder(decorations: FlameChartDecoration[]): void {
+  decorations.sort((decoration1, decoration2) => {
+    return decorationDrawOrder[decoration1.type] - decorationDrawOrder[decoration2.type];
+  });
+}
 
 export class FlameChartTimelineData {
   entryLevels: number[]|Uint16Array;

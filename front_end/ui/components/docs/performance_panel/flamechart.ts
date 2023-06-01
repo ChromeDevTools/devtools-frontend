@@ -55,7 +55,7 @@ function renderExample1() {
 }
 
 /**
- * Render a flame chart with main thread long events to stripe and a warning triangle.
+ * Render a flame chart with main thread long events to stripe.
  **/
 function renderExample2() {
   class FakeProviderWithLongTasksForStriping extends FakeProvider {
@@ -65,14 +65,11 @@ function renderExample2() {
         entryStartTimes: [5, 80, 5],
         entryTotalTimes: [70, 10, 80],
         entryDecorations: [
-          [
-            {
-              type: 'CANDY',
-              startAtTime: TraceEngine.Types.Timing.MicroSeconds(50_000),
-            },
-            {type: 'WARNING_TRIANGLE'},
-          ],
-          [{type: 'WARNING_TRIANGLE'}],
+          [{
+            type: 'CANDY',
+            startAtTime: TraceEngine.Types.Timing.MicroSeconds(50_000),
+          }],
+          [/* No decorations for the event with index 1 */],
           [
             {
               type: 'CANDY',
@@ -81,7 +78,7 @@ function renderExample2() {
           ],
         ],
         groups: [{
-          name: 'Testing Candy Stripe decorations and warning triangles' as Platform.UIString.LocalizedString,
+          name: 'Testing Candy Stripe decorations' as Platform.UIString.LocalizedString,
           startLevel: 1,
           style: {
             height: 17,

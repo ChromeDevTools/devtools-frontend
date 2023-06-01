@@ -1030,7 +1030,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       if (skippedInitialTabSelectedEvent) {
         // We don't log the initially selected sidebar pane to UMA because
         // it will skew the histogram heavily toward the Styles pane
-        Host.userMetrics.sidebarPaneShown(tabId);
+        Host.userMetrics.elementsSidebarTabShown(tabId);
       } else {
         skippedInitialTabSelectedEvent = true;
       }

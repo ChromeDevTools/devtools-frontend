@@ -76,10 +76,16 @@ export class UserMetrics {
     this.#panelChangedSinceLaunch = true;
   }
 
-  sidebarPaneShown(sidebarPaneName: string): void {
-    const code = SidebarPaneCodes[sidebarPaneName as keyof typeof SidebarPaneCodes] || 0;
+  elementsSidebarTabShown(sidebarPaneName: string): void {
+    const code = ElementsSidebarTabCodes[sidebarPaneName as keyof typeof ElementsSidebarTabCodes] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.SidebarPaneShown, code, SidebarPaneCodes.MaxValue);
+        EnumeratedHistogram.ElementsSidebarTabShown, code, ElementsSidebarTabCodes.MaxValue);
+  }
+
+  sourcesSidebarTabShown(sidebarPaneName: string): void {
+    const code = SourcesSidebarTabCodes[sidebarPaneName as keyof typeof SourcesSidebarTabCodes] || 0;
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.SourcesSidebarTabShown, code, SourcesSidebarTabCodes.MaxValue);
   }
 
   settingsPanelShown(settingsViewId: string): void {
@@ -582,12 +588,13 @@ export enum PanelCodes {
   'bounce_tracking_mitigations' = 65,
   MaxValue = 66,
 }
+
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /* eslint-disable @typescript-eslint/naming-convention */
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
-export enum SidebarPaneCodes {
+export enum ElementsSidebarTabCodes {
   'OtherSidebarPane' = 0,
   'Styles' = 1,
   'Computed' = 2,
@@ -596,12 +603,22 @@ export enum SidebarPaneCodes {
   'elements.domBreakpoints' = 5,
   'elements.domProperties' = 6,
   'accessibility.view' = 7,
-  'navigator-network' = 8,
-  'navigator-files' = 9,
-  'navigator-overrides' = 10,
-  'navigator-contentScripts' = 11,
-  'navigator-snippets' = 12,
-  MaxValue = 13,
+  MaxValue = 8,
+}
+
+/* eslint-enable @typescript-eslint/naming-convention */
+
+/* eslint-disable @typescript-eslint/naming-convention */
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum SourcesSidebarTabCodes {
+  'OtherSidebarPane' = 0,
+  'navigator-network' = 1,
+  'navigator-files' = 2,
+  'navigator-overrides' = 3,
+  'navigator-contentScripts' = 4,
+  'navigator-snippets' = 5,
+  MaxValue = 6,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

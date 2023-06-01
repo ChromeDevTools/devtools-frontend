@@ -398,7 +398,7 @@ describe('User Metrics for sidebar panes', () => {
     await navigateToSidePane('Computed');
     await assertHistogramEventsInclude([
       {
-        actionName: 'DevTools.SidebarPaneShown',
+        actionName: 'DevTools.Elements.SidebarTabShown',
         actionCode: 2,  // Computed
       },
     ]);
@@ -411,7 +411,7 @@ describe('User Metrics for sidebar panes', () => {
     const events = await retrieveRecordedHistogramEvents(frontend);
     const eventNames = events.map(event => event.actionName);
 
-    assert.notInclude(eventNames, 'DevTools.SidebarPaneShown');
+    assert.notInclude(eventNames, 'DevTools.Elements.SidebarTabShown');
   });
 
   it('dispatches sidebar panes events for switching to \'Filesystem\' tab in the \'Sources\' panel', async () => {
@@ -420,8 +420,8 @@ describe('User Metrics for sidebar panes', () => {
 
     await assertHistogramEventsInclude([
       {
-        actionName: 'DevTools.SidebarPaneShown',
-        actionCode: 9,  // navigator-files
+        actionName: 'DevTools.Sources.SidebarTabShown',
+        actionCode: 2,  // navigator-files
       },
     ]);
   });

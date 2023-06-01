@@ -320,6 +320,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
   private selection?: TimelineSelection|null;
+  private primaryTargetPromiseCallback = (_target: SDK.Target.Target): void => {};
+  private primaryTargetPromise = new Promise<SDK.Target.Target>(res => {
+    this.primaryTargetPromiseCallback = res;
+  });
+
   #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.TraceModel.ENABLED_TRACE_HANDLERS>;
   // Tracks the index of the trace that the user is currently viewing.
   #traceEngineActiveTraceIndex = -1;
@@ -416,6 +421,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           SDK.CPUProfilerModel.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished,
           event => this.consoleProfileFinished(event.data), this);
     }
+    SDK.TargetManager.TargetManager.instance().observeTargets({
+      targetAdded: (target: SDK.Target.Target) => {
+        if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+          return;
+        }
+        this.primaryTargetPromiseCallback(target);
+      },
+      targetRemoved: (_: SDK.Target.Target) => {},
+    });
   }
 
   static instance(opts: {
@@ -851,11 +865,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
       this.showRecordingStarted();
 
-      const mainTarget = (SDK.TargetManager.TargetManager.instance().primaryPageTarget() as SDK.Target.Target);
+      const primaryTarget = await this.primaryTargetPromise;
+
       if (UIDevtoolsUtils.isUiDevTools()) {
-        this.controller = new UIDevtoolsController(mainTarget, this);
+        this.controller = new UIDevtoolsController(primaryTarget, this);
       } else {
-        this.controller = new TimelineController(mainTarget, this);
+        this.controller = new TimelineController(primaryTarget, this);
       }
       this.setUIControlsEnabled(false);
       this.hideLandingPage();

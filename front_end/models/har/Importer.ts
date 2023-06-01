@@ -223,6 +223,7 @@ export class Importer {
       sendEnd: accumulateTime(timings.send),
       pushStart: 0,
       pushEnd: 0,
+      receiveHeadersStart: timings.wait && (timings.wait >= 0) ? lastEntry : -1,
       receiveHeadersEnd: accumulateTime(timings.wait),
     };
     accumulateTime(timings.receive);

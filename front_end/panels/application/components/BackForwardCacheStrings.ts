@@ -522,6 +522,11 @@ const UIStrings = {
    *  @description Description text for not restored reason IndexedDBEvent.
    */
   indexedDBEvent: 'Back/forward cache is disabled due to an IndexedDB event.',
+  /**
+   * @description Description text for not restored reason CookieDisabled.
+   */
+  cookieDisabled:
+      'Back/forward cache is disabled because cookies are disabled on a page that uses `Cache-Control: no-store`.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheStrings.ts', UIStrings);
@@ -663,4 +668,5 @@ export const NotRestoredReasonDescription = {
   'KeepaliveRequest': {name: i18nLazyString(UIStrings.keepaliveRequest)},
   'AuthorizationHeader': {name: i18nLazyString(UIStrings.authorizationHeader)},
   'IndexedDBEvent': {name: i18nLazyString(UIStrings.indexedDBEvent)},
+  'CookieDisabled': {name: i18nLazyString(UIStrings.cookieDisabled)},
 };

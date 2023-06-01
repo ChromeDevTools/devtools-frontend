@@ -1374,7 +1374,8 @@ export const generatedProperties = [
   "keywords": [
    "normal",
    "inline-size",
-   "size"
+   "size",
+   "sticky"
   ],
   "name": "container-type"
  },
@@ -2446,7 +2447,8 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "auto"
+   "auto",
+   "normal"
   ],
   "name": "offset-position"
  },
@@ -3081,6 +3083,13 @@ export const generatedProperties = [
   "name": "scroll-timeline-name"
  },
  {
+  "inherited": true,
+  "keywords": [
+   "auto"
+  ],
+  "name": "scrollbar-color"
+ },
+ {
   "inherited": false,
   "keywords": [
    "auto",
@@ -3437,6 +3446,9 @@ export const generatedProperties = [
    "pretty"
   ],
   "name": "text-wrap"
+ },
+ {
+  "name": "timeline-scope"
  },
  {
   "longhands": [
@@ -4341,7 +4353,8 @@ export const generatedPropertyValues = {
   "values": [
    "normal",
    "inline-size",
-   "size"
+   "size",
+   "sticky"
   ]
  },
  "content-visibility": {
@@ -4981,7 +4994,8 @@ export const generatedPropertyValues = {
  },
  "offset-position": {
   "values": [
-   "auto"
+   "auto",
+   "normal"
   ]
  },
  "offset-rotate": {
@@ -5283,6 +5297,11 @@ export const generatedPropertyValues = {
  "scroll-start-target-y": {
   "values": [
    "none",
+   "auto"
+  ]
+ },
+ "scrollbar-color": {
+  "values": [
    "auto"
   ]
  },

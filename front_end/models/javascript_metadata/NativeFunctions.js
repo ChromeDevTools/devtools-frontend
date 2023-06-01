@@ -417,6 +417,11 @@ export const NativeFunctions = [
     receivers: ['Blob']
   },
   {
+    name: 'slice',
+    signatures: [['input','starts','sizes']],
+    receivers: ['MLGraphBuilder']
+  },
+  {
     name: 'split',
     signatures: [['separator','?limit'],['splitter','?limit']]
   },
@@ -2205,7 +2210,13 @@ export const NativeFunctions = [
   },
   {
     name: 'getAttribute',
-    signatures: [['qualifiedName'],['name']]
+    signatures: [['qualifiedName'],['name']],
+    receivers: ['Element']
+  },
+  {
+    name: 'getAttribute',
+    signatures: [['tag']],
+    receivers: ['SmartCardConnection']
   },
   {
     name: 'getAttributeNS',
@@ -4985,11 +4996,23 @@ export const NativeFunctions = [
   },
   {
     name: 'clearInterval',
-    signatures: [['id']]
+    signatures: [['id'],['?handle']],
+    receivers: ['Window','WorkerGlobalScope']
+  },
+  {
+    name: 'clearInterval',
+    signatures: [['id']],
+    receivers: ['Window']
   },
   {
     name: 'clearTimeout',
-    signatures: [['id']]
+    signatures: [['id'],['?handle']],
+    receivers: ['Window','WorkerGlobalScope']
+  },
+  {
+    name: 'clearTimeout',
+    signatures: [['id']],
+    receivers: ['Window']
   },
   {
     name: 'createImageBitmap',
@@ -6779,6 +6802,10 @@ export const NativeFunctions = [
     signatures: [['urn_or_config','replacements']]
   },
   {
+    name: 'getInterestGroupAdAuctionData',
+    signatures: [['config']]
+  },
+  {
     name: 'createAdRequest',
     signatures: [['config']]
   },
@@ -7773,7 +7800,7 @@ export const NativeFunctions = [
     signatures: [['?faceDetectorOptions']]
   },
   {
-    name: 'sendHistogramReport',
+    name: 'contributeToHistogram',
     signatures: [['contribution']]
   },
   {
@@ -7783,6 +7810,10 @@ export const NativeFunctions = [
   {
     name: 'transmit',
     signatures: [['sendBuffer']]
+  },
+  {
+    name: 'control',
+    signatures: [['controlCode','data']]
   },
   {
     name: 'SmartCardError',

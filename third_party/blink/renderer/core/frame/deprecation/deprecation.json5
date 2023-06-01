@@ -125,7 +125,7 @@
       web_features: [
         "kCrossOriginAccessBasedOnDocumentDomain",
       ],
-      milestone: 109,
+      milestone: 115,
     },
     {
       name: "CrossOriginWindowAlert",
@@ -159,7 +159,22 @@
       web_features: [
         "kDocumentDomainSettingWithoutOriginAgentClusterHeader",
       ],
-      milestone: 109,
+      milestone: 115,
+    },
+    {
+      name: "DOMMutationEvents",
+      message: "DOM Mutation Events, including `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, and `DOMCharacterDataModified` are deprecated (https://w3c.github.io/uievents/#legacy-event-types) and will be removed. Please use `MutationObserver` instead.",
+      translation_note: "Warning displayed to developers when non-standard Mutation Events are used. These are deprecated and will be removed.",
+      web_features: [
+        "kDOMCharacterDataModifiedEvent",
+        "kDOMNodeInsertedEvent",
+        "kDOMNodeInsertedIntoDocumentEvent",
+        "kDOMNodeRemovedEvent",
+        "kDOMNodeRemovedFromDocumentEvent",
+        "kDOMSubtreeModifiedEvent",
+      ],
+      chrome_status_feature: 5083947249172480,
+      milestone: 127,
     },
     {
       name: "EventPath",
@@ -173,7 +188,7 @@
     },
     {
       name: "ExpectCTHeader",
-      message: "The `Expect-CT` header is no longer supported. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
+      message: "The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
       translation_note: "This message is shown when the deprecated Expect-CT header is present.",
       web_features: [
         "kExpectCTHeader",

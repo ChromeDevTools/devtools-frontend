@@ -51,13 +51,17 @@ export const UIStrings = {
    */
   DocumentDomainSettingWithoutOriginAgentClusterHeader: "Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an `Origin-Agent-Cluster: ?0` header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details.",
   /**
+   * @description Warning displayed to developers when non-standard Mutation Events are used. These are deprecated and will be removed.
+   */
+  DOMMutationEvents: "DOM Mutation Events, including `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, and `DOMCharacterDataModified` are deprecated (https://w3c.github.io/uievents/#legacy-event-types) and will be removed. Please use `MutationObserver` instead.",
+  /**
    * @description Warning displayed to developers when the non-standard `Event.path` API is used to notify them that this API is deprecated.
    */
   EventPath: "`Event.path` is deprecated and will be removed. Please use `Event.composedPath()` instead.",
   /**
    * @description This message is shown when the deprecated Expect-CT header is present.
    */
-  ExpectCTHeader: "The `Expect-CT` header is no longer supported. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
+  ExpectCTHeader: "The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
   /**
    * @description Warning displayed to developers when the Geolocation API is used from an insecure origin (one that isn't localhost or doesn't use HTTPS) to notify them that this use is no longer supported.
    */
@@ -268,10 +272,14 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
     "milestone": 103
   },
   "CrossOriginAccessBasedOnDocumentDomain": {
-    "milestone": 109
+    "milestone": 115
+  },
+  "DOMMutationEvents": {
+    "chromeStatusFeature": 5083947249172480,
+    "milestone": 127
   },
   "DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "milestone": 109
+    "milestone": 115
   },
   "EventPath": {
     "chromeStatusFeature": 5726124632965120,

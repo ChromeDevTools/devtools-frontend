@@ -2462,7 +2462,7 @@ export class TimelineUIUtils {
       const categoryStack: string[] = [];
       let lastTime = 0;
       TimelineModel.TimelineModel.TimelineModelImpl.forEachEvent(
-          events, onStartEvent, onEndEvent, undefined, undefined, undefined, filterForStats(), false);
+          events, onStartEvent, onEndEvent, undefined, undefined, undefined, filterForStats());
 
       function filterForStats(): (arg0: SDK.TracingModel.CompatibleTraceEvent) => boolean {
         const visibleEventsFilter = TimelineUIUtils.visibleEventsFilter();

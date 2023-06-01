@@ -266,7 +266,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     const height = this.element.offsetHeight;
     context.lineWidth = 1;
     context.beginPath();
-    context.strokeStyle = NetworkLogView.getDCLEventColor();
+    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(NetworkLogView.getDCLEventColor());
     for (let i = this.domContentLoadedEvents.length - 1; i >= 0; --i) {
       const x = Math.round(calculator.computePosition(this.domContentLoadedEvents[i])) + 0.5;
       context.moveTo(x, 0);
@@ -275,7 +275,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     context.stroke();
 
     context.beginPath();
-    context.strokeStyle = NetworkLogView.getLoadEventColor();
+    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(NetworkLogView.getLoadEventColor());
     for (let i = this.loadEvents.length - 1; i >= 0; --i) {
       const x = Math.round(calculator.computePosition(this.loadEvents[i])) + 0.5;
       context.moveTo(x, 0);

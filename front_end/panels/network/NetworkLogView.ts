@@ -52,7 +52,6 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import networkLogViewStyles from './networkLogView.css.js';
 
@@ -1139,13 +1138,13 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         const domContentLoadedText = i18nString(
             UIStrings.domcontentloadedS,
             {PH1: i18n.TimeUtilities.secondsToString(this.mainRequestDOMContentLoadedTime - baseTime)});
-        appendChunk(domContentLoadedText).style.color = NetworkLogView.getDCLEventColor();
+        appendChunk(domContentLoadedText).style.color = `var(${NetworkLogView.getDCLEventColor()})`;
       }
       if (this.mainRequestLoadTime !== -1) {
         this.summaryToolbarInternal.appendSeparator();
         const loadText =
             i18nString(UIStrings.loadS, {PH1: i18n.TimeUtilities.secondsToString(this.mainRequestLoadTime - baseTime)});
-        appendChunk(loadText).style.color = NetworkLogView.getLoadEventColor();
+        appendChunk(loadText).style.color = `var(${NetworkLogView.getLoadEventColor()})`;
       }
     }
   }
@@ -2334,11 +2333,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   static getDCLEventColor(): string {
-    return ThemeSupport.ThemeSupport.instance().getComputedValue('--color-syntax-3');
+    return '--color-syntax-3';
   }
 
   static getLoadEventColor(): string {
-    return ThemeSupport.ThemeSupport.instance().getComputedValue('--color-syntax-1');
+    return '--color-syntax-1';
   }
 }
 

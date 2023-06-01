@@ -49,4 +49,54 @@ describeWithMockConnection('SecurityPanel', () => {
                                 createTarget({parentTarget: tabTarget, subtype: 'prerender'});
                                 return createTarget({parentTarget: tabTarget});
                               }));
+
+  it('can switch to a different SecurityModel', async () => {
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const mainTarget = createTarget({parentTarget: tabTarget});
+    const mainSecurityModel = mainTarget.model(Security.SecurityModel.SecurityModel);
+    assertNotNullOrUndefined(mainSecurityModel);
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+
+    // Add the main target to the security panel.
+    securityPanel.modelAdded(mainSecurityModel);
+    const visibleSecurityState = {
+      securityState: Protocol.Security.SecurityState.Insecure,
+      securityStateIssueIds: [],
+      certificateSecurityState: null,
+    } as unknown as Security.SecurityModel.PageVisibleSecurityState;
+    mainSecurityModel.dispatchEventToListeners(
+        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
+                      ?.classList.contains('security-summary-insecure'));
+
+    // Switch to the prerender target.
+    const prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    const prerenderSecurityModel = prerenderTarget.model(Security.SecurityModel.SecurityModel);
+    assertNotNullOrUndefined(prerenderSecurityModel);
+    securityPanel.modelAdded(prerenderSecurityModel);
+    securityPanel.modelRemoved(mainSecurityModel);
+
+    // Check that the security panel does not listen to events from the previous target.
+    visibleSecurityState.securityState = Protocol.Security.SecurityState.Secure;
+    mainSecurityModel.dispatchEventToListeners(
+        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
+                      ?.classList.contains('security-summary-insecure'));
+
+    // Check that the security panel listens to events from the current target.
+    prerenderSecurityModel.dispatchEventToListeners(
+        Security.SecurityModel.Events.VisibleSecurityStateChanged, visibleSecurityState);
+    assert.isTrue(securityPanel.mainView.contentElement.querySelector('.security-summary')
+                      ?.classList.contains('security-summary-secure'));
+
+    // Check that the SecurityPanel listens to any PrimaryPageChanged event
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel);
+    const sidebarTreeClearSpy = sinon.spy(securityPanel.sidebarTree, 'clearOrigins');
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+      frame: {url: 'https://www.example.com'} as SDK.ResourceTreeModel.ResourceTreeFrame,
+      type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation,
+    });
+    assert.isTrue(sidebarTreeClearSpy.calledOnce);
+  });
 });

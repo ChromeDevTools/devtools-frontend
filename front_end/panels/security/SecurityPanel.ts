@@ -492,7 +492,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     SDK.TargetManager.SDKModelObserver<SecurityModel> {
   readonly mainView: SecurityMainView;
   private readonly sidebarMainViewElement: SecurityPanelSidebarTreeElement;
-  private readonly sidebarTree: SecurityPanelSidebarTree;
+  readonly sidebarTree: SecurityPanelSidebarTree;
   private readonly lastResponseReceivedForLoaderId: Map<string, SDK.NetworkRequest.NetworkRequest>;
   private readonly origins: Map<string, OriginState>;
   private readonly filterRequestCounts: Map<string, number>;
@@ -520,11 +520,14 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
 
     this.filterRequestCounts = new Map();
 
-    SDK.TargetManager.TargetManager.instance().observeModels(SecurityModel, this);
-
     this.visibleView = null;
     this.eventListeners = [];
     this.securityModel = null;
+
+    SDK.TargetManager.TargetManager.instance().observeModels(SecurityModel, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.onPrimaryPageChanged, this);
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SecurityPanel {
@@ -727,17 +730,18 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
   }
 
   modelAdded(securityModel: SecurityModel): void {
-    if (securityModel.target() !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (securityModel.target() !== securityModel.target().outermostTarget()) {
       return;
     }
 
     this.securityModel = securityModel;
     const resourceTreeModel = securityModel.resourceTreeModel();
     const networkManager = securityModel.networkManager();
+    if (this.eventListeners.length) {
+      Common.EventTarget.removeEventListeners(this.eventListeners);
+    }
     this.eventListeners = [
       securityModel.addEventListener(Events.VisibleSecurityStateChanged, this.onVisibleSecurityStateChanged, this),
-      resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this),
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.InterstitialShown, this.onInterstitialShown, this),
       resourceTreeModel.addEventListener(
@@ -805,6 +809,7 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
   private readonly originGroupTitles: Map<OriginGroup, string>;
   private originGroups: Map<OriginGroup, UI.TreeOutline.TreeElement>;
   private readonly elementsByOrigin: Map<string, SecurityPanelSidebarTreeElement>;
+
   constructor(mainViewElement: SecurityPanelSidebarTreeElement, showOriginInPanel: (arg0: Origin) => void) {
     super();
 

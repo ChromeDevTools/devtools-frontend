@@ -9,7 +9,6 @@ import {
   makeFakeSDKEventFromPayload,
   type FakeEventPayload,
   makeFakeEventPayload,
-  FakeStorage,
 } from '../../helpers/TimelineHelpers.js';
 import {defaultTraceEvent} from '../../helpers/TraceHelpers.js';
 
@@ -146,7 +145,7 @@ describe('EventTypeHelpers', () => {
         dur: 5_000,
       };
       const payload = makeFakeEventPayload(fakePayload);
-      const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+      const tracingModel = new SDK.TracingModel.TracingModel();
       const process = new SDK.TracingModel.Process(tracingModel, 1);
       const thread = new SDK.TracingModel.Thread(process, 1);
       const event = SDK.TracingModel.PayloadEvent.fromPayload(payload, thread);

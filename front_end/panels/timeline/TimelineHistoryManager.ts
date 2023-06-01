@@ -118,7 +118,6 @@ export class TimelineHistoryManager {
     const modelUsedMoreTimeAgo =
         this.recordings.reduce((a, b) => lastUsedTime(a.legacyModel) < lastUsedTime(b.legacyModel) ? a : b);
     this.recordings.splice(this.recordings.indexOf(modelUsedMoreTimeAgo), 1);
-    modelUsedMoreTimeAgo.legacyModel.dispose();
 
     function lastUsedTime(model: PerformanceModel): number {
       const data = TimelineHistoryManager.dataForModel(model);
@@ -139,7 +138,6 @@ export class TimelineHistoryManager {
   }
 
   clear(): void {
-    this.recordings.forEach(model => model.legacyModel.dispose());
     this.recordings = [];
     this.lastActiveModel = null;
     this.updateState();

@@ -12,10 +12,7 @@ type IgnoreListArgs = {
 };
 
 export class TracingModel {
-  #backingStorageInternal: BackingStorage;
-  readonly #shouldSaveToFile: boolean;
   readonly #title: string|undefined;
-  #firstWritePending: boolean;
   readonly #processById: Map<string|number, Process>;
   readonly #processByName: Map<string, Process>;
   #minimumRecordTimeInternal: number;
@@ -29,12 +26,8 @@ export class TracingModel {
   readonly #mainFrameNavStartTimes: Map<string, PayloadEvent>;
   readonly #allEventsPayload: EventPayload[] = [];
 
-  constructor(backingStorage: BackingStorage, shouldSaveToFile = true, title?: string) {
-    this.#backingStorageInternal = backingStorage;
-    this.#shouldSaveToFile = shouldSaveToFile;
+  constructor(title?: string) {
     this.#title = title;
-    // Avoid extra reset of the storage as it's expensive.
-    this.#firstWritePending = true;
     this.#processById = new Map();
     this.#processByName = new Map();
     this.#minimumRecordTimeInternal = Number(Infinity);
@@ -117,21 +110,10 @@ export class TracingModel {
 
   tracingComplete(): void {
     this.processPendingAsyncEvents();
-    if (this.#shouldSaveToFile) {
-      this.#backingStorageInternal.appendString(this.#firstWritePending ? '[]' : ']');
-      this.#backingStorageInternal.finishWriting();
-      this.#firstWritePending = false;
-    }
     for (const process of this.#processById.values()) {
       for (const thread of process.threads.values()) {
         thread.tracingComplete();
       }
-    }
-  }
-
-  dispose(): void {
-    if (!this.#firstWritePending && this.#shouldSaveToFile) {
-      this.#backingStorageInternal.reset();
     }
   }
 
@@ -141,21 +123,6 @@ export class TracingModel {
     if (!process) {
       process = new Process(this, payload.pid);
       this.#processById.set(payload.pid, process);
-    }
-
-    let backingStorage: (() => Promise<string|null>)|null = null;
-    if (this.#shouldSaveToFile) {
-      const eventsDelimiter = ',\n';
-      this.#backingStorageInternal.appendString(this.#firstWritePending ? '[' : eventsDelimiter);
-      this.#firstWritePending = false;
-      const stringPayload = JSON.stringify(payload);
-      const isAccessible = payload.ph === TraceEngine.Types.TraceEvents.Phase.OBJECT_SNAPSHOT;
-      const keepStringsLessThan = 10000;
-      if (isAccessible && stringPayload.length > keepStringsLessThan) {
-        backingStorage = this.#backingStorageInternal.appendAccessibleString(stringPayload);
-      } else {
-        this.#backingStorageInternal.appendString(stringPayload);
-      }
     }
 
     const timestamp = payload.ts / 1000;
@@ -213,7 +180,6 @@ export class TracingModel {
     if (TraceEngine.Types.TraceEvents.isAsyncPhase(payload.ph)) {
       this.#asyncEvents.push((event as AsyncEvent));
     }
-    event.setBackingStorage(backingStorage);
     if (event.hasCategory(DevToolsMetadataEventCategory)) {
       this.#devToolsMetadataEventsInternal.push(event);
     }
@@ -404,10 +370,6 @@ export class TracingModel {
       return;
     }
     console.assert(false, 'Invalid async event phase');
-  }
-
-  backingStorage(): BackingStorage {
-    return this.#backingStorageInternal;
   }
 
   title(): string|undefined {

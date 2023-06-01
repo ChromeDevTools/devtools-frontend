@@ -30,8 +30,6 @@
 
 import * as Common from '../../core/common/common.js';
 
-import type * as SDK from '../../core/sdk/sdk.js';
-
 import {ChunkedFileReader, type ChunkedReader} from './FileUtils.js';
 
 export class TempFile {
@@ -91,64 +89,5 @@ export class TempFile {
 
   remove(): void {
     this.#lastBlob = null;
-  }
-}
-
-export class TempFileBackingStorage implements SDK.TracingModel.BackingStorage {
-  #file: TempFile|null;
-  #strings!: string[];
-  #stringsLength!: number;
-
-  constructor() {
-    this.#file = null;
-    this.reset();
-  }
-
-  appendString(string: string): void {
-    this.#strings.push(string);
-    this.#stringsLength += string.length;
-    const flushStringLength = 10 * 1024 * 1024;
-    if (this.#stringsLength > flushStringLength) {
-      this.flush();
-    }
-  }
-
-  appendAccessibleString(string: string): () => Promise<string|null> {
-    this.flush();
-    if (!this.#file) {
-      return async(): Promise<null> => null;
-    }
-    const startOffset = this.#file.size();
-    this.#strings.push(string);
-    this.flush();
-    return this.#file.readRange.bind(this.#file, startOffset, this.#file.size());
-  }
-
-  private flush(): void {
-    if (!this.#strings.length) {
-      return;
-    }
-    if (!this.#file) {
-      this.#file = new TempFile();
-    }
-    this.#stringsLength = 0;
-    this.#file.write(this.#strings.splice(0));
-  }
-
-  finishWriting(): void {
-    this.flush();
-  }
-
-  reset(): void {
-    if (this.#file) {
-      this.#file.remove();
-    }
-    this.#file = null;
-    this.#strings = [];
-    this.#stringsLength = 0;
-  }
-
-  writeToStream(outputStream: Common.StringOutputStream.OutputStream): Promise<DOMError|null> {
-    return this.#file ? this.#file.copyToOutputStream(outputStream) : Promise.resolve(null);
   }
 }

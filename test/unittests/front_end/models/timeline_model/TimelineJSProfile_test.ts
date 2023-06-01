@@ -8,7 +8,6 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
-import {FakeStorage} from '../../helpers/TimelineHelpers.js';
 
 describe('TimelineJSProfile', () => {
   let tracingModel: SDK.TracingModel.TracingModel;
@@ -22,7 +21,7 @@ describe('TimelineJSProfile', () => {
   };
 
   before(() => {
-    tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+    tracingModel = new SDK.TracingModel.TracingModel();
     process = new SDK.TracingModel.Process(tracingModel, 1);
     thread = new SDK.TracingModel.Thread(process, 1);
   });

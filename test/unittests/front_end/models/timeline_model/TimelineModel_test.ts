@@ -13,7 +13,6 @@ import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {
   DevToolsTimelineCategory,
-  FakeStorage,
   makeFakeSDKEventFromPayload,
   traceModelFromTraceFile,
 } from '../../helpers/TimelineHelpers.js';
@@ -192,7 +191,7 @@ describeWithEnvironment('TimelineModel', () => {
     tracingModel: SDK.TracingModel.TracingModel,
     timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
   } {
-    const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+    const tracingModel = new SDK.TracingModel.TracingModel();
     const timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
     tracingModel.addEvents((preamble as unknown as SDK.TracingManager.EventPayload[]).concat(events));
     tracingModel.tracingComplete();
@@ -403,7 +402,7 @@ describeWithEnvironment('TimelineModel', () => {
     let nestableAsyncEvents: SDK.TracingModel.AsyncEvent[];
     let nonNestableAsyncEvents: SDK.TracingModel.AsyncEvent[];
     let syncEvents: SDK.TracingModel.PayloadEvent[];
-    const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+    const tracingModel = new SDK.TracingModel.TracingModel();
     const process = new SDK.TracingModel.Process(tracingModel, 1);
     const thread = new SDK.TracingModel.Thread(process, 1);
     const nestableAsyncEventPayloads = [

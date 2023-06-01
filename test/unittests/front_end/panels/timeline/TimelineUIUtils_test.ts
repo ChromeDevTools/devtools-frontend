@@ -10,7 +10,6 @@ import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-import {FakeStorage} from '../../helpers/TimelineHelpers.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
@@ -29,7 +28,7 @@ describeWithMockConnection('TimelineUIUtils', () => {
 
   beforeEach(() => {
     target = createTarget();
-    tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+    tracingModel = new SDK.TracingModel.TracingModel();
     process = new SDK.TracingModel.Process(tracingModel, 1);
     thread = new SDK.TracingModel.Thread(process, 1);
 

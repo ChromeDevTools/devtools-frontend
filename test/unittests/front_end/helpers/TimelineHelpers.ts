@@ -9,21 +9,6 @@ import type * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import {loadTraceEventsLegacyEventPayload} from './TraceHelpers.js';
 
-export class FakeStorage extends SDK.TracingModel.BackingStorage {
-  override appendString() {
-  }
-
-  appendAccessibleString(x: string): () => Promise<string|null> {
-    return () => Promise.resolve(x);
-  }
-
-  override finishWriting() {
-  }
-
-  override reset() {
-  }
-}
-
 /**
  * Provides a stubbed SDK.TracingModel.Thread instance.
  * IMPORTANT: this is not designed to be a fully stubbed Thread, but one that is
@@ -116,7 +101,7 @@ export async function traceModelFromTraceFile(file: string): Promise<{
   performanceModel: Timeline.PerformanceModel.PerformanceModel,
 }> {
   const events = await loadTraceEventsLegacyEventPayload(file);
-  const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+  const tracingModel = new SDK.TracingModel.TracingModel();
   const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();

@@ -73,7 +73,7 @@ TestRunner.formatters.formatAsInvalidationCause = function(cause) {
 };
 
 PerformanceTestRunner.createTracingModel = function(events) {
-  const model = new SDK.TracingModel(new Bindings.TempFileBackingStorage('tracing'));
+  const model = new SDK.TracingModel();
   model.addEvents(events);
   model.tracingComplete();
   return model;
@@ -119,7 +119,7 @@ PerformanceTestRunner.timelineFrameModel = function() {
 };
 
 PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) {
-  const tracingModel = new SDK.TracingModel(new Bindings.TempFileBackingStorage('tracing'));
+  const tracingModel = new SDK.TracingModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();
   const performanceModel = new Timeline.PerformanceModel();

@@ -86,6 +86,3 @@ Bindings.StyleFile = BindingsModule.StylesSourceMapping.StyleFile;
 
 /** @constructor */
 Bindings.TempFile = BindingsModule.TempFile.TempFile;
-
-/** @constructor */
-Bindings.TempFileBackingStorage = BindingsModule.TempFile.TempFileBackingStorage;

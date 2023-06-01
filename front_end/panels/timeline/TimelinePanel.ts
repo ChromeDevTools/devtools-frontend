@@ -629,7 +629,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     console.assert(this.state === State.Idle);
     this.setState(State.Loading);
     if (this.performanceModel) {
-      this.performanceModel.dispose();
       this.performanceModel = null;
     }
   }
@@ -723,12 +722,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.createFileSelector();
   }
 
-  loadFromURL(url: Platform.DevToolsPath.UrlString): void {
+  async loadFromURL(url: Platform.DevToolsPath.UrlString): Promise<void> {
     if (this.state !== State.Idle) {
       return;
     }
     this.prepareToLoadTimeline();
-    this.loader = TimelineLoader.loadFromURL(url, this);
+    this.loader = await TimelineLoader.loadFromURL(url, this);
   }
 
   private updateOverviewControls(): void {
@@ -1181,7 +1180,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.landingPage.detach();
   }
 
-  loadingStarted(): void {
+  async loadingStarted(): Promise<void> {
     this.hideLandingPage();
 
     if (this.statusPane) {
@@ -1202,16 +1201,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!this.loader) {
       this.statusPane.finish();
     }
-    this.loadingProgress(0);
+    await this.loadingProgress(0);
   }
 
-  loadingProgress(progress?: number): void {
+  async loadingProgress(progress?: number): Promise<void> {
     if (typeof progress === 'number' && this.statusPane) {
       this.statusPane.updateProgressBar(i18nString(UIStrings.received), progress * 100);
     }
   }
 
-  processingStarted(): void {
+  async processingStarted(): Promise<void> {
     if (this.statusPane) {
       this.statusPane.updateStatus(i18nString(UIStrings.processingProfile));
     }
@@ -1327,7 +1326,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private cancelLoading(): void {
     if (this.loader) {
-      this.loader.cancel();
+      void this.loader.cancel();
     }
   }
 
@@ -1453,7 +1452,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (item.kind === 'string') {
       const url = dataTransfer.getData('text/uri-list') as Platform.DevToolsPath.UrlString;
       if (new Common.ParsedURL.ParsedURL(url).isValid) {
-        this.loadFromURL(url);
+        void this.loadFromURL(url);
       }
     } else if (item.kind === 'file') {
       const file = items[0].getAsFile();
@@ -1625,8 +1624,8 @@ export class LoadTimelineHandler implements Common.QueryParamHandler.QueryParamH
   }
 
   handleQueryParam(value: string): void {
-    void UI.ViewManager.ViewManager.instance().showView('timeline').then(() => {
-      TimelinePanel.instance().loadFromURL(window.decodeURIComponent(value) as Platform.DevToolsPath.UrlString);
+    void UI.ViewManager.ViewManager.instance().showView('timeline').then(async () => {
+      await TimelinePanel.instance().loadFromURL(window.decodeURIComponent(value) as Platform.DevToolsPath.UrlString);
     });
   }
 }

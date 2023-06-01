@@ -7,7 +7,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -53,9 +52,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     this.performanceModel = new PerformanceModel();
     this.performanceModel.setMainTarget(target);
     this.client = client;
-
-    const backingStorage = new Bindings.TempFile.TempFileBackingStorage();
-    this.tracingModel = new SDK.TracingModel.TracingModel(backingStorage);
+    this.tracingModel = new SDK.TracingModel.TracingModel();
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.CPUProfilerModel.CPUProfilerModel, this);
   }
@@ -360,7 +357,7 @@ export interface Client {
   loadingProgress(progress?: number): void;
   loadingComplete(
       tracingModel: SDK.TracingModel.TracingModel|null,
-      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null): void;
+      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null): Promise<void>;
   loadingCompleteForTest(): void;
 }
 export interface RecordingOptions {

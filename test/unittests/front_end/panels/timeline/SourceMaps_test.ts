@@ -20,7 +20,6 @@ import {
   dispatchEvent,
   setMockConnectionResponseHandler,
 } from '../../helpers/MockConnection.js';
-import {FakeStorage} from '../../helpers/TimelineHelpers.js';
 
 const {assert} = chai;
 
@@ -94,7 +93,7 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
     performanceModel = new Timeline.PerformanceModel.PerformanceModel();
     const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
         profile, 1, false, 'mock-name');
-    tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+    tracingModel = new SDK.TracingModel.TracingModel();
     tracingModel.addEvents(traceEvents);
     await performanceModel.setTracingModel(tracingModel);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();

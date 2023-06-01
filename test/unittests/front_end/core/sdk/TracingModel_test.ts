@@ -5,14 +5,14 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import {loadTraceEventsLegacyEventPayload, allModelsFromFile} from '../../helpers/TraceHelpers.js';
-import {FakeStorage, StubbedThread} from '../../helpers/TimelineHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {loadTraceEventsLegacyEventPayload, allModelsFromFile} from '../../helpers/TraceHelpers.js';
+import {StubbedThread} from '../../helpers/TimelineHelpers.js';
 
 describeWithEnvironment('TracingModel', () => {
   it('can create events from an EventPayload[] and finds the correct number of processes', async () => {
     const events = await loadTraceEventsLegacyEventPayload('basic.json.gz');
-    const model = new SDK.TracingModel.TracingModel(new FakeStorage());
+    const model = new SDK.TracingModel.TracingModel();
     model.addEvents(events);
     assert.strictEqual(model.sortedProcesses().length, 4);
   });

@@ -182,12 +182,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.frameModelInternal;
   }
 
-  dispose(): void {
-    if (this.tracingModelInternal) {
-      this.tracingModelInternal.dispose();
-    }
-  }
-
   filmStripModelFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): SDK.FilmStripModel.Frame|null {
     // For idle frames, look at the state at the beginning of the frame.
     const screenshotTime = frame.idle ? frame.startTime : frame.endTime;

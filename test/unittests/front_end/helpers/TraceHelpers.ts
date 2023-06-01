@@ -8,7 +8,6 @@ import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {initializeGlobalVars} from './EnvironmentHelpers.js';
 
-import {FakeStorage} from './TimelineHelpers.js';
 interface CompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
 interface DecompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
 declare const CompressionStream: {
@@ -250,7 +249,7 @@ export async function allModelsFromFile(file: string): Promise<{
 }> {
   const traceParsedData = await loadModelDataFromTraceFile(file);
   const events = await loadTraceEventsLegacyEventPayload(file);
-  const tracingModel = new SDK.TracingModel.TracingModel(new FakeStorage());
+  const tracingModel = new SDK.TracingModel.TracingModel();
   const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();

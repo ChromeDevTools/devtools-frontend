@@ -97,7 +97,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private canvas: HTMLCanvasElement;
   private entryInfo: HTMLElement;
   private readonly markerHighlighElement: HTMLElement;
-  private readonly highlightElement: HTMLElement;
+  readonly highlightElement: HTMLElement;
   private readonly selectedElement: HTMLElement;
   private rulerEnabled: boolean;
   private barHeight: number;

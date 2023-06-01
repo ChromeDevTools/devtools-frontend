@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import * as EnvironmentHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import * as TimelineHelpers from '../../../../../test/unittests/front_end/helpers/TimelineHelpers.js';
 import * as TraceHelpers from '../../../../../test/unittests/front_end/helpers/TraceHelpers.js';
 import * as PerfUI from '../../../legacy/components/perf_ui/perf_ui.js';
 import * as ComponentSetup from '../../helpers/helpers.js';
+
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
-import {FakeProvider} from './FlameChartHelpers.js';
 
 await EnvironmentHelpers.initializeGlobalVars();
 await ComponentSetup.ComponentServerSetup.setup();
@@ -17,7 +18,7 @@ await ComponentSetup.ComponentServerSetup.setup();
  * Render a basic flame chart with 3 events on the same level
  **/
 function renderExample1() {
-  class FakeProviderWithBasicEvents extends FakeProvider {
+  class FakeProviderWithBasicEvents extends TimelineHelpers.FakeFlameChartProvider {
     override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
       return PerfUI.FlameChart.FlameChartTimelineData.create({
         entryLevels: [1, 1, 1],
@@ -58,7 +59,7 @@ function renderExample1() {
  * Render a flame chart with main thread long events to stripe and a warning triangle.
  **/
 function renderExample2() {
-  class FakeProviderWithLongTasksForStriping extends FakeProvider {
+  class FakeProviderWithLongTasksForStriping extends TimelineHelpers.FakeFlameChartProvider {
     override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
       return PerfUI.FlameChart.FlameChartTimelineData.create({
         entryLevels: [1, 1, 2],

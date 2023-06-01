@@ -4,6 +4,7 @@
 
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
+import * as PerfUI from '../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import type * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import {loadTraceEventsLegacyEventPayload} from './TraceHelpers.js';
@@ -126,4 +127,62 @@ export async function traceModelFromTraceFile(file: string): Promise<{
     timelineModel,
     performanceModel,
   };
+}
+
+export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataProvider {
+  minimumBoundary(): number {
+    return 0;
+  }
+
+  totalTime(): number {
+    return 100;
+  }
+
+  formatValue(value: number): string {
+    return value.toString();
+  }
+
+  maxStackDepth(): number {
+    return 3;
+  }
+
+  prepareHighlightedEntryInfo(_entryIndex: number): Element|null {
+    return null;
+  }
+
+  canJumpToEntry(_entryIndex: number): boolean {
+    return false;
+  }
+
+  entryTitle(entryIndex: number): string|null {
+    return `Entry ${entryIndex}`;
+  }
+
+  entryFont(_entryIndex: number): string|null {
+    return null;
+  }
+
+  entryColor(_entryIndex: number): string {
+    return 'lightblue';
+  }
+
+  decorateEntry(): boolean {
+    return false;
+  }
+
+  forceDecoration(_entryIndex: number): boolean {
+    return false;
+  }
+
+  textColor(_entryIndex: number): string {
+    return 'black';
+  }
+
+  navStartTimes(): Map<string, SDK.TracingModel.Event> {
+    return new Map();
+  }
+
+  timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+    return PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
+  }
 }

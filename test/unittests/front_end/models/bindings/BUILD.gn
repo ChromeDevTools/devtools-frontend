@@ -7,7 +7,6 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("bindings") {
   testonly = true
   sources = [
-    "BreakpointManager_test.ts",
     "CompilerScriptMapping_test.ts",
     "DebuggerWorkspaceBinding_test.ts",
     "DefaultScriptMapping_test.ts",

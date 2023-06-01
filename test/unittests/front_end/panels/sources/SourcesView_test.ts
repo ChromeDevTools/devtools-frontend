@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as Breakpoints from '../../../../../front_end/models/breakpoints/breakpoints.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
@@ -32,7 +33,7 @@ describe('SourcesView', () => {
       resourceMapping,
       targetManager,
     });
-    const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});

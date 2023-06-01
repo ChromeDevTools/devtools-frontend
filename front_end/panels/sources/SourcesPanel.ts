@@ -35,6 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -673,7 +674,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
     await this.debuggerPausedMessage.render(
         details, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
-        Bindings.BreakpointManager.BreakpointManager.instance());
+        Breakpoints.BreakpointManager.BreakpointManager.instance());
     if (details) {
       this.updateDebuggerButtonsAndStatusForTest();
     }

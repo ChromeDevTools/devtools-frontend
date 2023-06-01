@@ -4,6 +4,7 @@
 
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as Bindings from '../../../../front_end/models/bindings/bindings.js';
+import * as Breakpoints from '../../../../front_end/models/breakpoints/breakpoints.js';
 import * as Persistence from '../../../../front_end/models/persistence/persistence.js';
 import * as Workspace from '../../../../front_end/models/workspace/workspace.js';
 import type * as Platform from '../../../../front_end/core/platform/platform.js';
@@ -14,7 +15,7 @@ export function setUpEnvironment() {
   const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
   const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
       {forceNew: true, resourceMapping, targetManager});
-  const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+  const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
       {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
   Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
   const networkPersistenceManager =

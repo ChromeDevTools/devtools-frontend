@@ -9,6 +9,7 @@ import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as Breakpoints from '../../../../../front_end/models/breakpoints/breakpoints.js';
 import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 
@@ -57,12 +58,13 @@ describeWithMockConnection('BreakpointManager', () => {
   };
 
   const DEFAULT_BREAKPOINT:
-      [Bindings.BreakpointManager.UserCondition, boolean, boolean, Bindings.BreakpointManager.BreakpointOrigin] = [
-        Bindings.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
-        true,   // enabled
-        false,  // isLogpoint
-        Bindings.BreakpointManager.BreakpointOrigin.OTHER,
-      ];
+      [Breakpoints.BreakpointManager.UserCondition, boolean, boolean, Breakpoints.BreakpointManager.BreakpointOrigin] =
+          [
+            Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
+            true,   // enabled
+            false,  // isLogpoint
+            Breakpoints.BreakpointManager.BreakpointOrigin.OTHER,
+          ];
 
   // For tests with source maps.
   const ORIGINAL_SCRIPT_SOURCES_CONTENT = 'function foo() {\n  console.log(\'Hello\');\n}\n';
@@ -81,7 +83,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
   let target: SDK.Target.Target;
   let backend: MockProtocolBackend;
-  let breakpointManager: Bindings.BreakpointManager.BreakpointManager;
+  let breakpointManager: Breakpoints.BreakpointManager.BreakpointManager;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
   let targetManager: SDK.TargetManager.TargetManager;
   let workspace: Workspace.Workspace.WorkspaceImpl;
@@ -115,7 +117,7 @@ describeWithMockConnection('BreakpointManager', () => {
       }
     });
 
-    breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+    breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
   });
 
@@ -233,18 +235,18 @@ describeWithMockConnection('BreakpointManager', () => {
   });
 
   describe('Breakpoint#backendCondition()', () => {
-    function createBreakpoint(condition: string, isLogpoint: boolean): Bindings.BreakpointManager.Breakpoint {
+    function createBreakpoint(condition: string, isLogpoint: boolean): Breakpoints.BreakpointManager.Breakpoint {
       const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
       const storageState = {
         url: URL,
         resourceTypeName: uiSourceCode.contentType().name(),
         lineNumber: 5,
-        condition: condition as Bindings.BreakpointManager.UserCondition,
+        condition: condition as Breakpoints.BreakpointManager.UserCondition,
         enabled: true,
         isLogpoint,
       };
-      return new Bindings.BreakpointManager.Breakpoint(
-          breakpointManager, uiSourceCode, storageState, Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+      return new Breakpoints.BreakpointManager.Breakpoint(
+          breakpointManager, uiSourceCode, storageState, Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION);
     }
 
     it('wraps logpoints in console.log', () => {
@@ -362,7 +364,7 @@ describeWithMockConnection('BreakpointManager', () => {
     assert.isNull(breakpoint.getLastResolvedState());
     const result = await update;
     // Make sure that no error occurred.
-    assert.isTrue(result === Bindings.BreakpointManager.DebuggerUpdateResult.OK);
+    assert.isTrue(result === Breakpoints.BreakpointManager.DebuggerUpdateResult.OK);
     assert.strictEqual(breakpoint.getLastResolvedState()?.[0].lineNumber, 13);
     await breakpoint.remove(false);
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
@@ -594,16 +596,16 @@ describeWithMockConnection('BreakpointManager', () => {
     // in the breakpoint manager.
     const url = 'http://example.com/script.js' as Platform.DevToolsPath.UrlString;
     const lineNumber = 1;
-    const breakpoints: Bindings.BreakpointManager.BreakpointStorageState[] = [{
+    const breakpoints: Breakpoints.BreakpointManager.BreakpointStorageState[] = [{
       url,
       resourceTypeName: 'script',
       lineNumber,
-      condition: '' as Bindings.BreakpointManager.UserCondition,
+      condition: '' as Breakpoints.BreakpointManager.UserCondition,
       enabled: true,
       isLogpoint: false,
     }];
     Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints).set(breakpoints);
-    Bindings.BreakpointManager.BreakpointManager.instance(
+    Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
 
     // Create a new target and make sure that the backend receives setBreakpointByUrl request
@@ -629,11 +631,11 @@ describeWithMockConnection('BreakpointManager', () => {
     // in the breakpoint manager (for the resolved location!).
     const compiledUrl = 'http://example.com/compiled.js' as Platform.DevToolsPath.UrlString;
     const compiledLineNumber = 2;
-    const breakpoints: Bindings.BreakpointManager.BreakpointStorageState[] = [{
+    const breakpoints: Breakpoints.BreakpointManager.BreakpointStorageState[] = [{
       url: 'http://example.com/src/script.ts' as Platform.DevToolsPath.UrlString,
       resourceTypeName: 'sm-script',
       lineNumber: 1,
-      condition: '' as Bindings.BreakpointManager.UserCondition,
+      condition: '' as Breakpoints.BreakpointManager.UserCondition,
       enabled: true,
       isLogpoint: false,
       resolvedState: [{
@@ -644,7 +646,7 @@ describeWithMockConnection('BreakpointManager', () => {
       }],
     }];
     Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints).set(breakpoints);
-    Bindings.BreakpointManager.BreakpointManager.instance(
+    Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
 
     // Create a new target and make sure that the backend receives setBreakpointByUrl request
@@ -670,9 +672,9 @@ describeWithMockConnection('BreakpointManager', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assertNotNullOrUndefined(debuggerModel);
-    const breakpoints: Bindings.BreakpointManager.BreakpointStorageState[] = [];
+    const breakpoints: Breakpoints.BreakpointManager.BreakpointStorageState[] = [];
     const setting = Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints);
-    Bindings.BreakpointManager.BreakpointManager.instance(
+    Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
 
     // Add script with source map.
@@ -721,7 +723,7 @@ describeWithMockConnection('BreakpointManager', () => {
       const targetManager = SDK.TargetManager.TargetManager.instance();
       const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
-      breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+      breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
           {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
     });
 
@@ -1500,14 +1502,14 @@ describeWithMockConnection('BreakpointManager', () => {
     let workerScript: SDK.Script.Script;
     let mainScript: SDK.Script.Script;
 
-    let breakpoint: Bindings.BreakpointManager.Breakpoint;
+    let breakpoint: Breakpoints.BreakpointManager.Breakpoint;
 
     function waitForBreakpointLocationsAdded() {
       let twoBreakpointLocationsCallback: () => void;
       const twoBreakpointLocationsAddedPromise = new Promise<void>(resolve => {
         twoBreakpointLocationsCallback = resolve;
       });
-      breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, () => {
+      breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointAdded, () => {
         if (breakpointManager.allBreakpointLocations().length === 2) {
           twoBreakpointLocationsCallback();
         }
@@ -1544,7 +1546,7 @@ describeWithMockConnection('BreakpointManager', () => {
       // we can manually call 'modelAdded' in the order that we want,
       // and thus control which target is taken care of first.
       const modelAddedStub =
-          sinon.stub(Bindings.BreakpointManager.Breakpoint.prototype, 'modelAdded').callsFake((() => {}));
+          sinon.stub(Breakpoints.BreakpointManager.Breakpoint.prototype, 'modelAdded').callsFake((() => {}));
 
       // Set the breakpoint on the main target, but note that the debugger won't be updated.
       const bp = await breakpointManager.setBreakpoint(mainUiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
@@ -1737,13 +1739,13 @@ describeWithMockConnection('BreakpointManager storage', () => {
 
   it('records breakpoint count after loading from storage', async () => {
     // Create 200 breakpoints in the storage.
-    const breakpoints: Bindings.BreakpointManager.BreakpointStorageState[] = [];
+    const breakpoints: Breakpoints.BreakpointManager.BreakpointStorageState[] = [];
     for (let i = 0; i < 201; i++) {
       breakpoints.push({
         url: 'http://example.com/script.js' as Platform.DevToolsPath.UrlString,
         resourceTypeName: 'script',
         lineNumber: i,
-        condition: '' as Bindings.BreakpointManager.UserCondition,
+        condition: '' as Breakpoints.BreakpointManager.UserCondition,
         enabled: true,
         isLogpoint: false,
       });
@@ -1755,7 +1757,7 @@ describeWithMockConnection('BreakpointManager storage', () => {
         Host.UserMetrics.BreakpointsRestoredFromStorageCount.LessThan300));
 
     // Creating breakpoint manager to load the breakpoints from storage and record the breakpoint count.
-    Bindings.BreakpointManager.BreakpointManager.instance({
+    Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
       targetManager: SDK.TargetManager.TargetManager.instance(),
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),

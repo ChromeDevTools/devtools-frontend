@@ -37,6 +37,7 @@ devtools_module("persistence") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../models/bindings:bundle",
+    "../../models/breakpoints:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../ui/legacy:bundle",
@@ -60,9 +61,9 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/models/workspace_diff/*",
     "../../entrypoints/main/*",
     "../../panels/network/*",
+    "../../panels/recorder/*",
     "../../panels/snippets/*",
     "../../panels/sources/*",
-    "../../panels/recorder/*",
     "../workspace_diff/*",
   ]
 

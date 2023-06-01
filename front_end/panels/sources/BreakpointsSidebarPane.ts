@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -91,9 +92,9 @@ export class BreakpointsSidebarPane extends UI.ThrottledWidget.ThrottledWidget {
 }
 
 export class BreakpointsSidebarController implements UI.ContextFlavorListener.ContextFlavorListener {
-  readonly #breakpointManager: Bindings.BreakpointManager.BreakpointManager;
-  readonly #breakpointItemToLocationMap =
-      new WeakMap<SourcesComponents.BreakpointsView.BreakpointItem, Bindings.BreakpointManager.BreakpointLocation[]>();
+  readonly #breakpointManager: Breakpoints.BreakpointManager.BreakpointManager;
+  readonly #breakpointItemToLocationMap = new WeakMap<
+      SourcesComponents.BreakpointsView.BreakpointItem, Breakpoints.BreakpointManager.BreakpointLocation[]>();
   readonly #breakpointsActiveSetting: Common.Settings.Setting<boolean>;
   readonly #pauseOnUncaughtExceptionSetting: Common.Settings.Setting<boolean>;
   readonly #pauseOnCaughtExceptionSetting: Common.Settings.Setting<boolean>;
@@ -103,19 +104,19 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
   // This is used to keep track of outstanding edits to breakpoints that were initiated
   // by the breakpoint edit button (for UMA).
-  #outstandingBreakpointEdited: Bindings.BreakpointManager.Breakpoint|undefined;
+  #outstandingBreakpointEdited: Breakpoints.BreakpointManager.Breakpoint|undefined;
   #updateScheduled = false;
   #updateRunning = false;
 
   private constructor(
-      breakpointManager: Bindings.BreakpointManager.BreakpointManager, settings: Common.Settings.Settings) {
+      breakpointManager: Breakpoints.BreakpointManager.BreakpointManager, settings: Common.Settings.Settings) {
     this.#collapsedFilesSettings = Common.Settings.Settings.instance().createSetting('collapsedFiles', []);
     this.#collapsedFiles = new Set(this.#collapsedFilesSettings.get());
     this.#breakpointManager = breakpointManager;
     this.#breakpointManager.addEventListener(
-        Bindings.BreakpointManager.Events.BreakpointAdded, this.#onBreakpointAdded, this);
+        Breakpoints.BreakpointManager.Events.BreakpointAdded, this.#onBreakpointAdded, this);
     this.#breakpointManager.addEventListener(
-        Bindings.BreakpointManager.Events.BreakpointRemoved, this.#onBreakpointRemoved, this);
+        Breakpoints.BreakpointManager.Events.BreakpointRemoved, this.#onBreakpointRemoved, this);
     this.#breakpointsActiveSetting = settings.moduleSetting('breakpointsActive');
     this.#breakpointsActiveSetting.addChangeListener(this.update, this);
     this.#pauseOnUncaughtExceptionSetting = settings.moduleSetting('pauseOnUncaughtException');
@@ -126,11 +127,11 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
   static instance({forceNew, breakpointManager, settings}: {
     forceNew: boolean|null,
-    breakpointManager: Bindings.BreakpointManager.BreakpointManager,
+    breakpointManager: Breakpoints.BreakpointManager.BreakpointManager,
     settings: Common.Settings.Settings,
   } = {
     forceNew: null,
-    breakpointManager: Bindings.BreakpointManager.BreakpointManager.instance(),
+    breakpointManager: Breakpoints.BreakpointManager.BreakpointManager.instance(),
     settings: Common.Settings.Settings.instance(),
   }): BreakpointsSidebarController {
     if (!breakpointsViewControllerInstance || forceNew) {
@@ -153,7 +154,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     void this.update();
   }
 
-  breakpointEditFinished(breakpoint: Bindings.BreakpointManager.Breakpoint|null, edited: boolean): void {
+  breakpointEditFinished(breakpoint: Breakpoints.BreakpointManager.Breakpoint|null, edited: boolean): void {
     if (this.#outstandingBreakpointEdited && this.#outstandingBreakpointEdited === breakpoint) {
       if (edited) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointConditionEditedFromSidebar);
@@ -164,7 +165,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
   breakpointStateChanged(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem, checked: boolean): void {
     const locations = this.#getLocationsForBreakpointItem(breakpointItem);
-    locations.forEach((value: Bindings.BreakpointManager.BreakpointLocation) => {
+    locations.forEach((value: Breakpoints.BreakpointManager.BreakpointLocation) => {
       const breakpoint = value.breakpoint;
       breakpoint.setEnabled(checked);
     });
@@ -173,7 +174,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   async breakpointEdited(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem, editButtonClicked: boolean):
       Promise<void> {
     const locations = this.#getLocationsForBreakpointItem(breakpointItem);
-    let location: Bindings.BreakpointManager.BreakpointLocation|undefined;
+    let location: Breakpoints.BreakpointManager.BreakpointLocation|undefined;
     for (const locationCandidate of locations) {
       if (!location || locationCandidate.uiLocation.compareTo(location.uiLocation) < 0) {
         location = locationCandidate;
@@ -327,10 +328,10 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     };
   }
 
-  #onBreakpointAdded(event: Common.EventTarget.EventTargetEvent<Bindings.BreakpointManager.BreakpointLocation>):
+  #onBreakpointAdded(event: Common.EventTarget.EventTargetEvent<Breakpoints.BreakpointManager.BreakpointLocation>):
       Promise<void> {
     const breakpoint = event.data.breakpoint;
-    if (breakpoint.origin === Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION &&
+    if (breakpoint.origin === Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION &&
         this.#collapsedFiles.has(breakpoint.url())) {
       // Auto-expand if a new breakpoint was added to a collapsed group.
       this.#collapsedFiles.delete(breakpoint.url());
@@ -339,11 +340,11 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     return this.update();
   }
 
-  #onBreakpointRemoved(event: Common.EventTarget.EventTargetEvent<Bindings.BreakpointManager.BreakpointLocation>):
+  #onBreakpointRemoved(event: Common.EventTarget.EventTargetEvent<Breakpoints.BreakpointManager.BreakpointLocation>):
       Promise<void> {
     const breakpoint = event.data.breakpoint;
     if (this.#collapsedFiles.has(breakpoint.url())) {
-      const locations = Bindings.BreakpointManager.BreakpointManager.instance().allBreakpointLocations();
+      const locations = Breakpoints.BreakpointManager.BreakpointManager.instance().allBreakpointLocations();
       const otherBreakpointsOnSameFileExist =
           locations.some(location => location.breakpoint.url() === breakpoint.url());
       if (!otherBreakpointsOnSameFileExist) {
@@ -359,7 +360,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     this.#collapsedFilesSettings.set(Array.from(this.#collapsedFiles.values()));
   }
 
-  #getBreakpointTypeAndDetails(locations: Bindings.BreakpointManager.BreakpointLocation[]):
+  #getBreakpointTypeAndDetails(locations: Breakpoints.BreakpointManager.BreakpointLocation[]):
       {type: SDK.DebuggerModel.BreakpointType, hoverText?: string} {
     const breakpointWithCondition = locations.find(location => Boolean(location.breakpoint.condition()));
     const breakpoint = breakpointWithCondition?.breakpoint;
@@ -376,7 +377,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   }
 
   #getLocationsForBreakpointItem(breakpointItem: SourcesComponents.BreakpointsView.BreakpointItem):
-      Bindings.BreakpointManager.BreakpointLocation[] {
+      Breakpoints.BreakpointManager.BreakpointLocation[] {
     const locations = this.#breakpointItemToLocationMap.get(breakpointItem);
     assertNotNullOrUndefined(locations);
     return locations;
@@ -391,7 +392,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     return null;
   }
 
-  #getBreakpointLocations(): Bindings.BreakpointManager.BreakpointLocation[] {
+  #getBreakpointLocations(): Breakpoints.BreakpointManager.BreakpointLocation[] {
     const locations = this.#breakpointManager.allBreakpointLocations().filter(
         breakpointLocation =>
             breakpointLocation.uiLocation.uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Debugger);
@@ -399,7 +400,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     locations.sort((item1, item2) => item1.uiLocation.compareTo(item2.uiLocation));
 
     const result = [];
-    let lastBreakpoint: Bindings.BreakpointManager.Breakpoint|null = null;
+    let lastBreakpoint: Breakpoints.BreakpointManager.Breakpoint|null = null;
     let lastLocation: Workspace.UISourceCode.UILocation|null = null;
     for (const location of locations) {
       if (location.breakpoint !== lastBreakpoint || (lastLocation && location.uiLocation.compareTo(lastLocation))) {
@@ -411,14 +412,14 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     return result;
   }
 
-  #groupBreakpointLocationsById(breakpointLocations: Bindings.BreakpointManager.BreakpointLocation[]):
-      Bindings.BreakpointManager.BreakpointLocation[][] {
-    const map = new Platform.MapUtilities.Multimap<string, Bindings.BreakpointManager.BreakpointLocation>();
+  #groupBreakpointLocationsById(breakpointLocations: Breakpoints.BreakpointManager.BreakpointLocation[]):
+      Breakpoints.BreakpointManager.BreakpointLocation[][] {
+    const map = new Platform.MapUtilities.Multimap<string, Breakpoints.BreakpointManager.BreakpointLocation>();
     for (const breakpointLocation of breakpointLocations) {
       const uiLocation = breakpointLocation.uiLocation;
       map.set(uiLocation.id(), breakpointLocation);
     }
-    const arr: Bindings.BreakpointManager.BreakpointLocation[][] = [];
+    const arr: Breakpoints.BreakpointManager.BreakpointLocation[][] = [];
     for (const id of map.keysArray()) {
       const locations = Array.from(map.get(id));
       if (locations.length) {
@@ -428,7 +429,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     return arr;
   }
 
-  #getLocationIdsByLineId(breakpointLocations: Bindings.BreakpointManager.BreakpointLocation[]):
+  #getLocationIdsByLineId(breakpointLocations: Breakpoints.BreakpointManager.BreakpointLocation[]):
       Platform.MapUtilities.Multimap<string, string> {
     const result = new Platform.MapUtilities.Multimap<string, string>();
 
@@ -440,7 +441,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     return result;
   }
 
-  #getBreakpointState(locations: Bindings.BreakpointManager.BreakpointLocation[]):
+  #getBreakpointState(locations: Breakpoints.BreakpointManager.BreakpointLocation[]):
       SourcesComponents.BreakpointsView.BreakpointStatus {
     const hasEnabled = locations.some(location => location.breakpoint.enabled());
     const hasDisabled = locations.some(location => !location.breakpoint.enabled());
@@ -454,7 +455,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     return status;
   }
 
-  #getContent(locations: Bindings.BreakpointManager.BreakpointLocation[][]):
+  #getContent(locations: Breakpoints.BreakpointManager.BreakpointLocation[][]):
       Promise<Array<TextUtils.Text.Text|Common.WasmDisassembly.WasmDisassembly>> {
     // Use a cache to share the Text objects between all breakpoints. This way
     // we share the cached line ending information that Text calculates. This

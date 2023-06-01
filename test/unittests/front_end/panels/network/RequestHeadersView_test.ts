@@ -11,6 +11,7 @@ import * as Root from '../../../../../front_end/core/root/root.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as Breakpoints from '../../../../../front_end/models/breakpoints/breakpoints.js';
 import {assertElement, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
@@ -86,7 +87,7 @@ describeWithMockConnection('RequestHeadersView', () => {
       resourceMapping,
       targetManager,
     });
-    const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});

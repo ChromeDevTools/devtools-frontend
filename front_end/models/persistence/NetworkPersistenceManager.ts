@@ -8,7 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Bindings from '../bindings/bindings.js';
+import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {FileSystemWorkspaceBinding, type FileSystem} from './FileSystemWorkspaceBinding.js';
@@ -71,7 +71,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     });
 
     PersistenceImpl.instance().addNetworkInterceptor(this.canHandleNetworkUISourceCode.bind(this));
-    Bindings.BreakpointManager.BreakpointManager.instance().addUpdateBindingsCallback(
+    Breakpoints.BreakpointManager.BreakpointManager.instance().addUpdateBindingsCallback(
         this.networkUISourceCodeAdded.bind(this));
 
     this.eventDescriptors = [];

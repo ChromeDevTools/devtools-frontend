@@ -6,6 +6,7 @@ const {assert} = chai;
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as Breakpoints from '../../../../../front_end/models/breakpoints/breakpoints.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
@@ -26,15 +27,16 @@ describeWithMockConnection('PersistenceImpl', () => {
 
   let backend: MockProtocolBackend;
   let target: SDK.Target.Target;
-  let breakpointManager: Bindings.BreakpointManager.BreakpointManager;
+  let breakpointManager: Breakpoints.BreakpointManager.BreakpointManager;
 
   const DEFAULT_BREAKPOINT:
-      [Bindings.BreakpointManager.UserCondition, boolean, boolean, Bindings.BreakpointManager.BreakpointOrigin] = [
-        Bindings.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
-        true,   // enabled
-        false,  // isLogpoint
-        Bindings.BreakpointManager.BreakpointOrigin.OTHER,
-      ];
+      [Breakpoints.BreakpointManager.UserCondition, boolean, boolean, Breakpoints.BreakpointManager.BreakpointOrigin] =
+          [
+            Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
+            true,   // enabled
+            false,  // isLogpoint
+            Breakpoints.BreakpointManager.BreakpointOrigin.OTHER,
+          ];
 
   const SCRIPT_DESCRIPTION = {
     url: 'http://www.google.com/script.js' as Platform.DevToolsPath.UrlString,
@@ -56,7 +58,7 @@ describeWithMockConnection('PersistenceImpl', () => {
       targetManager,
     });
     Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
-    breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+    breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
 
     backend = new MockProtocolBackend();

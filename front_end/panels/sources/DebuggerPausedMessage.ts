@@ -12,6 +12,7 @@ import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
 
 import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
+import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -181,7 +182,7 @@ export class DebuggerPausedMessage {
   async render(
       details: SDK.DebuggerModel.DebuggerPausedDetails|null,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
-      breakpointManager: Bindings.BreakpointManager.BreakpointManager): Promise<void> {
+      breakpointManager: BreakpointManager.BreakpointManager.BreakpointManager): Promise<void> {
     this.contentElement.removeChildren();
     this.contentElement.hidden = !details;
     if (!details) {

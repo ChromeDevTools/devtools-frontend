@@ -34,14 +34,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../bindings/bindings.js';
 
 import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {DebuggerWorkspaceBinding} from './DebuggerWorkspaceBinding.js';
-
-import {LiveLocationPool, type LiveLocation} from './LiveLocation.js';
-import {DefaultScriptMapping} from './DefaultScriptMapping.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
 let breakpointManagerInstance: BreakpointManager;
@@ -51,7 +48,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   readonly storage = new Storage();
   readonly #workspace: Workspace.Workspace.WorkspaceImpl;
   readonly targetManager: SDK.TargetManager.TargetManager;
-  readonly debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
+  readonly debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
   // For each source code, we remember the list or breakpoints that refer to that UI source code as
   // their home UI source code. This is necessary to correctly remove the UI source code from
   // breakpoints upon receiving the UISourceCodeRemoved event.
@@ -66,7 +63,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   private constructor(
       targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl,
-      debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
+      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) {
     super();
     this.#workspace = workspace;
     this.targetManager = targetManager;
@@ -97,7 +94,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     forceNew: boolean|null,
     targetManager: SDK.TargetManager.TargetManager|null,
     workspace: Workspace.Workspace.WorkspaceImpl|null,
-    debuggerWorkspaceBinding: DebuggerWorkspaceBinding|null,
+    debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding|null,
   } = {forceNew: null, targetManager: null, workspace: null, debuggerWorkspaceBinding: null}): BreakpointManager {
     const {forceNew, targetManager, workspace, debuggerWorkspaceBinding} = opts;
     if (!breakpointManagerInstance || forceNew) {
@@ -233,7 +230,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   static getScriptForInlineUiSourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Script.Script|null {
-    const script = DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
+    const script = Bindings.DefaultScriptMapping.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
     if (script && script.isInlineScript() && !script.hasSourceURL) {
       return script;
     }
@@ -921,9 +918,9 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
 export class ModelBreakpoint {
   #debuggerModel: SDK.DebuggerModel.DebuggerModel;
   #breakpoint: Breakpoint;
-  readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;
-  readonly #liveLocations = new LiveLocationPool();
-  readonly #uiLocations = new Map<LiveLocation, Workspace.UISourceCode.UILocation>();
+  readonly #debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+  readonly #liveLocations = new Bindings.LiveLocation.LiveLocationPool();
+  readonly #uiLocations = new Map<Bindings.LiveLocation.LiveLocation, Workspace.UISourceCode.UILocation>();
   #updateMutex = new Common.Mutex.Mutex();
   #cancelCallback = false;
   #currentState: Breakpoint.State|null = null;
@@ -936,7 +933,7 @@ export class ModelBreakpoint {
 
   constructor(
       debuggerModel: SDK.DebuggerModel.DebuggerModel, breakpoint: Breakpoint,
-      debuggerWorkspaceBinding: DebuggerWorkspaceBinding) {
+      debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) {
     this.#debuggerModel = debuggerModel;
     this.#breakpoint = breakpoint;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
@@ -996,8 +993,9 @@ export class ModelBreakpoint {
       for (const uiSourceCode of this.#breakpoint.getUiSourceCodes()) {
         const {lineNumber: uiLineNumber, columnNumber: uiColumnNumber} =
             BreakpointManager.uiLocationFromBreakpointLocation(uiSourceCode, lineNumber, columnNumber);
-        const locations = await DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
-            uiSourceCode, uiLineNumber, uiColumnNumber);
+        const locations =
+            await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
+                uiSourceCode, uiLineNumber, uiColumnNumber);
         debuggerLocations = locations.filter(location => location.debuggerModel === this.#debuggerModel);
         if (debuggerLocations.length) {
           break;
@@ -1157,7 +1155,7 @@ export class ModelBreakpoint {
     }
   }
 
-  private async locationUpdated(liveLocation: LiveLocation): Promise<void> {
+  private async locationUpdated(liveLocation: Bindings.LiveLocation.LiveLocation): Promise<void> {
     const oldUILocation = this.#uiLocations.get(liveLocation);
     const uiLocation = await liveLocation.uiLocation();
 

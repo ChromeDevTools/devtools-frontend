@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as Bindings from '../bindings/bindings.js';
+import * as BreakpointManager from '../breakpoints/breakpoints.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {Automapping, type AutomappingStatus} from './Automapping.js';
@@ -17,14 +18,15 @@ let persistenceInstance: PersistenceImpl;
 
 export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly workspace: Workspace.Workspace.WorkspaceImpl;
-  private readonly breakpointManager: Bindings.BreakpointManager.BreakpointManager;
+  private readonly breakpointManager: BreakpointManager.BreakpointManager.BreakpointManager;
   private readonly filePathPrefixesToBindingCount: FilePathPrefixesBindingCounts;
   private subscribedBindingEventListeners:
       Platform.MapUtilities.Multimap<Workspace.UISourceCode.UISourceCode, () => void>;
   private readonly mapping: Automapping;
 
   constructor(
-      workspace: Workspace.Workspace.WorkspaceImpl, breakpointManager: Bindings.BreakpointManager.BreakpointManager) {
+      workspace: Workspace.Workspace.WorkspaceImpl,
+      breakpointManager: BreakpointManager.BreakpointManager.BreakpointManager) {
     super();
     this.workspace = workspace;
     this.breakpointManager = breakpointManager;
@@ -42,7 +44,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   static instance(opts: {
     forceNew: boolean|null,
     workspace: Workspace.Workspace.WorkspaceImpl|null,
-    breakpointManager: Bindings.BreakpointManager.BreakpointManager|null,
+    breakpointManager: BreakpointManager.BreakpointManager.BreakpointManager|null,
   } = {forceNew: null, workspace: null, breakpointManager: null}): PersistenceImpl {
     const {forceNew, workspace, breakpointManager} = opts;
     if (!persistenceInstance || forceNew) {
@@ -267,7 +269,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       await breakpoint.remove(false /* keepInStorage */);
       return this.breakpointManager.setBreakpoint(
           to, breakpoint.lineNumber(), breakpoint.columnNumber(), breakpoint.condition(), breakpoint.enabled(),
-          breakpoint.isLogpoint(), Bindings.BreakpointManager.BreakpointOrigin.OTHER);
+          breakpoint.isLogpoint(), BreakpointManager.BreakpointManager.BreakpointOrigin.OTHER);
     }));
   }
 

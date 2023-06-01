@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as BreakpointManager from './BreakpointManager.js';
 import * as CompilerScriptMapping from './CompilerScriptMapping.js';
 import * as ContentProviderBasedProject from './ContentProviderBasedProject.js';
 import * as CSSWorkspaceBinding from './CSSWorkspaceBinding.js';
@@ -22,7 +21,6 @@ import * as StylesSourceMapping from './StylesSourceMapping.js';
 import * as TempFile from './TempFile.js';
 
 export {
-  BreakpointManager,
   CompilerScriptMapping,
   ContentProviderBasedProject,
   CSSWorkspaceBinding,

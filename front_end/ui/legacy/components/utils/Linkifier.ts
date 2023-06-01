@@ -34,6 +34,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
+import * as Breakpoints from '../../../../models/breakpoints/breakpoints.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -172,7 +173,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
       return;
     }
 
-    const breakpoint = Bindings.BreakpointManager.BreakpointManager.instance().findBreakpoint(uiLocation);
+    const breakpoint = Breakpoints.BreakpointManager.BreakpointManager.instance().findBreakpoint(uiLocation);
     if (breakpoint) {
       info.revealable = breakpoint;
     }
@@ -756,7 +757,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
         section: 'reveal',
         title: destination ? i18nString(UIStrings.revealInS, {PH1: destination}) : i18nString(UIStrings.reveal),
         handler: (): Promise<void> => {
-          if (revealable instanceof Bindings.BreakpointManager.BreakpointLocation) {
+          if (revealable instanceof Breakpoints.BreakpointManager.BreakpointLocation) {
             Host.userMetrics.breakpointEditDialogRevealedFrom(
                 Host.UserMetrics.BreakpointEditDialogRevealedFrom.Linkifier);
           }
@@ -1036,7 +1037,7 @@ interface LinkDisplayOptions {
   /**
    * If true, we'll check if there is a breakpoint at the UILocation we get
    * from the LiveLocation. If we find a breakpoint, we'll reveal the corresponding
-   * {@link Bindings.BreakpointManager.BreakpointLocation}. Which opens the
+   * {@link Breakpoints.BreakpointManager.BreakpointLocation}. Which opens the
    * breakpoint edit dialog.
    */
   revealBreakpoint?: boolean;

@@ -1,0 +1,52 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
+
+devtools_module("breakpoints") {
+  sources = [ "BreakpointManager.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../bindings:bundle",
+    "../text_utils:bundle",
+    "../workspace:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "breakpoints.ts"
+
+  deps = [ ":breakpoints" ]
+
+  visibility = [
+    ":*",
+    "../../../test/unittests/front_end/models/breakpoints/*",
+    "../../panels/sources/*",
+    "../../ui/components/linkifier/*",
+    "../../ui/legacy/components/utils/*",
+    "../persistence/*",
+  ]
+
+  visibility += devtools_models_visibility
+}
+
+devtools_entrypoint("legacy") {
+  entrypoint = "breakpoints-legacy.ts"
+
+  deps = [ ":bundle" ]
+
+  visibility = [
+    "../..:legacy_entrypoints",
+    "../../entrypoints/shell/*",
+    "../../legacy_test_runner/*",
+  ]
+}

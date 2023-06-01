@@ -8,6 +8,7 @@
 const {assert} = chai;
 
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as Breakpoints from '../../../../../front_end/models/breakpoints/breakpoints.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
@@ -34,7 +35,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       targetManager,
     });
     Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
-    const breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance(
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});

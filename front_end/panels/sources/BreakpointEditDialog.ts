@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Bindings from '../../models/bindings/bindings.js';
+import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -65,7 +65,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface BreakpointEditDialogResult {
   committed: boolean;
-  condition: Bindings.BreakpointManager.UserCondition;
+  condition: BreakpointManager.BreakpointManager.UserCondition;
   isLogpoint: boolean;
 }
 
@@ -245,7 +245,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.editor.remove();
     this.#history.pushHistoryItem(condition);
     const isLogpoint = this.breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT;
-    this.onFinish({committed, condition: condition as Bindings.BreakpointManager.UserCondition, isLogpoint});
+    this.onFinish({committed, condition: condition as BreakpointManager.BreakpointManager.UserCondition, isLogpoint});
   }
 
   override wasShown(): void {

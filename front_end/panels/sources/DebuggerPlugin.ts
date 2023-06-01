@@ -35,6 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -50,7 +51,7 @@ import {Plugin} from './Plugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
 import {BreakpointsSidebarController} from './BreakpointsSidebarPane.js';
 
-const {EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION} = Bindings.BreakpointManager;
+const {EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION} = Breakpoints.BreakpointManager;
 
 const UIStrings = {
   /**
@@ -157,12 +158,12 @@ const MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS = 500;
 
 type BreakpointDescription = {
   position: number,
-  breakpoint: Bindings.BreakpointManager.Breakpoint,
+  breakpoint: Breakpoints.BreakpointManager.Breakpoint,
 };
 
 type BreakpointEditRequest = {
   line: CodeMirror.Line,
-  breakpoint: Bindings.BreakpointManager.Breakpoint|null,
+  breakpoint: Breakpoints.BreakpointManager.Breakpoint|null,
   location: {lineNumber: number, columnNumber: number}|null,
   isLogpoint?: boolean,
 };
@@ -179,7 +180,7 @@ export class DebuggerPlugin extends Plugin {
   private controlTimeout: number|undefined = undefined;
   private sourceMapInfobar: UI.Infobar.Infobar|null = null;
   private readonly scriptsPanel: SourcesPanel;
-  private readonly breakpointManager: Bindings.BreakpointManager.BreakpointManager;
+  private readonly breakpointManager: Breakpoints.BreakpointManager.BreakpointManager;
   // Manages pop-overs shown when the debugger is active and the user
   // hovers over an expression
   private popoverHelper: UI.PopoverHelper.PopoverHelper|null = null;
@@ -221,12 +222,12 @@ export class DebuggerPlugin extends Plugin {
     debuggerPluginForUISourceCode.set(uiSourceCode, this);
 
     this.scriptsPanel = SourcesPanel.instance();
-    this.breakpointManager = Bindings.BreakpointManager.BreakpointManager.instance();
+    this.breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
 
     this.breakpointManager.addEventListener(
-        Bindings.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);
+        Breakpoints.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);
     this.breakpointManager.addEventListener(
-        Bindings.BreakpointManager.Events.BreakpointRemoved, this.breakpointChange, this);
+        Breakpoints.BreakpointManager.Events.BreakpointRemoved, this.breakpointChange, this);
 
     this.uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
     this.uiSourceCode.addEventListener(
@@ -443,7 +444,7 @@ export class DebuggerPlugin extends Plugin {
     this.popoverHelper?.hidePopover();
   }
 
-  editBreakpointLocation({breakpoint, uiLocation}: Bindings.BreakpointManager.BreakpointLocation): void {
+  editBreakpointLocation({breakpoint, uiLocation}: Breakpoints.BreakpointManager.BreakpointLocation): void {
     const {lineNumber} = this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
     const line = this.editor?.state.doc.line(lineNumber + 1);
     if (!line) {
@@ -1158,7 +1159,7 @@ export class DebuggerPlugin extends Plugin {
 
   private fetchBreakpoints(): {
     position: number,
-    breakpoint: Bindings.BreakpointManager.Breakpoint,
+    breakpoint: Breakpoints.BreakpointManager.Breakpoint,
   }[] {
     if (!this.editor) {
       return [];
@@ -1175,7 +1176,7 @@ export class DebuggerPlugin extends Plugin {
     });
   }
 
-  private lineBreakpoints(line: CodeMirror.Line): readonly Bindings.BreakpointManager.Breakpoint[] {
+  private lineBreakpoints(line: CodeMirror.Line): readonly Breakpoints.BreakpointManager.Breakpoint[] {
     return this.breakpoints.filter(b => b.position >= line.from && b.position <= line.to).map(b => b.breakpoint);
   }
 
@@ -1185,14 +1186,14 @@ export class DebuggerPlugin extends Plugin {
       Promise<BreakpointDecoration> {
     const decorations: CodeMirror.Range<CodeMirror.Decoration>[] = [];
     const gutterMarkers: CodeMirror.Range<CodeMirror.GutterMarker>[] = [];
-    const breakpointsByLine = new Map<number, Bindings.BreakpointManager.Breakpoint[]>();
+    const breakpointsByLine = new Map<number, Breakpoints.BreakpointManager.Breakpoint[]>();
     const inlineMarkersByLine =
-        new Map<number, {breakpoint: Bindings.BreakpointManager.Breakpoint | null, column: number}[]>();
+        new Map<number, {breakpoint: Breakpoints.BreakpointManager.Breakpoint | null, column: number}[]>();
     const possibleBreakpointRequests: Promise<void>[] = [];
     const inlineMarkerPositions = new Set<number>();
 
     const addInlineMarker =
-        (linePos: number, columnNumber: number, breakpoint: Bindings.BreakpointManager.Breakpoint|null): void => {
+        (linePos: number, columnNumber: number, breakpoint: Breakpoints.BreakpointManager.Breakpoint|null): void => {
           let inlineMarkers = inlineMarkersByLine.get(linePos);
           if (!inlineMarkers) {
             inlineMarkers = [];
@@ -1301,8 +1302,8 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  private breakpointChange(event: Common.EventTarget.EventTargetEvent<Bindings.BreakpointManager.BreakpointLocation>):
-      void {
+  private breakpointChange(
+      event: Common.EventTarget.EventTargetEvent<Breakpoints.BreakpointManager.BreakpointLocation>): void {
     const {uiLocation} = event.data;
     if (uiLocation.uiSourceCode !== this.uiSourceCode || this.muted) {
       return;
@@ -1317,7 +1318,7 @@ export class DebuggerPlugin extends Plugin {
     this.refreshBreakpointsTimeout = window.setTimeout(() => this.refreshBreakpoints(), 50);
   }
 
-  onInlineBreakpointMarkerClick(event: MouseEvent, breakpoint: Bindings.BreakpointManager.Breakpoint|null): void {
+  onInlineBreakpointMarkerClick(event: MouseEvent, breakpoint: Breakpoints.BreakpointManager.Breakpoint|null): void {
     event.consume(true);
     if (breakpoint) {
       if (event.shiftKey) {
@@ -1335,7 +1336,8 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  onInlineBreakpointMarkerContextMenu(event: MouseEvent, breakpoint: Bindings.BreakpointManager.Breakpoint|null): void {
+  onInlineBreakpointMarkerContextMenu(event: MouseEvent, breakpoint: Breakpoints.BreakpointManager.Breakpoint|null):
+      void {
     event.consume(true);
     // If there's events coming from the editor, there must be an editor.
     const editor = this.editor as TextEditor.TextEditor.TextEditor;
@@ -1516,7 +1518,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   private async createNewBreakpoint(
-      line: CodeMirror.Line, condition: Bindings.BreakpointManager.UserCondition, enabled: boolean,
+      line: CodeMirror.Line, condition: Breakpoints.BreakpointManager.UserCondition, enabled: boolean,
       isLogpoint: boolean): Promise<void> {
     if (!this.editor || !SourceFrame.SourceFrame.isBreakableLine(this.editor.state, line)) {
       return;
@@ -1528,12 +1530,12 @@ export class DebuggerPlugin extends Plugin {
   }
 
   private async setBreakpoint(
-      lineNumber: number, columnNumber: number|undefined, condition: Bindings.BreakpointManager.UserCondition,
-      enabled: boolean, isLogpoint: boolean): Promise<Bindings.BreakpointManager.Breakpoint|undefined> {
+      lineNumber: number, columnNumber: number|undefined, condition: Breakpoints.BreakpointManager.UserCondition,
+      enabled: boolean, isLogpoint: boolean): Promise<Breakpoints.BreakpointManager.Breakpoint|undefined> {
     Common.Settings.Settings.instance().moduleSetting('breakpointsActive').set(true);
     const bp = await this.breakpointManager.setBreakpoint(
         this.uiSourceCode, lineNumber, columnNumber, condition, enabled, isLogpoint,
-        Bindings.BreakpointManager.BreakpointOrigin.USER_ACTION);
+        Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION);
     this.breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
     return bp;
   }
@@ -1609,9 +1611,9 @@ export class DebuggerPlugin extends Plugin {
     this.setExecutionLocation(null);
 
     this.breakpointManager.removeEventListener(
-        Bindings.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);
+        Breakpoints.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);
     this.breakpointManager.removeEventListener(
-        Bindings.BreakpointManager.Events.BreakpointRemoved, this.breakpointChange, this);
+        Breakpoints.BreakpointManager.Events.BreakpointRemoved, this.breakpointChange, this);
     this.uiSourceCode.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
     this.uiSourceCode.removeEventListener(
@@ -1661,7 +1663,7 @@ export class BreakpointLocationRevealer implements Common.Revealer.Revealer {
   }
 
   async reveal(breakpointLocation: Object, omitFocus?: boolean|undefined): Promise<void> {
-    if (!(breakpointLocation instanceof Bindings.BreakpointManager.BreakpointLocation)) {
+    if (!(breakpointLocation instanceof Breakpoints.BreakpointManager.BreakpointLocation)) {
       throw new Error('Internal error: not a breakpoint location');
     }
     const {uiLocation} = breakpointLocation;
@@ -1775,7 +1777,7 @@ const breakpointMarkers = CodeMirror.StateField.define<BreakpointDecoration>({
 class BreakpointInlineMarker extends CodeMirror.WidgetType {
   class: string;
 
-  constructor(readonly breakpoint: Bindings.BreakpointManager.Breakpoint|null, readonly parent: DebuggerPlugin) {
+  constructor(readonly breakpoint: Breakpoints.BreakpointManager.Breakpoint|null, readonly parent: DebuggerPlugin) {
     super();
     // Eagerly compute DOM class so that the widget is recreated when it changes.
     this.class = 'cm-inlineBreakpoint';
@@ -1823,7 +1825,7 @@ class BreakpointGutterMarker extends CodeMirror.GutterMarker {
 }
 
 function mostSpecificBreakpoint(
-    a: Bindings.BreakpointManager.Breakpoint, b: Bindings.BreakpointManager.Breakpoint): number {
+    a: Breakpoints.BreakpointManager.Breakpoint, b: Breakpoints.BreakpointManager.Breakpoint): number {
   if (a.enabled() !== b.enabled()) {
     return a.enabled() ? -1 : 1;
   }

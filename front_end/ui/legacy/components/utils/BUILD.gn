@@ -31,6 +31,7 @@ devtools_module("utils") {
     "../../../../core/sdk:bundle",
     "../../../../generated:protocol",
     "../../../../models/bindings:bundle",
+    "../../../../models/breakpoints:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../models/workspace:bundle",
     "../../../../ui/legacy:bundle",

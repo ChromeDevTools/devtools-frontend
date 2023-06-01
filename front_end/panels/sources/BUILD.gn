@@ -65,6 +65,7 @@ devtools_module("sources") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
+    "../../models/breakpoints:bundle",
     "../../models/extensions:bundle",
     "../../models/formatter:bundle",
     "../../models/issues_manager:bundle",

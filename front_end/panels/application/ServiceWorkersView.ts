@@ -227,7 +227,8 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
                 i18nString(UIStrings.seeAllRegistrations)}</a>`;
     self.onInvokeElement(seeOthers, event => {
       const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
-      rootTarget && rootTarget.targetAgent().invoke_createTarget({url: 'chrome://serviceworker-internals?devtools'});
+      rootTarget &&
+          void rootTarget.targetAgent().invoke_createTarget({url: 'chrome://serviceworker-internals?devtools'});
       event.consume(true);
     });
     othersSectionRow.appendChild(seeOthers);

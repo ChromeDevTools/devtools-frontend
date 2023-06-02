@@ -448,7 +448,7 @@ export class CoverageView extends UI.Widget.VBox {
   }
 
   processBacklog(): void {
-    this.model && this.model.processJSBacklog();
+    this.model && void this.model.processJSBacklog();
   }
 
   private async onPrimaryPageChanged(
@@ -585,7 +585,7 @@ export class CoverageView extends UI.Widget.VBox {
     if (!accepted) {
       return;
     }
-    this.model && this.model.exportReport(fos);
+    this.model && await this.model.exportReport(fos);
   }
 
   selectCoverageItemByUrl(url: string): void {

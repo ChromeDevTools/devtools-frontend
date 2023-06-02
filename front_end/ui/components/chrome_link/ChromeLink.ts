@@ -41,7 +41,7 @@ export class ChromeLink extends HTMLElement {
   openSettingsTab(event: KeyboardEvent): void {
     if (event.type === 'click' || (event.type === 'keydown' && Platform.KeyboardUtilities.isEnterOrSpaceKey(event))) {
       const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
-      rootTarget && rootTarget.targetAgent().invoke_createTarget({url: this.#href});
+      rootTarget && void rootTarget.targetAgent().invoke_createTarget({url: this.#href});
       event.consume(true);
     }
   }

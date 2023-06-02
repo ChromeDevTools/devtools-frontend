@@ -5,7 +5,7 @@ const visitor_keys_1 = require("@typescript-eslint/visitor-keys");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isValidNode(x) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return x !== null && typeof x === 'object' && typeof x.type === 'string';
+    return x != null && typeof x === 'object' && typeof x.type === 'string';
 }
 function getVisitorKeysForNode(allVisitorKeys, node) {
     const keys = allVisitorKeys[node.type];

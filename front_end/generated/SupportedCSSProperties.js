@@ -3687,6 +3687,13 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
+   "normal"
+  ],
+  "name": "word-boundary-detection"
+ },
+ {
+  "inherited": true,
+  "keywords": [
    "normal",
    "break-all",
    "keep-all",
@@ -5679,6 +5686,11 @@ export const generatedPropertyValues = {
  "will-change": {
   "values": [
    "auto"
+  ]
+ },
+ "word-boundary-detection": {
+  "values": [
+   "normal"
   ]
  },
  "word-break": {

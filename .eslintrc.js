@@ -139,7 +139,7 @@ module.exports = {
     'files': ['*.ts'],
     'parserOptions': {
       'allowAutomaticSingleRunInference': true,
-      'project': './config/typescript/tsconfig.eslint.json',
+      'project': path.join(__dirname, 'config', 'typescript', 'tsconfig.eslint.json'),
     },
     'rules': {
       '@typescript-eslint/explicit-member-accessibility': [2, {'accessibility': 'no-public'}],

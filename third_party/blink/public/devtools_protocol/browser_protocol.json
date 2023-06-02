@@ -8738,7 +8738,7 @@
                         },
                         {
                             "name": "quality",
-                            "description": "Compression quality from range [0..100] (jpeg only).",
+                            "description": "Compression quality from range [0..100] (jpeg and webp only).",
                             "optional": true,
                             "type": "integer"
                         },
@@ -12609,6 +12609,34 @@
                     ]
                 },
                 {
+                    "id": "ContentSecurityPolicySource",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "HTTP",
+                        "Meta"
+                    ]
+                },
+                {
+                    "id": "ContentSecurityPolicyStatus",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "effectiveDirectives",
+                            "type": "string"
+                        },
+                        {
+                            "name": "isEnforced",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "source",
+                            "$ref": "ContentSecurityPolicySource"
+                        }
+                    ]
+                },
+                {
                     "id": "SecurityIsolationStatus",
                     "experimental": true,
                     "type": "object",
@@ -12622,6 +12650,14 @@
                             "name": "coep",
                             "optional": true,
                             "$ref": "CrossOriginEmbedderPolicyStatus"
+                        },
+                        {
+                            "name": "csp",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ContentSecurityPolicyStatus"
+                            }
                         }
                     ]
                 },

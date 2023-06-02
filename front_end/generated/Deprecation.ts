@@ -55,10 +55,6 @@ export const UIStrings = {
    */
   DOMMutationEvents: "DOM Mutation Events, including `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, and `DOMCharacterDataModified` are deprecated (https://w3c.github.io/uievents/#legacy-event-types) and will be removed. Please use `MutationObserver` instead.",
   /**
-   * @description Warning displayed to developers when the non-standard `Event.path` API is used to notify them that this API is deprecated.
-   */
-  EventPath: "`Event.path` is deprecated and will be removed. Please use `Event.composedPath()` instead.",
-  /**
    * @description This message is shown when the deprecated Expect-CT header is present.
    */
   ExpectCTHeader: "The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018.",
@@ -280,10 +276,6 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "milestone": 115
-  },
-  "EventPath": {
-    "chromeStatusFeature": 5726124632965120,
-    "milestone": 109
   },
   "ExpectCTHeader": {
     "chromeStatusFeature": 6244547273687040,

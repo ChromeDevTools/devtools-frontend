@@ -449,6 +449,7 @@ inspectorBackend.registerEnum("Network.PrivateNetworkRequestPolicy", {Allow: "Al
 inspectorBackend.registerEnum("Network.IPAddressSpace", {Local: "Local", Private: "Private", Public: "Public", Unknown: "Unknown"});
 inspectorBackend.registerEnum("Network.CrossOriginOpenerPolicyValue", {SameOrigin: "SameOrigin", SameOriginAllowPopups: "SameOriginAllowPopups", RestrictProperties: "RestrictProperties", UnsafeNone: "UnsafeNone", SameOriginPlusCoep: "SameOriginPlusCoep", RestrictPropertiesPlusCoep: "RestrictPropertiesPlusCoep"});
 inspectorBackend.registerEnum("Network.CrossOriginEmbedderPolicyValue", {None: "None", Credentialless: "Credentialless", RequireCorp: "RequireCorp"});
+inspectorBackend.registerEnum("Network.ContentSecurityPolicySource", {HTTP: "HTTP", Meta: "Meta"});
 inspectorBackend.registerEnum("Network.ReportStatus", {Queued: "Queued", Pending: "Pending", MarkedForRemoval: "MarkedForRemoval", Success: "Success"});
 inspectorBackend.registerEvent("Network.dataReceived", ["requestId", "timestamp", "dataLength", "encodedDataLength"]);
 inspectorBackend.registerEvent("Network.eventSourceMessageReceived", ["requestId", "timestamp", "eventName", "eventId", "data"]);

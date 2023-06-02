@@ -5723,7 +5723,7 @@ export namespace HeadlessExperimental {
      */
     format?: ScreenshotParamsFormat;
     /**
-     * Compression quality from range [0..100] (jpeg only).
+     * Compression quality from range [0..100] (jpeg and webp only).
      */
     quality?: integer;
     /**
@@ -8492,9 +8492,21 @@ export namespace Network {
     reportOnlyReportingEndpoint?: string;
   }
 
+  export const enum ContentSecurityPolicySource {
+    HTTP = 'HTTP',
+    Meta = 'Meta',
+  }
+
+  export interface ContentSecurityPolicyStatus {
+    effectiveDirectives: string;
+    isEnforced: boolean;
+    source: ContentSecurityPolicySource;
+  }
+
   export interface SecurityIsolationStatus {
     coop?: CrossOriginOpenerPolicyStatus;
     coep?: CrossOriginEmbedderPolicyStatus;
+    csp?: ContentSecurityPolicyStatus[];
   }
 
   /**

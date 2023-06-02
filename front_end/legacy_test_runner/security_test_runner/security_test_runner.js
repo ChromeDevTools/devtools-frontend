@@ -8,7 +8,7 @@ import '../../panels/security/security-legacy.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.SecurityTestRunner = self.SecurityTestRunner || {};
+export const SecurityTestRunner = {};
 
 SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
   for (const key in Security.SecurityPanelSidebarTree.OriginGroup) {
@@ -33,6 +33,3 @@ SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
 SecurityTestRunner.dispatchRequestFinished = function(request) {
   TestRunner.networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
 };
-
-const globalTestRunner = self.SecurityTestRunner;
-export {globalTestRunner as SecurityTestRunner};

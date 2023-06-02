@@ -12,7 +12,7 @@ import * as Layers from '../../panels/layers/layers.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.LayersTestRunner = self.LayersTestRunner || {};
+export const LayersTestRunner = {};
 
 LayersTestRunner.layerTreeModel = function() {
   if (!LayersTestRunner.layerTreeModelInternal) {
@@ -161,6 +161,3 @@ LayersTestRunner.dumpSelectedStyles = function(message, element) {
 
   TestRunner.addResult(message + ': ' + classes.join(', '));
 };
-
-const globalTestRunner = self.LayersTestRunner;
-export {globalTestRunner as LayersTestRunner};

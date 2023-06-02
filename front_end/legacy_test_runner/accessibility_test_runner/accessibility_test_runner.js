@@ -11,7 +11,7 @@ import '../../core/i18n/i18n.js';
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
 
-self.AccessibilityTestRunner = self.AccessibilityTestRunner || {};
+export const AccessibilityTestRunner = {};
 
 AccessibilityTestRunner.accessibilitySidebarPane = function() {
   return Accessibility.AccessibilitySidebarView.instance();
@@ -80,6 +80,3 @@ AccessibilityTestRunner.findARIAAttributeTreeElement = function(attribute) {
 
   return null;
 };
-
-const globalTestRunner = self.AccessibilityTestRunner;
-export {globalTestRunner as AccessibilityTestRunner};

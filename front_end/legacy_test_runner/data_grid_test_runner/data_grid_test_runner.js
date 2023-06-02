@@ -8,7 +8,7 @@ import '../../ui/legacy/components/data_grid/data_grid-legacy.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.DataGridTestRunner = self.DataGridTestRunner || {};
+export const DataGridTestRunner = {};
 
 DataGridTestRunner.dumpDataGrid = function(root, descentIntoCollapsed, prefix) {
   if (!prefix) {
@@ -79,6 +79,3 @@ DataGridTestRunner.dumpAndValidateDataGrid = function(root) {
   DataGridTestRunner.dumpDataGrid(root);
   DataGridTestRunner.validateDataGrid(root);
 };
-
-const globalTestRunner = self.DataGridTestRunner;
-export {globalTestRunner as DataGridTestRunner};

@@ -9,7 +9,7 @@ import '../sources_test_runner/sources_test_runner.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.CoverageTestRunner = self.CoverageTestRunner || {};
+export const CoverageTestRunner = {};
 
 /**
  * @param jsCoveragePerBlock - Collect per Block coverage if `true`, per function coverage otherwise.
@@ -153,6 +153,3 @@ CoverageTestRunner.dumpCoverageListView = function() {
     TestRunner.addResult(`${url} ${type} used: ${data.usedSize()} unused: ${data.unusedSize()} total: ${data.size()}`);
   }
 };
-
-const globalTestRunner = self.CoverageTestRunner;
-export {globalTestRunner as CoverageTestRunner};

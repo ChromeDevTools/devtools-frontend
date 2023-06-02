@@ -9,7 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.SDKTestRunner = self.SDKTestRunner || {};
+export const SDKTestRunner = {};
 
 let id = 0;
 
@@ -295,6 +295,3 @@ class MockPageConnection {
     return Promise.resolve();
   }
 }
-
-const globalTestRunner = self.SDKTestRunner;
-export {globalTestRunner as SDKTestRunner};

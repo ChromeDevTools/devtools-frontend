@@ -8,7 +8,7 @@ import '../../panels/emulation/emulation-legacy.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.DeviceModeTestRunner = self.DeviceModeTestRunner || {};
+export const DeviceModeTestRunner = {};
 
 DeviceModeTestRunner.buildFakePhone = function(overrides) {
   const StandardPhoneJSON = {
@@ -46,6 +46,3 @@ DeviceModeTestRunner.buildFakePhone = function(overrides) {
   const json = Object.assign(StandardPhoneJSON, overrides || {});
   return Emulation.EmulatedDevice.fromJSONV1(json);
 };
-
-const globalTestRunner = self.DeviceModeTestRunner;
-export {globalTestRunner as DeviceModeTestRunner};

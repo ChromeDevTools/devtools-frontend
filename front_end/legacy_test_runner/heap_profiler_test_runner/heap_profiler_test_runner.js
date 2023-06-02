@@ -10,7 +10,7 @@ import '../../ui/legacy/components/data_grid/data_grid-legacy.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.HeapProfilerTestRunner = self.HeapProfilerTestRunner || {};
+export const HeapProfilerTestRunner = {};
 
 HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
   HeapProfilerTestRunner.createJSHeapSnapshotMockObject = function() {
@@ -742,6 +742,3 @@ HeapProfilerTestRunner.startSamplingHeapProfiler = async function() {
 HeapProfilerTestRunner.stopSamplingHeapProfiler = function() {
   Profiler.SamplingHeapProfileType.instance.stopRecordingProfile();
 };
-
-const globalTestRunner = self.HeapProfilerTestRunner;
-export {globalTestRunner as HeapProfilerTestRunner};

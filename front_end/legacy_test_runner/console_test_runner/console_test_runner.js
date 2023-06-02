@@ -12,7 +12,7 @@ import * as ConsoleCounters from '../../panels/console_counters/console_counters
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
 
-self.ConsoleTestRunner = self.ConsoleTestRunner || {};
+export const ConsoleTestRunner = {};
 
 /** @typedef {function(!Element, !SDK.ConsoleMessage=):string} */
 ConsoleTestRunner.Formatter;
@@ -723,6 +723,3 @@ ConsoleTestRunner.visibleIndices = function() {
   }
   return {first, last, count};
 };
-
-const globalTestRunner = self.ConsoleTestRunner;
-export {globalTestRunner as ConsoleTestRunner};

@@ -303,14 +303,6 @@ export async function loadLegacyModule(module) {
 }
 
 /**
- * @param {string} module
- * @return {!Promise<void>}
- */
-export async function loadTestModule(module) {
-  await import(`../${module}/${module}.js`);
-}
-
-/**
  * @param {string} panel
  * @return {!Promise.<?UI.Panel.Panel>}
  */
@@ -1521,7 +1513,6 @@ TestRunner.waitForUISourceCodeRemoved = waitForUISourceCodeRemoved;
 TestRunner.url = url;
 TestRunner.dumpSyntaxHighlight = dumpSyntaxHighlight;
 TestRunner.loadLegacyModule = loadLegacyModule;
-TestRunner.loadTestModule = loadTestModule;
 TestRunner.evaluateInPageRemoteObject = evaluateInPageRemoteObject;
 TestRunner.evaluateInPage = evaluateInPage;
 TestRunner.evaluateInPageAnonymously = evaluateInPageAnonymously;

@@ -115,7 +115,7 @@ export class InspectorBackend {
     return this.getOrCreateEventParameterNamesForDomain(domain);
   }
 
-  getEventParamterNames(): ReadonlyMap<ProtocolDomainName, ReadonlyEventParameterNames> {
+  getEventParameterNames(): ReadonlyMap<ProtocolDomainName, ReadonlyEventParameterNames> {
     return this.#eventParameterNamesForDomain;
   }
 
@@ -539,7 +539,7 @@ export class TargetBase {
       this.#agents.set(domain, agent);
     }
 
-    for (const [domain, eventParameterNames] of inspectorBackend.getEventParamterNames().entries()) {
+    for (const [domain, eventParameterNames] of inspectorBackend.getEventParameterNames().entries()) {
       this.#dispatchers.set(domain, new DispatcherManager(eventParameterNames));
     }
   }
@@ -918,11 +918,16 @@ class _AgentPrototype {
   replyArgs: {
     [x: string]: string[],
   };
+  commandParameters: {
+    [x: string]: CommandParameter[],
+  };
+
   readonly domain: string;
   target!: TargetBase;
   constructor(domain: string) {
     this.replyArgs = {};
     this.domain = domain;
+    this.commandParameters = {};
   }
 
   registerCommand(methodName: UnqualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
@@ -934,7 +939,7 @@ class _AgentPrototype {
 
     // @ts-ignore Method code generation
     this[methodName] = sendMessagePromise;
-
+    this.commandParameters[domainAndMethod] = parameters;
     function invoke(
         this: _AgentPrototype, request: Object|undefined = {}): Promise<Protocol.ProtocolResponseWithError> {
       return this.invoke(domainAndMethod, request);

@@ -12,7 +12,10 @@ generate_css("css_files") {
 }
 
 devtools_module("protocol_monitor") {
-  sources = [ "ProtocolMonitor.ts" ]
+  sources = [
+    "JSONPromptEditor.ts",
+    "ProtocolMonitor.ts",
+  ]
 
   deps = [
     "../../core/host:bundle",

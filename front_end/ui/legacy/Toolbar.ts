@@ -733,6 +733,9 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     return this.prompt.textWithCurrentSuggestion();
   }
 
+  valueWithoutSuggestion(): string {
+    return this.prompt.text();
+  }
   private onKeydownCallback(event: KeyboardEvent): void {
     if (event.key === 'Enter' && this.prompt.text()) {
       this.dispatchEventToListeners(ToolbarInput.Event.EnterPressed, this.prompt.text());

@@ -1,6 +1,6 @@
 # tslib
 
-This is a runtime library for [TypeScript](http://www.typescriptlang.org/) that contains all of the TypeScript helper functions.
+This is a runtime library for [TypeScript](https://www.typescriptlang.org/) that contains all of the TypeScript helper functions.
 
 This library is primarily used by the `--importHelpers` flag in TypeScript.
 When using `--importHelpers`, a module that uses helper functions like `__extends` and `__assign` in the following emitted file:

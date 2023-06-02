@@ -66,12 +66,26 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
     const {contentProvider} = this.#uiSourceCodeToData.get(uiSourceCode) as UISourceCodeData;
     try {
       const content = await contentProvider.requestContent();
+      if ('error' in content) {
+        return {
+          error: content.error,
+          isEncoded: content.isEncoded,
+          content: null,
+        };
+      }
       const wasmDisassemblyInfo = 'wasmDisassemblyInfo' in content ? content.wasmDisassemblyInfo : undefined;
+
+      if (wasmDisassemblyInfo && content.isEncoded === false) {
+        return {
+          content: '',
+          wasmDisassemblyInfo,
+          isEncoded: false,
+        };
+      }
+
       return {
         content: content.content,
-        wasmDisassemblyInfo,
         isEncoded: content.isEncoded,
-        error: 'error' in content && content.error || '',
       };
     } catch (err) {
       // TODO(rob.paveza): CRBug 1013683 - Consider propagating exceptions full-stack

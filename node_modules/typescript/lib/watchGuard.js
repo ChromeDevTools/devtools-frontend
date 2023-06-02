@@ -47,7 +47,7 @@ var directoryName = process.argv[2];
 try {
   const watcher = fs.watch(directoryName, { recursive: true }, () => ({}));
   watcher.close();
-} catch (e) {
+} catch {
 }
 process.exit(0);
 //# sourceMappingURL=watchGuard.js.map

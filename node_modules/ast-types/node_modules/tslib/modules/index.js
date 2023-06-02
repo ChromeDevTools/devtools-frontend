@@ -61,3 +61,4 @@ export {
     __classPrivateFieldSet,
     __classPrivateFieldIn,
 };
+export default tslib;

@@ -249,6 +249,10 @@ const UIStrings = {
    *@example {2.12} PH1
    */
   ssec: '{PH1} sec',
+  /**
+   *@description Message shown when a browser recording could not be started.
+   */
+  couldNotStart: 'Could not start recording, please try again later',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -864,7 +868,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
       this.showRecordingStarted();
 
-      const primaryTarget = await this.primaryTargetPromise;
+      const MAX_WAIT_FOR_TARGET_MS = 2000;
+      const timeoutPromise = new Promise(res => setTimeout(res, MAX_WAIT_FOR_TARGET_MS));
+      const primaryTarget = await Promise.race([this.primaryTargetPromise, timeoutPromise]);
+      if (!(primaryTarget instanceof SDK.Target.Target)) {
+        this.recordingFailed(i18nString(UIStrings.couldNotStart));
+        return;
+      }
 
       if (UIDevtoolsUtils.isUiDevTools()) {
         this.controller = new UIDevtoolsController(primaryTarget, this);

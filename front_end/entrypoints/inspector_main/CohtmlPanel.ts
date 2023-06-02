@@ -110,9 +110,12 @@ const UIStrings = {
 
   updateCacheStr: 'Update Cache',
 
-  capacityStr: 'Capacity:',
+  capacityStr: 'Capacity Count:',
+
+  memoryStr: 'Capacity Memory:',
 
 };
+const SCRATCH_LAYERS_ID = 1;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/CohtmlPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -256,6 +259,52 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     });
   }
 
+  private cacheUpdateHandler(id: number, entryInput: HTMLInputElement, unitSelect?: HTMLSelectElement | null) {
+    return async (event: Event) => {
+      let inputElement = (entryInput as HTMLInputElement);
+      if (inputElement.value.length == 0) {
+        return;
+      }
+      let newSize = Number(inputElement.value);
+      if (!isNaN(newSize)) {
+
+        // JSON specifies only 32-bit integers so we can't send a bigger
+        // number than 2^32 bytes (~ 2147 MBs; this should be enough for all caches)
+        const MAX_32BIT_INTEGER = 2147483647;
+        newSize = clamp(newSize, 0, MAX_32BIT_INTEGER);
+
+        switch (unitSelect?.value) {
+          case "Bytes": break;
+          case "KBs": newSize *= 1024; break;
+          case "MBs": newSize *= 1024 * 1024; break;
+        }
+
+        let setCount = !unitSelect;
+
+        // create the object that will be send to the backend
+        let state: Protocol.CohtmlDebug.RenoirCache = {
+          type: id,
+          capacityBytes: !setCount ? newSize : -1,
+          capacityCount: setCount ? newSize : -1
+        };
+
+        const button = event.currentTarget;
+        this.toggleButtonLoadingIndicator(button, true);
+        // send the data to the backend (the C++ code)
+        await this.cohtmlDebugModel?.setRenoirCacheState(state);
+
+        // Cohtml does not update the caches immediatly but rather on the
+        // next frame. Hence we can't request the new cache state immediatly but
+        // have to "wait a little bit". 100ms is plenty of time but still keeps the
+        // updating feeling interactive
+        setTimeout(async () => {
+          await this.fetchCacheStates();
+          this.toggleButtonLoadingIndicator(button, false);
+        }, 100);
+      }
+    };
+  }
+
   private createCacheEntryForRenoirCache(id: number, title: string, parent: HTMLElement) {
     let cachePanel = parent.createChild('div', 'cache-entry');
 
@@ -263,25 +312,32 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
     cacheName.innerHTML = title;
 
     let newCacheUIEntry = new RenoirCacheUIEntry();
+    const options = [
+      { label: UIStrings.capacityStr, unitsSelect: false, currentCapacityLabel: UIStrings.currentCapacityCountStr, isCount: true },
+      { label: UIStrings.memoryStr, unitsSelect: true, currentCapacityLabel: UIStrings.currentCapacityBytesStr, isCount: false },
+    ];
 
-    let firstRow = cachePanel.createChild('div', 'cache-wrapper');
-    {
-      const capacityWrapper = firstRow.createChild('div', 'cache-option');
+    for (const { label, unitsSelect, currentCapacityLabel, isCount } of options) {
+      const row = cachePanel.createChild('div', 'cache-wrapper');
+      const capacityWrapper = row.createChild('div', 'cache-option');
       let entryName = capacityWrapper.createChild('span', 'label');
-      entryName.innerText = UIStrings.capacityStr;
+      entryName.innerText = label;
 
       // input field where the user enters the desired cache size
       let entryInput = capacityWrapper.createChild('input') as HTMLInputElement;
       entryInput.setAttribute('type', 'number');
 
-      const unitsWrapper = firstRow.createChild('div', 'cache-option');
-      // unit for the enered number (label + select element)
-      let unit = unitsWrapper.createChild('span', 'label');
-      unit.innerText = 'Unit:';
-      let types: string[] = ["Count", "Bytes", "KBs", "MBs"];
-      let unitSelect = this.appendSelect("Type", types, unitsWrapper);
+      let unitSelect = null;
+      if (unitsSelect) {
+        const unitsWrapper = row.createChild('div', 'cache-option');
+        // unit for the enered number (label + select element)
+        let unit = unitsWrapper.createChild('span', 'label');
+        unit.innerText = 'Unit:';
+        let types: string[] = ["Bytes", "KBs", "MBs"];
+        unitSelect = this.appendSelect("Type", types, unitsWrapper);
+      }
 
-      const buttonWrapper = firstRow.createChild('div', 'cache-option button-wrapper');
+      const buttonWrapper = row.createChild('div', 'cache-option button-wrapper');
       // button for updating the corresponding cache.
       const entryButton = UI.UIUtils.createTextButton(i18nString(UIStrings.updateCacheStr), void 0, 'cohtml-button margin-top-0');
       UI.ARIAUtils.markAsLink(entryButton);
@@ -292,65 +348,27 @@ export class CohtmlPanelView extends UI.Widget.VBox implements SDK.TargetManager
 
       buttonWrapper.createChild('div', 'icon');
 
-      entryButton.onclick = async (event: Event) => {
-        let inputElement = (entryInput as HTMLInputElement);
-        if (inputElement.value.length == 0) {
-          return;
-        }
-        let newSize = Number(inputElement.value);
-        if (!isNaN(newSize)) {
+      // We need to make sure that the Scratch Layers are aways used with MBs because their minimum capacity memory is 4MB
+      // and it does not make sense to set them in kbs or bytes. We recognize them by their id/position that is comming from the C++.
+      // Make sure when you change their position in C++ - static constexpr InternalCaches s_ProcessedCaches[], to reflect the change here in SCRATCH_LAYERS_ID as well.
+      if (unitSelect && id === SCRATCH_LAYERS_ID) {
+        unitSelect.value = 'MBs';
+        unitSelect.disabled = true;
 
-          // JSON specifies only 32-bit integers so we can't send a bigger
-          // number than 2^32 bytes (~ 2147 MBs; this should be enough for all caches)
-          const MAX_32BIT_INTEGER = 2147483647;
-          newSize = clamp(newSize, 0, MAX_32BIT_INTEGER);
+        const warning = row.createChild('div', 'cache-option');
+        warning.innerHTML="<span style='color:red;margin-right:3px;'>WARNING:</span> Scratch layer capacity memory cannot be set to less than 4MB!"
+      }
 
-          switch (unitSelect.value) {
-            case "Count": break;
-            case "Bytes": break;
-            case "KBs": newSize *= 1024; break;
-            case "MBs": newSize *= 1024 * 1024; break;
-          }
+      entryButton.onclick = this.cacheUpdateHandler(id, entryInput, unitSelect);
 
-          let setCount = unitSelect.value == "Count";
-
-          // create the object that will be send to the backend
-          let state: Protocol.CohtmlDebug.RenoirCache = {
-            type: id,
-            capacityBytes: !setCount ? newSize : -1,
-            capacityCount: setCount ? newSize : -1
-          };
-
-          const button = event.currentTarget;
-          this.toggleButtonLoadingIndicator(button, true);
-          // send the data to the backend (the C++ code)
-          await this.cohtmlDebugModel?.setRenoirCacheState(state);
-
-          // Cohtml does not update the caches immediatly but rather on the
-          // next frame. Hence we can't request the new cache state immediatly but
-          // have to "wait a little bit". 100ms is plenty of time but still keeps the
-          // updating feeling interactive
-          setTimeout(async () => {
-            await this.fetchCacheStates();
-            this.toggleButtonLoadingIndicator(button, false);
-          }, 100);
-        }
-      };
-    }
-
-    // create a couple of span elements to display the currenet capacity bytes and count
-    // of the cache
-    let secondRow = cachePanel.createChild('div', 'cache-wrapper');
-    {
-      let currentCapacityCount = secondRow.createChild('div', 'cache-option');
-      currentCapacityCount.innerText = UIStrings.currentCapacityCountStr;
-
-      let currentCapacityBytes = secondRow.createChild('div', 'cache-option');
-      currentCapacityBytes.innerText = UIStrings.currentCapacityBytesStr;
-
-      // save the span elements for later so that we can update them when we have to
-      newCacheUIEntry.currentBytesSpanElement = currentCapacityBytes;
-      newCacheUIEntry.currentCountSpanElement = currentCapacityCount;
+      let currentRow = cachePanel.createChild('div', 'cache-wrapper');
+      let currentCapacity = currentRow.createChild('div', 'cache-option');
+      currentCapacity.innerText = currentCapacityLabel;
+      if (isCount) {
+        newCacheUIEntry.currentCountSpanElement = currentCapacity;
+      } else {
+        newCacheUIEntry.currentBytesSpanElement = currentCapacity;
+      }
     }
 
     // create the entry in the frontend map for the caches state

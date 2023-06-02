@@ -17,12 +17,13 @@ import * as Sources from '../../../../../front_end/panels/sources/sources.js';
 import * as SourcesComponents from '../../../../../front_end/panels/sources/components/components.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-import {initializeGlobalVars, deinitializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
+import {
+  describeWithEnvironment,
+} from '../../helpers/EnvironmentHelpers.js';
 import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
-describe('SourcesView', () => {
+describeWithEnvironment('SourcesView', () => {
   beforeEach(async () => {
-    await initializeGlobalVars();
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -36,11 +37,8 @@ describe('SourcesView', () => {
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-  });
-
-  afterEach(async () => {
-    await deinitializeGlobalVars();
   });
 
   it('creates new source view of updated type when renamed file requires a different viewer', async () => {

@@ -15,8 +15,5 @@
     "../../inspector_overlay/**/*.ts",
     "../../scripts/protocol_typescript/*.ts",
     "../../test/**/*.ts"
-  ],
-  "exclude": [
-    "../../front_end/third_party"
   ]
 }

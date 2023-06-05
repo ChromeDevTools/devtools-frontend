@@ -47,6 +47,51 @@ function assertGridContents(gridComponent: HTMLElement, headerExpected: string[]
   assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
 }
 
+async function testWarnings(warnings: SDK.PreloadingModel.PreloadWarnings, infoTextsExpected: string[]) {
+  const target = createTarget();
+
+  sinon.stub(target.systemInfo(), 'invoke_getFeatureState').callsFake(async x => {
+    let featureEnabled;
+    switch (x.featureState) {
+      case 'PreloadingHoldback':
+        featureEnabled = warnings.featureFlagPreloadingHoldback;
+        break;
+      case 'PrerenderHoldback':
+        featureEnabled = warnings.featureFlagPrerender2Holdback;
+        break;
+      default:
+        throw new Error('unreachable');
+    }
+    return {featureEnabled} as Protocol.SystemInfo.GetFeatureStateResponse;
+  });
+
+  const warningsUpdatedPromise: Promise<void> = new Promise(resolve => {
+    const model = target.model(SDK.PreloadingModel.PreloadingModel);
+    assertNotNullOrUndefined(model);
+    model.addEventListener(SDK.PreloadingModel.Events.WarningsUpdated, _ => resolve());
+  });
+
+  const view = createView(target);
+
+  dispatchEvent(target, 'Preload.preloadEnabledStateUpdated', {
+    disabledByPreference: warnings.disabledByPreference,
+    disabledByDataSaver: warnings.disabledByDataSaver,
+    disabledByBatterySaver: warnings.disabledByBatterySaver,
+  });
+
+  await warningsUpdatedPromise;
+  await coordinator.done();
+
+  const infobarContainer = view.getInfobarContainerForTest();
+  const infoTextsGot = Array.from(infobarContainer.children).map(infobarElement => {
+    assertShadowRoot(infobarElement.shadowRoot);
+    const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
+    assertNotNullOrUndefined(infoText);
+    return infoText.textContent;
+  });
+  assert.deepEqual(infoTextsGot, infoTextsExpected);
+}
+
 // Holds targets and ids, and emits events.
 class NavigationEmulator {
   private seq: number = 0;
@@ -679,148 +724,74 @@ describeWithMockConnection('PreloadingView', async () => {
   });
 
   it('shows no warnings if holdback flags are disabled', async () => {
-    const featureFlags = {
-      'PreloadingHoldback': false,
-      'PrerenderHoldback': false,
-    };
-
-    const target = createTarget();
-
-    sinon.stub(target.systemInfo(), 'invoke_getFeatureState').callsFake(async x => {
-      const featureEnabled = featureFlags[x.featureState as keyof typeof featureFlags];
-      return {featureEnabled} as Protocol.SystemInfo.GetFeatureStateResponse;
-    });
-
-    const view = createView(target);
-
-    await view.getFeatureFlagWarningsPromiseForTest();
-    await coordinator.done();
-
-    const infobarContainer = view.getInfobarContainerForTest();
-    assert.strictEqual(infobarContainer.children.length, 0);
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: false,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: false,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: false,
+        },
+        []);
   });
 
   it('shows an warning if PreloadingHoldback enabled', async () => {
-    const featureFlags = {
-      'PreloadingHoldback': true,
-      'PrerenderHoldback': false,
-    };
-
-    const target = createTarget();
-
-    sinon.stub(target.systemInfo(), 'invoke_getFeatureState').callsFake(async x => {
-      const featureEnabled = featureFlags[x.featureState as keyof typeof featureFlags];
-      return {featureEnabled} as Protocol.SystemInfo.GetFeatureStateResponse;
-    });
-
-    const view = createView(target);
-
-    await view.getFeatureFlagWarningsPromiseForTest();
-    await coordinator.done();
-
-    const infobarContainer = view.getInfobarContainerForTest();
-    const infoTexts = Array.from(infobarContainer.children).map(infobarElement => {
-      assertShadowRoot(infobarElement.shadowRoot);
-      const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
-      assertNotNullOrUndefined(infoText);
-      return infoText.textContent;
-    });
-    assert.deepEqual(infoTexts, ['Preloading was disabled, but is force-enabled now']);
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: true,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: false,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: false,
+        },
+        ['Preloading was disabled, but is force-enabled now']);
   });
 
   it('shows two warnings if PreloadingHoldback and Prerender2Holdback enabled', async () => {
-    const featureFlags = {
-      'PreloadingHoldback': true,
-      'PrerenderHoldback': true,
-    };
-
-    const target = createTarget();
-
-    sinon.stub(target.systemInfo(), 'invoke_getFeatureState').callsFake(async x => {
-      const featureEnabled = featureFlags[x.featureState as keyof typeof featureFlags];
-      return {featureEnabled} as Protocol.SystemInfo.GetFeatureStateResponse;
-    });
-
-    const view = createView(target);
-
-    await view.getFeatureFlagWarningsPromiseForTest();
-    await coordinator.done();
-
-    const infobarContainer = view.getInfobarContainerForTest();
-    const infoTexts = Array.from(infobarContainer.children).map(infobarElement => {
-      assertShadowRoot(infobarElement.shadowRoot);
-      const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
-      assertNotNullOrUndefined(infoText);
-      return infoText.textContent;
-    });
-    assert.deepEqual(
-        infoTexts,
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: true,
+          featureFlagPrerender2Holdback: true,
+          disabledByPreference: false,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: false,
+        },
         ['Preloading was disabled, but is force-enabled now', 'Prerendering was disabled, but is force-enabled now']);
   });
 
   it('shows an warning if PreloadEnabledState DisabledByPreference', async () => {
-    const emulator = new NavigationEmulator();
-
-    await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
-
-    dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
-      disabledByPreference: true,
-      disabledByDataSaver: false,
-      disabledByBatterySaver: false,
-    });
-
-    const infobarContainer = view.getInfobarContainerForTest();
-    const infoTexts = Array.from(infobarContainer.children).map(infobarElement => {
-      assertShadowRoot(infobarElement.shadowRoot);
-      const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
-      assertNotNullOrUndefined(infoText);
-      return infoText.textContent;
-    });
-    assert.deepEqual(infoTexts, ['Preloading is disabled']);
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: false,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: true,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: false,
+        },
+        ['Preloading is disabled']);
   });
 
   it('shows an warning if Preloading is disabled by DataSaver', async () => {
-    const emulator = new NavigationEmulator();
-
-    await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
-
-    dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
-      disabledByPreference: false,
-      disabledByDataSaver: true,
-      disabledByBatterySaver: false,
-    });
-
-    const infobarContainer = view.getInfobarContainerForTest();
-    const infoTexts = Array.from(infobarContainer.children).map(infobarElement => {
-      assertShadowRoot(infobarElement.shadowRoot);
-      const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
-      assertNotNullOrUndefined(infoText);
-      return infoText.textContent;
-    });
-    assert.deepEqual(infoTexts, ['Preloading is disabled']);
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: false,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: false,
+          disabledByDataSaver: true,
+          disabledByBatterySaver: false,
+        },
+        ['Preloading is disabled']);
   });
 
   it('shows an warning if Preloading is disabled by BatterySaver', async () => {
-    const emulator = new NavigationEmulator();
-
-    await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
-
-    dispatchEvent(emulator.primaryTarget, 'Preload.preloadEnabledStateUpdated', {
-      disabledByPreference: false,
-      disabledByDataSaver: false,
-      disabledByBatterySaver: true,
-    });
-
-    const infobarContainer = view.getInfobarContainerForTest();
-    const infoTexts = Array.from(infobarContainer.children).map(infobarElement => {
-      assertShadowRoot(infobarElement.shadowRoot);
-      const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
-      assertNotNullOrUndefined(infoText);
-      return infoText.textContent;
-    });
-    assert.deepEqual(infoTexts, ['Preloading is disabled']);
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: false,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: false,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: true,
+        },
+        ['Preloading is disabled']);
   });
 });

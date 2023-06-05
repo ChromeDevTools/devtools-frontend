@@ -171,11 +171,6 @@ class PreloadingUIUtils {
   }
 }
 
-interface FeatureFlags {
-  preloadingHoldback: boolean|null;
-  prerender2Holdback: boolean|null;
-}
-
 // Holds PreloadingModel of current context
 //
 // There can be multiple Targets and PreloadingModels and they switch as
@@ -192,14 +187,18 @@ interface FeatureFlags {
 // from the old model to the new model. See
 // PreloadingMoedl.onPrimaryPageChanged.
 class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.PreloadingModel.PreloadingModel> {
-  private readonly view: PreloadingView;
   model: SDK.PreloadingModel.PreloadingModel;
+  private readonly view: PreloadingView;
+  private readonly warningsView: PreloadingWarningsView;
 
-  constructor(view: PreloadingView, model: SDK.PreloadingModel.PreloadingModel) {
+  constructor(model: SDK.PreloadingModel.PreloadingModel, view: PreloadingView, warningsView: PreloadingWarningsView) {
     this.view = view;
+    this.warningsView = warningsView;
 
     this.model = model;
     this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
+    this.model.addEventListener(
+        SDK.PreloadingModel.Events.WarningsUpdated, this.warningsView.onWarningsUpdated, this.warningsView);
   }
 
   initialize(): void {
@@ -213,14 +212,20 @@ class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.Pre
     }
 
     this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
+    this.model.removeEventListener(
+        SDK.PreloadingModel.Events.WarningsUpdated, this.warningsView.onWarningsUpdated, this.warningsView);
     this.model = model;
     this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
+    this.model.addEventListener(
+        SDK.PreloadingModel.Events.WarningsUpdated, this.warningsView.onWarningsUpdated, this.warningsView);
 
     this.view.render();
   }
 
   modelRemoved(model: SDK.PreloadingModel.PreloadingModel): void {
     model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
+    model.removeEventListener(
+        SDK.PreloadingModel.Events.WarningsUpdated, this.warningsView.onWarningsUpdated, this.warningsView);
   }
 }
 
@@ -230,7 +235,8 @@ export class PreloadingView extends UI.Widget.VBox {
   private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
   private checkboxFilterBySelectedRuleSet: UI.Toolbar.ToolbarCheckbox;
 
-  private readonly infobarContainer: HTMLDivElement;
+  private readonly warningsContainer: HTMLDivElement;
+  private readonly warningsView = new PreloadingWarningsView();
   private readonly hsplitUsedPreloading: UI.SplitWidget.SplitWidget;
   private readonly hsplit: UI.SplitWidget.SplitWidget;
   private readonly vsplitRuleSets: UI.SplitWidget.SplitWidget;
@@ -240,15 +246,15 @@ export class PreloadingView extends UI.Widget.VBox {
   private readonly preloadingDetails =
       new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   private readonly usedPreloading = new PreloadingComponents.UsedPreloadingView.UsedPreloadingView();
-  private readonly featureFlagWarningsPromise: Promise<void>;
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
 
-    this.modelProxy = new PreloadingModelProxy(this, model);
+    this.modelProxy = new PreloadingModelProxy(model, this, this.warningsView);
 
     // this (VBox)
-    //   +- infobarContainer
+    //   +- warningsContainer
+    //        +- PreloadingWarningsView
     //   +- hsplitUsedPreloading
     //        +- hsplit
     //             +- vsplitRuleSets
@@ -272,9 +278,10 @@ export class PreloadingView extends UI.Widget.VBox {
     // - If an row of PreloadingGrid selected, PreloadingDetailsReportView shows details of it.
     // - If not, PreloadingDetailsReportView shows some messages.
 
-    this.infobarContainer = document.createElement('div');
-    this.infobarContainer.classList.add('flex-none');
-    this.contentElement.insertBefore(this.infobarContainer, this.contentElement.firstChild);
+    this.warningsContainer = document.createElement('div');
+    this.warningsContainer.classList.add('flex-none');
+    this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
+    this.warningsView.show(this.warningsContainer);
 
     this.ruleSetGrid.addEventListener('cellfocused', this.onRuleSetsGridCellFocused.bind(this));
     this.vsplitRuleSets = this.makeVsplit(this.ruleSetGrid, this.ruleSetDetails);
@@ -314,8 +321,6 @@ export class PreloadingView extends UI.Widget.VBox {
     );
     this.hsplitUsedPreloading.setMainWidget(this.hsplit);
     this.hsplitUsedPreloading.setSidebarWidget(usedPreloadingContainer);
-
-    this.featureFlagWarningsPromise = this.getFeatureFlags().then(x => this.onGetFeatureFlags(x));
   }
 
   private makeVsplit(left: HTMLElement, right: HTMLElement): UI.SplitWidget.SplitWidget {
@@ -388,45 +393,6 @@ export class PreloadingView extends UI.Widget.VBox {
         ruleSets,
       };
     }
-    // TODO(crbug.com/1384419): Add more information in PreloadEnabledState from
-    // backend to distinguish the details of the reasons why preloading is
-    // disabled.
-    const detailsMessage = document.createElement('div');
-    let shouldWarningBeShown = false;
-
-    if (this.modelProxy.model.isPreloadDisabledByPreference()) {
-      const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-      preloadingSettingLink.href = 'chrome://settings/cookies';
-      preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPageSettings);
-      const extensionSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-      extensionSettingLink.href = 'chrome://extensions';
-      extensionSettingLink.textContent = i18nString(UIStrings.extensionSettings);
-      detailsMessage.appendChild(i18n.i18n.getFormatLocalizedString(
-          str_, UIStrings.warningDetailPreloadingStateDisabled,
-          {PH1: preloadingSettingLink, PH2: extensionSettingLink}));
-      shouldWarningBeShown = true;
-    }
-
-    if (this.modelProxy.model.isPreloadDisabledByDatasaver()) {
-      const element = document.createElement('div');
-      element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByDatasaver));
-      detailsMessage.appendChild(element);
-      shouldWarningBeShown = true;
-    }
-
-    if (this.modelProxy.model.isPreloadDisabledByBatterysaver()) {
-      const element = document.createElement('div');
-      element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByBatterysaver));
-      detailsMessage.appendChild(element);
-      shouldWarningBeShown = true;
-    }
-
-    if (shouldWarningBeShown) {
-      // Clear infobarContainer if there is other warning, such as holdback
-      // related warnings.
-      this.infobarContainer.removeChildren();
-      this.showInfobar(i18nString(UIStrings.warningTitlePreloadingStateDisabled), detailsMessage);
-    }
   }
 
   render(): void {
@@ -480,44 +446,8 @@ export class PreloadingView extends UI.Widget.VBox {
     this.render();
   }
 
-  async getFeatureFlags(): Promise<FeatureFlags> {
-    const preloadingHoldbackPromise = this.modelProxy.model.target().systemInfo().invoke_getFeatureState({
-      featureState: 'PreloadingHoldback',
-    });
-    const prerender2HoldbackPromise = this.modelProxy.model.target().systemInfo().invoke_getFeatureState({
-      featureState: 'PrerenderHoldback',
-    });
-    return {
-      preloadingHoldback: (await preloadingHoldbackPromise).featureEnabled ?? null,
-      prerender2Holdback: (await prerender2HoldbackPromise).featureEnabled ?? null,
-    };
-  }
-
-  // Shows warnings if features are disabled by feature flags.
-  private onGetFeatureFlags(flags: FeatureFlags): void {
-    if (flags.preloadingHoldback === true) {
-      this.showInfobar(
-          i18nString(UIStrings.warningTitlePreloadingDisabledByFeatureFlag),
-          i18nString(UIStrings.warningDetailPreloadingDisabledByFeatureFlag));
-    }
-
-    if (flags.prerender2Holdback === true) {
-      this.showInfobar(
-          i18nString(UIStrings.warningTitlePrerenderingDisabledByFeatureFlag),
-          i18nString(UIStrings.warningDetailPrerenderingDisabledByFeatureFlag));
-    }
-  }
-
-  private showInfobar(titleText: string, detailsMessage: string|Element): void {
-    const infobar = new UI.Infobar.Infobar(
-        UI.Infobar.Type.Warning, /* text */ titleText, /* actions? */ undefined, /* disableSetting? */ undefined);
-    infobar.setParentView(this);
-    infobar.createDetailsRowMessage(detailsMessage);
-    this.infobarContainer.appendChild(infobar.element);
-  }
-
   getInfobarContainerForTest(): HTMLDivElement {
-    return this.infobarContainer;
+    return this.warningsView.contentElement;
   }
 
   getRuleSetGridForTest(): PreloadingComponents.RuleSetGrid.RuleSetGrid {
@@ -540,12 +470,79 @@ export class PreloadingView extends UI.Widget.VBox {
     return this.usedPreloading;
   }
 
-  getFeatureFlagWarningsPromiseForTest(): Promise<void> {
-    return this.featureFlagWarningsPromise;
-  }
-
   setCheckboxFilterBySelectedRuleSetForTest(checked: boolean): void {
     this.checkboxFilterBySelectedRuleSet.setChecked(checked);
     this.render();
+  }
+}
+
+export class PreloadingWarningsView extends UI.Widget.VBox {
+  constructor() {
+    super(/* isWebComponent */ false, /* delegatesFocus */ false);
+  }
+
+  onWarningsUpdated(event: Common.EventTarget.EventTargetEvent<SDK.PreloadingModel.PreloadWarnings>): void {
+    // TODO(crbug.com/1384419): Add more information in PreloadEnabledState from
+    // backend to distinguish the details of the reasons why preloading is
+    // disabled.
+    function createDisabledMessages(warnings: SDK.PreloadingModel.PreloadWarnings): HTMLDivElement|null {
+      const detailsMessage = document.createElement('div');
+      let shouldShowWarning = false;
+
+      if (warnings.disabledByPreference) {
+        const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
+        preloadingSettingLink.href = 'chrome://settings/cookies';
+        preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPageSettings);
+        const extensionSettingLink = new ChromeLink.ChromeLink.ChromeLink();
+        extensionSettingLink.href = 'chrome://extensions';
+        extensionSettingLink.textContent = i18nString(UIStrings.extensionSettings);
+        detailsMessage.appendChild(i18n.i18n.getFormatLocalizedString(
+            str_, UIStrings.warningDetailPreloadingStateDisabled,
+            {PH1: preloadingSettingLink, PH2: extensionSettingLink}));
+        shouldShowWarning = true;
+      }
+
+      if (warnings.disabledByDataSaver) {
+        const element = document.createElement('div');
+        element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByDatasaver));
+        detailsMessage.appendChild(element);
+        shouldShowWarning = true;
+      }
+
+      if (warnings.disabledByBatterySaver) {
+        const element = document.createElement('div');
+        element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByBatterysaver));
+        detailsMessage.appendChild(element);
+        shouldShowWarning = true;
+      }
+
+      return shouldShowWarning ? detailsMessage : null;
+    }
+
+    const warnings = event.data;
+    const detailsMessage = createDisabledMessages(warnings);
+    if (detailsMessage !== null) {
+      this.showInfobar(i18nString(UIStrings.warningTitlePreloadingStateDisabled), detailsMessage);
+    } else {
+      if (warnings.featureFlagPreloadingHoldback) {
+        this.showInfobar(
+            i18nString(UIStrings.warningTitlePreloadingDisabledByFeatureFlag),
+            i18nString(UIStrings.warningDetailPreloadingDisabledByFeatureFlag));
+      }
+
+      if (warnings.featureFlagPrerender2Holdback) {
+        this.showInfobar(
+            i18nString(UIStrings.warningTitlePrerenderingDisabledByFeatureFlag),
+            i18nString(UIStrings.warningDetailPrerenderingDisabledByFeatureFlag));
+      }
+    }
+  }
+
+  private showInfobar(titleText: string, detailsMessage: string|Element): void {
+    const infobar = new UI.Infobar.Infobar(
+        UI.Infobar.Type.Warning, /* text */ titleText, /* actions? */ undefined, /* disableSetting? */ undefined);
+    infobar.setParentView(this);
+    infobar.createDetailsRowMessage(detailsMessage);
+    this.contentElement.appendChild(infobar.element);
   }
 }

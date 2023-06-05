@@ -33,9 +33,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   private lastPrimaryPageModel: PreloadingModel|null = null;
   private documents: Map<Protocol.Network.LoaderId, DocumentPreloadingData> =
       new Map<Protocol.Network.LoaderId, DocumentPreloadingData>();
-  private preloadIsDisabledByPreference: boolean|null = null;
-  private preloadIsDisabledByDatasaver: boolean|null = null;
-  private preloadIsDisabledByBatterysaver: boolean|null = null;
+  private getFeatureFlagsPromise: Promise<FeatureFlags>;
 
   constructor(target: Target) {
     super(target);
@@ -44,6 +42,8 @@ export class PreloadingModel extends SDKModel<EventTypes> {
 
     this.agent = target.preloadAgent();
     void this.agent.invoke_enable();
+
+    this.getFeatureFlagsPromise = this.getFeatureFlags();
 
     const targetInfo = target.targetInfo();
     if (targetInfo !== undefined && targetInfo.subtype === 'prerender') {
@@ -145,18 +145,6 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     }
 
     return document.preloadingAttempts.getAll(null, document.sources);
-  }
-
-  isPreloadDisabledByPreference(): boolean|null {
-    return this.preloadIsDisabledByPreference;
-  }
-
-  isPreloadDisabledByDatasaver(): boolean|null {
-    return this.preloadIsDisabledByDatasaver;
-  }
-
-  isPreloadDisabledByBatterysaver(): boolean|null {
-    return this.preloadIsDisabledByBatterysaver;
   }
 
   private onPrimaryPageChanged(
@@ -266,11 +254,27 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.ModelUpdated);
   }
 
-  onPreloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
-    this.preloadIsDisabledByPreference = event.disabledByPreference;
-    this.preloadIsDisabledByDatasaver = event.disabledByDataSaver;
-    this.preloadIsDisabledByBatterysaver = event.disabledByBatterySaver;
-    this.dispatchEventToListeners(Events.ModelUpdated);
+  private async getFeatureFlags(): Promise<FeatureFlags> {
+    const preloadingHoldbackPromise = this.target().systemInfo().invoke_getFeatureState({
+      featureState: 'PreloadingHoldback',
+    });
+    const prerender2HoldbackPromise = this.target().systemInfo().invoke_getFeatureState({
+      featureState: 'PrerenderHoldback',
+    });
+    return {
+      preloadingHoldback: (await preloadingHoldbackPromise).featureEnabled,
+      prerender2Holdback: (await prerender2HoldbackPromise).featureEnabled,
+    };
+  }
+
+  async onPreloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): Promise<void> {
+    const featureFlags = await this.getFeatureFlagsPromise;
+    const warnings = {
+      featureFlagPreloadingHoldback: featureFlags.preloadingHoldback,
+      featureFlagPrerender2Holdback: featureFlags.prerender2Holdback,
+      ...event,
+    };
+    this.dispatchEventToListeners(Events.WarningsUpdated, warnings);
   }
 }
 
@@ -280,10 +284,12 @@ SDKModel.register(PreloadingModel, {capabilities: Capability.DOM, autostart: fal
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   ModelUpdated = 'ModelUpdated',
+  WarningsUpdated = 'WarningsUpdated',
 }
 
 export type EventTypes = {
   [Events.ModelUpdated]: void,
+  [Events.WarningsUpdated]: PreloadWarnings,
 };
 
 class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
@@ -317,7 +323,7 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
   }
 
   preloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
-    this.model.onPreloadEnabledStateUpdated(event);
+    void this.model.onPreloadEnabledStateUpdated(event);
   }
 }
 
@@ -584,4 +590,17 @@ class SourceRegistry {
   update(sources: Protocol.Preload.PreloadingAttemptSource[]): void {
     this.map = new Map(sources.map(s => [makePreloadingAttemptId(s.key), s]));
   }
+}
+
+interface FeatureFlags {
+  preloadingHoldback: boolean;
+  prerender2Holdback: boolean;
+}
+
+export interface PreloadWarnings {
+  featureFlagPreloadingHoldback: boolean;
+  featureFlagPrerender2Holdback: boolean;
+  disabledByPreference: boolean;
+  disabledByDataSaver: boolean;
+  disabledByBatterySaver: boolean;
 }

@@ -16,9 +16,10 @@ Decide on the metric (an [enumerated histogram](https://chromium.googlesource.co
     3. Create a new function in <code>[UserMetrics.ts](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/core/host/UserMetrics.ts;l=351)</code> with an enum parameter that corresponds to the possible values like <code>colorPickerOpenedFrom(type: ColorPickerOpenedFrom): void</code> that calls <code>InspectorFrontendHostInstance.recordEnumeratedHistogram</code>.
     4. Call the new function from <code>Host.userMetrics</code> in the places that you want to log the event.
     5. Create the CL.
-2. Update enums in the Chromium side in <code>[tools/metrics/histograms/enums.xml](https://source.chromium.org/chromium/chromium/src/+/main:tools/metrics/histograms/enums.xml;l=26267?q=tools%2Fmetrics%2Fhistograms%2Fenums.xml)</code>.
-    1. Add a new enum with values corresponding to the values in the frontend with name <code>DevTools&lt;HISTOGRAM_NAME></code> and make sure that enum values 1-1 map to the values you’ve defined in the frontend.
-    2. Create the CL.
+2. Update [histograms.xml](https://source.corp.google.com/h/chromium/chromium/src/+/main:tools/metrics/histograms/metadata/dev/histograms.xml) and [enums.xml](https://source.chromium.org/chromium/chromium/src/+/main:tools/metrics/histograms/enums.xml;l=26267?q=tools%2Fmetrics%2Fhistograms%2Fenums.xml) in the Chromium codebase.
+    1. Add a new enum in [enums.xml](https://source.chromium.org/chromium/chromium/src/+/main:tools/metrics/histograms/enums.xml;l=26267?q=tools%2Fmetrics%2Fhistograms%2Fenums.xml) with values corresponding to the values in the frontend with name <code>DevTools&lt;HISTOGRAM_NAME></code> and make sure that enum values 1-1 map to the values you’ve defined in the frontend.
+    2. Add the new histogram definition in [histograms.xml](https://source.corp.google.com/h/chromium/chromium/src/+/main:tools/metrics/histograms/metadata/dev/histograms.xml) and set enum name to be the enum you've defined in the 1st step. Make sure that histogram name is the same with the name you've used in the frontend change.
+    3. Create the CL.
 
 ## Tracking an action
 

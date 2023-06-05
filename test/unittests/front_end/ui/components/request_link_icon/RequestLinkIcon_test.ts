@@ -6,12 +6,14 @@ import {assertNotNullOrUndefined} from '../../../../../../front_end/core/platfor
 import type * as Logs from '../../../../../../front_end/models/logs/logs.js';
 import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import * as RequestLinkIcon from '../../../../../../front_end/ui/components/request_link_icon/request_link_icon.js';
 import * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
 import {assertElement, assertShadowRoot, renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
-import {describeWithEnvironment, describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import * as NetworkForward from '../../../../../../front_end/panels/network/forward/forward.js';
 import * as Root from '../../../../../../front_end/core/root/root.js';
 
@@ -113,7 +115,7 @@ class MockRequestResolver {
   }
 }
 
-describeWithLocale('RequestLinkIcon', () => {
+describeWithEnvironment('RequestLinkIcon', () => {
   const requestId1 = 'r1' as Protocol.Network.RequestId;
   const requestId2 = 'r2' as Protocol.Network.RequestId;
 
@@ -309,12 +311,32 @@ describeWithLocale('RequestLinkIcon', () => {
     });
   });
 
-  describeWithEnvironment('handles clicks correctly', () => {
+  describe('handles clicks correctly', () => {
     const mockRequest = {
       url() {
         return 'http://foo.bar/baz';
       },
     };
+
+    before(() => {
+      UI.ViewManager.resetViewRegistration();
+      UI.ViewManager.registerViewExtension({
+        // @ts-ignore
+        location: 'mock-location',
+        id: 'network',
+        title: () => 'Network' as Platform.UIString.LocalizedString,
+        commandPrompt: () => 'Network' as Platform.UIString.LocalizedString,
+        persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
+        async loadView() {
+          return new UI.Widget.Widget();
+        },
+      });
+      UI.ViewManager.ViewManager.instance({forceNew: true});
+    });
+
+    after(() => {
+      UI.ViewManager.maybeRemoveViewExtension('network');
+    });
 
     it('if the icon is clicked', async () => {
       Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);

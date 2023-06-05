@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import '../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-legacy.js';
-import '../test_runner/test_runner.js';
 import '../../panels/profiler/profiler-legacy.js';
 import '../../ui/legacy/components/data_grid/data_grid-legacy.js';
+
+import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.

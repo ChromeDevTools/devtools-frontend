@@ -87,7 +87,7 @@ function describeBody(fn: () => void) {
 }
 
 export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite) => void) {
-  if (fn.toString().match(/(^|\s)it.only\('[^]+',.*\)/)?.length) {
+  if (fn.toString().match(/(^|\s)(?:describe|it).only\(['|"][^]+['|"],.*\)/)?.length) {
     // eslint-disable-next-line rulesdir/no_only
     describeWithRealConnection.only(title, fn);
     return;

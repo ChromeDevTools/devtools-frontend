@@ -202,6 +202,7 @@ export async function getMainFlameChartWithTracks(
   flameChart.update();
   return {flameChart, dataProvider};
 }
+
 /**
  * Draws a track in the flame chart using the legacy system. For this to work,
  * a codepath to append the track must be available in the implementation of
@@ -211,6 +212,7 @@ export async function getMainFlameChartWithTracks(
  * chart.
  * @param trackType the legacy "type" of the track to be rendered. For
  * example: "GPU"
+ * @param expanded if the track is expanded
  * @returns a flame chart element and its corresponding data provider.
  */
 export async function getMainFlameChartWithLegacyTrack(
@@ -235,6 +237,38 @@ export async function getMainFlameChartWithLegacyTrack(
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   const minTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
   const maxTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
+  flameChart.setWindowTimes(minTime, maxTime);
+  flameChart.markAsRoot();
+  flameChart.update();
+  return {flameChart, dataProvider};
+}
+
+/**
+ * Draws the network track in the flame chart using the legacy system.
+ *
+ * @param traceFileName The name of the trace file to be loaded to the flame
+ * chart.
+ * @param expanded if the track is expanded
+ * @returns a flame chart element and its corresponding data provider.
+ */
+export async function getNetworkFlameChartWithLegacyTrack(traceFileName: string, expanded: boolean): Promise<{
+  flameChart: PerfUI.FlameChart.FlameChart,
+  dataProvider: Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider,
+}> {
+  await initializeGlobalVars();
+
+  const {traceParsedData, performanceModel} = await allModelsFromFile(traceFileName);
+  const minTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
+  const maxTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
+  const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+  dataProvider.setWindowTimes(minTime, maxTime);
+  dataProvider.setModel(performanceModel);
+  dataProvider.timelineData().groups.forEach(group => {
+    group.expanded = expanded;
+  });
+
+  const delegate = new MockFlameChartDelegate();
+  const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   flameChart.setWindowTimes(minTime, maxTime);
   flameChart.markAsRoot();
   flameChart.update();

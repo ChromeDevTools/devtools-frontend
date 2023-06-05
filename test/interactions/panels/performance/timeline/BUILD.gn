@@ -11,6 +11,7 @@ node_ts_library("timeline") {
     "interactions_track_test.ts",
     "layout_shifts_track_test.ts",
     "main_thread_test.ts",
+    "network_track_test.ts",
     "timeline_test.ts",
     "timings_track_test.ts",
   ]

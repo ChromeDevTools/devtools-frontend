@@ -524,6 +524,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.timelineDataInternal.entryDecorations[eventIndex] = decorationsForEvent;
   }
 
+  /**
+   * Appends a track in the flame chart using the legacy system.
+   * @param track the legacy track to be rendered.
+   * @param expanded if the track is expanded.
+   */
   appendLegacyTrackData(track: TimelineModel.TimelineModel.Track, expanded?: boolean): void {
     this.#instantiateTimelineData();
     const eventEntryType = EntryType.Event;

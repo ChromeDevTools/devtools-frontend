@@ -23,7 +23,8 @@ await renderContent(expanded === 'false' ? false : true);
 
 type FlameChartData = {
   flameChart: PerfUI.FlameChart.FlameChart,
-  dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
+  dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider|
+              Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider,
 };
 async function renderContent(expanded: boolean) {
   const container = document.getElementById('container');
@@ -50,6 +51,8 @@ async function renderContent(expanded: boolean) {
     } else if (track in TimelineModel.TimelineModel.TrackType) {
       flameChartData = await FrontendHelpers.getMainFlameChartWithLegacyTrack(
           file, track as TimelineModel.TimelineModel.TrackType, expanded);
+    } else if (track === 'Network') {
+      flameChartData = await FrontendHelpers.getNetworkFlameChartWithLegacyTrack(file, expanded);
     } else {
       p.classList.remove('loading');
       p.innerText = `Invalid track name: ${track}`;

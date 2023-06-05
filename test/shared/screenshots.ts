@@ -271,6 +271,18 @@ async function execImageDiffCommand(cmd: string) {
 }
 
 async function compare(golden: string, generated: string, maximumDiffThreshold: number) {
+  const isOnBot = process.env.LUCI_CONTEXT !== undefined;
+
+  if (!isOnBot && process.env.SKIP_SCREENSHOT_COMPARISONS_FOR_FAST_COVERAGE) {
+    // When checking test coverage locally the tests get sped up significantly
+    // if we do not do the actual image comparison. Obviously this makes the
+    // tests all pass, but it is useful to quickly get coverage stats.
+    // Therefore you can pass this flag to skip all screenshot comparisions. We
+    // make sure this is only possible if not on a CQ bot and 99.9% of the time
+    // this should not be used!
+    return;
+  }
+
   const {rawMisMatchPercentage, diffPath} = await imageDiff(golden, generated);
 
   const base64TestGeneratedImageLog = `Here's the image the test generated as a base64:
@@ -284,8 +296,6 @@ async function compare(golden: string, generated: string, maximumDiffThreshold: 
         encoding: 'base64',
       }) :
                  ''}`;
-
-  const isOnBot = process.env.LUCI_CONTEXT !== undefined;
 
   let debugInfo = '';
   if (isOnBot) {

@@ -33,44 +33,136 @@ describeWithEnvironment('FlameChart', () => {
     }
   });
 
-  describe('highlightEntry', () => {
-    function renderChart(chart: PerfUI.FlameChart.FlameChart): void {
-      const container = document.createElement('div');
-      renderElementIntoDOM(container);
-      chart.markAsRoot();
-      chart.setWindowTimes(0, 100);
-      chart.show(container);
-      chart.update();
+  function renderChart(chart: PerfUI.FlameChart.FlameChart): void {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    chart.markAsRoot();
+    chart.show(container);
+    chart.update();
+  }
+
+  class FakeProvider extends FakeFlameChartProvider {
+    override entryColor(_entryIndex: number): string {
+      return 'red';
     }
 
-    it('updates the chart to highlight the entry and dispatches an event', async () => {
-      class FakeProvider extends FakeFlameChartProvider {
-        override entryColor(_entryIndex: number): string {
-          return 'red';
-        }
+    override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+      return PerfUI.FlameChart.FlameChartTimelineData.create({
+        entryLevels: [1, 1, 1],
+        entryStartTimes: [5, 60, 80],
+        entryTotalTimes: [50, 10, 10],
+        groups: [{
+          name: 'Test Group' as Platform.UIString.LocalizedString,
+          startLevel: 1,
+          style: {
+            height: 17,
+            padding: 4,
+            collapsible: false,
+            color: 'black',
+            backgroundColor: 'grey',
+            nestingLevel: 0,
+            itemsHeight: 17,
+          },
+        }],
+      });
+    }
+  }
 
-        override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
-          return PerfUI.FlameChart.FlameChartTimelineData.create({
-            entryLevels: [1, 1, 1],
-            entryStartTimes: [5, 60, 80],
-            entryTotalTimes: [50, 10, 10],
-            groups: [{
-              name: 'Test Group' as Platform.UIString.LocalizedString,
-              startLevel: 1,
-              style: {
-                height: 17,
-                padding: 4,
-                collapsible: false,
-                color: 'black',
-                backgroundColor: 'grey',
-                nestingLevel: 0,
-                itemsHeight: 17,
-              },
-            }],
-          });
-        }
+  it('notifies the delegate when the window has changed', async () => {
+    const provider = new FakeProvider();
+    const delegate = new MockFlameChartDelegate();
+    const windowChangedSpy = sinon.spy(delegate, 'windowChanged');
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+    renderChart(chartInstance);
+    chartInstance.windowChanged(0, 5, false);
+    assert.isTrue(windowChangedSpy.calledWith(0, 5, false));
+  });
+
+  it('notifies the delegate when the range selection has changed', async () => {
+    const provider = new FakeProvider();
+    const delegate = new MockFlameChartDelegate();
+    const updateRangeSpy = sinon.spy(delegate, 'updateRangeSelection');
+    chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+    renderChart(chartInstance);
+    chartInstance.updateRangeSelection(0, 5);
+    assert.isTrue(updateRangeSpy.calledWith(0, 5));
+  });
+
+  describe('setSelectedEntry', () => {
+    class SetSelectedEntryTestProvider extends FakeFlameChartProvider {
+      override entryColor(_entryIndex: number): string {
+        return 'red';
       }
 
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+        return PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [1, 1, 1, 1],
+          entryStartTimes: [5, 60, 80, 300],
+          entryTotalTimes: [50, 10, 10, 500],
+          groups: [{
+            name: 'Test Group' as Platform.UIString.LocalizedString,
+            startLevel: 1,
+            style: {
+              height: 17,
+              padding: 4,
+              collapsible: false,
+              color: 'black',
+              backgroundColor: 'grey',
+              nestingLevel: 0,
+              itemsHeight: 17,
+            },
+          }],
+        });
+      }
+    }
+
+    it('does not change the time window if the selected entry is already revealed', async () => {
+      const provider = new SetSelectedEntryTestProvider();
+      const delegate = new MockFlameChartDelegate();
+      const windowChangedSpy = sinon.spy(delegate, 'windowChanged');
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      // Make the window wide so lots is visible
+      chartInstance.setSize(800, 400);
+      chartInstance.setWindowTimes(0, 100);
+      renderChart(chartInstance);
+      // Pick the first event which is only 50ms long and therefore should be in view already.
+      chartInstance.setSelectedEntry(0);
+      assert.strictEqual(windowChangedSpy.callCount, 0);
+    });
+
+    it('will change the window time to reveal the selected entry when the entry is off the right of the screen',
+       async () => {
+         const provider = new SetSelectedEntryTestProvider();
+         const delegate = new MockFlameChartDelegate();
+         const windowChangedSpy = sinon.spy(delegate, 'windowChanged');
+         chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+         // Make the width narrow so that not everything fits
+         chartInstance.setSize(100, 400);
+         // Ensure the event we want to select is out of the viewport by selecting the first 100ms.
+         chartInstance.setWindowTimes(0, 100);
+         renderChart(chartInstance);
+         chartInstance.setSelectedEntry(3);
+         assert.isTrue(windowChangedSpy.calledOnceWithExactly(300, 400, true));
+       });
+
+    it('will change the window time to reveal the selected entry when the entry is off the left of the screen',
+       async () => {
+         const provider = new SetSelectedEntryTestProvider();
+         const delegate = new MockFlameChartDelegate();
+         const windowChangedSpy = sinon.spy(delegate, 'windowChanged');
+         chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+         // Make the width narrow so that not everything fits
+         chartInstance.setSize(100, 400);
+         // Ensure the event we want to select is out of the viewport by selecting the last 200ms
+         chartInstance.setWindowTimes(250, 600);
+         renderChart(chartInstance);
+         chartInstance.setSelectedEntry(0);
+         assert.isTrue(windowChangedSpy.calledOnceWithExactly(5, 355, true));
+       });
+  });
+
+  describe('highlightEntry', () => {
+    it('updates the chart to highlight the entry and dispatches an event', async () => {
       const provider = new FakeProvider();
       const delegate = new MockFlameChartDelegate();
       chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
@@ -99,6 +191,55 @@ describeWithEnvironment('FlameChart', () => {
       assert.strictEqual(highlightedEventListener.callCount, 1);
       const event = highlightedEventListener.args[0][0] as Common.EventTarget.EventTargetEvent<number>;
       assert.strictEqual(event.data, entryIndexToHighlight);
+    });
+
+    it('does nothing if the entry is already highlighted', async () => {
+      const provider = new FakeProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      renderChart(chartInstance);
+
+      const highlightedEventListener = sinon.stub();
+      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, highlightedEventListener);
+      chartInstance.highlightEntry(2);
+      chartInstance.highlightEntry(2);
+      // Ensure that there is only one event listener called, despite the
+      // highlightEntry method being called twice, because it was called with
+      // the same ID.
+      assert.strictEqual(highlightedEventListener.callCount, 1);
+    });
+
+    it('does nothing if the DataProvider entryColor() method returns a falsey value', async () => {
+      class EmptyColorProvider extends FakeProvider {
+        override entryColor(): string {
+          return '';
+        }
+      }
+      const provider = new EmptyColorProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      renderChart(chartInstance);
+
+      const highlightedEventListener = sinon.stub();
+      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, highlightedEventListener);
+      chartInstance.highlightEntry(2);
+      // No calls because entryColor returned a false value.
+      assert.strictEqual(highlightedEventListener.callCount, 0);
+    });
+
+    it('dispatches the highlight event with an ID of -1 when the highlight is hidden', async () => {
+      const provider = new FakeProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      renderChart(chartInstance);
+
+      const highlightedEventListener = sinon.stub();
+      chartInstance.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, highlightedEventListener);
+      chartInstance.highlightEntry(2);
+      chartInstance.hideHighlight();
+      // Ensure the argument to the last event listener call was -1
+      const event = highlightedEventListener.args[1][0] as Common.EventTarget.EventTargetEvent<number>;
+      assert.strictEqual(event.data, -1);
     });
   });
 });

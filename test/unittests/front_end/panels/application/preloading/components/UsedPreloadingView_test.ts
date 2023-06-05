@@ -72,7 +72,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
     const component = await renderUsedPreloadingView(data);
     assertShadowRoot(component.shadowRoot);
 
-    assert.strictEqual(component.shadowRoot.textContent, '');
+    assert.include(component.shadowRoot.textContent, 'No preloading was used for this page.');
   });
 
   it('renderes prefetch used', async () => {

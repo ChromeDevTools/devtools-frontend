@@ -50,6 +50,7 @@ import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
 import {BounceTrackingMitigationsTreeElement} from './BounceTrackingMitigationsTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
+import {type PreloadingResultView, type PreloadingView} from './preloading/PreloadingView.js';
 import {PreloadingTreeElement} from './PreloadingTreeElement.js';
 import resourcesSidebarStyles from './resourcesSidebar.css.js';
 import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
@@ -264,7 +265,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement;
   pushMessagingTreeElement: BackgroundServiceTreeElement;
   reportingApiTreeElement: ReportingApiTreeElement;
-  preloadingTreeElement: PreloadingTreeElement|undefined;
+  preloadingTreeElement: PreloadingTreeElement<PreloadingView>|undefined;
+  preloadingResultTreeElement: PreloadingTreeElement<PreloadingResultView>|undefined;
   private readonly resourcesSection: ResourcesSection;
   private readonly databaseTableViews: Map<DatabaseModelDatabase, {
     [x: string]: DatabaseTableView,
@@ -400,8 +402,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       const preloadingSectionTitle = i18nString(UIStrings.preloading);
       const preloadingSectionTreeElement = this.addSidebarSection(preloadingSectionTitle);
 
-      this.preloadingTreeElement = new PreloadingTreeElement(panel);
+      this.preloadingTreeElement = PreloadingTreeElement.newForPreloadingView(panel);
+      this.preloadingResultTreeElement = PreloadingTreeElement.newForPreloadingResultView(panel);
       preloadingSectionTreeElement.appendChild(this.preloadingTreeElement);
+      preloadingSectionTreeElement.appendChild(this.preloadingResultTreeElement);
     }
 
     const resourcesSectionTitle = i18nString(UIStrings.frames);
@@ -561,12 +565,11 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.periodicBackgroundSyncTreeElement.initialize(backgroundServiceModel);
     this.pushMessagingTreeElement.initialize(backgroundServiceModel);
 
-    // The condition is equivalent to
-    // `Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL)`.
-    if (this.preloadingTreeElement) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL)) {
       const preloadingModel = this.target?.model(SDK.PreloadingModel.PreloadingModel);
       if (preloadingModel) {
-        this.preloadingTreeElement.initialize(preloadingModel);
+        this.preloadingTreeElement?.initialize(preloadingModel);
+        this.preloadingResultTreeElement?.initialize(preloadingModel);
       }
     }
   }

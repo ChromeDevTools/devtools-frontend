@@ -188,10 +188,12 @@ class PreloadingUIUtils {
 // PreloadingMoedl.onPrimaryPageChanged.
 class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.PreloadingModel.PreloadingModel> {
   model: SDK.PreloadingModel.PreloadingModel;
-  private readonly view: PreloadingView;
+  private readonly view: PreloadingView|PreloadingResultView;
   private readonly warningsView: PreloadingWarningsView;
 
-  constructor(model: SDK.PreloadingModel.PreloadingModel, view: PreloadingView, warningsView: PreloadingWarningsView) {
+  constructor(
+      model: SDK.PreloadingModel.PreloadingModel, view: PreloadingView|PreloadingResultView,
+      warningsView: PreloadingWarningsView) {
     this.view = view;
     this.warningsView = warningsView;
 
@@ -237,7 +239,6 @@ export class PreloadingView extends UI.Widget.VBox {
 
   private readonly warningsContainer: HTMLDivElement;
   private readonly warningsView = new PreloadingWarningsView();
-  private readonly hsplitUsedPreloading: UI.SplitWidget.SplitWidget;
   private readonly hsplit: UI.SplitWidget.SplitWidget;
   private readonly vsplitRuleSets: UI.SplitWidget.SplitWidget;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
@@ -255,22 +256,19 @@ export class PreloadingView extends UI.Widget.VBox {
     // this (VBox)
     //   +- warningsContainer
     //        +- PreloadingWarningsView
-    //   +- hsplitUsedPreloading
-    //        +- hsplit
-    //             +- vsplitRuleSets
-    //                  +- leftContainer
-    //                       +- RuleSetGrid
-    //                  +- rightContainer
-    //                       +- RuleSetDetailsReportView
-    //             +- VBox
-    //                  +- toolbar (filtering)
-    //                  +- vsplitPreloadingAttempts
-    //                       +- leftContainer
-    //                            +- PreloadingGrid
-    //                       +- rightContainer
-    //                            +- PreloadingDetailsReportView
+    //   +- hsplit
+    //        +- vsplitRuleSets
+    //             +- leftContainer
+    //                  +- RuleSetGrid
+    //             +- rightContainer
+    //                  +- RuleSetDetailsReportView
     //        +- VBox
-    //             + UsedPreloadingReportView
+    //             +- toolbar (filtering)
+    //             +- vsplitPreloadingAttempts
+    //                  +- leftContainer
+    //                       +- PreloadingGrid
+    //                  +- rightContainer
+    //                       +- PreloadingDetailsReportView
     //
     // - If an row of RuleSetGrid selected, RuleSetDetailsReportView shows details of it.
     // - If not, RuleSetDetailsReportView hides.
@@ -308,19 +306,6 @@ export class PreloadingView extends UI.Widget.VBox {
     );
     this.hsplit.setSidebarWidget(this.vsplitRuleSets);
     this.hsplit.setMainWidget(preloadingAttempts);
-
-    const usedPreloadingContainer = new UI.Widget.VBox();
-    usedPreloadingContainer.contentElement.appendChild(this.usedPreloading);
-    this.hsplitUsedPreloading = new UI.SplitWidget.SplitWidget(
-        /* isVertical */ false,
-        /* secondIsSidebar */ true,
-        /* settingName */ undefined,
-        /* defaultSidebarWidth */ undefined,
-        /* defaultSidebarHeight */ 50,
-        /* constraintsInDip */ undefined,
-    );
-    this.hsplitUsedPreloading.setMainWidget(this.hsplit);
-    this.hsplitUsedPreloading.setSidebarWidget(usedPreloadingContainer);
   }
 
   private makeVsplit(left: HTMLElement, right: HTMLElement): UI.SplitWidget.SplitWidget {
@@ -353,7 +338,7 @@ export class PreloadingView extends UI.Widget.VBox {
 
     this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
 
-    this.hsplitUsedPreloading.show(this.contentElement);
+    this.hsplit.show(this.contentElement);
 
     // Lazily initialize PreloadingModelProxy because this triggers a chain
     //
@@ -473,6 +458,54 @@ export class PreloadingView extends UI.Widget.VBox {
   setCheckboxFilterBySelectedRuleSetForTest(checked: boolean): void {
     this.checkboxFilterBySelectedRuleSet.setChecked(checked);
     this.render();
+  }
+}
+
+export class PreloadingResultView extends UI.Widget.VBox {
+  private readonly modelProxy: PreloadingModelProxy;
+
+  private readonly warningsContainer: HTMLDivElement;
+  private readonly warningsView = new PreloadingWarningsView();
+  private readonly usedPreloading = new PreloadingComponents.UsedPreloadingView.UsedPreloadingView();
+
+  constructor(model: SDK.PreloadingModel.PreloadingModel) {
+    super(/* isWebComponent */ true, /* delegatesFocus */ false);
+
+    this.modelProxy = new PreloadingModelProxy(model, this, this.warningsView);
+
+    this.warningsContainer = document.createElement('div');
+    this.warningsContainer.classList.add('flex-none');
+    this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
+    this.warningsView.show(this.warningsContainer);
+
+    const usedPreloadingContainer = new UI.Widget.VBox();
+    usedPreloadingContainer.contentElement.appendChild(this.usedPreloading);
+    usedPreloadingContainer.show(this.contentElement);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+
+    this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
+
+    // Lazily initialize PreloadingModelProxy because this triggers a chain
+    //
+    //    PreloadingModelProxy.initialize()
+    // -> TargetManager.observeModels()
+    // -> PreloadingModelProxy.modelAdded()
+    // -> PreloadingResultView.render()
+    //
+    // , and PreloadingView.onModelAdded() requires all members are
+    // initialized. So, here is the best timing.
+    this.modelProxy.initialize();
+  }
+
+  render(): void {
+    this.usedPreloading.data = this.modelProxy.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value);
+  }
+
+  getUsedPreloadingForTest(): PreloadingComponents.UsedPreloadingView.UsedPreloadingView {
+    return this.usedPreloading;
   }
 }
 

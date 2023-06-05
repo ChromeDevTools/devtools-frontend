@@ -10,24 +10,42 @@ import type * as Platform from '../../core/platform/platform.js';
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {type ResourcesPanel} from './ResourcesPanel.js';
 
-import {PreloadingView} from './preloading/PreloadingView.js';
+import {PreloadingView, PreloadingResultView} from './preloading/PreloadingView.js';
 
 const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
   prefetchingAndPrerendering: 'Prefetching & Prerendering',
+  /**
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
+  thisPage: 'This Page',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/PreloadingTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class PreloadingTreeElement extends ApplicationPanelTreeElement {
-  private model?: SDK.PreloadingModel.PreloadingModel;
-  private view?: PreloadingView;
+type M = SDK.PreloadingModel.PreloadingModel;
+
+export class PreloadingTreeElement<V extends PreloadingView|PreloadingResultView> extends ApplicationPanelTreeElement {
+  private model?: M;
+  private ctorV: {new(model: M): V};
+  private view?: V;
   #selectedInternal: boolean;
 
-  constructor(resourcesPanel: ResourcesPanel) {
-    super(resourcesPanel, i18nString(UIStrings.prefetchingAndPrerendering), false);
+  // TODO(https://crbug.com/1410709): Split this view into "SpeculationRules" and "Preload".
+  static newForPreloadingView(resourcesPanel: ResourcesPanel): PreloadingTreeElement<PreloadingView> {
+    return new PreloadingTreeElement(resourcesPanel, PreloadingView, i18nString(UIStrings.prefetchingAndPrerendering));
+  }
+
+  static newForPreloadingResultView(resourcesPanel: ResourcesPanel): PreloadingTreeElement<PreloadingResultView> {
+    return new PreloadingTreeElement(resourcesPanel, PreloadingResultView, i18nString(UIStrings.thisPage));
+  }
+
+  constructor(resourcesPanel: ResourcesPanel, ctorV: {new(model: M): V}, title: string) {
+    super(resourcesPanel, title, false);
+
+    this.ctorV = ctorV;
 
     const icon = UI.Icon.Icon.create('arrow-up-down', 'resource-tree-item');
     this.setLeadingIcons([icon]);
@@ -58,7 +76,7 @@ export class PreloadingTreeElement extends ApplicationPanelTreeElement {
     }
 
     if (!this.view) {
-      this.view = new PreloadingView(this.model);
+      this.view = new this.ctorV(this.model);
     }
 
     this.showView(this.view);

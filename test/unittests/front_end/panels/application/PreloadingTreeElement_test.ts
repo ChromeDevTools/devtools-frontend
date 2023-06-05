@@ -21,7 +21,7 @@ describeWithMockConnection('PreloadingTreeElement', () => {
     const panel = {
       showView: spy,
     } as unknown as Resources.ResourcesPanel.ResourcesPanel;
-    const preloadingTreeElement = new Application.PreloadingTreeElement.PreloadingTreeElement(panel);
+    const preloadingTreeElement = Application.PreloadingTreeElement.PreloadingTreeElement.newForPreloadingView(panel);
 
     preloadingTreeElement.onselect(false);
     assert.isTrue(spy.notCalled);

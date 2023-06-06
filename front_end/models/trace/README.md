@@ -4,6 +4,7 @@ This folder contains the new trace engine that was first implemented for the Per
 
 ## High level architecture
 
+```
      ┌──────────────┐
      │  Model#parse ├───┐
      └──────────────┘   │
@@ -33,6 +34,7 @@ This folder contains the new trace engine that was first implemented for the Per
       ┌──────────────────▼─────────────────┐
       │const data = model.traceParsedData()│
       └────────────────────────────────────┘
+```
 
 `Model#parse` is the entrypoint into the engine and is the public interface that consumers use to initiate tracing and to fetch data back.
 

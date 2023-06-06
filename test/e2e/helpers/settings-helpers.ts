@@ -81,7 +81,7 @@ export const toggleIgnoreListing = async (enable: boolean) => {
   const enabledPattern = '.ignore-list-options:not(.ignore-listing-disabled)';
   const disabledPattern = '.ignore-list-options.ignore-listing-disabled';
   await waitFor(enable ? disabledPattern : enabledPattern);
-  await click('[aria-label="Enable Ignore Listing"]');
+  await click('[title="Enable Ignore Listing"]');
   await waitFor(enable ? enabledPattern : disabledPattern);
   await closeSettings();
 };

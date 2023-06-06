@@ -13,7 +13,7 @@ describe('Breakpoints on CSP Violation', async () => {
     await openSourcesPanel();
     await waitForAria('CSP Violation Breakpoints');
     await click('[aria-label="CSP Violation Breakpoints"]');
-    await click('[aria-label="Trusted Type Violations"]');
+    await click('[title="Trusted Type Violations"]');
     await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
 
     const resource = goToResource('network/trusted-type-violations-enforced.rawresponse');
@@ -37,7 +37,7 @@ describe('Breakpoints on CSP Violation', async () => {
     await openSourcesPanel();
     await waitForAria('CSP Violation Breakpoints');
     await click('[aria-label="CSP Violation Breakpoints"]');
-    await click('[aria-label="Trusted Type Violations"]');
+    await click('[title="Trusted Type Violations"]');
 
     const resource = goToResource('network/trusted-type-violations-report-only.rawresponse');
 

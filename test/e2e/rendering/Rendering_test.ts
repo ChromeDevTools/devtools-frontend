@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, waitFor, waitForAria} from '../../shared/helper.js';
+import {getBrowserAndPages, waitFor} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
@@ -76,6 +76,6 @@ describe('Rendering pane', () => {
 
   it('includes UI for emulating auto dark mode', async () => {
     await openPanelViaMoreTools('Rendering');
-    await waitForAria('Enable automatic dark mode[role="checkbox"]');
+    await waitFor('[title="Enable automatic dark mode"]');
   });
 });

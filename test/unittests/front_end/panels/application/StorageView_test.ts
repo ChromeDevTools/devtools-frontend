@@ -76,7 +76,7 @@ describeWithMockConnection('StorageView', () => {
       assertElement(container, HTMLDivElement);
       assertShadowRoot(container.shadowRoot);
       const customQuotaCheckbox = container.shadowRoot.querySelector('.quota-override-row span')
-                                      ?.shadowRoot?.querySelector('[aria-label="Simulate custom storage quota"]') ||
+                                      ?.shadowRoot?.querySelector('[title="Simulate custom storage quota"]') ||
           null;
       assertElement(customQuotaCheckbox, HTMLInputElement);
       customQuotaCheckbox.checked = true;

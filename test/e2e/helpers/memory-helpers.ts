@@ -45,7 +45,7 @@ export async function takeAllocationTimelineProfile({recordStacks}: {recordStack
   const radioButton = await $('//label[text()="Allocation instrumentation on timeline"]', undefined, 'xpath');
   await clickElement(radioButton);
   if (recordStacks) {
-    await click('input[aria-label="Record stack traces of allocations (extra performance overhead)"]');
+    await click('[title="Record stack traces of allocations (extra performance overhead)"]');
   }
   await click('button[aria-label="Start recording heap profile"]');
   await new Promise(r => setTimeout(r, 200));

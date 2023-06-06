@@ -93,11 +93,11 @@ export async function waitForSelectedRequestChange(initialRequestName: string|nu
 }
 
 export async function setPersistLog(persist: boolean) {
-  await setCheckBox('[aria-label="Preserve log"]', persist);
+  await setCheckBox('[title="Do not clear log on page reload / navigation"]', persist);
 }
 
 export async function setCacheDisabled(disabled: boolean): Promise<void> {
-  await setCheckBox('[aria-label="Disable cache"]', disabled);
+  await setCheckBox('[title^="Disable cache"]', disabled);
 }
 
 export async function setTimeWindow(): Promise<void> {

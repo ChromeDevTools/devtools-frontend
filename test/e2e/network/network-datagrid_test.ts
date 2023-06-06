@@ -65,9 +65,9 @@ describe('The Network Tab', async function() {
     await navigateToNetworkTab('resources-from-cache.html');
 
     // Click the label next to the checkbox input element
-    await click('[aria-label="Disable cache"] + label');
+    await click('[title^="Disable cache"] + label');
 
-    const checkbox = await waitFor('[aria-label="Disable cache"]');
+    const checkbox = await waitFor('[title^="Disable cache"]');
     const checked = await checkbox.evaluate(box => (box as HTMLInputElement).checked);
 
     assert.strictEqual(checked, false, 'The disable cache checkbox should be unchecked');

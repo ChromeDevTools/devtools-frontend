@@ -85,7 +85,7 @@ describe('IssueView cache', async () => {
       'false',
     ];
     await waitForResources(2, [header, expectedRow1, expectedRow2]);
-    await setCheckBox('[aria-label="Include third-party cookie issues"]', true);
+    await setCheckBox('[title="Include cookie Issues caused by third-party sites"]', true);
 
     // Trigger issue again to see if resources are updated.
     await triggerIssue();

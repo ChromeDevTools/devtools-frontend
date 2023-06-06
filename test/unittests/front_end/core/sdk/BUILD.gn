@@ -22,6 +22,7 @@ ts_library("sdk") {
     "DOMModel_test.ts",
     "DebuggerModel_test.ts",
     "EmulationModel_test.ts",
+    "FilmStripModel_test.ts",
     "FrameManager_test.ts",
     "NetworkManager_test.ts",
     "NetworkRequest_test.ts",

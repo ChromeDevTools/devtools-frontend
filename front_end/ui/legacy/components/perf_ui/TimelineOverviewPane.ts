@@ -219,8 +219,11 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
       return;
     }
 
-    this.windowStartTime = event.data.rawStartValue;
-    this.windowEndTime = event.data.rawEndValue;
+    this.windowStartTime =
+        event.data.rawStartValue === this.overviewCalculator.minimumBoundary() ? 0 : event.data.rawStartValue;
+    this.windowEndTime =
+        event.data.rawEndValue === this.overviewCalculator.maximumBoundary() ? Infinity : event.data.rawEndValue;
+
     const windowTimes = {startTime: this.windowStartTime, endTime: this.windowEndTime};
 
     this.dispatchEventToListeners(Events.WindowChanged, windowTimes);

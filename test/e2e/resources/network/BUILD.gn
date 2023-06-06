@@ -15,6 +15,7 @@ copy_to_gen("network") {
     "headers-and-payload.html",
     "hello.html",
     "image.svg",
+    "infinite-requests.html",
     "last-modified.html",
     "last-modified.rawresponse",
     "requests.html",

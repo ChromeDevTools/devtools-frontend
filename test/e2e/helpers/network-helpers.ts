@@ -44,6 +44,10 @@ export async function getAllRequestNames() {
   return await Promise.all(requests.map(request => request.evaluate(r => r.childNodes[1].textContent)));
 }
 
+export async function getNumberOfRequests() {
+  return (await getAllRequestNames()).length;
+}
+
 export async function getSelectedRequestName() {
   const request = await $(REQUEST_LIST_SELECTOR + ' tr.selected .name-column');
   if (!request) {
@@ -94,6 +98,16 @@ export async function setPersistLog(persist: boolean) {
 
 export async function setCacheDisabled(disabled: boolean): Promise<void> {
   await setCheckBox('[aria-label="Disable cache"]', disabled);
+}
+
+export async function setTimeWindow(): Promise<void> {
+  const overviewGridCursorArea = await waitFor('.overview-grid-cursor-area');
+  await overviewGridCursorArea.click({offset: {x: 0, y: 10}});
+}
+
+export async function clearTimeWindow(): Promise<void> {
+  const overviewGridCursorArea = await waitFor('.overview-grid-cursor-area');
+  await overviewGridCursorArea.click({count: 2});
 }
 
 export async function getTextFromHeadersRow(row: puppeteer.ElementHandle<Element>) {

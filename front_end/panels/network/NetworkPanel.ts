@@ -371,7 +371,15 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       void {
     const startTime = Math.max(this.calculator.minimumBoundary(), event.data.startTime / 1000);
     const endTime = Math.min(this.calculator.maximumBoundary(), event.data.endTime / 1000);
-    this.networkLogView.setWindow(startTime, endTime);
+    if (startTime === this.calculator.minimumBoundary() && endTime === this.calculator.maximumBoundary()) {
+      // Reset the filters for NetworkLogView when the window is reset
+      // to its boundaries. This clears the filters and allows the users
+      // to see the incoming requests after they have updated the curtains
+      // to be in the edges. (ex: by double clicking on the overview grid)
+      this.networkLogView.setWindow(0, 0);
+    } else {
+      this.networkLogView.setWindow(startTime, endTime);
+    }
   }
 
   private async searchToggleClick(): Promise<void> {

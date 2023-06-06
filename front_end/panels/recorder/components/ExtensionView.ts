@@ -111,7 +111,7 @@ export class ExtensionView extends HTMLElement {
                 {
                   variant: Buttons.Button.Variant.ROUND,
                   size: Buttons.Button.Size.TINY,
-                  iconName: 'bin',
+                  iconName: 'cross',
                 } as Buttons.Button.ButtonData
               }
               @click=${this.#closeView}

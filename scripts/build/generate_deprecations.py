@@ -37,6 +37,9 @@ def deprecations_from_file(file_name):
     meta = {}
     ui_strings = {}
     for entry in doc["data"]:
+        if "obsolete_to_be_removed_after_milestone" in entry:
+            continue
+
         name = entry["name"]
 
         meta_for_entry = {}

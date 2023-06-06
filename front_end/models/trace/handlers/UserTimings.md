@@ -20,7 +20,7 @@ Events that represent a `performance.measure` call will come in pairs: a begin e
 
 ### Parsing out user timings
 
-For `performance.mark` calls, the handler looks for events with the user timing category and the `Mark` trace event phase ('R'). These events are then filtered to exclude timings appendend by Chrome (1).
+For `performance.mark` calls, the handler looks for events with the user timing category and the `Mark` trace event phase (`I`). However, pre-June 2023, these are emitted with phase `R`. These events are then filtered to exclude timings appendend by Chrome (1).
 
 For `performance.measure` calls, the handler looks for begin or end events in the trace. Once we have these, we then pair them up, and create a list of synthetic user timing events. These are events that do not actually exist in the trace, but we create because we need one event to map to each block. The event is made up of information from the begin and/or end event and includes most crucially:
 

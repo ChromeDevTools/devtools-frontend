@@ -738,7 +738,7 @@ export interface TraceEventTimeStamp extends TraceEventData {
 
 export interface TraceEventPerformanceMark extends TraceEventData {
   cat: 'blink.user_timing';
-  ph: Phase.MARK;
+  ph: Phase.INSTANT|Phase.MARK;
   id: string;
 }
 
@@ -1057,7 +1057,8 @@ export function isTraceEventPerformanceMeasure(traceEventData: TraceEventData):
 
 export function isTraceEventPerformanceMark(traceEventData: TraceEventData):
     traceEventData is TraceEventPerformanceMark {
-  return traceEventData.ph === Phase.MARK && traceEventData.cat === 'blink.user_timing';
+  return (traceEventData.ph === Phase.MARK || traceEventData.ph === Phase.INSTANT) &&
+      traceEventData.cat === 'blink.user_timing';
 }
 
 export function isTraceEventConsoleTime(traceEventData: TraceEventData): traceEventData is TraceEventConsoleTimeBegin|

@@ -376,31 +376,15 @@ export function getNodeFor(
 }
 
 /**
- * Gets the event for a node from a tree in a thread.
- * @see RendererHandler.ts
- */
-export function getEventFor(
-    thread: TraceModel.Handlers.ModelHandlers.Renderer.RendererThread,
-    node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode):
-    TraceModel.Handlers.ModelHandlers.Renderer.RendererEvent {
-  const event = thread.events[node.eventIndex];
-  if (!event) {
-    assert(false, `Couldn't get the event at index ${node.eventIndex} for node in thread ${thread.name}`);
-    return null as never;
-  }
-  return event;
-}
-
-/**
  * Gets all the `events` for the `nodes` with `ids`.
  */
 export function getEventsIn(
     ids: IterableIterator<TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNodeId>,
     nodes:
         Map<TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNodeId,
-            TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode>,
-    events: TraceModel.Types.TraceEvents.TraceEventData[]): TraceModel.Types.TraceEvents.TraceEventData[] {
-  return [...ids].map(id => nodes.get(id)).flatMap(node => node ? [events[node.eventIndex]] : []);
+            TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode>):
+    TraceModel.Types.TraceEvents.TraceEventData[] {
+  return [...ids].map(id => nodes.get(id)).flatMap(node => node ? node.event : []);
 }
 /**
  * Pretty-prints the tree in a thread.
@@ -410,13 +394,13 @@ export function prettyPrint(
     nodes: Set<TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNodeId>,
     predicate: (
         node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode,
-        event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEvent) => boolean = () => true,
+        event: TraceModel.Handlers.ModelHandlers.Renderer.RendererTraceEvent) => boolean = () => true,
     indentation: number = 2, delimiter: string = ' ', prefix: string = '-', newline: string = '\n',
     out: string = ''): string {
   let skipped = false;
   for (const nodeId of nodes) {
     const node = getNodeFor(thread, nodeId);
-    const event = getEventFor(thread, node);
+    const event = node.event;
     if (!predicate(node, event)) {
       out += `${!skipped ? newline : ''}.`;
       skipped = true;

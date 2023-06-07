@@ -6,18 +6,15 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
-import {
-  buildStackTraceAsCallFramesFromId,
-  data as samplesData,
-  getAllHotFunctionsBetweenTimestamps,
-} from './SamplesHandler.js';
 
 import {KnownEventName, KNOWN_EVENTS, type TraceEventHandlerName, HandlerState} from './types.js';
 import * as Types from '../types/types.js';
 
 const processes = new Map<Types.TraceEvents.ProcessID, RendererProcess>();
-const traceEventToNode = new Map<RendererEvent, RendererEventNode>();
-const allRendererEvents: RendererEvent[] = [];
+const traceEventToNode = new Map<RendererTraceEvent, RendererEventNode>();
+const allRendererEvents: RendererTraceEvent[] = [];
+let nodeIdCount = 0;
+const makeRendererEventNodeId = (): RendererEventNodeId => (++nodeIdCount) as RendererEventNodeId;
 
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -38,17 +35,13 @@ const makeEmptyRendererEventTree = (): RendererEventTree => ({
   maxDepth: 0,
 });
 
-const makeEmptyRendererEventNode = (eventIndex: number): RendererEventNode => ({
-  eventIndex,
+const makeEmptyRendererEventNode = (event: RendererTraceEvent, id: RendererEventNodeId): RendererEventNode => ({
+  event,
+  id,
   parentId: null,
   childrenIds: new Set(),
   depth: 0,
 });
-
-const makeRendererEventNodeIdGenerator = (): () => RendererEventNodeId => {
-  let i = 0;
-  return (): RendererEventNodeId => i++ as RendererEventNodeId;
-};
 
 const getOrCreateRendererProcess =
     (processes: Map<Types.TraceEvents.ProcessID, RendererProcess>, pid: Types.TraceEvents.ProcessID):
@@ -64,6 +57,7 @@ export function reset(): void {
   processes.clear();
   traceEventToNode.clear();
   allRendererEvents.length = 0;
+  nodeIdCount = -1;
   handlerState = HandlerState.UNINITIALIZED;
 }
 
@@ -292,69 +286,46 @@ export function buildHierarchy(
  * Complexity: O(n), where n = number of events
  */
 export function treify(
-    events: RendererEvent[], options: {filter: {has: (name: KnownEventName) => boolean}}): RendererEventTree {
+    events: RendererTraceEvent[], options: {filter: {has: (name: KnownEventName) => boolean}}): RendererEventTree {
   const stack = [];
+  // Reset the node id counter for every new renderer.
+  nodeIdCount = -1;
   const tree = makeEmptyRendererEventTree();
-  const makeRendererEventNodeId = makeRendererEventNodeIdGenerator();
-  let lastScheduleStyleRecalcEvent: RendererEvent|null = null;
-  let lastInvalidateLayout: RendererEvent|null = null;
-  let lastForcedStyleRecalc: RendererEvent|null = null;
-
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
 
-    buildHotFunctionsStackTracesForTask(event);
-
-    if (event.name === KnownEventName.ScheduleStyleRecalculation) {
-      lastScheduleStyleRecalcEvent = event;
-    }
-    if (event.name === KnownEventName.InvalidateLayout) {
-      lastInvalidateLayout = event;
-    }
-    if (event.name === KnownEventName.RecalculateStyles) {
-      lastForcedStyleRecalc = event;
-    }
     // If the current event should not be part of the tree, then simply proceed
     // with the next event.
     if (!options.filter.has(event.name as KnownEventName)) {
       continue;
     }
 
-    const duration = Types.TraceEvents.isTraceEventInstant(event) ? 0 : event.dur;
+    const duration = event.dur || 0;
+    const nodeId = makeRendererEventNodeId();
+    const node = makeEmptyRendererEventNode(event, nodeId);
 
     // If the parent stack is empty, then the current event is a root. Create a
     // node for it, mark it as a root, then proceed with the next event.
     if (stack.length === 0) {
-      const node = makeEmptyRendererEventNode(i);
-      const nodeId = makeRendererEventNodeId();
       tree.nodes.set(nodeId, node);
       tree.roots.add(nodeId);
-      event.totalTime = Types.Timing.MicroSeconds(duration);
       event.selfTime = Types.Timing.MicroSeconds(duration);
-      stack.push(nodeId);
+      stack.push(node);
       tree.maxDepth = Math.max(tree.maxDepth, stack.length);
       traceEventToNode.set(event, node);
       continue;
     }
 
-    const parentNodeId = stack[stack.length - 1];
-    if (parentNodeId === undefined) {
-      throw new Error('Impossible: no parent node id found in the stack');
+    const parentNode = stack.at(-1);
+    if (parentNode === undefined) {
+      throw new Error('Impossible: no parent node found in the stack');
     }
 
-    const parentNode = tree.nodes.get(parentNodeId);
-    if (!parentNode) {
-      throw new Error('Impossible: no parent node exists for the given id');
-    }
-
-    const parentEvent = events[parentNode.eventIndex];
-    if (!parentEvent) {
-      throw new Error('Impossible: no parent event exists for the given node');
-    }
+    const parentEvent = parentNode.event;
 
     const begin = event.ts;
     const parentBegin = parentEvent.ts;
-    const parentDuration = Types.TraceEvents.isTraceEventInstant(parentEvent) ? 0 : parentEvent.dur;
+    const parentDuration = parentEvent.dur || 0;
     const end = begin + duration;
     const parentEnd = parentBegin + parentDuration;
     // Check the relationship between the parent event at the top of the stack,
@@ -378,6 +349,8 @@ export function treify(
     if (startsAfterParent) {
       stack.pop();
       i--;
+      // The last created node has been discarded, so discard this id.
+      nodeIdCount--;
       continue;
     }
 
@@ -392,103 +365,19 @@ export function treify(
     //    contained within the parent event. Create a node for the current
     //    event, establish the parent/child relationship, then proceed with the
     //    next event.
-    const node = makeEmptyRendererEventNode(i);
-    const nodeId = makeRendererEventNodeId();
     tree.nodes.set(nodeId, node);
     node.depth = stack.length;
-    node.parentId = parentNodeId;
+    node.parentId = parentNode.id;
     parentNode.childrenIds.add(nodeId);
     event.selfTime = Types.Timing.MicroSeconds(duration);
-    event.totalTime = Types.Timing.MicroSeconds(duration);
     if (parentEvent.selfTime !== undefined) {
-      parentEvent.selfTime = Types.Timing.MicroSeconds(parentEvent.selfTime - event.totalTime);
+      parentEvent.selfTime = Types.Timing.MicroSeconds(parentEvent.selfTime - (event.dur || 0));
     }
-    stack.push(nodeId);
+    stack.push(node);
     tree.maxDepth = Math.max(tree.maxDepth, stack.length);
     traceEventToNode.set(event, node);
-    // For checking if an event is a forced layout, this point in the process
-    // is the perfect spot.
-    // An event is a forced layout if it is in a subset of all events (see
-    // EVENTS_THAT_MAY_BE_FORCED_LAYOUTS constant) AND if its parent event is
-    // not a RunTask.  Rather than navigate the tree and perform this check
-    // later on, we can do this at this point, where we already have done the
-    // work to calculate the event and its parent event.
-    checkIfEventIsForcedLayoutAndStore(
-        event, lastScheduleStyleRecalcEvent, lastInvalidateLayout, lastForcedStyleRecalc);
   }
   return tree;
-}
-
-function checkIfEventIsForcedLayoutAndStore(
-    event: RendererEvent, lastScheduleStyleRecalcEvent: RendererEvent|null, lastInvalidateLayout: RendererEvent|null,
-    lastForcedStyleRecalc: RendererEvent|null): void {
-  // Forced re relayout
-  if (FORCED_LAYOUT_EVENT_NAMES.has(event.name as KnownEventName)) {
-    if (lastInvalidateLayout) {
-      // By default, the initiator of a forced re layout is the last InvalidateLayout event.
-      event.initiator = lastInvalidateLayout;
-    }
-
-    // However if the last InvalidateLayout ended before the last forced styles recalc,
-    // set the initiator to be the last ScheduleStylesRecalc.
-    const lastForcedStyleEndTime = lastForcedStyleRecalc && lastForcedStyleRecalc.ts + (lastForcedStyleRecalc.dur || 0);
-    const hasInitiator = lastScheduleStyleRecalcEvent && lastInvalidateLayout && lastForcedStyleEndTime;
-    if (hasInitiator && lastForcedStyleEndTime > lastInvalidateLayout.ts) {
-      event.initiator = lastScheduleStyleRecalcEvent;
-    }
-  }
-
-  // Forced styles recalc
-  if (FORCED_RECALC_STYLE_EVENTS.has(event.name as KnownEventName)) {
-    lastForcedStyleRecalc = event;
-    if (lastScheduleStyleRecalcEvent) {
-      // By default, the initiator of a forced styles recalc is the last ScheduleStylesRecalc event.
-      event.initiator = lastScheduleStyleRecalcEvent;
-    }
-  }
-}
-
-function eventIsLongTask(event: RendererEvent, mustBeOnMainFrame: boolean): boolean {
-  if (event.name !== KnownEventName.RunTask) {
-    return false;
-  }
-  const eventProcess = processes.get(event.pid);
-  const isOnMainFrame = Boolean(eventProcess && eventProcess.isOnMainFrame);
-  if (!isOnMainFrame && mustBeOnMainFrame) {
-    return false;
-  }
-
-  const errorTimeThreshold = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(50));
-  const eventDuration = Types.TraceEvents.isTraceEventInstant(event) ? 0 : event.dur;
-  return eventDuration > errorTimeThreshold;
-}
-
-export function buildHotFunctionsStackTracesForTask(task: RendererEvent): void {
-  if (!eventIsLongTask(task, true)) {
-    // Don't spend time computing this data for tasks that aren't long.
-    return;
-  }
-  const {processes} = samplesData();
-  const thread = processes.get(task.pid)?.threads.get(task.tid);
-  // This threshold is temporarily set to 0 until so that at the moment
-  // we want to always show what functions were executed in a long task.
-  // In the future however, as we provide more sophisticated details
-  // for long tasks, we should set the threshold to a more valuable value.
-  const HOT_FUNCTION_MIN_SELF_PERCENTAGE = 0;
-  const calls = thread?.calls;
-  const taskStart = task.ts;
-  const taskEnd = Types.Timing.MicroSeconds(task.ts + (task.dur || 0));
-  const hotFunctions =
-      calls && getAllHotFunctionsBetweenTimestamps(calls, taskStart, taskEnd, HOT_FUNCTION_MIN_SELF_PERCENTAGE);
-  const tree = thread?.tree;
-  if (!hotFunctions || !tree) {
-    return;
-  }
-  // Store the top 10 hot functions.
-  const MAX_HOT_FUNCTION_COUNT = 10;
-  task.hotFunctionsStackTraces =
-      hotFunctions.slice(0, MAX_HOT_FUNCTION_COUNT)
-          .map(hotFunction => buildStackTraceAsCallFramesFromId(tree, hotFunction.stackFrame.nodeId).reverse());
 }
 
 export const FORCED_LAYOUT_EVENT_NAMES = new Set([
@@ -506,8 +395,8 @@ export function deps(): TraceEventHandlerName[] {
 
 export interface RendererHandlerData {
   processes: Map<Types.TraceEvents.ProcessID, RendererProcess>;
-  traceEventToNode: Map<RendererEvent, RendererEventNode>;
-  allRendererEvents: RendererEvent[];
+  traceEventToNode: Map<RendererTraceEvent, RendererEventNode>;
+  allRendererEvents: RendererTraceEvent[];
 }
 
 export interface RendererProcess {
@@ -520,18 +409,18 @@ export interface RendererProcess {
 
 export interface RendererThread {
   name: string|null;
-  events: RendererEvent[];
+  events: RendererTraceEvent[];
   tree?: RendererEventTree;
 }
 
 interface RendererEventData {
   selfTime: Types.Timing.MicroSeconds;
-  totalTime: Types.Timing.MicroSeconds;
-  initiator: RendererEvent;
+  initiator: RendererTraceEvent;
+  parent?: RendererTraceEvent;
   hotFunctionsStackTraces: Types.TraceEvents.TraceEventCallFrame[][];
 }
 
-export type RendererEvent = Types.TraceEvents.TraceEventRendererData&Partial<RendererEventData>;
+export type RendererTraceEvent = Types.TraceEvents.TraceEventRendererData&Partial<RendererEventData>;
 
 export interface RendererEventTree {
   nodes: Map<RendererEventNodeId, RendererEventNode>;
@@ -540,8 +429,9 @@ export interface RendererEventTree {
 }
 
 export interface RendererEventNode {
-  eventIndex: number;
+  event: RendererTraceEvent;
   depth: number;
+  id: RendererEventNodeId;
   parentId?: RendererEventNodeId|null;
   childrenIds: Set<RendererEventNodeId>;
 }

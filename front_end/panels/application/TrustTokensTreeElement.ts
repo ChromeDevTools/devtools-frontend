@@ -4,8 +4,8 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
@@ -22,11 +22,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/TrustTokensTreeElement.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-/** Fetch the Trust Token data regularly from the backend while the panel is open */
-const REFRESH_INTERVAL_MS = 1000;
-
 export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
-  private view?: TrustTokensViewWidgetWrapper;
+  private view?: LegacyWrapper.LegacyWrapper
+      .LegacyWrapper<UI.Widget.Widget, ApplicationComponents.TrustTokensView.TrustTokensView>;
 
   constructor(storagePanel: ResourcesPanel) {
     super(storagePanel, i18nString(UIStrings.trustTokens), false);
@@ -41,37 +39,11 @@ export class TrustTokensTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = new TrustTokensViewWidgetWrapper(new ApplicationComponents.TrustTokensView.TrustTokensView());
+      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
+          UI.Widget.Widget, new ApplicationComponents.TrustTokensView.TrustTokensView());
     }
     this.showView(this.view);
     Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.trust_tokens]);
     return false;
-  }
-}
-
-export class TrustTokensViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWidget {
-  private readonly trustTokensView: ApplicationComponents.TrustTokensView.TrustTokensView;
-
-  constructor(trustTokensView: ApplicationComponents.TrustTokensView.TrustTokensView) {
-    super(/* isWebComponent */ false, REFRESH_INTERVAL_MS);
-    this.trustTokensView = trustTokensView;
-    this.contentElement.appendChild(this.trustTokensView);
-    this.update();
-  }
-
-  protected override async doUpdate(): Promise<void> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!mainTarget) {
-      return;
-    }
-    const {tokens} = await mainTarget.storageAgent().invoke_getTrustTokens();
-    this.trustTokensView.data = {
-      tokens,
-      deleteClickHandler: (_issuer: string): void => {
-        void mainTarget.storageAgent().invoke_clearTrustTokens({issuerOrigin: _issuer});
-      },
-    };
-
-    this.update();
   }
 }

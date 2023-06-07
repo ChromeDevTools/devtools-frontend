@@ -3,9 +3,12 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import trustTokensViewStyles from './trustTokensView.css.js';
@@ -92,42 +95,55 @@ export interface TrustTokensViewData {
   deleteClickHandler: (issuerOrigin: string) => void;
 }
 
-export class TrustTokensView extends HTMLElement {
+const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
+
+/** Fetch the Trust Token data regularly from the backend while the panel is open */
+const REFRESH_INTERVAL_MS = 1000;
+
+export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   static readonly litTagName = LitHtml.literal`devtools-trust-tokens-storage-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #tokens: Protocol.Storage.TrustTokens[] = [];
-  #deleteClickHandler: (issuerOrigin: string) => void = () => {};
+
+  #deleteClickHandler(issuerOrigin: string): void {
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    void mainTarget?.storageAgent().invoke_clearTrustTokens({issuerOrigin});
+  }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [trustTokensViewStyles];
-    this.#render();
+    void this.render();
   }
 
-  set data(data: TrustTokensViewData) {
-    this.#tokens = data.tokens;
-    this.#deleteClickHandler = data.deleteClickHandler;
-    this.#render();
+  override async render(): Promise<void> {
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!mainTarget) {
+      return;
+    }
+    const {tokens} = await mainTarget.storageAgent().invoke_getTrustTokens();
+
+    await coordinator.write('Render TrustTokensView', () => {
+      // clang-format off
+      LitHtml.render(LitHtml.html`
+        <div>
+          <span class="heading">${i18nString(UIStrings.trustTokens)}</span>
+          <${IconButton.Icon.Icon.litTagName} class="info-icon" title=${
+              i18nString(UIStrings.allStoredTrustTokensAvailableIn)}
+            .data=${
+              {iconName: 'info', color: 'var(--icon-default)', width: '16px'} as
+              IconButton.Icon.IconWithName}>
+          </${IconButton.Icon.Icon.litTagName}>
+          ${this.#renderGridOrNoDataMessage(tokens)}
+        </div>
+      `, this.#shadow, {host: this});
+      // clang-format on
+      if (this.isConnected) {
+        setTimeout(() => this.render(), REFRESH_INTERVAL_MS);
+      }
+    });
   }
 
-  #render(): void {
-    // clang-format off
-    LitHtml.render(LitHtml.html`
-      <div>
-        <span class="heading">${i18nString(UIStrings.trustTokens)}</span>
-        <${IconButton.Icon.Icon.litTagName} class="info-icon" title=${
-            i18nString(UIStrings.allStoredTrustTokensAvailableIn)}
-          .data=${
-            {iconName: 'info', color: 'var(--icon-default)', width: '16px'} as
-            IconButton.Icon.IconWithName}>
-        </${IconButton.Icon.Icon.litTagName}>
-        ${this.#renderGridOrNoDataMessage()}
-      </div>
-    `, this.#shadow, {host: this});
-    // clang-format on
-  }
-
-  #renderGridOrNoDataMessage(): LitHtml.TemplateResult {
-    if (this.#tokens.length === 0) {
+  #renderGridOrNoDataMessage(tokens: Protocol.Storage.TrustTokens[]): LitHtml.TemplateResult {
+    if (tokens.length === 0) {
       return LitHtml.html`<div class="no-tt-message">${i18nString(UIStrings.noTrustTokensStored)}</div>`;
     }
 
@@ -158,7 +174,7 @@ export class TrustTokensView extends HTMLElement {
           sortable: false,
         },
       ],
-      rows: this.#buildRowsFromTokens(),
+      rows: this.#buildRowsFromTokens(tokens),
       initialSort: {
         columnId: 'issuer',
         direction: DataGrid.DataGridUtils.SortDirection.ASC,
@@ -172,19 +188,19 @@ export class TrustTokensView extends HTMLElement {
     `;
   }
 
-  #buildRowsFromTokens(): DataGrid.DataGridUtils.Row[] {
-    const tokens = this.#tokens.filter(token => token.count > 0);
-    return tokens.map(token => ({
-                        cells: [
-                          {
-                            columnId: 'delete-button',
-                            value: removeTrailingSlash(token.issuerOrigin),
-                            renderer: this.#deleteButtonRendererForDataGridCell.bind(this),
-                          },
-                          {columnId: 'issuer', value: removeTrailingSlash(token.issuerOrigin)},
-                          {columnId: 'count', value: token.count},
-                        ],
-                      }));
+  #buildRowsFromTokens(tokens: Protocol.Storage.TrustTokens[]): DataGrid.DataGridUtils.Row[] {
+    return tokens.filter(token => token.count > 0)
+        .map(token => ({
+               cells: [
+                 {
+                   columnId: 'delete-button',
+                   value: removeTrailingSlash(token.issuerOrigin),
+                   renderer: this.#deleteButtonRendererForDataGridCell.bind(this),
+                 },
+                 {columnId: 'issuer', value: removeTrailingSlash(token.issuerOrigin)},
+                 {columnId: 'count', value: token.count},
+               ],
+             }));
   }
 
   #deleteButtonRendererForDataGridCell(issuer: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {

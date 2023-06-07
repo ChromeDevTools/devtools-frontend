@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as DataGrid from '../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import {
   assertElement,
   assertShadowRoot,
@@ -14,22 +14,20 @@ import {
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
 import {getCellByIndexes, getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
-import {describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
+import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
-async function renderTrustTokensView(
-    tokens: Protocol.Storage.TrustTokens[], deleteClickHandler: (issuer: string) => void = () => {}):
-    Promise<ApplicationComponents.TrustTokensView.TrustTokensView> {
+async function renderTrustTokensView(): Promise<ApplicationComponents.TrustTokensView.TrustTokensView> {
   const component = new ApplicationComponents.TrustTokensView.TrustTokensView();
   renderElementIntoDOM(component);
-  component.data = {tokens, deleteClickHandler};
 
   // The data-grid's renderer is scheduled, so we need to wait until the coordinator
   // is done before we can test against it.
-  await coordinator.done();
+  await coordinator.done({waitForWork: true});
 
   return component;
 }
@@ -42,12 +40,22 @@ function getInternalDataGridShadowRoot(component: ApplicationComponents.TrustTok
   return dataGrid.shadowRoot;
 }
 
-describeWithLocale('TrustTokensView', () => {
+describeWithMockConnection('TrustTokensView', () => {
+  let target: SDK.Target.Target;
+
+  beforeEach(() => {
+    target = createTarget();
+  });
+
   it('renders trust token data', async () => {
-    const component = await renderTrustTokensView([
-      {issuerOrigin: 'foo.com', count: 42},
-      {issuerOrigin: 'bar.org', count: 7},
-    ]);
+    sinon.stub(target.storageAgent(), 'invoke_getTrustTokens').resolves({
+      tokens: [
+        {issuerOrigin: 'foo.com', count: 42},
+        {issuerOrigin: 'bar.org', count: 7},
+      ],
+      getError: () => undefined,
+    });
+    const component = await renderTrustTokensView();
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
@@ -58,10 +66,14 @@ describeWithLocale('TrustTokensView', () => {
   });
 
   it('does not display issuers with zero stored tokens', async () => {
-    const component = await renderTrustTokensView([
-      {issuerOrigin: 'no-issuer.org', count: 0},
-      {issuerOrigin: 'foo.com', count: 42},
-    ]);
+    sinon.stub(target.storageAgent(), 'invoke_getTrustTokens').resolves({
+      tokens: [
+        {issuerOrigin: 'no-issuer.org', count: 0},
+        {issuerOrigin: 'foo.com', count: 42},
+      ],
+      getError: () => undefined,
+    });
+    const component = await renderTrustTokensView();
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
@@ -69,10 +81,14 @@ describeWithLocale('TrustTokensView', () => {
   });
 
   it('removes trailing slashes from issuer origins', async () => {
-    const component = await renderTrustTokensView([
-      {issuerOrigin: 'example.com/', count: 20},
-      {issuerOrigin: 'sub.domain.org/', count: 14},
-    ]);
+    sinon.stub(target.storageAgent(), 'invoke_getTrustTokens').resolves({
+      tokens: [
+        {issuerOrigin: 'example.com/', count: 20},
+        {issuerOrigin: 'sub.domain.org/', count: 14},
+      ],
+      getError: () => undefined,
+    });
+    const component = await renderTrustTokensView();
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
@@ -83,7 +99,8 @@ describeWithLocale('TrustTokensView', () => {
   });
 
   it('hides trust token table when there are no trust tokens', async () => {
-    const component = await renderTrustTokensView([]);
+    sinon.stub(target.storageAgent(), 'invoke_getTrustTokens').resolves({tokens: [], getError: () => undefined});
+    const component = await renderTrustTokensView();
     assertShadowRoot(component.shadowRoot);
 
     const nullGridElement = component.shadowRoot.querySelector('devtools-data-grid-controller');
@@ -95,19 +112,16 @@ describeWithLocale('TrustTokensView', () => {
 
   it('calls the delete handler with the right issuer when the delete button is clicked in a row', async () => {
     // Create a Promise that resolves with the issuer for which the delete button was clicked.
-    let resolveDeleteButtonPromise: (issuer: string) => void;
-    const deleteButtonClicked: Promise<string> = new Promise(resolve => {
-      resolveDeleteButtonPromise = resolve;
+    sinon.stub(target.storageAgent(), 'invoke_getTrustTokens').resolves({
+      tokens: [
+        {issuerOrigin: 'bar.org', count: 42},
+        {issuerOrigin: 'foo.com', count: 7},
+      ],
+      getError: () => undefined,
     });
+    const clearTrustTokens = sinon.stub(target.storageAgent(), 'invoke_clearTrustTokens').resolves();
 
-    const component = await renderTrustTokensView(
-        [
-          {issuerOrigin: 'bar.org', count: 42},
-          {issuerOrigin: 'foo.com', count: 7},
-        ],
-        (issuer: string) => {
-          resolveDeleteButtonPromise(issuer);
-        });
+    const component = await renderTrustTokensView();
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const deleteCell = getCellByIndexes(dataGridShadowRoot, {column: 2, row: 1});
@@ -118,7 +132,6 @@ describeWithLocale('TrustTokensView', () => {
     assertElement(deleteButton, HTMLButtonElement);
     dispatchClickEvent(deleteButton);
 
-    const actualIssuer = await deleteButtonClicked;
-    assert.strictEqual(actualIssuer, 'bar.org');
+    assert.isTrue(clearTrustTokens.calledOnceWith({issuerOrigin: 'bar.org'}));
   });
 });

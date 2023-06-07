@@ -8,7 +8,6 @@ ts_library("sources") {
   testonly = true
   sources = [
     "BreakpointEditDialog_test.ts",
-    "BreakpointsSidebarPane_test.ts",
     "CSSPlugin_test.ts",
     "CoveragePlugin_test.ts",
     "DebuggerPlugin_test.ts",

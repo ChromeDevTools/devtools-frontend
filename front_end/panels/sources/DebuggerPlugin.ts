@@ -44,12 +44,12 @@ import type * as TextEditor from '../../ui/components/text_editor/text_editor.js
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SourceComponents from './components/components.js';
 
 import {AddDebugInfoURLDialog} from './AddSourceMapURLDialog.js';
 import {BreakpointEditDialog, type BreakpointEditDialogResult} from './BreakpointEditDialog.js';
 import {Plugin} from './Plugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
-import {BreakpointsSidebarController} from './BreakpointsSidebarPane.js';
 
 const {EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION} = Breakpoints.BreakpointManager;
 
@@ -837,10 +837,12 @@ export class DebuggerPlugin extends Plugin {
       dialog.detach();
       editor.dispatch({effects: compartment.reconfigure([])});
       if (!result.committed) {
-        BreakpointsSidebarController.instance().breakpointEditFinished(breakpoint, false);
+        SourceComponents.BreakpointsView.BreakpointsSidebarController.instance().breakpointEditFinished(
+            breakpoint, false);
         return;
       }
-      BreakpointsSidebarController.instance().breakpointEditFinished(breakpoint, oldCondition !== result.condition);
+      SourceComponents.BreakpointsView.BreakpointsSidebarController.instance().breakpointEditFinished(
+          breakpoint, oldCondition !== result.condition);
       recordBreakpointWithConditionAdded(result);
       if (breakpoint) {
         breakpoint.setCondition(result.condition, result.isLogpoint);
@@ -1672,7 +1674,8 @@ export class BreakpointLocationRevealer implements Common.Revealer.Revealer {
     if (debuggerPlugin) {
       debuggerPlugin.editBreakpointLocation(breakpointLocation);
     } else {
-      BreakpointsSidebarController.instance().breakpointEditFinished(breakpointLocation.breakpoint, false);
+      SourceComponents.BreakpointsView.BreakpointsSidebarController.instance().breakpointEditFinished(
+          breakpointLocation.breakpoint, false);
     }
   }
 }

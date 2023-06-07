@@ -4,7 +4,6 @@
 
 import * as AddSourceMapURLDialog from './AddSourceMapURLDialog.js';
 import * as BreakpointEditDialog from './BreakpointEditDialog.js';
-import * as BreakpointsSidebarPane from './BreakpointsSidebarPane.js';
 import * as CallStackSidebarPane from './CallStackSidebarPane.js';
 import * as CoveragePlugin from './CoveragePlugin.js';
 import * as CSSPlugin from './CSSPlugin.js';
@@ -35,7 +34,6 @@ import * as WatchExpressionsSidebarPane from './WatchExpressionsSidebarPane.js';
 export {
   AddSourceMapURLDialog,
   BreakpointEditDialog,
-  BreakpointsSidebarPane,
   CallStackSidebarPane,
   CoveragePlugin,
   CSSPlugin,

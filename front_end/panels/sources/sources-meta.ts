@@ -14,6 +14,7 @@ import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js'
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Sources from './sources.js';
+import type * as SourcesComponents from './components/components.js';
 
 const UIStrings = {
   /**
@@ -412,12 +413,20 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/sources-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedSourcesModule: (typeof Sources|undefined);
+let loadedSourcesComponentsModule: (typeof SourcesComponents|undefined);
 
 async function loadSourcesModule(): Promise<typeof Sources> {
   if (!loadedSourcesModule) {
     loadedSourcesModule = await import('./sources.js');
   }
   return loadedSourcesModule;
+}
+
+async function loadSourcesComponentsModule(): Promise<typeof SourcesComponents> {
+  if (!loadedSourcesComponentsModule) {
+    loadedSourcesComponentsModule = await import('./components/components.js');
+  }
+  return loadedSourcesComponentsModule;
 }
 
 function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (sourcesModule: typeof Sources) => T[]): T[] {
@@ -532,8 +541,8 @@ UI.ViewManager.registerViewExtension({
   title: i18nLazyString(UIStrings.breakpoints),
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
-    const Sources = await loadSourcesModule();
-    return Sources.BreakpointsSidebarPane.BreakpointsSidebarPane.instance();
+    const SourcesComponents = await loadSourcesComponentsModule();
+    return SourcesComponents.BreakpointsView.BreakpointsView.instance().wrapper as UI.Widget.Widget;
   },
 });
 
@@ -1858,8 +1867,8 @@ UI.Context.registerListener({
     return [SDK.DebuggerModel.DebuggerPausedDetails];
   },
   async loadListener() {
-    const Sources = await loadSourcesModule();
-    return Sources.BreakpointsSidebarPane.BreakpointsSidebarController.instance();
+    const SourcesComponents = await loadSourcesComponentsModule();
+    return SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
   },
 });
 

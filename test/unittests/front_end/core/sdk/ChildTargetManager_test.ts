@@ -106,6 +106,27 @@ describeWithMockConnection('ChildTargetManager', () => {
     assert.strictEqual(subtarget.type(), SDK.Target.Type.Frame);
   });
 
+  it('sets subtarget to frame for sidebar URLs if type is other', async () => {
+    const target = createTarget();
+    const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(target);
+    assert.strictEqual(childTargetManager.childTargets().length, 0);
+    await childTargetManager.attachedToTarget({
+      sessionId: createSessionId(),
+      targetInfo: createTargetInfo(undefined, 'other', 'chrome://read-later.top-chrome/'),
+      waitingForDebugger: false,
+    });
+    let [subtarget] = childTargetManager.childTargets().slice(-1);
+    assert.strictEqual(subtarget.type(), SDK.Target.Type.Frame);
+
+    await childTargetManager.attachedToTarget({
+      sessionId: createSessionId(),
+      targetInfo: createTargetInfo(undefined, 'other', 'chrome://booksmarks-side-panel.top-chrome/'),
+      waitingForDebugger: false,
+    });
+    [subtarget] = childTargetManager.childTargets().slice(-1);
+    assert.strictEqual(subtarget.type(), SDK.Target.Type.Frame);
+  });
+
   it('sets worker target name to the target title', async () => {
     const target = createTarget();
     const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(target);

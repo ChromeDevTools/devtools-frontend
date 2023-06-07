@@ -1452,7 +1452,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private onRequestUpdated(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
     const request = event.data;
-    if (SDK.TargetManager.TargetManager.instance().isInScope(SDK.NetworkManager.NetworkManager.forRequest(request))) {
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
+    if (!networkManager || SDK.TargetManager.TargetManager.instance().isInScope(networkManager)) {
       this.refreshRequest(request);
     }
   }

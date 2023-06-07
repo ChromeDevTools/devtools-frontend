@@ -1161,6 +1161,10 @@ export class TimelineModelImpl {
 
       case RecordType.DisplayItemListSnapshot:
       case RecordType.PictureSnapshot: {
+        // If we get a snapshot, we try to find the last Paint event for the
+        // current layer, and store the snapshot as the relevant picture for
+        // that event, thus creating a relationship between the snapshot and
+        // the last Paint event for the current timestamp.
         const layerUpdateEvent = this.findAncestorEvent(RecordType.UpdateLayer);
         if (!layerUpdateEvent || layerUpdateEvent.args['layerTreeId'] !== this.mainFrameLayerTreeId) {
           break;

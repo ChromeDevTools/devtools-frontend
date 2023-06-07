@@ -99,6 +99,11 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     if (this.pendingSnapshot) {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this.pendingSnapshot});
     } else if (this.event && this.event.name === TimelineModel.TimelineModel.RecordType.Paint) {
+      // When we process events (TimelineModel#processEvent) and find a
+      // snapshot event, we look for the last paint that occurred and link the
+      // snapshot to that paint event. That is why here if the event is a Paint
+      // event, we look to see if it has had a matching picture event set for
+      // it.
       const picture =
           (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(this.event).picture as
            SDK.TracingModel.ObjectSnapshot);

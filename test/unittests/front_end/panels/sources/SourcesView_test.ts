@@ -43,6 +43,8 @@ describeWithEnvironment('SourcesView', () => {
 
   it('creates new source view of updated type when renamed file requires a different viewer', async () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
+    sourcesView.markAsRoot();
+    sourcesView.show(document.body);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const {uiSourceCode, project} = createFileSystemUISourceCode({
       url: 'file:///path/to/overrides/example.html' as Platform.DevToolsPath.UrlString,
@@ -80,6 +82,7 @@ describeWithEnvironment('SourcesView', () => {
     await uiSourceCode.rename('font.woff' as Platform.DevToolsPath.RawPathString);
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourceFrame.FontView.FontView);
     workspace.removeProject(project);
+    sourcesView.detach();
   });
 
   it('creates a HeadersView when the filename is \'.headers\'', async () => {

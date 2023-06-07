@@ -8,6 +8,7 @@ ts_library("timeline_model") {
   testonly = true
   sources = [
     "TimelineFrameBeginFrameQueue_test.ts",
+    "TimelineFrameModel_test.ts",
     "TimelineJSProfile_test.ts",
     "TimelineModelFilter_test.ts",
     "TimelineModel_test.ts",

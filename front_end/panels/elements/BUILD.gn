@@ -50,7 +50,6 @@ devtools_module("elements") {
     "ImagePreviewPopover.ts",
     "InspectElementModeController.ts",
     "LayersWidget.ts",
-    "LayoutSidebarPane.ts",
     "MarkerDecorator.ts",
     "MetricsSidebarPane.ts",
     "NodeStackTraceWidget.ts",
@@ -118,12 +117,12 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../../test/unittests/front_end/panels/elements/*",
     "../../entrypoints/*",
+    "../../panels/recorder/*",
     "../../ui/components/docs/computed_style_property/*",
     "../../ui/components/docs/computed_style_trace/*",
     "../../ui/components/docs/elements_breadcrumbs/*",
     "../../ui/components/docs/flexbox_editor/*",
     "../../ui/components/docs/layout_pane/*",
-    "../../panels/recorder/*",
 
     # TODO(crbug.com/1202788): Remove invalid dependents
     "../network/*",

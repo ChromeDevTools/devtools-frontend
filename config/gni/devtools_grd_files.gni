@@ -1120,7 +1120,6 @@ grd_files_debug_sources = [
   "front_end/panels/elements/ImagePreviewPopover.js",
   "front_end/panels/elements/InspectElementModeController.js",
   "front_end/panels/elements/LayersWidget.js",
-  "front_end/panels/elements/LayoutSidebarPane.js",
   "front_end/panels/elements/MarkerDecorator.js",
   "front_end/panels/elements/MetricsSidebarPane.js",
   "front_end/panels/elements/NodeStackTraceWidget.js",

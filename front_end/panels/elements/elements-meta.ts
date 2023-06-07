@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Elements from './elements.js';
+import type * as ElementsComponents from './components/components.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
@@ -153,12 +154,19 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/elements-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedElementsModule: (typeof Elements|undefined);
+let loadedElementsComponentsModule: (typeof ElementsComponents|undefined);
 
 async function loadElementsModule(): Promise<typeof Elements> {
   if (!loadedElementsModule) {
     loadedElementsModule = await import('./elements.js');
   }
   return loadedElementsModule;
+}
+async function loadElementsComponentsModule(): Promise<typeof ElementsComponents> {
+  if (!loadedElementsComponentsModule) {
+    loadedElementsComponentsModule = await import('./components/components.js');
+  }
+  return loadedElementsComponentsModule;
 }
 function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (elementsModule: typeof Elements) => T[]): T[] {
   if (loadedElementsModule === undefined) {
@@ -250,8 +258,8 @@ UI.ViewManager.registerViewExtension({
   order: 4,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
-    const Elements = await loadElementsModule();
-    return Elements.LayoutSidebarPane.LayoutSidebarPane.instance();
+    const ElementsComponents = await loadElementsComponentsModule();
+    return ElementsComponents.LayoutPane.LayoutPane.instance().wrapper as UI.Widget.Widget;
   },
 });
 

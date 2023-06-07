@@ -14,7 +14,6 @@ ts_library("elements") {
     "ElementsPanel_test.ts",
     "ElementsTreeElementHighlighter_test.ts",
     "InspectElementModeController_test.ts",
-    "LayoutSidebarPane_test.ts",
     "PropertiesWidget_test.ts",
     "StylePropertiesSection_test.ts",
     "StylePropertyHighlighter_test.ts",

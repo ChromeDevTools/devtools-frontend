@@ -181,7 +181,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.EMULATION, 'emulation.touch', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
         Common.Settings.SettingCategory.EMULATION, 'emulation.idleDetection', '', Common.Settings.SettingType.ENUM),
-    createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridLineLabels', true),
+    createSettingValue(
+        Common.Settings.SettingCategory.GRID, 'showGridLineLabels', 'none', Common.Settings.SettingType.ENUM),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'extendGridLines', true),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridAreas', true),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'showGridTrackSizes', true),

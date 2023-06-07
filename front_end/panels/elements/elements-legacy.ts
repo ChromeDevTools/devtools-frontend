@@ -82,9 +82,6 @@ Elements.MarkerDecorator = ElementsModule.MarkerDecorator.MarkerDecorator;
 Elements.GenericDecorator = ElementsModule.MarkerDecorator.GenericDecorator;
 
 /** @constructor */
-Elements.LayoutSidebarPane = ElementsModule.LayoutSidebarPane.LayoutSidebarPane;
-
-/** @constructor */
 Elements.MetricsSidebarPane = ElementsModule.MetricsSidebarPane.MetricsSidebarPane;
 
 /** @constructor */

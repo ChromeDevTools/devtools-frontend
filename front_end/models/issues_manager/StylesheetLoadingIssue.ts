@@ -8,6 +8,11 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import {type MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
+export const lateImportStylesheetLoadingCode = [
+  Protocol.Audits.InspectorIssueCode.StylesheetLoadingIssue,
+  Protocol.Audits.StyleSheetLoadingIssueReason.LateImportRule,
+].join('::');
+
 export class StylesheetLoadingIssue extends Issue {
   #issueDetails: Protocol.Audits.StylesheetLoadingIssueDetails;
   constructor(issueDetails: Protocol.Audits.StylesheetLoadingIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
@@ -19,6 +24,10 @@ export class StylesheetLoadingIssue extends Issue {
 
   override sources(): Array<Protocol.Audits.SourceCodeLocation> {
     return [this.#issueDetails.sourceCodeLocation];
+  }
+
+  details(): Protocol.Audits.StylesheetLoadingIssueDetails {
+    return this.#issueDetails;
   }
 
   primaryKey(): string {

@@ -155,6 +155,40 @@ describeWithMockConnection('NetworkLogView', () => {
         }
       });
 
+      it('can import from HAR', async () => {
+        const URL_1 = 'http://example.com/' as Platform.DevToolsPath.UrlString;
+        const URL_2 = 'http://example.com/favicon.ico' as Platform.DevToolsPath.UrlString;
+        function makeHarEntry(url: Platform.DevToolsPath.UrlString) {
+          return {
+            request: {method: 'GET', url: url, headersSize: -1, bodySize: 0},
+            response: {status: 0, content: {'size': 0, 'mimeType': 'x-unknown'}, headersSize: -1, bodySize: -1},
+            startedDateTime: null,
+            time: null,
+            timings: {blocked: null, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: 0},
+          };
+        }
+        const har = {
+          log: {
+            version: '1.2',
+            creator: {name: 'WebInspector', version: '537.36'},
+            entries: [makeHarEntry(URL_1), makeHarEntry(URL_2)],
+          },
+        };
+        networkLogView.markAsRoot();
+        networkLogView.show(document.body);
+        const blob = new Blob([JSON.stringify(har)], {type: 'text/plain'});
+        const file = new File([blob], 'log.har');
+        await networkLogView.onLoadFromFile(file);
+        await coordinator.done({waitForWork: true});
+
+        const rootNode = networkLogView.columns().dataGrid().rootNode();
+        assert.deepEqual(
+            rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
+            [URL_1, URL_2]);
+
+        networkLogView.detach();
+      });
+
       it('shows summary toolbar with content', () => {
         target.setInspectedURL('http://example.com/' as Platform.DevToolsPath.UrlString);
         const request = createNetworkRequest('http://example.com/', {finished: true});

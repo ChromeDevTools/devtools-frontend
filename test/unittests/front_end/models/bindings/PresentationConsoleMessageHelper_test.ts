@@ -13,18 +13,19 @@ import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {MockExecutionContext} from '../../helpers/MockExecutionContext.js';
 
 async function addMessage(
-    helper: Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageHelper, target: SDK.Target.Target,
+    helper: Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper, target: SDK.Target.Target,
     url: Platform.DevToolsPath.UrlString) {
   const details = {line: 2, column: 1, url};
   const message = new SDK.ConsoleModel.ConsoleMessage(
       target.model(SDK.RuntimeModel.RuntimeModel), SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI,
       Protocol.Log.LogEntryLevel.Error, 'test message', details);
-  await helper.consoleMessageAdded(message);
+  const level = Workspace.UISourceCode.Message.Level.Error;
+  await helper.addMessage(new Workspace.UISourceCode.Message(level, message.messageText), message);
   return message;
 }
 
 async function addUISourceCode(
-    helper: Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageHelper,
+    helper: Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper,
     url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode> {
   const uiSourceCodeAddedSpy = sinon.stub(helper, 'uiSourceCodeAddedForTest');
   const uiSourceCodeAddedDonePromise = new Promise<void>(r => uiSourceCodeAddedSpy.callsFake(r));
@@ -41,7 +42,7 @@ async function addUISourceCode(
 }
 
 async function addScript(
-    helper: Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageHelper,
+    helper: Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper,
     debuggerModel: SDK.DebuggerModel.DebuggerModel, executionContext: SDK.RuntimeModel.ExecutionContext,
     url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode> {
   const scriptParsedSpy = sinon.stub(helper, 'parsedScriptSourceForTest');
@@ -62,7 +63,8 @@ async function addScript(
 }
 
 async function addStyleSheet(
-    helper: Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageHelper, cssModel: SDK.CSSModel.CSSModel,
+    helper: Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper,
+    cssModel: SDK.CSSModel.CSSModel,
     url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode> {
   const styleSheetAddedSpy = sinon.stub(helper, 'styleSheetAddedForTest');
   const styleSheetAddedDonePromise = new Promise<void>(r => styleSheetAddedSpy.callsFake(r));
@@ -94,7 +96,7 @@ async function addStyleSheet(
 
 describeWithMockConnection('PresentationConsoleMessageHelper', () => {
   const url = 'http://example.test/test.css' as Platform.DevToolsPath.UrlString;
-  let helper: Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageHelper;
+  let helper: Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper;
   let executionContext: SDK.RuntimeModel.ExecutionContext;
   let cssModel: SDK.CSSModel.CSSModel;
 
@@ -102,7 +104,7 @@ describeWithMockConnection('PresentationConsoleMessageHelper', () => {
     executionContext = new MockExecutionContext(createTarget());
     const {debuggerModel} = executionContext;
     Platform.assertNotNullOrUndefined(debuggerModel);
-    helper = new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageHelper();
+    helper = new Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper();
     helper.setDebuggerModel(debuggerModel);
 
     const target = executionContext.target();

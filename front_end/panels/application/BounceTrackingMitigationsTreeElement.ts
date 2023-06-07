@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
@@ -21,7 +22,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/BounceTrackingMitig
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class BounceTrackingMitigationsTreeElement extends ApplicationPanelTreeElement {
-  private view?: BounceTrackingMitigationsViewWidgetWrapper;
+  private view?: LegacyWrapper.LegacyWrapper.LegacyWrapper<
+      UI.Widget.Widget, ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView>;
 
   constructor(resourcesPanel: ResourcesPanel) {
     super(resourcesPanel, i18nString(UIStrings.bounceTrackingMitigations), false);
@@ -36,28 +38,11 @@ export class BounceTrackingMitigationsTreeElement extends ApplicationPanelTreeEl
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (!this.view) {
-      this.view = new BounceTrackingMitigationsViewWidgetWrapper(
-          new ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView());
+      this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
+          UI.Widget.Widget, new ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView());
     }
     this.showView(this.view);
     Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.bounce_tracking_mitigations]);
     return false;
-  }
-}
-
-export class BounceTrackingMitigationsViewWidgetWrapper extends UI.ThrottledWidget.ThrottledWidget {
-  private readonly bounceTrackingMitigationsView:
-      ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView;
-
-  constructor(bounceTrackingMitigationsView:
-                  ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView) {
-    super(/* isWebComponent */ false);
-    this.bounceTrackingMitigationsView = bounceTrackingMitigationsView;
-    this.contentElement.appendChild(this.bounceTrackingMitigationsView);
-    this.update();
-  }
-
-  protected override async doUpdate(): Promise<void> {
-    this.update();
   }
 }

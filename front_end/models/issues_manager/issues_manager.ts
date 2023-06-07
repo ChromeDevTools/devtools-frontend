@@ -24,6 +24,7 @@ import * as QuirksModeIssue from './QuirksModeIssue.js';
 import * as RelatedIssue from './RelatedIssue.js';
 import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
 import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
+import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 
 export {
   AttributionReportingIssue,
@@ -48,4 +49,5 @@ export {
   RelatedIssue,
   SharedArrayBufferIssue,
   SourceFrameIssuesManager,
+  StylesheetLoadingIssue,
 };

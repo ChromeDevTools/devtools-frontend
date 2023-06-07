@@ -1023,7 +1023,9 @@ export enum IssueCreated {
   'GenericIssue::FormLabelForMatchesNonExistingIdError' = 73,
   'GenericIssue::FormHasPasswordFieldWithoutUsernameFieldError' = 74,
   'GenericIssue::FormInputHasWrongButWellIntendedAutocompleteValueError' = 75,
-  MaxValue = 76,
+  'StylesheetLoadingIssue::LateImportRule' = 76,
+  'StylesheetLoadingIssue::RequestFailed' = 77,
+  MaxValue = 78,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

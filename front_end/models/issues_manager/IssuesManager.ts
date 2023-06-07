@@ -25,6 +25,7 @@ import {QuirksModeIssue} from './QuirksModeIssue.js';
 import {CookieIssue} from './CookieIssue.js';
 import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
+import {StylesheetLoadingIssue} from './StylesheetLoadingIssue.js';
 
 export {Events} from './IssuesManagerEvents.js';
 
@@ -107,6 +108,10 @@ const issueCodeHandlers = new Map<
   [
     Protocol.Audits.InspectorIssueCode.BounceTrackingIssue,
     BounceTrackingIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.StylesheetLoadingIssue,
+    StylesheetLoadingIssue.fromInspectorIssue,
   ],
 ]);
 

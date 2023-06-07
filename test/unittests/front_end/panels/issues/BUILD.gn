@@ -12,6 +12,7 @@ ts_library("issues") {
     "IssueAggregator_test.ts",
     "IssueView_test.ts",
     "LowContrastIssuesAggregation_test.ts",
+    "StylesheetLoadingIssue_test.ts",
   ]
 
   deps = [

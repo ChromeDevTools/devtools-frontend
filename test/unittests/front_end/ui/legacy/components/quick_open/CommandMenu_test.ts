@@ -74,5 +74,6 @@ describeWithLocale('CommandMenu', () => {
     assert.isTrue(
         callback.calledOnceWithExactly(setting, undefined),
         'Revealer was either not called or was called with unexpected arguments');
+    TestRevealer.reset();
   });
 });

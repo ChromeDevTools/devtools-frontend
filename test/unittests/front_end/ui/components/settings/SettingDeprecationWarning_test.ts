@@ -65,5 +65,6 @@ describe('SettingDeprecationWarning', () => {
     assert.isTrue(
         callback.calledOnceWithExactly(experiment, undefined),
         'Revealer was either not called or was called with unexpected arguments');
+    TestRevealer.reset();
   });
 });

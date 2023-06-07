@@ -62,7 +62,7 @@ export let reveal = async function(revealable: Object|null, omitFocus?: boolean)
   }
 };
 
-export function setRevealForTest(newReveal: (arg0: Object|null, arg1?: boolean|undefined) => Promise<undefined>): void {
+export function setRevealForTest(newReveal: (arg0: Object|null, arg1?: boolean|undefined) => Promise<void>): void {
   reveal = newReveal;
 }
 

@@ -246,7 +246,6 @@ export class PreloadingView extends UI.Widget.VBox {
   private readonly preloadingGrid = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
   private readonly preloadingDetails =
       new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
-  private readonly usedPreloading = new PreloadingComponents.UsedPreloadingView.UsedPreloadingView();
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
@@ -413,8 +412,6 @@ export class PreloadingView extends UI.Widget.VBox {
     this.preloadingGrid.update(preloadingAttemptRows);
 
     this.updatePreloadingDetails();
-
-    this.usedPreloading.data = this.modelProxy.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value);
   }
 
   private onRuleSetsGridCellFocused(event: Event): void {
@@ -449,10 +446,6 @@ export class PreloadingView extends UI.Widget.VBox {
 
   getPreloadingDetailsForTest(): PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView {
     return this.preloadingDetails;
-  }
-
-  getUsedPreloadingForTest(): PreloadingComponents.UsedPreloadingView.UsedPreloadingView {
-    return this.usedPreloading;
   }
 
   setCheckboxFilterBySelectedRuleSetForTest(checked: boolean): void {

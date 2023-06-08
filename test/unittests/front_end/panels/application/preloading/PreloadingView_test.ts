@@ -316,6 +316,18 @@ function createView(target: SDK.Target.Target): Resources.PreloadingView.Preload
   return view;
 }
 
+function createResultView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingResultView {
+  const model = target.model(SDK.PreloadingModel.PreloadingModel);
+  assertNotNullOrUndefined(model);
+  const view = new Resources.PreloadingView.PreloadingResultView(model);
+  const container = new UI.Widget.VBox();
+  view.show(container.element);
+  // Ensure PreloadingModelProxy.initialize to be called.
+  view.wasShown();
+
+  return view;
+}
+
 describeWithMockConnection('PreloadingView', async () => {
   it('renders grid and details', async () => {
     const emulator = new NavigationEmulator();
@@ -511,16 +523,12 @@ describeWithMockConnection('PreloadingView', async () => {
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
     assertShadowRoot(ruleSetGridComponent.shadowRoot);
-    const usedPreloadingComponent = view.getUsedPreloadingForTest();
-    assertShadowRoot(usedPreloadingComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
         ['Validity', 'Location'],
         [],
     );
-
-    assert.include(usedPreloadingComponent.shadowRoot.textContent, 'This page was prerendered');
   });
 
   // See https://crbug.com/1432880
@@ -793,5 +801,33 @@ describeWithMockConnection('PreloadingView', async () => {
           disabledByBatterySaver: true,
         },
         ['Preloading is disabled']);
+  });
+});
+
+describeWithMockConnection('PreloadingResultView', async () => {
+  it('shows information of preloading of the last page', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createResultView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+    await emulator.activateAndDispatchEvents('prerendered.html');
+
+    await coordinator.done();
+
+    const usedPreloadingComponent = view.getUsedPreloadingForTest();
+    assertShadowRoot(usedPreloadingComponent.shadowRoot);
+
+    assert.include(usedPreloadingComponent.shadowRoot.textContent, 'This page was prerendered');
   });
 });

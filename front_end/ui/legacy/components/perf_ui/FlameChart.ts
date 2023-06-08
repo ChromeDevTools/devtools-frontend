@@ -1148,7 +1148,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const barWidth = overrides?.width || this.#eventBarWidth(timelineData, entryIndex);
     // We purposefully leave a 1px gap off the height so there is a small gap
     // visually between events vertically in the panel.
-    context.rect(barX, barY, barWidth, barHeight - 1);
+    // Similarly, we leave 0.5 pixels off the width so that there is a small
+    // gap between events. Otherwise if a trace has a lot of events it looks
+    // like one solid block and is not very easy to distinguish when events
+    // start and end.
+    context.rect(barX, barY, barWidth - 0.5, barHeight - 1);
   }
 
   #eventBarHeight(timelineData: FlameChartTimelineData, entryIndex: number): number {

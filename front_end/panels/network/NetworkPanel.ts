@@ -539,6 +539,9 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
   private load(): void {
     if (this.filmStripRecorder && this.filmStripRecorder.isRecording()) {
+      if (this.pendingStopTimer) {
+        window.clearTimeout(this.pendingStopTimer);
+      }
       this.pendingStopTimer = window.setTimeout(this.stopFilmStripRecording.bind(this), this.displayScreenshotDelay);
     }
   }

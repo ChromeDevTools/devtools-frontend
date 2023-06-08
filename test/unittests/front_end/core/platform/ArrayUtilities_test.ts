@@ -158,61 +158,59 @@ describe('ArrayUtilities', () => {
     });
   });
 
-  describe('calculates bounds', () => {
-    it('calculates the lower bound', () => {
-      const fixtures = [
-        [],
-        [1],
-        [-1, -1, 0, 0, 0, 0, 2, 3, 4, 4, 4, 7, 9, 9, 9],
-      ];
-
-      function testArray(array: number[], useComparator: boolean) {
-        function comparator(a: number, b: number) {
-          return a < b ? -1 : (a > b ? 1 : 0);
-        }
-
-        for (let value = -2; value <= 12; ++value) {
-          const index = useComparator ?
-              Platform.ArrayUtilities.lowerBound(array, value, comparator) :
-              Platform.ArrayUtilities.lowerBound(array, value, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
-          assert.isTrue(0 <= index && index <= array.length, 'index is not within bounds');
-          assert.isTrue(index === 0 || array[index - 1] < value, 'array[index - 1] >= value');
-          assert.isTrue(index === array.length || array[index] >= value, 'array[index] < value');
-        }
-      }
-
-      for (const fixture of fixtures) {
-        testArray(fixture, false);
-        testArray(fixture, true);
-      }
+  describe('upperBound', () => {
+    it('finds the first object after the needle whose value is greater than the needle', async () => {
+      const input = [0, 1, 2, 3, 4, 5];
+      const index = Platform.ArrayUtilities.upperBound(input, 2, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+      assert.strictEqual(index, 3);
     });
 
-    it('calculates the upper bound', () => {
-      const fixtures = [
-        [],
-        [1],
-        [-1, -1, 0, 0, 0, 0, 2, 3, 4, 4, 4, 7, 9, 9, 9],
-      ];
+    it('can take left and right params to alter the range', async () => {
+      const input = [0, 1, 2, 3, 4, 5];
+      const index = Platform.ArrayUtilities.upperBound(input, 2, Platform.ArrayUtilities.DEFAULT_COMPARATOR, 4, 6);
+      assert.strictEqual(index, 4);
+    });
 
-      function testArray(array: number[], useComparator: boolean) {
-        function comparator(a: number, b: number) {
-          return a < b ? -1 : (a > b ? 1 : 0);
+    it('can take a custom comparator to determine how to compare elements', async () => {
+      const input = [{time: 0, name: 'test1'}, {time: 6, name: 'test2'}];
+      const index = Platform.ArrayUtilities.upperBound(input, 2, (needle, element) => {
+        if (needle > element.time) {
+          return 1;
         }
-
-        for (let value = -2; value <= 12; ++value) {
-          const index = useComparator ?
-              Platform.ArrayUtilities.upperBound(array, value, comparator) :
-              Platform.ArrayUtilities.upperBound(array, value, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
-          assert.isTrue(0 <= index && index <= array.length, 'index is out of bounds');
-          assert.isTrue(index === 0 || array[index - 1] <= value, 'array[index - 1] > value');
-          assert.isTrue(index === array.length || array[index] > value, 'array[index] <= value');
+        if (element.time > needle) {
+          return -1;
         }
-      }
+        return 0;
+      });
+      assert.strictEqual(index, 1);
+    });
+  });
 
-      for (const fixture of fixtures) {
-        testArray(fixture, false);
-        testArray(fixture, true);
-      }
+  describe('lowerBound', () => {
+    it('finds the first object after the needle whose value is equal to or greater than the needle', async () => {
+      const input = [0, 1, 2, 3, 4, 5];
+      const index = Platform.ArrayUtilities.lowerBound(input, 2, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+      assert.strictEqual(index, 2);
+    });
+
+    it('can take left and right params to alter the range', async () => {
+      const input = [0, 1, 2, 3, 4, 5];
+      const index = Platform.ArrayUtilities.lowerBound(input, 2, Platform.ArrayUtilities.DEFAULT_COMPARATOR, 5, 6);
+      assert.strictEqual(index, 5);
+    });
+
+    it('can take a custom comparator to determine how to compare elements', async () => {
+      const input = [{time: 0, name: 'test1'}, {time: 2, name: 'test2'}, {time: 3, name: 'test3'}];
+      const index = Platform.ArrayUtilities.lowerBound(input, 2, (needle, element) => {
+        if (needle > element.time) {
+          return 1;
+        }
+        if (element.time > needle) {
+          return -1;
+        }
+        return 0;
+      });
+      assert.strictEqual(index, 1);
     });
   });
 

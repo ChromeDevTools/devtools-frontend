@@ -110,15 +110,23 @@ export const mergeOrdered = <T>(array1: T[], array2: T[], comparator: (a: T, b: 
   return mergeOrIntersect(array1, array2, comparator, true);
 };
 
-export const DEFAULT_COMPARATOR = (a: string|number, b: string|number): number => {
+export const DEFAULT_COMPARATOR = (a: string|number, b: string|number): -1|0|1 => {
   return a < b ? -1 : (a > b ? 1 : 0);
 };
 
 /**
- * Return index of the leftmost element that is equal or greater
- * than the specimen object. If there's no such element (i.e. all
- * elements are smaller than the specimen) returns right bound.
- * The function works for sorted array.
+ * Returns the index of the element closest to the needle that is equal to or
+ * greater than it. Assumes that the provided array is sorted.
+ *
+ * If no element is found, the right bound is returned.
+ *
+ * Uses the provided comparator function to determine if two items are equal or
+ * if one is greater than the other. If you are working with strings or
+ * numbers, you can use ArrayUtilities.DEFAULT_COMPARATOR. Otherwise, you
+ * should define one that takes the needle element and an element from the
+ * array and returns a positive or negative number to indicate which is greater
+ * than the other.
+ *
  * When specified, |left| (inclusive) and |right| (exclusive) indices
  * define the search window.
  */
@@ -143,10 +151,18 @@ export function lowerBound<S, T, A extends S[]>(
 }
 
 /**
- * Return index of the leftmost element that is greater
- * than the specimen object. If there's no such element (i.e. all
- * elements are smaller or equal to the specimen) returns right bound.
- * The function works for sorted array.
+ * Returns the index of the element closest to the needle that is greater than
+ * it. Assumes that the provided array is sorted.
+ *
+ * If no element is found, the right bound is returned.
+ *
+ * Uses the provided comparator function to determine if two items are equal or
+ * if one is greater than the other. If you are working with strings or
+ * numbers, you can use ArrayUtilities.DEFAULT_COMPARATOR. Otherwise, you
+ * should define one that takes the needle element and an element from the
+ * array and returns a positive or negative number to indicate which is greater
+ * than the other.
+ *
  * When specified, |left| (inclusive) and |right| (exclusive) indices
  * define the search window.
  */

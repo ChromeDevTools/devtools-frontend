@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TraceEngine from '../../models/trace/trace.js';
 import * as Platform from '../platform/platform.js';
 
-import {TracingModel, type Event, type ObjectSnapshot} from './TracingModel.js';
+import {TracingModel, type ObjectSnapshot} from './TracingModel.js';
 
 export class FilmStripModel {
   #framesInternal: Frame[];
@@ -37,12 +38,7 @@ export class FilmStripModel {
       if (!event.hasCategory(DEVTOOLS_SCREENSHOT_CATEGORY)) {
         continue;
       }
-      if (event.name === TraceEvents.CaptureFrame) {
-        const data = event.args['data'];
-        if (data) {
-          this.#framesInternal.push(Frame.fromEvent(this, event, this.#framesInternal.length));
-        }
-      } else if (event.name === TraceEvents.Screenshot) {
+      if (event.name === TraceEvents.Screenshot) {
         this.#framesInternal.push(Frame.fromSnapshot(this, (event as ObjectSnapshot), this.#framesInternal.length));
       }
     }
@@ -79,7 +75,6 @@ export class FilmStripModel {
 const DEVTOOLS_SCREENSHOT_CATEGORY = 'disabled-by-default-devtools.screenshot';
 
 const TraceEvents = {
-  CaptureFrame: 'CaptureFrame',
   Screenshot: 'Screenshot',
 };
 
@@ -87,20 +82,15 @@ export class Frame {
   readonly #modelInternal: FilmStripModel;
   timestamp: number;
   index: number;
-  #imageData: string|null;
   #snapshot: ObjectSnapshot|null;
+  #traceEvent: TraceEngine.Types.TraceEvents.TraceEventSnapshot|null;
+
   constructor(model: FilmStripModel, timestamp: number, index: number) {
     this.#modelInternal = model;
     this.timestamp = timestamp;
     this.index = index;
-    this.#imageData = null;
+    this.#traceEvent = null;
     this.#snapshot = null;
-  }
-
-  static fromEvent(model: FilmStripModel, event: Event, index: number): Frame {
-    const frame = new Frame(model, event.startTime, index);
-    frame.#imageData = event.args['data'];
-    return frame;
   }
 
   static fromSnapshot(model: FilmStripModel, snapshot: ObjectSnapshot, index: number): Frame {
@@ -109,13 +99,25 @@ export class Frame {
     return frame;
   }
 
+  static fromTraceEvent(
+      model: FilmStripModel, snapshot: TraceEngine.Types.TraceEvents.TraceEventSnapshot, index: number): Frame {
+    const startTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(snapshot.ts);
+    const frame = new Frame(model, startTime, index);
+    frame.#traceEvent = snapshot;
+    return frame;
+  }
+
   model(): FilmStripModel {
     return this.#modelInternal;
   }
 
   imageDataPromise(): Promise<string|null> {
-    if (this.#imageData || !this.#snapshot) {
-      return Promise.resolve(this.#imageData);
+    if (this.#traceEvent) {
+      return Promise.resolve(this.#traceEvent.args.snapshot);
+    }
+
+    if (!this.#snapshot) {
+      return Promise.resolve(null);
     }
 
     return this.#snapshot.objectPromise() as Promise<string|null>;

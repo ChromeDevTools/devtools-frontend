@@ -39,4 +39,31 @@ describeWithEnvironment('FilmStripModel', () => {
     const timestampBeforeAnyFrames = frameTimestamps[0] - 100;
     assert.isNull(filmStrip.frameByTimestamp(timestampBeforeAnyFrames));
   });
+
+  describe('creating frames', () => {
+    it('can create a frame from a screenshot snapshot event or a trace engine snapshot event and both are equivalent',
+       async () => {
+         const {tracingModel, traceParsedData} = await allModelsFromFile('web-dev.json.gz');
+         const browserMain = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
+         const sdkSnapshot = browserMain?.events().find(event => {
+           return event.name === 'Screenshot';
+         });
+         if (!sdkSnapshot) {
+           throw new Error('Could not find expected screenshot event');
+         }
+         const traceEngineSnapshot = traceParsedData.Screenshots.at(0);
+         if (!traceEngineSnapshot) {
+           throw new Error('Could not find expected screenshot event');
+         }
+         const filmStrip = new SDK.FilmStripModel.FilmStripModel(tracingModel);
+         const frameFromSDK =
+             SDK.FilmStripModel.Frame.fromSnapshot(filmStrip, sdkSnapshot as SDK.TracingModel.ObjectSnapshot, 0);
+         const frameFromTrace = SDK.FilmStripModel.Frame.fromTraceEvent(filmStrip, traceEngineSnapshot, 0);
+         const imageDataSDK = await frameFromSDK.imageDataPromise();
+         const imageDataTrace = await frameFromTrace.imageDataPromise();
+         assert.typeOf(imageDataSDK, 'string');
+         assert.typeOf(imageDataTrace, 'string');
+         assert.strictEqual(imageDataTrace, imageDataSDK);
+       });
+  });
 });

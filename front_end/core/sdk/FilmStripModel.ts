@@ -34,7 +34,7 @@ export class FilmStripModel {
       if (event.startTime < this.#zeroTimeInternal) {
         continue;
       }
-      if (!event.hasCategory(category)) {
+      if (!event.hasCategory(DEVTOOLS_SCREENSHOT_CATEGORY)) {
         continue;
       }
       if (event.name === TraceEvents.CaptureFrame) {
@@ -60,15 +60,23 @@ export class FilmStripModel {
     return this.#spanTimeInternal;
   }
 
-  frameByTimestamp(timestamp: number): Frame|null {
-    const index = Platform.ArrayUtilities.upperBound(
-                      this.#framesInternal, timestamp, (timestamp, frame) => timestamp - frame.timestamp) -
-        1;
-    return index >= 0 ? this.#framesInternal[index] : null;
+  frameByTimestamp(searchTimestamp: number): Frame|null {
+    // We want to find the closest frame to the timestamp that happened BEFORE
+    // the timestamp. So to do that we walk from the end of the array of
+    // frames, looking for the first frame where its timestamp is less than the
+    // timestamp we are searching for. It is important we search from the end
+    // of the array of frames, otherwise we will simply return the first frame
+    // that happened before the timestamp, even if it is not the closest one.
+    const closestFrameIndexBeforeTimestamp =
+        Platform.ArrayUtilities.nearestIndexFromEnd(this.#framesInternal, frame => frame.timestamp < searchTimestamp);
+    if (closestFrameIndexBeforeTimestamp === null) {
+      return null;
+    }
+    return this.#framesInternal[closestFrameIndexBeforeTimestamp];
   }
 }
 
-const category = 'disabled-by-default-devtools.screenshot';
+const DEVTOOLS_SCREENSHOT_CATEGORY = 'disabled-by-default-devtools.screenshot';
 
 const TraceEvents = {
   CaptureFrame: 'CaptureFrame',

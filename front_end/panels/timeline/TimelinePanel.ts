@@ -324,9 +324,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
   private selection?: TimelineSelection|null;
-  private primaryTargetPromiseCallback = (_target: SDK.Target.Target): void => {};
-  private primaryTargetPromise = new Promise<SDK.Target.Target>(res => {
-    this.primaryTargetPromiseCallback = res;
+  private primaryPageTargetPromiseCallback = (_target: SDK.Target.Target): void => {};
+  private primaryPageTargetPromise = new Promise<SDK.Target.Target>(res => {
+    this.primaryPageTargetPromiseCallback = res;
   });
 
   #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.TraceModel.ENABLED_TRACE_HANDLERS>;
@@ -430,7 +430,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
           return;
         }
-        this.primaryTargetPromiseCallback(target);
+        this.primaryPageTargetPromiseCallback(target);
       },
       targetRemoved: (_: SDK.Target.Target) => {},
     });
@@ -870,16 +870,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
       const MAX_WAIT_FOR_TARGET_MS = 2000;
       const timeoutPromise = new Promise(res => setTimeout(res, MAX_WAIT_FOR_TARGET_MS));
-      const primaryTarget = await Promise.race([this.primaryTargetPromise, timeoutPromise]);
-      if (!(primaryTarget instanceof SDK.Target.Target)) {
+      const primaryPageTarget = await Promise.race([this.primaryPageTargetPromise, timeoutPromise]);
+      if (!(primaryPageTarget instanceof SDK.Target.Target)) {
         this.recordingFailed(i18nString(UIStrings.couldNotStart));
         return;
       }
 
       if (UIDevtoolsUtils.isUiDevTools()) {
-        this.controller = new UIDevtoolsController(primaryTarget, this);
+        this.controller = new UIDevtoolsController(primaryPageTarget, this);
       } else {
-        this.controller = new TimelineController(primaryTarget, this);
+        this.controller = new TimelineController(primaryPageTarget, this);
       }
       this.setUIControlsEnabled(false);
       this.hideLandingPage();

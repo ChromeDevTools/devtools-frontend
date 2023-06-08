@@ -173,7 +173,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     const drawerElement = this.drawerTabbedPane.element;
     ARIAUtils.markAsComplementary(drawerElement);
-    ARIAUtils.setAccessibleName(drawerElement, i18nString(UIStrings.drawer));
+    ARIAUtils.setLabel(drawerElement, i18nString(UIStrings.drawer));
 
     this.drawerSplitWidget.installResizer(this.drawerTabbedPane.headerElement());
     this.drawerSplitWidget.setSidebarWidget(this.drawerTabbedPane);
@@ -200,7 +200,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     const mainHeaderElement = this.tabbedPane.headerElement();
     ARIAUtils.markAsNavigation(mainHeaderElement);
-    ARIAUtils.setAccessibleName(mainHeaderElement, i18nString(UIStrings.mainToolbar));
+    ARIAUtils.setLabel(mainHeaderElement, i18nString(UIStrings.mainToolbar));
 
     // Store the initial selected panel for use in launch histograms
     Host.userMetrics.setLaunchPanel(this.tabbedPane.selectedTabId);

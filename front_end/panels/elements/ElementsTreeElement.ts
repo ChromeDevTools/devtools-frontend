@@ -1477,7 +1477,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.decorationsElement.classList.add('hidden');
       this.gutterContainer.classList.toggle(
           'has-decorations', Boolean(decorations.length || descendantDecorations.length));
-      UI.ARIAUtils.setAccessibleName(this.decorationsElement, '');
+      UI.ARIAUtils.setLabel(this.decorationsElement, '');
 
       if (!decorations.length && !descendantDecorations.length) {
         return;
@@ -1513,7 +1513,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         processColors.call(this, descendantColors, 'elements-gutter-decoration elements-has-decorated-children');
       }
       UI.Tooltip.Tooltip.install(this.decorationsElement, titles.textContent);
-      UI.ARIAUtils.setAccessibleName(this.decorationsElement, titles.textContent || '');
+      UI.ARIAUtils.setLabel(this.decorationsElement, titles.textContent || '');
 
       function processColors(this: ElementsTreeElement, colors: Set<string>, className: string): void {
         for (const color of colors) {
@@ -1710,7 +1710,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     UI.UIUtils.createTextChild(tagElement, '>');
     UI.UIUtils.createTextChild(parentElement, '\u200B');
     if (tagElement.textContent) {
-      UI.ARIAUtils.setAccessibleName(tagElement, tagElement.textContent);
+      UI.ARIAUtils.setLabel(tagElement, tagElement.textContent);
     }
   }
 

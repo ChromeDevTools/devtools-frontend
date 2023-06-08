@@ -266,7 +266,7 @@ export class SensorsView extends UI.Widget.VBox {
     const customLocations = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
     const manageButton =
         UI.UIUtils.createTextButton(i18nString(UIStrings.manage), () => Common.Revealer.reveal(customLocations));
-    UI.ARIAUtils.setAccessibleName(manageButton, i18nString(UIStrings.manageTheListOfLocations));
+    UI.ARIAUtils.setLabel(manageButton, i18nString(UIStrings.manageTheListOfLocations));
     fields.appendChild(manageButton);
     const fillCustomSettings = (): void => {
       if (!this.customLocationsGroup) {
@@ -627,7 +627,7 @@ export class SensorsView extends UI.Widget.VBox {
 
     const resetButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.reset), this.resetDeviceOrientation.bind(this), 'orientation-reset-button');
-    UI.ARIAUtils.setAccessibleName(resetButton, i18nString(UIStrings.resetDeviceOrientation));
+    UI.ARIAUtils.setLabel(resetButton, i18nString(UIStrings.resetDeviceOrientation));
     resetButton.setAttribute('type', 'reset');
     cellElement.appendChild(resetButton);
     return fieldsetElement;

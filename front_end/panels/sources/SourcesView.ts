@@ -154,7 +154,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const list = element.createChild('div', 'tabbed-pane-placeholder');
     list.addEventListener('keydown', this.placeholderOnKeyDown.bind(this), false);
     UI.ARIAUtils.markAsList(list);
-    UI.ARIAUtils.setAccessibleName(list, i18nString(UIStrings.sourceViewActions));
+    UI.ARIAUtils.setLabel(list, i18nString(UIStrings.sourceViewActions));
 
     for (let i = 0; i < shortcuts.length; i++) {
       const shortcut = shortcuts[i];

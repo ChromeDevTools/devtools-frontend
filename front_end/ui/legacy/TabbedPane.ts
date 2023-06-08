@@ -139,7 +139,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   setAccessibleName(name: string): void {
-    ARIAUtils.setAccessibleName(this.tabsElement, name);
+    ARIAUtils.setLabel(this.tabsElement, name);
   }
 
   setCurrentTabLocked(locked: boolean): void {
@@ -435,7 +435,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     if (tab && tab.title !== tabTitle) {
       tab.title = tabTitle;
-      ARIAUtils.setAccessibleName(tab.tabElement, tabTitle);
+      ARIAUtils.setLabel(tab.tabElement, tabTitle);
       this.updateTabElements();
     }
   }
@@ -595,7 +595,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const moreTabsString = i18nString(UIStrings.moreTabs);
     dropDownContainer.title = moreTabsString;
     ARIAUtils.markAsMenuButton(dropDownContainer);
-    ARIAUtils.setAccessibleName(dropDownContainer, moreTabsString);
+    ARIAUtils.setLabel(dropDownContainer, moreTabsString);
     dropDownContainer.tabIndex = 0;
     dropDownContainer.appendChild(chevronIcon);
     dropDownContainer.addEventListener('click', this.dropDownClicked.bind(this));
@@ -1117,7 +1117,7 @@ export class TabbedPaneTab {
     tabElement.id = 'tab-' + this.idInternal;
     ARIAUtils.markAsTab(tabElement);
     ARIAUtils.setSelected(tabElement, false);
-    ARIAUtils.setAccessibleName(tabElement, this.title);
+    ARIAUtils.setLabel(tabElement, this.title);
 
     const titleElement = tabElement.createChild('span', 'tabbed-pane-header-tab-title');
     titleElement.textContent = this.title;

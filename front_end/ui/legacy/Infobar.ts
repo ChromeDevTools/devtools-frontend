@@ -118,7 +118,7 @@ export class Infobar {
     if (type !== Type.Issue) {
       this.contentElement.tabIndex = 0;
     }
-    ARIAUtils.setAccessibleName(this.contentElement, text);
+    ARIAUtils.setLabel(this.contentElement, text);
     this.contentElement.addEventListener('keydown', event => {
       if (event.keyCode === Keys.Esc.code) {
         this.dispose();

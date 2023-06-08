@@ -172,7 +172,7 @@ export class SoftContextMenu {
 
   setContextMenuElementLabel(label: string): void {
     if (this.contextMenuElement) {
-      ARIAUtils.setAccessibleName(this.contextMenuElement, label);
+      ARIAUtils.setLabel(this.contextMenuElement, label);
     }
   }
 
@@ -243,7 +243,7 @@ export class SoftContextMenu {
       if (item.element?.classList.contains('location-menu')) {
         const label = item.element.ariaLabel || '';
         item.element.ariaLabel = '';
-        ARIAUtils.setAccessibleName(menuItemElement, label);
+        ARIAUtils.setLabel(menuItemElement, label);
       }
       detailsForElement.customElement = (item.element as HTMLElement);
       this.detailsForElementMap.set(menuItemElement, detailsForElement);
@@ -280,7 +280,7 @@ export class SoftContextMenu {
     } else if (item.shortcut) {
       accessibleName = i18nString(UIStrings.sS, {PH1: String(item.label), PH2: item.shortcut});
     }
-    ARIAUtils.setAccessibleName(menuItemElement, accessibleName);
+    ARIAUtils.setLabel(menuItemElement, accessibleName);
 
     this.detailsForElementMap.set(menuItemElement, detailsForElement);
     return menuItemElement;

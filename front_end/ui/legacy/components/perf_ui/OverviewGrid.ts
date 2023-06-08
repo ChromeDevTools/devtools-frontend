@@ -149,7 +149,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     UI.ARIAUtils.markAsGroup(this.parentElement);
     this.calculator = calculator;
 
-    UI.ARIAUtils.setAccessibleName(this.parentElement, i18nString(UIStrings.overviewGridWindow));
+    UI.ARIAUtils.setLabel(this.parentElement, i18nString(UIStrings.overviewGridWindow));
 
     UI.UIUtils.installDragHandle(
         this.parentElement, this.startWindowSelectorDragging.bind(this), this.windowSelectorDragging.bind(this),
@@ -173,12 +173,12 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
         this.rightResizeElement, this.resizerElementStartDragging.bind(this),
         this.rightResizeElementDragging.bind(this), null, 'ew-resize');
 
-    UI.ARIAUtils.setAccessibleName(this.leftResizeElement, i18nString(UIStrings.leftResizer));
+    UI.ARIAUtils.setLabel(this.leftResizeElement, i18nString(UIStrings.leftResizer));
     UI.ARIAUtils.markAsSlider(this.leftResizeElement);
     const leftKeyDown = (event: Event): void => this.handleKeyboardResizing(event, false);
     this.leftResizeElement.addEventListener('keydown', leftKeyDown);
 
-    UI.ARIAUtils.setAccessibleName(this.rightResizeElement, i18nString(UIStrings.rightResizer));
+    UI.ARIAUtils.setLabel(this.rightResizeElement, i18nString(UIStrings.rightResizer));
     UI.ARIAUtils.markAsSlider(this.rightResizeElement);
 
     const rightKeyDown = (event: Event): void => this.handleKeyboardResizing(event, true);

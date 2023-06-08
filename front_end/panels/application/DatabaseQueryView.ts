@@ -300,7 +300,7 @@ export class DatabaseQueryView extends Common.ObjectWrapper.eventMixin<EventType
     element.className = 'database-user-query';
     element.tabIndex = -1;
 
-    UI.ARIAUtils.setAccessibleName(element, i18nString(UIStrings.queryS, {PH1: query}));
+    UI.ARIAUtils.setLabel(element, i18nString(UIStrings.queryS, {PH1: query}));
     this.queryResults.push(element);
     this.updateFocusedItem();
 

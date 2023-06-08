@@ -159,7 +159,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.canvas = (this.viewportElement.createChild('canvas', 'fill') as HTMLCanvasElement);
 
     this.canvas.tabIndex = 0;
-    UI.ARIAUtils.setAccessibleName(this.canvas, i18nString(UIStrings.flameChart));
+    UI.ARIAUtils.setLabel(this.canvas, i18nString(UIStrings.flameChart));
     UI.ARIAUtils.markAsTree(this.canvas);
     this.setDefaultFocusedElement(this.canvas);
     this.canvas.classList.add('flame-chart-canvas');

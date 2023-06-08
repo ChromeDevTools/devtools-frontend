@@ -242,7 +242,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     const playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
     playbackRateControl.addEventListener('keydown', this.handlePlaybackRateControlKeyDown.bind(this));
     UI.ARIAUtils.markAsListBox(playbackRateControl);
-    UI.ARIAUtils.setAccessibleName(playbackRateControl, i18nString(UIStrings.playbackRates));
+    UI.ARIAUtils.setLabel(playbackRateControl, i18nString(UIStrings.playbackRates));
 
     this.#playbackRateButtons = [];
     for (const playbackRate of GlobalPlaybackRates) {
@@ -259,7 +259,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.updatePlaybackControls();
     this.#previewContainer = (this.contentElement.createChild('div', 'animation-timeline-buffer') as HTMLElement);
     UI.ARIAUtils.markAsListBox(this.#previewContainer);
-    UI.ARIAUtils.setAccessibleName(this.#previewContainer, i18nString(UIStrings.animationPreviews));
+    UI.ARIAUtils.setLabel(this.#previewContainer, i18nString(UIStrings.animationPreviews));
     this.#popoverHelper = new UI.PopoverHelper.PopoverHelper(this.#previewContainer, this.getPopoverRequest.bind(this));
     this.#popoverHelper.setDisableOnClick(true);
     this.#popoverHelper.setTimeout(0);
@@ -549,7 +549,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     preview.removeButton().addEventListener('click', this.removeAnimationGroup.bind(this, group));
     preview.element.addEventListener('click', this.selectAnimationGroup.bind(this, group));
     preview.element.addEventListener('keydown', this.handleAnimationGroupKeyDown.bind(this, group));
-    UI.ARIAUtils.setAccessibleName(
+    UI.ARIAUtils.setLabel(
         preview.element, i18nString(UIStrings.animationPreviewS, {PH1: this.#groupBuffer.indexOf(group) + 1}));
     UI.ARIAUtils.markAsOption(preview.element);
 

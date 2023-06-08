@@ -182,7 +182,7 @@ export class AnimationUI {
     circle.style.stroke = this.#color;
     circle.setAttribute('r', (Options.AnimationMargin / 2).toString());
     circle.tabIndex = 0;
-    UI.ARIAUtils.setAccessibleName(
+    UI.ARIAUtils.setLabel(
         circle,
         keyframeIndex <= 0 ? i18nString(UIStrings.animationEndpointSlider) :
                              i18nString(UIStrings.animationKeyframeSlider));
@@ -231,7 +231,7 @@ export class AnimationUI {
     }
     const group = cache[keyframeIndex];
     group.tabIndex = 0;
-    UI.ARIAUtils.setAccessibleName(group, i18nString(UIStrings.sSlider, {PH1: this.#animationInternal.name()}));
+    UI.ARIAUtils.setLabel(group, i18nString(UIStrings.sSlider, {PH1: this.#animationInternal.name()}));
     group.style.transform = 'translateX(' + leftDistance.toFixed(2) + 'px)';
 
     if (easing === 'linear') {

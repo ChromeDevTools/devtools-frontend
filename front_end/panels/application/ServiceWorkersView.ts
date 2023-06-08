@@ -555,7 +555,7 @@ export class Section {
 
     editor.value = initialValue;
     editor.placeholder = placeholder;
-    UI.ARIAUtils.setAccessibleName(editor, label);
+    UI.ARIAUtils.setLabel(editor, label);
 
     form.addEventListener('submit', (e: Event) => {
       callback(editor.value || '');
@@ -620,7 +620,7 @@ export class Section {
       });
       errorsLabel.classList.add('devtools-link', 'link');
       errorsLabel.tabIndex = 0;
-      UI.ARIAUtils.setAccessibleName(
+      UI.ARIAUtils.setLabel(
           errorsLabel, i18nString(UIStrings.sRegistrationErrors, {PH1: this.registration.errors.length}));
       self.onInvokeElement(errorsLabel, () => Common.Console.Console.instance().show());
       name.appendChild(errorsLabel);

@@ -452,7 +452,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.descriptionField = this.identitySection.appendFlexedField(i18nString(UIStrings.description));
 
     this.startURLField = this.presentationSection.appendField(i18nString(UIStrings.startUrl));
-    UI.ARIAUtils.setAccessibleName(this.startURLField, i18nString(UIStrings.startUrl));
+    UI.ARIAUtils.setLabel(this.startURLField, i18nString(UIStrings.startUrl));
 
     const themeColorField = this.presentationSection.appendField(i18nString(UIStrings.themeColor));
     this.themeColorSwatch = new InlineEditor.ColorSwatch.ColorSwatch();
@@ -594,7 +594,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     const startURL = stringProperty('start_url');
     if (appId && recommendedId) {
       const appIdField = this.identitySection.appendField(i18nString(UIStrings.computedAppId));
-      UI.ARIAUtils.setAccessibleName(appIdField, 'App Id');
+      UI.ARIAUtils.setLabel(appIdField, 'App Id');
       appIdField.textContent = appId;
 
       const helpIcon = new IconButton.Icon.Icon();

@@ -48,7 +48,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     // Also see crbug/1408003
     this.containerElement =
         this.contentElement.createChild('div', 'overview-sidebar-panel-container') as HTMLDivElement;
-    UI.ARIAUtils.setAccessibleName(this.containerElement, i18nString(UIStrings.cssOverviewPanelSidebar));
+    UI.ARIAUtils.setLabel(this.containerElement, i18nString(UIStrings.cssOverviewPanelSidebar));
     UI.ARIAUtils.markAsTree(this.containerElement);
 
     // Clear overview.

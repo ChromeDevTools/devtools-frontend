@@ -162,13 +162,13 @@ export class SearchableView extends VBox {
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-prev');
     this.searchNavigationPrevElement.addEventListener('click', this.onPrevButtonSearch.bind(this), false);
     Tooltip.install(this.searchNavigationPrevElement, i18nString(UIStrings.searchPrevious));
-    ARIAUtils.setAccessibleName(this.searchNavigationPrevElement, i18nString(UIStrings.searchPrevious));
+    ARIAUtils.setLabel(this.searchNavigationPrevElement, i18nString(UIStrings.searchPrevious));
 
     this.searchNavigationNextElement =
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-next');
     this.searchNavigationNextElement.addEventListener('click', this.onNextButtonSearch.bind(this), false);
     Tooltip.install(this.searchNavigationNextElement, i18nString(UIStrings.searchNext));
-    ARIAUtils.setAccessibleName(this.searchNavigationNextElement, i18nString(UIStrings.searchNext));
+    ARIAUtils.setLabel(this.searchNavigationNextElement, i18nString(UIStrings.searchNext));
 
     this.searchInputElement.addEventListener('keydown', this.onSearchKeyDown.bind(this), true);
     this.searchInputElement.addEventListener('input', this.onInput.bind(this), false);
@@ -277,7 +277,7 @@ export class SearchableView extends VBox {
   setPlaceholder(placeholder: string, ariaLabel?: string): void {
     this.searchInputElement.placeholder = placeholder;
     if (ariaLabel) {
-      ARIAUtils.setAccessibleName(this.searchInputElement, ariaLabel);
+      ARIAUtils.setLabel(this.searchInputElement, ariaLabel);
     }
   }
 

@@ -176,7 +176,7 @@ export class StylePropertiesSection {
     this.element.classList.add('styles-section');
     this.element.classList.add('matched-styles');
     this.element.classList.add('monospace');
-    UI.ARIAUtils.setAccessibleName(this.element, `${this.headerText()}, css selector`);
+    UI.ARIAUtils.setLabel(this.element, `${this.headerText()}, css selector`);
     this.element.tabIndex = -1;
     UI.ARIAUtils.markAsListitem(this.element);
     this.element.addEventListener('keydown', this.onKeyDown.bind(this), false);
@@ -199,7 +199,7 @@ export class StylePropertiesSection {
     const selectorContainer = document.createElement('div');
     selectorContainer.classList.add('selector-container');
     this.selectorElement = document.createElement('span');
-    UI.ARIAUtils.setAccessibleName(this.selectorElement, i18nString(UIStrings.cssSelector));
+    UI.ARIAUtils.setLabel(this.selectorElement, i18nString(UIStrings.cssSelector));
     this.selectorElement.classList.add('selector');
     this.selectorElement.textContent = this.headerText();
     selectorContainer.appendChild(this.selectorElement);

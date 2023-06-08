@@ -441,8 +441,7 @@ export class RequestTimingView extends UI.Widget.VBox {
       bar.style.left = left + '%';
       bar.style.right = right + '%';
       bar.textContent = '\u200B';  // Important for 0-time items to have 0 width.
-      UI.ARIAUtils.setAccessibleName(
-          row, i18nString(UIStrings.startedAtS, {PH1: calculator.formatValue(range.start, 2)}));
+      UI.ARIAUtils.setLabel(row, i18nString(UIStrings.startedAtS, {PH1: calculator.formatValue(range.start, 2)}));
       const label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
       label.textContent = i18n.TimeUtilities.secondsToString(duration, true);
 

@@ -109,7 +109,7 @@ export class TimelineHistoryManager {
     const modelTitle = this.title(performanceModel);
     this.buttonInternal.setText(modelTitle);
     const buttonTitle = this.action.title();
-    UI.ARIAUtils.setAccessibleName(
+    UI.ARIAUtils.setLabel(
         this.buttonInternal.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
     this.updateState();
     if (this.recordings.length <= maxRecordings) {
@@ -194,7 +194,7 @@ export class TimelineHistoryManager {
     const modelTitle = this.title(model);
     const buttonTitle = this.action.title();
     this.buttonInternal.setText(modelTitle);
-    UI.ARIAUtils.setAccessibleName(
+    UI.ARIAUtils.setLabel(
         this.buttonInternal.element, i18nString(UIStrings.currentSessionSS, {PH1: modelTitle, PH2: buttonTitle}));
   }
 
@@ -263,7 +263,7 @@ export class TimelineHistoryManager {
     container.classList.add('hbox');
     const nameSpan = container.createChild('span', 'name');
     nameSpan.textContent = title;
-    UI.ARIAUtils.setAccessibleName(nameSpan, title);
+    UI.ARIAUtils.setLabel(nameSpan, title);
     const tracingModel = performanceModel.tracingModel();
     const duration =
         i18n.TimeUtilities.millisToString(tracingModel.maximumRecordTime() - tracingModel.minimumRecordTime(), false);
@@ -360,7 +360,7 @@ export class DropDown implements UI.ListControl.ListDelegate<PerformanceModel> {
     listModel.replaceAll(models);
 
     UI.ARIAUtils.markAsMenu(this.listControl.element);
-    UI.ARIAUtils.setAccessibleName(this.listControl.element, i18nString(UIStrings.selectTimelineSession));
+    UI.ARIAUtils.setLabel(this.listControl.element, i18nString(UIStrings.selectTimelineSession));
     contentElement.appendChild(this.listControl.element);
     contentElement.addEventListener('keydown', this.onKeyDown.bind(this), false);
     contentElement.addEventListener('click', this.onClick.bind(this), false);

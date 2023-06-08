@@ -106,7 +106,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     UI.ARIAUtils.markAsList(this.list.element);
 
     this.contentElement.appendChild(this.list.element);
-    UI.ARIAUtils.setAccessibleName(this.list.element, i18nString(UIStrings.keyboardShortcutsList));
+    UI.ARIAUtils.setLabel(this.list.element, i18nString(UIStrings.keyboardShortcutsList));
     const footer = this.contentElement.createChild('div');
     footer.classList.add('keybinds-footer');
     const docsLink = UI.XLink.XLink.create(
@@ -348,12 +348,12 @@ export class ShortcutListItem {
   private createEmptyInfo(): void {
     if (UI.ShortcutRegistry.ShortcutRegistry.instance().actionHasDefaultShortcut(this.item.id())) {
       const icon = UI.Icon.Icon.create('keyboard-pen', 'keybinds-modified');
-      UI.ARIAUtils.setAccessibleName(icon, i18nString(UIStrings.shortcutModified));
+      UI.ARIAUtils.setLabel(icon, i18nString(UIStrings.shortcutModified));
       this.element.appendChild(icon);
     }
     if (!this.isEditing) {
       const emptyElement = this.element.createChild('div', 'keybinds-shortcut keybinds-list-text');
-      UI.ARIAUtils.setAccessibleName(emptyElement, i18nString(UIStrings.noShortcutForAction));
+      UI.ARIAUtils.setLabel(emptyElement, i18nString(UIStrings.noShortcutForAction));
       if (Root.Runtime.experiments.isEnabled('keyboardShortcutEditor')) {
         this.element.appendChild(this.createEditButton());
       }
@@ -408,7 +408,7 @@ export class ShortcutListItem {
     let icon: UI.Icon.Icon;
     if (shortcut.type !== UI.KeyboardShortcut.Type.UnsetShortcut && !shortcut.isDefault()) {
       icon = UI.Icon.Icon.create('keyboard-pen', 'keybinds-modified');
-      UI.ARIAUtils.setAccessibleName(icon, i18nString(UIStrings.shortcutModified));
+      UI.ARIAUtils.setLabel(icon, i18nString(UIStrings.shortcutModified));
       this.element.appendChild(icon);
     }
     const shortcutElement = this.element.createChild('div', 'keybinds-shortcut keybinds-list-text');
@@ -466,7 +466,7 @@ export class ShortcutListItem {
     button.setAttribute('title', label);
     button.appendChild(UI.Icon.Icon.create(iconName));
     button.addEventListener('click', listener);
-    UI.ARIAUtils.setAccessibleName(button, label);
+    UI.ARIAUtils.setLabel(button, label);
     if (className) {
       button.classList.add(className);
     }

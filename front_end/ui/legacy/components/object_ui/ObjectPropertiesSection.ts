@@ -430,7 +430,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 
     const revealText = i18nString(UIStrings.revealInMemoryInpector);
     UI.Tooltip.Tooltip.install(memoryIcon, revealText);
-    UI.ARIAUtils.setAccessibleName(memoryIcon, revealText);
+    UI.ARIAUtils.setLabel(memoryIcon, revealText);
 
     // Directly set property on memory icon, so that the memory icon is also
     // styled within the context of code mirror.

@@ -883,7 +883,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
       dockItemElement.classList.add('flex-auto');
       dockItemElement.classList.add('location-menu');
       dockItemElement.tabIndex = -1;
-      UI.ARIAUtils.setAccessibleName(dockItemElement, UIStrings.dockSide + UIStrings.dockSideNaviation);
+      UI.ARIAUtils.setLabel(dockItemElement, UIStrings.dockSide + UIStrings.dockSideNaviation);
       const titleElement = dockItemElement.createChild('span', 'dockside-title');
       titleElement.textContent = i18nString(UIStrings.dockSide);
       const toggleDockSideShorcuts =

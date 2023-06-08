@@ -559,7 +559,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const column = this.visibleColumnsArray[cellIndex];
     if (column.dataType === DataType.Boolean) {
       const checkboxLabel = UI.UIUtils.CheckboxLabel.create(undefined, (node.data[column.id] as boolean));
-      UI.ARIAUtils.setAccessibleName(checkboxLabel, column.title || '');
+      UI.ARIAUtils.setLabel(checkboxLabel, column.title || '');
 
       let hasChanged = false;
       checkboxLabel.style.height = '100%';
@@ -1987,7 +1987,7 @@ export class DataGridNode<T> {
     for (let i = 0; i < cell.children.length; i++) {
       UI.ARIAUtils.markAsHidden(cell.children[i]);
     }
-    UI.ARIAUtils.setAccessibleName(cell, name);
+    UI.ARIAUtils.setLabel(cell, name);
   }
 
   nodeSelfHeight(): number {

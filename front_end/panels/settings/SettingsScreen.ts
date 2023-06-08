@@ -258,7 +258,7 @@ abstract class SettingsTab extends UI.Widget.VBox {
       const title = block.createChild('div', 'settings-section-title');
       title.textContent = name;
       UI.ARIAUtils.markAsHeading(title, 2);
-      UI.ARIAUtils.setAccessibleName(block, name);
+      UI.ARIAUtils.setLabel(block, name);
     }
     return block;
   }

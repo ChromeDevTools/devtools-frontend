@@ -1104,7 +1104,7 @@ export function createInput(className?: string, type?: string): HTMLInputElement
 export function createSelect(name: string, options: string[]|Map<string, string[]>[]|Set<string>): HTMLSelectElement {
   const select = document.createElement('select');
   select.classList.add('chrome-select');
-  ARIAUtils.setAccessibleName(select, name);
+  ARIAUtils.setLabel(select, name);
   for (const option of options) {
     if (option instanceof Map) {
       for (const [key, value] of option) {
@@ -1170,7 +1170,7 @@ export function createSlider(min: number, max: number, tabIndex: number): Elemen
 }
 
 export function setTitle(element: HTMLElement, title: string): void {
-  ARIAUtils.setAccessibleName(element, title);
+  ARIAUtils.setLabel(element, title);
   Tooltip.install(element, title);
 }
 
@@ -1321,14 +1321,14 @@ export class DevToolsCloseButton extends HTMLDivElement {
     const root = Utils.createShadowRootWithCoreStyles(this, {cssFile: closeButtonStyles, delegatesFocus: undefined});
     this.buttonElement = (root.createChild('div', 'close-button') as HTMLElement);
     Tooltip.install(this.buttonElement, i18nString(UIStrings.close));
-    ARIAUtils.setAccessibleName(this.buttonElement, i18nString(UIStrings.close));
+    ARIAUtils.setLabel(this.buttonElement, i18nString(UIStrings.close));
     ARIAUtils.markAsButton(this.buttonElement);
     const regularIcon = Icon.create('cross', 'default-icon');
     this.buttonElement.appendChild(regularIcon);
   }
 
   setAccessibleName(name: string): void {
-    ARIAUtils.setAccessibleName(this.buttonElement, name);
+    ARIAUtils.setLabel(this.buttonElement, name);
   }
 
   setTabbable(tabbable: boolean): void {
@@ -1555,7 +1555,7 @@ export class ConfirmDialog {
     const dialog = new Dialog();
     dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);
-    ARIAUtils.setAccessibleName(dialog.contentElement, message);
+    ARIAUtils.setLabel(dialog.contentElement, message);
     const shadowRoot = Utils.createShadowRootWithCoreStyles(
         dialog.contentElement, {cssFile: confirmDialogStyles, delegatesFocus: undefined});
     const content = shadowRoot.createChild('div', 'widget');

@@ -449,7 +449,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     settingsPane.show(this.contentsElement);
     settingsPane.element.classList.add('console-settings-pane');
 
-    UI.ARIAUtils.setAccessibleName(settingsPane.element, i18nString(UIStrings.consoleSettings));
+    UI.ARIAUtils.setLabel(settingsPane.element, i18nString(UIStrings.consoleSettings));
     UI.ARIAUtils.markAsGroup(settingsPane.element);
 
     const settingsToolbarLeft = new UI.Toolbar.Toolbar('', settingsPane.element);

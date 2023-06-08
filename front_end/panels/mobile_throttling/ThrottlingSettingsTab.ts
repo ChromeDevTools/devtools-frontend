@@ -230,14 +230,14 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     const fields = content.createChild('div', 'conditions-edit-row');
     const nameInput = editor.createInput('title', 'text', '', titleValidator);
-    UI.ARIAUtils.setAccessibleName(nameInput, nameStr);
+    UI.ARIAUtils.setLabel(nameInput, nameStr);
     fields.createChild('div', 'conditions-list-text conditions-list-title').appendChild(nameInput);
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     let cell = fields.createChild('div', 'conditions-list-text');
     const downloadInput = editor.createInput('download', 'text', i18n.i18n.lockedString('kbit/s'), throughputValidator);
     cell.appendChild(downloadInput);
-    UI.ARIAUtils.setAccessibleName(downloadInput, downloadStr);
+    UI.ARIAUtils.setLabel(downloadInput, downloadStr);
     const downloadOptional = cell.createChild('div', 'conditions-edit-optional');
     const optionalStr = i18nString(UIStrings.optional);
     downloadOptional.textContent = optionalStr;
@@ -246,7 +246,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     cell = fields.createChild('div', 'conditions-list-text');
     const uploadInput = editor.createInput('upload', 'text', i18n.i18n.lockedString('kbit/s'), throughputValidator);
-    UI.ARIAUtils.setAccessibleName(uploadInput, uploadStr);
+    UI.ARIAUtils.setLabel(uploadInput, uploadStr);
     cell.appendChild(uploadInput);
     const uploadOptional = cell.createChild('div', 'conditions-edit-optional');
     uploadOptional.textContent = optionalStr;
@@ -255,7 +255,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     cell = fields.createChild('div', 'conditions-list-text');
     const latencyInput = editor.createInput('latency', 'text', i18n.i18n.lockedString('ms'), latencyValidator);
-    UI.ARIAUtils.setAccessibleName(latencyInput, latencyStr);
+    UI.ARIAUtils.setLabel(latencyInput, latencyStr);
     cell.appendChild(latencyInput);
     const latencyOptional = cell.createChild('div', 'conditions-edit-optional');
     latencyOptional.textContent = optionalStr;

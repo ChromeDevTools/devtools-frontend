@@ -1471,7 +1471,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
     const filterInput = StylesSidebarPane.createPropertyFilterElement(
         i18nString(UIStrings.filter), hbox, this.onFilterChanged.bind(this));
-    UI.ARIAUtils.setAccessibleName(filterInput, i18nString(UIStrings.filterStyles));
+    UI.ARIAUtils.setLabel(filterInput, i18nString(UIStrings.filterStyles));
     filterContainerElement.appendChild(filterInput);
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
     toolbar.makeToggledGray();
@@ -2248,7 +2248,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderName(): Element {
     const nameElement = document.createElement('span');
-    UI.ARIAUtils.setAccessibleName(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: this.propertyName}));
+    UI.ARIAUtils.setLabel(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: this.propertyName}));
     nameElement.className = 'webkit-css-property';
     nameElement.textContent = this.propertyName;
     nameElement.normalize();
@@ -2257,7 +2257,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderValue(): Element {
     const valueElement = document.createElement('span');
-    UI.ARIAUtils.setAccessibleName(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: this.propertyValue}));
+    UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: this.propertyValue}));
     valueElement.className = 'value';
     if (!this.propertyValue) {
       return valueElement;

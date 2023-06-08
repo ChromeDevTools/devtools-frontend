@@ -140,7 +140,7 @@ export class ElementsTreeOutline extends
     if (hideGutter) {
       this.elementInternal.classList.add('elements-hide-gutter');
     }
-    UI.ARIAUtils.setAccessibleName(this.elementInternal, i18nString(UIStrings.pageDom));
+    UI.ARIAUtils.setLabel(this.elementInternal, i18nString(UIStrings.pageDom));
     this.elementInternal.addEventListener('focusout', this.onfocusout.bind(this), false);
     this.elementInternal.addEventListener('mousedown', this.onmousedown.bind(this), false);
     this.elementInternal.addEventListener('mousemove', this.onmousemove.bind(this), false);

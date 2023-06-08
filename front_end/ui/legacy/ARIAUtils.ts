@@ -340,7 +340,7 @@ export function setProgressBarValue(element: Element, valueNow: number, valueTex
   }
 }
 
-export function setAccessibleName(element: Element, name: string): void {
+export function setLabel(element: Element, name: string): void {
   element.setAttribute('aria-label', name);
 }
 

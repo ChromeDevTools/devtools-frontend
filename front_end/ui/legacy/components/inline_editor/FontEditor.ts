@@ -308,7 +308,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         label = i18nString(UIStrings.fallbackS, {PH1: i});
       }
       fontSelectorObject.label.textContent = label;
-      UI.ARIAUtils.setAccessibleName(fontSelectorObject.input, label);
+      UI.ARIAUtils.setLabel(fontSelectorObject.input, label);
       fontSelectorObject.deleteButton.setTitle(i18nString(UIStrings.deleteS, {PH1: label}));
       fontSelectorObject.index = i;
     }
@@ -592,7 +592,7 @@ class FontPropertyInputs {
       }
     });
     field.appendChild(slider);
-    UI.ARIAUtils.setAccessibleName(slider.sliderElement, i18nString(UIStrings.sSliderInput, {PH1: this.propertyName}));
+    UI.ARIAUtils.setLabel(slider.sliderElement, i18nString(UIStrings.sSliderInput, {PH1: this.propertyName}));
     return slider;
   }
 
@@ -610,7 +610,7 @@ class FontPropertyInputs {
     textBoxInput.step = 'any';
     textBoxInput.addEventListener('input', this.onTextBoxInput.bind(this), false);
     field.appendChild(textBoxInput);
-    UI.ARIAUtils.setAccessibleName(textBoxInput, i18nString(UIStrings.sTextInput, {PH1: this.propertyName}));
+    UI.ARIAUtils.setLabel(textBoxInput, i18nString(UIStrings.sTextInput, {PH1: this.propertyName}));
     return textBoxInput;
   }
 
@@ -640,7 +640,7 @@ class FontPropertyInputs {
       }
     }, false);
     field.appendChild(unitInput);
-    UI.ARIAUtils.setAccessibleName(unitInput, i18nString(UIStrings.sUnitInput, {PH1: this.propertyName}));
+    UI.ARIAUtils.setLabel(unitInput, i18nString(UIStrings.sUnitInput, {PH1: this.propertyName}));
 
     return unitInput;
   }

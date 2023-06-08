@@ -152,13 +152,13 @@ export class ThrottlingManager {
           // The title is usually an i18nLazyString except for custom values that are stored in the local storage in the form of a string.
           const title = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
           const option = new Option(title, title);
-          UI.ARIAUtils.setAccessibleName(option, i18nString(UIStrings.sS, {PH1: group.title, PH2: title}));
+          UI.ARIAUtils.setLabel(option, i18nString(UIStrings.sS, {PH1: group.title, PH2: title}));
           groupElement.appendChild(option);
           options.push(conditions);
         }
         if (i === groups.length - 1) {
           const option = new Option(i18nString(UIStrings.add), i18nString(UIStrings.add));
-          UI.ARIAUtils.setAccessibleName(option, i18nString(UIStrings.addS, {PH1: group.title}));
+          UI.ARIAUtils.setLabel(option, i18nString(UIStrings.addS, {PH1: group.title}));
           groupElement.appendChild(option);
           options.push(null);
         }

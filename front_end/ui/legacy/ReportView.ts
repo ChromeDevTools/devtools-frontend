@@ -150,7 +150,7 @@ export class Section extends VBox {
    */
   setUiGroupTitle(groupTitle: string): void {
     ARIAUtils.markAsGroup(this.element);
-    ARIAUtils.setAccessibleName(this.element, groupTitle);
+    ARIAUtils.setLabel(this.element, groupTitle);
   }
 
   createToolbar(): Toolbar {
@@ -214,7 +214,7 @@ export class Section extends VBox {
 
   markFieldListAsGroup(): void {
     ARIAUtils.markAsGroup(this.fieldList);
-    ARIAUtils.setAccessibleName(this.fieldList, this.title());
+    ARIAUtils.setLabel(this.fieldList, this.title());
   }
 
   setIconMasked(masked: boolean): void {

@@ -504,8 +504,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
                     ({name: category.title(), label: (): string => category.shortTitle(), title: category.title()}));
     this.resourceCategoryFilterUI =
         new UI.FilterBar.NamedBitSetFilterUI(filterItems, this.networkResourceTypeFiltersSetting);
-    UI.ARIAUtils.setAccessibleName(
-        this.resourceCategoryFilterUI.element(), i18nString(UIStrings.resourceTypesToInclude));
+    UI.ARIAUtils.setLabel(this.resourceCategoryFilterUI.element(), i18nString(UIStrings.resourceTypesToInclude));
     this.resourceCategoryFilterUI.addEventListener(
         UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
     filterBar.addFilter(this.resourceCategoryFilterUI);

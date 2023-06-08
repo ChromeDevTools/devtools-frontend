@@ -1168,7 +1168,7 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   constructor(navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => void)) {
     super('', true);
     this.listItemElement.classList.add('navigator-' + type + '-tree-item', 'navigator-folder-tree-item');
-    UI.ARIAUtils.setAccessibleName(this.listItemElement, `${title}, ${type}`);
+    UI.ARIAUtils.setLabel(this.listItemElement, `${title}, ${type}`);
     this.nodeType = type;
     this.title = title;
     this.tooltip = title;
@@ -1218,7 +1218,7 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   setNode(node: NavigatorTreeNode): void {
     this.node = node;
     this.updateTooltip();
-    UI.ARIAUtils.setAccessibleName(this.listItemElement, `${this.title}, ${this.nodeType}`);
+    UI.ARIAUtils.setLabel(this.listItemElement, `${this.title}, ${this.nodeType}`);
   }
 
   private updateTooltip(): void {
@@ -1281,7 +1281,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.classList.add(
         'navigator-' + uiSourceCode.contentType().name() + '-tree-item', 'navigator-file-tree-item');
     this.tooltip = uiSourceCode.url();
-    UI.ARIAUtils.setAccessibleName(this.listItemElement, `${uiSourceCode.name()}, ${this.nodeType}`);
+    UI.ARIAUtils.setLabel(this.listItemElement, `${uiSourceCode.name()}, ${this.nodeType}`);
     Common.EventTarget.fireEvent('source-tree-file-added', uiSourceCode.fullDisplayName());
     this.navigatorView = navigatorView;
     this.uiSourceCodeInternal = uiSourceCode;
@@ -1324,7 +1324,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   updateAccessibleName(): void {
-    UI.ARIAUtils.setAccessibleName(this.listItemElement, `${this.uiSourceCodeInternal.name()}, ${this.nodeType}`);
+    UI.ARIAUtils.setLabel(this.listItemElement, `${this.uiSourceCodeInternal.name()}, ${this.nodeType}`);
   }
 
   get uiSourceCode(): Workspace.UISourceCode.UISourceCode {

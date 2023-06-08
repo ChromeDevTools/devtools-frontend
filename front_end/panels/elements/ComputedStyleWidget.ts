@@ -261,7 +261,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     const filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
     const filterInput = StylesSidebarPane.createPropertyFilterElement(
         i18nString(UIStrings.filter), hbox, this.filterComputedStyles.bind(this));
-    UI.ARIAUtils.setAccessibleName(filterInput, i18nString(UIStrings.filterComputedStyles));
+    UI.ARIAUtils.setLabel(filterInput, i18nString(UIStrings.filterComputedStyles));
     filterContainerElement.appendChild(filterInput);
     this.input = filterInput;
     this.filterRegex = null;

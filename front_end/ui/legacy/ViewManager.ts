@@ -368,7 +368,7 @@ export class ContainerWidget extends VBox {
     this.view = view;
     this.element.tabIndex = -1;
     ARIAUtils.markAsTabpanel(this.element);
-    ARIAUtils.setAccessibleName(this.element, i18nString(UIStrings.sPanel, {PH1: view.title()}));
+    ARIAUtils.setLabel(this.element, i18nString(UIStrings.sPanel, {PH1: view.title()}));
     this.setDefaultFocusedElement(this.element);
   }
 
@@ -432,7 +432,7 @@ class ExpandableContainerWidget extends VBox {
     this.titleElement.appendChild(this.titleExpandIcon);
     const titleText = view.title();
     createTextChild(this.titleElement, titleText);
-    ARIAUtils.setAccessibleName(this.titleElement, titleText);
+    ARIAUtils.setLabel(this.titleElement, titleText);
     ARIAUtils.setExpanded(this.titleElement, false);
     this.titleElement.tabIndex = 0;
     self.onInvokeElement(this.titleElement, this.toggleExpanded.bind(this));

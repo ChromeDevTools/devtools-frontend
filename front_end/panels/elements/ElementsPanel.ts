@@ -241,7 +241,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     stackElement.appendChild(crumbsContainer);
 
     UI.ARIAUtils.markAsMain(this.domTreeContainer);
-    UI.ARIAUtils.setAccessibleName(this.domTreeContainer, i18nString(UIStrings.domTreeExplorer));
+    UI.ARIAUtils.setLabel(this.domTreeContainer, i18nString(UIStrings.domTreeExplorer));
 
     this.splitWidget.setMainWidget(this.searchableViewInternal);
     this.splitMode = null;
@@ -1044,11 +1044,11 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     const headerElement = tabbedPane.headerElement();
     UI.ARIAUtils.markAsNavigation(headerElement);
-    UI.ARIAUtils.setAccessibleName(headerElement, i18nString(UIStrings.sidePanelToolbar));
+    UI.ARIAUtils.setLabel(headerElement, i18nString(UIStrings.sidePanelToolbar));
 
     const contentElement = tabbedPane.tabbedPaneContentElement();
     UI.ARIAUtils.markAsComplementary(contentElement);
-    UI.ARIAUtils.setAccessibleName(contentElement, i18nString(UIStrings.sidePanelContent));
+    UI.ARIAUtils.setLabel(contentElement, i18nString(UIStrings.sidePanelContent));
 
     const stylesView =
         new UI.View.SimpleView(i18nString(UIStrings.styles), /* isWebComponent */ undefined, SidebarPaneTabId.Styles);

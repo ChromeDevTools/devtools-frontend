@@ -149,7 +149,7 @@ export class SearchView extends UI.Widget.VBox {
     this.search.setAttribute('type', 'text');
     this.search.setAttribute('results', '0');
     this.search.setAttribute('size', '42');
-    UI.ARIAUtils.setAccessibleName(this.search, i18nString(UIStrings.searchQuery));
+    UI.ARIAUtils.setLabel(this.search, i18nString(UIStrings.searchQuery));
     const searchItem = new UI.Toolbar.ToolbarItem(searchContainer);
 
     const toolbar = new UI.Toolbar.Toolbar('search-toolbar', this.searchPanelElement);

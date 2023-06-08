@@ -860,7 +860,7 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
     originGroup.setCollapsible(false);
     originGroup.expand();
     originGroup.listItemElement.classList.add('security-sidebar-origins');
-    UI.ARIAUtils.setAccessibleName(originGroup.childrenListElement, originGroupTitle);
+    UI.ARIAUtils.setLabel(originGroup.childrenListElement, originGroupTitle);
     return originGroup;
   }
 
@@ -896,7 +896,7 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
       } else {
         newParent.title = i18nString(UIStrings.mainOriginNonsecure);
       }
-      UI.ARIAUtils.setAccessibleName(newParent.childrenListElement, newParent.title);
+      UI.ARIAUtils.setLabel(newParent.childrenListElement, newParent.title);
     } else {
       switch (securityState) {
         case Protocol.Security.SecurityState.Secure:
@@ -1612,7 +1612,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
             buttonText = i18nString(UIStrings.hideFullDetails);
           }
           toggleSctsDetailsLink.textContent = buttonText;
-          UI.ARIAUtils.setAccessibleName(toggleSctsDetailsLink, buttonText);
+          UI.ARIAUtils.setLabel(toggleSctsDetailsLink, buttonText);
           UI.ARIAUtils.setExpanded(toggleSctsDetailsLink, !isDetailsShown);
           sctSummaryTable.element().classList.toggle('hidden');
           sctTableWrapper.classList.toggle('hidden');
@@ -1691,7 +1691,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
             buttonText = i18nString(UIStrings.showMoreSTotal, {PH1: sanList.length});
           }
           truncatedSANToggle.textContent = buttonText;
-          UI.ARIAUtils.setAccessibleName(truncatedSANToggle, buttonText);
+          UI.ARIAUtils.setLabel(truncatedSANToggle, buttonText);
           UI.ARIAUtils.setExpanded(truncatedSANToggle, isTruncated);
         }
         const truncatedSANToggle = UI.UIUtils.createTextButton(

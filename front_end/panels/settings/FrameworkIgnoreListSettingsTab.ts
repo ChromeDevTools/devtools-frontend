@@ -139,7 +139,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     this.list.show(ignoreListOptions);
     const addPatternButton =
         UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this.addButtonClicked.bind(this), 'add-button');
-    UI.ARIAUtils.setAccessibleName(addPatternButton, i18nString(UIStrings.addFilenamePattern));
+    UI.ARIAUtils.setLabel(addPatternButton, i18nString(UIStrings.addFilenamePattern));
     ignoreListOptions.appendChild(addPatternButton);
     this.setting =
         Common.Settings.Settings.instance().moduleSetting('skipStackFramesPattern') as Common.Settings.RegExpSetting;
@@ -252,7 +252,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     const fields = content.createChild('div', 'ignore-list-edit-row');
     const pattern = editor.createInput('pattern', 'text', '/framework\\.js$', patternValidator.bind(this));
-    UI.ARIAUtils.setAccessibleName(pattern, i18nString(UIStrings.pattern));
+    UI.ARIAUtils.setLabel(pattern, i18nString(UIStrings.pattern));
     fields.createChild('div', 'ignore-list-pattern').appendChild(pattern);
 
     return editor;

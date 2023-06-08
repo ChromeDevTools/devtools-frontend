@@ -225,7 +225,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const formattedColor = suggestedColor.asString(colorFormat);
     const suggestedColorString = formattedColor ? formattedColor + ' ' : '';
     const label = i18nString(UIStrings.useSuggestedColorStoFixLow, {PH1: suggestedColorString});
-    UI.ARIAUtils.setAccessibleName(button, label);
+    UI.ARIAUtils.setLabel(button, label);
     UI.Tooltip.Tooltip.install(button, label);
     button.tabIndex = 0;
     button.style.backgroundColor = suggestedColorString;

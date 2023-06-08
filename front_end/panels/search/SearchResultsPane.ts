@@ -150,7 +150,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     matchesCountSpan.className = 'search-result-matches-count';
 
     matchesCountSpan.textContent = `${this.searchResult.matchesCount()}`;
-    UI.ARIAUtils.setAccessibleName(
+    UI.ARIAUtils.setLabel(
         matchesCountSpan, i18nString(UIStrings.matchesCountS, {PH1: this.searchResult.matchesCount()}));
 
     this.listItemElement.appendChild(matchesCountSpan);
@@ -190,9 +190,9 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
       const resultLabel = searchResult.matchLabel(i);
       labelSpan.textContent = resultLabel;
       if (typeof resultLabel === 'number' && !isNaN(resultLabel)) {
-        UI.ARIAUtils.setAccessibleName(labelSpan, i18nString(UIStrings.lineS, {PH1: resultLabel}));
+        UI.ARIAUtils.setLabel(labelSpan, i18nString(UIStrings.lineS, {PH1: resultLabel}));
       } else {
-        UI.ARIAUtils.setAccessibleName(labelSpan, resultLabel);
+        UI.ARIAUtils.setLabel(labelSpan, resultLabel);
       }
       anchor.appendChild(labelSpan);
 
@@ -237,7 +237,7 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     const contentSpan = document.createElement('span');
     contentSpan.className = 'search-match-content';
     contentSpan.textContent = lineContent;
-    UI.ARIAUtils.setAccessibleName(contentSpan, `${lineContent} line`);
+    UI.ARIAUtils.setLabel(contentSpan, `${lineContent} line`);
     UI.UIUtils.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-search-result');
     return contentSpan;
   }

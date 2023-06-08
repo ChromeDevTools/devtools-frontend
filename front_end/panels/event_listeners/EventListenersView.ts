@@ -250,7 +250,7 @@ export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
     this.toggleOnClick = true;
     this.linkifier = linkifier;
     this.changeCallback = changeCallback;
-    UI.ARIAUtils.setAccessibleName(this.listItemElement, `${type}, event listener`);
+    UI.ARIAUtils.setLabel(this.listItemElement, `${type}, event listener`);
   }
 
   static comparator(element1: UI.TreeOutline.TreeElement, element2: UI.TreeOutline.TreeElement): number {

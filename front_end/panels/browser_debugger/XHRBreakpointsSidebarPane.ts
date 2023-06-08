@@ -84,7 +84,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     this.contentElement.appendChild(this.#list.element);
     this.#list.element.classList.add('breakpoint-list', 'hidden');
     UI.ARIAUtils.markAsList(this.#list.element);
-    UI.ARIAUtils.setAccessibleName(this.#list.element, i18nString(UIStrings.xhrfetchBreakpoints));
+    UI.ARIAUtils.setLabel(this.#list.element, i18nString(UIStrings.xhrfetchBreakpoints));
     this.#emptyElement = this.contentElement.createChild('div', 'gray-info-message');
     this.#emptyElement.textContent = i18nString(UIStrings.noBreakpoints);
 
@@ -126,7 +126,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     inputElementContainer.textContent = i18nString(UIStrings.breakWhenUrlContains);
 
     const inputElement = inputElementContainer.createChild('span', 'breakpoint-condition-input');
-    UI.ARIAUtils.setAccessibleName(inputElement, i18nString(UIStrings.urlBreakpoint));
+    UI.ARIAUtils.setLabel(inputElement, i18nString(UIStrings.urlBreakpoint));
     this.addListElement(inputElementContainer, this.#list.element.firstChild as Element | null);
 
     function finishEditing(this: XHRBreakpointsSidebarPane, accept: boolean, e: Element, text: string): void {
@@ -184,7 +184,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     const title = item ? i18nString(UIStrings.urlContainsS, {PH1: item}) : i18nString(UIStrings.anyXhrOrFetch);
     const label = UI.UIUtils.CheckboxLabel.create(title, enabled);
     UI.ARIAUtils.markAsHidden(label);
-    UI.ARIAUtils.setAccessibleName(element, title);
+    UI.ARIAUtils.setLabel(element, title);
     element.appendChild(label);
     label.checkboxElement.addEventListener('click', this.checkboxClicked.bind(this, item, enabled), false);
     element.addEventListener('click', event => {

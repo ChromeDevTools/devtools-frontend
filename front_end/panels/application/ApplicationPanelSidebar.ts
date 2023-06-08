@@ -477,7 +477,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     treeElement.selectable = false;
     this.sidebarTree.appendChild(treeElement);
     UI.ARIAUtils.markAsHeading(treeElement.listItemElement, 3);
-    UI.ARIAUtils.setAccessibleName(treeElement.childrenListElement, title);
+    UI.ARIAUtils.setLabel(treeElement.childrenListElement, title);
     return treeElement;
   }
 
@@ -1108,7 +1108,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     const reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
     this.view = new AppManifestView(emptyView, reportView, new Common.Throttler.Throttler(1000));
-    UI.ARIAUtils.setAccessibleName(this.listItemElement, i18nString(UIStrings.onInvokeManifestAlert));
+    UI.ARIAUtils.setLabel(this.listItemElement, i18nString(UIStrings.onInvokeManifestAlert));
     const handleExpansion = (evt: Event): void => {
       this.setExpandable((evt as CustomEvent).detail);
     };
@@ -1158,7 +1158,7 @@ export class ManifestChildTreeElement extends ApplicationPanelTreeElement {
     this.#sectionFieldElement = fieldElement;
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
     this.listItemElement.addEventListener('keydown', this.onInvokeElementKeydown.bind(this));
-    UI.ARIAUtils.setAccessibleName(
+    UI.ARIAUtils.setLabel(
         this.listItemElement, i18nString(UIStrings.beforeInvokeAlert, {PH1: this.listItemElement.title}));
   }
 
@@ -1790,7 +1790,7 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
   constructor(storagePanel: ResourcesPanel, treeElement: UI.TreeOutline.TreeElement) {
     this.panel = storagePanel;
     this.treeElement = treeElement;
-    UI.ARIAUtils.setAccessibleName(this.treeElement.listItemNode, 'Resources Section');
+    UI.ARIAUtils.setLabel(this.treeElement.listItemNode, 'Resources Section');
     this.treeElementForFrameId = new Map();
     this.treeElementForTargetId = new Map();
 
@@ -2054,7 +2054,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     this.frameId = frame.id;
     if (this.title !== frame.displayName()) {
       this.title = frame.displayName();
-      UI.ARIAUtils.setAccessibleName(this.listItemElement, this.title);
+      UI.ARIAUtils.setLabel(this.listItemElement, this.title);
       if (this.parent) {
         const parent = this.parent;
         // Insert frame at new position to preserve correct alphabetical order

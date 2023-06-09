@@ -196,7 +196,7 @@ export async function finalize(): Promise<void> {
         Types.Timing.MicroSeconds(request.willSendRequests[request.willSendRequests.length - 1].ts) :
         Types.Timing.MicroSeconds(finalSendRequest.ts);
 
-    // Finsh time and end time
+    // Finish time and end time
     // =======================
     // The finish time and the end time are subtly different.
     //  - Finish time: records the point at which the network stack stopped receiving the data

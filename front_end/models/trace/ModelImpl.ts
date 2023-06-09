@@ -29,6 +29,7 @@ export const ENABLED_TRACE_HANDLERS = {
   LayoutShifts: Handlers.ModelHandlers.LayoutShifts,
   Screenshots: Handlers.ModelHandlers.Screenshots,
   GPU: Handlers.ModelHandlers.GPU,
+  NetworkRequests: Handlers.ModelHandlers.NetworkRequests,
 };
 export type PartialTraceParseDataDuringMigration =
     Readonly<Handlers.Types.EnabledHandlerDataWithMeta<typeof ENABLED_TRACE_HANDLERS>>;

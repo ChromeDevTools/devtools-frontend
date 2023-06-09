@@ -145,7 +145,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private currentLevel: number;
 
   // The Performance and the Timeline models are expected to be
-  // deprecrated in favor of using traceEngineData (new RPP engine) only
+  // deprecated in favor of using traceEngineData (new RPP engine) only
   // as part of the work in crbug.com/1386091. For this reason they
   // have the "legacy" prefix on their name.
   private legacyPerformanceModel: PerformanceModel|null;

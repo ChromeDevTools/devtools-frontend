@@ -144,8 +144,14 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
       targetInfos,
       // For the most part, defer to Lighthouse for which targets are important.
       // Excluding devtools targets is required for e2e tests to work, and LH doesn't support auditing DT targets anyway.
-      targetFilterCallback: targetInfo =>
-          !targetInfo.url.match(/^https:\/\/i0.devtools-frontend/) && !targetInfo.url.match(/^devtools:\/\//),
+      targetFilterCallback: targetInfo => {
+        if (targetInfo.url.startsWith('https://i0.devtools-frontend') || targetInfo.url.startsWith('devtools://')) {
+          return false;
+        }
+        // TODO only connect to iframes that are related to the main target. This requires refactoring in Puppeteer: https://github.com/puppeteer/puppeteer/issues/3667.
+        return (
+            targetInfo.targetId === mainFrameId || targetInfo.openerId === mainFrameId || targetInfo.type === 'iframe');
+      },
       // Lighthouse can only audit normal pages.
       isPageTargetCallback: targetInfo => targetInfo.type === 'page',
     });

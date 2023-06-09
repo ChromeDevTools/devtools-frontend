@@ -1647,6 +1647,53 @@
                     ]
                 },
                 {
+                    "id": "FailedRequestInfo",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "url",
+                            "description": "The URL that failed to load.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "failureMessage",
+                            "description": "The failure message for the failed request.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "StyleSheetLoadingIssueReason",
+                    "type": "string",
+                    "enum": [
+                        "LateImportRule",
+                        "RequestFailed"
+                    ]
+                },
+                {
+                    "id": "StylesheetLoadingIssueDetails",
+                    "description": "This issue warns when a referenced stylesheet couldn't be loaded.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "sourceCodeLocation",
+                            "description": "Source code position that referenced the failing stylesheet.",
+                            "$ref": "SourceCodeLocation"
+                        },
+                        {
+                            "name": "styleSheetLoadingIssueReason",
+                            "description": "Reason why the stylesheet couldn't be loaded.",
+                            "$ref": "StyleSheetLoadingIssueReason"
+                        },
+                        {
+                            "name": "failedRequestInfo",
+                            "description": "Contains additional info when the failure was due to a request.",
+                            "optional": true,
+                            "$ref": "FailedRequestInfo"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -1666,7 +1713,8 @@
                         "DeprecationIssue",
                         "ClientHintIssue",
                         "FederatedAuthRequestIssue",
-                        "BounceTrackingIssue"
+                        "BounceTrackingIssue",
+                        "StylesheetLoadingIssue"
                     ]
                 },
                 {
@@ -1753,6 +1801,11 @@
                             "name": "bounceTrackingIssueDetails",
                             "optional": true,
                             "$ref": "BounceTrackingIssueDetails"
+                        },
+                        {
+                            "name": "stylesheetLoadingIssueDetails",
+                            "optional": true,
+                            "$ref": "StylesheetLoadingIssueDetails"
                         }
                     ]
                 },

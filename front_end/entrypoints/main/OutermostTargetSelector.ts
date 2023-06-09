@@ -9,6 +9,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
 
+import outermostTargetSelectorStyles from './outermostTargetSelector.css.js';
+
 const UIStrings = {
   /**
    *@description Title of toolbar item in outermost target selector in the main toolbar
@@ -66,8 +68,14 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
   }
 
   highlightedItemChanged(
-      _from: SDK.Target.Target|null, _to: SDK.Target.Target|null, _fromElement: Element|null,
-      _toElement: Element|null): void {
+      _from: SDK.Target.Target|null, _to: SDK.Target.Target|null, fromElement: Element|null,
+      toElement: Element|null): void {
+    if (fromElement) {
+      fromElement.classList.remove('highlighted');
+    }
+    if (toElement) {
+      toElement.classList.add('highlighted');
+    }
   }
 
   titleFor(target: SDK.Target.Target): string {
@@ -142,8 +150,9 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
 
   createElementForItem(item: SDK.Target.Target): Element {
     const element = document.createElement('div');
-    const shadowRoot =
-        UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: undefined, delegatesFocus: undefined});
+    element.classList.add('target');
+    const shadowRoot = UI.Utils.createShadowRootWithCoreStyles(
+        element, {cssFile: [outermostTargetSelectorStyles], delegatesFocus: undefined});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');

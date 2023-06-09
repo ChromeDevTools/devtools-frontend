@@ -809,6 +809,7 @@ grd_files_debug_sources = [
   "front_end/entrypoints/main/MainImpl.js",
   "front_end/entrypoints/main/OutermostTargetSelector.js",
   "front_end/entrypoints/main/SimpleApp.js",
+  "front_end/entrypoints/main/outermostTargetSelector.css.js",
   "front_end/entrypoints/node_app/NodeConnectionsPanel.js",
   "front_end/entrypoints/node_app/NodeMain.js",
   "front_end/entrypoints/node_app/nodeConnectionsPanel.css.js",

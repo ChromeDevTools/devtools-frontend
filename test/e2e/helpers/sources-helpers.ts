@@ -88,12 +88,16 @@ export async function doubleClickSourceTreeItem(selector: string) {
   await click(selector, {clickOptions: {clickCount: 2, offset: {x: 40, y: 10}}});
 }
 
+export async function waitForSourcesPanel(): Promise<void> {
+  // Wait for the navigation panel to show up
+  await waitFor('.navigator-file-tree-item');
+}
+
 export async function openSourcesPanel() {
   // Locate the button for switching to the sources tab.
   await click('#tab-sources');
 
-  // Wait for the navigation panel to show up
-  await waitFor('.navigator-file-tree-item');
+  await waitForSourcesPanel();
 }
 
 export async function openFileInSourcesPanel(testInput: string) {

@@ -27,6 +27,8 @@ copy_to_gen("network") {
     "service-worker.html",
     "service-worker.js",
     "style.css",
+    "stylesheet-resources.css",
+    "stylesheet-resources.html",
     "third-party-resources.html",
     "trusted-type-policy-violation-report-only.rawresponse",
     "trusted-type-violations-enforced.rawresponse",

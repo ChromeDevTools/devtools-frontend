@@ -515,7 +515,8 @@ export enum Action {
   RemoveFileSystemForOverrides = 77,
   FileSystemSourceSelected = 78,
   OverridesSourceSelected = 79,
-  MaxValue = 80,
+  StyleSheetInitiatorLinkClicked = 80,
+  MaxValue = 81,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

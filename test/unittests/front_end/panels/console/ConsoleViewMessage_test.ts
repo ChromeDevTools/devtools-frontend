@@ -89,7 +89,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const expectedCallFrame = stackTrace.callFrames[1];  // userFunction.
       sinon.assert.calledOnceWithExactly(
           linkifier.maybeLinkifyConsoleCallFrame, target, expectedCallFrame,
-          {inlineFrameIndex: 0, revealBreakpoint: true});
+          {inlineFrameIndex: 0, revealBreakpoint: true, userMetric: undefined});
     });
 
     it('uses the last "marker sourceURL" frame when searching for the breakpoint/logpoint frame', () => {
@@ -116,7 +116,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const expectedCallFrame = stackTrace.callFrames[3];  // userFunction.
       sinon.assert.calledOnceWithExactly(
           linkifier.maybeLinkifyConsoleCallFrame, target, expectedCallFrame,
-          {inlineFrameIndex: 0, revealBreakpoint: true});
+          {inlineFrameIndex: 0, revealBreakpoint: true, userMetric: undefined});
     });
   });
 });

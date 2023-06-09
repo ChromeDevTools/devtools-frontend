@@ -40,6 +40,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as Host from '../../core/host/host.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
@@ -466,6 +467,14 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return elements;
   }
 
+  #getLinkifierMetric(): Host.UserMetrics.Action|undefined {
+    const request = Logs.NetworkLog.NetworkLog.requestForConsoleMessage(this.message);
+    if (request?.resourceType().isStyleSheet()) {
+      return Host.UserMetrics.Action.StyleSheetInitiatorLinkClicked;
+    }
+    return undefined;
+  }
+
   protected buildMessageAnchor(): HTMLElement|null {
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
@@ -474,23 +483,26 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     const linkify = ({stackFrameWithBreakpoint, scriptId, stackTrace, url, line, column}:
                          SDK.ConsoleModel.ConsoleMessage): HTMLElement|null => {
+      const userMetric = this.#getLinkifierMetric();
       if (stackFrameWithBreakpoint) {
         return this.linkifier.maybeLinkifyConsoleCallFrame(runtimeModel.target(), stackFrameWithBreakpoint, {
           inlineFrameIndex: 0,
           revealBreakpoint: true,
+          userMetric,
         });
       }
       if (scriptId) {
         return this.linkifier.linkifyScriptLocation(
             runtimeModel.target(), scriptId, url || Platform.DevToolsPath.EmptyUrlString, line,
-            {columnNumber: column, inlineFrameIndex: 0});
+            {columnNumber: column, inlineFrameIndex: 0, userMetric});
       }
       if (stackTrace && stackTrace.callFrames.length) {
         return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
       }
       if (url && url !== 'undefined') {
         return this.linkifier.linkifyScriptLocation(
-            runtimeModel.target(), /* scriptId */ null, url, line, {columnNumber: column, inlineFrameIndex: 0});
+            runtimeModel.target(), /* scriptId */ null, url, line,
+            {columnNumber: column, inlineFrameIndex: 0, userMetric});
       }
       return null;
     };

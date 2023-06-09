@@ -1284,6 +1284,13 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
+  #getLinkifierMetric(): Host.UserMetrics.Action|undefined {
+    if (this.requestInternal.resourceType().isStyleSheet()) {
+      return Host.UserMetrics.Action.StyleSheetInitiatorLinkClicked;
+    }
+    return undefined;
+  }
+
   private renderInitiatorCell(cell: HTMLElement): void {
     this.initiatorCell = cell;
     const request = this.requestInternal;
@@ -1301,6 +1308,7 @@ export class NetworkRequestNode extends NetworkNode {
                                                         text: uiSourceCode ? uiSourceCode.displayName() : undefined,
                                                         lineNumber: initiator.lineNumber,
                                                         columnNumber: initiator.columnNumber,
+                                                        userMetric: this.#getLinkifierMetric(),
                                                       } as Components.Linkifier.LinkifyURLOptions)));
         this.appendSubtitle(cell, i18nString(UIStrings.parser));
         break;

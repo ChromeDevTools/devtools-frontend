@@ -17,14 +17,22 @@ import {
 
 const REQUEST_LIST_SELECTOR = '.network-log-grid tbody';
 
+export async function waitForNetworkTab(): Promise<void> {
+  // Make sure the network tab is shown on the screen
+  await waitFor('.network-log-grid');
+}
+
+export async function openNetworkTab(): Promise<void> {
+  await click('#tab-network');
+  await waitForNetworkTab();
+}
+
 /**
  * Select the Network tab in DevTools
  */
 export async function navigateToNetworkTab(testName: string) {
   await goToResource(`network/${testName}`);
-  await click('#tab-network');
-  // Make sure the network tab is shown on the screen
-  await waitFor('.network-log-grid');
+  await openNetworkTab();
 }
 
 /**

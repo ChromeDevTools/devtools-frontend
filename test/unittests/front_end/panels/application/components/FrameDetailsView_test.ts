@@ -9,7 +9,6 @@ import * as ApplicationComponents from '../../../../../../front_end/panels/appli
 import * as ExpandableList from '../../../../../../front_end/ui/components/expandable_list/expandable_list.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../../../front_end/ui/components/report_view/report_view.js';
-import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 import {
   assertShadowRoot,
   getCleanTextContentFromElements,
@@ -214,9 +213,6 @@ describeWithRealConnection('FrameDetailsView', () => {
         reportOnlyValue: Protocol.Network.CrossOriginOpenerPolicyValue.SameOrigin,
       },
     });
-    const wrapper = sinon.createStubInstance(UI.ThrottledWidget.ThrottledWidget);
-    component.wrapper = wrapper;
-    wrapper.update.callsFake(() => component.render());
     renderElementIntoDOM(component);
     component.targetChanged({data: {subtype: 'prerender', url: 'https://example.test/'} as Protocol.Target.TargetInfo});
 

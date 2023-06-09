@@ -9,7 +9,6 @@ import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as TreeOutline from '../../../../../../front_end/ui/components/tree_outline/tree_outline.js';
-import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 import {
   assertElement,
   assertShadowRoot,
@@ -73,28 +72,24 @@ describeWithMockConnection('BackForwardCacheView', () => {
     });
 
     it('updates BFCacheView on main frame navigation', async () => {
-      const view = await renderBackForwardCacheView();
-      const wrapper = sinon.createStubInstance(UI.ThrottledWidget.ThrottledWidget);
-      view.wrapper = wrapper;
+      await renderBackForwardCacheView();
       assertNotNullOrUndefined(resourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel.mainFrame);
       resourceTreeModel.dispatchEventToListeners(
           SDK.ResourceTreeModel.Events.PrimaryPageChanged,
           {frame: resourceTreeModel.mainFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
 
-      assert.isTrue(wrapper.update.calledOnce);
+      await coordinator.done({waitForWork: true});
     });
 
     it('updates BFCacheView on BFCache detail update', async () => {
-      const view = await renderBackForwardCacheView();
-      const wrapper = sinon.createStubInstance(UI.ThrottledWidget.ThrottledWidget);
-      view.wrapper = wrapper;
+      await renderBackForwardCacheView();
       assertNotNullOrUndefined(resourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel.mainFrame);
       resourceTreeModel.dispatchEventToListeners(
           SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, resourceTreeModel.mainFrame);
 
-      assert.isTrue(wrapper.update.calledOnce);
+      await coordinator.done({waitForWork: true});
     });
 
     it('renders status if restored from BFCache', async () => {

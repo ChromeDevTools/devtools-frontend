@@ -9,7 +9,6 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Root from '../../../core/root/root.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
-import type * as UI from '../../../ui/legacy/legacy.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -146,8 +145,7 @@ const enum ScreenStatusType {
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-export class BackForwardCacheView extends
-    LegacyWrapper.LegacyWrapper.WrappableComponent<UI.ThrottledWidget.ThrottledWidget> {
+export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   static readonly litTagName = LitHtml.literal`devtools-resources-back-forward-cache-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #screenStatus = ScreenStatusType.Result;
@@ -157,14 +155,10 @@ export class BackForwardCacheView extends
   constructor() {
     super();
     this.#getMainResourceTreeModel()?.addEventListener(
-        SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.update, this);
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.render, this);
     this.#getMainResourceTreeModel()?.addEventListener(
-        SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.update, this);
+        SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.render, this);
     this.classList.add('overflow-auto');
-  }
-
-  update(): void {
-    this.wrapper?.update();
   }
 
   #getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {

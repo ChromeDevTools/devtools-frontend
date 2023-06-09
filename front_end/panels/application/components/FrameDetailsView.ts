@@ -22,7 +22,6 @@ import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import type * as UI from '../../../ui/legacy/legacy.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as Protocol from '../../../generated/protocol.js';
@@ -270,8 +269,7 @@ export interface FrameDetailsReportViewData {
   adScriptId: Protocol.Page.AdScriptId|null;
 }
 
-export class FrameDetailsReportView extends
-    LegacyWrapper.LegacyWrapper.WrappableComponent<UI.ThrottledWidget.ThrottledWidget> {
+export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   static readonly litTagName = LitHtml.literal`devtools-resources-frame-details-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
@@ -289,24 +287,20 @@ export class FrameDetailsReportView extends
     this.#frame = frame;
     this.#prerenderedUrl = '';
     this.classList.add('overflow-auto');
-    this.update();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetInfoChanged, this.targetChanged,
         this);
     frame.resourceTreeModel().addEventListener(
-        SDK.ResourceTreeModel.Events.PrerenderingStatusUpdated, this.update, this);
-  }
-
-  update(): void {
-    this.wrapper?.update();
+        SDK.ResourceTreeModel.Events.PrerenderingStatusUpdated, this.render, this);
+    void this.render();
   }
 
   targetChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>): void {
     const targetInfo = event.data;
     if (targetInfo.subtype === 'prerender') {
       this.#prerenderedUrl = targetInfo.url;
-      this.update();
+      void this.render();
     }
   }
 

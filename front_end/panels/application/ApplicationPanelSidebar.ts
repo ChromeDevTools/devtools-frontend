@@ -2019,8 +2019,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
   private treeElementForWindow: Map<Protocol.Target.TargetID, FrameWindowTreeElement>;
   private treeElementForWorker: Map<Protocol.Target.TargetID, WorkerTreeElement>;
   private view: LegacyWrapper.LegacyWrapper
-      .LegacyWrapper<UI.ThrottledWidget.ThrottledWidget, ApplicationComponents.FrameDetailsView.FrameDetailsReportView>|
-      null;
+      .LegacyWrapper<UI.Widget.Widget, ApplicationComponents.FrameDetailsView.FrameDetailsReportView>|null;
 
   constructor(section: ResourcesSection, frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super(section.panel, '', false);
@@ -2068,8 +2067,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
 
     if (this.selected) {
       this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
-          UI.ThrottledWidget.ThrottledWidget,
-          new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
+          UI.Widget.Widget, new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
       this.showView(this.view);
     } else {
       this.view = null;
@@ -2107,10 +2105,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     super.onselect(selectedByUser);
     if (!this.view) {
       this.view = LegacyWrapper.LegacyWrapper.legacyWrapper(
-          UI.ThrottledWidget.ThrottledWidget,
-          new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
-    } else {
-      this.view.update();
+          UI.Widget.Widget, new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(this.frame));
     }
     Host.userMetrics.panelShown(Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.frame_details]);
     this.showView(this.view);

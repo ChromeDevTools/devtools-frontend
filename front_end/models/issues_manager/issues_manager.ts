@@ -20,7 +20,6 @@ import * as IssuesManager from './IssuesManager.js';
 import * as LowTextContrastIssue from './LowTextContrastIssue.js';
 import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
 import * as MixedContentIssue from './MixedContentIssue.js';
-import * as NavigatorUserAgentIssue from './NavigatorUserAgentIssue.js';
 import * as QuirksModeIssue from './QuirksModeIssue.js';
 import * as RelatedIssue from './RelatedIssue.js';
 import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
@@ -46,7 +45,6 @@ export {
   LowTextContrastIssue,
   MarkdownIssueDescription,
   MixedContentIssue,
-  NavigatorUserAgentIssue,
   QuirksModeIssue,
   RelatedIssue,
   SharedArrayBufferIssue,

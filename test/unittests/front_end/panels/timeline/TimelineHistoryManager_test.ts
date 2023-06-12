@@ -5,8 +5,7 @@
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {traceModelFromTraceFile} from '../../helpers/TimelineHelpers.js';
-import {loadModelDataFromTraceFile, setTraceModelTimeout} from '../../helpers/TraceHelpers.js';
+import {allModelsFromFile, setTraceModelTimeout} from '../../helpers/TraceHelpers.js';
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
@@ -48,24 +47,27 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
   it('can select from multiple parsed data objects', async () => {
     // Add two parsed data objects to the history manager.
-    const firstTraceFileName = 'slow-interaction-button-click.json.gz';
-    const firstLegacyModel = await traceModelFromTraceFile(firstTraceFileName);
-    const firstTraceParsedData = await loadModelDataFromTraceFile(firstTraceFileName);
-    historyManager.addRecording(firstLegacyModel.performanceModel, firstTraceParsedData);
+    const firstFileModels = await allModelsFromFile('slow-interaction-button-click.json.gz');
+    historyManager.addRecording(
+        firstFileModels.performanceModel,
+        firstFileModels.traceParsedData,
+        firstFileModels.filmStripModel,
+    );
 
-    const secondTraceFileName = 'slow-interaction-keydown.json.gz';
-    const secondLegacyModel = await traceModelFromTraceFile(secondTraceFileName);
-    const secondTraceParsedData = await loadModelDataFromTraceFile(secondTraceFileName);
-    historyManager.addRecording(secondLegacyModel.performanceModel, secondTraceParsedData);
+    const secondFileModels = await allModelsFromFile('slow-interaction-keydown.json.gz');
+    historyManager.addRecording(
+        secondFileModels.performanceModel, secondFileModels.traceParsedData, secondFileModels.filmStripModel);
 
     // Make sure the correct model tuples (legacy and new engine) are returned when
     // using the history manager to navigate between trace files..
     const previousRecording = historyManager.navigate(1);
-    assert.strictEqual(previousRecording?.legacyModel, firstLegacyModel.performanceModel);
-    assert.strictEqual(previousRecording?.traceParseData, firstTraceParsedData);
+    assert.strictEqual(previousRecording?.legacyModel, firstFileModels.performanceModel);
+    assert.strictEqual(previousRecording?.traceParseData, firstFileModels.traceParsedData);
+    assert.strictEqual(previousRecording?.filmStripModel, firstFileModels.filmStripModel);
 
     const nextRecording = historyManager.navigate(-1);
-    assert.strictEqual(nextRecording?.legacyModel, secondLegacyModel.performanceModel);
-    assert.strictEqual(nextRecording?.traceParseData, secondTraceParsedData);
+    assert.strictEqual(nextRecording?.legacyModel, secondFileModels.performanceModel);
+    assert.strictEqual(nextRecording?.traceParseData, secondFileModels.traceParsedData);
+    assert.strictEqual(nextRecording?.filmStripModel, secondFileModels.filmStripModel);
   });
 });

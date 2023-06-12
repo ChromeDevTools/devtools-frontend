@@ -22,7 +22,7 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
 }
 describeWithEnvironment('TimelineFlameChartView', () => {
   it('Can search for events by name in the timeline', async () => {
-    const {traceParsedData, performanceModel} = await allModelsFromFile('lcp-images.json.gz');
+    const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile('lcp-images.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
@@ -30,7 +30,7 @@ describeWithEnvironment('TimelineFlameChartView', () => {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
     const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
     flameChartView.setSearchableView(searchableView);
-    flameChartView.setModel(performanceModel, traceParsedData);
+    flameChartView.setModel(performanceModel, traceParsedData, filmStripModel);
 
     const searchQuery = 'Paint';
     const searchConfig =

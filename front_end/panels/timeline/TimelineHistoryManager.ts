@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -66,6 +67,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export type RecordingData = {
   legacyModel: PerformanceModel,
   traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
+  filmStripModel: SDK.FilmStripModel.FilmStripModel,
 };
 
 export class TimelineHistoryManager {
@@ -102,10 +104,11 @@ export class TimelineHistoryManager {
 
   addRecording(
       performanceModel: PerformanceModel,
-      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null): void {
+      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
+      filmStripModel: SDK.FilmStripModel.FilmStripModel): void {
     this.lastActiveModel = performanceModel;
-    this.recordings.unshift({legacyModel: performanceModel, traceParseData});
-    this.buildPreview(performanceModel);
+    this.recordings.unshift({legacyModel: performanceModel, traceParseData, filmStripModel});
+    this.buildPreview(performanceModel, filmStripModel);
     const modelTitle = this.title(performanceModel);
     this.buttonInternal.setText(modelTitle);
     const buttonTitle = this.action.title();
@@ -234,7 +237,8 @@ export class TimelineHistoryManager {
     return data.title;
   }
 
-  private buildPreview(performanceModel: PerformanceModel): HTMLDivElement {
+  private buildPreview(performanceModel: PerformanceModel, filmStripModel: SDK.FilmStripModel.FilmStripModel):
+      HTMLDivElement {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
     const domain = parsedURL ? parsedURL.host : '';
     const title = performanceModel.tracingModel().title() || domain;
@@ -252,7 +256,7 @@ export class TimelineHistoryManager {
 
     preview.appendChild(this.buildTextDetails(performanceModel, title, timeElement));
     const screenshotAndOverview = preview.createChild('div', 'hbox');
-    screenshotAndOverview.appendChild(this.buildScreenshotThumbnail(performanceModel));
+    screenshotAndOverview.appendChild(this.buildScreenshotThumbnail(filmStripModel));
     screenshotAndOverview.appendChild(this.buildOverview(performanceModel));
     return data.preview;
   }
@@ -273,13 +277,12 @@ export class TimelineHistoryManager {
     return container;
   }
 
-  private buildScreenshotThumbnail(performanceModel: PerformanceModel): Element {
+  private buildScreenshotThumbnail(filmStripModel: SDK.FilmStripModel.FilmStripModel): Element {
     const container = document.createElement('div');
     container.classList.add('screenshot-thumb');
     const thumbnailAspectRatio = 3 / 2;
     container.style.width = this.totalHeight * thumbnailAspectRatio + 'px';
     container.style.height = this.totalHeight + 'px';
-    const filmStripModel = performanceModel.filmStripModel();
     const frames = filmStripModel.frames();
     const lastFrame = frames[frames.length - 1];
     if (!lastFrame) {

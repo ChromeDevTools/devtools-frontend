@@ -19,6 +19,10 @@ export class FilmStripModel {
     this.reset(tracingModel, zeroTime);
   }
 
+  hasFrames(): boolean {
+    return this.#framesInternal.length > 0;
+  }
+
   reset(tracingModel: TracingModel, zeroTime?: number): void {
     this.#zeroTimeInternal = zeroTime || tracingModel.minimumRecordTime();
     this.#spanTimeInternal = tracingModel.maximumRecordTime() - this.#zeroTimeInternal;

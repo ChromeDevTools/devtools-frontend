@@ -184,12 +184,12 @@ export async function getMainFlameChartWithTracks(
 }> {
   await initializeGlobalVars();
 
-  const {traceParsedData, performanceModel} = await allModelsFromFile(traceFileName);
+  const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile(traceFileName);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   // The data provider still needs a reference to the legacy model to
   // work properly.
-  dataProvider.setModel(performanceModel, traceParsedData);
+  dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
   dataProvider.buildFromTrackAppenders(/* expandedTracks?= */ expanded ? trackAppenderNames : undefined);
@@ -222,12 +222,12 @@ export async function getMainFlameChartWithLegacyTrack(
 }> {
   await initializeGlobalVars();
 
-  const {traceParsedData, performanceModel, timelineModel} = await allModelsFromFile(traceFileName);
+  const {filmStripModel, traceParsedData, performanceModel, timelineModel} = await allModelsFromFile(traceFileName);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   // The data provider still needs a reference to the legacy model to
   // work properly.
-  dataProvider.setModel(performanceModel, traceParsedData);
+  dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
   const track = timelineModel.tracks().find(track => track.type === trackType);
   if (!track) {
     throw new Error(`Legacy track with of type ${trackType} not found in timeline model.`);
@@ -280,6 +280,7 @@ export async function allModelsFromFile(file: string): Promise<{
   timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
   performanceModel: Timeline.PerformanceModel.PerformanceModel,
   traceParsedData: TraceModel.Handlers.Types.TraceParseData,
+  filmStripModel: SDK.FilmStripModel.FilmStripModel,
 }> {
   const traceParsedData = await loadModelDataFromTraceFile(file);
   const events = await loadTraceEventsLegacyEventPayload(file);
@@ -289,9 +290,11 @@ export async function allModelsFromFile(file: string): Promise<{
   tracingModel.tracingComplete();
   await performanceModel.setTracingModel(tracingModel);
   const timelineModel = performanceModel.timelineModel();
+  const filmStripModel = new SDK.FilmStripModel.FilmStripModel(tracingModel);
   return {
     tracingModel,
     timelineModel,
+    filmStripModel,
     performanceModel,
     traceParsedData,
   };

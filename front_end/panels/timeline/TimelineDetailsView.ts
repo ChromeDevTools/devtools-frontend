@@ -85,6 +85,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private preferredTabId?: string;
   private selection?: TimelineSelection|null;
   #traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null;
+  #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -124,6 +125,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
   setModel(
       model: PerformanceModel|null, traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
+      filmStripModel: SDK.FilmStripModel.FilmStripModel|null,
       selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null): void {
     if (this.model !== model) {
       if (this.model) {
@@ -136,6 +138,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
     this.#traceEngineData = traceEngineData;
     this.#selectedEvents = selectedEvents;
+    this.#filmStripModel = filmStripModel;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
       view.setModelWithEvents(model, selectedEvents, traceEngineData);
@@ -212,6 +215,16 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.updateContents();
   }
 
+  #getFilmStripFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): SDK.FilmStripModel.Frame|null {
+    if (!this.#filmStripModel) {
+      return null;
+    }
+    // For idle frames, look at the state at the beginning of the frame.
+    const screenshotTime = frame.idle ? frame.startTime : frame.endTime;
+    const filmStripFrame = this.#filmStripModel.frameByTimestamp(screenshotTime);
+    return filmStripFrame && filmStripFrame.timestamp - frame.endTime < 10 ? filmStripFrame : null;
+  }
+
   setSelection(selection: TimelineSelection|null): void {
     this.detailsLinkifier.reset();
     this.selection = selection;
@@ -227,7 +240,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
           .then(fragment => this.appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
     } else if (TimelineSelection.isFrameObject(selectionObject)) {
       const frame = selectionObject;
-      const filmStripFrame = this.model.filmStripModelFrame(frame);
+      const filmStripFrame = this.#getFilmStripFrame(frame);
       this.setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
       if (frame.layerTree) {
         const layersView = this.layersView();

@@ -152,6 +152,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private compatibilityTracksAppender: CompatibilityTracksAppender|null;
   private legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl|null;
   private traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null;
+  #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
   /**
    * Raster threads are tracked and enumerated with this property. This is also
    * used to group all raster threads together in the same track, instead of
@@ -236,11 +237,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   setModel(
       performanceModel: PerformanceModel|null,
-      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null): void {
+      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
+      filmStripModel: SDK.FilmStripModel.FilmStripModel|null): void {
     this.reset();
     this.legacyPerformanceModel = performanceModel;
     this.legacyTimelineModel = performanceModel && performanceModel.timelineModel();
     this.traceEngineData = newTraceEngineData;
+    this.#filmStripModel = filmStripModel;
     if (this.legacyTimelineModel) {
       this.minimumBoundaryInternal = this.legacyTimelineModel.minimumRecordTime();
       this.timeSpan = this.legacyTimelineModel.isEmpty() ?
@@ -804,9 +807,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!this.legacyPerformanceModel || !this.timelineDataInternal || !this.legacyTimelineModel) {
       return;
     }
-    const screenshots = this.legacyPerformanceModel.filmStripModel().frames();
-    const hasFilmStrip = Boolean(screenshots.length);
-    this.framesHeader.collapsible = hasFilmStrip;
+    const hasScreenshots = Boolean(this.#filmStripModel && this.#filmStripModel.hasFrames());
+    this.framesHeader.collapsible = hasScreenshots;
     this.appendHeader(i18nString(UIStrings.frames), this.framesHeader, false /* selectable */);
 
     this.entryTypeByLevel[this.currentLevel] = EntryType.Frame;
@@ -815,12 +817,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     ++this.currentLevel;
 
-    if (!hasFilmStrip) {
+    if (!this.#filmStripModel || !hasScreenshots) {
       return;
     }
     this.appendHeader('', this.screenshotsHeader, false /* selectable */);
     this.entryTypeByLevel[this.currentLevel] = EntryType.Screenshot;
     let prevTimestamp: number|undefined;
+    const screenshots = this.#filmStripModel.frames();
     for (const screenshot of screenshots) {
       this.entryData.push(screenshot);
       (this.timelineDataInternal.entryLevels as number[]).push(this.currentLevel);

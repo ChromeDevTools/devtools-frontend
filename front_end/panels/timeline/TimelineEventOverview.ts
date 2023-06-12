@@ -312,10 +312,12 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
   private drawGeneration?: symbol;
   private emptyImage?: HTMLImageElement;
   private imageWidth?: number;
+  #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
 
-  constructor() {
+  constructor(filmStripModel: SDK.FilmStripModel.FilmStripModel) {
     super('filmstrip', null);
     this.frameToImagePromise = new Map();
+    this.#filmStripModel = filmStripModel;
     this.lastFrame = null;
     this.lastElement = null;
     this.reset();
@@ -323,7 +325,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
 
   override update(): void {
     super.update();
-    const frames = this.model ? this.model.filmStripModel().frames() : [];
+    const frames = this.#filmStripModel ? this.#filmStripModel.frames() : [];
     if (!frames.length) {
       return;
     }
@@ -359,14 +361,13 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     if (!imageWidth || !this.model) {
       return;
     }
-    const filmStripModel = this.model.filmStripModel();
-    if (!filmStripModel.frames().length) {
+    if (!this.#filmStripModel || this.#filmStripModel.frames().length < 1) {
       return;
     }
     const padding = TimelineFilmStripOverview.Padding;
     const width = this.width();
-    const zeroTime = filmStripModel.zeroTime();
-    const spanTime = filmStripModel.spanTime();
+    const zeroTime = this.#filmStripModel.zeroTime();
+    const spanTime = this.#filmStripModel.spanTime();
     const scale = spanTime / width;
     const context = this.context();
     const drawGeneration = this.drawGeneration;
@@ -374,7 +375,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     context.beginPath();
     for (let x = padding; x < width; x += imageWidth + 2 * padding) {
       const time = zeroTime + (x + imageWidth / 2) * scale;
-      const frame = filmStripModel.frameByTimestamp(time);
+      const frame = this.#filmStripModel.frameByTimestamp(time);
       if (!frame) {
         continue;
       }
@@ -394,7 +395,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
   }
 
   override async overviewInfoPromise(x: number): Promise<Element|null> {
-    if (!this.model || !this.model.filmStripModel().frames().length) {
+    if (!this.#filmStripModel || this.#filmStripModel.frames().length === 0) {
       return null;
     }
 
@@ -403,7 +404,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
       return null;
     }
     const time = calculator.positionToTime(x);
-    const frame = this.model.filmStripModel().frameByTimestamp(time);
+    const frame = this.#filmStripModel.frameByTimestamp(time);
     if (frame === this.lastFrame) {
       return this.lastElement;
     }

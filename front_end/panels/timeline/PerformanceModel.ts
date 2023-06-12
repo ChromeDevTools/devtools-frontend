@@ -17,7 +17,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   private filtersInternal: TimelineModel.TimelineModelFilter.TimelineModelFilter[];
   private readonly timelineModelInternal: TimelineModel.TimelineModel.TimelineModelImpl;
   private readonly frameModelInternal: TimelineModel.TimelineFrameModel.TimelineFrameModel;
-  private filmStripModelInternal: SDK.FilmStripModel.FilmStripModel|null;
   private windowInternal: Window;
   private willResolveNames = false;
   private recordStartTimeInternal?: number;
@@ -31,7 +30,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.timelineModelInternal = new TimelineModel.TimelineModel.TimelineModelImpl();
     this.frameModelInternal = new TimelineModel.TimelineFrameModel.TimelineFrameModel(
         event => TimelineUIUtils.eventStyle(event).category.name);
-    this.filmStripModelInternal = null;
 
     this.windowInternal = {left: 0, right: Infinity};
 
@@ -163,31 +161,12 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.timelineModelInternal;
   }
 
-  filmStripModel(): SDK.FilmStripModel.FilmStripModel {
-    if (this.filmStripModelInternal) {
-      return this.filmStripModelInternal;
-    }
-    if (!this.tracingModelInternal) {
-      throw 'call setTracingModel before accessing PerformanceModel';
-    }
-    this.filmStripModelInternal = new SDK.FilmStripModel.FilmStripModel(this.tracingModelInternal);
-    return this.filmStripModelInternal;
-  }
-
   frames(): TimelineModel.TimelineFrameModel.TimelineFrame[] {
     return this.frameModelInternal.getFrames();
   }
 
   frameModel(): TimelineModel.TimelineFrameModel.TimelineFrameModel {
     return this.frameModelInternal;
-  }
-
-  filmStripModelFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): SDK.FilmStripModel.Frame|null {
-    // For idle frames, look at the state at the beginning of the frame.
-    const screenshotTime = frame.idle ? frame.startTime : frame.endTime;
-    const filmStripModel = (this.filmStripModelInternal as SDK.FilmStripModel.FilmStripModel);
-    const filmStripFrame = filmStripModel.frameByTimestamp(screenshotTime);
-    return filmStripFrame && filmStripFrame.timestamp - frame.endTime < 10 ? filmStripFrame : null;
   }
 
   setWindow(window: Window, animate?: boolean): void {

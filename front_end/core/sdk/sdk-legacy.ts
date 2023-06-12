@@ -116,6 +116,9 @@ SDK.DebuggerModel.CallFrame = SDKModule.DebuggerModel.CallFrame;
 SDK.DebuggerPausedDetails = SDKModule.DebuggerModel.DebuggerPausedDetails;
 
 /** @constructor */
+SDK.FilmStripModel = SDKModule.FilmStripModel.FilmStripModel;
+
+/** @constructor */
 SDK.HeapProfilerModel = SDKModule.HeapProfilerModel.HeapProfilerModel;
 
 /** @constructor */

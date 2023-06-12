@@ -77,6 +77,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private selectedSearchResult?: number;
   private searchRegex?: RegExp;
   #traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null;
+  #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -191,15 +192,17 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   setModel(
       model: PerformanceModel|null,
-      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null): void {
+      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
+      filmStripModel: SDK.FilmStripModel.FilmStripModel|null): void {
     if (model === this.model) {
       return;
     }
+    this.#filmStripModel = filmStripModel;
     this.#traceEngineData = newTraceEngineData;
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.model = model;
     this.#selectedEvents = null;
-    this.mainDataProvider.setModel(this.model, newTraceEngineData);
+    this.mainDataProvider.setModel(this.model, newTraceEngineData, filmStripModel);
     this.networkDataProvider.setModel(this.model, newTraceEngineData);
     if (this.model) {
       this.eventListeners = [
@@ -218,7 +221,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   private updateTrack(): void {
     this.countersView.setModel(this.model, this.#selectedEvents);
-    this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
+    this.detailsView.setModel(this.model, this.#traceEngineData, this.#filmStripModel, this.#selectedEvents);
   }
 
   private refresh(): void {

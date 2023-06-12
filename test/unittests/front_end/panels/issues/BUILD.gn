@@ -8,6 +8,7 @@ ts_library("issues") {
   testonly = true
   sources = [
     "DeprecationIssue_test.ts",
+    "FederatedAuthUserInfoRequestIssue_test.ts",
     "GenericIssue_test.ts",
     "IssueAggregator_test.ts",
     "IssueView_test.ts",

@@ -11,6 +11,7 @@ import * as CookieIssue from './CookieIssue.js';
 import * as CorsIssue from './CorsIssue.js';
 import * as CrossOriginEmbedderPolicyIssue from './CrossOriginEmbedderPolicyIssue.js';
 import * as DeprecationIssue from './DeprecationIssue.js';
+import * as FederatedAuthUserInfoRequestIssue from './FederatedAuthUserInfoRequestIssue.js';
 import * as GenericIssue from './GenericIssue.js';
 import * as HeavyAdIssue from './HeavyAdIssue.js';
 import * as Issue from './Issue.js';
@@ -36,6 +37,7 @@ export {
   CorsIssue,
   CrossOriginEmbedderPolicyIssue,
   DeprecationIssue,
+  FederatedAuthUserInfoRequestIssue,
   GenericIssue,
   HeavyAdIssue,
   Issue,

@@ -1632,6 +1632,32 @@
                     ]
                 },
                 {
+                    "id": "FederatedAuthUserInfoRequestIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "federatedAuthUserInfoRequestIssueReason",
+                            "$ref": "FederatedAuthUserInfoRequestIssueReason"
+                        }
+                    ]
+                },
+                {
+                    "id": "FederatedAuthUserInfoRequestIssueReason",
+                    "description": "Represents the failure reason when a getUserInfo() call fails.\nShould be updated alongside FederatedAuthUserInfoRequestResult in\nthird_party/blink/public/mojom/devtools/inspector_issue.mojom.",
+                    "type": "string",
+                    "enum": [
+                        "NotSameOrigin",
+                        "NotIframe",
+                        "NotPotentiallyTrustworthy",
+                        "NoApiPermission",
+                        "NotSignedInWithIdp",
+                        "NoAccountSharingPermission",
+                        "InvalidConfigOrWellKnown",
+                        "InvalidAccountsResponse",
+                        "NoReturningUserFromFetchedAccounts"
+                    ]
+                },
+                {
                     "id": "ClientHintIssueDetails",
                     "description": "This issue tracks client hints related issues. It's used to deprecate old\nfeatures, encourage the use of new ones, and provide general guidance.",
                     "type": "object",
@@ -1714,7 +1740,8 @@
                         "ClientHintIssue",
                         "FederatedAuthRequestIssue",
                         "BounceTrackingIssue",
-                        "StylesheetLoadingIssue"
+                        "StylesheetLoadingIssue",
+                        "FederatedAuthUserInfoRequestIssue"
                     ]
                 },
                 {
@@ -1806,6 +1833,11 @@
                             "name": "stylesheetLoadingIssueDetails",
                             "optional": true,
                             "$ref": "StylesheetLoadingIssueDetails"
+                        },
+                        {
+                            "name": "federatedAuthUserInfoRequestIssueDetails",
+                            "optional": true,
+                            "$ref": "FederatedAuthUserInfoRequestIssueDetails"
                         }
                     ]
                 },

@@ -1092,6 +1092,27 @@ export namespace Audits {
     ThirdPartyCookiesBlocked = 'ThirdPartyCookiesBlocked',
   }
 
+  export interface FederatedAuthUserInfoRequestIssueDetails {
+    federatedAuthUserInfoRequestIssueReason: FederatedAuthUserInfoRequestIssueReason;
+  }
+
+  /**
+   * Represents the failure reason when a getUserInfo() call fails.
+   * Should be updated alongside FederatedAuthUserInfoRequestResult in
+   * third_party/blink/public/mojom/devtools/inspector_issue.mojom.
+   */
+  export const enum FederatedAuthUserInfoRequestIssueReason {
+    NotSameOrigin = 'NotSameOrigin',
+    NotIframe = 'NotIframe',
+    NotPotentiallyTrustworthy = 'NotPotentiallyTrustworthy',
+    NoAPIPermission = 'NoApiPermission',
+    NotSignedInWithIdp = 'NotSignedInWithIdp',
+    NoAccountSharingPermission = 'NoAccountSharingPermission',
+    InvalidConfigOrWellKnown = 'InvalidConfigOrWellKnown',
+    InvalidAccountsResponse = 'InvalidAccountsResponse',
+    NoReturningUserFromFetchedAccounts = 'NoReturningUserFromFetchedAccounts',
+  }
+
   /**
    * This issue tracks client hints related issues. It's used to deprecate old
    * features, encourage the use of new ones, and provide general guidance.
@@ -1158,6 +1179,7 @@ export namespace Audits {
     FederatedAuthRequestIssue = 'FederatedAuthRequestIssue',
     BounceTrackingIssue = 'BounceTrackingIssue',
     StylesheetLoadingIssue = 'StylesheetLoadingIssue',
+    FederatedAuthUserInfoRequestIssue = 'FederatedAuthUserInfoRequestIssue',
   }
 
   /**
@@ -1183,6 +1205,7 @@ export namespace Audits {
     federatedAuthRequestIssueDetails?: FederatedAuthRequestIssueDetails;
     bounceTrackingIssueDetails?: BounceTrackingIssueDetails;
     stylesheetLoadingIssueDetails?: StylesheetLoadingIssueDetails;
+    federatedAuthUserInfoRequestIssueDetails?: FederatedAuthUserInfoRequestIssueDetails;
   }
 
   /**

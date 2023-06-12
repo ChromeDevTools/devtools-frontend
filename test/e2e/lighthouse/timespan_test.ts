@@ -25,7 +25,7 @@ import {
 // This test will fail (by default) in headful mode, as the target page never gets painted.
 // To resolve this when debugging, just make sure the target page is visible during the lighthouse run.
 
-describe.skipOnParallel('Timespan', async function() {
+describe('Timespan', async function() {
   // The tests in this suite are particularly slow
   if (this.timeout() !== 0) {
     this.timeout(60_000);

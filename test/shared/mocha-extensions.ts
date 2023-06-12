@@ -129,14 +129,6 @@ describe.skipOnPlatforms = function(platforms: Array<Platform>, name: string, fn
   }
 };
 
-describe.skipOnParallel = function(name: string, fn: (this: Mocha.Suite) => void) {
-  if (process.env.JOBS !== '1') {
-    wrapDescribe(Mocha.describe.skip, `[sequential] ${name}`, fn);
-  } else {
-    describe(`[sequential] ${name}`, fn);
-  }
-};
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err?: any) {
   function* joinStacks() {
@@ -204,14 +196,6 @@ export function makeCustomWrappedIt(namePrefix: string = '') {
       wrapMochaCall(Mocha.it.skip, name, callback);
     } else {
       it(name, callback);
-    }
-  };
-
-  newMochaItFunc.skipOnParallel = function(name: string, callback: Mocha.Func|Mocha.AsyncFunc) {
-    if (process.env.JOBS !== '1') {
-      wrapMochaCall(Mocha.it.skip, `[sequential] ${name}`, callback);
-    } else {
-      newMochaItFunc(`[sequential] ${name}`, callback);
     }
   };
 

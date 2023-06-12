@@ -68,13 +68,17 @@ def main():
         help=
         'Set the desired level of logging. This configures logging for the run_auto_unittests and for Karma'
     )
+    parser.add_argument('--swarming-output-file',
+                        dest='swarming_output_file',
+                        default=None,
+                        help='Save coverage files to swarming output.')
     args = parser.parse_args(sys.argv[1:])
 
     efficiently_recompile.recompile(args.target, 'test/unittests')
     run_unittests.run_unit_tests_on_ninja_build_target(
         args.target, args.no_text_coverage, args.no_html_coverage,
         args.coverage, args.expanded_reporting, args.chrome_binary, args.cwd,
-        args.log_level, args.mocha_fgrep)
+        args.log_level, args.mocha_fgrep, args.swarming_output_file)
 
 
 if __name__ == '__main__':

@@ -114,6 +114,11 @@ const yargsObject =
           desc: 'Whether to collect code coverage for this test suite',
           default: false,
         })
+        .option('swarming-output-file', {
+          type: 'string',
+          desc: 'Path to copy goldens and coverage files',
+          default: '',
+        })
         .parserConfiguration({
           // So that if we pass --foo-bar, Yargs only populates
           // argv with '--foo-bar', not '--foo-bar' and 'fooBar'.
@@ -319,6 +324,13 @@ function main() {
   }
   if (resultStatusCode !== 0) {
     log('ERRORS DETECTED');
+  }
+  if (yargsObject['swarming-output-file']) {
+    if (yargsObject['coverage']) {
+      fs.cpSync(
+          'interactions-coverage', `${yargsObject['swarming-output-file']}/interactions-coverage`, {recursive: true});
+    }
+    fs.cpSync('test/interactions/goldens', `${yargsObject['swarming-output-file']}/goldens`, {recursive: true});
   }
   process.exit(resultStatusCode);
 }

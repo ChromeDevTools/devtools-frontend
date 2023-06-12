@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Protocol from '../../generated/protocol.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import {type MarkdownIssueDescription} from './MarkdownIssueDescription.js';
@@ -24,6 +24,16 @@ export class StylesheetLoadingIssue extends Issue {
 
   override sources(): Array<Protocol.Audits.SourceCodeLocation> {
     return [this.#issueDetails.sourceCodeLocation];
+  }
+  override requests(): Array<Protocol.Audits.AffectedRequest> {
+    if (!this.#issueDetails.failedRequestInfo) {
+      return [];
+    }
+    const {url, requestId} = this.#issueDetails.failedRequestInfo;
+    if (!requestId) {
+      return [];
+    }
+    return [{url, requestId}];
   }
 
   details(): Protocol.Audits.StylesheetLoadingIssueDetails {

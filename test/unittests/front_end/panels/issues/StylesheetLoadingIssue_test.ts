@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as IssuesManager from '../../../../../front_end/models/issues_manager/issues_manager.js';
@@ -30,7 +31,8 @@ describeWithLocale('StylesheetLoadingIssue', () => {
         columnNumber: 2,
       },
       styleSheetLoadingIssueReason: Protocol.Audits.StyleSheetLoadingIssueReason.RequestFailed,
-      failedRequestInfo: {url: 'http://invalid', failureMessage: 'failureMessage'},
+      failedRequestInfo:
+          {url: 'http://invalid', failureMessage: 'failureMessage', requestId: '12345' as Protocol.Network.RequestId},
     };
     const issue = createProtocolIssue(issueDetails);
     const stylesheetIssues =
@@ -40,6 +42,8 @@ describeWithLocale('StylesheetLoadingIssue', () => {
 
     assert.strictEqual(stylesheetIssue.getCategory(), IssuesManager.Issue.IssueCategory.Other);
     assert.deepStrictEqual(stylesheetIssue.sources(), [issueDetails.sourceCodeLocation]);
+    const {url, requestId} = issueDetails.failedRequestInfo;
+    assert.deepStrictEqual(stylesheetIssue.requests(), [{url, requestId}]);
     assert.strictEqual(stylesheetIssue.getKind(), IssuesManager.Issue.IssueKind.PageError);
     assert.isNotNull(stylesheetIssue.getDescription());
   });
@@ -99,7 +103,8 @@ describeWithLocale('StylesheetLoadingIssue', () => {
           columnNumber: 2,
         },
         styleSheetLoadingIssueReason: Protocol.Audits.StyleSheetLoadingIssueReason.RequestFailed,
-        failedRequestInfo: {url: 'http://invalid', failureMessage: 'failureMessage'},
+        failedRequestInfo:
+            {url: 'http://invalid', failureMessage: 'failureMessage', requestId: '12354' as Protocol.Network.RequestId},
       },
     ];
 
@@ -126,5 +131,9 @@ describeWithLocale('StylesheetLoadingIssue', () => {
     assert.deepStrictEqual(
         Array.from(aggregatedIssues[1].sources()),
         [issueDetails[2].sourceCodeLocation, issueDetails[3].sourceCodeLocation]);
+    assert.deepStrictEqual(Array.from(aggregatedIssues[0].requests()), []);
+    const {url, requestId} = issueDetails[3].failedRequestInfo as Protocol.Audits.FailedRequestInfo;
+    Platform.assertNotNullOrUndefined(requestId);
+    assert.deepStrictEqual(Array.from(aggregatedIssues[1].requests()), [{url, requestId}]);
   });
 });

@@ -5,9 +5,10 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {loadTraceEventsLegacyEventPayload, allModelsFromFile} from '../../helpers/TraceHelpers.js';
-import {StubbedThread} from '../../helpers/TimelineHelpers.js';
+import {StubbedThread, makeFakeEventPayload} from '../../helpers/TimelineHelpers.js';
 
 describeWithEnvironment('TracingModel', () => {
   it('can create events from an EventPayload[] and finds the correct number of processes', async () => {
@@ -15,6 +16,105 @@ describeWithEnvironment('TracingModel', () => {
     const model = new SDK.TracingModel.TracingModel();
     model.addEvents(events);
     assert.strictEqual(model.sortedProcesses().length, 4);
+  });
+
+  describe('parsing trace events with unusual characters and large snapshots', () => {
+    function setupAndReturnMainThread(): SDK.TracingModel.Thread {
+      const testEvents = [
+        makeFakeEventPayload({
+          name: 'NonAscii',
+          categories: ['devtools.timeline'],
+          ts: 1,
+          ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+          args: {
+            'nonascii':
+                '\u043b\u0435\u0442 \u043c\u0438 \u0441\u043f\u0438\u043a \u0444\u0440\u043e\u043c \u043c\u0430\u0439 \u0445\u0430\u0440\u0442',
+          },
+        }),
+        makeFakeEventPayload({
+          name: 'NonAsciiSnapshot',
+          categories: ['devtools.timeline'],
+          args: {'snapshot': '\u0442\u0435\u0441\u0442'},
+          ts: 1,
+          ph: TraceEngine.Types.TraceEvents.Phase.OBJECT_SNAPSHOT,
+        }),
+        makeFakeEventPayload({
+          name: 'ShortSnapshot',
+          categories: ['devtools.timeline'],
+          ts: 1,
+          args: {'snapshot': 'short snapshot data'},
+          ph: TraceEngine.Types.TraceEvents.Phase.OBJECT_SNAPSHOT,
+        }),
+        makeFakeEventPayload({
+          name: 'LongSnapshot',
+          categories: ['devtools.timeline'],
+          args: {'snapshot': 'abcdef'.repeat(10_000)},
+          ts: 1,
+          ph: TraceEngine.Types.TraceEvents.Phase.OBJECT_SNAPSHOT,
+        }),
+      ];
+
+      const model = new SDK.TracingModel.TracingModel();
+      model.addEvents(testEvents);
+      const process = model.sortedProcesses()[0];
+      const thread = process.sortedThreads()[0];
+      return thread;
+    }
+
+    it('can parse trace events with non ascii characters', async () => {
+      const mainThread = setupAndReturnMainThread();
+      const nonAsciiEvent = mainThread.events().find(event => event.name === 'NonAscii');
+      if (!nonAsciiEvent) {
+        throw new Error('Could not find expected NonAscii event');
+      }
+      assert.strictEqual(
+          nonAsciiEvent.args.nonascii,
+          '\u043b\u0435\u0442 \u043c\u0438 \u0441\u043f\u0438\u043a \u0444\u0440\u043e\u043c \u043c\u0430\u0439 \u0445\u0430\u0440\u0442');
+    });
+
+    it('can parse an event with a non ascii snapshot', async () => {
+      const mainThread = setupAndReturnMainThread();
+      const nonAsciiEvent =
+          mainThread.events().find(event => event.name === 'NonAsciiSnapshot') as SDK.TracingModel.ObjectSnapshot;
+      if (!nonAsciiEvent) {
+        throw new Error('Could not find expected NonAscii event');
+      }
+      assert.isTrue(nonAsciiEvent instanceof SDK.TracingModel.ObjectSnapshot);
+      const data = await nonAsciiEvent.objectPromise() as unknown as string;
+      if (!data) {
+        throw new Error('Could not get object from snapshot event');
+      }
+      assert.strictEqual(data, '\u0442\u0435\u0441\u0442');
+    });
+
+    it('can parse an event with a short snapshot', async () => {
+      const mainThread = setupAndReturnMainThread();
+      const snapshotEvent =
+          mainThread.events().find(event => event.name === 'ShortSnapshot') as SDK.TracingModel.ObjectSnapshot;
+      if (!snapshotEvent) {
+        throw new Error('Could not find expected snapshot event');
+      }
+      assert.isTrue(snapshotEvent instanceof SDK.TracingModel.ObjectSnapshot);
+      const data = await snapshotEvent.objectPromise() as unknown as string;
+      if (!data) {
+        throw new Error('Could not get object from snapshot event');
+      }
+      assert.strictEqual(data, 'short snapshot data');
+    });
+    it('can parse an event with a long snapshot', async () => {
+      const mainThread = setupAndReturnMainThread();
+      const snapshotEvent =
+          mainThread.events().find(event => event.name === 'LongSnapshot') as SDK.TracingModel.ObjectSnapshot;
+      if (!snapshotEvent) {
+        throw new Error('Could not find expected snapshot event');
+      }
+      assert.isTrue(snapshotEvent instanceof SDK.TracingModel.ObjectSnapshot);
+      const data = await snapshotEvent.objectPromise() as unknown as string;
+      if (!data) {
+        throw new Error('Could not get object from snapshot event');
+      }
+      assert.strictEqual(data, 'abcdef'.repeat(10_000));
+    });
   });
 
   describe('fromPayload', () => {

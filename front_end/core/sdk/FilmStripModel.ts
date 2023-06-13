@@ -116,6 +116,8 @@ export class Frame {
   }
 
   imageDataPromise(): Promise<string|null> {
+    // TODO(crbug.com/1453234): make this function sync now that all the ways
+    // we store snapshots are sync.
     if (this.#traceEvent) {
       return Promise.resolve(this.#traceEvent.args.snapshot);
     }
@@ -124,6 +126,6 @@ export class Frame {
       return Promise.resolve(null);
     }
 
-    return this.#snapshot.objectPromise() as Promise<string|null>;
+    return Promise.resolve(this.#snapshot.getSnapshot() as unknown as string);
   }
 }

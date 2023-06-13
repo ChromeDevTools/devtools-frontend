@@ -388,7 +388,7 @@ export class TracingFrameLayerTree {
   }
 
   async layerTreePromise(): Promise<TracingLayerTree|null> {
-    const result = (await this.snapshot.objectPromise() as unknown as {
+    const result = (this.snapshot.getSnapshot() as unknown as {
       active_tiles: TracingLayerTile[],
       device_viewport_size: {
         width: number,
@@ -502,21 +502,24 @@ export class LayerPaintEvent {
     rect: Array<number>,
     serializedPicture: string,
   }|null> {
+    // TODO(crbug.com/1453234): this function does not need to be async now
     const picture = EventOnTimelineData.forEvent(this.eventInternal).picture;
     if (!picture) {
       return Promise.resolve(null);
     }
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return picture.objectPromise().then((result: any) => {
-      if (!result) {
-        return null;
-      }
-      const rect = result['params'] && result['params']['layer_rect'];
-      const picture = result['skp64'];
-      return rect && picture ? {rect: rect, serializedPicture: picture} : null;
-    });
+    const snapshot = picture.getSnapshot() as unknown as {
+      params?: {
+        layer_rect: [number, number, number, number],
+      },
+      skp64?: string,
+    };
+
+    const rect = snapshot['params'] && snapshot['params']['layer_rect'];
+    const pictureData = snapshot['skp64'];
+    return Promise.resolve(
+        rect && pictureData ? {rect: rect, serializedPicture: pictureData} : null,
+    );
   }
 
   async snapshotPromise(): Promise<{

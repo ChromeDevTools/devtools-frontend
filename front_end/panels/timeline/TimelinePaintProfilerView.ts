@@ -98,7 +98,8 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     }|null>;
     if (this.pendingSnapshot) {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this.pendingSnapshot});
-    } else if (this.event && this.event.name === TimelineModel.TimelineModel.RecordType.Paint) {
+    } else if (
+        this.event && this.event.name === TimelineModel.TimelineModel.RecordType.Paint && this.paintProfilerModel) {
       // When we process events (TimelineModel#processEvent) and find a
       // snapshot event, we look for the last paint that occurred and link the
       // snapshot to that paint event. That is why here if the event is a Paint
@@ -107,14 +108,11 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       const picture =
           (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(this.event).picture as
            SDK.TracingModel.ObjectSnapshot);
-      snapshotPromise =
-          picture.objectPromise()
-              .then(
-                  data =>
-                      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-                  // @ts-expect-error
-                  (this.paintProfilerModel as SDK.PaintProfiler.PaintProfilerModel).loadSnapshot(data['skp64']))
-              .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
+      const snapshotData = picture.getSnapshot() as unknown as {skp64: string};
+      snapshotPromise = this.paintProfilerModel.loadSnapshot(snapshotData['skp64']).then(snapshot => {
+        return snapshot && {rect: null, snapshot: snapshot};
+      });
+
     } else if (this.event && this.event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       snapshotPromise = this.frameModel.rasterTilePromise(this.event);
     } else {

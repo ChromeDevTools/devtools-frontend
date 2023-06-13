@@ -80,7 +80,7 @@ describeWithEnvironment('TracingModel', () => {
         throw new Error('Could not find expected NonAscii event');
       }
       assert.isTrue(nonAsciiEvent instanceof SDK.TracingModel.ObjectSnapshot);
-      const data = await nonAsciiEvent.objectPromise() as unknown as string;
+      const data = nonAsciiEvent.getSnapshot() as unknown as string;
       if (!data) {
         throw new Error('Could not get object from snapshot event');
       }
@@ -95,7 +95,7 @@ describeWithEnvironment('TracingModel', () => {
         throw new Error('Could not find expected snapshot event');
       }
       assert.isTrue(snapshotEvent instanceof SDK.TracingModel.ObjectSnapshot);
-      const data = await snapshotEvent.objectPromise() as unknown as string;
+      const data = snapshotEvent.getSnapshot() as unknown as string;
       if (!data) {
         throw new Error('Could not get object from snapshot event');
       }
@@ -109,7 +109,7 @@ describeWithEnvironment('TracingModel', () => {
         throw new Error('Could not find expected snapshot event');
       }
       assert.isTrue(snapshotEvent instanceof SDK.TracingModel.ObjectSnapshot);
-      const data = await snapshotEvent.objectPromise() as unknown as string;
+      const data = snapshotEvent.getSnapshot() as unknown as string;
       if (!data) {
         throw new Error('Could not get object from snapshot event');
       }

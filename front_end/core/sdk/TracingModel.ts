@@ -407,19 +407,6 @@ export const LegacyTopLevelEventCategory = 'toplevel';
 export const DevToolsMetadataEventCategory = 'disabled-by-default-devtools.timeline';
 export const DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
 
-export abstract class BackingStorage {
-  appendString(_string: string): void {
-  }
-
-  abstract appendAccessibleString(string: string): () => Promise<string|null>;
-
-  finishWriting(): void {
-  }
-
-  reset(): void {
-  }
-}
-
 export function eventHasPayload(event: Event): event is PayloadEvent {
   return 'rawPayload' in event;
 }
@@ -509,9 +496,6 @@ export class Event {
     }
     this.setEndTime(endEvent.startTime);
   }
-
-  setBackingStorage(_backingStorage: (() => Promise<string|null>)|null): void {
-  }
 }
 
 /**
@@ -581,14 +565,9 @@ export class PayloadEvent extends Event {
 }
 
 export class ObjectSnapshot extends PayloadEvent {
-  #backingStorage: (() => Promise<string|null>)|null;
-  #objectPromiseInternal: Promise<ObjectSnapshot|null>|null;
-
   private constructor(
       category: string|undefined, name: string, startTime: number, thread: Thread, rawPayload: EventPayload) {
     super(category, name, TraceEngine.Types.TraceEvents.Phase.OBJECT_SNAPSHOT, startTime, thread, rawPayload);
-    this.#backingStorage = null;
-    this.#objectPromiseInternal = null;
   }
 
   static override fromPayload(payload: EventPayload, thread: Thread): ObjectSnapshot {
@@ -607,45 +586,12 @@ export class ObjectSnapshot extends PayloadEvent {
     return snapshot;
   }
 
-  requestObject(callback: (arg0: ObjectSnapshot|null) => void): void {
+  getSnapshot(): ObjectSnapshot {
     const snapshot = this.args['snapshot'];
-    if (snapshot) {
-      callback((snapshot as ObjectSnapshot));
-      return;
+    if (!snapshot) {
+      throw new Error('ObjectSnapshot has no snapshot argument.');
     }
-    const storage = this.#backingStorage;
-    if (storage) {
-      storage().then(onRead, callback.bind(null, null));
-    }
-
-    function onRead(result: string|null): void {
-      if (!result) {
-        callback(null);
-        return;
-      }
-      try {
-        const payload = JSON.parse(result);
-        callback(payload['args']['snapshot']);
-      } catch (e) {
-        Common.Console.Console.instance().error('Malformed event data in backing storage');
-        callback(null);
-      }
-    }
-  }
-
-  objectPromise(): Promise<ObjectSnapshot|null> {
-    if (!this.#objectPromiseInternal) {
-      this.#objectPromiseInternal = new Promise(this.requestObject.bind(this));
-    }
-    return this.#objectPromiseInternal;
-  }
-
-  override setBackingStorage(backingStorage: (() => Promise<string|null>)|null): void {
-    if (!backingStorage) {
-      return;
-    }
-    this.#backingStorage = backingStorage;
-    this.args = {};
+    return snapshot;
   }
 }
 

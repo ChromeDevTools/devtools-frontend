@@ -172,9 +172,9 @@
   color: inherit;
 }
 
-.network-log-grid.data-grid:focus-within tr.selected,
-.network-log-grid.data-grid:focus-within tr.selected .network-cell-subtitle,
-.network-log-grid.data-grid:focus-within tr.selected .network-dim-cell {
+.network-log-grid.data-grid:focus tr.selected,
+.network-log-grid.data-grid:focus tr.selected .network-cell-subtitle,
+.network-log-grid.data-grid:focus tr.selected .network-dim-cell {
   color: var(--legacy-selection-fg-color);
 }
 

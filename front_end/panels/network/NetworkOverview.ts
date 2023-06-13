@@ -17,6 +17,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
   private selectedFilmStripTime: number;
   private numBands: number;
+  private updateScheduled: boolean;
   private highlightedRequest: SDK.NetworkRequest.NetworkRequest|null;
   private loadEvents!: number[];
   private domContentLoadedEvents!: number[];
@@ -32,7 +33,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     super();
     this.selectedFilmStripTime = -1;
     this.element.classList.add('network-overview');
-
+    this.updateScheduled = false;
     this.numBands = 1;
     this.highlightedRequest = null;
 
@@ -139,13 +140,15 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   }
 
   scheduleUpdate(): void {
-    if (!this.isShowing()) {
+    if (this.updateScheduled || !this.isShowing()) {
       return;
     }
+    this.updateScheduled = true;
     void coordinator.write(this.update.bind(this));
   }
 
   override update(): void {
+    this.updateScheduled = false;
     const calculator = this.calculator();
 
     const newBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());

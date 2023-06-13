@@ -11,36 +11,80 @@
   border-bottom: 1px solid var(--color-details-hairline);
   position: relative;
   overflow: hidden;
-}
 
-.styles-section > div {
-  padding: 2px 2px 4px 4px;
-}
+  > div {
+    padding: 2px 2px 4px 4px;
+  }
 
-.styles-section:last-child {
-  border-bottom: none;
-}
+  &:last-child {
+    border-bottom: none;
+  }
 
-.styles-section.read-only {
-  background-color: var(--color-background-opacity-50);
-  font-style: italic;
-}
+  &.has-open-popover {
+    z-index: 1;
+  }
 
-.styles-section.has-open-popover {
-  z-index: 1;
-}
+  &.read-only {
+    background-color: var(--color-background-opacity-50);
+    font-style: italic;
+  }
 
-.styles-section:focus-visible {
-  background-color: var(--color-background-elevation-2);
-}
+  &:focus-visible,
+  &.read-only:focus-visible {
+    background-color: var(--color-background-elevation-2);
+  }
 
-.styles-section.read-only:focus-visible {
-  background-color: var(--color-background-elevation-2);
-}
+  .simple-selector.filter-match {
+    background-color: var(--color-match-highlight);
+    color: var(--color-text-primary);
+  }
 
-.styles-section .simple-selector.filter-match {
-  background-color: var(--color-match-highlight);
-  color: var(--color-text-primary);
+  .devtools-link {
+    user-select: none;
+  }
+
+  .styles-section-subtitle devtools-icon {
+    margin-bottom: -4px;
+  }
+
+  .styles-section-subtitle .devtools-link {
+    color: var(--color-text-primary);
+    text-decoration-color: hsl(0deg 0% 60%);
+    outline-offset: 0;
+  }
+
+  .selector,
+  .try-rule-selector-element {
+    color: var(--color-text-disabled);
+  }
+
+  .simple-selector.selector-matches,
+  &.keyframe-key {
+    color: var(--color-text-primary);
+  }
+
+  .style-properties {
+    margin: 0;
+    padding: 2px 4px 0 0;
+    list-style: none;
+    clear: both;
+    display: flex;
+  }
+
+  &.matched-styles .style-properties {
+    padding-left: 0;
+  }
+
+  & span.simple-selector:hover {
+    text-decoration: var(--override-styles-section-text-hover-text-decoration);
+    cursor: var(--override-styles-section-text-hover-cursor);
+  }
+
+  &.styles-panel-hovered:not(.read-only),
+  &.styles-panel-hovered:not(.read-only) devtools-css-query {
+    --override-styles-section-text-hover-text-decoration: underline;
+    --override-styles-section-text-hover-cursor: default;
+  }
 }
 
 .sidebar-pane-closing-brace {
@@ -52,10 +96,10 @@
   background-clip: padding;
   word-wrap: break-word;
   white-space: normal;
-}
 
-.styles-section-title .query-list {
-  color: var(--color-text-disabled);
+  .query-list {
+    color: var(--color-text-disabled);
+  }
 }
 
 .styles-section-subtitle {
@@ -73,45 +117,6 @@
 .sidebar-pane-open-brace,
 .sidebar-pane-closing-brace {
   color: var(--color-text-primary);
-}
-
-.styles-section .devtools-link {
-  user-select: none;
-}
-
-.styles-section .styles-section-subtitle devtools-icon {
-  margin-bottom: -4px;
-}
-
-.styles-section .styles-section-subtitle .devtools-link {
-  color: var(--color-text-primary);
-  text-decoration-color: hsl(0deg 0% 60%);
-  outline-offset: 0;
-}
-
-.styles-section .selector {
-  color: var(--color-text-disabled);
-}
-
-.styles-section .simple-selector.selector-matches,
-.styles-section.keyframe-key {
-  color: var(--color-text-primary);
-}
-
-.styles-section .try-rule-selector-element {
-  color: var(--color-text-disabled);
-}
-
-.styles-section .style-properties {
-  margin: 0;
-  padding: 2px 4px 0 0;
-  list-style: none;
-  clear: both;
-  display: flex;
-}
-
-.styles-section.matched-styles .style-properties {
-  padding-left: 0;
 }
 
 .nesting-symbol.implicit {
@@ -181,39 +186,28 @@
 .styles-sidebar-pane-filter-box {
   flex: auto;
   display: flex;
-}
 
-.styles-sidebar-pane-filter-box > input {
-  outline: none !important; /* stylelint-disable-line declaration-no-important */
-  border: none;
-  width: 100%;
-  background: var(--color-background);
-  padding-left: 4px;
-  margin: 3px;
-}
+  > input {
+    outline: none !important; /* stylelint-disable-line declaration-no-important */
+    border: none;
+    width: 100%;
+    background: var(--color-background);
+    padding-left: 4px;
+    margin: 3px;
 
-.styles-sidebar-pane-filter-box > input:hover {
-  box-shadow: var(--legacy-focus-ring-inactive-shadow);
-}
+    &:hover {
+      box-shadow: var(--legacy-focus-ring-inactive-shadow);
+    }
 
-.styles-sidebar-pane-filter-box > input:focus,
-.styles-sidebar-pane-filter-box > input:not(:placeholder-shown) {
-  box-shadow: var(--legacy-focus-ring-active-shadow);
-}
+    &:focus,
+    &:not(:placeholder-shown) {
+      box-shadow: var(--legacy-focus-ring-active-shadow);
+    }
 
-.styles-sidebar-pane-filter-box > input::placeholder {
-  color: var(--color-text-secondary);
-}
-
-.styles-section.styles-panel-hovered:not(.read-only),
-.styles-section.styles-panel-hovered:not(.read-only) devtools-css-query {
-  --override-styles-section-text-hover-text-decoration: underline;
-  --override-styles-section-text-hover-cursor: default;
-}
-
-.styles-section span.simple-selector:hover {
-  text-decoration: var(--override-styles-section-text-hover-text-decoration);
-  cursor: var(--override-styles-section-text-hover-cursor);
+    &::placeholder {
+      color: var(--color-text-secondary);
+    }
+  }
 }
 
 .sidebar-separator {
@@ -225,19 +219,19 @@
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: 22px;
-}
 
-.sidebar-separator > span.monospace {
-  max-width: 180px;
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-  margin-left: 2px;
-}
+  > span.monospace {
+    max-width: 180px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
 
-.sidebar-separator.layer-separator {
-  display: flex;
+  &.layer-separator {
+    display: flex;
+  }
 }
 
 .sidebar-pane-section-toolbar {
@@ -245,21 +239,21 @@
   right: 0;
   bottom: -1px;
   z-index: 0;
-}
 
-.sidebar-pane-section-toolbar.new-rule-toolbar {
-  visibility: hidden;
-  margin-bottom: 5px;
+  &.new-rule-toolbar {
+    visibility: hidden;
+    margin-bottom: 5px;
 
-  --toolbar-height: 16px;
+    --toolbar-height: 16px;
+  }
+
+  &.shifted-toolbar {
+    padding-right: 32px;
+  }
 }
 
 .styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar.new-rule-toolbar {
   visibility: visible;
-}
-
-.sidebar-pane-section-toolbar.shifted-toolbar {
-  padding-right: 32px;
 }
 
 .styles-show-all {
@@ -275,40 +269,44 @@
     background: ButtonFace;
   }
 
-  .styles-section:focus-visible,
-  .styles-section.read-only:focus-visible {
-    forced-color-adjust: none;
-    background-color: Highlight;
-  }
-
-  .styles-section .styles-section-subtitle .devtools-link {
-    color: linktext;
-    text-decoration-color: linktext;
-  }
-
-  .styles-section .styles-section-subtitle .devtools-link:focus-visible {
-    color: HighlightText;
-  }
-
-  .styles-section:focus-visible *,
-  .styles-section.read-only:focus-visible *,
-  .styles-section:focus-visible .styles-section-subtitle .devtools-link {
-    color: HighlightText;
-    text-decoration-color: HighlightText;
-  }
-
   .sidebar-pane-section-toolbar {
     forced-color-adjust: none;
     border-color: 1px solid ButtonText;
     background-color: ButtonFace;
   }
 
-  .styles-section:focus-visible .sidebar-pane-section-toolbar {
-    background-color: ButtonFace;
-  }
+  .styles-section {
+    &:focus-visible,
+    &.read-only:focus-visible {
+      forced-color-adjust: none;
+      background-color: Highlight;
+    }
 
-  .styles-section:focus-visible {
-    --webkit-css-property-color: HighlightText;
+    .styles-section-subtitle {
+      .devtools-link {
+        color: linktext;
+        text-decoration-color: linktext;
+
+        &:focus-visible {
+          color: HighlightText;
+        }
+      }
+    }
+
+    &:focus-visible *,
+    &.read-only:focus-visible *,
+    &:focus-visible .styles-section-subtitle .devtools-link {
+      color: HighlightText;
+      text-decoration-color: HighlightText;
+    }
+
+    &:focus-visible .sidebar-pane-section-toolbar {
+      background-color: ButtonFace;
+    }
+
+    &:focus-visible {
+      --webkit-css-property-color: HighlightText;
+    }
   }
 }
 

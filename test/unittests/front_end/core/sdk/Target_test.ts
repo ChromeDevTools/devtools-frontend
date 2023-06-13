@@ -28,7 +28,7 @@ describeWithMockConnection('Target', () => {
   });
 
   it('has capabilities based on the type', () => {
-    assert.isTrue(tabTarget.hasAllCapabilities(SDK.Target.Capability.Target));
+    assert.isTrue(tabTarget.hasAllCapabilities(SDK.Target.Capability.Target | SDK.Target.Capability.Tracing));
     assert.isFalse(tabTarget.hasAllCapabilities(SDK.Target.Capability.DOM));
 
     assert.isTrue(mainFrameTargetUnderTab.hasAllCapabilities(

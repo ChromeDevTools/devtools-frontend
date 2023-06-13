@@ -77,7 +77,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = Capability.Target | Capability.IO;
         break;
       case Type.Tab:
-        this.#capabilitiesMask = Capability.Target;
+        this.#capabilitiesMask = Capability.Target | Capability.Tracing;
         break;
     }
     this.#typeInternal = type;

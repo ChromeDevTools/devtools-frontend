@@ -1231,6 +1231,71 @@ describeWithEnvironment('TimelineModel', () => {
     }
   });
 
+  it('creates tracks for prerender targets', () => {
+    const {timelineModel} = traceWithEvents([
+      {
+        'args': {'name': 'CrRendererMain'},
+        'cat': '__metadata',
+        'name': 'thread_name',
+        'ph': 'M',
+        'pid': 1777777,
+        'tid': 1,
+        'ts': 0,
+      },
+      {
+        'args': {
+          'data': {
+            'frame': 'DEADBEEF1234567890987654321ABCDE',
+            'name': '',
+            'processId': 1777777,
+            'url': 'https://192.168.0.105/prerender.html',
+          },
+        },
+        'cat': 'disabled-by-default-devtools.timeline',
+        'name': 'FrameCommittedInBrowser',
+        'ph': 'I',
+        'pid': 1537480,
+        's': 't',
+        'tid': 1537480,
+        'ts': 962632244598,
+        'tts': 23622650,
+      },
+    ] as unknown as SDK.TracingManager.EventPayload[]);
+    const trackInfo = summarizeArray(timelineModel.tracks());
+    assert.deepEqual(trackInfo, [
+      {
+        'name': 'CrRendererMain',
+        'type': 'MainThread',
+        'forMainFrame': true,
+        'url': 'https://192.168.0.105/prerender.html',
+        'threadName': 'CrRendererMain',
+        'threadId': 1,
+        'processId': 1777777,
+        'processName': '',
+      },
+      {
+        'name': 'Thread 0',
+        'type': 'Other',
+        'forMainFrame': false,
+        'url': '',
+        'threadName': '',
+        'threadId': 0,
+        'processId': 1537729,
+        'processName': 'Renderer',
+      },
+      {
+        'name': 'CrRendererMain',
+        'type': 'MainThread',
+        'forMainFrame': true,
+        'url': 'https://192.168.0.105/run.html',
+        'threadName': 'CrRendererMain',
+        'threadId': 1,
+        'processId': 1537729,
+        'processName': 'Renderer',
+      },
+    ]);
+  });
+
   describe('style invalidations', () => {
     /**
      * This helper function is very confusing without context. It is designed

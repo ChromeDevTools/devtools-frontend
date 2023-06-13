@@ -153,7 +153,7 @@ module.exports = {
     },
     // TODO(crbug/1402569): Remove once LitElement is fully adopted.
     {
-      'files': ['panels/recorder/**/*.ts'],
+      'files': ['panels/recorder/**/*.ts', 'panels/protocol_monitor/**/*.ts'],
       'rules': {
         'rulesdir/check_component_naming': 0,
         'rulesdir/ban_literal_devtools_component_tag_names': 0,

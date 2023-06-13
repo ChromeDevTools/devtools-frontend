@@ -80,6 +80,9 @@ devtools_entrypoint("bundle") {
     ":*",
     "../:*",
     "../../../../test/unittests/front_end/panels/recorder/*",
+
+    # TODO(crbug.com/1454420): Move the RecorderInput component to the ui folder
+    "../../../panels/protocol_monitor/components/*",
     "../../../ui/components/docs/*",
   ]
 }

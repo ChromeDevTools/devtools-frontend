@@ -4,10 +4,8 @@
 
 import './ProtocolMonitor.js';
 
-import * as JSONPromptEditor from './JSONPromptEditor.js';
 import * as ProtocolMonitor from './ProtocolMonitor.js';
 
 export {
-  JSONPromptEditor,
   ProtocolMonitor,
 };

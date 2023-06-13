@@ -261,8 +261,8 @@ export async function getNetworkFlameChartWithLegacyTrack(traceFileName: string,
   const minTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
   const maxTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-  dataProvider.setWindowTimes(minTime, maxTime);
   dataProvider.setModel(performanceModel, traceParsedData);
+  dataProvider.setWindowTimes(minTime, maxTime);
   dataProvider.timelineData().groups.forEach(group => {
     group.expanded = expanded;
   });

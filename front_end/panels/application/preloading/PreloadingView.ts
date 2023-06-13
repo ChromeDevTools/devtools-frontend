@@ -4,6 +4,7 @@
 
 import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as Common from '../../../core/common/common.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -171,68 +172,8 @@ class PreloadingUIUtils {
   }
 }
 
-// Holds PreloadingModel of current context
-//
-// There can be multiple Targets and PreloadingModels and they switch as
-// time goes. For example:
-//
-// - Prerendering started and a user switched context with
-//   ExecutionContextSelector. This switching is bidirectional.
-// - Prerendered page is activated. This switching is unidirectional.
-//
-// Context switching is managed by scoped target. This class handles
-// switching events and holds PreloadingModel of current context.
-//
-// Note that switching at the timing of activation triggers handing over
-// from the old model to the new model. See
-// PreloadingMoedl.onPrimaryPageChanged.
-class PreloadingModelProxy implements SDK.TargetManager.SDKModelObserver<SDK.PreloadingModel.PreloadingModel> {
-  model: SDK.PreloadingModel.PreloadingModel;
-  private readonly view: PreloadingView|PreloadingResultView;
-  private readonly warningsView: PreloadingWarningsView;
-
-  constructor(
-      model: SDK.PreloadingModel.PreloadingModel, view: PreloadingView|PreloadingResultView,
-      warningsView: PreloadingWarningsView) {
-    this.view = view;
-    this.warningsView = warningsView;
-
-    this.model = model;
-    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
-    this.model.addEventListener(
-        SDK.PreloadingModel.Events.WarningsUpdated, this.warningsView.onWarningsUpdated, this.warningsView);
-  }
-
-  initialize(): void {
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.PreloadingModel.PreloadingModel, this, {scoped: true});
-  }
-
-  modelAdded(model: SDK.PreloadingModel.PreloadingModel): void {
-    // Ignore models/targets of non-outermost frames like iframe/FencedFrames.
-    if (model.target().outermostTarget() !== model.target()) {
-      return;
-    }
-
-    this.model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
-    this.model.removeEventListener(
-        SDK.PreloadingModel.Events.WarningsUpdated, this.warningsView.onWarningsUpdated, this.warningsView);
-    this.model = model;
-    this.model.addEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
-    this.model.addEventListener(
-        SDK.PreloadingModel.Events.WarningsUpdated, this.warningsView.onWarningsUpdated, this.warningsView);
-
-    this.view.render();
-  }
-
-  modelRemoved(model: SDK.PreloadingModel.PreloadingModel): void {
-    model.removeEventListener(SDK.PreloadingModel.Events.ModelUpdated, this.view.render, this.view);
-    model.removeEventListener(
-        SDK.PreloadingModel.Events.WarningsUpdated, this.warningsView.onWarningsUpdated, this.warningsView);
-  }
-}
-
 export class PreloadingView extends UI.Widget.VBox {
-  private readonly modelProxy: PreloadingModelProxy;
+  private model: SDK.PreloadingModel.PreloadingModel;
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
   private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
   private checkboxFilterBySelectedRuleSet: UI.Toolbar.ToolbarCheckbox;
@@ -250,7 +191,14 @@ export class PreloadingView extends UI.Widget.VBox {
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
 
-    this.modelProxy = new PreloadingModelProxy(model, this, this.warningsView);
+    this.model = model;
+    SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.ModelUpdated, this.render, this,
+        {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WarningsUpdated,
+        this.warningsView.onWarningsUpdated, this.warningsView, {scoped: true});
 
     // this (VBox)
     //   +- warningsContainer
@@ -339,21 +287,19 @@ export class PreloadingView extends UI.Widget.VBox {
 
     this.hsplit.show(this.contentElement);
 
-    // Lazily initialize PreloadingModelProxy because this triggers a chain
-    //
-    //    PreloadingModelProxy.initialize()
-    // -> TargetManager.observeModels()
-    // -> PreloadingModelProxy.modelAdded()
-    // -> PreloadingView.render()
-    //
-    // , and PreloadingView.onModelAdded() requires all members are
-    // initialized. So, here is the best timing.
-    this.modelProxy.initialize();
+    this.render();
+  }
+
+  onScopeChange(): void {
+    const model = SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.PreloadingModel.PreloadingModel);
+    assertNotNullOrUndefined(model);
+    this.model = model;
+    this.render();
   }
 
   private updateRuleSetDetails(): void {
     const id = this.focusedRuleSetId;
-    const ruleSet = id === null ? null : this.modelProxy.model.getRuleSetById(id);
+    const ruleSet = id === null ? null : this.model.getRuleSetById(id);
     this.ruleSetDetails.data = ruleSet;
 
     if (ruleSet === null) {
@@ -365,12 +311,11 @@ export class PreloadingView extends UI.Widget.VBox {
 
   private updatePreloadingDetails(): void {
     const id = this.focusedPreloadingAttemptId;
-    const preloadingAttempt = id === null ? null : this.modelProxy.model.getPreloadingAttemptById(id);
+    const preloadingAttempt = id === null ? null : this.model.getPreloadingAttemptById(id);
     if (preloadingAttempt === null) {
       this.preloadingDetails.data = null;
     } else {
-      const ruleSets =
-          preloadingAttempt.ruleSetIds.map(id => this.modelProxy.model.getRuleSetById(id)).filter(x => x !== null) as
+      const ruleSets = preloadingAttempt.ruleSetIds.map(id => this.model.getRuleSetById(id)).filter(x => x !== null) as
           Protocol.Preload.RuleSet[];
       this.preloadingDetails.data = {
         preloadingAttempt,
@@ -384,11 +329,11 @@ export class PreloadingView extends UI.Widget.VBox {
     //
     // Currently, all rule sets that appear in DevTools are valid.
     // TODO(https://crbug.com/1384419): Add property `validity` to the CDP.
-    const ruleSetRows = this.modelProxy.model.getAllRuleSets().map(({id, value}) => ({
-                                                                     id,
-                                                                     validity: PreloadingUIUtils.validity(value),
-                                                                     location: PreloadingUIUtils.location(value),
-                                                                   }));
+    const ruleSetRows = this.model.getAllRuleSets().map(({id, value}) => ({
+                                                          id,
+                                                          validity: PreloadingUIUtils.validity(value),
+                                                          location: PreloadingUIUtils.location(value),
+                                                        }));
     this.ruleSetGrid.update(ruleSetRows);
 
     this.updateRuleSetDetails();
@@ -397,7 +342,7 @@ export class PreloadingView extends UI.Widget.VBox {
     const filteringRuleSetId = this.checkboxFilterBySelectedRuleSet.checked() ? this.focusedRuleSetId : null;
     const url = SDK.TargetManager.TargetManager.instance().inspectedURL();
     const securityOrigin = url ? (new Common.ParsedURL.ParsedURL(url)).securityOrigin() : null;
-    const preloadingAttemptRows = this.modelProxy.model.getPreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
+    const preloadingAttemptRows = this.model.getPreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
       // Shorten URL if a preloading attempt is same-origin.
       const orig = value.key.url;
       const url = securityOrigin && orig.startsWith(securityOrigin) ? orig.slice(securityOrigin.length) : orig;
@@ -455,7 +400,7 @@ export class PreloadingView extends UI.Widget.VBox {
 }
 
 export class PreloadingResultView extends UI.Widget.VBox {
-  private readonly modelProxy: PreloadingModelProxy;
+  private model: SDK.PreloadingModel.PreloadingModel;
 
   private readonly warningsContainer: HTMLDivElement;
   private readonly warningsView = new PreloadingWarningsView();
@@ -464,7 +409,14 @@ export class PreloadingResultView extends UI.Widget.VBox {
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
 
-    this.modelProxy = new PreloadingModelProxy(model, this, this.warningsView);
+    this.model = model;
+    SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.ModelUpdated, this.render, this,
+        {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WarningsUpdated,
+        this.warningsView.onWarningsUpdated, this.warningsView, {scoped: true});
 
     this.warningsContainer = document.createElement('div');
     this.warningsContainer.classList.add('flex-none');
@@ -481,20 +433,18 @@ export class PreloadingResultView extends UI.Widget.VBox {
 
     this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
 
-    // Lazily initialize PreloadingModelProxy because this triggers a chain
-    //
-    //    PreloadingModelProxy.initialize()
-    // -> TargetManager.observeModels()
-    // -> PreloadingModelProxy.modelAdded()
-    // -> PreloadingResultView.render()
-    //
-    // , and PreloadingView.onModelAdded() requires all members are
-    // initialized. So, here is the best timing.
-    this.modelProxy.initialize();
+    this.render();
+  }
+
+  onScopeChange(): void {
+    const model = SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.PreloadingModel.PreloadingModel);
+    assertNotNullOrUndefined(model);
+    this.model = model;
+    this.render();
   }
 
   render(): void {
-    this.usedPreloading.data = this.modelProxy.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value);
+    this.usedPreloading.data = this.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value);
   }
 
   getUsedPreloadingForTest(): PreloadingComponents.UsedPreloadingView.UsedPreloadingView {

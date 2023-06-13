@@ -852,6 +852,7 @@ experimental domain Audits
       string url
       # The failure message for the failed request.
       string failureMessage
+      optional Network.RequestId requestId
 
   type StyleSheetLoadingIssueReason extends string
     enum
@@ -6514,6 +6515,7 @@ domain Network
       enum status
         Ok
         InvalidArgument
+        MissingIssuerKeys
         FailedPrecondition
         ResourceExhausted
         AlreadyExists
@@ -7300,11 +7302,9 @@ domain Page
       ch-ua-platform
       ch-ua-model
       ch-ua-mobile
-      ch-ua-full
       ch-ua-full-version
       ch-ua-full-version-list
       ch-ua-platform-version
-      ch-ua-reduced
       ch-ua-wow64
       ch-viewport-height
       ch-viewport-width
@@ -8567,7 +8567,7 @@ domain Page
       KeepaliveRequest
       IndexedDBEvent
       Dummy
-      AuthorizationHeader
+      JsNetworkRequestReceivedCacheControlNoStoreResource
       # Disabled for RenderFrameHost reasons
       # See content/browser/renderer_host/back_forward_cache_disable.h for explanations.
       ContentSecurityHandler
@@ -11107,6 +11107,7 @@ experimental domain Preload
       MemoryPressureOnTrigger
       MemoryPressureAfterTriggered
       PrerenderingDisabledByDevTools
+      ResourceLoadBlockedByClient
 
   # Fired when a prerender attempt is completed.
   event prerenderAttemptCompleted

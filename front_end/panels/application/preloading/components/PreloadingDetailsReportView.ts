@@ -267,6 +267,11 @@ const UIStrings = {
    */
   prerenderFinalStatusPrerenderingDisabledByDevTools:
       'The prerender was not performed because DevTools has been used to disable prerendering.',
+
+  /**
+   *  Description text for PrerenderFinalStatus::kResourceLoadBlockedByClient.
+   */
+  prerenderFinalStatusResourceLoadBlockedByClient: 'Some resource load was blocked.',
 };
 const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingDetailsReportView.ts', UIStrings);
@@ -460,6 +465,8 @@ class PreloadingUIUtils {
         return i18nString(UIStrings.prerenderFinalStatusMemoryPressureAfterTriggered);
       case Protocol.Preload.PrerenderFinalStatus.PrerenderingDisabledByDevTools:
         return i18nString(UIStrings.prerenderFinalStatusPrerenderingDisabledByDevTools);
+      case Protocol.Preload.PrerenderFinalStatus.ResourceLoadBlockedByClient:
+        return i18nString(UIStrings.prerenderFinalStatusResourceLoadBlockedByClient);
       default:
         // Note that we use switch and exhaustiveness check to prevent to
         // forget updating these strings, but allow to handle unknown

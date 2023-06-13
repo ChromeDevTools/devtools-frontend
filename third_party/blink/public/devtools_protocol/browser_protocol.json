@@ -1685,6 +1685,11 @@
                             "name": "failureMessage",
                             "description": "The failure message for the failed request.",
                             "type": "string"
+                        },
+                        {
+                            "name": "requestId",
+                            "optional": true,
+                            "$ref": "Network.RequestId"
                         }
                     ]
                 },
@@ -14257,6 +14262,7 @@
                             "enum": [
                                 "Ok",
                                 "InvalidArgument",
+                                "MissingIssuerKeys",
                                 "FailedPrecondition",
                                 "ResourceExhausted",
                                 "AlreadyExists",
@@ -15657,11 +15663,9 @@
                         "ch-ua-platform",
                         "ch-ua-model",
                         "ch-ua-mobile",
-                        "ch-ua-full",
                         "ch-ua-full-version",
                         "ch-ua-full-version-list",
                         "ch-ua-platform-version",
-                        "ch-ua-reduced",
                         "ch-ua-wow64",
                         "ch-viewport-height",
                         "ch-viewport-width",
@@ -16642,7 +16646,7 @@
                         "KeepaliveRequest",
                         "IndexedDBEvent",
                         "Dummy",
-                        "AuthorizationHeader",
+                        "JsNetworkRequestReceivedCacheControlNoStoreResource",
                         "ContentSecurityHandler",
                         "ContentWebAuthenticationAPI",
                         "ContentFileChooser",
@@ -23462,7 +23466,8 @@
                         "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation",
                         "MemoryPressureOnTrigger",
                         "MemoryPressureAfterTriggered",
-                        "PrerenderingDisabledByDevTools"
+                        "PrerenderingDisabledByDevTools",
+                        "ResourceLoadBlockedByClient"
                     ]
                 },
                 {

@@ -70,6 +70,11 @@ const UIStrings = {
   /**
    *@description Text for an error status in the Network panel
    */
+  theKeysForThisPSTIssuerAreUnavailable:
+      'The keys for this PST issuer are unavailable. The issuer may need to be registered via the Chrome registration process.',
+  /**
+   *@description Text for an error status in the Network panel
+   */
   aClientprovidedArgumentWas: 'A client-provided argument was malformed or otherwise invalid.',
   /**
    *@description Text for an error status in the Network panel
@@ -257,6 +262,8 @@ function getDetailedTextForStatusCode(status: Protocol.Network.TrustTokenOperati
       return i18nString(UIStrings.eitherNoInputsForThisOperation);
     case Protocol.Network.TrustTokenOperationDoneEventStatus.BadResponse:
       return i18nString(UIStrings.theServersResponseWasMalformedOr);
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.MissingIssuerKeys:
+      return i18nString(UIStrings.theKeysForThisPSTIssuerAreUnavailable);
     case Protocol.Network.TrustTokenOperationDoneEventStatus.FailedPrecondition:
     case Protocol.Network.TrustTokenOperationDoneEventStatus.Unavailable:
     case Protocol.Network.TrustTokenOperationDoneEventStatus.InternalError:

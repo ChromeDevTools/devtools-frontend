@@ -515,9 +515,10 @@ const UIStrings = {
    */
   keepaliveRequest: 'Back/forward cache is disabled due to a keepalive request.',
   /**
-   *  @description Empty string to roll protocol.
+   *  @description Description text for not restored reason JsNetworkRequestReceivedCacheControlNoStoreResource.
    */
-  authorizationHeader: 'Back/forward cache is disabled due to a keepalive request.',
+  jsNetworkRequestReceivedCacheControlNoStoreResource:
+      'Back/forward cache is disabled because some JavaScript network request received resource with `Cache-Control: no-store` header.',
   /**
    *  @description Description text for not restored reason IndexedDBEvent.
    */
@@ -666,7 +667,8 @@ export const NotRestoredReasonDescription = {
   'ErrorDocument': {name: i18nLazyString(UIStrings.errorDocument)},
   'FencedFramesEmbedder': {name: i18nLazyString(UIStrings.fencedFramesEmbedder)},
   'KeepaliveRequest': {name: i18nLazyString(UIStrings.keepaliveRequest)},
-  'AuthorizationHeader': {name: i18nLazyString(UIStrings.authorizationHeader)},
+  'JsNetworkRequestReceivedCacheControlNoStoreResource':
+      {name: i18nLazyString(UIStrings.jsNetworkRequestReceivedCacheControlNoStoreResource)},
   'IndexedDBEvent': {name: i18nLazyString(UIStrings.indexedDBEvent)},
   'CookieDisabled': {name: i18nLazyString(UIStrings.cookieDisabled)},
 };

@@ -1131,6 +1131,7 @@ export namespace Audits {
      * The failure message for the failed request.
      */
     failureMessage: string;
+    requestId?: Network.RequestId;
   }
 
   export const enum StyleSheetLoadingIssueReason {
@@ -9640,6 +9641,7 @@ export namespace Network {
   export const enum TrustTokenOperationDoneEventStatus {
     Ok = 'Ok',
     InvalidArgument = 'InvalidArgument',
+    MissingIssuerKeys = 'MissingIssuerKeys',
     FailedPrecondition = 'FailedPrecondition',
     ResourceExhausted = 'ResourceExhausted',
     AlreadyExists = 'AlreadyExists',
@@ -10602,11 +10604,9 @@ export namespace Page {
     ChUaPlatform = 'ch-ua-platform',
     ChUaModel = 'ch-ua-model',
     ChUaMobile = 'ch-ua-mobile',
-    ChUaFull = 'ch-ua-full',
     ChUaFullVersion = 'ch-ua-full-version',
     ChUaFullVersionList = 'ch-ua-full-version-list',
     ChUaPlatformVersion = 'ch-ua-platform-version',
-    ChUaReduced = 'ch-ua-reduced',
     ChUaWow64 = 'ch-ua-wow64',
     ChViewportHeight = 'ch-viewport-height',
     ChViewportWidth = 'ch-viewport-width',
@@ -11340,7 +11340,7 @@ export namespace Page {
     KeepaliveRequest = 'KeepaliveRequest',
     IndexedDBEvent = 'IndexedDBEvent',
     Dummy = 'Dummy',
-    AuthorizationHeader = 'AuthorizationHeader',
+    JsNetworkRequestReceivedCacheControlNoStoreResource = 'JsNetworkRequestReceivedCacheControlNoStoreResource',
     ContentSecurityHandler = 'ContentSecurityHandler',
     ContentWebAuthenticationAPI = 'ContentWebAuthenticationAPI',
     ContentFileChooser = 'ContentFileChooser',
@@ -15718,6 +15718,7 @@ export namespace Preload {
     MemoryPressureOnTrigger = 'MemoryPressureOnTrigger',
     MemoryPressureAfterTriggered = 'MemoryPressureAfterTriggered',
     PrerenderingDisabledByDevTools = 'PrerenderingDisabledByDevTools',
+    ResourceLoadBlockedByClient = 'ResourceLoadBlockedByClient',
   }
 
   /**

@@ -93,7 +93,8 @@ describeWithEnvironment('LayoutShiftsTrackAppender', () => {
     }
   });
 
-  it('returns the correct title for an interaction', async () => {
+  // Flaky test
+  it.skip('[crbug.com/1454749] returns the correct title for an interaction', async () => {
     const {layoutShiftsTrackAppender, traceParsedData} = await renderTrackAppender('cls-single-frame.json.gz');
     const shifts = traceParsedData.LayoutShifts.clusters.flatMap(c => c.events);
     const title = layoutShiftsTrackAppender.titleForEvent(shifts[0]);

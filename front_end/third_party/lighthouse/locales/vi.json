@@ -981,28 +981,28 @@
     "message": "Được phép nhưng có cảnh báo"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% LCP (Nội dung lớn nhất hiển thị)"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Giai đoạn"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Thời gian"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Đây là thành phần nội dung lớn nhất hiển thị trong khung nhìn. [Tìm hiểu thêm về thành phần Thời gian hiển thị nội dung lớn nhất](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Độ trễ khi tải"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Thời gian tải"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Độ trễ khi hiển thị"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
-    "message": "TTFB"
+    "message": "TTFB (Thời gian cho byte đầu tiên)"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "Thành phần Thời gian hiển thị nội dung lớn nhất"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Hãy cân nhắc thêm \"unsafe-inline\" (bị các trình duyệt hỗ trợ nonces/hashes bỏ qua) để tương thích ngược với những trình duyệt cũ."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Ký tự đại diện (*) sẽ không bao gồm việc uỷ quyền khi xử lý `Access-Control-Allow-Headers` CORS."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Các yêu cầu tài nguyên có URL chứa cả ký tự `(n|r|t)` khoảng trắng đã bị xoá và ký tự nhỏ hơn (`<`) sẽ bị chặn. Vui lòng xoá các dòng mới và mã hoá ký tự nhỏ hơn khỏi các vị trí như giá trị thuộc tính phần tử để tải những tài nguyên như vậy."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` không được dùng nữa; thay vào đó, hãy sử dụng API đã chuẩn hoá: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` không được dùng nữa; thay vào đó, hãy sử dụng API đã chuẩn hoá: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` không được dùng nữa; thay vào đó, hãy sử dụng API đã chuẩn hoá: `nextHopProtocol` trong Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Cookie có chứa ký tự `(0|r|n)` sẽ bị từ chối thay vì cắt bớt."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Hệ thống không còn thiết lập `document.domain` để nới lỏng chính sách cùng nguồn gốc nữa và tính năng này sẽ bị tắt theo mặc định. Cảnh bảo về việc không dùng nữa này là dành cho quyền truy cập nhiều nguồn gốc đã được bật bằng cách thiết lập `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Tính năng kích hoạt {PH1} qua các iframe nhiều nguồn gốc không được dùng nữa và sẽ bị loại bỏ trong tương lai."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Nên sử dụng thuộc tính `disableRemotePlayback`nhằm tắt chế độ tích hợp Truyền mặc định thay vì sử dụng bộ chọn `-internal-media-controls-overlay-cast-button`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} không được dùng nữa. Thay vào đó, hãy sử dụng {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Đây là ví dụ về một thông báo vấn đề không dùng nữa đã được dịch."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Hệ thống không còn thiết lập `document.domain` để nới lỏng chính sách cùng nguồn gốc nữa và tính năng này sẽ bị tắt theo mặc định. Để tiếp tục sử dụng tính năng này, vui lòng chọn không sử dụng cụm tác nhân dùng khoá gốc bằng cách gửi một tiêu đề `Origin-Agent-Cluster: ?0` kèm theo phản hồi HTTP cho tài liệu và khung. Xem https://developer.chrome.com/blog/immutable-document-domain/ để biết thêm chi tiết."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` không được dùng nữa và sẽ bị xoá. Thay vào đó, hãy sử dụng `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Tiêu đề `Expect-CT` không được dùng nữa và sẽ bị xoá. Chrome yêu cầu Tính minh bạch của chứng chỉ đối với tất cả chứng chỉ được tin cậy công khai cấp sau ngày 30 tháng 4 năm 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Kiểm tra trang trạng thái của tính năng để biết thêm thông tin."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` và `watchPosition()` không còn hoạt động trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` và `watchPosition()` không còn được dùng trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` không còn hoạt động trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` không được dùng nữa. Thay vào đó, hãy sử dụng `RTCPeerConnectionIceErrorEvent.address` hoặc `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Nguồn gốc của bên bán và dữ liệu bất kỳ trong sự kiện `canmakepayment` của trình chạy dịch vụ không được dùng nữa và sẽ bị loại bỏ: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Trang web này đã yêu cầu một tài nguyên phụ qua một mạng mà trang web này chỉ truy cập được do có vị thế mạng đặc quyền của người dùng. Những yêu cầu như vậy làm lộ các thiết bị và máy chủ không công khai trên Internet, làm tăng nguy cơ bị tấn công giả mạo yêu cầu trên nhiều trang web (CSRF) và/hoặc rò rỉ thông tin. Để giảm thiểu những rủi ro này, Chrome sẽ ngừng yêu cầu các nguồn phụ không công khai khi được khởi tạo từ các ngữ cảnh không an toàn và sẽ bắt đầu chặn những yêu cầu đó."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "Không tải được CSS qua các URL `file:` trừ phi chúng kết thúc bằng đuôi tệp `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Hệ thống không dùng `SourceBuffer.abort()` để huỷ việc xoá khoảng không đồng bộ của `remove()` nữa do thay đổi về quy cách. Sau này chế độ hỗ trợ cũng sẽ bị xoá. Thay vào đó, bạn nên nghe sự kiện `updateend`. Mục đích của `abort()` chỉ là huỷ lệnh thêm nội dung nghe nhìn không đồng bộ (asynchronous media append) hoặc đặt lại trạng thái của trình phân tích cú pháp."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Do thay đổi về quy cách, hệ thống không còn dùng chế độ đặt giá trị dưới dấu thời gian trình bày cao nhất cho `MediaSource.duration` nữa đối với mọi khung đã mã hoá và lưu vào vùng đệm. Chế độ hỗ trợ yêu cầu xoá tường minh cho nội dung phương tiện lưu trong bộ đệm bị cắt bớt sau này cũng sẽ bị xoá. Bạn nên triển khai lệnh `remove(newDuration, oldDuration)` tường minh trên mọi `sourceBuffers`, khi `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Thay đổi này sẽ có hiệu lực từ mốc {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI sẽ yêu cầu cấp quyền sử dụng ngay cả khi `MIDIOptions` không chỉ rõ sysex."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Có thể Notification API không còn được dùng qua các nguồn gốc không an toàn. Bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Có thể quyền cho Notification API không còn được yêu cầu qua một iframe nhiều nguồn gốc nữa. Thay vào đó, bạn nên cân nhắc việc yêu cầu quyền qua một khung cấp cao hoặc mở một cửa sổ mới."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Đối tác của bạn đang đàm phán một phiên bản (D)TLS đã lỗi thời. Vui lòng trao đổi với đối tác của bạn để khắc phục."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "WebSQL trong ngữ cảnh không an toàn không được dùng nữa và sẽ sớm bị xoá. Vui lòng dùng Bộ nhớ web hoặc Cơ sở dữ liệu đã lập chỉ mục."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Việc chỉ định `overflow: visible` trên thẻ img, video và canvas có thể khiến các thẻ này tạo ra nội dung hình ảnh bên ngoài ranh giới thành phần. Xem tại https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` không được dùng nữa. Vui lòng sử dụng chế độ cài đặt đúng thời điểm cho trình xử lý thanh toán."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Lệnh gọi `PaymentRequest` của bạn đã bỏ qua chỉ thị `connect-src` của Chính sách bảo mật nội dung (CSP). Chế độ bỏ qua này không được dùng nữa. Vui lòng thêm giá trị nhận dạng phương thức thanh toán từ API `PaymentRequest` (trong trường `supportedMethods`) vào chỉ thị `connect-src` của CSP."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` không được dùng nữa. Vui lòng sử dụng `navigator.storage` đã chuẩn hoá."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<source src>` có phần tử mẹ `<picture>` không hợp lệ nên sẽ bị bỏ qua. Thay vào đó, vui lòng sử dụng `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` không được dùng nữa. Vui lòng sử dụng `navigator.storage` đã chuẩn hoá."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Yêu cầu tài nguyên phụ có URL chứa thông tin xác thực được nhúng (ví dụ: `https://user:pass@host/`) sẽ bị chặn."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Điều kiện hạn chế `DtlsSrtpKeyAgreement` đã bị xoá. Bạn đã chỉ định một giá trị `false` cho điều kiện hạn chế này, đây được coi là nỗ lực sử dụng phương thức `SDES key negotiation` đã bị xoá. Chức năng này đã bị xoá; thay vào đó, hãy sử dụng một dịch vụ có hỗ trợ `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Điều kiện hạn chế `DtlsSrtpKeyAgreement` đã bị xoá. Bạn đã chỉ định một giá trị `true` cho điều kiện hạn chế này, việc này không có tác dụng gì nhưng bạn có thể xoá điều kiện hạn chế này cho gọn gàng."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Đã phát hiện `Complex Plan B SDP`. Phương ngữ này của `Session Description Protocol` không còn được hỗ trợ. Thay vào đó, vui lòng sử dụng `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`Plan B SDP semantics` (được dùng khi xây dựng một `RTCPeerConnection` bằng `{sdpSemantics:plan-b}`) là một phiên bản đã cũ phi tiêu chuẩn của `Session Description Protocol` và đã bị xoá vĩnh viễn khỏi Nền tảng web (Web Platform). Bạn vẫn dùng được giao thức này khi xây dựng bằng `IS_FUCHSIA`, nhưng chúng tôi có kế hoạch xoá càng sớm càng tốt. Hãy ngừng phụ thuộc vào giao thức này. Xem https://crbug.com/1302249 để nắm được trạng thái."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Tuỳ chọn `rtcpMuxPolicy` không được dùng nữa và sẽ bị xoá."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` sẽ đòi hỏi việc tách biệt nhiều nguồn gốc. Xem https://developer.chrome.com/blog/enabling-shared-array-buffer/ để biết thêm thông tin."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Khi không có hoạt động kích hoạt của người dùng, `speechSynthesis.speak()` không được dùng nữa và sẽ bị loại bỏ."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Đang dùng một tính năng không dùng nữa"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Các tiện ích phải chọn sử dụng chế độ tách biệt nhiều nguồn gốc để có thể tiếp tục sử dụng `SharedArrayBuffer`. Xem https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1} là phương thức tuỳ theo nhà cung cấp. Thay vào đó, hãy sử dụng {PH2} tiêu chuẩn."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "JSON phản hồi không hỗ trợ UTF-16 trong `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Tính năng `XMLHttpRequest` đồng bộ trên luồng chính không được dùng nữa do có tác động không tốt đối với trải nghiệm của người dùng cuối. Để xem thêm thông tin trợ giúp, hãy tham khảo https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` không được dùng nữa. Thay vào đó, hãy sử dụng `isSessionSupported()` và kiểm tra giá trị boolean đã phân giải."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Thời gian chặn chuỗi chính"
   },
@@ -2760,31 +2610,31 @@
     "message": "Dùng [Ezoic Leap](https://pubdash.ezoic.com/speed) và bật `Resize Images` để thay đổi kích thước hình ảnh sao cho phù hợp với thiết bị, qua đó làm giảm dung lượng dữ liệu truyền qua mạng."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Sử dụng thành phần `gatsby-plugin-image` thay cho `<img>` để tự động tối ưu hoá định dạng hình ảnh. [Tìm hiểu thêm](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Sử dụng thành phần `gatsby-plugin-image` thay cho `<img>` để tự động tải từng phần của hình ảnh. [Tìm hiểu thêm](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Sử dụng thành phần `gatsby-plugin-image` và đặt thuộc tính `loading` thành `eager`. [Tìm hiểu thêm](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Sử dụng `Gatsby Script API` để trì hoãn việc tải các tập lệnh không quan trọng của bên thứ ba. [Tìm hiểu thêm](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Sử dụng trình bổ trợ `PurgeCSS` `Gatsby` để xoá các quy tắc không sử dụng khỏi biểu định kiểu. [Tìm hiểu thêm](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Sử dụng `Webpack Bundle Analyzer` để phát hiện mã JavaScript không được sử dụng. [Tìm hiểu thêm](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Định cấu hình bộ nhớ đệm cho các nội dung không thay đổi được. [Tìm hiểu thêm](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Sử dụng thành phần `gatsby-plugin-image` thay cho `<img>` để điều chỉnh chất lượng ảnh. [Tìm hiểu thêm](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Sử dụng thành phần `gatsby-plugin-image` để đặt `sizes` phù hợp. [Tìm hiểu thêm](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Hãy cân nhắc tải ảnh GIF lên một dịch vụ để có thể nhúng ảnh đó ở dạng video HTML5."
@@ -2865,10 +2715,10 @@
     "message": "Có thể thêm thẻ `<link rel=preload>` bằng cách [sửa đổi bố cục của một giao diện](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Sử dụng thành phần `next/image` thay cho `<img>` để tự động tối ưu hoá định dạng hình ảnh. [Tìm hiểu thêm](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Sử dụng thành phần `next/image` thay cho `<img>` để tự động tải từng phần của hình ảnh. [Tìm hiểu thêm](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Dùng thành phần `next/image` và thiết lập giá trị \"mức độ ưu tiên\" thành đúng (true) để tải trước hình ảnh LCP. [Tìm hiểu thêm](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Hãy cân nhắc đặt `PurgeCSS` trong cấu hình `Next.js` để xoá các quy tắc không sử dụng khỏi biểu định kiểu. [Tìm hiểu thêm](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Sử dụng `Webpack Bundle Analyzer` để phát hiện mã JavaScript không được sử dụng. [Tìm hiểu thêm](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Hãy cân nhắc dùng `Next.js Analytics` để đo lường hiệu suất của ứng dụng trong thực tế. [Tìm hiểu thêm](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Định cấu hình bộ nhớ đệm cho các trang `Server-side Rendered` (SSR) và thành phần không thay đổi được. [Tìm hiểu thêm](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Sử dụng thành phần `next/image` thay cho `<img>` để điều chỉnh chất lượng ảnh. [Tìm hiểu thêm](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Hãy dùng phần tử `next/image` để đặt `sizes` phù hợp. [Tìm hiểu thêm](https://nextjs.org/docs/api-reference/next/image#sizes)."

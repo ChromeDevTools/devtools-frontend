@@ -981,25 +981,25 @@
     "message": "許可（警告あり）"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "LCP の割合"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "位相"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "タイミング"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "ビューポート内で描画された最大のコンテンツ要素です。[Largest Contentful Paint 要素の詳細](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "読み込み遅延"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "読み込み時間"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "レンダリング遅延"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "古いブラウザとの下位互換性を保つため、'unsafe-inline' を追加することを検討してください（nonce / hash をサポートしているブラウザでは無視されます）。"
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "CORS の `Access-Control-Allow-Headers` の処理では、Authorization はワイルドカード記号（*）で表されなくなります。"
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "URL に削除された空白文字（`(n|r|t)`）と小なり記号（`<`）が含まれるリソース リクエストはブロックされます。これらのリソースを読み込むには、要素の属性値などの場所にある改行を削除し、小なり記号をエンコードしてください。"
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` は非推奨となっています。代わりに標準化 API の Navigation Timing 2 を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` は非推奨となっています。代わりに標準化 API の Paint Timing を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` は非推奨となっています。代わりに標準化 API である Navigation Timing 2 の `nextHopProtocol` を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "`(0|r|n)` 文字が含まれる Cookie は、切り捨てではなく拒否されます。"
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "`document.domain` の設定による同一オリジン ポリシーの緩和は非推奨であり、デフォルトで無効になる予定です。この非推奨の警告は、`document.domain` の設定により有効にしたクロスオリジンのアクセスに対して行われます。"
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "クロスオリジンの iframe から {PH1} をトリガーすることは非推奨であり、今後削除される予定です。"
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "デフォルトの Cast の統合を無効にするには、`-internal-media-controls-overlay-cast-button` セレクタではなく `disableRemotePlayback` 属性を使用する必要があります。"
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} は非推奨になりました。代わりに {PH2} を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "非推奨に関する問題の翻訳されたメッセージのサンプルです。"
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "`document.domain` の設定による同一オリジン ポリシーの緩和は非推奨であり、デフォルトで無効になる予定です。引き続きこの機能を使用するには、オリジンキー エージェント クラスタを無効にしてください。これには、ドキュメントとフレームの HTTP レスポンスとともに `Origin-Agent-Cluster: ?0` ヘッダーを送信します。詳しくは、https://developer.chrome.com/blog/immutable-document-domain/ をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` は非推奨であり、削除される予定です。代わりに `Event.composedPath()` を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "`Expect-CT` ヘッダーは非推奨であり、削除される予定です。Chrome では、2018 年 4 月 30 日以降に発行されたすべての公的に信頼されている証明書に対して、Certificate Transparency（証明書の透明性）を設定する必要があります。"
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "詳しくは、機能のステータス ページをご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` と `watchPosition()` は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` と `watchPosition()` は、保護されていないオリジンでは非推奨となっています。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` は非推奨になりました。代わりに `RTCPeerConnectionIceErrorEvent.address` または `RTCPeerConnectionIceErrorEvent.port` を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "`canmakepayment` Service Worker イベントの、次の販売者のオリジンと任意のデータのサポートは終了し、削除される予定です。`topOrigin`、`paymentRequestOrigin`、`methodData`、`modifiers`。"
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "ウェブサイトが、ネットワークで特権を持つユーザーのみアクセス可能な、ネットワークのサブリソースをリクエストしました。これらのリクエストにより、非公開のデバイスやサーバーがインターネット上で参照できるようになるため、クロスサイト リクエスト フォージェリ（CSRF）攻撃や情報漏洩のリスクが高まります。これらのリスクを軽減するため、Chrome では、保護されていないコンテキストからの非公開サブリソースへのリクエストは非推奨となっており、今後ブロックされるようになる予定です。"
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "末尾が `.css` ファイル拡張子ではない CSS を、`file:` の URL から読み込むことはできません。"
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "`remove()` の非同期の範囲の削除を中止するための `SourceBuffer.abort()` の使用は、仕様変更により非推奨となっており、今後サポートされなくなります。代わりに `updateend` イベントをリッスンします。なお、`abort()` については、非同期メディアの追加の中止と、パーサーの状態のリセットのみを行います。"
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "バッファ済みコードフレームの最も高いプレゼンテーション タイムスタンプを下回る `MediaSource.duration` の設定は、仕様変更により非推奨となりました。切り捨てられたバッファ済みメディアの暗黙的な削除は、今後サポートされなくなります。代わりに、すべての `sourceBuffers` で明示的に `remove(newDuration, oldDuration)` を実行してください。このとき、`newDuration < oldDuration` となるよう指定してください。"
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "この変更はマイルストーン {milestone} で有効になります。"
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI は、`MIDIOptions` で SysEx が指定されていない場合でも使用許可を要求します。"
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Notification API は保護されていないオリジンから使用できなくなっている可能性があります。アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "通知 API の権限は、クロスオリジンの iframe からリクエストできなくなっている可能性があります。最上位フレームからの権限をリクエストするか、代わりに新しいウィンドウを開くことを検討してください。"
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "パートナーは古い (D)TLS バージョンの交渉を行っています。パートナーに確認してこれを修正してもらってください。"
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "セキュアでないコンテキストでの WebSQL は非推奨であり、まもなく削除されます。Web Storage または Indexed Database を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "img タグ、video タグ、canvas タグに `overflow: visible` を指定すると、要素の境界外にビジュアル コンテンツが作成される場合があります。https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` が非推奨となりました。支払いハンドラには、代わりに JIT インストールを使用してください。"
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "`PaymentRequest` 呼び出しが Content-Security-Policy（CSP）`connect-src` ディレクティブをバイパスしました。このバイパスは非推奨となっています。`PaymentRequest` API（`supportedMethods` フィールド）のお支払い方法 ID を CSP の `connect-src` ディレクティブに追加してください。"
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` は非推奨になりました。代わりに、標準化された `navigator.storage` を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<source src>` で `<picture>` 親要素を使用すると無効となり、無視されます。代わりに `<source srcset>` を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` は非推奨になりました。代わりに、標準化された `navigator.storage` を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "URL に埋め込み認証情報（`https://user:pass@host/` など）が含まれるサブリソース リクエストはブロックされます。"
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "`DtlsSrtpKeyAgreement` の制約は削除されました。この制約に指定されている `false` 値は、削除された `SDES key negotiation` の方法を使用する試みとして解釈されます。この機能は削除されたため、`DTLS key negotiation` をサポートしているサービスで代用してください。"
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "`DtlsSrtpKeyAgreement` の制約は削除されました。この制約に指定されている `true` 値は適用されませんが、この制約を削除するとシンプルにできます。"
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` を検出しました。`Session Description Protocol` のこの言語でのサポートは終了しました。代わりに `Unified Plan SDP` を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`{sdpSemantics:plan-b}` を指定して `RTCPeerConnection` を構築する際に使用される `Plan B SDP semantics` は、`Session Description Protocol` の以前の非標準バージョンであり、ウェブ プラットフォームから完全に削除されています。`IS_FUCHSIA` を使用して構築する場合は引き続き使用可能ですが、可能な限り速やかな削除が予定されているため、使用されないようお願いします。状況については https://crbug.com/1302249 をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "`rtcpMuxPolicy` オプションは非推奨であり、削除される予定です。"
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` ではクロスオリジン分離が必要となります。詳しくは、https://developer.chrome.com/blog/enabling-shared-array-buffer/ をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "ユーザー アクティベーションのない `speechSynthesis.speak()` は非推奨であり、削除される予定です。"
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "非推奨の機能が使用されています"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "拡張機能で引き続き `SharedArrayBuffer` を使用するには、クロスオリジン分離を有効にする必要があります。https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1} はベンダー固有です。代わりに標準の {PH2} を使用してください。"
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "UTF-16 は、`XMLHttpRequest` のレスポンス JSON ではサポートされていません。"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "メインスレッドの同期的な `XMLHttpRequest` は、エンドユーザーのエクスペリエンスに悪影響があるため、非推奨となっています。詳しくは、https://xhr.spec.whatwg.org/ をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` は非推奨になりました。代わりに `isSessionSupported()` を使用して、解決済みのブール値を確認してください。"
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "メインスレッドのブロック時間"
   },
@@ -2760,31 +2610,31 @@
     "message": "[Ezoic Leap](https://pubdash.ezoic.com/speed) を使用して、`Resize Images` を有効にし、画像のサイズをデバイスに適したサイズに変更することで、ネットワーク ペイロード サイズを削減します。"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "画像形式が自動的に最適化されるように、`<img>` ではなく `gatsby-plugin-image` コンポーネントを使用します。[詳細](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "画像が自動的に遅延読み込みされるように、`<img>` ではなく `gatsby-plugin-image` コンポーネントを使用します。[詳細](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "`gatsby-plugin-image` コンポーネントを使用して、`loading` プロパティを `eager` に設定します。[詳細](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "重要でない第三者スクリプトの読み込みを遅らせるように、`Gatsby Script API` を使用します。[詳細](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "使用されていないルールをスタイルシートから削除できるように、`PurgeCSS` `Gatsby` プラグインを使用します。[詳細](https://purgecss.com/plugins/gatsby.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "使用されていない JavaScript コードを検出できるように、`Webpack Bundle Analyzer` を使用します。[詳細](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "不変アセットのキャッシュを構成してください。[詳細](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "画質が調整されるように、`<img>` ではなく `gatsby-plugin-image` コンポーネントを使用します。[詳細](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "適切な `sizes` を設定できるように、`gatsby-plugin-image` コンポーネントを使用します。[詳細](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "GIF を HTML5 動画として埋め込み可能なサービスにアップロードすることをご検討ください。"
@@ -2865,10 +2715,10 @@
     "message": "[テーマのレイアウトを編集](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)して、`<link rel=preload>` タグを追加できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "画像形式が自動的に最適化されるように、`<img>` ではなく `next/image` コンポーネントを使用します。[詳細](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "画像が自動的に遅延読み込みされるように、`<img>` ではなく `next/image` コンポーネントを使用します。[詳細](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "`next/image` コンポーネントを使用して、「priority」を true に設定し、LCP 画像をプリロードします。[詳細](https://nextjs.org/docs/api-reference/next/image#priority)"
@@ -2883,7 +2733,7 @@
     "message": "使用されていないルールをスタイルシートから削除するには、`Next.js` で `PurgeCSS` を設定することをご検討ください。[詳細](https://purgecss.com/guides/next.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "使用されていない JavaScript コードを検出できるように、`Webpack Bundle Analyzer` を使用します。[詳細](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "アプリの実際のパフォーマンスを測定するには、`Next.js Analytics` の使用をご検討ください。[詳細](https://nextjs.org/docs/advanced-features/measuring-performance)"
@@ -2892,7 +2742,7 @@
     "message": "不変アセットと `Server-side Rendered`（SSR）ページのキャッシュを設定してください。[詳細](https://nextjs.org/docs/going-to-production#caching)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "画質が調整されるように、`<img>` ではなく `next/image` コンポーネントを使用します。[詳細](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "適切な `sizes` を設定するには、`next/image` コンポーネントを使用してください。[詳細](https://nextjs.org/docs/api-reference/next/image#sizes)"

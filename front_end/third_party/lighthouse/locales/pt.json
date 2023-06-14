@@ -981,25 +981,25 @@
     "message": "Permitido com um alerta"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% de LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Fase"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Tempo"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Este é o maior elemento com conteúdo na janela de visualização. [Saiba mais sobre o elemento Maior exibição de conteúdo](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)."
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Atraso no carregamento"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Tempo de carregamento"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Atraso na renderização"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Adicione \"unsafe-inline\", ignorado por navegadores compatíveis com nonces/hashes, para oferecer compatibilidade com versões anteriores dos navegadores."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "A autorização não será coberta pelo caractere curinga (*) no gerenciamento do CORS de `Access-Control-Allow-Headers`."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Solicitações de recursos com URLs que contêm caracteres `(n|r|t)` de espaço em branco removido e caracteres \"menor que\" (`<`) estão bloqueadas. Remova novas linhas e codifique caracteres \"menor que\" em lugares como valores de atributos de elementos para carregar esses recursos."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "O uso de `chrome.loadTimes()` foi descontinuado. Use a API padronizada Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "O uso de `chrome.loadTimes()` foi descontinuado. Use a API padronizada Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "O uso de `chrome.loadTimes()` foi descontinuado. Use a API padronizada `nextHopProtocol` na Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Cookies contendo um caractere `(0|r|n)` serão rejeitados em vez de truncados."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "O relaxamento de políticas da mesma origem com a definição de `document.domain` foi descontinuado e será desativado por padrão. Este alerta de descontinuação é para um acesso de origem cruzada que foi ativado ao configurar `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "O acionamento da função {PH1} de iframes de origem cruzada foi descontinuado e será removido."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Use o atributo `disableRemotePlayback` para desativar a integração padrão do Google Cast em vez de usar o seletor `-internal-media-controls-overlay-cast-button`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "O uso de {PH1} foi descontinuado. Use {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Este é um exemplo de mensagem traduzida sobre um problema de descontinuação."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "O relaxamento de políticas da mesma origem com a definição de `document.domain` foi descontinuado e será desativado por padrão. Para continuar usando esse recurso, desative os clusters de agente com origin-key, enviando um cabeçalho `Origin-Agent-Cluster: ?0` junto à resposta HTTP para o documento e os frames. Confira mais detalhes em https://developer.chrome.com/blog/immutable-document-domain/ (link em inglês)."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "A API `Event.path` foi descontinuada e será removida. Use `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "O cabeçalho `Expect-CT` foi descontinuado e vai ser removido. O Chrome exige Transparência dos certificados para todos os certificados considerados confiáveis emitidos depois de 30 de abril de 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Verifique a página de status do recurso para saber mais detalhes."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` e `watchPosition()` não funcionam mais em origens não seguras. Para usar esse recurso, troque a origem do seu aplicativo por outra que seja segura, por exemplo, HTTPS. Consulte https://goo.gle/chrome-insecure-origins para ver mais detalhes."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "O uso de `getCurrentPosition()` e `watchPosition()` foi descontinuado em origens não seguras. Para usar esse recurso, troque a origem do seu aplicativo por outra que seja segura, por exemplo, HTTPS. Consulte https://goo.gle/chrome-insecure-origins para ver mais detalhes."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` não funciona mais em origens não seguras. Para usar esse recurso, troque a origem do seu aplicativo por outra que seja segura, por exemplo, HTTPS. Consulte https://goo.gle/chrome-insecure-origins para ver mais detalhes."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "O uso de `RTCPeerConnectionIceErrorEvent.hostCandidate` foi descontinuado. Use `RTCPeerConnectionIceErrorEvent.address` ou `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "A origem do comerciante e os dados arbitrários do evento do service worker `canmakepayment` foram descontinuados e vão ser removidos: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "O site solicitou um recurso secundário de uma rede que ele só conseguiu acessar devido à posição privilegiada na rede que os usuários dele têm. Essas solicitações expõem para a Internet dispositivos e servidores particulares, aumentando o risco de ataques de falsificação de solicitações entre sites (CSRF, na sigla em inglês) e/ou de vazamento de informações. Para reduzir os riscos, o Chrome descontinua solicitações para recursos secundários particulares quando iniciadas em contextos não seguros e vai começar a fazer o bloqueio delas."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "O CSS não pode ser carregado usando URLs `file:`, a menos que eles terminem com uma extensão de arquivo `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "O uso de `SourceBuffer.abort()` para cancelar a remoção de intervalo assíncrono de `remove()` foi descontinuado devido a uma mudança na especificação. O suporte será removido futuramente. Como alternativa, você precisa detectar o evento `updateend`. O uso de `abort()` tem como objetivo cancelar um anexo de mídia assíncrono ou redefinir o estado do analisador."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "A definição de `MediaSource.duration` abaixo do carimbo de data/hora mais alto da apresentação de frames codificados em buffer foi descontinuada por causa de uma mudança na especificação. O suporte para remoção implícita de mídia truncada em buffer será removido no futuro. Faça uma `remove(newDuration, oldDuration)` explícita em todos os `sourceBuffers`, em que `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Esta mudança vai entrar em vigor com a versão principal {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "A Web MIDI pede permissão de uso mesmo que o sysex não esteja especificado em `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "A API Notification não pode mais ser usada em origens não seguras. Troque a origem do seu aplicativo para uma que seja segura, como HTTPS. Consulte https://goo.gle/chrome-insecure-origins para ver mais detalhes."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "A permissão para a API Notification não pode mais ser solicitada em um iframe de origem cruzada. Solicite a permissão em um frame de nível superior ou abra uma nova janela."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Seu parceiro está negociando uma versão (D)TLS obsoleta. Fale com ele para que isso seja corrigido."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "O WebSQL em contextos não seguros foi descontinuado e vai ser removido em breve. Use Web Storage ou Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Especificar `overflow: visible` em tags de img, video e canvas pode fazer com que elas produzam conteúdo visual fora dos limites do elemento. Consulte https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md (em inglês) para saber mais."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "O uso de `paymentManager.instruments` foi descontinuado. Use uma instalação just-in-time para gerenciadores de pagamento."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Sua chamada `PaymentRequest` ignorou a diretiva `connect-src` da Política de Segurança de Conteúdo (CSP). Essa ação foi descontinuada. Adicione o identificador da forma de pagamento da API `PaymentRequest` (no campo `supportedMethods`) à diretiva `connect-src` da CSP."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "O uso de `StorageType.persistent` foi descontinuado. Use o `navigator.storage` padronizado."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "O elemento `<source src>` com um pai `<picture>` é inválido e será ignorado. Use `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "O uso de `window.webkitStorageInfo` foi descontinuado. Use o `navigator.storage` padronizado."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "As solicitações de recursos secundários com URLs que contêm credenciais incorporadas (como `https://user:pass@host/`) estão bloqueadas."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "A restrição `DtlsSrtpKeyAgreement` foi removida. Você especificou um valor `false` para essa restrição. Essa ação foi interpretada como uma tentativa de usar o método `SDES key negotiation` removido. Essa funcionalidade foi removida. Use um serviço que tenha suporte à `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "A restrição `DtlsSrtpKeyAgreement` foi removida. Você especificou um valor `true` para essa restrição. Essa ação não teve efeito, mas você pode remover a restrição para manter a organização."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` detectado. Não há mais suporte para esse dialeto do `Session Description Protocol`. Use `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "O `Plan B SDP semantics`, que é usado ao criar uma `RTCPeerConnection` com `{sdpSemantics:plan-b}`, é uma versão legada não padrão do `Session Description Protocol`, que foi excluído permanentemente da plataforma Web. Ele ainda está disponível ao criar com `IS_FUCHSIA`, mas pretendemos fazer a exclusão assim que possível. Evite depender dele. Acesse https://crbug.com/1302249 (link em inglês) para ver o status."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "A opção `rtcpMuxPolicy` foi descontinuada e vai ser removida."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` requer isolamento de origem cruzada. Consulte https://developer.chrome.com/blog/enabling-shared-array-buffer/ (link em inglês) para ver mais detalhes."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "A API `speechSynthesis.speak()` sem ativação do usuário foi descontinuada e será removida."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Um recurso descontinuado foi usado"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "As extensões precisam ativar o isolamento de origem cruzada para continuar usando o recurso `SharedArrayBuffer`. Consulte https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ (link em inglês)."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "A função {PH1} é específica para fornecedores. Use a função padrão {PH2}."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "Não há suporte da resposta JSON para UTF-16 no `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "O `XMLHttpRequest` síncrono na linha de execução principal foi descontinuado por causa dos efeitos prejudiciais à experiência do usuário final. Para receber mais ajuda, acesse https://xhr.spec.whatwg.org/ (link em inglês)."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "O uso de `supportsSession()` foi descontinuado. Use `isSessionSupported()` e verifique o valor booleano resolvido."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Tempo de bloqueio da linha de execução principal"
   },
@@ -2760,31 +2610,31 @@
     "message": "Use o [Ezoic Leap](https://pubdash.ezoic.com/speed) e ative a configuração `Resize Images` para redimensionar imagens a um tamanho adequado para dispositivos, reduzindo o tamanho do payload de rede."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Use o componente `gatsby-plugin-image` em vez de `<img>` para otimizar automaticamente o formato das imagens. [Saiba mais](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Use o componente `gatsby-plugin-image` em vez de `<img>` para carregar imagens de maneira automática e lenta. [Saiba mais](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Use o componente `gatsby-plugin-image` e defina a propriedade `loading` como `eager`. [Saiba mais](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Use a `Gatsby Script API` para adiar o carregamento de scripts terceirizados não essenciais. [Saiba mais](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Use o plug-in `Gatsby` do `PurgeCSS` para remover regras não usadas das folhas de estilo. [Saiba mais](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Use o `Webpack Bundle Analyzer` para detectar códigos JavaScript não usados. [Saiba mais](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Configure o armazenamento em cache para recursos imutáveis. [Saiba mais](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Use o componente `gatsby-plugin-image` em vez de `<img>` para ajustar a qualidade das imagens. [Saiba mais](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Use o componente `gatsby-plugin-image` para configurar um valor de `sizes` adequado. [Saiba mais](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Faça upload do seu GIF para um serviço que o disponibilizará para incorporação como um vídeo HTML5."
@@ -2865,10 +2715,10 @@
     "message": "As tags `<link rel=preload>` podem ser adicionadas [modificando o layout de um tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use o componente `next/image` em vez de `<img>` para otimizar automaticamente o formato das imagens. [Saiba mais](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use o componente `next/image` em vez de `<img>` para carregar imagens de maneira automática e lenta. [Saiba mais](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Use o componente `next/image` e defina o campo \"prioridade\" como verdadeiro para pré-carregar imagens LCP. [Saiba mais](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Configure o plug-in `PurgeCSS` com `Next.js` para remover regras não usadas das folhas de estilo. [Saiba mais](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Use o `Webpack Bundle Analyzer` para detectar códigos JavaScript não usados. [Saiba mais](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Use o `Next.js Analytics` para medir o desempenho do seu app no mundo real. [Saiba mais](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Configure o armazenamento em cache para recursos e páginas `Server-side Rendered` (SSR) imutáveis. [Saiba mais](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Use o componente `next/image` em vez de `<img>` para ajustar a qualidade das imagens. [Saiba mais](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Use o componente `next/image` para configurar o valor de `sizes` adequado. [Saiba mais](https://nextjs.org/docs/api-reference/next/image#sizes)."

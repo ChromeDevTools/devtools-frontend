@@ -981,25 +981,25 @@
     "message": "Povoleno s upozorněním"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Fáze"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Časování"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Toto je největší obsahový prvek vykreslený v zobrazované oblasti. [Další informace o prvku spojeném s vykreslením největšího obsahu](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Prodleva načítání"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Doba načítání"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Prodleva vykreslení"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Zvažte, zda nepřidat unsafe-inline (ignorováno prohlížeči, které podporují hodnoty nonce/hash) z důvodu zpětné kompatibility se staršími prohlížeči."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Zástupný symbol (*) se při zpracování záhlaví `Access-Control-Allow-Headers` pro CORS nevztahuje na záhlaví Authorization."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Požadavky na zdroje, jejichž adresy URL obsahovaly jak odstraněné prázdné znaky `(n|r|t)`, tak znaky menší než (`<`), jsou blokovány. Aby se tyto zdroje načetly, je na místech, jako jsou hodnoty atributů, potřeba odstranit zalomení řádků a zakódovat znaky menší než."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "Metoda `chrome.loadTimes()` je zastaralá, použijte místo ní standardizované API: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "API `chrome.loadTimes()` je zastaralé. Použijte místo něj standardizované API: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "Metoda `chrome.loadTimes()` je zastaralá. Použijte místo ní standardizované API: `nextHopProtocol` v Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Soubory cookie obsahující znak `(0|r|n)` budou namísto zkrácení odmítnuty."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Uvolnění zásad stejného původu nastavením atributu `document.domain` je zastaralé a bude ve výchozím nastavení zakázáno. Toto upozornění na ukončení podpory se týká přístupu mezi různými zdroji, který byl povolen nastavením `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Spouštění {PH1} z prvků iframe z jiného zdroje již není podporováno a v budoucnu bude odstraněno."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Namísto selektoru `-internal-media-controls-overlay-cast-button` byste k vypnutí výchozí integrace funkce Cast měli použít atribut `disableRemotePlayback`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "API {PH1} je zastaralé. Použijte místo něj API {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Toto je příklad přeložené zprávy o problému s ukončením podpory."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Uvolnění zásad stejného původu nastavením atributu `document.domain` je zastaralé a bude ve výchozím nastavení zakázáno. Pokud tuto funkci chcete nadále používat, odesláním záhlaví `Origin-Agent-Cluster: ?0` spolu s odpovědí HTTP pro dokument a rámce se odhlaste z clusterů zástupců rozlišovaných podle zdrojů. Další podrobnosti najdete na stránce https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "API `Event.path` je zastaralé a bude odstraněno. Použijte místo něj API `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Záhlaví `Expect-CT` je zastaralé a bude odstraněno. Chrome u všech veřejně důvěryhodných certifikátů vydaných po 30. dubnu 2018 vyžaduje ochranu Certificate Transparency."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Další podrobnosti najdete na stránce s informacemi o stavu funkcí."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` a `watchPosition()` již nefungují u nezabezpečených zdrojů. Pokud tuto funkci chcete použít, měli byste zvážit převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "Metody `getCurrentPosition()` a `watchPosition()` již v nezabezpečených zdrojích nejsou podporovány. Pokud tuto funkci chcete použít, měli byste zvážit převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` již nefunguje u nezabezpečených zdrojů. Pokud tuto funkci chcete použít, měli byste zvážit převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "Rozhraní `RTCPeerConnectionIceErrorEvent.hostCandidate` je zastaralé. Použijte místo něj rozhraní `RTCPeerConnectionIceErrorEvent.address` nebo `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Zdroj obchodníka a libovolná data z události `canmakepayment` procesu service worker jsou zastaralé a budou odstraněny: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Web si vyžádal dílčí zdroj ze sítě, ke které měl přístup pouze díky privilegované pozici svých uživatelů v síti. Tyto požadavky umožňují získat z internetu přístup k neveřejným zařízením a serverům, čímž se zvyšuje riziko útoku CSRF (cross-site request forgery) a/nebo úniku informací. Aby Chrome tato rizika zmírnil, přestává podporovat požadavky na neveřejné dílčí zdroje iniciované z nezabezpečených kontextů a začne je blokovat."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "Styly CSS lze z adres URL `file:` načíst pouze v případě, že končí příponou souboru `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Použití `SourceBuffer.abort()` ke zrušení asynchronního odstranění rozsahu pomocí metody `remove()` je vzhledem ke změně specifikace zastaralé. Podpora bude v budoucnu odstraněna. Doporučujeme místo toho naslouchat události `updateend`. Metoda `abort()` je určena pouze ke zrušení asynchronního připojení média nebo resetování stavu analyzátoru."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Nastavení hodnoty `MediaSource.duration` nižší, než je nejvyšší prezentační časové razítko kterýchkoliv kódovaných snímků ve vyrovnávací paměti, je z důvodu změny specifikace zastaralé. Podpora implicitního odstranění zkrácených médií ve vyrovnávací pamětí bude v budoucnu odstraněna. Místo toho byste u všech objektů `sourceBuffers`, u kterých je `newDuration < oldDuration`, měli explicitně provést `remove(newDuration, oldDuration)`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Tato změna nabude účinnosti od milníku {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Rozhraní Web MIDI požádá o oprávnění k použití i v případě, že v `MIDIOptions` není zadán sysex."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Notification API již nelze používat z nezabezpečených zdrojů. Zvažte převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Oprávnění pro rozhraní Notification API již nelze požadovat z prvku iframe z jiného zdroje. Měli byste zvážit vyžádání oprávnění z rámce nejvyšší úrovně nebo otevření nového okna."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Váš partner vyjednává zastaralou verzi (D)TLS. Požádejte ho o nápravu."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "Podpora protokolu WebSQL v nezabezpečených kontextech byla ukončena a brzy bude odstraněna. Použijte rozhraní Web Storage nebo IndexedDB."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Pokud u značek img, video či canvas zadáte vlastnost `overflow: visible`, může se vizuální obsah zobrazit mimo hranice prvku. Viz https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "API `paymentManager.instruments` je zastaralé. Obslužné nástroje pro platby místo toho instalujte bezprostředně před použitím."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Vaše volání rozhraní `PaymentRequest` obchází direktivu `connect-src` zásad zabezpečení obsahu (CSP). Toto obcházení již není podporováno. Přidejte do direktivy CSP `connect-src` identifikátor platební metody z rozhraní API `PaymentRequest` (v poli `supportedMethods`)."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "Rozhraní `StorageType.persistent` je zastaralé. Použijte místo něj standardizované rozhraní `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "Prvek `<source src>` s nadřazeným prvkem `<picture>` je neplatný, a proto je ignorován. Použijte místo něj prvek `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "Rozhraní `window.webkitStorageInfo` je zastaralé. Použijte místo něj standardizované rozhraní `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Požadavky na dílčí zdroje, jejichž adresy URL obsahují vložené přihlašovací údaje (např. `https://user:pass@host/`), jsou blokovány."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Omezení `DtlsSrtpKeyAgreement` je odstraněno. Pro toto omezení jste zadali hodnotu `false`, která je interpretována jako pokus o použití odstraněné metody `SDES key negotiation`. Tato funkce je odstraněna. Použijte místo toho službu, která podporuje metodu `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Omezení `DtlsSrtpKeyAgreement` je odstraněno. Pro toto omezení jste zadali hodnotu `true`, což nemělo žádný účinek, ale pro pořádek můžete toto omezení odstranit."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Byl zjištěn protokol `Complex Plan B SDP`. Tento dialekt protokolu `Session Description Protocol` již není podporován. Použijte místo něj protokol `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Verze `Plan B SDP semantics` používaná při vytváření připojení s `RTCPeerConnection` pomocí `{sdpSemantics:plan-b}` je zastaralá nestandardní verze protokolu `Session Description Protocol`, která byla z webové platformy trvale odstraněna. Při sestavování s parametrem `IS_FUCHSIA` je stále k dispozici, ale máme v úmyslu ji co nejdříve smazat. Nespoléhejte se na ni. Informace o stavu najdete na stránce https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Možnost `rtcpMuxPolicy` je zastaralá a bude odstraněna."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` bude vyžadovat izolaci od jiných zdrojů. Další podrobnosti najdete na stránce https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Volání metody `speechSynthesis.speak()` bez aktivace ze strany uživatele je zastaralé a bude odstraněno."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Byla použita zastaralá funkce"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Pokud v rozšířeních chcete používat technologii `SharedArrayBuffer`, je u nich potřeba aktivovat izolaci od jiných zdrojů. Viz https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "Metoda {PH1} je specifická pro dodavatele. Použijte místo ní standardní metodu {PH2}."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "Kódování UTF-16 není v objektech JSON odpovědí rozhraní `XMLHttpRequest` podporováno"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronní požadavky `XMLHttpRequest` v hlavním vláknu jsou zastaralé, protože mají nepříznivý vliv na dojem koncového uživatele. Další informace najdete na stránce https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "Metoda `supportsSession()` je zastaralá. Použijte místo ní metodu `isSessionSupported()` a zkontrolujte vrácenou logickou hodnotu."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Doba blokování hlavního podprocesu"
   },
@@ -2760,31 +2610,31 @@
     "message": "Použijte nástroj [Ezoic Leap](https://pubdash.ezoic.com/speed) a zapněte možnost `Resize Images`, aby velikost obrázků přizpůsobil zařízení a snížili jste tak množství dat přenášené po síti."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Použijte místo komponenty `<img>` komponentu `gatsby-plugin-image`, aby se automaticky optimalizoval formát obrázků. [Další informace](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Použijte místo komponenty `gatsby-plugin-image` komponentu `<img>`, aby se obrázky automaticky načítaly líně. [Další informace](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Použijte komponentu `gatsby-plugin-image` a nastavte vlastnost `loading` na `eager`. [Další informace](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Odložte načítání nekritických skriptů třetích stran pomocí `Gatsby Script API`. [Další informace](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Pomocí pluginu `Gatsby` `PurgeCSS` ze šablon stylů odstraňte nepoužívaná pravidla. [Další informace](https://purgecss.com/plugins/gatsby.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Vyhledejte pomocí nástroje `Webpack Bundle Analyzer` nepoužívaný kód JavaScript. [Další informace](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Nakonfigurujte ukládání neměnných podkladů do mezipaměti. [Další informace](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Pokud chcete upravit kvalitu obrázků, použijte místo komponenty `<img>` komponentu `gatsby-plugin-image`. [Další informace](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Pomocí komponenty `gatsby-plugin-image` nastavte vhodné velikosti (`sizes`). [Další informace](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Zvažte nahrání souboru GIF do služby, pomocí které ho bude možné vložit jako video HTML5."
@@ -2865,10 +2715,10 @@
     "message": "Značky `<link rel=preload>` lze přidat [úpravou rozvržení motivů](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Použijte místo komponenty `<img>` komponentu `next/image`, aby se automaticky optimalizoval formát obrázků. [Další informace](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Použijte místo komponenty `next/image` komponentu `<img>`, aby se obrázky automaticky načítaly líně. [Další informace](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Použijte komponentu `next/image` a nastavte atribut priority na hodnotu true, aby se obrázek LCP načetl předem. [Další informace](https://nextjs.org/docs/api-reference/next/image#priority)"
@@ -2883,7 +2733,7 @@
     "message": "Zvažte nastavení pluginu `PurgeCSS` v konfiguraci platformy `Next.js` k odstranění nepoužívaných pravidel ze šablon stylů. [Další informace](https://purgecss.com/guides/next.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Vyhledejte pomocí nástroje `Webpack Bundle Analyzer` nepoužívaný kód JavaScript. [Další informace](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Zvažte změření výkonu aplikace v reálném světě pomocí nástroje `Next.js Analytics`. [Další informace](https://nextjs.org/docs/advanced-features/measuring-performance)"
@@ -2892,7 +2742,7 @@
     "message": "Nakonfigurujte ukládání neměnných podkladů a stránek vykreslovaných na serveru (`Server-side Rendered` – SSR) do mezipaměti. [Další informace](https://nextjs.org/docs/going-to-production#caching)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Pokud chcete upravit kvalitu obrázků, použijte místo komponenty `<img>` komponentu `next/image`. [Další informace](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Pomocí komponenty `next/image` nastavte vhodné velikosti (`sizes`). [Další informace](https://nextjs.org/docs/api-reference/next/image#sizes)"

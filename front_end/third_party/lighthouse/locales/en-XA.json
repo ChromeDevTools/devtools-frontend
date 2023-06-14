@@ -981,28 +981,28 @@
     "message": "[Åļļöŵéð ŵîţĥ ŵåŕñîñĝ one two three]"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "[% oƒ ĻÇÞ one]"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "[Þĥåšé one]"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "[Ţîmîñĝ one]"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "[Ţĥîš îš ţĥé ļåŕĝéšţ çöñţéñţƒûļ éļéméñţ þåîñţéð ŵîţĥîñ ţĥé vîéŵþöŕţ. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé Ļåŕĝéšţ Çöñţéñţƒûļ Þåîñţ éļéméñţᐅ](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "[Ļöåð Ðéļåý one two]"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "[Ļöåð Ţîmé one two]"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "[Ŕéñðéŕ Ðéļåý one two]"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
-    "message": "TTFB"
+    "message": "[ŢŢFБ one]"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "[Ļåŕĝéšţ Çöñţéñţƒûļ Þåîñţ éļéméñţ one two three four five six seven]"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "[Çöñšîðéŕ åððîñĝ 'ûñšåƒé-îñļîñé' (îĝñöŕéð бý бŕöŵšéŕš šûþþöŕţîñĝ ñöñçéš/ĥåšĥéš) ţö бé бåçķŵåŕð çömþåţîбļé ŵîţĥ öļðéŕ бŕöŵšéŕš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "[Åûţĥöŕîžåţîöñ ŵîļļ ñöţ бé çövéŕéð бý ţĥé ŵîļðçåŕð šýmбöļ (*) îñ ÇÖŔŠ ᐅ`Access-Control-Allow-Headers`ᐊ ĥåñðļîñĝ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "[Ŕéšöûŕçé ŕéqûéšţš ŵĥöšé ÛŔĻš çöñţåîñéð бöţĥ ŕémövéð ŵĥîţéšþåçé ᐅ`(n|r|t)`ᐊ çĥåŕåçţéŕš åñð ļéšš-ţĥåñ çĥåŕåçţéŕš (ᐅ`<`ᐊ) åŕé бļöçķéð. Þļéåšé ŕémövé ñéŵļîñéš åñð éñçöðé ļéšš-ţĥåñ çĥåŕåçţéŕš ƒŕöm þļåçéš ļîķé éļéméñţ åţţŕîбûţé våļûéš îñ öŕðéŕ ţö ļöåð ţĥéšé ŕéšöûŕçéš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo]"
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "[ᐅ`chrome.loadTimes()`ᐊ îš ðéþŕéçåţéð, îñšţéåð ûšé šţåñðåŕðîžéð ÅÞÎ: Ñåvîĝåţîöñ Ţîmîñĝ 2. one two three four five six seven eight nine ten eleven twelve thirteen]"
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "[ᐅ`chrome.loadTimes()`ᐊ îš ðéþŕéçåţéð, îñšţéåð ûšé šţåñðåŕðîžéð ÅÞÎ: Þåîñţ Ţîmîñĝ. one two three four five six seven eight nine ten eleven twelve]"
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "[ᐅ`chrome.loadTimes()`ᐊ îš ðéþŕéçåţéð, îñšţéåð ûšé šţåñðåŕðîžéð ÅÞÎ: ᐅ`nextHopProtocol`ᐊ îñ Ñåvîĝåţîöñ Ţîmîñĝ 2. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "[Çööķîéš çöñţåîñîñĝ å ᐅ`(0|r|n)`ᐊ çĥåŕåçţéŕ ŵîļļ бé ŕéĵéçţéð îñšţéåð öƒ ţŕûñçåţéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "[Ŕéļåxîñĝ ţĥé šåmé-öŕîĝîñ þöļîçý бý šéţţîñĝ ᐅ`document.domain`ᐊ îš ðéþŕéçåţéð, åñð ŵîļļ бé ðîšåбļéð бý ðéƒåûļţ. Ţĥîš ðéþŕéçåţîöñ ŵåŕñîñĝ îš ƒöŕ å çŕöšš-öŕîĝîñ åççéšš ţĥåţ ŵåš éñåбļéð бý šéţţîñĝ ᐅ`document.domain`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "[Ţŕîĝĝéŕîñĝ ᐅ{PH1}ᐊ ƒŕöm çŕöšš öŕîĝîñ îƒŕåméš ĥåš бééñ ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð îñ ţĥé ƒûţûŕé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "[Ţĥé ᐅ`disableRemotePlayback`ᐊ åţţŕîбûţé šĥöûļð бé ûšéð îñ öŕðéŕ ţö ðîšåбļé ţĥé ðéƒåûļţ Çåšţ îñţéĝŕåţîöñ îñšţéåð öƒ ûšîñĝ ᐅ`-internal-media-controls-overlay-cast-button`ᐊ šéļéçţöŕ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "[ᐅ{PH1}ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé ᐅ{PH2}ᐊ îñšţéåð. one two three four five six seven eight nine]"
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "[Ţĥîš îš åñ éxåmþļé öƒ å ţŕåñšļåţéð ðéþŕéçåţîöñ îššûé méššåĝé. one two three four five six seven eight nine ten eleven twelve]"
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "[Ŕéļåxîñĝ ţĥé šåmé-öŕîĝîñ þöļîçý бý šéţţîñĝ ᐅ`document.domain`ᐊ îš ðéþŕéçåţéð, åñð ŵîļļ бé ðîšåбļéð бý ðéƒåûļţ. Ţö çöñţîñûé ûšîñĝ ţĥîš ƒéåţûŕé, þļéåšé öþţ-öûţ öƒ öŕîĝîñ-ķéýéð åĝéñţ çļûšţéŕš бý šéñðîñĝ åñ ᐅ`Origin-Agent-Cluster: ?0`ᐊ ĥéåðéŕ åļöñĝ ŵîţĥ ţĥé ĤŢŢÞ ŕéšþöñšé ƒöŕ ţĥé ðöçûméñţ åñð ƒŕåméš. Šéé ĥţţþš://ðévéļöþéŕ.çĥŕömé.çöm/бļöĝ/îmmûţåбļé-ðöçûméñţ-ðömåîñ/ ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty]"
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "[ᐅ`Event.path`ᐊ îš ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð. Þļéåšé ûšé ᐅ`Event.composedPath()`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven twelve]"
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "[Ţĥé ᐅ`Expect-CT`ᐊ ĥéåðéŕ îš ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð. Çĥŕömé ŕéqûîŕéš Çéŕţîƒîçåţé Ţŕåñšþåŕéñçý ƒöŕ åļļ þûбļîçļý ţŕûšţéð çéŕţîƒîçåţéš îššûéð åƒţéŕ Åþŕîļ 30, 2018. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "[Çĥéçķ ţĥé ƒéåţûŕé šţåţûš þåĝé ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten]"
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "[ᐅ`getCurrentPosition()`ᐊ åñð ᐅ`watchPosition()`ᐊ ñö ļöñĝéŕ ŵöŕķ öñ îñšéçûŕé öŕîĝîñš. Ţö ûšé ţĥîš ƒéåţûŕé, ýöû šĥöûļð çöñšîðéŕ šŵîţçĥîñĝ ýöûŕ åþþļîçåţîöñ ţö å šéçûŕé öŕîĝîñ, šûçĥ åš ĤŢŢÞŠ. Šéé ĥţţþš://ĝöö.ĝļé/çĥŕömé-îñšéçûŕé-öŕîĝîñš ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "[ᐅ`getCurrentPosition()`ᐊ åñð ᐅ`watchPosition()`ᐊ åŕé ðéþŕéçåţéð öñ îñšéçûŕé öŕîĝîñš. Ţö ûšé ţĥîš ƒéåţûŕé, ýöû šĥöûļð çöñšîðéŕ šŵîţçĥîñĝ ýöûŕ åþþļîçåţîöñ ţö å šéçûŕé öŕîĝîñ, šûçĥ åš ĤŢŢÞŠ. Šéé ĥţţþš://ĝöö.ĝļé/çĥŕömé-îñšéçûŕé-öŕîĝîñš ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "[ᐅ`getUserMedia()`ᐊ ñö ļöñĝéŕ ŵöŕķš öñ îñšéçûŕé öŕîĝîñš. Ţö ûšé ţĥîš ƒéåţûŕé, ýöû šĥöûļð çöñšîðéŕ šŵîţçĥîñĝ ýöûŕ åþþļîçåţîöñ ţö å šéçûŕé öŕîĝîñ, šûçĥ åš ĤŢŢÞŠ. Šéé ĥţţþš://ĝöö.ĝļé/çĥŕömé-îñšéçûŕé-öŕîĝîñš ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "[ᐅ`RTCPeerConnectionIceErrorEvent.hostCandidate`ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé ᐅ`RTCPeerConnectionIceErrorEvent.address`ᐊ öŕ ᐅ`RTCPeerConnectionIceErrorEvent.port`ᐊ îñšţéåð. one two three four five six seven eight nine ten]"
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "[Ţĥé méŕçĥåñţ öŕîĝîñ åñð åŕбîţŕåŕý ðåţå ƒŕöm ţĥé ᐅ`canmakepayment`ᐊ šéŕvîçé ŵöŕķéŕ évéñţ åŕé ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð: ᐅ`topOrigin`ᐊ, ᐅ`paymentRequestOrigin`ᐊ, ᐅ`methodData`ᐊ, ᐅ`modifiers`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "[Ţĥé ŵéбšîţé ŕéqûéšţéð å šûбŕéšöûŕçé ƒŕöm å ñéţŵöŕķ ţĥåţ îţ çöûļð öñļý åççéšš бéçåûšé öƒ îţš ûšéŕš' þŕîvîļéĝéð ñéţŵöŕķ þöšîţîöñ. Ţĥéšé ŕéqûéšţš éxþöšé ñöñ-þûбļîç ðévîçéš åñð šéŕvéŕš ţö ţĥé îñţéŕñéţ, îñçŕéåšîñĝ ţĥé ŕîšķ öƒ å çŕöšš-šîţé ŕéqûéšţ ƒöŕĝéŕý (ÇŠŔF) åţţåçķ, åñð/öŕ îñƒöŕmåţîöñ ļéåķåĝé. Ţö mîţîĝåţé ţĥéšé ŕîšķš, Çĥŕömé ðéþŕéçåţéš ŕéqûéšţš ţö ñöñ-þûбļîç šûбŕéšöûŕçéš ŵĥéñ îñîţîåţéð ƒŕöm ñöñ-šéçûŕé çöñţéxţš, åñð ŵîļļ šţåŕţ бļöçķîñĝ ţĥém. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "[ÇŠŠ çåññöţ бé ļöåðéð ƒŕöm ᐅ`file:`ᐊ ÛŔĻš ûñļéšš ţĥéý éñð îñ å ᐅ`.css`ᐊ ƒîļé éxţéñšîöñ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "[Ûšîñĝ ᐅ`SourceBuffer.abort()`ᐊ ţö åбöŕţ ᐅ`remove()`ᐊ'š åšýñçĥŕöñöûš ŕåñĝé ŕémövåļ îš ðéþŕéçåţéð ðûé ţö šþéçîƒîçåţîöñ çĥåñĝé. Šûþþöŕţ ŵîļļ бé ŕémövéð îñ ţĥé ƒûţûŕé. Ýöû šĥöûļð ļîšţéñ ţö ţĥé ᐅ`updateend`ᐊ évéñţ îñšţéåð. ᐅ`abort()`ᐊ îš îñţéñðéð ţö öñļý åбöŕţ åñ åšýñçĥŕöñöûš méðîå åþþéñð öŕ ŕéšéţ þåŕšéŕ šţåţé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree]"
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "[Šéţţîñĝ ᐅ`MediaSource.duration`ᐊ бéļöŵ ţĥé ĥîĝĥéšţ þŕéšéñţåţîöñ ţîméšţåmþ öƒ åñý бûƒƒéŕéð çöðéð ƒŕåméš îš ðéþŕéçåţéð ðûé ţö šþéçîƒîçåţîöñ çĥåñĝé. Šûþþöŕţ ƒöŕ îmþļîçîţ ŕémövåļ öƒ ţŕûñçåţéð бûƒƒéŕéð méðîå ŵîļļ бé ŕémövéð îñ ţĥé ƒûţûŕé. Ýöû šĥöûļð îñšţéåð þéŕƒöŕm éxþļîçîţ ᐅ`remove(newDuration, oldDuration)`ᐊ öñ åļļ ᐅ`sourceBuffers`ᐊ, ŵĥéŕé ᐅ`newDuration < oldDuration`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour]"
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "[Ţĥîš çĥåñĝé ŵîļļ ĝö îñţö éƒƒéçţ ŵîţĥ mîļéšţöñé ᐅ{milestone}ᐊ. one two three four five six seven eight nine ten eleven]"
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "[Ŵéб MÎÐÎ ŵîļļ åšķ å þéŕmîššîöñ ţö ûšé évéñ îƒ ţĥé šýšéx îš ñöţ šþéçîƒîéð îñ ţĥé ᐅ`MIDIOptions`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "[Ţĥé Ñöţîƒîçåţîöñ ÅÞÎ måý ñö ļöñĝéŕ бé ûšéð ƒŕöm îñšéçûŕé öŕîĝîñš. Ýöû šĥöûļð çöñšîðéŕ šŵîţçĥîñĝ ýöûŕ åþþļîçåţîöñ ţö å šéçûŕé öŕîĝîñ, šûçĥ åš ĤŢŢÞŠ. Šéé ĥţţþš://ĝöö.ĝļé/çĥŕömé-îñšéçûŕé-öŕîĝîñš ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "[Þéŕmîššîöñ ƒöŕ ţĥé Ñöţîƒîçåţîöñ ÅÞÎ måý ñö ļöñĝéŕ бé ŕéqûéšţéð ƒŕöm å çŕöšš-öŕîĝîñ îƒŕåmé. Ýöû šĥöûļð çöñšîðéŕ ŕéqûéšţîñĝ þéŕmîššîöñ ƒŕöm å ţöþ-ļévéļ ƒŕåmé öŕ öþéñîñĝ å ñéŵ ŵîñðöŵ îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "[Ýöûŕ þåŕţñéŕ îš ñéĝöţîåţîñĝ åñ öбšöļéţé (Ð)ŢĻŠ véŕšîöñ. Þļéåšé çĥéçķ ŵîţĥ ýöûŕ þåŕţñéŕ ţö ĥåvé ţĥîš ƒîxéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "[ŴéбŠQĻ îñ ñöñ-šéçûŕé çöñţéxţš îš ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð šööñ. Þļéåšé ûšé Ŵéб Šţöŕåĝé öŕ Îñðéxéð Ðåţåбåšé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "[Šþéçîƒýîñĝ ᐅ`overflow: visible`ᐊ öñ îmĝ, vîðéö åñð çåñvåš ţåĝš måý çåûšé ţĥém ţö þŕöðûçé vîšûåļ çöñţéñţ öûţšîðé öƒ ţĥé éļéméñţ бöûñðš. Šéé ĥţţþš://ĝîţĥûб.çöm/ŴÎÇĜ/šĥåŕéð-éļéméñţ-ţŕåñšîţîöñš/бļöб/måîñ/ðéбûĝĝîñĝ_övéŕƒļöŵ_öñ_îmåĝéš.mð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "[ᐅ`paymentManager.instruments`ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé ĵûšţ-îñ-ţîmé îñšţåļļ ƒöŕ þåýméñţ ĥåñðļéŕš îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "[Ýöûŕ ᐅ`PaymentRequest`ᐊ çåļļ бýþåššéð Çöñţéñţ-Šéçûŕîţý-Þöļîçý (ÇŠÞ) ᐅ`connect-src`ᐊ ðîŕéçţîvé. Ţĥîš бýþåšš îš ðéþŕéçåţéð. Þļéåšé åðð ţĥé þåýméñţ méţĥöð îðéñţîƒîéŕ ƒŕöm ţĥé ᐅ`PaymentRequest`ᐊ ÅÞÎ (îñ ᐅ`supportedMethods`ᐊ ƒîéļð) ţö ýöûŕ ÇŠÞ ᐅ`connect-src`ᐊ ðîŕéçţîvé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "[ᐅ`StorageType.persistent`ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé šţåñðåŕðîžéð ᐅ`navigator.storage`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven]"
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "[ᐅ`<source src>`ᐊ ŵîţĥ å ᐅ`<picture>`ᐊ þåŕéñţ îš îñvåļîð åñð ţĥéŕéƒöŕé îĝñöŕéð. Þļéåšé ûšé ᐅ`<source srcset>`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "[ᐅ`window.webkitStorageInfo`ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé šţåñðåŕðîžéð ᐅ`navigator.storage`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven]"
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "[Šûбŕéšöûŕçé ŕéqûéšţš ŵĥöšé ÛŔĻš çöñţåîñ émбéððéð çŕéðéñţîåļš (é.ĝ. ᐅ`https://user:pass@host/`ᐊ) åŕé бļöçķéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "[Ţĥé çöñšţŕåîñţ ᐅ`DtlsSrtpKeyAgreement`ᐊ îš ŕémövéð. Ýöû ĥåvé šþéçîƒîéð å ᐅ`false`ᐊ våļûé ƒöŕ ţĥîš çöñšţŕåîñţ, ŵĥîçĥ îš îñţéŕþŕéţéð åš åñ åţţémþţ ţö ûšé ţĥé ŕémövéð ᐅ`SDES key negotiation`ᐊ méţĥöð. Ţĥîš ƒûñçţîöñåļîţý îš ŕémövéð; ûšé å šéŕvîçé ţĥåţ šûþþöŕţš ᐅ`DTLS key negotiation`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "[Ţĥé çöñšţŕåîñţ ᐅ`DtlsSrtpKeyAgreement`ᐊ îš ŕémövéð. Ýöû ĥåvé šþéçîƒîéð å ᐅ`true`ᐊ våļûé ƒöŕ ţĥîš çöñšţŕåîñţ, ŵĥîçĥ ĥåð ñö éƒƒéçţ, бûţ ýöû çåñ ŕémövé ţĥîš çöñšţŕåîñţ ƒöŕ ţîðîñéšš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "[ᐅ`Complex Plan B SDP`ᐊ ðéţéçţéð. Ţĥîš ðîåļéçţ öƒ ţĥé ᐅ`Session Description Protocol`ᐊ îš ñö ļöñĝéŕ šûþþöŕţéð. Þļéåšé ûšé ᐅ`Unified Plan SDP`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "[ᐅ`Plan B SDP semantics`ᐊ, ŵĥîçĥ îš ûšéð ŵĥéñ çöñšţŕûçţîñĝ åñ ᐅ`RTCPeerConnection`ᐊ ŵîţĥ ᐅ`{sdpSemantics:plan-b}`ᐊ, îš å ļéĝåçý ñöñ-šţåñðåŕð véŕšîöñ öƒ ţĥé ᐅ`Session Description Protocol`ᐊ ţĥåţ ĥåš бééñ þéŕmåñéñţļý ðéļéţéð ƒŕöm ţĥé Ŵéб Þļåţƒöŕm. Îţ îš šţîļļ åvåîļåбļé ŵĥéñ бûîļðîñĝ ŵîţĥ ᐅ`IS_FUCHSIA`ᐊ, бûţ ŵé îñţéñð ţö ðéļéţé îţ åš šööñ åš þöššîбļé. Šţöþ ðéþéñðîñĝ öñ îţ. Šéé ĥţţþš://çŕбûĝ.çöm/1302249 ƒöŕ šţåţûš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven]"
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "[Ţĥé ᐅ`rtcpMuxPolicy`ᐊ öþţîöñ îš ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð. one two three four five six seven eight nine ten]"
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "[ᐅ`SharedArrayBuffer`ᐊ ŵîļļ ŕéqûîŕé çŕöšš-öŕîĝîñ îšöļåţîöñ. Šéé ĥţţþš://ðévéļöþéŕ.çĥŕömé.çöm/бļöĝ/éñåбļîñĝ-šĥåŕéð-åŕŕåý-бûƒƒéŕ/ ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "[ᐅ`speechSynthesis.speak()`ᐊ ŵîţĥöûţ ûšéŕ åçţîvåţîöñ îš ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð. one two three four five six seven eight nine ten eleven twelve]"
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "[Ðéþŕéçåţéð Féåţûŕé Ûšéð one two three]"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "[Éxţéñšîöñš šĥöûļð öþţ îñţö çŕöšš-öŕîĝîñ îšöļåţîöñ ţö çöñţîñûé ûšîñĝ ᐅ`SharedArrayBuffer`ᐊ. Šéé ĥţţþš://ðévéļöþéŕ.çĥŕömé.çöm/ðöçš/éxţéñšîöñš/mv3/çŕöšš-öŕîĝîñ-îšöļåţîöñ/. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "[ᐅ{PH1}ᐊ îš véñðöŕ-šþéçîƒîç. Þļéåšé ûšé ţĥé šţåñðåŕð ᐅ{PH2}ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven twelve]"
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "[ÛŢF-16 îš ñöţ šûþþöŕţéð бý ŕéšþöñšé ĵšöñ îñ ᐅ`XMLHttpRequest`ᐊ one two three four five six seven eight nine ten]"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "[Šýñçĥŕöñöûš ᐅ`XMLHttpRequest`ᐊ öñ ţĥé måîñ ţĥŕéåð îš ðéþŕéçåţéð бéçåûšé öƒ îţš ðéţŕîméñţåļ éƒƒéçţš ţö ţĥé éñð ûšéŕ’š éxþéŕîéñçé. Föŕ möŕé ĥéļþ, çĥéçķ ĥţţþš://xĥŕ.šþéç.ŵĥåţŵĝ.öŕĝ/. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "[ᐅ`supportsSession()`ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé ᐅ`isSessionSupported()`ᐊ åñð çĥéçķ ţĥé ŕéšöļvéð бööļéåñ våļûé îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "[Måîñ-Ţĥŕéåð Бļöçķîñĝ Ţîmé one two three]"
   },
@@ -2760,31 +2610,31 @@
     "message": "[Ûšé ᐅ[ᐊÉžöîç Ļéåþᐅ](https://pubdash.ezoic.com/speed)ᐊ åñð éñåбļé ᐅ`Resize Images`ᐊ ţö ŕéšîžé îmåĝéš ţö å ðévîçé åþþŕöþŕîåţé šîžé, ŕéðûçîñĝ ñéţŵöŕķ þåýļöåð šîžéš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "[Ûšé ţĥé ᐅ`gatsby-plugin-image`ᐊ çömþöñéñţ îñšţéåð öƒ ᐅ`<img>`ᐊ ţö åûţömåţîçåļļý öþţîmîžé îmåĝé ƒöŕmåţ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "[Ûšé ţĥé ᐅ`gatsby-plugin-image`ᐊ çömþöñéñţ îñšţéåð öƒ ᐅ`<img>`ᐊ ţö åûţömåţîçåļļý ļåžý-ļöåð îmåĝéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "[Ûšé ţĥé ᐅ`gatsby-plugin-image`ᐊ çömþöñéñţ åñð šéţ ţĥé ᐅ`loading`ᐊ þŕöþ ţö ᐅ`eager`ᐊ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "[Ûšé ţĥé ᐅ`Gatsby Script API`ᐊ ţö ðéƒéŕ ļöåðîñĝ öƒ ñöñ-çŕîţîçåļ ţĥîŕð-þåŕţý šçŕîþţš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "[Ûšé ţĥé ᐅ`PurgeCSS`ᐊ ᐅ`Gatsby`ᐊ þļûĝîñ ţö ŕémövé ûñûšéð ŕûļéš ƒŕöm šţýļéšĥééţš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://purgecss.com/plugins/gatsby.html)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "[Ûšé ᐅ`Webpack Bundle Analyzer`ᐊ ţö ðéţéçţ ûñûšéð ĴåvåŠçŕîþţ çöðé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)ᐊ one two three four five six seven eight nine ten eleven twelve]"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "[Çöñƒîĝûŕé çåçĥîñĝ ƒöŕ îmmûţåбļé åššéţš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)ᐊ. one two three four five six seven eight nine ten eleven twelve]"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "[Ûšé ţĥé ᐅ`gatsby-plugin-image`ᐊ çömþöñéñţ îñšţéåð öƒ ᐅ`<img>`ᐊ ţö åðĵûšţ îmåĝé qûåļîţý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "[Ûšé ţĥé ᐅ`gatsby-plugin-image`ᐊ çömþöñéñţ ţö šéţ åþþŕöþŕîåţé ᐅ`sizes`ᐊ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)ᐊ. one two three four five six seven eight nine ten eleven twelve]"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "[Çöñšîðéŕ ûþļöåðîñĝ ýöûŕ ĜÎF ţö å šéŕvîçé ŵĥîçĥ ŵîļļ måķé îţ åvåîļåбļé ţö émбéð åš åñ ĤŢMĻ5 vîðéö. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
@@ -2865,10 +2715,10 @@
     "message": "[ᐅ`<link rel=preload>`ᐊ ţåĝš çåñ бé åððéð бý ᐅ[ᐊmöðîƒýîñĝ å ţĥéméš'š ļåýöûţᐅ](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)ᐊ. one two three four five six seven eight nine ten eleven twelve]"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "[Ûšé ţĥé ᐅ`next/image`ᐊ çömþöñéñţ îñšţéåð öƒ ᐅ`<img>`ᐊ ţö åûţömåţîçåļļý öþţîmîžé îmåĝé ƒöŕmåţ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/basic-features/image-optimization)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "[Ûšé ţĥé ᐅ`next/image`ᐊ çömþöñéñţ îñšţéåð öƒ ᐅ`<img>`ᐊ ţö åûţömåţîçåļļý ļåžý-ļöåð îmåĝéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/basic-features/image-optimization)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "[Ûšé ţĥé ᐅ`next/image`ᐊ çömþöñéñţ åñð šéţ \"þŕîöŕîţý\" ţö ţŕûé ţö þŕéļöåð ĻÇÞ îmåĝé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/api-reference/next/image#priority)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
@@ -2883,7 +2733,7 @@
     "message": "[Çöñšîðéŕ šéţţîñĝ ûþ ᐅ`PurgeCSS`ᐊ îñ ᐅ`Next.js`ᐊ çöñƒîĝûŕåţîöñ ţö ŕémövé ûñûšéð ŕûļéš ƒŕöm šţýļéšĥééţš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://purgecss.com/guides/next.html)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "[Ûšé ᐅ`Webpack Bundle Analyzer`ᐊ ţö ðéţéçţ ûñûšéð ĴåvåŠçŕîþţ çöðé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)ᐊ one two three four five six seven eight nine ten eleven twelve]"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "[Çöñšîðéŕ ûšîñĝ ᐅ`Next.js Analytics`ᐊ ţö méåšûŕé ýöûŕ åþþ'š ŕéåļ-ŵöŕļð þéŕƒöŕmåñçé. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/advanced-features/measuring-performance)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
@@ -2892,7 +2742,7 @@
     "message": "[Çöñƒîĝûŕé çåçĥîñĝ ƒöŕ îmmûţåбļé åššéţš åñð ᐅ`Server-side Rendered`ᐊ (ŠŠŔ) þåĝéš. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/going-to-production#caching)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "[Ûšé ţĥé ᐅ`next/image`ᐊ çömþöñéñţ îñšţéåð öƒ ᐅ`<img>`ᐊ ţö åðĵûšţ îmåĝé qûåļîţý. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/basic-features/image-optimization)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "[Ûšé ţĥé ᐅ`next/image`ᐊ çömþöñéñţ ţö šéţ ţĥé åþþŕöþŕîåţé ᐅ`sizes`ᐊ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/api-reference/next/image#sizes)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen]"

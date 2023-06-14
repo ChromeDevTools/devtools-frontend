@@ -981,28 +981,28 @@
     "message": "चेतावनी के साथ अनुमति दी गई"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "एलसीपी का %"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "फ़ेज़"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "समय"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "यह व्यूपोर्ट में सबसे बड़ा कॉन्टेंटफ़ुल पेंट एलिमेंट है. [सबसे बड़े कॉन्टेंटफ़ुल पेंट एलिमेंट के बारे में ज़्यादा जानें](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "कॉन्टेंट लोड होने में देरी"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "कॉन्टेंट लोड होने में लगने वाला समय"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "रेंडर होने में देरी"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
-    "message": "TTFB"
+    "message": "टीटीएफ़बी"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "सबसे बड़ा कॉन्टेंटफ़ुल पेंट वाला एलिमेंट"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "'unsafe-inline' जोड़ें, ताकि CSP पुराने ब्राउज़र के साथ काम कर सके. nonces/hashes के साथ काम करने वाले ब्राउज़र पर 'unsafe-inline' को अनदेखा किया जा सकता है."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "सीओआरएस `Access-Control-Allow-Headers` हैंडलिंग में, वाइल्डकार्ड सिंबल (*) की ओर से अनुमति देने की सुविधा कवर नहीं की जाएगी."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "जिन रिसॉर्स के यूआरएल में खाली सफ़ेद जगह के हटाए गए वर्ण `(n|r|t)` और लेस-दैन वर्ण (`<`), दोनों शामिल हों उनका अनुरोध नहीं किया जा सकता है. उन रिसॉर्स को ब्लॉक किया गया है. एलिमेंट एट्रिब्यूट की वैल्यू जैसी जगहों से, कृपया नई लाइनों को हटाएं और कम वर्णों को एन्कोड करें, ताकि इन रिसॉर्स को लोड किया जा सके."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: `nextHopProtocol` in Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Cookies containing a `(0|r|n)` character will be rejected instead of truncated."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "`document.domain` को सेट करके, एक ही ऑरिजिन से जुड़ी नीति में पाबंदियों को हटाने की सुविधा पर रोक लगा दी गई है. इसे डिफ़ॉल्ट रूप से बंद कर दिया जाएगा. इस्तेमाल पर पाबंदी लागने की यह चेतावनी, उस क्रॉस-ऑरिजिन ऐक्सेस के लिए है जिसे `document.domain` सेटिंग की मदद से चालू किया गया था."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "क्रॉस-ओरिजिन iframes में {PH1} को ट्रिगर करने पर रोक लगा दी गई है और आने वाले समय में इसे हटा दिया जाएगा."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "`-internal-media-controls-overlay-cast-button` सिलेक्टर के बजाय, `disableRemotePlayback` एट्रिब्यूट का इस्तेमाल किया जाना चाहिए, ताकि डिफ़ॉल्ट कास्ट इंटिग्रेशन को बंद किया जा सके."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} के इस्तेमाल पर रोक लगा दी गई है. इसके बजाय, कृपया {PH2} का इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "यह अनुवाद किए गए एक ऐसे मैसेज का उदाहरण है जिसमें रोकी गई सुविधा से जुड़ी समस्या के बारे में बताया गया हो."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "`document.domain` को सेट करके, एक ही ऑरिजिन से जुड़ी नीति में पाबंदियों को हटाने की सुविधा पर रोक लगा दी गई है. इसे डिफ़ॉल्ट रूप से बंद कर दिया जाएगा. इस सुविधा का इस्तेमाल जारी रखने के लिए, कृपया ऑरिजिन के हिसाब से बने एजेंट क्लस्टर से ऑप्ट आउट करें. इसके लिए, `Origin-Agent-Cluster: ?0` हेडर के साथ-साथ, दस्तावेज़ और फ़्रेम के लिए एचटीटीपी रिस्पॉन्स भेजें. ज़्यादा जानकारी के लिए, https://developer.chrome.com/blog/immutable-document-domain/ पर जाएं."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` के इस्तेमाल पर रोक लगा दी गई है और इसे हटा दिया जाएगा. इसके बजाय, कृपया `Event.composedPath()` का इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "`Expect-CT` हेडर के इस्तेमाल पर पाबंदी लगा दी गई है और इसे हटा दिया जाएगा. Chrome को 30 अप्रैल, 2018 के बाद जारी किए गए सभी सर्टिफ़िकेट के लिए, पारदर्शिता सर्टिफ़िकेट फ़्रेमवर्क की ज़रूरत होगी. ऐसा सार्वजनिक रूप से भरोसेमंद सर्टिफ़िकेट के तौर पर पुष्टि किए गए सर्टिफ़िकेट के लिए ज़रूरी है."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "ज़्यादा जानकारी के लिए, सुविधा की स्थिति वाला पेज देखें."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` और `watchPosition()` असुरक्षित ऑरिजिन पर, अब काम नहीं करते. इस सुविधा का इस्तेमाल करने के लिए, आपको अपने ऐप्लिकेशन को एचटीटीपीएस जैसे किसी सुरक्षित ऑरिजिन पर स्विच करना होगा. ज़्यादा जानकारी के लिए, https://goo.gle/chrome-insecure-origins पर जाएं."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "असुरक्षित ऑरिजिन पर, `getCurrentPosition()` और `watchPosition()` के इस्तेमाल पर पाबंदी लगा दी गई है. इस सुविधा का इस्तेमाल करने के लिए, आपको अपने ऐप्लिकेशन को एचटीटीपीएस जैसे किसी सुरक्षित ऑरिजिन पर स्विच करना होगा. ज़्यादा जानकारी के लिए, https://goo.gle/chrome-insecure-origins पर जाएं."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` के इस्तेमाल पर पाबंदी लगा दी गई है. इसके बजाय `RTCPeerConnectionIceErrorEvent.address` या `RTCPeerConnectionIceErrorEvent.port` इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "`canmakepayment` सर्विस वर्कर इवेंट से लिए गए, व्यापारी या कंपनी के ऑरिजिन और उनके आर्बिट्रेरी डेटा के इस्तेमाल पर पाबंदी लगा दी गई है और उन्हें हटा दिया जाएगा: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Using `SourceBuffer.abort()` to abort `remove()`'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should listen to the `updateend` event instead. `abort()` is intended to only abort an asynchronous media append or reset parser state."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting `MediaSource.duration` below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit `remove(newDuration, oldDuration)` on all `sourceBuffers`, where `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "माइलस्टोन {milestone} इस्तेमाल करने पर, यह बदलाव लागू हो जाएगा."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "अब असुरक्षित ऑरिजिन से, Notification API का इस्तेमाल नहीं किया जा सकेगा. कृपया अपने ऐप्लिकेशन को एचटीटीपीएस जैसे सुरक्षित ऑरिजिन पर ले जाएं. ज़्यादा जानकारी के लिए, https://goo.gle/chrome-insecure-origins पर जाएं."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Notification API को इस्तेमाल करने की अनुमति से जुड़ा अनुरोध, क्रॉस-ऑरिजिन iframe से नहीं किया जा सकता. इसके बजाय, आप किसी टॉप लेवल फ़्रेम से अनुरोध करें या नई विंडो का इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "असुरक्षित कॉन्टेक्स्ट में WebSQL के इस्तेमाल पर रोक लगा दी गई है और इसे जल्द ही हटा दिया जाएगा. Web Storage या Indexed Database का इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "img, video, और canvas टैग पर `overflow: visible` लागू होने से, विज़ुअल कॉन्टेंट एलिमेंट की सीमाओं के बाहर दिखते हैं. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md देखें."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` के इस्तेमाल पर रोक लगा दी गई है. इसके बजाय, पेमेंट हैंडलर के लिए just-in-time इंस्टॉल करने की सुविधा इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "आपके `PaymentRequest` कॉल ने Content-Security-Policy (सीएसपी) `connect-src` डायरेक्टिव को बायपास किया है. हालांकि, यह बायपास अब काम नहीं करता. कृपया `PaymentRequest` API (`supportedMethods` फ़ील्ड में) से अपने सीएसपी `connect-src` डायरेक्टिव में, पैसे चुकाने के तरीके के आइडेंटिफ़ायर को जोड़ें."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` के इस्तेमाल पर पाबंदी लगा दी गई है. इसके बजाय, कृपया स्टैंडर्ड `navigator.storage` का इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<picture>` पैरंट वाला `<source src>` गलत है. इसलिए, इसे अनदेखा किया गया है. इसके बजाय, कृपया `<source srcset>` का इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` के इस्तेमाल पर पाबंदी लगा दी गई है. इसके बजाय, कृपया स्टैंडर्ड `navigator.storage` का इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "कंस्ट्रेंट `DtlsSrtpKeyAgreement` को हटा दिया गया है. आपने इस कंस्ट्रेंट के लिए, `false` वैल्यू दी है. इससे ऐसा लगता है कि आपने हटाए गए `SDES key negotiation` तरीके को इस्तेमाल करने की कोशिश की है. इस सुविधा को हटा दिया गया है. इसके बजाय, ऐसी सेवा का इस्तेमाल करें जो `DTLS key negotiation` के साथ काम करती हो."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "कंस्ट्रेंट `DtlsSrtpKeyAgreement` को हटा दिया गया है. आपने इस कंस्ट्रेंट के लिए `true` वैल्यू दी है, जिससे कोई फ़र्क़ नहीं पड़ेगा. हालांकि, व्यवस्थित रखने के लिए, इस कंस्ट्रेंट को हटाया जा सकता है."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` की पहचान की गई. `Session Description Protocol` का यह डायलेक्ट अब काम नहीं करता. इसके बजाय, कृपया `Unified Plan SDP` का इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`{sdpSemantics:plan-b}` वाला `RTCPeerConnection` बनाते समय, `Plan B SDP semantics` का इस्तेमाल किया जाता है. यह `Session Description Protocol` का ऐसा पुराना वर्शन है जो स्टैंडर्ड नहीं है. इसे वेब प्लैटफ़ॉर्म से हमेशा के लिए मिटा दिया गया है. `IS_FUCHSIA` के साथ प्रोटोकॉल बनाते समय, यह अब भी उपलब्ध रहता है. हालांकि, हम इसे जल्द से जल्द मिटाना चाहते हैं. इसलिए, इसका इस्तेमाल न करें. इसका स्टेटस जानने के लिए, https://crbug.com/1302249 पर जाएं."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "`rtcpMuxPolicy` विकल्प के इस्तेमाल पर रोक लगा दी गई है और इसे हटा दिया जाएगा."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` के लिए क्रॉस-ऑरिजिन आइसोलेशन ज़रूरी है. ज़्यादा जानकारी के लिए, https://developer.chrome.com/blog/enabling-shared-array-buffer/ देखें."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "उपयोगकर्ता की गतिविधि के बिना, `speechSynthesis.speak()` का इस्तेमाल नहीं किया जा सकता और इस सुविधा को हटा दिया जाएगा."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "पाबंदी वाली सुविधा का इस्तेमाल किया गया"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "`SharedArrayBuffer` का इस्तेमाल जारी रखने के लिए, एक्सटेंशन को क्रॉस-ऑरिजिन आइसोलेशन के लिए ऑप्ट करना चाहिए. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ देखें."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1}, वेंडर के हिसाब से है. इसके बजाय, कृपया स्टैंडर्ड {PH2} का इस्तेमाल करें."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "UTF-16, `XMLHttpRequest` में response.json के साथ काम नहीं करता"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "मुख्य थ्रेड पर सिंक किए गए `XMLHttpRequest` के इस्तेमाल पर रोक लगा दी गई है. इसकी वजह यह है कि असली उपयोगकर्ता के अनुभव पर इसका बुरा असर पड़ रहा था. इस बारे में किसी भी तरह की मदद के लिए, https://xhr.spec.whatwg.org/ पर जाएं."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` के इस्तेमाल पर पाबंदी लगा दी गई है. इसके बजाय, कृपया `isSessionSupported()` का इस्तेमाल करें और रिज़ॉल्व की गई बूलियन वैल्यू देखें."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "मुख्य थ्रेड ब्लॉक होने का समय"
   },
@@ -2760,31 +2610,31 @@
     "message": "[Ezoic Leap](https://pubdash.ezoic.com/speed) का इस्तेमाल करें और `Resize Images` को चालू करें, ताकि इमेज का साइज़ बदलकर, डिवाइस के हिसाब से सही साइज़ बनाया जा सके. इससे, नेटवर्क के पेलोड साइज़ को कम किया जा सकेगा."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "इमेज फ़ॉर्मैट को अपने-आप ऑप्टिमाइज़ होने के लिए, `<img>` के बजाय `gatsby-plugin-image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "इमेज को अपने-आप लेज़ी-लोड होने के लिए, `<img>` के बजाय `gatsby-plugin-image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "`loading` प्रॉपर्टी को `eager` पर सेट करने के लिए, `gatsby-plugin-image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "तीसरे पक्ष के गै़र-ज़रूरी स्क्रिप्ट को लोड होने से रोकने के लिए, `Gatsby Script API` का इस्तेमाल करें. [ज़्यादा जानें](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "जिन नियमों का इस्तेमाल न किया गया हो उन्हें स्टाइलशीट से हटाने के लिए, `PurgeCSS` `Gatsby` प्लगिन का इस्तेमाल करें. [ज़्यादा जानें](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "इस्तेमाल न हुए JavaScript कोड का पता लगाने के लिए `Webpack Bundle Analyzer` का इस्तेमाल करें. [ज़्यादा जानें](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "ऐसी ऐसेट को कैश मेमोरी में सेव करने की सुविधा चालू करें जिनमें बदलाव न किया जा सकता हो. [ज़्यादा जानें](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "इमेज क्वालिटी को अडजस्ट करने के लिए, `<img>` के बजाय `gatsby-plugin-image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "सही `sizes` को सेट करने के लिए, `gatsby-plugin-image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "किसी ऐसी सेवा में अपनी GIF अपलोड करें जो उसे HTML5 वीडियो में जोड़ने के लिए तैयार रख सके."
@@ -2865,10 +2715,10 @@
     "message": "`<link rel=preload>` टैग, [किसी थीम के लेआउट में बदलाव करके](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) जोड़े जा सकते हैं."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "इमेज फ़ॉर्मैट को अपने-आप ऑप्टिमाइज़ होने के लिए, `<img>` के बजाय `next/image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "इमेज को अपने-आप लेज़ी-लोड होने के लिए, `<img>` के बजाय `next/image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "`next/image` कॉम्पोनेंट का इस्तेमाल करें और एलसीपी इमेज पहले से लोड करने के लिए, \"प्राथमिकता\" को सही पर सेट करें. [ज़्यादा जानें](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "जिन नियमों का इस्तेमाल न किया गया हो उन्हें स्टाइलशीट से हटाने के लिए, `Next.js` कॉन्फ़िगरेशन में `PurgeCSS` को सेट अप करें. [ज़्यादा जानें](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "इस्तेमाल न हुए JavaScript कोड का पता लगाने के लिए `Webpack Bundle Analyzer` का इस्तेमाल करें. [ज़्यादा जानें](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "आपका ऐप्लिकेशन असल में कैसा परफ़ॉर्म कर रहा है, यह मापने के लिए `Next.js Analytics` का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "ऐसी एसेट और `Server-side Rendered` एसएसआर पेजों को कैश मेमोरी में सेव करने की सुविधा चालू करें जिनमें बदलाव न होता हो. [ज़्यादा जानें](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "इमेज क्वालिटी को अडजस्ट करने के लिए, `<img>` के बजाय `next/image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "सही `sizes` को सेट करने के लिए, `next/image` कॉम्पोनेंट का इस्तेमाल करें. [ज़्यादा जानें](https://nextjs.org/docs/api-reference/next/image#sizes)."

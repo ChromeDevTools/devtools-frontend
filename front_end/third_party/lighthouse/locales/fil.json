@@ -981,7 +981,7 @@
     "message": "Pinapayagan nang may babala"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% ng LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
     "message": "Phase"
@@ -993,13 +993,13 @@
     "message": "Ito ang pinakamalaking contentful element na na-paint sa viewport. [Matuto pa tungkol sa element na Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Pagkaantala sa Pag-load"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Oras ng Pag-load"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Pagkaantala sa Pag-render"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Pag-isipang magdagdag ng 'unsafe-inline' (binabalewala ng mga browser na sumusuporta sa mga nonce/hash) para maging backward compatible sa mga lumang browser."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Hindi sasaklawin ang pagpapahintulot ng simbolong wildcard (*) sa pangangasiwa ng `Access-Control-Allow-Headers` sa CORS."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Naka-block ang mga kahiligan sa resource na may mga URL na naglalaman ng mga inalis na whitespace `(n|r|t)` character at less-than character (`<`). Pakialis ang mga newline at i-encode ang mga less-than character mula sa mga lugar tulad ng mga value na attribute ng element para ma-load ang mga resource na ito."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "Hindi na ginagamit ang `chrome.loadTimes()`, standardized na API: Navigation Timing 2 na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "Hindi na ginagamit ang `chrome.loadTimes()`, standardized na API: Paint Timing na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "Hindi na ginagamit ang `chrome.loadTimes()`, standardized na API: `nextHopProtocol` sa Navigation Timing 2 na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Tatanggihan sa halip na puputulin ang cookies na naglalaman ng `(0|r|n)` character."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Hindi na ginagamit, at madi-disable nang default ang pagpapahinga ng patakaran sa iisang origin sa pamamagitan ng pagtatakda sa `document.domain`. Ang babalang ito sa paghinto sa paggamit ay para sa isang cross-origin na access na na-enable sa pamamagitan ng pagtatakda sa `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Hindi na ginagamit at aalisin ang pag-trigger ng {PH1} mula sa mga cross origin na iframe sa hinaharap."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Dapat gamitin ang attribute na `disableRemotePlayback` para i-disable ang default na integration ng Cast sa halip na gamitin ang selector na `-internal-media-controls-overlay-cast-button`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "Hindi na ginagamit ang {PH1}. {PH2} na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Isa itong halimbawa ng isinalin na mensahe sa isyu sa paghinto sa paggamit."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Hindi na ginagamit, at madi-disable nang default ang pagpapahinga ng patakaran sa iisang origin sa pamamagitan ng pagtatakda sa `document.domain`. Para patuloy na magamit ang feature na ito, mag-opt out sa mga origin-keyed agent cluster sa pamamagitan ng pagpapadala ng header na `Origin-Agent-Cluster: ?0` kasama ng sagot ng HTTP para sa dokumento at mga frame. Tingnan ang https://developer.chrome.com/blog/immutable-document-domain/ para sa higit pang detalye."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "Hindi na ginagamit at aalisin na ang `Event.path`. `Event.composedPath()` na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Hindi na ginagamit at aalisin na ang `Expect-CT` na header. Iniaatas ng Chrome ang Transparency ng Certificate para sa lahat ng pampublikong pinagkakatiwalaang certificate na ibinigay pagkalipas ng Abril 30, 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Tingnan ang page ng status ng feature para sa higit pang detalye."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "Hindi na gumagana ang `getCurrentPosition()` at `watchPosition()` sa mga hindi secure na origin. Para magamit ang feature na ito, pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "Hindi na ginagamit ang `getCurrentPosition()` at `watchPosition()` sa mga hindi secure na origin. Para magamit ang feature na ito, pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "Hindi na gumagana ang `getUserMedia()` sa mga hindi secure na origin. Para magamit ang feature na ito, pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "Hindi na ginagamit ang `RTCPeerConnectionIceErrorEvent.hostCandidate`. `RTCPeerConnectionIceErrorEvent.address` o `RTCPeerConnectionIceErrorEvent.port` na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Ang origin ng merchant at arbitrary na data mula sa `canmakepayment` na event ng service worker ay hindi na ginagamit at aalisin: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Humiling ang website ng subresource mula sa isang network na maa-access lang nito dahil sa privileged na posisyon ng network ng mga user nito. Ine-expose ng mga kahilingang ito ang mga hindi pampublikong device at server sa internet, na nagpapataas sa panganib ng cross-site request forgery (CSRF) na pag-atake, at/o pag-leak ng impormasyon. Para mapigilan ang mga panganib na ito, hindi na gagamitin ng Chrome ang mga kahilingan sa mga hindi pampublikong subresource kapag sinimulan mula sa mga hindi secure na konteksto, at magsisimula itong i-block ang mga iyon."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "Hindi ma-load ang CSS mula sa mga URL ng `file:` maliban na lang kung nagtatapos ang mga ito sa file extension na `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Hindi na ginagamit ang paggamit ng `SourceBuffer.abort()` para i-abort ang asynchronous na pag-aalis ng sakop ng `remove()` dahil sa pagbabago ng detalye. Aalisin ang suporta sa hinaharap. Dapat mong pakinggan na lang ang `updateend`. Nilalayon lang ng `abort()` na i-abort ang asynchronous na pagdaragdag ng media o i-reset ang status ng pang-parse."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Hindi na ginagamit ang pagtatakda ng `MediaSource.duration` sa ibaba ng pinakamataas na timestamp ng presentation ng anumang naka-buffer at naka-code na frame dahil sa pagbabago ng detalye. Aalisin ang suporta para sa direktang pag-aalis ng naputol at naka-buffer na media sa hinaharap. Sa halip, dapat kang magsagawa ng direktang `remove(newDuration, oldDuration)` sa lahat ng `sourceBuffers`, kung saan `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Magkakaroon ng bisa ang pagbabagong ito sa milestone na {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Hihingi ng pahintulot ang Web MIDI sa paggamit kahit na hindi tinukoy ang sysex sa `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Posibleng hindi na magamit ang Notification API mula sa mga hindi secure na origin. Pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Posibleng hindi na humiling ng pahintulot para sa Notification API mula sa isang cross-origin na iframe. Pag-isipang humiling ng pahintulot mula sa isang top-level na frame o magbukas na lang ng bagong window."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Nagne-negotiate ang iyong partner ng lumang bersyon ng (D)TLS. Sumangguni sa iyong partner para maayos ito."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "Hindi na ginagamit ang WebSQL sa mga hindi secure na konteksto at malapit na itong alisin. Pakigamit ang Web Storage o Naka-index na Database."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Kapag tinukoy ang `overflow: visible` sa mga tag ng img, video, at canvas, posibleng gumawa ang mga ito ng visual na content sa labas ng mga hangganan ng element. Tingnan ang https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "Hindi na ginagamit ang `paymentManager.instruments`. Gumamit na lang ng just-in-time na pag-install para sa mga tagapangasiwa ng pagbabayad."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Na-bypass ng iyong call na `PaymentRequest` ang direktibang `connect-src` ng Content-Security-Policy (CSP). Hindi na ginagamit ang pag-bypass na ito. Magdagdag ng identifier ng paraan ng pagbabayad mula sa `PaymentRequest` API (sa field na `supportedMethods`) sa iyong direktibang `connect-src` ng CSP."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "Hindi na ginagamit ang `StorageType.persistent`. Pakigamit na lang ang standardized na `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "Invalid at binabalewala ang `<source src>` na may parent na `<picture>`. `<source srcset>` na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "Hindi na ginagamit ang `window.webkitStorageInfo`. Pakigamit na lang ang standardized na `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Naka-block ang mga kahilingan sa subresource na may mga URL na naglalaman ng mga naka-embed na kredensyal (hal. `https://user:pass@host/`)."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Inalis ang paghihigpit na `DtlsSrtpKeyAgreement`. Tinukoy mo ang isang `false` na value para sa paghihigpit na ito, na itinuturing na pagsubok na gamitin ang inalis na paraan ng `SDES key negotiation`. Inalis ang functionality na ito; isang serbisyong sumusuporta sa `DTLS key negotiation` na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Inalis ang paghihigpit na `DtlsSrtpKeyAgreement`. Tinukoy mo ang isang `true` na value para sa paghihigpit na ito, na walang epekto, pero puwede mong alisin ang paghihigpit na ito para sa kaayusan."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Na-detect ang `Complex Plan B SDP`. Hindi na sinusuportahan ang dialect na ito ng `Session Description Protocol`. `Unified Plan SDP` na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Ang `Plan B SDP semantics`, na ginagamit kapag bumubuo ng `RTCPeerConnection` gamit ang `{sdpSemantics:plan-b}`, ay isang legacy at hindi standard na bersyon ng `Session Description Protocol` na permanendeng na-delete sa Web Platform. Available pa rin ito kapag bubuo gamit ang `IS_FUCHSIA`, pero balak naming i-delete ito sa lalong madaling panahon. Huwag mo itong asahan. Tingnan ang https://crbug.com/1302249 para sa status."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Hindi na ginagamit at aalisin na ang opsyong `rtcpMuxPolicy`."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "Mangangailangan ang `SharedArrayBuffer` ng pag-isolate ng cross-origin. Tingnan ang https://developer.chrome.com/blog/enabling-shared-array-buffer/ para sa higit pang detalye."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Hindi na ginagamit at aalisin ang `speechSynthesis.speak()` nang walang pag-activate ng user."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Gumagamit ng Hindi na Ginagamit na Feature"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Dapat mag-opt in ang mga extension sa mga pag-isolate ng cross-origin para patuloy na magamit ang `SharedArrayBuffer`. Tingnan ang https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "Partikular sa vendor ang {PH1}. Karaniwang {PH2} na lang ang gamitin."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "Hindi sinusuportahan ang UTF-16 ng sagot na json sa `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Hindi na ginagamit ang synchronous na `XMLHttpRequest` sa pangunahing thread dahil sa mga nakakapinsalang epekto nito sa experience ng end user. Para sa higit pang tulong, tingnan ang https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "Hindi na ginagamit ang `supportsSession()`. Sa halip, pakigamit ang `isSessionSupported()` at tingnan ang nalutas na boolean value."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Oras ng Pag-block ng Pangunahing Thread"
   },
@@ -2760,31 +2610,31 @@
     "message": "Gamitin ang [Ezoic Leap](https://pubdash.ezoic.com/speed) at i-enable ang `Resize Images` para i-resize ang mga larawan sa laking naaangkop sa device, na nagbabawas sa mga laki ng payload ng network."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Gamitin ang bahaging `gatsby-plugin-image` sa halip na `<img>` para awtomatikong i-optimize ang format ng larawan. [Matuto pa](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Gamitin ang bahaging `gatsby-plugin-image` sa halip na `<img>` para awtomatikong i-load nang mabagal ang mga larawan. [Matuto pa](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Gamitin ang bahaging `gatsby-plugin-image` at itakda sa `eager` ang prop na `loading`. [Matuto pa](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Gamitin ang `Gatsby Script API` para ipagpaliban ang pag-load ng hindi mahahalagang third-party na script. [Matuto pa](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Gamitin ang plugin na `PurgeCSS` `Gatsby` para alisin sa mga stylesheet ang mga hindi ginagamit na panuntunan. [Matuto pa](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Gamitin ang `Webpack Bundle Analyzer` para mag-detect ng hindi ginagamit na JavaScript code. [Matuto pa](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "I-configure ang pag-cache para sa mga hindi nababagong asset. [Matuto pa](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Gamitin ang bahaging `gatsby-plugin-image` sa halip na `<img>` para i-adjust ang kalidad ng larawan. [Matuto pa](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Gamitin ang bahaging `gatsby-plugin-image` para itakda ang naaangkop na `sizes`. [Matuto pa](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Pag-isipang i-upload ang iyong GIF sa isang serbisyo kung saan gagawin itong available para i-embed bilang HTML5 video."
@@ -2865,10 +2715,10 @@
     "message": "Maidaragdag ang mga tag ng `<link rel=preload>` sa pamamagitan ng [pagbabago ng layout ng tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Gamitin ang bahaging `next/image` sa halip na `<img>` para awtomatikong i-optimize ang format ng larawan. [Matuto pa](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Gamitin ang bahaging `next/image` sa halip na `<img>` para awtomatikong i-load nang mabagal ang mga larawan. [Matuto pa](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Gamitin ang bahaging `next/image` at itakda ang \"priyoridad\" sa true para i-preload ang larawan ng LCP. [Matuto pa](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Pag-isipang i-set up ang `PurgeCSS` sa configuration ng `Next.js` para mag-alis ng mga hindi ginagamit na panuntunan sa mga stylesheet. [Matuto pa](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Gamitin ang `Webpack Bundle Analyzer` para mag-detect ng hindi ginagamit na JavaScript code. [Matuto pa](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Pag-isipang gamitin ang `Next.js Analytics` para sukatin ang aktwal na performance ng iyong app. [Matuto pa](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "I-configure ang pag-cache para sa mga hindi nababagong asset at `Server-side Rendered` (SSR) page. [Matuto pa](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Gamitin ang bahaging `next/image` sa halip na `<img>` para i-adjust ang kalidad ng larawan. [Matuto pa](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Gamitin ang bahaging `next/image` para itakda ang naaangkop na `sizes`. [Matuto pa](https://nextjs.org/docs/api-reference/next/image#sizes)."

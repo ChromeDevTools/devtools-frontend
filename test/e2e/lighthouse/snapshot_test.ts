@@ -79,7 +79,7 @@ describe('Snapshot', async function() {
     });
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
-    assert.strictEqual(auditResults.length, 71);
+    assert.strictEqual(auditResults.length, 75);
     assert.deepStrictEqual(erroredAudits, []);
     assert.deepStrictEqual(failedAudits.map(audit => audit.id), [
       'document-title',

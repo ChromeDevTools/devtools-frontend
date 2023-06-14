@@ -981,25 +981,25 @@
     "message": "Sallittu varoituksen kanssa"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% LCP:stä"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Vaihe"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Ajoitus"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Tämä on näkymän suurin renderöity sisältö. [Lue lisää Sivun latautumisaika ‐mittarista](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)."
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Latautumisen viive"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Latautumisaika"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Renderöinnin viive"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Harkitse \"unsafe-inlinen\" (jonka nonceja/hasheja tukevat selaimet ohittavat) lisäämistä, niin voit saavuttaa taaksepäinyhteensopivuuden vanhempien selainten kanssa."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Jokerimerkki (*) CORS `Access-Control-Allow-Headers` ‑käsittelyssä ei kata valtuutusta."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Resurssipyynnöt, joiden URL-osoitteet sisälsivät sekä poistettuja tyhjätilamerkkejä (`(n|r|t)`) että pienempi kuin ‑merkkejä (`<`) on estetty. Poista newline-koodit ja koodaa pienempi kuin ‑merkkejä esimerkiksi elementin attribuuttiarvoista, jos haluat ladata näitä resursseja."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` on poistettu käytöstä, käytä sen sijaan standardoitua APIa: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` on poistettu käytöstä, käytä sen sijaan standardoitua APIa: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` on poistettu käytöstä, käytä sen sijaan standardoitua APIa: `nextHopProtocol` Navigation Timing 2:ssa."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "`(0|r|n)` ‑merkin sisältävät evästeet hylätään lyhentämisen sijaan."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Saman alkuperän käytännön lieventäminen määrittämällä `document.domain` on poistettu käytöstä eikä näin ollen ole käytössä oletuksena. Tämä käytöstäpoistovaroitus koskee eri lähteistä peräisin olevaa pääsyoikeutta, joka on otettu käyttöön asetuksella `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Kohteen {PH1} käynnistäminen eri lähteistä peräisin olevista iframeista on poistettu käytöstä ja poistetaan kokonaan tulevaisuudessa."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "`disableRemotePlayback` ‑attribuuttia pitäisi käyttää oletusarvoisen Cast-integraation käytöstä poistamiseen `-internal-media-controls-overlay-cast-button` ‑valitsimen sijaan."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} on poistettu käytöstä. Käytä sen sijaan tätä: {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Tämä on esimerkki käännetystä viestistä, joka kertoo käytöstä poistamiseen liittyvästä ongelmasta."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Saman alkuperän käytännön lieventäminen määrittämällä `document.domain` on poistettu käytöstä eikä näin ollen ole käytössä oletuksena. Jos haluat jatkaa tämän ominaisuuden käyttöä, poista käytöstä alkuperään sidotut agenttiklusterit lähettämällä `Origin-Agent-Cluster: ?0` ‑otsikko dokumentin ja kehysten HTTP-vastauksen mukana. Lue lisää osoitteesta https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` on poistettu käytöstä ja poistetaan kokonaan. Käytä sen sijaan tätä: `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Otsikko (`Expect-CT`) on poistettu käytöstä ja poistetaan kokonaan. Chrome edellyttää Certificate Transparencya kaikille 30.4.2018 jälkeen myönnetyille julkisesti luotetuille varmenteille."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Lisätietoa löydät ominaisuuden tilasivulta."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` ja `watchPosition()` eivät enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` ja `watchPosition()` on poistettu käytöstä suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` ei enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` on poistettu käytöstä. Valitse sen sijaan `RTCPeerConnectionIceErrorEvent.address` tai `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Kauppiaan alkuperän ja satunnaisen datan määrä service worker ‑tapahtumasta (`canmakepayment`) on poistettu käytöstä, ja se poistetaan seuraavista: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Verkkosivusto pyysi aliresurssia verkosta, johon sillä oli pääsy vain käyttäjiensä oikeutetun verkkoaseman vuoksi. Nämä pyynnöt altistavat ei-julkisia laitteita ja palvelimia näkyville internetiin, mikä lisää sivustojen välisten pyyntöjen väärennykseen (CSRF) liittyvän hyökkäyksen ja/tai tietovuodon riskiä. Pienentääkseen riskiä Chrome poistaa käytöstä ei-julkisille aliresursseille osoitetut pyynnöt, jos ne ovat peräisin suojaamattomista konteksteista, ja alkaa estää niitä."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS:ää ei voi ladata `file:` ‑URL-osoitteista, elleivät ne pääty `.css` ‑tiedostotunnisteeseen."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Kohteen `SourceBuffer.abort()` käyttö kohteen `remove()` asynkronisen välin poistamiseen on poistettu käytöstä määritysmuutoksen vuoksi. Tuki poistetaan tulevaisuudessa. Kuuntele sen sijaan tapahtuma `updateend`. `abort()` on tarkoitettu ainoastaan asynkronisen medialiitteen tai nollausjäsentäjän tilan keskeytykseen."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Kohteen `MediaSource.duration` asettaminen puskuroidun koodatun kehyksen korkeinta esitysaikaleimaa alemmas on poistettu käytöstä määritysmuutoksen vuoksi. Lyhennetyn puskuroidun median implisiittisen poiston tuki poistetaan tulevaisuudessa. Tee sen sijaan eksplisiittinen `remove(newDuration, oldDuration)` kaikkien `sourceBuffers` ‑kohteiden kohdalla, joissa `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Tämä muutos tulee voimaan, kun versionumero {milestone} saavutetaan."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI pyytää käyttölupaa, vaikka `MIDIOptions` ei ole määrittänyt sysexiä."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Notification APIa ei saa enää käyttää suojaamattomista alkuperistä. Suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Notification APIn lupaa ei välttämättä enää pyydetä eri lähteistä peräisin olevalta iframelta. Suosittelemme sen sijaan pyytämään lupaa ylätason kehykseltä tai avaamaan uuden ikkunan."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Yhteistyökumppanisi neuvottelee vanhentuneesta (D)TLS-versiosta. Pyydä yhteistyökumppaniasi korjaamaan tämä."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "WebSQL on poistettu käytöstä suojaamattomissa konteksteissa ja se poistetaan pian. Käytä verkkotallennustilaa tai hakemistoon lisättyä tietokantaa."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Jos `overflow: visible` määritetään img-, video- ja canvas-tageissa, ne voivat tuottaa visuaalista sisältöä elementtirajojen ulkopuolella. Lue lisää osoitteesta https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` on poistettu käytöstä. Käytä maksujen käsittelijöille sen sijaan heti asennettavaa (JIT) APIa."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "`PaymentRequest`-kutsu ohitti Content-Security-Policy (CSP) ‑käytännön `connect-src`-säännön. Tämä ohitus on poistettu käytöstä. Lisää maksutavan tunniste `PaymentRequest` APIsta (`supportedMethods`-kentässä) CSP-käytännön `connect-src`-sääntöön."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` on poistettu käytöstä. Valitse sen sijaan standardoitu `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<source src>`, jolla on `<picture>`-ylätaso, on virheellinen ja jätetään näin ollen huomiotta. Käytä sen sijaan tätä: `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` on poistettu käytöstä. Valitse sen sijaan standardoitu `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Aliresurssipyynnöt, joiden URL-osoitteet sisältävät upotettuja kirjautumistietoja (esim. `https://user:pass@host/`), on estetty."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Rajoitus `DtlsSrtpKeyAgreement` on poistettu. Olet määrittänyt `false` ‑arvon tälle rajoitukselle, mikä tulkitaan yrityksenä käyttää poistettua `SDES key negotiation` ‑metodia. Tämä toiminto on poistettu. Käytä sen sijaan palvelua, joka tukee tätä: `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Rajoitus `DtlsSrtpKeyAgreement` on poistettu. Olet määrittänyt `true` ‑arvon tälle rajoitukselle, jolla ei ollut mitään vaikutusta, mutta voit poistaa rajoituksen siisteyden vuoksi."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` havaittu. Tätä `Session Description Protocol` ‑murretta ei enää tueta. Käytä sen sijaan tätä: `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`Plan B SDP semantics`, jota käytetään kohteen `RTCPeerConnection` rakentamiseen kohteella `{sdpSemantics:plan-b}`, on vanha, ei-standardiversio kohteesta `Session Description Protocol`, joka on poistettu pysyvästi verkkoalustalta. Se on edelleen käytettävissä, kun `IS_FUCHSIA` on käytössä rakentamisessa, mutta aiomme poistaa sen mahdollisimman pian. Älä enää laske sen varaan. Katso sen tila osoitteesta https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "`rtcpMuxPolicy` ‑vaihtoehto on poistettu käytöstä ja poistetaan kokonaan."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` edellyttää muista lähteistä eristämistä. Lue lisää osoitteesta https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "`speechSynthesis.speak()` ilman käyttäjän aktivointia on poistettu käytöstä ja poistetaan kokonaan."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Käytöstä poistettua ominaisuutta käytetty"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Laajennusten pitäisi ottaa muista lähteistä eristäminen käyttöön, jotta ne voivat jatkaa tämän käyttöä: `SharedArrayBuffer`. Lue lisää osoitteesta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1} on myyjäkohtainen. Käytä sen sijaan {PH2} ‑standardiversiota."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "Vastaus-JSON ei tue UTF-16:ta kohteessa `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Pääsäikeen samanaikainen `XMLHttpRequest` on poistettu käytöstä, koska sillä oli haitallisia vaikutuksia loppukäyttäjän kokemukseen. Lue lisäohjeita osoitteesta https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` on poistettu käytöstä. Ota sen sijaan `isSessionSupported()` käyttöön ja tarkista ratkaistu looginen arvo."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Pääsäikeen estoaika"
   },
@@ -2760,31 +2610,31 @@
     "message": "Käytä [Ezoic Leapia](https://pubdash.ezoic.com/speed) ja ota `Resize Images` käyttöön muuttaaksesi kuvien kokoa laitteisiin sopivaksi, jotta voit vähentää verkkoresurssien kokoja."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Optimoi kuvamuoto automaattisesti käyttämällä `gatsby-plugin-image`-komponenttia `<img>`-komponentin sijaan. [Lue lisää](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Lataa kuvat automaattisesti laiskasti käyttämällä `gatsby-plugin-image`-komponenttia `<img>`-komponentin sijaan. [Lue lisää](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Käytä `gatsby-plugin-image`-komponenttia ja aseta `loading`-omaisuuden arvoksi `eager`. [Lue lisää](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Lykkää ei-kriittisten kolmannen osapuolen skriptien lataamista suorittamalla `Gatsby Script API`. [Lue lisää](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Poista tyyliarkkien käyttämättömät säännöt `PurgeCSS` `Gatsby` ‐liitännäisellä. [Lue lisää](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Valitse `Webpack Bundle Analyzer`, jotta voit havaita käyttämättömän JavaScript-ohjelmakoodin. [Lue lisää](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Määritä muuttumattomien kohteiden välimuistiin tallentaminen. [Lue lisää](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Säädä kuvanlaatua käyttämällä `gatsby-plugin-image`-komponenttia `<img>`-komponentin sijaan. [Lue lisää](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Käytä `gatsby-plugin-image`-komponenttia, jotta `sizes` saa sopivan arvon. [Lue lisää](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "GIF kannattaa ehkä ladata palveluun, jonka avulla se voidaan upottaa HTML5-videona."
@@ -2865,10 +2715,10 @@
     "message": "`<link rel=preload>`-tagit voidaan lisätä [muuttamalla teeman asettelua](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Optimoi kuvamuoto automaattisesti käyttämällä `next/image`-komponenttia `<img>`-komponentin sijaan. [Lue lisää](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Lataa kuvat automaattisesti laiskasti käyttämällä `next/image`-komponenttia `<img>`-komponentin sijaan. [Lue lisää](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Käytä `next/image`-komponenttia ja aseta prioriteetti todeksi, jotta voit esiladata LCP-kuvan. [Lue lisää](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Ota `PurgeCSS` käyttöön määrityksessä (`Next.js`), jotta voit poistaa tyyliarkkien käyttämättömät säännöt. [Lue lisää](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Valitse `Webpack Bundle Analyzer`, jotta voit havaita käyttämättömän JavaScript-ohjelmakoodin. [Lue lisää](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Sinun kannattaa ehkä valita `Next.js Analytics`, jotta voit mitata sovelluksen todellista toimivuutta. [Lue lisää](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Määritä muuttumattomien kohteiden ja `Server-side Rendered` (SSR) ‑sivujen välimuistiin siirtäminen. [Lue lisää](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Säädä kuvanlaatua käyttämällä `next/image`-komponenttia `<img>`-komponentin sijaan. [Lue lisää](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Suorita `next/image`, jotta `sizes` voi saada sopivan arvon. [Lue lisää](https://nextjs.org/docs/api-reference/next/image#sizes)."

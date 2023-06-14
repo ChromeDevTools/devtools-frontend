@@ -981,25 +981,25 @@
     "message": "எச்சரிக்கையுடன் அனுமதிக்கப்பட்டது"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "LCPயின் %"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "நிலை"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "நேரம்"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "இது காட்சிப் பகுதிக்குள் தோன்றக்கூடிய உள்ளடக்கம் உள்ள மிகப்பெரிய உறுப்பாகும். ['பெரிய பகுதியைக் காட்டும் நேரம்' உறுப்பு குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "ஏற்றுதல் தாமதம்"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "ஏற்றப்படும் நேரம்"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "ரெண்டர் தாமதம்"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "பழைய உலாவிகளுடன் இணக்கமாக இருக்கும் வகையில் 'unsafe-inline' (nonces/hashes என்பதை ஆதரிக்கும் உலாவிகளால் புறக்கணிக்கப்பட்டது) என்பதைச் சேர்ப்பதைக் கருத்தில் கொள்ளவும்."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "CORS `Access-Control-Allow-Headers`ஸைக் கையாளும்போது வைல்டுகார்டு குறியீட்டில் (*) அங்கீகரிப்பு சேர்க்கப்படாது."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "அகற்றப்பட்ட இடைவெளி `(n|r|t)` எழுத்துகள், ‘குறைவைக்’ குறிக்கும் எழுத்துகள் (`<`) ஆகிய இரண்டும் இருக்கும் URLகளின் ஆதாரக் கோரிக்கைகள் தடுக்கப்பட்டுள்ளன. இந்த ஆதாரங்களை ஏற்ற, நியூலைன்களை அகற்றி ‘குறைவைக்’ குறிக்கும் எழுத்துகளை எலிமெண்ட் ஆட்ரிபியூட் மதிப்புகள் போன்ற இடங்களில் இருந்து என்கோடிங் செய்யவும்."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` செயல்பாடு நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Navigation Timing 2ல் `nextHopProtocol`."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "`(0|r|n)` எழுத்து இருக்கும் குக்கீகள் துண்டிக்கப்படுவதற்குப் பதிலாக நிராகரிக்கப்படும்."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "`document.domain` ஐ அமைத்து அதே ஆரிஜின் கொள்கையைத் தளர்த்துவது நிறுத்தப்பட்டது. இயல்பாகவே இது முடக்கப்படும். இந்த நிறுத்த எச்சரிக்கை கிராஸ் ஆரிஜின் அணுகலுக்கானது. இது `document.domain` அமைப்பின் மூலம் இயக்கப்பட்டது."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "கிராஸ் ஆரிஜின் iframesஸில் இருந்து {PH1} ஐ டிரிகர் செய்வது நிறுத்தப்பட்டது, எதிர்காலத்தில் அது அகற்றப்படும்."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "இயல்பு அலைபரப்பு ஒருங்கிணைப்பை முடக்க `-internal-media-controls-overlay-cast-button` தேர்விக்குப் பதிலாக `disableRemotePlayback` பண்புக்கூறைப் பயன்படுத்த வேண்டும்."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} நிறுத்தப்பட்டது. இதற்குப் பதிலாக {PH2} ஐப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "இது, மொழிபெயர்க்கப்பட்ட நிறுத்தச் சிக்கல் மெசேஜிற்கான ஓர் எடுத்துக்காட்டாகும்."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "`document.domain` ஐ அமைத்து அதே ஆரிஜின் கொள்கையைத் தளர்த்துவது நிறுத்தப்பட்டது. இயல்பாகவே இது முடக்கப்படும். இந்த அம்சத்தைத் தொடர்ந்து பயன்படுத்த ஆவணம் மற்றும் ஃபிரேம்களுக்கான HTTP பதிலுடன் `Origin-Agent-Cluster: ?0` தலைப்பை அனுப்பி ஆரிஜின்-கீய்டு ஏஜெண்ட் கிளஸ்டர்களின் ஒப்புதலை நீக்கவும். கூடுதல் தகவல்களுக்கு https://developer.chrome.com/blog/immutable-document-domain/ தளத்திற்குச் செல்லவும்."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். இதற்குப் பதிலாக `Event.composedPath()` ஐப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "`Expect-CT` தலைப்பு நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். ஏப்ரல் 30, 2018க்குப் பிறகு வெளியிடப்பட்ட பொதுவில் நம்பப்படும் சான்றிதழ்கள் அனைத்திற்குமான சான்றிதழ் வெளிப்படைத்தன்மை Chromeமிற்குத் தேவை."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "மேலும் விவரங்களுக்கு அம்சத்தின் நிலைப் பக்கத்தைப் பாருங்கள்."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் `getCurrentPosition()` மற்றும் `watchPosition()` இனி செயல்படாது. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் `getCurrentPosition()`, `watchPosition()` ஆகியவை நிறுத்தப்பட்டன. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் `getUserMedia()` இனி செயல்படாது. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` நிறுத்தப்பட்டது. இதற்குப் பதிலாக `RTCPeerConnectionIceErrorEvent.address` அல்லது `RTCPeerConnectionIceErrorEvent.port` ஐப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "`canmakepayment` service worker நிகழ்வில் இருந்து பெறப்பட்ட வணிகரின் ஆரிஜின் மற்றும் தன்னிச்சையான தரவு நிறுத்தப்பட்டு அகற்றப்படும்: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "பயனர்களின் சிறப்பு நெட்வொர்க் நிலை காரணமாக மட்டுமே இந்த இணையதளம் அணுகக்கூடிய நெட்வொர்க்கில் இருந்து துணை ஆதாரத்தைக் கோருகிறது. இந்தக் கோரிக்கைகள் பொதுவில் இல்லாத சாதனங்களையும் சேவையகங்களையும் இணையத்தில் வெளிப்படுத்தும். இதன் மூலம் வேற்று தளக் கோரிக்கை மோசடி (CSRF) தாக்குதல் மற்றும்/அல்லது தகவல் கசிவு போன்ற அபாயத்தை அதிகரிக்கும். இதுபோன்ற அபாயங்களைக் குறைக்க பொதுவில் இல்லாத துணை ஆதாரங்களுக்குப் பாதுகாப்பற்ற சூழல்களில் இருந்து வரக்கூடிய கோரிக்கைகளை Chrome நிறுத்துவதோடு அவற்றைத் தடுக்கவும் செய்கிறது."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "`.css` ஃபைல் நீட்டிப்பில் முடிவடைந்தால் மட்டுமே `file:` URLகளில் இருந்து CSSஸை ஏற்ற முடியும்."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "`remove()` இன் ஒத்திசையாத வரம்பு அகற்றுதலை ரத்துசெய்ய `SourceBuffer.abort()` ஐப் பயன்படுத்துவது விவரக்குறிப்பு மாற்றம் காரணமாக நிறுத்தப்பட்டது. இதற்கான ஆதரவும் எதிர்காலத்தில் அகற்றப்படும். அதற்குப் பதிலாக `updateend` நிகழ்வைக் கவனிக்க வேண்டும். ஒத்திசையாத மீடியா இணைப்பை ரத்துசெய்ய அல்லது பாகுபடுத்தும் நிலையை மீட்டமைக்க மட்டும் `abort()` பயன்படுத்தப்படும்."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "இடையகக் குறியீட்டு ஃபிரேம்களின் அதிகபட்சக் காட்சி நேரமுத்திரைக்குக் குறைவாக `MediaSource.duration` ஐ அமைப்பது விவரக்குறிப்பு மாற்றம் காரணமாக நிறுத்தப்பட்டது. துண்டிக்கப்பட்ட இடையக மீடியாவை மறைமுகமாக அகற்றுவதற்கான ஆதரவு எதிர்காலத்தில் அகற்றப்படும். `newDuration < oldDuration` எனும் நிலை உள்ள எல்லா இடங்களிலும் `sourceBuffers` அனைத்திலும் வெளிப்படையான `remove(newDuration, oldDuration)` ஐ மேற்கொள்ள வேண்டும்."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "{milestone}வது பதிப்பில் இந்த மாற்றம் நடைமுறைக்கு வரும்."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "`MIDIOptions` இல் sysex குறிப்பிடப்படாமல் இருந்தாலும் பயன்படுத்துவதற்கான அனுமதியை இணைய MIDI கோரும்."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "பாதுகாப்பற்ற ஆரிஜின்களில் இருந்து Notification APIயை இனி பயன்படுத்த முடியாது. உங்கள் ஆப்ஸைப் பாதுகாப்பான ஆரிஜினுக்கு (எ.கா. HTTPS) மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Notification APIக்கான அனுமதியைக் கிராஸ் ஆரிஜின் iframeமில் இருந்து இனி கோர முடியாது. உயர்நிலை ஃபிரேமிடம் அனுமதி கோரவும் அல்லது புதிய சாளரத்தைத் திறக்கவும்."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "காலாவதியான (D)TLS பதிப்பை உங்கள் கூட்டாளர் பரிமாற்றம் செய்கிறார். இதைச் சரிசெய்ய உங்கள் கூட்டாளரைத் தொடர்புகொள்ளவும்."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "பாதுகாப்பற்ற சூழல்களில் உள்ள WebSQL நிறுத்தப்பட்டது, அத்துடன் அது விரைவில் அகற்றப்படும். இணையச் சேமிப்பகம் அல்லது இன்டெக்ஸ் செய்யப்பட்ட தரவுத்தளத்தைப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "படம், வீடியோ மற்றும் கேன்வாஸ் குறிச்சொற்களில் `overflow: visible` ஐக் குறிப்பிடுவது, உறுப்பு வரம்புகளைத் தாண்டிய காட்சி உள்ளடக்கத்திற்கு வழிவகுக்கலாம். https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md எனும் இணைப்பைப் பார்க்கவும்."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` நிறுத்தப்பட்டது. அதற்குப் பதிலாக, பேமெண்ட் ஹேண்ட்லர்களுக்கான தக்க நேர நிறுவலைப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "உங்கள் `PaymentRequest` அழைப்பு உள்ளடக்கப் பாதுகாப்புக் கொள்கை (CSP) `connect-src` டைரெக்டிவைப் புறக்கணித்துவிட்டது. இந்தப் புறக்கணிப்பு நிறுத்தப்பட்டது. `PaymentRequest` APIயில் (`supportedMethods` புலத்தில்) உள்ள பேமெண்ட் முறை அடையாளங்காட்டியை உங்கள் CSP `connect-src` டைரெக்டிவில் சேர்க்கவும்."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` நிறுத்தப்பட்டது. இதற்குப் பதிலாக நிலையான `navigator.storage` ஐப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "முதல்நிலை `<picture>` உடன் கூடிய `<source src>` தவறானது, எனவே தவிர்க்கப்பட்டது. இதற்குப் பதிலாக `<source srcset>` ஐப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` நிறுத்தப்பட்டது. இதற்குப் பதிலாக நிலையான `navigator.storage` ஐப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "உட்பொதிந்த அனுமதிச் சான்றுகள் இருக்கும் URLகளின் துணை ஆதாரக் கோரிக்கைகள் (எ.கா. `https://user:pass@host/`) தடுக்கப்பட்டன."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "`DtlsSrtpKeyAgreement` கட்டுப்பாடு அகற்றப்பட்டது. இந்தக் கட்டுப்பாட்டுக்கு `false` மதிப்பைக் குறிப்பிட்டுள்ளீர்கள். இதன் மூலம் அகற்றப்பட்ட `SDES key negotiation` முறையைப் பயன்படுத்த முயன்றதாகப் புரிந்துகொள்ளப்படுகிறது. இந்தச் செயல்பாடு அகற்றப்பட்டது, இதற்குப் பதிலாக `DTLS key negotiation` ஐ ஆதரிக்கும் சேவையைப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "`DtlsSrtpKeyAgreement` கட்டுப்பாடு அகற்றப்பட்டது. இந்தக் கட்டுப்பாட்டுக்கு `true` மதிப்பைக் குறிப்பிட்டுள்ளீர்கள். இது விளைவுகள் எதையும் ஏற்படுத்தாது, ஆனால் தோற்றத்திற்காக இந்தக் கட்டுப்பாட்டை நீங்கள் அகற்றலாம்."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` கண்டறியப்பட்டது. `Session Description Protocol` இன் இந்தக் குறிப்பிட்ட பதிப்பு இனி ஆதரிக்கப்படாது. இதற்குப் பதிலாக `Unified Plan SDP` ஐப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`{sdpSemantics:plan-b}` உடன் `RTCPeerConnection` ஐ உருவாக்கும்போது `Plan B SDP semantics` பயன்படுத்தப்படும். இது இணைய பிளாட்ஃபார்மில் இருந்து நிரந்தரமாக நீக்கப்பட்ட `Session Description Protocol` இன் நிலையற்ற பழைய பதிப்பு. `IS_FUCHSIA` மூலம் உருவாக்கும்போது இதைத் தொடர்ந்து பயன்படுத்தலாம். ஆனால் கூடிய விரைவில் இதை நீக்கிவிடுவோம். இதைச் சார்ந்திருப்பதைத் தவிர்க்க வேண்டும். நிலையை அறிய https://crbug.com/1302249 தளத்தைப் பார்க்கவும்."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "`rtcpMuxPolicy` விருப்பம் நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும்."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer`க்குக் கிராஸ் ஆரிஜின் ஐசொலேஷன் தேவை. கூடுதல் தகவல்களுக்கு https://developer.chrome.com/blog/enabling-shared-array-buffer/ தளத்திற்குச் செல்லவும்."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "பயனர் செயல்படுத்தல் இல்லாத `speechSynthesis.speak()` நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும்."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "நிறுத்தப்பட்ட அம்சம் பயன்படுத்தப்பட்டுள்ளது"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "`SharedArrayBuffer` ஐத் தொடர்ந்து பயன்படுத்த நீட்டிப்புகள் கிராஸ் ஆரிஜின் ஐசொலேஷனைப் பயன்படுத்த வேண்டும். https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ தளத்தைப் பார்வையிடவும்."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1} விற்பனையாளர் சார்ந்தது. இதற்குப் பதிலாக நிலையான {PH2} ஐப் பயன்படுத்தவும்."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "`XMLHttpRequest` இல் உள்ள json பதிலில் UTF-16 ஆதரிக்கப்படுவதில்லை"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "இறுதிப் பயனர் அனுபவத்தில் பாதிப்பை ஏற்படுத்தும் என்பதால் முதன்மைத் தொடரிழையில் ஒத்திசையும் `XMLHttpRequest` நிறுத்தப்பட்டது. கூடுதல் உதவிக்கு https://xhr.spec.whatwg.org/ தளத்தைப் பார்க்கவும்."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` நிறுத்தப்பட்டது. இதற்குப் பதிலாக `isSessionSupported()` ஐப் பயன்படுத்தித் தீர்க்கப்பட்ட பூலியன் மதிப்பைப் பார்க்கவும்."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "முக்கியத் தொடரிழையில் தடுப்பதற்குச் செலவிட்ட நேரம்"
   },
@@ -2760,31 +2610,31 @@
     "message": "நெட்வொர்க் பேலோடு அளவுகளைக் குறைத்து, சாதனத்திற்குப் பொருத்தமாக இருக்கும் வகையில் படங்களை அளவு மாற்றம் செய்ய, [Ezoic Leap](https://pubdash.ezoic.com/speed) கருவியைப் பயன்படுத்துவதுடன் `Resize Images` ஐயும் இயக்கவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "பட வடிவமைப்பைத் தானாக மேம்படுத்த, `<img>` காம்பனென்ட்டிற்குப் பதிலாக `gatsby-plugin-image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "தேவையுள்ளபோது படங்கள் தானாகக் காட்டப்பட, `<img>` காம்பனென்ட்டிற்குப் பதிலாக `gatsby-plugin-image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "`gatsby-plugin-image` காம்பனென்ட்டைப் பயன்படுத்தி `loading` உடைமையை `eager` என்று அமைக்கவும். [மேலும் அறிக](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "முக்கியமில்லாத மூன்றாம் தரப்பு ஸ்கிரிப்ட்டுகள் ஏற்றப்படுவதைத் தாமதப்படுத்த, `Gatsby Script API` ஐப் பயன்படுத்தவும். [மேலும் அறிக](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "பயன்படுத்தப்படாத விதிகளை ஸ்டைல்ஷீட்டுகளில் இருந்து அகற்ற `PurgeCSS` `Gatsby` செருகுநிரலைப் பயன்படுத்தவும். [மேலும் அறிக](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "பயன்படுத்தப்படாத JavaScript குறியீட்டைக் கண்டறிய, `Webpack Bundle Analyzer` ஐப் பயன்படுத்தவும். [மேலும் அறிக](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "இம்மியூட்டபிள் அசெட்டுகளுக்குத் தற்காலிகச் சேமிப்பை உள்ளமைக்கவும். [மேலும் அறிக](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "படத் தரத்தைச் சரிசெய்ய, `<img>` காம்பனென்ட்டிற்குப் பதிலாக `gatsby-plugin-image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "பொருத்தமான `sizes` ஐ அமைக்க, `gatsby-plugin-image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "GIFஐ HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
@@ -2865,10 +2715,10 @@
     "message": "[தீம்களின் தளவமைப்பை மாற்றுவதன்](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) மூலம் `<link rel=preload>` குறியிடல்களைச் சேர்க்க முடியும்."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "பட வடிவமைப்பைத் தானாக மேம்படுத்த, `<img>` காம்பனென்ட்டிற்குப் பதிலாக `next/image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "தேவையுள்ளபோது படங்கள் தானாகக் காட்டப்பட, `<img>` காம்பனென்ட்டிற்குப் பதிலாக `next/image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "LCP படத்தை முன்கூட்டியே ஏற்ற, `next/image` காம்பனென்ட்டைப் பயன்படுத்துவதுடன் \"முன்னுரிமை\" என்பதை ‘சரி’ எனவும் அமைக்கவும். [மேலும் அறிக](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "பயன்படுத்தப்படாத விதிகளை ஸ்டைல்ஷீட்டுகளில் இருந்து அகற்ற, `Next.js` உள்ளமைவில் `PurgeCSS` செருகுநிரலை அமைக்கவும். [மேலும் அறிக](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "பயன்படுத்தப்படாத JavaScript குறியீட்டைக் கண்டறிய, `Webpack Bundle Analyzer` ஐப் பயன்படுத்தவும். [மேலும் அறிக](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "உங்கள் ஆப்ஸின் நிகழ்நேரச் செயல்திறனை அளவிட, `Next.js Analytics` ஐப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "இம்மியூட்டபிள் அசெட்டுகள், `Server-side Rendered` (SSR) பக்கங்கள் ஆகியவற்றுக்கான தற்காலிகச் சேமிப்பை உள்ளமைக்கவும். [மேலும் அறிக](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "படத் தரத்தைச் சரிசெய்ய, `<img>` காம்பனென்ட்டிற்குப் பதிலாக `next/image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "பொருத்தமான `sizes` ஐ அமைக்க, `next/image` காம்பனென்ட்டைப் பயன்படுத்தவும். [மேலும் அறிக](https://nextjs.org/docs/api-reference/next/image#sizes)."

@@ -981,25 +981,25 @@
     "message": "İzin verildi ancak uyarı içeriyor"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "LCP yüzdesi"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Aşama"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Zamanlama"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Bu, görüntü alanı içinde boyanan en büyük zengin içerikli öğedir. [Largest Contentful Paint öğesi hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)."
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Yükleme Gecikmesi"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Yükleme Süresi"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Oluşturma Gecikmesi"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Eski tarayıcılarla geriye dönük uyumluluk sağlamak için \"unsafe-inline\" yönergesi (nonce/hash destekleyen tarayıcılar tarafından yok sayılır) eklemeyi düşünün."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "CORS `Access-Control-Allow-Headers` işlemlerinde kimlik doğrulama, joker karakter (*) simgesinin kapsamına girmeyecektir."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "URL'lerinde hem kaldırılan boşluk `(n|r|t)` karakterleri hem küçüktür karakterleri (`<`) bulunan kaynak istekleri engellenir. Bu kaynakları yüklemek için lütfen yeni satırları kaldırıp öğe özellik değeri gibi yerlerdeki küçüktür karakterlerini kodlayın."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` desteği sonlandırıldı. Onun yerine standart API: Navigation Timing 2'yi kullanın."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` desteği sonlandırıldı. Lütfen standart API: Paint Timing'i kullanın."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` desteği sonlandırıldı. Onun yerine Navigation Timing 2'de standart API: `nextHopProtocol` kullanın."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "`(0|r|n)` karakteri içeren çerezler kısaltılmayıp reddedilecektir."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "`document.domain` ayarlayarak aynı kaynak politikasını esnetme işleviyle ilgili destek sonlandırılmış olup varsayılan olarak devre dışı bırakılacaktır. Bu desteği sonlandırma uyarısı, `document.domain` ayarlamak suretiyle izin verilen bir çapraz kaynak erişimine yöneliktir."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Çapraz kaynak iframe'lerden {PH1} tetikleme işlevi artık kullanılmıyor olup ileride kaldırılacaktır."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Varsayılan Cast entegrasyonunu devre dışı bırakmak için `-internal-media-controls-overlay-cast-button` yerine `disableRemotePlayback` özelliği kullanılmalıdır."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} desteği sonlandırıldı. Lütfen bunun yerine {PH2} politikasını kullanın."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Bu, desteği sonlandırma sorunu mesajı için çeviri örneğidir."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "`document.domain` ayarlayarak aynı kaynak politikasını esnetme işleviyle ilgili destek sonlandırılmış olup varsayılan olarak devre dışı bırakılacaktır. Bu özelliği kullanmayı sürdürmek için lütfen doküman ve çerçevelere yönelik HTTP yanıtıyla birlikte `Origin-Agent-Cluster: ?0` üstbilgisi göndererek kaynak anahtarlı aracı kümelerini devre dışı bırakın. Ayrıntılı bilgi için https://developer.chrome.com/blog/immutable-document-domain/ sayfasına bakın."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` artık kullanılmıyor olup kaldırılacaktır. Lütfen bunun yerine `Event.composedPath()` politikasını kullanın."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "`Expect-CT` seçeneği artık kullanılmıyor olup kaldırılacaktır. Chrome, 30 Nisan 2018'den sonra düzenlenen ve herkes tarafından güvenilen tüm sertifikalar için Sertifika Şeffaflığı'nı zorunlu kılmaktadır."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Daha fazla bilgi için özellik durumu sayfasına göz atın."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` ve `watchPosition()` güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` ve `watchPosition()` desteği güvenli olmayan kaynaklarda sonlandırıldı. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` desteği sonlandırıldı. Yerine lütfen `RTCPeerConnectionIceErrorEvent.address` veya `RTCPeerConnectionIceErrorEvent.port` kullanın."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "`canmakepayment` hizmet çalışanı etkinliğindeki satıcı kaynağı ve rastgele veriler ile ilgili destek sonlandırılacak olup bunlar kaldırılacaktır: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Web sitesi, kullanıcılarının ayrıcalıklı ağ konumu sayesinde erişebildiği bir ağdan alt kaynak istedi. Bu istekler herkese açık olmayan cihazların ve sunucuların internette açığa çıkmasına neden olarak, siteler arası istek sahtekarlığı (CSRF) saldırısı ve/veya bilgi sızıntısı riskini artırır. Bu riskleri azaltmak amacıyla Chrome, güvenli olmayan bağlamlardan herkese açık olmayan alt kaynaklara gönderilen isteklerle ilgili desteği sonlandırmıştır ve bu istekleri engellemeye başlayacaktır."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "`.css` dosya uzantısıyla bitmeyen `file:` URL'lerinden CSS yüklenemiyor."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Spesifikasyon değişimi nedeniyle artık `remove()` eşzamansız aralık kaldırma işlemini iptal etmek için `SourceBuffer.abort()` kullanılmamaktadır. Bu işlevle ilgili destek ileride kaldırılacaktır. Bunun yerine `updateend` etkinliğini dinlemeniz gerekir. `abort()` yalnızca eşzamansız medya eklerini iptal etmek veya ayrıştırıcı durumunu sıfırlamak için kullanılmalıdır."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Spesifikasyon değişikliği nedeniyle, arabellekte kodlanan çerçevelerdeki en yüksek sunum zaman damgasından düşük bir `MediaSource.duration` değeri ayarlama özelliğiyle ilgili destek sonlandırıldı. Arabellekteki kırpılmış medya öğelerinin dolaylı yoldan kaldırılması ileride desteklenmeyecektir. Onun yerine, `newDuration < oldDuration` olan durumlarda her `sourceBuffers` üzerinde açık `remove(newDuration, oldDuration)` uygulamanız gerekir."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Bu değişiklik, {milestone} olan kilometre taşıyla geçerli olacak."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Sysex, `MIDIOptions` içinde belirtilmiş olmasa bile Web MIDI, sysex kullanmak için izin ister."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Artık Notification API güvenli olmayan kaynaklardan kullanılamaz. Uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Artık çapraz kaynak iframe'lerden Notification API izni istenemez. Bunun yerine izni üst düzey bir çerçeveden istemeniz veya yeni bir pencere açmanız gerekir."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "İş ortağınızın anlaşma yaptığı (D)TLS sürümü artık kullanılmıyor. Lütfen iş ortağınızla görüşüp bu durumu düzeltin."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "Güvenli olmayan bağlamlarda WebSQL kullanımı kaldırılacak ve yakında mevcut olmayacak. Lütfen web depolama veya dizine eklenmiş veritabanı kullanın."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "img, video ve canvas etiketlerinde `overflow: visible` belirtilmesi, öğe sınırlarının dışında görsel içerik oluşturulmasına neden olabilir. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md sayfasını inceleyin."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` desteği sonlandırıldı. Bunun yerine, ödeme işleyiciler için lütfen tam zamanında yükleme özelliğini kullanın."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "`PaymentRequest` çağrınız, İçerik Güvenliği Politikası (İGP) `connect-src` yönergesini atladı. Bu atlama işleminin desteği sonlandırılmıştır. Lütfen `PaymentRequest` API'deki (`supportedMethods` alanındaki) ödeme yöntemi tanımlayıcısını İGP `connect-src` yönergenize ekleyin."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` desteği sonlandırıldı. Lütfen bunun yerine standart `navigator.storage` kullanın."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "Üst öğesi `<picture>` olan `<source src>` öğeleri geçersiz olduğundan yoksayılır. Lütfen bunun yerine `<source srcset>` politikasını kullanın."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` desteği sonlandırıldı. Lütfen bunun yerine standart `navigator.storage` kullanın."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "URL'lerinde yerleştirilmiş kimlik bilgileri (ör. `https://user:pass@host/`) olan alt kaynak istekleri engellenir."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "`DtlsSrtpKeyAgreement` kısıtlaması kaldırıldı. Bu kısıtlama için belirttiğiniz `false` değeri, kaldırılan `SDES key negotiation` yöntemini kullanmaya yönelik bir deneme olarak yorumlandı. Bu işlev kaldırılmıştır; onun yerine `DTLS key negotiation` destekleyen bir hizmet kullanın."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "`DtlsSrtpKeyAgreement` kısıtlaması kaldırıldı. Bu kısıtlama için belirttiğiniz `true` değeri etkisiz olmuştur ancak düzenli olmak adına bu kısıtlamayı kaldırabilirsiniz."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` hareketi algılandı. Bu `Session Description Protocol` sürümü artık desteklenmiyor. Lütfen bunun yerine `Unified Plan SDP` politikasını kullanın."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`{sdpSemantics:plan-b}` ile `RTCPeerConnection` oluştururken kullanılan `Plan B SDP semantics`; web platformundan kalıcı olarak silinmiş olan `Session Description Protocol` protokolünün eski ve standart dışı bir sürümüdür. `IS_FUCHSIA` ile derleme yaparken hâlâ kullanılabilir olsa da bu protokolü en kısa sürede silmeyi düşünüyoruz. Artık bu protokolü kullanmayın. https://crbug.com/1302249 adresinden durumu takip edebilirsiniz."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "`rtcpMuxPolicy` seçeneğinin desteği sonlandırılmış olup kaldırılacaktır."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer`, kökler arası erişimin kapatılmasını gerektiriyor. Daha fazla bilgi için https://developer.chrome.com/blog/enabling-shared-array-buffer/ adresini ziyaret edin."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Kullanıcı etkinliği olmadan `speechSynthesis.speak()` çağırma işlevi artık kullanılmıyor olup kaldırılacaktır."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Desteği Sonlandırılan Özellik Kullanıldı"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Uzantıların `SharedArrayBuffer` kullanmayı sürdürmek için kökler arası erişimi kapatmaları gerekir. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ adresini ziyaret edin."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1}, satıcıya özgü bir işlevdir. Onun yerine lütfen standart {PH2} işlevini kullanın."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "`XMLHttpRequest` içindeki yanıt JSON dosyası UTF-16'yı desteklemiyor."
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Son kullanıcı deneyimini olumsuz etkilemesi nedeniyle, ana iş parçacığında eşzamanlı `XMLHttpRequest` işleviyle ilgili destek sonlandırıldı. Daha fazla yardım için https://xhr.spec.whatwg.org/ adresini ziyaret edin."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` desteği sonlandırıldı. Onun yerine lütfen `isSessionSupported()` kullanın ve çözümlenen boole değerini kontrol edin."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Ana İleti Dizisi Engelleme Süresi"
   },
@@ -2760,31 +2610,31 @@
     "message": "Görselleri cihazlara uygun şekilde yeniden boyutlandırıp ağ yükü boyutlarını azaltmak için [Ezoic Leap](https://pubdash.ezoic.com/speed)'i kullanarak `Resize Images` ayarını etkinleştirin."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Resim biçimini otomatik olarak optimize etmek için `<img>` yerine `gatsby-plugin-image` bileşenini kullanın. [Daha fazla bilgi](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Resimleri otomatik olarak geç yüklemek için `<img>` yerine `gatsby-plugin-image` bileşenini kullanın. [Daha fazla bilgi](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "`gatsby-plugin-image` bileşenini kullanarak `loading` özelliğini `eager` olarak ayarlayın. [Daha fazla bilgi](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Kritik olmayan üçüncü taraf komut dosyalarının yüklenmesini ertelemek için `Gatsby Script API` bileşenini kullanın. [Daha fazla bilgi](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Kullanılmayan kuralları stil sayfalarından kaldırmak için `PurgeCSS` `Gatsby` bileşenini kullanın. [Daha fazla bilgi](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Kullanılmayan JavaScript kodunu belirlemek için `Webpack Bundle Analyzer` kullanın. [Daha fazla bilgi](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Sabit öğeler için önbelleğe almayı yapılandırın. [Daha fazla bilgi](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Resim kalitesini düzenlemek için `<img>` yerine `gatsby-plugin-image` bileşenini kullanın. [Daha fazla bilgi](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Uygun `sizes` kurulumu için `gatsby-plugin-image` bileşenini kullanın. [Daha fazla bilgi](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "GIF dosyanızı, HTML5 videosu olarak yerleştirmek için kullanılabilmesini sağlayacak bir hizmete yüklemeyi düşünün."
@@ -2865,10 +2715,10 @@
     "message": "`<link rel=preload>` etiketleri, [bir temanın düzeni değiştirilerek](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) eklenebilir."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Resim biçimini otomatik olarak optimize etmek için `<img>` yerine `next/image` bileşenini kullanın. [Daha fazla bilgi](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Resimleri otomatik olarak geç yüklemek için `<img>` yerine `next/image` bileşenini kullanın. [Daha fazla bilgi](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "LCP görselini önceden yüklemek için `next/image` bileşenini kullanın ve \"önceliği\" doğru olarak ayarlayın. [Daha fazla bilgi](https://nextjs.org/docs/api-reference/next/image#priority)"
@@ -2883,7 +2733,7 @@
     "message": "Kullanılmayan kuralları stil sayfalarından kaldırmak için `Next.js` içerisinde `PurgeCSS` kurma seçeneğini değerlendirin. [Daha fazla bilgi](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Kullanılmayan JavaScript kodunu belirlemek için `Webpack Bundle Analyzer` kullanın. [Daha fazla bilgi](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Uygulamanızın gerçek dünya performansını ölçmek için `Next.js Analytics` kullanma seçeneğini değerlendirin. [Daha fazla bilgi](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Sabit öğeler ve `Server-side Rendered` (SSR) sayfaları için önbelleğe almayı yapılandırın. [Daha fazla bilgi](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Resim kalitesini düzenlemek için `<img>` yerine `next/image` bileşenini kullanın. [Daha fazla bilgi](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Uygun `sizes` kurulumu için `next/image` bileşenini kullanın. [Daha fazla bilgi](https://nextjs.org/docs/api-reference/next/image#sizes)."

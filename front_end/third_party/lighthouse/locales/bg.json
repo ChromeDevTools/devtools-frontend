@@ -981,25 +981,25 @@
     "message": "Разрешено с предупреждение"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% от LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Фаза"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Време"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Този елемент е най-голямото съдържание, изобразено в прозоречния изглед. [Научете повече за елемента, рендериран при изобразяване на най-голямото съдържание (LCP)](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Забавяне на зареждането"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Време за зареждане"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Забавяне при рендерирането"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Обмислете дали да не добавите unsafe-inline (пренебрегва се от браузъри, които поддържат nonce и хешове), за да се обезпечи обратна съвместимост с по-стари браузъри."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Заместващият знак (*) няма да обхваща заглавката Authorization при обработване на `Access-Control-Allow-Headers` в CORS."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Заявките за ресурси, чиито URL адреси съдържат премахнатите знаци за интервал (`(n|r|t)`) и знака за по-малко (`<`), са блокирани. За да се заредят тези ресурси, премахнете новите редове и кодирайте знаците за по-малко, използвани например в стойности на атрибути за елементи."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "Приложният програмен интерфейс `chrome.loadTimes()` е оттеглен. Вместо него използвайте стандартизирания API Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "Приложният програмен интерфейс `chrome.loadTimes()` е оттеглен. Вместо него използвайте стандартизирания API Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "Приложният програмен интерфейс `chrome.loadTimes()` е оттеглен. Вместо него използвайте стандартизирания API `nextHopProtocol` в Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "„Бисквитките“, съдържащи знак `(0|r|n)`, ще бъдат отхвърляни вместо скъсявани."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Възможността за отмяна на правилото за един и същ източник чрез задаване на `document.domain` е оттеглена и ще бъде деактивирана по подразбиране. Това предупреждение за оттегляне се отнася за достъпа от външни източници, активиран чрез настройката `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Възможността за задействане на {PH1} от вложени рамки от външни източници е оттеглена и ще бъде премахната в бъдеще."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "За деактивиране на стандартната интеграция на функцията за предаване трябва да се използва атрибутът `disableRemotePlayback`, а не селекторът `-internal-media-controls-overlay-cast-button`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "Приложният програмен интерфейс {PH1} е оттеглен. Вместо него използвайте {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Това е пример на преведено съобщение за оттегляне."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Възможността за отмяна на правилото за един и същ източник чрез задаване на `document.domain` е оттеглена и ще бъде деактивирана по подразбиране. За да продължите да използвате тази функция, откажете се от групите агенти с ключ източник, като изпратите заглавка `Origin-Agent-Cluster: ?0` заедно с HTTP отговора за документа и рамките. За повече подробности вижте https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "Приложният програмен интерфейс `Event.path` е оттеглен и ще бъде премахнат. Вместо него използвайте `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Заглавката `Expect-CT` е оттеглена и ще бъде премахната. Chrome изисква Прозрачност на сертификатите за всички публично надеждни сертификати, издадени след 30 април 2018 г."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Проверете страницата за състояние на функцията за още подробности."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` и `watchPosition()` вече не работят за незащитени източници. За да използвате тази функция, препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` и `watchPosition()` са оттеглени за незащитени източници. За да използвате тази функция, препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` вече не работи за незащитени източници. За да използвате тази функция, препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "Полето `RTCPeerConnectionIceErrorEvent.hostCandidate` е оттеглено. Вместо него използвайте `RTCPeerConnectionIceErrorEvent.address` или `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Източникът на търговеца и произволни данни от събитието `canmakepayment` на service worker са оттеглени и ще бъдат премахнати: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Уебсайтът заяви подресурс от мрежа, до която успя да осъществи достъп само заради специалните разрешения на потребителите в нея. Тези заявки разкриват в интернет информация за непублични устройства и сървъри. Това повишава риска от атаки чрез фалшифициране на заявки от друг сайт (CSRF) и/или от изтичане на информация. За да намали този риск, Chrome оттегля инициираните от незащитен контекст заявки до непублични подресурси и ще започне да ги блокира."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS не може да се зареди от URL адреси със схема `file:`, освен ако не завършват с файловото разширение `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Възможността за използване на `SourceBuffer.abort()` за прекратяване на асинхронното премахване на периоди чрез `remove()` е оттеглена поради промяна на спецификацията. Поддръжката ще бъде премахната в бъдеще. Вместо това трябва да използвате приемател за събитието `updateend`. Функцията `abort()` е предназначена за прекратяване само на асинхронно добавяне на мултимедия или нулиране на състоянието на инструмента за синтактичен анализ."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Възможността за задаване на стойност за `MediaSource.duration`, по-малка от най-голямото клеймо за дата и час за представяне на буферирани кодирани рамки, е оттеглена поради промяна на спецификацията. Поддръжката за неявно премахване на скъсена буферирана мултимедия ще бъде премахната в бъдеще. Вместо това трябва да извършвате изрично премахване чрез `remove(newDuration, oldDuration)` за всички елементи `sourceBuffers`, за които `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Тази промяна ще влезе в сила с важния етап {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Уеб MIDI ще иска разрешение за използване на специални системни съобщения дори ако опцията sysex не е посочена в `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "API за известия вече не може да се използва от незащитени източници. Препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Разрешението за достъп до API за известия вече не може да се заявява от вложени рамки от външни източници. Препоръчваме да го заявявате от рамка от първо ниво или да отваряте нов прозорец."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Партньорът ви договаря връзка през остаряла версия на (D)TLS. Помолете го да отстрани проблема."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "Възможността за използване на WebSQL в незащитен контекст е оттеглена и скоро ще бъде премахната. Моля, използвайте уеб хранилище или индексирана база от данни."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Посочването на `overflow: visible` в маркери img, video и canvas може да доведе до показване на визуално съдържание извън границите на елемента. Вижте https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "Приложният програмен интерфейс `paymentManager.instruments` е оттеглен. Вместо него използвайте функцията за навременно инсталиране на инструменти за обработване на плащания."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Начинът, по който извиквате `PaymentRequest`, заобикаля директивата `connect-src` на правилата за сигурност на съдържанието (CSP). Тази възможност за заобикаляне е оттеглена. От `PaymentRequest` API (в полето `supportedMethods`) добавете идентификатора на начина на плащане към директивата `connect-src` на CSP."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "Типът `StorageType.persistent` е оттеглен. Вместо него използвайте стандартизирания `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "Комбинацията от `<source src>` и родителски елемент `<picture>` е невалидна и следователно бе пренебрегната. Вместо това използвайте `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "Приложният програмен интерфейс `window.webkitStorageInfo` е оттеглен. Вместо него използвайте стандартизирания `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Заявките за подресурси, чиито URL адреси съдържат вградени идентификационни данни (напр. `https://user:pass@host/`), са блокирани."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Ограничението `DtlsSrtpKeyAgreement` е премахнато. Посочихте за него стойност `false`, която се тълкува като опит за използване на оттегления метод `SDES key negotiation`. Тази функционалност е премахната. Вместо нея използвайте услуга, която поддържа `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Ограничението `DtlsSrtpKeyAgreement` е премахнато. Посочихте за него стойност `true`, която няма ефект, но можете да премахнете това ограничение с цел опростяване."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Установено е използване на `Complex Plan B SDP`. Тази версия на `Session Description Protocol` вече не се поддържа. Вместо нея използвайте `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Версията `Plan B SDP semantics`, която се използва за изграждане на връзка от типа `RTCPeerConnection` с `{sdpSemantics:plan-b}`, е предишна, нестандартна версия на `Session Description Protocol`, която е изтрита за постоянно от уеб платформата. Тя все още е налична при създаване на връзки чрез `IS_FUCHSIA`, но планираме да я изтрием възможно най-скоро. Спрете да разчитате на нея. За информация относно състоянието вижте https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Опцията `rtcpMuxPolicy` е оттеглена и ще бъде премахната."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` ще изисква изолиране от външни източници. За повече подробности вижте https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Възможността за използване на `speechSynthesis.speak()` без активиране от потребител е оттеглена и ще бъде премахната."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Използвана е оттеглена функция"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Разширенията трябва да се включат в изолирането от външни източници, за да продължат да използват `SharedArrayBuffer`. Вижте https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "Методът {PH1} е за конкретен доставчик. Вместо него използвайте стандартния {PH2}."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "UTF-16 не се поддържа от JSON отговора в `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Възможността за използване на синхронни обекти `XMLHttpRequest` в основната нишка е оттеглена, тъй като влошава практическата работа на крайните потребители. За повече помощ посетете https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "Методът `supportsSession()` е оттеглен. Вместо него използвайте `isSessionSupported()` и проверете получената логическа стойност."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Време на блокиране на основната нишка"
   },
@@ -2760,31 +2610,31 @@
     "message": "Използвайте [Ezoic Leap](https://pubdash.ezoic.com/speed) и активирайте `Resize Images` с цел преоразмеряване на изображенията до размер, подходящ за конкретно устройство, за да намалите необходимите мрежови ресурси."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Използвайте компонента `gatsby-plugin-image` вместо `<img>` с цел автоматично оптимизиране на графичния формат. [Научете повече](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Използвайте компонента `gatsby-plugin-image` вместо `<img>` с цел автоматично забавяне на зареждането на изображенията. [Научете повече](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Използвайте компонента `gatsby-plugin-image` и задайте `eager` за свойството `loading`. [Научете повече](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Използвайте `Gatsby Script API`, за да отложите зареждането на некритични скриптове от трети страни. [Научете повече](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Използвайте приставката `Gatsby` за `PurgeCSS`, за да премахнете неизползваните правила от стиловите листове. [Научете повече](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Използвайте `Webpack Bundle Analyzer`, за да откриете неизползван JavaScript код. [Научете повече](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Конфигурирайте кеширането на непроменливите активи. [Научете повече](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Използвайте компонента `gatsby-plugin-image` вместо `<img>`, за да коригирате качеството на изображенията. [Научете повече](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Използвайте компонента `gatsby-plugin-image`, за да зададете подходяща стойност за `sizes`. [Научете повече](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Добре е да качите GIF файла си в услуга, която ще даде възможност да бъде вграден като видеоклип с HTML5."
@@ -2865,10 +2715,10 @@
     "message": "Можете да добавите маркери `<link rel=preload>`, като [промените оформлението на дадената тема](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Използвайте компонента `next/image` вместо `<img>` с цел автоматично оптимизиране на графичния формат. [Научете повече](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Използвайте компонента `next/image` вместо `<img>` с цел автоматично забавяне на зареждането на изображенията. [Научете повече](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Използвайте компонента `next/image` и задайте true за priority с цел предварително зареждане на най-голямото изображение (LCP). [Научете повече](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Добре е да настроите `PurgeCSS` в конфигурацията с `Next.js`, за да премахнете неизползваните правила от стиловите листове. [Научете повече](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Използвайте `Webpack Bundle Analyzer`, за да откриете неизползван JavaScript код. [Научете повече](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Добре е да използвате `Next.js Analytics`, за да измервате действителната ефективност на приложението си. [Научете повече](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Конфигурирайте кеширането на непроменливите активи и SSR (`Server-side Rendered`) страници. [Научете повече](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Използвайте компонента `next/image` вместо `<img>`, за да коригирате качеството на изображенията. [Научете повече](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Използвайте компонента `next/image`, за да зададете подходяща стойност за `sizes`. [Научете повече](https://nextjs.org/docs/api-reference/next/image#sizes)."

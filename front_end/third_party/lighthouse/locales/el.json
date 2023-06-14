@@ -981,25 +981,25 @@
     "message": "Επιτρέπεται με προειδοποίηση"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Φάση"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Χρονισμός"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Αυτό είναι το στοιχείο με τη μεγαλύτερη σχεδίαση με περιεχόμενο στη θύρα προβολής. [Μάθετε περισσότερα σχετικά με το στοιχείο Μεγαλύτερη σχεδίαση με περιεχόμενο](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Καθυστέρηση φόρτωσης"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Χρόνος φόρτωσης"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Καθυστέρηση απόδοσης"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Εξετάστε το ενδεχόμενο να προσθέσετε το unsafe-inline (παραβλέπεται από προγράμματα περιήγησης που υποστηρίζουν αριθμούς nonce/κατακερματισμούς) για συμβατότητα με παλαιότερα προγράμματα περιήγησης."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Η εξουσιοδότηση θα καλυφθεί από τον χαρακτήρα μπαλαντέρ (*) στον χειρισμό `Access-Control-Allow-Headers` CORS."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Τα αιτήματα πόρων των οποίων τα URL περιείχαν καταργημένους χαρακτήρες κενού διαστήματος `(n|r|t)` και χαρακτήρες \"λιγότερο από\" (`<`) αποκλείονται. Καταργήστε τις νέες γραμμές και κωδικοποιήστε τους χαρακτήρες \"λιγότερο από\" από μέρη, όπως οι τιμές χαρακτηριστικών στοιχείων, προκειμένου να γίνει φόρτωση αυτών των πόρων."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "Το `chrome.loadTimes()` έχει καταργηθεί. Αντ' αυτού, χρησιμοποιήστε το τυποποιημένο API: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "Το `chrome.loadTimes()` έχει καταργηθεί. Αντ' αυτού χρησιμοποιήστε το τυποποιημένο API: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "Το `chrome.loadTimes()` έχει καταργηθεί. Αντ' αυτού, χρησιμοποιήστε το τυποποιημένο API: `nextHopProtocol` στο Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Τα cookie που περιέχουν χαρακτήρα `(0|r|n)` θα απορριφθούν αντί να περικοπούν."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Η χαλάρωση της πολιτικής κοινής προέλευσης με ρύθμιση του `document.domain` έχει καταργηθεί και θα απενεργοποιηθεί από προεπιλογή. Αυτή η προειδοποίηση κατάργησης αφορά μια πρόσβαση διασταυρούμενων προελεύσεων που ενεργοποιήθηκε με τη ρύθμιση του `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Η ενεργοποίηση του {PH1} από iframe διασταυρούμενων προελεύσεων έχει καταργηθεί και θα αποσυρθεί στο μέλλον."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Το χαρακτηριστικό `disableRemotePlayback` θα πρέπει να χρησιμοποιείται για την απενεργοποίηση της προεπιλεγμένης ενσωμάτωσης μετάδοσης αντί να χρησιμοποιείται ο επιλογέας `-internal-media-controls-overlay-cast-button`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "Το {PH1} καταργήθηκε. Αντ' αυτού, χρησιμοποιήστε το {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Αυτό είναι ένα παράδειγμα μεταφρασμένου μηνύματος για πρόβλημα κατάργησης."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Η χαλάρωση της πολιτικής κοινής προέλευσης με ρύθμιση του `document.domain` έχει καταργηθεί και θα απενεργοποιηθεί από προεπιλογή. Για να συνεχίσετε να χρησιμοποιείτε αυτήν τη λειτουργία, εξαιρεθείτε από τα συμπλέγματα παραγόντων με κλειδιά προέλευσης, στέλνοντας μια κεφαλίδα `Origin-Agent-Cluster: ?0` μαζί με την απόκριση HTTP για το έγγραφο και τα πλαίσια. Ανατρέξτε στη σελίδα https://developer.chrome.com/blog/immutable-document-domain/ για περισσότερες λεπτομέρειες."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "Το `Event.path` καταργήθηκε και θα αποσυρθεί. Αντ' αυτού, χρησιμοποιήστε το `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Η κεφαλίδα `Expect-CT` καταργήθηκε και θα αποσυρθεί. Το Chrome απαιτεί Διαφάνεια πιστοποιητικών για όλα τα πιστοποιητικά που θεωρούνται αξιόπιστα δημοσίως και έχουν εκδοθεί μετά τις 30 Απριλίου 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Ελέγξτε τη σελίδα κατάστασης λειτουργίας για περισσότερες λεπτομέρειες."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "Τα `getCurrentPosition()` και `watchPosition()` δεν λειτουργούν πλέον σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτήν τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "Τα `getCurrentPosition()` και `watchPosition()` καταργήθηκαν σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτήν τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "Το `getUserMedia()` δεν λειτουργεί πλέον σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτήν τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "Το `RTCPeerConnectionIceErrorEvent.hostCandidate` καταργήθηκε. Αντ' αυτού, χρησιμοποιήστε το `RTCPeerConnectionIceErrorEvent.address` ή το `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Η προέλευση εμπόρου και αυθαίρετα δεδομένα από το συμβάν service worker `canmakepayment` έχουν αποσυρθεί και θα καταργηθούν: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Ο ιστότοπος ζήτησε έναν δευτερεύοντα πόρο από ένα δίκτυο στο οποίο θα μπορούσε να αποκτήσει πρόσβαση μόνο λόγω της προνομιακής θέσης δικτύου των χρηστών του. Αυτά τα αιτήματα εκθέτουν τις μη δημόσιες συσκευές και τους μη δημόσιους διακομιστές στο διαδίκτυο, αυξάνοντας τον κίνδυνο επίθεσης τύπου cross-site request forgery (CSRF) ή/και διαρροής πληροφοριών. Για να μειωθούν αυτοί οι κίνδυνοι, το Chrome καταργεί τα αιτήματα σε μη δημόσιους δευτερεύοντες πόρους, όταν εκκινούνται από μη ασφαλή περιβάλλοντα και θα αρχίσει να τα αποκλείει."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "Δεν είναι δυνατή η φόρτωση του CSS από τα URL `file:`, εκτός εάν καταλήγουν σε επέκταση αρχείου `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Η χρήση του `SourceBuffer.abort()` για ακύρωση της ασύγχρονης κατάργησης εύρους του στοιχείου `remove()` έχει καταργηθεί λόγω αλλαγής προδιαγραφών. Η υποστήριξη θα καταργηθεί μελλοντικά. Εναλλακτικά, θα πρέπει να χρησιμοποιήσετε τη λειτουργία αναμονής για το συμβάν `updateend`. Το `abort()` προορίζεται μόνο για την ακύρωση της ασύγχρονης προσάρτησης μέσου ή την επαναφορά κατάστασης συντακτικού αναλυτή."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Η ρύθμιση του `MediaSource.duration` κάτω από την υψηλότερη χρονική σήμανση παρουσίασης τυχόν κωδικοποιημένων πλαισίων στην προσωρινή μνήμη έχει καταργηθεί λόγω αλλαγής προδιαγραφών. Η υποστήριξη για την έμμεση κατάργηση των περικομμένων μέσων στην προσωρινή μνήμη θα καταργηθεί στο μέλλον. Αντ' αυτού θα πρέπει να εκτελέσετε ρητή `remove(newDuration, oldDuration)` σε όλα τα `sourceBuffers`, όπου `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Αυτή η αλλαγή θα τεθεί σε ισχύ με το ορόσημο {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Το MIDI ιστού θα ζητήσει άδεια για χρήση ακόμα και αν το sysex δεν είναι καθορισμένο στο `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Το Notification API δεν μπορεί πλέον να χρησιμοποιείται από μη ασφαλείς προελεύσεις. Θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Δεν επιτρέπεται πλέον να ζητείται άδεια για το Notification API από ένα iframe διασταυρούμενων προελεύσεων. Θα πρέπει να εξετάσετε το ενδεχόμενο να ζητήσετε άδεια από ένα πλαίσιο ανώτερου επιπέδου ή, εναλλακτικά, να ανοίξετε ένα νέο παράθυρο."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Ο συνεργάτης σας κάνει διαπραγμάτευση για μια παρωχημένη έκδοση (D)TLS. Επικοινωνήστε με τον συνεργάτη σας για την επίλυση αυτού του ζητήματος."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "Το WebSQL σε μη ασφαλή περιβάλλοντα έχει καταργηθεί και θα αποσυρθεί σύντομα. Χρησιμοποιήστε αποθηκευτικό χώρο ιστού ή καταλογοποιημένη βάση δεδομένων."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Ο καθορισμός του στοιχείου `overflow: visible` σε ετικέτες img, video και canvas μπορεί να έχει ως αποτέλεσμα τη δημιουργία οπτικού περιεχομένου εκτός των ορίων του στοιχείου. Ανατρέξτε στη διεύθυνση https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "Το `paymentManager.instruments` καταργήθηκε. Χρησιμοποιήστε αντ' αυτού την έγκαιρη εγκατάσταση για τους δείκτες χειρισμού πληρωμών."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Η κλήση `PaymentRequest` παρέβλεψε την οδηγία `connect-src` της Πολιτικής ασφάλειας περιεχομένου (CSP). Αυτή η παράκαμψη καταργήθηκε. Προσθέστε το αναγνωριστικό τρόπου πληρωμής από το `PaymentRequest` API (στο πεδίο `supportedMethods`) στην οδηγία `connect-src` της CSP."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "Το `StorageType.persistent` καταργήθηκε. Αντ' αυτού, χρησιμοποιήστε το τυποποιημένο `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "Το `<source src>` με γονικό στοιχείο `<picture>` δεν είναι έγκυρο και συνεπώς παραβλέφθηκε. Εναλλακτικά, χρησιμοποιήστε το `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "Το `window.webkitStorageInfo` καταργήθηκε. Αντ' αυτού, χρησιμοποιήστε το τυποποιημένο `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Τα αιτήματα δευτερευόντων πόρων των οποίων τα URL περιέχουν ενσωματωμένα διαπιστευτήρια (π.χ. `https://user:pass@host/`) είναι αποκλεισμένα."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Ο περιορισμός `DtlsSrtpKeyAgreement` καταργήθηκε. Έχετε καθορίσει μια τιμή `false` για αυτόν τον περιορισμό, η οποία ερμηνεύεται ως προσπάθεια χρήσης της μεθόδου `SDES key negotiation` που καταργήθηκε. Αυτή η λειτουργία καταργήθηκε, χρησιμοποιήστε εναλλακτικά μια υπηρεσία που υποστηρίζει το `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Ο περιορισμός `DtlsSrtpKeyAgreement` καταργήθηκε. Έχετε καθορίσει μια τιμή `true` για αυτόν τον περιορισμό, η οποία δεν είχε κάποια επίδραση, αλλά μπορείτε να καταργήσετε αυτόν τον περιορισμό για λόγους οργάνωσης."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Εντοπίστηκε το `Complex Plan B SDP`. Αυτή η διάλεκτος του `Session Description Protocol` δεν υποστηρίζεται πλέον. Εναλλακτικά, χρησιμοποιήστε το `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Το `Plan B SDP semantics`, το οποίο χρησιμοποιείται κατά την κατασκευή `RTCPeerConnection` με `{sdpSemantics:plan-b}`, αποτελεί μια μη τυπική έκδοση παλαιού τύπου του `Session Description Protocol` που έχει διαγραφεί οριστικά από την πλατφόρμα ιστού. Είναι ακόμα διαθέσιμο κατά την κατασκευή με `IS_FUCHSIA`, αλλά σκοπεύουμε να το διαγράψουμε το συντομότερο δυνατό. Δεν θα πρέπει να εξαρτάστε πλέον από αυτό. Ανατρέξτε στη σελίδα https://crbug.com/1302249 για την κατάσταση."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Η επιλογή `rtcpMuxPolicy` καταργήθηκε και θα αποσυρθεί."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "Για το `SharedArrayBuffer` θα απαιτηθεί απομόνωση διασταυρούμενων προελεύσεων. Ανατρέξτε στη διεύθυνση https://developer.chrome.com/blog/enabling-shared-array-buffer/ για περισσότερες λεπτομέρειες."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Το `speechSynthesis.speak()` χωρίς ενεργοποίηση χρήστη καταργήθηκε και θα αποσυρθεί."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Χρησιμοποιήθηκε λειτουργία που έχει καταργηθεί"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Οι επεκτάσεις θα πρέπει να συμμετέχουν στην απομόνωση διασταυρούμενων προελεύσεων, για να συνεχιστεί η χρήση του `SharedArrayBuffer`. Ανατρέξτε στη διεύθυνση https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "Το {PH1} εξαρτάται από τον προμηθευτή. Χρησιμοποιήστε εναλλακτικά το τυπικό {PH2}."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "Το UTF-16 δεν υποστηρίζεται από το json απόκρισης στο `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Το συγχρονισμένο `XMLHttpRequest` στο κύριο νήμα έχει καταργηθεί λόγω των επιζήμιων συνεπειών του στην εμπειρία τελικού χρήστη. Για περισσότερη βοήθεια, ανατρέξτε στη σελίδα https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "Το `supportsSession()` καταργήθηκε. Χρησιμοποιήστε το `isSessionSupported()` και ελέγξτε εναλλακτικά την τιμή boolean που έχει επιλυθεί."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Χρόνος αποκλεισμού κύριου νήματος"
   },
@@ -2760,31 +2610,31 @@
     "message": "Χρησιμοποιήστε το [Ezoic Leap](https://pubdash.ezoic.com/speed) και ενεργοποιήστε το `Resize Images` για να αλλάξετε το μέγεθος των εικόνων στο κατάλληλο μέγεθος μιας συσκευής, μειώνοντας τα μεγέθη φορτίων δικτύου."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Χρησιμοποιήστε το στοιχείο `gatsby-plugin-image` αντί του `<img>` για την αυτόματη βελτιστοποίηση της μορφής εικόνας. [Μάθετε περισσότερα](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Χρησιμοποιήστε το στοιχείο `gatsby-plugin-image` αντί του `<img>` για την αυτόματη αργή φόρτωση των εικόνων. [Μάθετε περισσότερα](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Χρησιμοποιήστε το στοιχείο `gatsby-plugin-image` και ορίστε την ιδιότητα `loading` σε `eager`. [Μάθετε περισσότερα](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Χρησιμοποιήστε το στοιχείο `Gatsby Script API` για να αναβάλετε τη φόρτωση των σεναρίων τρίτου μέρους δευτερεύουσας σημασίας. [Μάθετε περισσότερα](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Χρησιμοποιήστε την προσθήκη `PurgeCSS` `Gatsby` για να καταργήσετε τους κανόνες που δεν χρησιμοποιούνται από τα φύλλα στιλ. [Μάθετε περισσότερα](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Χρησιμοποιήστε το στοιχείο `Webpack Bundle Analyzer` για ανίχνευση κώδικα JavaScript που δεν χρησιμοποιείται. [Μάθετε περισσότερα](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Διαμόρφωση κρυφής μνήμης για αμετάβλητα στοιχεία. [Μάθετε περισσότερα](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Χρησιμοποιήστε το στοιχείο `gatsby-plugin-image` αντί του `<img>` για να προσαρμόσετε την ποιότητα εικόνας. [Μάθετε περισσότερα](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Χρησιμοποιήστε το στοιχείο `gatsby-plugin-image` για να ορίσετε το κατάλληλο `sizes`. [Μάθετε περισσότερα](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Εξετάστε το ενδεχόμενο να ανεβάσετε το GIF σε μια υπηρεσία η οποία θα το διαθέσει για ενσωμάτωση ως βίντεο HTML5."
@@ -2865,10 +2715,10 @@
     "message": "Οι ετικέτες `<link rel=preload>` μπορούν να προστεθούν [τροποποιώντας τη διάταξη ενός θέματος](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Χρησιμοποιήστε το στοιχείο `next/image` αντί του `<img>` για την αυτόματη βελτιστοποίηση της μορφής εικόνας. [Μάθετε περισσότερα](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Χρησιμοποιήστε το στοιχείο `next/image` αντί του `<img>` για την αυτόματη αργή φόρτωση των εικόνων. [Μάθετε περισσότερα](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Χρησιμοποιήστε το στοιχείο `next/image` και ορίστε το πεδίο προτεραιότητα σε αληθές για την προφόρτωση της εικόνας LCP. [Μάθετε περισσότερα](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Εξετάστε το ενδεχόμενο να ρυθμίσετε το στοιχείο `PurgeCSS` στη διαμόρφωση `Next.js` για να καταργήσετε τους κανόνες που δεν χρησιμοποιούνται από τα φύλλα στιλ. [Μάθετε περισσότερα](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Χρησιμοποιήστε το στοιχείο `Webpack Bundle Analyzer` για ανίχνευση κώδικα JavaScript που δεν χρησιμοποιείται. [Μάθετε περισσότερα](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Εξετάστε το ενδεχόμενο να χρησιμοποιήσετε το στοιχείο `Next.js Analytics` για να μετράτε την πραγματική απόδοση της εφαρμογής σας. [Μάθετε περισσότερα](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Διαμόρφωση κρυφής μνήμης για αμετάβλητα στοιχεία και σελίδες `Server-side Rendered` (SSR). [Μάθετε περισσότερα](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Χρησιμοποιήστε το στοιχείο `next/image` αντί του `<img>` για να προσαρμόσετε την ποιότητα εικόνας. [Μάθετε περισσότερα](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Χρησιμοποιήστε το στοιχείο `next/image` για να ρυθμίσετε το κατάλληλο `sizes`. [Μάθετε περισσότερα](https://nextjs.org/docs/api-reference/next/image#sizes)."

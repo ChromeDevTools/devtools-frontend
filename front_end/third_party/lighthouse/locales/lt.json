@@ -981,28 +981,28 @@
     "message": "Leidžiama su įspėjimu"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "DTŽ proc."
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Fazė"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Laikas"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Tai didžiausias turiningas elementas, pažymėtas peržiūros srityje. [Sužinokite daugiau apie didžiausio turiningo žymėjimo elementą](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Įkėlimo delsa"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Įkėlimo laikas"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Pateikimo delsa"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
-    "message": "TTFB"
+    "message": "LPB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "Didžiausio turiningo žymėjimo elementas"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Apsvarstykite galimybę pridėti raktinį žodį „unsafe-inline“ (nepaisoma naršyklėse, palaikančiose vertes „nonce“ / „hash“), kad būtų užtikrintas atgalinis suderinamumas su senesnėmis naršyklėmis."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Prieigos teisė nebus įtraukta naudojant pakaitos simbolį (*) vykdant CORS funkcijos „`Access-Control-Allow-Headers`“ apdorojimą."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Šaltinių užklausos, kurių URL buvo pašalintų matomų tarpų „`(n|r|t)`“ simbolių ir simbolių „mažiau ne“ („`<`“), yra užblokuotos. Pašalinkite naujas eilutes ir užkoduokite simbolius „mažiau nei“ tokiose vietose kaip elementų atributų vertės, kad įkeltumėte šiuos šaltinius."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "Funkcijos „`chrome.loadTimes()`“ teikimas nutrauktas; vietoj jos naudokite standartizuotą API: „2 naršymo laiko žymės“."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "„`chrome.loadTimes()`“ teikimas nutrauktas; vietoj to naudokite standartizuotą API: „Vizualizavimo laiko žymės“."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "„`chrome.loadTimes()`“ teikimas nutrauktas; vietoj jos naudokite standartizuotą API: „`nextHopProtocol`“ skiltyje „2 naršymo laiko žymės“."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Slapukai, kuriuose yra „`(0|r|n)`“ simbolis, bus atmesti, o ne sutrumpinti."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "To paties šaltinio politikos apribojimų atlaisvinimo nustatant „`document.domain`“ funkcijos teikimas nutrauktas ir ji bus išjungta pagal numatytuosius nustatymus. Šis teikimo nutraukimo perspėjimas skirtas skirtingų šaltinių prieigai, kuri buvo įgalinta nustačius „`document.domain`“."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Funkcijos „{PH1}“ suaktyvinimo iš skirtingų šaltinių „iframe“ teikimas nutrauktas ir ateityje ji bus pašalinta."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Norint išjungti numatytąjį „Cast“ integravimą turėtų būti naudojamas atributas „`disableRemotePlayback`“ atributas vietoj parinkiklio „`-internal-media-controls-overlay-cast-button`“."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "„{PH1}“ teikimas nutrauktas. Vietoj jos naudokite funkciją „{PH2}“."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Tai yra išversto teikimo nutraukimo problemos pranešimo pavyzdys."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "To paties šaltinio politikos apribojimų atlaisvinimo nustatant „`document.domain`“ funkcijos teikimas nutrauktas ir ji bus išjungta pagal numatytuosius nustatymus. Jei norite toliau naudoti šią funkciją, atsisakykite šaltiniu pagrįstų priemonės grupių siųsdami „`Origin-Agent-Cluster: ?0`“ antraštę su HTTP atsaku dokumentui ir rėmeliams. Jei reikia išsamesnės informacijos, žr. https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "„`Event.path`“ teikimas nutrauktas ir ji bus pašalinta. Vietoj jos naudokite „`Event.composedPath()`“."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "„`Expect-CT`“ antraštės teikimas nutrauktas ir ji bus pašalinta. „Chrome“ reikalauja visų viešai pateikiamų sertifikatų, išduotų po 2018 m. balandžio 30 d., sertifikato skaidrumo."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Jei reikia daugiau išsamios informacijos, žr. funkcijų būsenos puslapį."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "„`getCurrentPosition()`“ ir „`watchPosition()`“ nebeveikia nesaugiuose šaltiniuose. Jei norite naudoti šią funkciją, turite apsvarstyti galimybę perjungti programą į saugų šaltinį, pvz., HTTPS. Jei reikia išsamesnės informacijos, žr. https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "Funkcijų „`getCurrentPosition()`“ ir „`watchPosition()`“ teikimas nutrauktas nesaugiuose šaltiniuose. Jei norite naudoti šią funkciją, turite apsvarstyti galimybę perjungti programą į saugų šaltinį, pvz., HTTPS. Jei reikia išsamesnės informacijos, žr. https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "„`getUserMedia()`“ nebeveikia nesaugiuose šaltiniuose. Jei norite naudoti šią funkciją, turite apsvarstyti galimybę perjungti programą į saugų šaltinį, pvz., HTTPS. Jei reikia išsamesnės informacijos, žr. https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "„`RTCPeerConnectionIceErrorEvent.hostCandidate`“ teikimas nutrauktas. Vietoj to naudokite „`RTCPeerConnectionIceErrorEvent.address`“ arba „`RTCPeerConnectionIceErrorEvent.port`“."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Prekybininko šaltinio ir atsitiktinių duomenų iš „`canmakepayment`“ pagalbinio „JavaScript“ failo įvykio teikimas nutrauktas ir jie bus pašalinti: „`topOrigin`“, „`paymentRequestOrigin`“, „`methodData`“, „`modifiers`“."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Svetainė pateikė papildomo šaltinio užklausą iš tinklo, kurį ji galėtų pasiekti tik dėl savo naudotojų privilegijuotosios tinklo pozicijos. Šiose užklausose parodomi ne vieši įrenginiai ir serveriai internete, todėl padidėja užklausos iš trečiosios šalies svetainės klastojimo (angl. „cross-site request forgery“, CSRF) atakos ir (arba) informacijos nutekėjimo rizika. Siekdama sumažinti šią riziką, „Chrome“ nutraukia užklausų ne viešiems papildomiems šaltiniams teikimą, kai jos inicijuojamos iš nesaugios aplinkos, ir pradės jas blokuoti."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS kalbos negalima įkelti iš „`file:`“ URL, nebent jie baigiasi `.css` failo plėtiniu."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "„`SourceBuffer.abort()`“ naudojimas siekiant nutraukti „`remove()`“ nesinchronizuoto diapazono pašalinimą nutrauktas dėl specifikacijos pakeitimo. Ateityje palaikymas bus pašalintas. Turėtumėte klausytis `updateend` įvykio. „`abort()`“ skirtas naudoti tik norint nutraukti nesinchronizuotos medijos pridėjimą arba iš naujo nustatyti analizavimo įrankio būseną."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "„`MediaSource.duration`“ nustatymas žemiau nei bet kurio į buferį įrašyto užkoduoto rėmelio aukščiausia pristatymo laiko žymė nutrauktas dėl specifikacijos pakeitimo. Sutrumpintos į buferį įrašytos medijos numatomo pašalinimo palaikymas ateityje bus pašalintas. Vietoj to turėtumėte atlikti aiškų „`remove(newDuration, oldDuration)`“ visuose „`sourceBuffers`“, kur „`newDuration < oldDuration`“."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Šis pakeitimas įsigalios paskelbus pagrindinės versijos numerį {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Žiniatinklio MIDI prašys naudojimo leidimo, net jei sistemos išskirtinis pranešimas nenurodytas funkcijoje „`MIDIOptions`“."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Pranešimų API nebegalima naudoti iš nesaugių šaltinių. Turėtumėte apsvarstyti galimybę perjungti programą į saugų šaltinį, pvz., HTTPS. Jei reikia išsamesnės informacijos, žr. https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Pranešimų API leidimo užklausų nebegalima teikti iš skirtingų šaltinių „iframe“. Vietoj to turėtumėte apsvarstyti galimybę teikti leidimo užklausą iš aukščiausio lygio rėmelio arba atidaryti naują langą."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Jūsų partneris derasi dėl pasenusios (D)TLS versijos. Susisiekite su partneriu, kad tai sutvarkytumėte."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "„WebSQL“ nesaugiame kontekste nebenaudojamas ir netrukus bus pašalintas. Naudokite žiniatinklio saugyklą arba indeksuotą duomenų bazę."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Žymose „img“, „video“ ir „canvas“ nurodžius „`overflow: visible`“, vaizdo turinys gali būti sukurtas už elemento ribų. Žr. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "„`paymentManager.instruments`“ teikimas nutrauktas. Mokėjimų doroklėms naudokite tiesioginį diegimą."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "„`PaymentRequest`“ iškvietimas apėjo turinio apsaugos politikos (CSP) direktyvą „`connect-src`“. Šis apėjimas nebenaudojamas. Pridėkite mokėjimo metodo identifikatorių iš „`PaymentRequest`“ API (lauke „`supportedMethods`“) prie CSP direktyvos „`connect-src`“."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "„`StorageType.persistent`“ teikimas nutrauktas. Vietoj to naudokite standartizuotą „`navigator.storage`“."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "Elementas „`<source src>`“ su „`<picture>`“ aukštesniuoju elementu netinkamas, todėl jo nepaisoma. Vietoj jo naudokite „`<source srcset>`“."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "„`window.webkitStorageInfo`“ teikimas nutrauktas. Vietoj to naudokite standartizuotą „`navigator.storage`“."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Papildomų šaltinių užklausos, kurių URL yra įterptų prisijungimo duomenų (pvz., `https://user:pass@host/`), yra užblokuotos."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Apribojimas „`DtlsSrtpKeyAgreement`“ pašalintas. Nurodėte šio apribojimo „`false`“ vertę, kuri interpretuojama kaip bandymas naudoti pašalintą „`SDES key negotiation`“ metodą. Ši funkcija pašalinta; vietoj jos naudokite paslaugą, kuri palaiko „`DTLS key negotiation`“."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Apribojimas „`DtlsSrtpKeyAgreement`“ pašalintas. Nurodėte šio apribojimo „`true`“ vertę, kuri neturėjo jokio poveikio, bet galite pašalinti šį apribojimą, kad būtų tvarkingiau."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Aptikta „`Complex Plan B SDP`“. Šis „`Session Description Protocol`“ dialektas nebepalaikomas. Vietoj jo naudokite „`Unified Plan SDP`“."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "„`Plan B SDP semantics`“, kuris naudojamas kuriant „`RTCPeerConnection`“, naudojant „`{sdpSemantics:plan-b}`“, yra pasenusi nestandartinė „`Session Description Protocol`“ versija, kuri buvo visam laikui ištrinta iš žiniatinklio platformos. Ji vis dar pasiekiama, jei kuriama naudojant „`IS_FUCHSIA`“, bet ketiname ją kuo greičiau ištrinti. Nebenaudokite jos. Būseną žr. adresu https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Parinkties „`rtcpMuxPolicy`“ teikimas nutrauktas ir ji bus pašalinta."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "Funkcijai „`SharedArrayBuffer`“ reikalinga apsauga nuo subjektų iš kitų domenų. Jei reikia išsamesnės informacijos, žr. https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Funkcijos „`speechSynthesis.speak()`“ be naudotojo suaktyvinimo teikimas nutrauktas ir ji bus pašalinta."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Naudojama funkcija, kurios teikimas nutrauktas"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Plėtiniams reikia pasirinkti apsaugą nuo subjektų iš kitų domenų, norint toliau naudoti „`SharedArrayBuffer`“. Žr. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "Funkcija „{PH1}“ yra konkretaus paslaugų teikėjo. Vietoj jos naudokite įprastą funkciją „{PH2}“."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "UTF-16 nepalaikomas atsako JSON naudojant funkciją „`XMLHttpRequest`“"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Sinchroninės funkcijos „`XMLHttpRequest`“ pagrindinėje grupėje teikimas nutrauktas dėl jos žalingo poveikio galutinio naudotojo funkcijoms. Jei reikia daugiau pagalbos, žr. https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "„`supportsSession()`“ teikimas nutrauktas. Vietoj to naudokite funkciją „`isSessionSupported()`“ ir patikrinkite priskirtą loginę vertę."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Pagrindinės grupės blokavimo laikas"
   },
@@ -2760,31 +2610,31 @@
     "message": "Naudodami [„Ezoic Leap“](https://pubdash.ezoic.com/speed) įgalinkite nustatymą „`Resize Images`“, kad pakeistumėte vaizdų dydį pagal įrenginį ir sumažintumėte tinklo naudingąją apkrovą."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Naudokite komponentą „`gatsby-plugin-image`“ vietoj „`<img>`“ vaizdų formatui automatiškai optimizuoti. [Sužinokite daugiau](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Naudokite komponentą „`gatsby-plugin-image`“ vietoj „`<img>`“ vaizdams automatiškai asinchroniškai įkelti. [Sužinokite daugiau](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Naudokite komponentą „`gatsby-plugin-image`“ ir nustatykite „`loading`“ pasiūlymą kaip „`eager`“. [Sužinokite daugiau](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Naudokite „`Gatsby Script API`“, kad atidėtumėte neesminių trečiosios šalies scenarijų įkėlimą. [Sužinokite daugiau](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Naudokite papildinį „`PurgeCSS` `Gatsby`“, kad pašalintumėte nenaudojamas taisykles iš stiliaus aprašų. [Sužinokite daugiau](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Naudokite „`Webpack Bundle Analyzer`“, kad aptiktumėte nenaudojamą „JavaScript“ kodą. [Sužinokite daugiau](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Konfigūruokite nekintamų išteklių saugojimą talpykloje. [Sužinokite daugiau](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Naudokite komponentą „`gatsby-plugin-image`“ vietoj „`<img>`“ vaizdų kokybei koreguoti. [Sužinokite daugiau](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Naudokite komponentą „`gatsby-plugin-image`“ atitinkamam „`sizes`“ nustatyti. [Sužinokite daugiau](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Apsvarstykite galimybę įkelti savo GIF į paslaugą, kuri leis jį įterpti kaip HTML5 vaizdo įrašą."
@@ -2865,10 +2715,10 @@
     "message": "Žymas „`<link rel=preload>`“ galima pridėti [keičiant temos išdėstymą](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Naudokite komponentą „`next/image`“ vietoj „`<img>`“ vaizdų formatui automatiškai optimizuoti. [Sužinokite daugiau](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Naudokite komponentą „`next/image`“ vietoj „`<img>`“ vaizdams automatiškai asinchroniškai įkelti. [Sužinokite daugiau](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Naudodami komponentą „`next/image`“ nustatykite prioritetą į „True“ ir iš anksto įkelkite DTŽ vaizdą. [Sužinokite daugiau](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Apsvarstykite galimybę nustatyti „`PurgeCSS`“ konfigūruodami „`Next.js`“, kad pašalintumėte nenaudojamas taisykles iš stiliaus aprašų. [Sužinokite daugiau](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Naudokite „`Webpack Bundle Analyzer`“, kad aptiktumėte nenaudojamą „JavaScript“ kodą. [Sužinokite daugiau](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Apsvarstykite galimybę naudoti „`Next.js Analytics`“ norėdami įvertinti programos realų našumą. [Sužinokite daugiau](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Konfigūruokite nekintamų išteklių ir „`Server-side Rendered`“ (SSR) puslapių saugojimą talpykloje. [Sužinokite daugiau](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Naudokite komponentą „`next/image`“ vietoj „`<img>`“ vaizdų kokybei koreguoti. [Sužinokite daugiau](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Naudokite komponentą „`next/image`“ atitinkamam „`sizes`“ nustatyti. [Sužinokite daugiau](https://nextjs.org/docs/api-reference/next/image#sizes)."

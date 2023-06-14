@@ -981,25 +981,25 @@
     "message": "허용됨(경고 포함)"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "LCP 비율"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "단계"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "타이밍"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "표시 영역에 페인팅된 가장 큰 콘텐츠 포함 요소입니다. [최대 콘텐츠 렌더링 시간 요소에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "로드 지연"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "로드 시간"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "렌더링 지연"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "기존 브라우저와의 하위 호환성을 위하여 'unsafe-inline(nonce/hash를 지원하는 브라우저에서 무시됨)'을 추가하는 것이 좋습니다."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "CORS `Access-Control-Allow-Headers` 처리 시 와일드 카드 기호(*)를 사용하면 승인되지 않습니다."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "URL에 삭제된 공백 `(n|r|t)` 문자 및 '미만' 문자(`<`)가 포함된 리소스 요청이 차단되었습니다. 이러한 리소스를 로드하려면 요소 속성 값과 같은 위치에서 줄바꿈을 삭제하고 '미만' 문자를 인코딩하세요."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()`는 지원 중단되었습니다. 대신 표준화된 API인 Navigation Timing 2를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()`는 사용 중지되었습니다. 대신 표준화된 API인 Paint Timing을 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()`는 지원 중단되었습니다. 대신 `nextHopProtocol`이 추가된 표준화된 API인 Navigation Timing 2를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "`(0|r|n)` 문자를 포함하는 쿠키는 잘리는 대신 거부됩니다."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "`document.domain` 설정을 통한 동일 출처 정책의 해제는 지원 중단되었으며 기본적으로 사용 중지될 예정입니다. 이 지원 중단 경고는 `document.domain` 설정에 의해 사용 설정된 교차 출처 액세스에 적용됩니다."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "교차 출처 iframe에서의 {PH1} 트리거는 지원 중단되었으며 앞으로 삭제될 예정입니다."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "기본 Cast 통합을 사용 중지하려면 `-internal-media-controls-overlay-cast-button` 선택기 대신 `disableRemotePlayback` 속성을 사용해야 합니다."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1}은 지원 중단되었습니다. 대신 {PH2}를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "지원 중단 문제 메시지의 예시 번역문입니다."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "`document.domain` 설정을 통한 동일 출처 정책의 해제는 지원 중단되었으며 기본적으로 사용 중지될 예정입니다. 이 기능을 계속 사용하려면 문서 및 프레임의 HTTP 응답과 함께 `Origin-Agent-Cluster: ?0` 헤더를 전송하여 오리진 키 에이전트 클러스터를 선택 해제하세요. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/blog/immutable-document-domain/"
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path`는 지원 중단되었으며 삭제될 예정입니다. 대신 `Event.composedPath()`를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "`Expect-CT` 헤더는 지원 중단되었으며 삭제될 예정입니다. Chrome에서는 2018년 4월 30일 이후 발행되었으며 공개적으로 신뢰할 수 있는 모든 인증서에 대해 인증서 투명성을 요구합니다."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "자세한 내용은 기능 상태 페이지에서 확인하세요."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` 및 `watchPosition()`은 안전하지 않은 출처에서 더 이상 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "안전하지 않은 출처의 `getCurrentPosition()` 및 `watchPosition()`은 지원 중단되었습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()`는 안전하지 않은 출처에서 더 이상 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate`는 지원 중단되었습니다. 대신 `RTCPeerConnectionIceErrorEvent.address` 또는 `RTCPeerConnectionIceErrorEvent.port`를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "`canmakepayment` 서비스 워커 이벤트의 판매자 원본 및 임의 데이터인 `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`가 지원 중단되었으며 삭제될 예정입니다."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "웹사이트에서 사용자 권한이 지정된 네트워크 위치로 인해 해당 웹사이트만 액세스 가능한 네트워크의 하위 리소스를 요청했습니다. 이러한 요청은 비공개 기기 및 서버를 인터넷에 노출시켜 크로스 사이트 요청 위조(CSRF) 공격 또는 정보 유출의 위험을 높입니다. 위험을 완화하기 위해 Chrome은 안전하지 않은 컨텍스트에서 시작된 비공개 하위 리소스에 대한 요청을 사용 중지하고 차단하기 시작합니다."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "`.css` 파일 확장자로 끝나지 않는 CSS는 `file:` URL에서 로드할 수 없습니다."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "사양 변경으로 인해 `SourceBuffer.abort()`를 사용하여 `remove()`의 비동기 범위 삭제를 취소하는 기능이 지원 중단되었습니다. 향후 지원이 삭제될 예정입니다. 대신 `updateend` 이벤트를 수신 대기해야 합니다. `abort()`는 비동기 미디어 추가 항목을 취소하거나 파서 상태를 초기화하는 데만 사용하도록 만들어졌습니다."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "사양 변경으로 인해, `MediaSource.duration`을 버퍼링된 코드 프레임의 최고 타임스탬프보다 낮게 설정하는 기능이 지원 중단되었습니다. 버퍼링된 미디어의 잘린 부분을 암시적으로 삭제하는 기능에 대한 지원은 앞으로 삭제될 예정입니다. `newDuration < oldDuration`의 경우 대신 모든 `sourceBuffers`에서 명시적 `remove(newDuration, oldDuration)`을 수행해야 합니다."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "이 변경사항은 주 버전 번호 {milestone}에 적용됩니다."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "sysex가 `MIDIOptions`에 지정되어 있지 않은 경우에도 사용할 수 있도록 웹 MIDI가 권한을 요청합니다."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "안전하지 않은 출처의 Notification API는 더 이상 사용할 수 없습니다. 애플리케이션을 HTTPS와 같이 안전한 출처로 전환해 보세요. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "더 이상 교차 출처 iframe에서 Notification API 권한을 요청할 수 없습니다. 최상위 프레임에서 권한을 요청하거나 대신 새로운 창을 여는 방법을 고려해야 합니다."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "파트너가 지원 중단된 (D)TLS 버전을 협상합니다. 파트너에게 확인하여 이를 해결하세요."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "비보안 컨텍스트의 WebSQL은 지원 중단되었으며 곧 삭제됩니다. Web Storage 또는 Indexed Database를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "img, video, canvas 태그에 `overflow: visible`을 지정하면 요소 경계 외부에 시각적 콘텐츠가 생성될 수 있습니다. 다음을 참고하세요. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments`가 지원 중단되었습니다. 대신 결제 핸들러에 just-in-time (JIT) 설치를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "`PaymentRequest` 호출이 콘텐츠 보안 정책(CSP) `connect-src` 지시어를 우회했습니다. 이 우회 지원은 중단되었습니다. `PaymentRequest` API(`supportedMethods` 입력란)의 결제 수단 식별자를 CSP `connect-src` 지시어에 추가하세요."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent`는 지원 중단되었습니다. 대신 표준화된 `navigator.storage`를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<picture>` 상위 요소를 지닌 `<source src>`가 잘못되었으므로 무시됩니다. 대신 `<source srcset>`를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo`는 지원 중단되었습니다. 대신 표준화된 `navigator.storage`를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "삽입된 사용자 인증 정보(예: `https://user:pass@host/`)가 URL에 포함된 하위 리소스 요청이 차단되었습니다."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "`DtlsSrtpKeyAgreement` 제약 조건은 삭제되었습니다. 이 제약 조건에 `false` 값을 지정했으며 이는 삭제된 `SDES key negotiation` 메서드를 사용하기 위한 시도로 해석될 수 있습니다. 해당 기능은 삭제되었습니다. 대신 `DTLS key negotiation`을 지원하는 서비스를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "`DtlsSrtpKeyAgreement` 제약 조건은 삭제되었습니다. 이 제약 조건에 `true` 값을 지정했으며 이는 아무런 영향을 미치지 않습니다. 정돈을 위해 이 제약 조건을 삭제할 수 있습니다."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP`가 감지되었습니다. 이 `Session Description Protocol` 버전은 더 이상 지원되지 않습니다. 대신 `Unified Plan SDP`를 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`{sdpSemantics:plan-b}`로 `RTCPeerConnection`을 구성할 때 사용되는 `Plan B SDP semantics`는 `Session Description Protocol`의 기존 비표준 버전으로, 웹 플랫폼에서 완전히 삭제되었습니다. `IS_FUCHSIA`로 빌드할 때는 여전히 사용 가능하지만 최대한 빨리 삭제할 예정입니다. 사용을 중지해 주시기 바랍니다. 상태는 https://crbug.com/1302249 페이지에서 확인하세요."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "`rtcpMuxPolicy` 옵션은 지원 중단되었으며 삭제될 예정입니다."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer`에서는 교차 출처 분리를 요구합니다. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/blog/enabling-shared-array-buffer/"
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "사용자 활성화를 포함하지 않은 `speechSynthesis.speak()`는 지원 중단되었으며 삭제될 예정입니다."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "지원 중단된 기능이 사용됨"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "`SharedArrayBuffer`를 계속 사용하려면 확장 프로그램에서 교차 출처 분리를 사용해야 합니다. 다음 페이지를 참고하세요. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1}은 공급업체마다 다릅니다. 대신 표준 {PH2}을 사용하세요."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "UTF-16은 `XMLHttpRequest`의 response.json에서 지원되지 않습니다."
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "최종 사용자 환경에 부정적인 영향을 미치므로 기본 스레드의 동기식 `XMLHttpRequest`가 지원 중단되었습니다. 추가 지원이 필요한 경우 다음 페이지를 참고하세요. https://xhr.spec.whatwg.org/"
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()`은 지원 중단되었습니다. 대신 `isSessionSupported()`를 사용하고 결정된 불리언 값을 확인하세요."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "기본 스레드 차단 시간"
   },
@@ -2760,31 +2610,31 @@
     "message": "[Ezoic Leap](https://pubdash.ezoic.com/speed)을 사용하고 `Resize Images`를 사용 설정하여 기기에 적절한 크기로 이미지 크기를 조절하고 네트워크 페이로드 크기를 줄이세요."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "`<img>` 대신 `gatsby-plugin-image` 구성요소를 사용하여 이미지 형식을 자동으로 최적화하세요. [자세히 알아보기](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "`<img>` 대신 `gatsby-plugin-image` 구성요소를 사용하여 이미지를 자동으로 지연 로드하세요. [자세히 알아보기](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "`gatsby-plugin-image` 구성요소를 사용하여 `loading` 속성을 `eager`로 설정하세요. [자세히 알아보기](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "`Gatsby Script API`를 사용하여 중요하지 않은 서드 파티 스크립트의 로드를 지연하세요. [자세히 알아보기](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "`PurgeCSS` `Gatsby` 플러그인을 사용하여 스타일시트에서 사용되지 않는 규칙을 삭제하세요. [자세히 알아보기](https://purgecss.com/plugins/gatsby.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "`Webpack Bundle Analyzer`를 사용하여 사용되지 않는 JavaScript 코드를 감지하세요. [자세히 알아보기](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "변경할 수 없는 애셋의 캐싱을 구성하세요. [자세히 알아보기](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "`<img>` 대신 `gatsby-plugin-image` 구성요소를 사용하여 이미지 품질을 조정하세요. [자세히 알아보기](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "`gatsby-plugin-image` 구성요소를 사용하여 적절한 `sizes`를 설정하세요. [자세히 알아보기](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "GIF를 HTML5 동영상으로 삽입할 수 있게 해 주는 서비스에 GIF를 업로드해 보세요."
@@ -2865,10 +2715,10 @@
     "message": "[테마의 레이아웃을 수정](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)하여 `<link rel=preload>` 태그를 추가할 수 있습니다."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "`<img>` 대신 `next/image` 구성요소를 사용하여 이미지 형식을 자동으로 최적화하세요. [자세히 알아보기](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "`<img>` 대신 `next/image` 구성요소를 사용하여 이미지를 자동으로 지연 로드하세요. [자세히 알아보기](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "`next/image` 구성요소를 사용하고 '우선순위'를 True로 설정하여 LCP 이미지를 미리 로드하세요. [자세히 알아보기](https://nextjs.org/docs/api-reference/next/image#priority)"
@@ -2883,7 +2733,7 @@
     "message": "`Next.js` 구성에 `PurgeCSS`를 설정하여 스타일시트에서 사용되지 않는 규칙을 삭제해 보세요. [자세히 알아보기](https://purgecss.com/guides/next.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "`Webpack Bundle Analyzer`를 사용하여 사용되지 않는 JavaScript 코드를 감지하세요. [자세히 알아보기](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "`Next.js Analytics`를 사용하여 앱의 실제 성능을 측정해 보세요. [자세히 알아보기](https://nextjs.org/docs/advanced-features/measuring-performance)"
@@ -2892,7 +2742,7 @@
     "message": "변경 불가능한 애셋 및 `Server-side Rendered`(SSR) 페이지의 캐싱을 구성하세요. [자세히 알아보기](https://nextjs.org/docs/going-to-production#caching)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "`<img>` 대신 `next/image` 구성요소를 사용하여 이미지 품질을 조정하세요. [자세히 알아보기](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "`next/image` 구성요소를 사용해 적절한 `sizes`를 설정하세요. [자세히 알아보기](https://nextjs.org/docs/api-reference/next/image#sizes)"

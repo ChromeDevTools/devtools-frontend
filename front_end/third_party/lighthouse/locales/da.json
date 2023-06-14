@@ -981,10 +981,10 @@
     "message": "Tilladt med advarsel"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% af LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Fase"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
     "message": "Timing"
@@ -993,13 +993,13 @@
     "message": "Dette element har den største udfyldning af indhold i det synlige område. [Få flere oplysninger om elementet med den største udfyldning af indhold](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Indlæsningsforsinkelse"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Indlæsningstid"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Gengivelsesforsinkelse"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Overvej at tilføje \"unsafe-inline\" (ignoreres af browsere, der understøtter nonces/hashes) for at gøre CSP'en bagudkompatibel med ældre browsere."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Godkendelse dækkes ikke af jokertegnet (*) ved behandling af CORS `Access-Control-Allow-Headers`."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Anmodninger om ressourcer, hvis webadresser både indeholder tegnene `(n|r|t)` uden blanktegn og mindre end-tegn (`<`), blokeres. Hvis du vil indlæse disse ressourcer, skal du fjerne linjeskift og indkode mindre end-tegn fra f.eks. attributværdier for elementer."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` er udfaset. Brug i stedet den standardiserede API: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` er udfaset. Brug i stedet den standardiserede API: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` er udfaset. Brug i stedet den standardiserede API: `nextHopProtocol` i Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Cookies, der indeholder et `(0|r|n)`-tegn, afvises i stedet for at blive forkortet."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Slækkelse af politikken for samme oprindelse ved at konfigurere `document.domain` er udfaset og deaktiveres som standard. Denne advarsel om udfasning gælder en adgang med krydsoprindelse, som blev aktiveret ved at konfigurere `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Aktivering af {PH1} fra iframes med krydsoprindelse er udfaset og fjernes senere hen."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Attributten `disableRemotePlayback` skal bruges i stedet for selektoren `-internal-media-controls-overlay-cast-button` for at deaktivere standardintegrationen af Cast."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} er udfaset. Brug i stedet {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Dette er et eksempel på en oversat meddelelse vedrørende et udfasningsproblem."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Slækkelse af politikken for samme oprindelse ved at konfigurere `document.domain` er udfaset og deaktiveres som standard. Hvis du vil fortsætte med at bruge denne funktion, skal du fravælge agentklynger med indtastede oprindelser ved at sende en `Origin-Agent-Cluster: ?0`-header sammen med HTTP-svaret for dokumentet og rammerne. Få flere oplysninger på https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` er udfaset og vil blive fjernet. Brug i stedet `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Headeren `Expect-CT` er udfaset og bliver fjernet. Chrome kræver Certifikatgennemsigtighed for alle offentligt godkendte certifikater, der er givet efter den 30. april 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Du kan få flere oplysninger på siden for funktionsstatus."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` og `watchPosition()` fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` og `watchPosition()` er udfasede på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` er udfaset. Brug i stedet `RTCPeerConnectionIceErrorEvent.address` eller `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Sælgerens oprindelse og de vilkårlige data fra `canmakepayment`-hændelsens scripttjeneste er udfaset og fjernes: `topOrigin`, `paymentRequestOrigin`, `methodData` og `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Websitet har anmodet om en underressource fra et netværk, som websitet kun havde adgang til på grund af dets brugeres privilegerede netværksposition. Disse anmodninger eksponerer ikke-offentlige enheder og servere på internettet, hvilket øger risikoen for et angreb med en forfalsket anmodning fra et andet website og/eller læk af oplysninger. For at minimere disse risici udfaser Chrome anmodninger til ikke-offentlige underressourcer, når de stammer fra usikre kontekster, og begynder at blokere dem."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS kan ikke indlæses fra webadresser med `file:`, medmindre de slutter med filtypen `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Brug af `SourceBuffer.abort()` til at annullere fjernelse af det asynkrone område for `remove()` er udfaset på grund af ændringer i specifikationerne. Understøttelsen fjernes senere hen. Du bør lytte til `updateend`-hændelsen i stedet. `abort()` er kun beregnet til at annullere en tilføjelse af asynkrone medier eller nulstille parsertilstanden."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Konfiguration af `MediaSource.duration` under det højeste tidsstempel for præsentation af kodede rammer, der er gemt i bufferen, er udfaset på grund af ændringer i specifikationerne. Understøttelse af implicit fjernelse af forkortede medier, der er gemt i bufferen, fjernes senere hen. Du bør i stedet udføre eksplicit `remove(newDuration, oldDuration)` på alle `sourceBuffers`, hvor `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Denne ændring træder i kraft i det overordnede versionsnummer {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI anmoder om tilladelse til brug, selvom sysex ikke er angivet i `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Notification API kan ikke længere bruges fra usikre oprindelser. Overvej at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Det er ikke længere muligt at anmode om tilladelse til Notification API fra en iframe med krydsoprindelse. Du bør i stedet overveje at anmode om tilladelse fra en ramme på øverste niveau eller åbne et nyt vindue."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Din partner forhandler om en forældet version af (D)TLS. Kontakt din partner for at løse dette problem."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "WebSQL i usikre kontekster er udfaset og fjernes snart. Du skal bruge Web Storage eller Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Angivelse af `overflow: visible` i img-, video- og canvas-tags kan medføre, at de producerer visuelt indhold uden for elementgrænserne. Se https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` er udfaset. Brug just-in-time-installation for betalingshandlere i stedet."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Dit `PaymentRequest`-opkald omgik Content Security Policy-direktivet `connect-src` (CSP). Denne omgåelse er udfaset. Føj betalingsmetodens id fra `PaymentRequest` API (i feltet `supportedMethods`) til CSP-direktivet `connect-src`."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` er udfaset. Brug i stedet standardiseret `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<source src>` med en overordnet `<picture>` er ugyldig og ignoreres. Brug i stedet `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` er udfaset. Brug i stedet standardiseret `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Anmodninger om underressourcer, hvis webadresser indeholder indlejrede loginoplysninger (f.eks. `https://user:pass@host/`), blokeres."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Begrænsningen `DtlsSrtpKeyAgreement` er fjernet. Du har angivet værdien `false` for denne begrænsning, hvilket tolkes som et forsøg på at bruge den fjernede metode `SDES key negotiation`. Denne funktion er fjernet. Brug i stedet en tjeneste, der understøtter `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Begrænsningen `DtlsSrtpKeyAgreement` er fjernet. Du har angivet værdien `true` for denne begrænsning, hvilket ikke har nogen effekt, men du kan fjerne denne begrænsning af hensyn til ryddeligheden."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` er registreret. Denne dialekt af `Session Description Protocol` understøttes ikke længere. Brug i stedet `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`Plan B SDP semantics`, som bruges ved konstruktion af en `RTCPeerConnection` med `{sdpSemantics:plan-b}`, er en forældet version, der ikke er standard, af `Session Description Protocol`, som er slettet permanent fra Web Platform. Den er stadig tilgængelig for udvikling med `IS_FUCHSIA`, men vi har til hensigt at slette den snarest muligt. Undlad at bruge den. Se status på https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Valgmuligheden `rtcpMuxPolicy` er udfaset og vil blive fjernet."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` kræver domæneisolering. Få flere oplysninger på https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "`speechSynthesis.speak()` uden brugeraktivering er udfaset og vil blive fjernet."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Brug af en udfaset funktion"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Udvidelser skal tilvælge domæneisolering for fortsat at kunne bruge `SharedArrayBuffer`. Se https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1} er leverandørspecifik. Brug i stedet standarden {PH2}."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "UTF-16 understøttes ikke af svar-json i `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synkront `XMLHttpRequest` i den primære tråd er udfaset, fordi det negativt påvirkede slutbrugerens oplevelse. Tjek https://xhr.spec.whatwg.org/ for at få mere hjælp."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` er udfaset. Brug i stedet `isSessionSupported()`, og tjek den matchede booleske værdi."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Tidspunkt for blokering af den primære tråd"
   },
@@ -2757,34 +2607,34 @@
     "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Preload Fonts` og `Preload Background Images` for at tilføje `preload`-links med henblik på at prioritere hentning af ressourcer, der aktuelt anmodes om, senere i sideindlæsningen."
   },
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | uses-responsive-images": {
-    "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Resize Images` for at tilpasse størrelsen på billeder til en størrelse, der er passende for en enhed, hvilket reducerer størrelsen på netværkets datapakker."
+    "message": "Brug [Ezoic Leap](https://pubdash.ezoic.com/speed), og aktivér `Resize Images` for at personligt tilpasse størrelsen på billeder til en størrelse, der er passende for en enhed, hvilket reducerer størrelsen på netværkets datapakker."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Brug komponenten `gatsby-plugin-image` i stedet for `<img>` til automatisk at optimere billedformatet. [Få flere oplysninger](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Brug komponenten `gatsby-plugin-image` i stedet for `<img>` til automatisk at udføre lazy loading af billeder. [Få flere oplysninger](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Brug komponenten `gatsby-plugin-image`, og angiv egenskaben `loading` som `eager`. [Få flere oplysninger](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Brug `Gatsby Script API` til at udskyde indlæsningen af tredjepartsscripts, som ikke er kritiske. [Få flere oplysninger](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Brug pluginnet `PurgeCSS` `Gatsby` til at fjerne ubrugte regler fra typografiarket. [Få flere oplysninger](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Brug `Webpack Bundle Analyzer` til at registrere ubrugt JavaScript-kode. [Få flere oplysninger](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Konfigurer cachelagring for uforanderlige aktiver. [Få flere oplysninger](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Brug komponenten `gatsby-plugin-image` i stedet for `<img>` til at justere billedkvaliteten. [Få flere oplysninger](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Brug komponenten `gatsby-plugin-image` til at angive de rigtige `sizes`. [Få flere oplysninger](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Overvej at uploade din gif til en tjeneste, hvor den kan indlejres som en HTML5-video."
@@ -2865,10 +2715,10 @@
     "message": "`<link rel=preload>`-tags kan tilføjes ved at [ændre layoutet for et tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Brug komponenten `next/image` i stedet for `<img>` til automatisk at optimere billedformatet. [Få flere oplysninger](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Brug komponenten `next/image` i stedet for `<img>` til automatisk at udføre lazy loading af billeder. [Få flere oplysninger](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Brug `next/image`-komponenten, og angiv \"prioritet\" som sand for at forudindlæse LCP-billedet [Få flere oplysninger](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Overvej at konfigurere `PurgeCSS` i `Next.js`-konfigurationen for at fjerne ubrugte regler fra typografiark. [Få flere oplysninger](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Brug `Webpack Bundle Analyzer` til at registrere ubrugt JavaScript-kode. [Få flere oplysninger](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Overvej at bruge `Next.js Analytics` til at måle din apps ydeevne i den virkelige verden. [Få flere oplysninger](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Konfigurer cachelagring for uforanderlige aktiver og SSR-sider (`Server-side Rendered`). [Få flere oplysninger](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Brug komponenten `next/image` i stedet for `<img>` til at justere billedkvaliteten. [Få flere oplysninger](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Brug komponenten `next/image` til at angive de rigtige `sizes`. [Få flere oplysninger](https://nextjs.org/docs/api-reference/next/image#sizes)."

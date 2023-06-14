@@ -981,25 +981,25 @@
     "message": "Дозволено із застереженням"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% від LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Фаза"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Час"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Це найбільший елемент контенту, який видно в області перегляду. [Докладніше про візуалізацію великого контенту.](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Затримка завантаження"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Час завантаження"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Затримка відображення"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Додайте команду unsafe-inline (ігнорується веб-переглядачами, що підтримують nonces/hashes) для зворотної сумісності зі старішими веб-переглядачами."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "На авторизацію під час обробки CORS `Access-Control-Allow-Headers` не поширюватиметься символ підстановки (*)."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Запити ресурсів до URL-адрес, які містять вилучені пробіли `(n|r|t)` та знаки менше (`<`), блокуються. Щоб завантажити ці ресурси, вилучіть символи нового рядка з таких місць, як значення атрибутів елементів, і закодуйте знаки менше."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` не підтримується. Натомість використовуйте стандартизований інтерфейс API: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` не підтримується, натомість використовуйте стандартизований інтерфейс API: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` не підтримується. Натомість використовуйте стандартизований метод API: `nextHopProtocol` у специфікації Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Файли cookie, які містять символ `(0|r|n)`, будуть відхилятися, а не скорочуватися."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Правило одного джерела більше не можна буде послаблювати, налаштувавши `document.domain`, і цю функцію буде вилучено. Це сповіщення про припинення міждоменного доступу, активованого завдяки налаштуванню `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Запуск {PH1} із міждоменних елементів iframe не підтримується, і в майбутньому цю функцію буде вилучено."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Щоб вимкнути інтеграцію Google Cast за умовчанням, використовуйте атрибут `disableRemotePlayback` замість засобу вибору `-internal-media-controls-overlay-cast-button`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} не підтримується. Натомість використовуйте {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Це приклад перекладеного повідомлення, пов’язаного з припиненням підтримки."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Правило одного джерела більше не можна буде послаблювати, налаштувавши `document.domain`, і цю функцію буде вилучено. Щоб продовжити користуватися цією функцією, вимкніть кластери агентів за ключем джерела. Для цього надішліть заголовок `Origin-Agent-Cluster: ?0` із відповіддю HTTP для документа й фреймів. Докладніше читайте на сторінці https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "Метод `Event.path` не підтримується, його буде вилучено. Натомість використовуйте `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Заголовок `Expect-CT` не підтримується, і його буде вилучено. Chrome вимагає перевірки всіх загальнодоступних надійних сертифікатів, виданих після 30 квітня 2018 року."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Щоб дізнатися більше, перегляньте сторінку зі статусом функції."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` і `watchPosition()` більше не працюють із незахищеними джерелами. Щоб користуватися цією функцією, перенесіть свій додаток у захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` і `watchPosition()` з незахищених джерел не підтримуються. Щоб користуватися цією функцією, перенесіть свій додаток у захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` більше не працює з незахищеними джерелами. Щоб користуватися цією функцією, перенесіть свій додаток у захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` не підтримується. Натомість використовуйте `RTCPeerConnectionIceErrorEvent.address` або `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Джерело продавця й довільні дані події синтаксису Service Worker `canmakepayment` не підтримуються. Їх буде вилучено: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Веб-сайт надіслав запит на субресурс у мережі, доступній лише завдяки повноваженням її користувачів. Такі запити відкривають інтернет-доступ до приватних пристроїв і серверів, що збільшує ризик атак із підробкою міжсайтових запитів (CSRF) та/або витоку інформації. Щоб знизити ці ризики, Chrome ігнорує запити до приватних субресурсів, які надходять із небезпечного контексту, і почне блокувати їх."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS не можна завантажити з URL-адрес `file:`, які не мають розширення файлу `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "У зв’язку зі зміною специфікацій скасування асинхронного вилучення діапазону елемента `remove()` через `SourceBuffer.abort()` не підтримується. У майбутньому цю функцію буде вилучено. Натомість вам слід керуватися подією `updateend`. `abort()` слід використовувати лише для того, щоб скасувати асинхронне додавання медіафайлів або скинути стан синтаксичного аналізатора."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "У зв’язку зі зміною специфікацій налаштування значення `MediaSource.duration` нижче за найвищу відображувану позначку часу будь-яких закодованих фреймів у буфері не підтримується. У майбутньому неявне вилучення стиснених медіафайлів із буфера не підтримуватиметься. Натомість застосовуйте явну функцію `remove(newDuration, oldDuration)` для всіх елементів `sourceBuffers`, де `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Ця зміна почне діяти для версії {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Навіть якщо в `MIDIOptions` не вказано значення SysEx, веб-сайти проситимуть дозвіл на використання MIDI."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Notification API більше не можна використовувати з незахищених джерел. Перенесіть свій додаток у захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Дозвіл на Notification API більше не можна запитувати з міждоменних елементів iframe. Запитайте дозвіл із фрейму верхнього рівня або відкрийте нове вікно."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Ваш партнер використовує застарілу версію (D)TLS. Щоб вирішити проблему, зверніться до партнера."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "Інтерфейс WebSQL не підтримується в незахищених контекстах, і невдовзі його буде вилучено. Використовуйте Web Storage або Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Якщо вказати властивість `overflow: visible` у тегах img, video й canvas, візуальний контент може відображатися за межами цих елементів. Докладніше: https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` не підтримується. Натомість скористайтесь актуальним інтерфейсом API для обробників платежів."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Ваш виклик `PaymentRequest` обійшов директиву `connect-src` Правил щодо безпеки контенту (CSP). Такий обхід не підтримується. Додайте в директиву CSP `connect-src` ідентифікатор способу оплати з `PaymentRequest` API (у полі `supportedMethods`)."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` не підтримується. Натомість використовуйте стандартну властивість `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "Елемент `<source src>` із батьківським елементом `<picture>` недійсний і тому ігнорується. Натомість використовуйте `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` не підтримується. Натомість використовуйте стандартну властивість `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Запити субресурсів за URL-адресами, що містять вставлені облікові дані (наприклад, `https://user:pass@host/`), блокуються."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Обмеження `DtlsSrtpKeyAgreement` вилучено. Ви вказали значення `false` для цього обмеження, що ми витлумачили як спробу застосувати вилучений метод \"`SDES key negotiation`\". Цю функцію вилучено; натомість використовуйте сервіс, що підтримує \"`DTLS key negotiation`\"."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Обмеження `DtlsSrtpKeyAgreement` вилучено. Ви вказали значення `true`, що не вплинуло на це обмеження, але можете вилучити його для більшої ясності."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Розпізнано протокол `Complex Plan B SDP`. Діалект протоколу `Session Description Protocol` більше не підтримується. Натомість використовуйте `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Протокол `Plan B SDP semantics`, який використовується для налаштування `RTCPeerConnection` із `{sdpSemantics:plan-b}`, – це застаріла нестандартна версія протоколу `Session Description Protocol`, яку назавжди видалено з веб-платформи. Вона досі доступна, якщо ви здійснюєте налаштування за допомогою `IS_FUCHSIA`, але ми плануємо вилучити цю версію в найближчому майбутньому. Намагайтеся не використовувати її. Щоб переглянути статус вилучення, перейдіть на сторінку https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Опція `rtcpMuxPolicy` не підтримується, її буде вилучено."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "Для `SharedArrayBuffer` вимагатиметься ізоляція від міждоменних джерел. Докладніше читайте на сторінці https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Виклик `speechSynthesis.speak()` без активації користувача не підтримується, і цю функцію буде вилучено."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Використовується функція, яка більше не підтримується"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Щоб і надалі використовувати `SharedArrayBuffer`, для розширень потрібно ввімкнути ізоляцію від міждоменних джерел. Докладніше читайте на сторінці https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1} залежить від постачальника. Натомість використовуйте стандартний метод {PH2}."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "UTF-16 не підтримується відповіддю JSON у `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Синхронний виклик `XMLHttpRequest` в основному потоці не підтримується, оскільки негативно впливає на взаємодію з кінцевим користувачем. Докладніше читайте на сторінці https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` не підтримується. Натомість використовуйте `isSessionSupported()`, щоб перевірити передане логічне значення."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Час блокування основного ланцюжка"
   },
@@ -2760,31 +2610,31 @@
     "message": "Скористайтесь [Ezoic Leap](https://pubdash.ezoic.com/speed) і ввімкніть налаштування `Resize Images`, щоб змінити розміри зображень відповідно до пристрою та, відповідно, зменшити обсяг даних у мережі."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Щоб автоматично оптимізувати формат зображень, замість `<img>` використовуйте компонент `gatsby-plugin-image`. [Докладніше.](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Щоб зображення автоматично відкладено завантажувалися, замість `<img>` використовуйте компонент `gatsby-plugin-image`. [Докладніше.](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Щоб вибрати для властивості `loading` значення `eager`, використовуйте компонент `gatsby-plugin-image`. [Докладніше.](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Щоб відкласти завантаження некритичних сторонніх скриптів, використовуйте `Gatsby Script API`. [Докладніше.](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Щоб вилучити з таблиць стилів правила, які не застосовуються, використовуйте плагін `PurgeCSS` `Gatsby`. [Докладніше.](https://purgecss.com/plugins/gatsby.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Щоб виявити код JavaScript, який не застосовується, скористайтесь інструментом `Webpack Bundle Analyzer`. [Докладніше.](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Налаштуйте кешування для незмінюваних об’єктів. [Докладніше.](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Щоб покращити якість зображення, замість `<img>` використовуйте компонент `gatsby-plugin-image`. [Докладніше.](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Щоб налаштувати потрібні `sizes`, використовуйте компонент `gatsby-plugin-image`. [Докладніше.](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Спробуйте завантажити анімацію GIF у сервіс, де її можна вставити як відео HTML5."
@@ -2865,10 +2715,10 @@
     "message": "Теги `<link rel=preload>` можна додати, лише [змінивши макет теми](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Щоб автоматично оптимізувати формат зображень, замість `<img>` використовуйте компонент `next/image`. [Докладніше.](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Щоб зображення автоматично відкладено завантажувалися, замість `<img>` використовуйте компонент `next/image`. [Докладніше.](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Скористайтеся компонентом `next/image` і задайте параметру priority значення true, щоб попередньо завантажити зображення LCP. [Докладніше.](https://nextjs.org/docs/api-reference/next/image#priority)"
@@ -2883,7 +2733,7 @@
     "message": "Щоб вилучати з таблиць стилів правила, які не використовуються, налаштуйте плагін `PurgeCSS` у конфігурації `Next.js`. [Докладніше.](https://purgecss.com/guides/next.html)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Щоб виявити код JavaScript, який не застосовується, скористайтесь інструментом `Webpack Bundle Analyzer`. [Докладніше.](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Щоб отримувати показники ефективності додатка під час взаємодії з користувачами, використовуйте `Next.js Analytics`. [Докладніше.](https://nextjs.org/docs/advanced-features/measuring-performance)"
@@ -2892,7 +2742,7 @@
     "message": "Налашуйте кешування для незмінюваних об’єктів і сторінок`Server-side Rendered` (SSR). [Докладніше.](https://nextjs.org/docs/going-to-production#caching)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Щоб покращити якість зображення, замість `<img>` використовуйте компонент `next/image`. [Докладніше.](https://nextjs.org/docs/basic-features/image-optimization)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Щоб налаштувати потрібні `sizes`, використовуйте компонент `next/image`. [Докладніше.](https://nextjs.org/docs/api-reference/next/image#sizes)"

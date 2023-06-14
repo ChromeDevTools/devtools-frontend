@@ -981,25 +981,25 @@
     "message": "Permisă cu avertisment"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% din LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Etapa"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Durată"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Acesta este cel mai mare element de conținut redat în aria vizibilă. [Află mai multe despre elementul Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Întârzierea la încărcare"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Durata de încărcare"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Întârzierea la redare"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Îți recomandăm să adaugi opțiunea unsafe-inline (ignorată de browserele care acceptă valori nonce/hash) pentru retrocompatibilitatea cu browsere mai vechi."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Autorizarea nu va fi acoperită de simbolul pentru metacaracter (*) în cadrul gestionării `Access-Control-Allow-Headers` prin CORS."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Solicitările de resurse ale căror adrese URL conțineau atât caractere pentru spații `(n|r|t)`, cât și semnul mai mic decât (`<`) sunt blocate. Pentru a încărca resursele, elimină caracterele de rând nou și codifică semnul mai mic decât în locuri cum ar fi valorile atributelor elementelor."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` s-a învechit. Folosește API-ul standardizat Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` s-a învechit. Folosește API-ul standardizat Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` s-a învechit. Folosește API-ul standardizat `nextHopProtocol` din Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Cookie-urile care conțin un caracter `(0|r|n)` vor fi respinse în loc de a fi trunchiate."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxarea politicii pentru aceeași origine prin setarea `document.domain` este învechită și va fi dezactivată în mod prestabilit. Acest avertisment privind renunțarea la dezvoltare este asociat unei accesări cu origini diferite, care a fost activată din setarea `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Declanșarea {PH1} din cadre iframe cu origini diferite s-a învechit și va fi eliminată pe viitor."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Pentru a dezactiva integrarea Cast prestabilită, trebuie folosit atributul `disableRemotePlayback` în locul selectorului `-internal-media-controls-overlay-cast-button`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} s-a învechit. Folosește {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Acesta este un exemplu de mesaj tradus privind o problemă legată de renunțarea la dezvoltare."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxarea politicii pentru aceeași origine prin setarea `document.domain` este învechită și va fi dezactivată în mod prestabilit. Pentru a folosi în continuare funcția, renunță la grupurile de agenți pentru care au fost configurate anumite origini, trimițând un antet `Origin-Agent-Cluster: ?0` împreună cu răspunsul HTTP pentru document și cadre. Consultă https://developer.chrome.com/blog/immutable-document-domain/ pentru detalii suplimentare."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "API-ul `Event.path` este învechit și va fi eliminat. Folosește `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Antetul `Expect-CT` este învechit și va fi eliminat. Chrome necesită Transparența certificatului pentru toate certificatele de încredere publice emise după 30 aprilie 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Pentru mai multe detalii accesează pagina cu starea funcțiilor."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` și `watchPosition()` nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` și `watchPosition()` sunt învechite pentru originile nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` s-a învechit. Folosește `RTCPeerConnectionIceErrorEvent.address` sau `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Originea comerciantului și datele arbitrare din evenimentul service worker `canmakepayment` sunt învechite și vor fi eliminate: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Site-ul a solicitat o subresursă de la o rețea pe care a putut să o acceseze numai datorită poziției privilegiate în rețea a utilizatorilor săi. Aceste solicitări expun pe internet dispozitive și servere care nu sunt publice, crescând riscul de atacuri prin falsificarea solicitărilor de pe alt site (CSRF) și de scurgeri de informații. Pentru a reduce aceste riscuri, Chrome marchează drept învechite solicitările de la subresurse care nu sunt publice atunci când sunt inițiate din contexte nesigure și va începe să le blocheze."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "Fișierul CSS nu se poate încărca din adrese URL `file:` dacă acestea nu se termină cu extensia de fișier `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Folosirea `SourceBuffer.abort()` pentru a abandona eliminarea intervalului asincron pentru `remove()` este învechită din cauza modificării specificațiilor. Pe viitor, aceasta nu va mai fi acceptată. Ar trebui să asculți evenimentul `updateend`. `abort()` are numai rolul de a abandona atașări media asincrone sau de a reseta starea parserului."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setarea `MediaSource.duration` sub cel mai mare marcaj temporal de prezentare al oricăror cadre codificate din memoria temporară este învechită din cauza modificării specificațiilor. Eliminarea implicită a elementelor media trunchiate din memoria temporară va fi eliminată pe viitor. În locul acesteia, trebuie să rulezi `remove(newDuration, oldDuration)` pentru toate obiectele `sourceBuffers`, unde `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Această modificare va intra în vigoare cu obiectivul {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI va solicita o permisiune de folosit chiar dacă sysex nu este specificat în `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "API-ul Notification nu mai poate fi folosit din origini nesigure. Îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Este posibil ca permisiunea pentru API-ul Notification să nu mai fie solicitată dintr-un iframe cu origini diferite. Îți recomandăm să soliciți permisiunea dintr-un cadru de nivel superior sau să deschizi o fereastră nouă."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Partenerul tău negociază o versiune (D)TLS învechită. Consultă-te cu partenerul pentru a remedia problema."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "WebSQL în contexte nesecurizate este învechit și se va elimina în curând. Folosește Spațiul de stocare web sau Baza de date indexată."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Dacă specifici `overflow: visible` pe etichetele imagine, video și pânză, este posibil să se producă conținut vizual în afara limitelor elementului. Accesează https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` s-a învechit. Folosește instalarea la timp pentru handlerele pentru plăți."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Apelul `PaymentRequest` a omis directiva Content-Security-Policy (CSP) `connect-src`. Această opțiune de ocolire este învechită. Adaugă identificatorul metodei de plată din API-ul `PaymentRequest` (în câmpul `supportedMethods`) la directiva CSP `connect-src`."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` s-a învechit. Folosește `navigator.storage` standardizat."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<source src>` cu un element părinte `<picture>` nu este valid, deci va fi ignorat. Folosește `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` s-a învechit. Folosește `navigator.storage` standardizat."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Solicitările de subresurse ale căror adrese URL conțin date de conectare încorporate (de ex., `https://user:pass@host/`) sunt blocate."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Restricția `DtlsSrtpKeyAgreement` a fost eliminată. Ai specificat o valoare `false` pentru această restricție, care este interpretată ca o încercare de a folosi metoda `SDES key negotiation` eliminată. Această funcție a fost eliminată. Folosește un serviciu care acceptă `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Restricția `DtlsSrtpKeyAgreement` a fost eliminată. Ai specificat o valoare `true` pentru această restricție, care nu a avut niciun efect, dar poți elimina restricția pentru un aspect ordonat."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "S-a detectat `Complex Plan B SDP`. Acest dialect pentru `Session Description Protocol` nu mai este acceptat. Folosește `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`Plan B SDP semantics`, care se folosește la construirea unui obiect `RTCPeerConnection` cu `{sdpSemantics:plan-b}`, care este o versiune non-standard veche `Session Description Protocol` care a fost ștearsă definitiv de pe platforma web. Aceasta este disponibilă și când construiești cu `IS_FUCHSIA`, dar intenționăm să o ștergem cât mai curând. Nu te mai baza pe aceasta. Consultă https://crbug.com/1302249 pentru stare."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Opțiunea `rtcpMuxPolicy` este învechită și va fi eliminată."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` va necesita blocarea accesului de la mai multe surse. Consultă https://developer.chrome.com/blog/enabling-shared-array-buffer/ pentru mai multe detalii."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Apelarea `speechSynthesis.speak()` fără activarea utilizatorului este învechită și va fi eliminată."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "S-a folosit o funcție învechită"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Extensiile trebuie să aibă blocarea accesului de la mai multe surse activată pentru a folosi în continuare `SharedArrayBuffer`. Consultă https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "Metoda {PH1} este specifică furnizorului. Folosește metoda standard, {PH2}."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "Fișierul JSON de răspuns din `XMLHttpRequest` nu acceptă UTF-16"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Obiectul sincron `XMLHttpRequest` din firul principal este învechit din cauza efectelor sale negative asupra experienței utilizatorului final. Pentru mai mult ajutor, consultă https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` s-a învechit. Folosește `isSessionSupported()` și verifică valoarea booleană rezultată."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Timpul de blocare a firului principal"
   },
@@ -2760,31 +2610,31 @@
     "message": "Folosește [Ezoic Leap](https://pubdash.ezoic.com/speed) și activează `Resize Images` ca să redimensionezi imaginile la o dimensiune adecvată pentru dispozitiv, reducând dimensiunile sarcinilor de rețea."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Folosește componenta `gatsby-plugin-image` în loc de `<img>` ca să optimizezi automat formatul de imagine. [Află mai multe](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Folosește componenta `gatsby-plugin-image` în loc de `<img>` pentru a încărca asincron imagini în mod automat. [Află mai multe](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Folosește componenta `gatsby-plugin-image` și setează proprietatea `loading` la `eager`. [Află mai multe](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Folosește `Gatsby Script API` pentru a amâna încărcarea scripturilor terță parte neesențiale. [Află mai multe](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Folosește pluginul `PurgeCSS` `Gatsby` pentru a elimina regulile nefolosite din foile de stil. [Află mai multe](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Folosește `Webpack Bundle Analyzer` pentru a detecta cod JavaScript nefolosit. [Află mai multe](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Configurează stocarea în memoria cache a elementelor invariabile. [Află mai multe](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Folosește componenta `gatsby-plugin-image` în loc de `<img>` ca să ajustezi calitatea imaginii. [Află mai multe](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Folosește componenta `gatsby-plugin-image` pentru a seta `sizes` potrivite. [Află mai multe](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Îți recomandăm să încarci GIF-ul într-un serviciu care îl va pune la dispoziție pentru încorporare ca videoclip HTML5."
@@ -2865,10 +2715,10 @@
     "message": "Etichetele `<link rel=preload>` se pot adăuga prin [modificarea aspectului unei teme](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Folosește componenta `next/image` în loc de `<img>` ca să optimizezi automat formatul de imagine. [Află mai multe](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Folosește componenta `next/image` în loc de `<img>` pentru a încărca asincron imagini în mod automat. [Află mai multe](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Folosește componenta `next/image` și setează prioritatea la true ca să preîncarci imaginea LCP. [Află mai multe](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Este recomandat să setezi `PurgeCSS` în configurația `Next.js` pentru a elimina regulile nefolosite din foile de stil. [Află mai multe](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Folosește `Webpack Bundle Analyzer` pentru a detecta cod JavaScript nefolosit. [Află mai multe](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Este recomandat să folosești `Next.js Analytics` pentru a măsura performanța reală a aplicației. [Află mai multe](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Configurează stocarea în memoria cache a elementelor și a paginilor `Server-side Rendered` (SSR) invariabile. [Află mai multe](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Folosește componenta `next/image` în loc de `<img>` ca să ajustezi calitatea imaginii. [Află mai multe](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Folosește componenta `next/image` pentru a seta `sizes` potrivite. [Află mai multe](https://nextjs.org/docs/api-reference/next/image#sizes)."

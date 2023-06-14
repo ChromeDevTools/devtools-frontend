@@ -981,25 +981,25 @@
     "message": "允许（附带警告）"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "LCP 占比 (%)"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "阶段"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "用时"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "这是此视口内绘制的最大内容元素。[详细了解 Largest Contentful Paint 元素](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "加载延迟"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "加载时间"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "渲染延迟"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "建议您添加“unsafe-inline”（会被支持 nonces/hashes 的浏览器忽略），以便向后兼容旧版浏览器。"
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "处理 CORS `Access-Control-Allow-Headers` 时，授权将不在通配符 (*) 的涵盖范围内。"
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "如果资源请求的网址同时包含已移除的空白字符 `(n|r|t)` 和小于字符 (`<`)，相应资源请求会被屏蔽。请从元素属性值等位置移除换行符并编码小于字符，以便加载这些资源。"
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` 已被弃用，请改用标准化 API：Navigation Timing 2。"
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` 已被弃用，请改用标准化 API：Paint Timing。"
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` 已被弃用，请改用标准化 API：Navigation Timing 2 中的 `nextHopProtocol`。"
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "包含 `(0|r|n)` 字符的 Cookie 将被拒，而不是被截断。"
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "通过设置 `document.domain` 放宽同源政策的功能已被弃用，并将默认处于停用状态。此弃用警告针对的是通过设置 `document.domain` 启用的跨源访问。"
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "从跨源 iframe 触发 {PH1} 的功能已被弃用，日后将被移除。"
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "若要停用默认 Cast 集成，应使用 `disableRemotePlayback` 属性，而非 `-internal-media-controls-overlay-cast-button` 选择器。"
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} 已被弃用。请改用 {PH2}。"
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "这是因使用弃用的功能而导致问题的一个示例消息（已经过翻译）。"
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "通过设置 `document.domain` 放宽同源政策的功能已被弃用，并将默认处于停用状态。若要继续使用此功能，请通过发送 `Origin-Agent-Cluster: ?0` 标头以及文档和框架的 HTTP 响应来选择停用以源为键的代理集群。如需了解详情，请访问 https://developer.chrome.com/blog/immutable-document-domain/。"
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` 已被弃用，并将被移除。请改用 `Event.composedPath()`。"
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "`Expect-CT` 标头已被弃用，并将被移除。Chrome 要求，在 2018 年 4 月 30 日之后颁发的所有受大众信任的证书均须遵守证书透明度政策。"
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "如需了解详情，请参阅功能状态页面。"
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` 和 `watchPosition()` 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` 和 `watchPosition()` 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` 已被弃用。请改用 `RTCPeerConnectionIceErrorEvent.address` 或 `RTCPeerConnectionIceErrorEvent.port`。"
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "`canmakepayment` Service Worker 事件中的商家源和任意数据已被弃用，并将被移除：`topOrigin`、`paymentRequestOrigin`、`methodData`、`modifiers`。"
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "该网站向网络请求了一项子资源，而且完全是因为其用户的特权网络位置才能够访问此项资源。此类请求会向互联网公开非公用设备和服务器，这会增加跨站请求伪造 (CSRF) 攻击和/或信息泄露的风险。为降低这类风险，Chrome 不再支持从非安全上下文发起针对非公用子资源的请求，并将开始阻止此类请求。"
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "无法从 `file:` 网址加载 CSS，除非它们以 `.css` 文件扩展名结尾。"
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "由于规范变更，使用 `SourceBuffer.abort()` 中止 `remove()` 移除异步范围的功能已被弃用。日后我们会移除相应支持。您应改为监听 `updateend` 事件。`abort()` 只应当用于中止异步媒体附加或重置解析状态。"
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "由于规范变更，我们不再支持将 `MediaSource.duration` 设为低于任何缓冲编码帧的最高呈现时间戳。日后我们将不再支持隐式移除被截断的缓冲媒体。您应改为对 `newDuration < oldDuration` 的所有 `sourceBuffers` 执行显式 `remove(newDuration, oldDuration)`。"
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "此变更将从里程碑 {milestone} 生效。"
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "即使 `MIDIOptions` 中未指定 sysex，Web MIDI 也会请求获得使用许可。"
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "无法再从不安全的源使用 Notification API。您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "无法再从跨源 iframe 中请求 Notification API 权限。您应考虑改为从顶级框架中请求权限，或者打开一个新窗口。"
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "您的合作伙伴正在协商某个已过时的 (D)TLS 版本。请与您的合作伙伴联系，以解决此问题。"
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "不安全情境中的 WebSQL 已被弃用，很快就会被移除。请使用 Web Storage 或 Indexed Database。"
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "为 img、video 和 canvas 标记指定 `overflow: visible` 可能会导致这些标记在元素边界之外生成视觉内容。请参阅 https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md。"
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` 已被弃用。请改用即时安装方式安装付款处理程序。"
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "您的 `PaymentRequest` 调用已绕过内容安全政策 (CSP) `connect-src` 指令。此绕过方式已被弃用。请将 `PaymentRequest` API 中的付款方式标识符（在 `supportedMethods` 字段中）添加到 CSP `connect-src` 指令中。"
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` 已被弃用。请改用标准化 `navigator.storage`。"
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "带有 `<picture>` 父级的 `<source src>` 无效，因此会被忽略。请改用 `<source srcset>`。"
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` 已被弃用。请改用标准化 `navigator.storage`。"
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "如果子资源请求的网址包含嵌入式凭据（例如 `https://user:pass@host/`），相应子资源请求会被屏蔽。"
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "约束条件 `DtlsSrtpKeyAgreement` 已被移除。您已为此约束条件指定 `false` 值，系统会将这种情况解读为尝试使用已被移除的 `SDES key negotiation` 方法。此功能已被移除；请改用支持 `DTLS key negotiation`的服务。"
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "约束条件 `DtlsSrtpKeyAgreement` 已被移除。您已为此约束条件指定 `true` 值，这没有任何作用，但为整洁起见，您可以移除此约束条件。"
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "检测到`Complex Plan B SDP`。`Session Description Protocol`的这种方言不再受支持。请改用`Unified Plan SDP`。"
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "使用 `{sdpSemantics:plan-b}` 构造 `RTCPeerConnection` 时采用了 `Plan B SDP semantics`，该协议是 `Session Description Protocol` 的非标准旧版本，已从 Web 平台中永久删除。使用 `IS_FUCHSIA` 进行构建时，这个旧版本仍可用，但我们打算尽快将其删除，因此请不要再依赖它。如需查看状态，请访问 https://crbug.com/1302249。"
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "`rtcpMuxPolicy` 选项已被弃用，并将被移除。"
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` 将要求进行跨域隔离。如需了解详情，请访问 https://developer.chrome.com/blog/enabling-shared-array-buffer/。"
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "无需用户激活的 `speechSynthesis.speak()` 已被弃用，并将被移除。"
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "使用了已弃用的功能"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "扩展程序应选择启用跨域隔离，以便继续使用 `SharedArrayBuffer`。请参阅 https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/。"
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1} 是特定于供应商的方法。请改用标准 {PH2}。"
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "`XMLHttpRequest` 中的响应 JSON 不支持 UTF-16"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "我们不再支持主线程上的同步 `XMLHttpRequest`，因为这会对最终用户的体验产生不利影响。如需更多帮助，请访问 https://xhr.spec.whatwg.org/。"
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` 已被弃用。请改用 `isSessionSupported()` 并查看已解析的布尔值。"
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "主线程拦截时间"
   },
@@ -2760,31 +2610,31 @@
     "message": "您只需使用 [Ezoic Leap](https://pubdash.ezoic.com/speed) 并启用“`Resize Images`”设置，即可调整图片大小以适合设备的大小，从而减少网络载荷量。"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "请使用 `gatsby-plugin-image` 组件（而非 `<img>`）自动优化图片格式。[了解详情](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)。"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "请使用 `gatsby-plugin-image` 组件（而非 `<img>`）自动延迟加载图片。[了解详情](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)。"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "请使用 `gatsby-plugin-image` 组件并将 `loading` 属性设为 `eager`。[了解详情](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)。"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "请使用 `Gatsby Script API` 推迟加载非关键第三方脚本。[了解详情](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)。"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "请使用 `PurgeCSS` `Gatsby` 插件从样式表中移除未使用的规则。[了解详情](https://purgecss.com/plugins/gatsby.html)。"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "请使用 `Webpack Bundle Analyzer` 检测未使用的 JavaScript 代码。[了解详情](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "请为不可变资源配置缓存。[了解详情](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)。"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "请使用 `gatsby-plugin-image` 组件（而非 `<img>`）调整图片质量。[了解详情](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)。"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "请使用 `gatsby-plugin-image` 组件设置适当的 `sizes`。[了解详情](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)。"
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "建议您将 GIF 上传到可让其作为 HTML5 视频嵌入的服务。"
@@ -2865,10 +2715,10 @@
     "message": "您可以通过[修改主题背景的布局](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)来添加 `<link rel=preload>` 标记。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "请使用 `next/image` 组件（而非 `<img>`）自动优化图片格式。[了解详情](https://nextjs.org/docs/basic-features/image-optimization)。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "请使用 `next/image` 组件（而非 `<img>`）自动延迟加载图片。[了解详情](https://nextjs.org/docs/basic-features/image-optimization)。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "您只需使用 `next/image` 组件并将“priority”设为 true，即可预加载 LCP 图片。[了解详情](https://nextjs.org/docs/api-reference/next/image#priority)。"
@@ -2883,7 +2733,7 @@
     "message": "建议您在 `Next.js` 配置中设置 `PurgeCSS` 以从样式表中移除未使用的规则。[了解详情](https://purgecss.com/guides/next.html)。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "请使用 `Webpack Bundle Analyzer` 检测未使用的 JavaScript 代码。[了解详情](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "建议您使用 `Next.js Analytics` 衡量应用的实际性能。[了解详情](https://nextjs.org/docs/advanced-features/measuring-performance)。"
@@ -2892,7 +2742,7 @@
     "message": "请为不可变资源和`Server-side Rendered` (SSR) 网页配置缓存。[了解详情](https://nextjs.org/docs/going-to-production#caching)。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "请使用 `next/image` 组件（而非 `<img>`）调整图片质量。[了解详情](https://nextjs.org/docs/basic-features/image-optimization)。"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "请使用 `next/image` 组件设置适当的 `sizes`。[了解详情](https://nextjs.org/docs/api-reference/next/image#sizes)。"

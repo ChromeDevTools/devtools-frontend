@@ -981,25 +981,25 @@
     "message": "Permès amb un advertiment"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% de l'LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Fase"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Temps"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Aquest és l'element més gran amb contingut que s'ha renderitzat a la finestra gràfica. [Més informació sobre la renderització de l'element més gran amb contingut](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Retard en la càrrega"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Temps de càrrega"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Retard en la renderització"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Pots optar per afegir \"unsafe-inline\" (els navegadors que admeten nonces o valors resum l'ignoren) perquè sigui retrocompatible amb navegadors més antics."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "El símbol del comodí (*) no cobrirà l'autorització a la gestió de la capçalera `Access-Control-Allow-Headers` a CORS."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Les sol·licituds de recursos amb URL que contenien tant caràcters d'espai en blanc (`(n|r|t)`) com caràcters d'\"inferior a\" (`<`) suprimits estan bloquejades. Suprimeix les línies noves i codifica els caràcters d'\"inferior a\" de llocs com els valors d'atribut d'element per carregar aquests recursos."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` està obsoleta. Substitueix-la per l'API estandarditzada Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "La funció `chrome.loadTimes()` està obsoleta. Substitueix-la per l'API estandarditzada: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` està obsoleta. Substitueix-la per l'API estandarditzada: `nextHopProtocol` a Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Les galetes que continguin un caràcter `(0|r|n)` es rebutjaran en lloc de truncar-se."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "El relaxament de la política del mateix origen establint `document.domain` està obsolet i es desactivarà de manera predeterminada. Aquest advertiment de discontinuació és per a un accés d'altres orígens activat establint `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "L'opció d'activar {PH1} des d'iframes d'altres orígens està obsoleta i se suprimirà en el futur."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "S'ha d'utilitzar l'atribut `disableRemotePlayback` per desactivar la integració de Cast predeterminada en lloc de fer servir el selector `-internal-media-controls-overlay-cast-button`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} està obsoleta. Substitueix-la per {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Això és un exemple d'un missatge traduït referent a un problema de discontinuació."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "El relaxament de la política del mateix origen establint `document.domain` està obsolet i es desactivarà de manera predeterminada. Per continuar utilitzant aquesta funció, cancel·la els clústers d'agent amb clau d'origen enviant una capçalera `Origin-Agent-Cluster: ?0` juntament amb la resposta HTTP per al document i els marcs. Consulta https://developer.chrome.com/blog/immutable-document-domain/ per obtenir més informació."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "La funció `Event.path` està obsoleta i se suprimirà. Substitueix-la per `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "La capçalera `Expect-CT` està obsoleta i se suprimirà. Chrome requereix Transparència de certificats per a tots els certificats considerats de confiança públicament que s'hagin emès després del 30 d'abril de 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Consulta la pàgina d'estat de la funció per obtenir informació més detallada."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` i `watchPosition()` ja no funcionen en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` i `watchPosition()` estan obsoletes en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` ja no funciona en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "La funció `RTCPeerConnectionIceErrorEvent.hostCandidate` està obsoleta. Substitueix-la per `RTCPeerConnectionIceErrorEvent.address` o per `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "L'origen del comerciant i les dades arbitràries de l'esdeveniment `canmakepayment` del Service Worker estan obsolets i se suprimiran: `topOrigin`, `paymentRequestOrigin`, `methodData` i `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "El lloc web ha sol·licitat un subrecurs des d'una xarxa a la qual només ha pogut accedir gràcies a la posició privilegiada a la xarxa dels seus usuaris. Aquestes sol·licituds exposen els dispositius i els servidors que no són públics a Internet, amb la qual cosa augmenta el risc de patir una fuita d'informació o un atac de falsificació de sol·licituds entre llocs web (CSRF). Per reduir aquests riscos, Chrome discontinua les sol·licituds a subrecursos que no són públics quan s'inicien des de contexts no segurs i comença a bloquejar-los."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "El CSS no es pot carregar des dels URL `file:`, tret que acabin amb l'extensió de fitxer `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "L'opció d'utilitzar `SourceBuffer.abort()` per anul·lar la supressió de l'interval asíncron duta a terme per `remove()` s'ha discontinuat a causa del canvi d'especificació. Es deixarà d'admetre en el futur. Hauràs d'escoltar l'esdeveniment `updateend`. `abort()` s'ha dissenyat només per anul·lar l'addició d'un mitjà asíncron o per restablir l'estat de l'analitzador."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "En configurar `MediaSource.duration` per sota de la marca de temps de presentació més alta de qualsevol marc amb codi emmagatzemat a la memòria intermèdia, està obsoleta a causa del canvi d'especificació. La supressió implícita de mitjans truncats emmagatzemats a la memòria intermèdia es deixarà d'admetre en el futur. En lloc seu, hauràs d'executar el codi `remove(newDuration, oldDuration)` explícit en totes les instàncies de `sourceBuffers` en què `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Aquest canvi es farà efectiu quan s'arribi a {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI demanarà permís d'ús fins i tot si el missatge exclusiu del sistema no s'especifica a `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Pot ser que l'API Notification ja no es pugui utilitzar des d'orígens no segurs. Planteja't canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Pot ser que el permís per a l'API Notification ja no se sol·liciti des d'un iframe d'altres orígens. T'hauries de plantejar sol·licitar permís des d'un marc de nivell superior o bé obrir una finestra nova."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "El teu partner està negociant una versió de (D)TLS obsoleta. Demana al teu partner que ho corregeixi."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "WebSQL està obsolet en contextos no segurs i se suprimirà aviat. Utilitza Web Storage o Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Si s'especifica `overflow: visible` a les etiquetes img, video i canvas, pot ser que produeixin contingut visual fora dels límits de l'element. Consulta https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "L'API `paymentManager.instruments` està obsoleta. Utilitza la instal·lació Just-In-Time per als gestors de pagaments."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "La crida a `PaymentRequest` ha omès la directiva `connect-src` de la política de seguretat del contingut (CSP). Aquesta omissió està obsoleta. Afegeix l'identificador de la forma de pagament de l'API `PaymentRequest` (al camp `supportedMethods`) a la directiva `connect-src` de la CSP."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "La funció `StorageType.persistent` està obsoleta. Substitueix-la per l'API `navigator.storage` estandarditzada."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "L'element `<source src>` amb un atribut superior `<picture>` no és vàlid i s'ignorarà. Substitueix-lo per `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "La funció `window.webkitStorageInfo` està obsoleta. Substitueix-la per l'API `navigator.storage` estandarditzada."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Les sol·licituds de subrecursos amb URL que contenen credencials inserides (per exemple, `https://user:pass@host/`) estan bloquejades."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "La restricció `DtlsSrtpKeyAgreement` s'ha suprimit. Has especificat un valor `false` per a aquesta restricció, la qual cosa s'interpreta com un intent d'utilitzar el mètode `SDES key negotiation` suprimit. Aquesta funcionalitat s'ha suprimit; substitueix-la per un servei que admeti `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "La restricció `DtlsSrtpKeyAgreement` s'ha suprimit. Has especificat un valor `true` per a aquesta restricció, la qual cosa no ha tingut cap efecte, però pots suprimir aquesta restricció per organitzar-te millor."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "S'ha detectat `Complex Plan B SDP`. Aquest dialecte de `Session Description Protocol` ja no s'admet. Substitueix-lo per `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "El protocol `Plan B SDP semantics`, utilitzat per construir una interfície `RTCPeerConnection` amb el format `{sdpSemantics:plan-b}`, és una versió no estàndard heretada del protocol `Session Description Protocol` que s'ha suprimit permanentment de la plataforma web. Continuarà estant disponible en compilar amb `IS_FUCHSIA`, però tenim previst suprimir-lo al més aviat possible. Deixa de dependre'n. Per veure'n l'estat, consulta https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "L'opció `rtcpMuxPolicy` està obsoleta i se suprimirà."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` requerirà l'aïllament d'altres orígens. Consulta https://developer.chrome.com/blog/enabling-shared-array-buffer/ per obtenir més informació."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "`speechSynthesis.speak()` sense l'activació de l'usuari està obsoleta i se suprimirà."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "S'ha utilitzat una funció obsoleta"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Les extensions han d'activar l'aïllament d'altres orígens per continuar utilitzant `SharedArrayBuffer`. Consulta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "La funció {PH1} és específica de cada proveïdor. Substitueix-la per la funció {PH2} estàndard."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "La resposta JSON no admet UTF-16 a `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "L'API `XMLHttpRequest` síncrona al fil principal està obsoleta a causa dels seus efectes perjudicials en l'experiència de l'usuari final. Per obtenir més ajuda, consulta https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "La funció `supportsSession()` està obsoleta. Substitueix-la per `isSessionSupported()` i comprova el valor booleà resolt."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Temps de bloqueig del fil principal"
   },
@@ -2760,31 +2610,31 @@
     "message": "Utilitza [Ezoic Leap](https://pubdash.ezoic.com/speed) i activa `Resize Images` per canviar la mida de les imatges perquè s'adapti a cada dispositiu a fi de reduir les mides de càrrega útil de la xarxa."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Utilitza el component `gatsby-plugin-image` (i no `<img>`) perquè el format d'imatge s'optimitzi automàticament. [Obtén més informació](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Utilitza el component `gatsby-plugin-image` (i no `<img>`) perquè les imatges es carreguin lentament de manera automàtica. [Obtén més informació](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Utilitza el component `gatsby-plugin-image` i estableix la propietat `loading` com a `eager`. [Obtén més informació](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Utilitza `Gatsby Script API` per ajornar la càrrega de scripts de tercers que no siguin essencials. [Obtén més informació](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Utilitza el connector `PurgeCSS` `Gatsby` per suprimir regles sense utilitzar dels fulls d'estil. [Obtén més informació](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Utilitza `Webpack Bundle Analyzer` per detectar codi JavaScript sense utilitzar. [Més informació](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Configura que els recursos invariables es desin a la memòria cau. [Obtén més informació](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Utilitza el component `gatsby-plugin-image` (i no `<img>`) per ajustar la qualitat d'imatge. [Obtén més informació](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Utilitza el component `gatsby-plugin-image` per establir les `sizes` adequades. [Obtén més informació](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Pots penjar el GIF en un servei que permeti inserir-lo com un vídeo HTML5."
@@ -2865,10 +2715,10 @@
     "message": "Es poden afegir etiquetes `<link rel=preload>` [modificant el disseny dels temes](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Utilitza el component `next/image` (i no `<img>`) perquè el format d'imatge s'optimitzi automàticament. [Obtén més informació](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Utilitza el component `next/image` (i no `<img>`) perquè les imatges es carreguin lentament de manera automàtica. [Obtén més informació](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Utilitza el component `next/image` i estableix \"priority\" en \"True\" per precarregar la imatge LCP. [Obtén més informació](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Pots establir `PurgeCSS` a la configuració de `Next.js` per suprimir regles sense utilitzar dels fulls d'estil. [Obtén més informació](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Utilitza `Webpack Bundle Analyzer` per detectar codi JavaScript sense utilitzar. [Més informació](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Pots utilitzar `Next.js Analytics` per mesurar el rendiment de la teva aplicació al món real. [Obtén més informació](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Configura l'emmagatzematge a la memòria cau per a recursos invariables i pàgines `Server-side Rendered` (SSR). [Obtén més informació](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Utilitza el component `next/image` (i no `<img>`) per ajustar la qualitat d'imatge. [Obtén més informació](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Utilitza el component `next/image` per establir les `sizes` adequades. [Obtén més informació](https://nextjs.org/docs/api-reference/next/image#sizes)."

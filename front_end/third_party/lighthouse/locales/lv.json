@@ -981,28 +981,28 @@
     "message": "Atļauts ar brīdinājumu"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% no LSA"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Posms"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Laiks"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Tas ir lielākais skatvietā atveidotais satura elements. [Uzziniet vairāk par lielāko satura atveidojuma elementu](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)."
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Ielādes aizkave"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Ielādes laiks"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Atveidošanas aizkave"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
-    "message": "TTFB"
+    "message": "LLPB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
     "message": "Lielākais satura atveidojuma elements"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Lai nodrošinātu atpakaļsaderību ar vecākām pārlūkprogrammām, varat pievienot atslēgvārdu “unsafe-inline” (pārlūkprogrammās, kas atbalsta vienreizējos kodus vai jaucējvērtības, šis atslēgvārds tiks ignorēts)."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Galvenei “authorization” nevarēs izmantot aizstājējzīmi (*), citas izcelsmes resursu kopīgošanas mehānismam apstrādājot “`Access-Control-Allow-Headers`”."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Resursu pieprasījumi, kuru vietrāžos URL bija ietvertas gan noņemtas baltstarpas rakstzīmes (`(n|r|t)`), gan rakstzīmes “mazāk nekā” (`<`), ir bloķēti. Lai ielādētu šos resursus, lūdzu, noņemiet jaunas rindas rakstzīmes un kodējiet rakstzīmes “mazāk nekā” tādās vietās kā elementu atribūtu vērtības."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "Metode “`chrome.loadTimes()`” vairs netiek izmantota, tās vietā izmantojiet standartizētu API: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "Metode “`chrome.loadTimes()`” vairs netiek izmantota, tās vietā izmantojiet standartizētu API: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "Metode “`chrome.loadTimes()`” vairs netiek izmantota, tās vietā izmantojiet standartizētu API: “`nextHopProtocol`” saskarnē Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Sīkfaili, kuros ir rakstzīme “`(0|r|n)`”, tiks noraidīti, nevis saīsināti."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Tās pašas izcelsmes politikas ierobežojumu noņemšana, iestatot “`document.domain`”, vairs netiek izmantota, un šī iespēja tiks atspējota pēc noklusējuma. Šis darbības pārtraukšanas brīdinājums ir saistīts ar citas izcelsmes piekļuvi, kas tika iespējota, iestatot “`document.domain`”."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Metodes “{PH1}” aktivizēšana no citas izcelsmes iframe ietvariem vairs netiek izmantota un nākotnē tiks noņemta."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Lai atspējotu noklusējuma Cast integrāciju, ir jāizmanto atribūts “`disableRemotePlayback`”, nevis atlasītājs “`-internal-media-controls-overlay-cast-button`”."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "Funkcija “{PH1}” vairs netiek atbalstīta. Tās vietā, lūdzu, izmantojiet funkciju “{PH2}”."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Šis ir tulkotā darbības pārtraukšanas problēmas ziņojuma piemērs."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Tās pašas izcelsmes politikas ierobežojumu noņemšana, iestatot “`document.domain`”, vairs netiek izmantota, un šī iespēja tiks atspējota pēc noklusējuma. Lai turpinātu izmantot šo funkciju, lūdzu, atsakieties no aģentu grupēšanas pēc izcelsmes, nosūtot galveni “`Origin-Agent-Cluster: ?0`” kopā ar HTTP atbildi dokumentam un ietvariem. Plašāku informāciju skatiet vietnē https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "Saskarne “`Event.path`” vairs netiek izmantota un tiks noņemta. Tās vietā, lūdzu, izmantojiet metodi “`Event.composedPath()`”."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Galvene “`Expect-CT`” vairs netiek atbalstīta un tiks noņemta. Pārlūkā Chrome visiem sertifikātiem, kas izdoti pēc 2018. gada 30. aprīļa un publiski atzīti par uzticamiem, ir jāizmanto sertifikāta pārredzamība."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Plašāku informāciju skatiet funkcijas statusa lapā."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "Metodes “`getCurrentPosition()`” un “`watchPosition()`” vairs nedarbojas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "Metodes “`getCurrentPosition()`” un “`watchPosition()`” vairs netiek izmantotas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "Metode “`getUserMedia()`” vairs nedarbojas nedrošiem avotiem. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "Objekts “`RTCPeerConnectionIceErrorEvent.hostCandidate`” vairs netiek atbalstīts. Tā vietā izmantojiet “`RTCPeerConnectionIceErrorEvent.address`” vai “`RTCPeerConnectionIceErrorEvent.port`”."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Tirgotāja izcelsme un patvaļīgi noteikti dati no pakalpojumu skripta notikuma “`canmakepayment`” ir novecojuši un tiks noņemti: `topOrigin`, `paymentRequestOrigin`, `methodData` un `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Vietne pieprasīja apakšresursu no tīkla, kam varēja piekļūt tikai lietotāju priviliģētā tīkla stāvokļa dēļ. Šie pieprasījumi saista publiski nepieejamas ierīces un serverus ar internetu, palielinot starpvietņu pieprasījuma viltošanas uzbrukumu un/vai informācijas noplūdes risku. Lai samazinātu šos riskus, Chrome pārtrauc atbalstīt pieprasījumus publiski nepieejamiem apakšresursiem, ja tie aktivizēti nedrošā vidē, un sāks tos bloķēt."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS nevar ielādēt no “`file:`” vietrāžiem URL, ja tie nebeidzas ar faila paplašinājumu “`.css`”."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Specifikācijas izmaiņu dēļ metodes “`SourceBuffer.abort()`” izmantošana, lai priekšlaikus pārtrauktu “`remove()`” asinhrono diapazona noņemšanu, ir novecojusi. Tiek plānots pārtraukt tās atbalstu. Tās vietā ieteicams izmantot notikuma “`updateend`” uztveršanu. Metode “`abort()`” ir paredzēta tikai asinhronas multivides līdzekļu pievienošanas priekšlaicīgai pārtraukšanai vai parsētāja statusa atiestatīšanai."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Specifikācijas izmaiņu dēļ vairs netiek atbalstīta “`MediaSource.duration`” iestatīšana zem lielākā parādīšanas laikspiedola buferī ievietotiem kodētiem ietvariem. Saīsināta, buferī ievietota multivides satura netiešas noņemšanas atbalsts tiks pārtraukts. Tās vietā izmantojiet tiešu metodi “`remove(newDuration, oldDuration)`” visiem objektiem “`sourceBuffers`”, ja tiek izpildīts nosacījums “`newDuration < oldDuration`”."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Šīs izmaiņas stāsies spēkā galvenajā versijā {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI vaicās izmantošanas atļauju, pat ja objektā “`MIDIOptions`” nav norādīta vērtība “sysex”."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Paziņojumu API vairs nevar izmantot no nedrošiem avotiem. Apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "No citas izcelsmes iframe ietvara vairs nevar pieprasīt atļauju saskarnei Paziņojumu API. Apsveriet iespēju pieprasīt atļauju no augšējā līmeņa ietvara vai atvērt jaunu logu."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Jūsu partneris saskaņo novecojušu (D)TLS versiju. Lūdzu, sazinieties ar partneri, lai to novērstu."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "Saskarne WebSQL vairs netiek izmantota nedrošos kontekstos un drīz tiks noņemta. Lūdzu, izmantojiet saskarni Web Storage vai Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Tagos “img”, “video” un “canvas” norādot vērtību “`overflow: visible`”, vizuāls saturs var tikt rādīts ārpus elementa robežām. Skatiet vietni https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "Saskarne `paymentManager.instruments` vairs netiek atbalstīta. Tās vietā maksājumu apdarinātājiem izmantojiet instalēšanu tieši laikā."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Ar jūsu `PaymentRequest` izsaukumu tika apieta Content-Security-Policy (satura drošības politikas — SDP) direktīva “`connect-src`”. Šādai apiešanai ir pārtraukts atbalsts. SDP direktīvai “`connect-src`” pievienojiet maksājuma veida identifikatoru no `PaymentRequest` API (laukā `supportedMethods`)."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "Elements “`StorageType.persistent`” vairs netiek atbalstīts. Tā vietā, lūdzu, izmantojiet standartizēto elementu “`navigator.storage`”."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "Elements `<source src>` ar galveno elementu `<picture>` nav derīgs, tādēļ tiks ignorēts. Tā vietā, lūdzu, izmantojiet `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "Saskarne “`window.webkitStorageInfo`” vairs netiek atbalstīta. Tās vietā, lūdzu, izmantojiet standartizēto elementu “`navigator.storage`”."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Apakšresursu pieprasījumi, kuru vietrāžos URL ir iegulti akreditācijas dati (piem., `https://user:pass@host/`), ir bloķēti."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Ierobežojums “`DtlsSrtpKeyAgreement`” ir noņemts. Jūs šim ierobežojumam esat noteicis vērtību “`false`”, un tas tiek interpretēts kā mēģinājums izmantot noņemto metodi “`SDES key negotiation`”. Šī funkcionalitāte ir noņemta. Tās vietā izmantojiet pakalpojumu, kas atbalsta metodi “`DTLS key negotiation`”."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Ierobežojums “`DtlsSrtpKeyAgreement`” ir noņemts. Jūs šim ierobežojumam esat noteicis vērtību “`true`”, taču tas nedarbojās. Skaidrības labad varat noņemt šo ierobežojumu."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Tika konstatēts protokols “`Complex Plan B SDP`”. Šis protokola “`Session Description Protocol`” veids vairs netiek izmantots. Tā vietā, lūdzu, izmantojiet “`Unified Plan SDP`”."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "Protokols “`Plan B SDP semantics`”, kas tiek izmantots, veidojot “`RTCPeerConnection`” ar `{sdpSemantics:plan-b}`, ir protokola “`Session Description Protocol`” mantota nestandarta versija, kas ir neatgriezeniski izdzēsta no tīmekļa platformas. Tas joprojām ir pieejams, veidošanai izmantojot “`IS_FUCHSIA`”, taču ir plānots to pēc iespējas drīzāk dzēst. Pārtrauciet to izmantot. Lai uzzinātu statusu, skatiet vietni https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Opcija “`rtcpMuxPolicy`” vairs nav pieejama un tiks noņemta."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "Objektam “`SharedArrayBuffer`” būs nepieciešama izolēšana no citas izcelsmes resursiem. Plašāku informāciju skatiet vietnē https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "Metode “`speechSynthesis.speak()`” bez lietotāja aktivizācijas vairs netiek izmantota un tiks noņemta."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Tiek izmantota novecojusi funkcija"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Lai turpinātu izmantot “`SharedArrayBuffer`”, paplašinājumiem ir jāizvēlas izolācija no citas izcelsmes resursiem. Plašāku informāciju skatiet vietnē https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "Funkcija “{PH1}” ir piesaistīta nodrošinātājam. Lūdzu, izmantojiet standarta funkciju “{PH2}”."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "Saskarnē “`XMLHttpRequest`” atbildes json failos netiek atbalstīts UTF-16."
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Sinhronā saskarne “`XMLHttpRequest`” galvenajā pavedienā vairs netiek izmantota, jo tā negatīvi ietekmēja galalietotāju pieredzi. Plašāku informāciju skatiet vietnē https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "Metode “`supportsSession()`” vairs netiek atbalstīta. Lūdzu, izmantojiet metodi “`isSessionSupported()`” un pārbaudiet saņemto Būla vērtību."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Galvenā pavediena bloķēšanas laiks"
   },
@@ -2760,31 +2610,31 @@
     "message": "Izmantojiet [Ezoic Leap](https://pubdash.ezoic.com/speed) un iespējojiet `Resize Images`, lai mainītu attēlu izmērus atbilstoši ierīcei, tādējādi samazinot tīkla lietderīgo slodzi."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Lai automātiski optimizētu attēlu formātu, izmantojiet komponentu `gatsby-plugin-image`, nevis `<img>`. [Uzziniet vairāk](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Lai automātiski atliktu attēlu ielādi, izmantojiet komponentu `gatsby-plugin-image`, nevis `<img>`. [Uzziniet vairāk](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Izmantojiet komponentu `gatsby-plugin-image` un iestatiet elementa `loading` vērtību `eager`. [Uzziniet vairāk](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Izmantojiet `Gatsby Script API`, lai atliktu mazāk svarīgu trešās puses skriptu ielādi. [Uzziniet vairāk](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Izmantojiet `PurgeCSS` `Gatsby` spraudni, lai noņemtu neizmantotas stilu lapu kārtulas. [Uzziniet vairāk](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Lai noteiktu neizmantotu JavaScript kodu, izmantojiet `Webpack Bundle Analyzer`. [Uzziniet vairāk](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Konfigurējiet nemainīgu līdzekļu saglabāšanu kešatmiņā. [Uzziniet vairāk](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Lai pielāgotu attēlu kvalitāti, izmantojiet komponentu `gatsby-plugin-image`, nevis `<img>`. [Uzziniet vairāk](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Lai iestatītu atbilstošās elementa `sizes` vērtības, izmantojiet komponentu `gatsby-plugin-image`. [Uzziniet vairāk](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Ieteicams augšupielādēt GIF failu pakalpojumā, kuru varēs izmantot, lai iegultu GIF failu kā HTML5 videoklipu."
@@ -2865,10 +2715,10 @@
     "message": "Varat pievienot `<link rel=preload>` tagus, [modificējot motīva izkārtojumu](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Lai automātiski optimizētu attēlu formātu, izmantojiet komponentu `next/image`, nevis `<img>`. [Uzziniet vairāk](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Lai automātiski atliktu attēlu ielādi, izmantojiet komponentu `next/image`, nevis `<img>`. [Uzziniet vairāk](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Izmantojiet komponentu `next/image` un iestatiet opcijai “priority” vērtību “true”, lai iepriekš ielādētu LCP attēlu. [Uzziniet vairāk](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Lai noņemtu neizmantotas stilu lapu kārtulas, `Next.js` konfigurācijā ieteicams iestatīt spraudni `PurgeCSS`. [Uzziniet vairāk](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Lai noteiktu neizmantotu JavaScript kodu, izmantojiet `Webpack Bundle Analyzer`. [Uzziniet vairāk](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Lai novērtētu lietotnes faktisko veiktspēju ieteicams izmantot `Next.js Analytics`. [Uzziniet vairāk](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Konfigurējiet nemainīgu līdzekļu un `Server-side Rendered` (SSR) lapu saglabāšanu kešatmiņā. [Uzziniet vairāk](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Lai pielāgotu attēlu kvalitāti, izmantojiet komponentu `next/image`, nevis `<img>`. [Uzziniet vairāk](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Lai iestatītu atbilstošās elementa `sizes` vērtības, izmantojiet komponentu `next/image`. [Uzziniet vairāk](https://nextjs.org/docs/api-reference/next/image#sizes)."

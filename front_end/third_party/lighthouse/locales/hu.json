@@ -981,25 +981,25 @@
     "message": "Figyelmeztetéssel engedélyezve"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "LCP százaléka"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Szakasz"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Időzítés"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Ez a legnagyobb, tartalommal rendelkező elem a megjelenítési területen. [További információ a Legnagyobb vizuális tartalom elemről](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)."
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Betöltési késleltetés"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Betöltési idő"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Megjelenítés késleltetése"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "A régebbi böngészőkkel való kompatibilitás érdekében használhatja az „unsafe-inline” kulcsszót (a nonce-t/hasht támogató böngészők figyelmen kívül hagyják)."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "A CORS `Access-Control-Allow-Headers` kezelésében az engedélyezést nem fogja fedni a helyettesítő karakter (*)."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Le vannak tiltva azok az erőforráskérések, amelyek esetében az URL-ek eltávolított `(n|r|t)` térközkaraktereket és kisebb mint karaktereket (`<`) is tartalmaznak. Az ilyen erőforrások betöltése érdekében távolítsa el az „új sor” jelöléseket, és kódolja a kisebb mint karaktereket az olyan helyeken, mint az elemek attribútumértékei."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "A `chrome.loadTimes()` függvényt megszüntettük. Használja helyette a szabványosított Navigation Timing 2 API-t."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "A `chrome.loadTimes()` függvényt megszüntettük, használja helyette a következő szabványosított API-t: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "A `chrome.loadTimes()` függvényt megszüntettük, használja helyette a következőt a szabványosított Navigation Timing 2 API keretein belül: `nextHopProtocol`."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "A `(0|r|n)` karaktert tartalmazó cookie-kat a böngésző csonkolás helyett el fogja utasítani."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Az ugyanarra az eredetre vonatkozó házirendnek a `document.domain` beállításával történő enyhítésére szolgáló lehetőséget megszüntettük, és alapértelmezés szerint le lesz tiltva. Ez a megszüntetési figyelmeztetés azokra az eredeteken átívelő hozzáférésekre érvényes, amelyek a `document.domain` beállításával lettek engedélyezve."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "A {PH1} eredeteken átívelő iframe-ekből való aktiválásának lehetőségét megszüntettük, és a jövőben el fogjuk távolítani."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Az `-internal-media-controls-overlay-cast-button` választó helyett a `disableRemotePlayback` attribútumot kell használni az alapértelmezett Cast-integráció letiltásához."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "A {PH1} paramétert megszüntettük. Használja helyette a következőt: {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Ez példa egy megszüntetett funkcióval kapcsolatos problémáról szóló, lefordított üzenetre."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Az ugyanarra az eredetre vonatkozó házirendnek a `document.domain` beállításával történő enyhítésére szolgáló lehetőséget megszüntettük, és alapértelmezés szerint le lesz tiltva. A funkció használatának folytatásához iratkozzon le az eredetkulccsal rendelkező ügynökklaszterekről úgy, hogy a HTTP-válasszal együtt egy `Origin-Agent-Cluster: ?0` fejlécet is elküld a dokumentumok és a keretek esetében. További részletek: https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "Az `Event.path` attribútumot megszüntettük, és el fogjuk távolítani. Használja helyette a következőt: `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Az `Expect-CT` fejlécet megszüntettük, és el fogjuk távolítani. A Chrome megköveteli A tanúsítványok átláthatósága funkció használatát a 2018. április 30. után kibocsátott összes nyilvánosan megbízható tanúsítvány esetében."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "További részleteket a funkció állapotát jelző oldalon találhat."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "A `getCurrentPosition()` és `watchPosition()` függvények többé nem működnek nem biztonságos eredetek esetében. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "A következő függvényeket megszüntettük a nem biztonságos eredetek esetében: `getCurrentPosition()` és `watchPosition()`. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "A `getUserMedia()` függvény többé nem működik nem biztonságos eredetek esetében. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "A `RTCPeerConnectionIceErrorEvent.hostCandidate` paramétert megszüntettük. Használja helyette a következők valamelyikét: `RTCPeerConnectionIceErrorEvent.address` vagy `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "A kereskedői eredetet és a `canmakepayment` service worker-eseményből származó tetszőleges adatokat megszüntettük, és eltávolítjuk őket: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "A webhely olyan hálózatból igényelt alerőforrást, amelyhez csak a felhasználói kiemelt hálózati pozíciója miatt tudott hozzáférni. Az ilyen kérelmek láthatóvá teszik a nem nyilvános eszközöket és szervereket az interneten, és így növelik a webhelyközi kérések hamisításával (CSRF) elkövetett támadások és az információszivárgás kockázatát. A kockázatok csökkentése érdekében a Chrome megszünteti a nem nyilvános részerőforrásokhoz irányuló olyan kérelmeket, amelyeket nem biztonságos környezetből indítanak, és elkezdi blokkolni őket."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "`file:` URL-ekből csak akkor lehet CSS-t betölteni, ha az URL-ek `.css` fájlkiterjesztésre végződnek."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Megszüntettük a `SourceBuffer.abort()` használatának lehetőségét a `remove()` függvény aszinkron tartományeltávolításának megszakítására a specifikációk változása miatt. A funkció támogatását is megszüntetjük a jövőben. Ehelyett figyelje az`updateend` eseményt. Az `abort()` csak arra szolgál, hogy megszakítson egy aszinkron médiatartalom-hozzáfűzést, vagy hogy visszaállítsa az elemző állapotát."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "A specifikációk változása miatt megszüntettük annak lehetőségét, hogy a `MediaSource.duration` értékét a pufferelt és kódolt keretek legmagasabb prezentációs időbélyege alá lehessen beállítani. A csonkolt és pufferelt médiatartalmak implicit eltávolításának támogatását meg fogjuk szüntetni a jövőben. Helyette explicit `remove(newDuration, oldDuration)` műveletet hajtson végre az összes olyan `sourceBuffers` esetében, amelyre igaz a következő: `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Ez a módosítás a következő mérföldkő elérésekor lép érvénybe: {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "A webes MIDI még akkor is engedélyt kér a használatra, ha a SysEx nincs megadva itt: `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "A Notification API többé nem használható nem biztonságos helyek esetében. Fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "A Notification API-ra vonatkozó engedélyt többé nem lehet eredeteken átívelő iframe-ből kérelmezni. Helyette inkább egy legfelső szintű kerettől kérjen engedélyt, vagy nyisson meg egy új ablakot."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Partnere egy elavult (D)TLS-verzióról tárgyal. Kérje meg partnerét, hogy javítsa ki ezt a problémát."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "A nem biztonságos környezetben lévő WebSQL elavult, ezért hamarosan eltávolítjuk. Használjon webes tárhelyet vagy indexelt adatbázist."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Ha a(z) `overflow: visible` értéket adja meg az img, video és canvas címkéken, előfordulhat, hogy az elem határain kívül hoznak létre vizuális tartalmat. Lásd: https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "A `paymentManager.instruments` paramétert megszüntettük. Használja helyette az igény szerinti telepítést a fizetéskezelőkhöz."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "A(z) `PaymentRequest` hívás megkerülte a Tartalombiztonsági irányelvek (CSP) `connect-src` utasítását. Ez a megkerülés elavult. Adja hozzá a(z) `PaymentRequest` API-ban szereplő fizetési mód azonosítóját (a[z] `supportedMethods` mezőben) a(z) `connect-src` CSP-utasításhoz."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "A `StorageType.persistent` paramétert megszüntettük. Használja helyette a szabványosított `navigator.storage` paramétert."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "A `<picture>` fölérendelt elemmel rendelkező `<source src>` elem érvénytelen, ezért a rendszer figyelmen kívül hagyja. Használja helyette a következőt: `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "A `window.webkitStorageInfo` paramétert megszüntettük. Használja helyette a szabványosított `navigator.storage` paramétert."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Le vannak tiltva azok az alerőforrás-kérések, amelyek URL-jei beágyazott hitelesítési adatokat tartalmaznak (pl. `https://user:pass@host/`)."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "A `DtlsSrtpKeyAgreement` korlátozást eltávolítottuk. Olyan `false` értéket adott meg ennél a korlátozásnál, amelyet a rendszer úgy értelmez, hogy az eltávolított `SDES key negotiation` metódust szeretné használni. Ezt a funkciót eltávolítottuk. Használjon helyette egy olyan szolgáltatást, amely támogatja a `DTLS key negotiation` műveletet."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "A `DtlsSrtpKeyAgreement` korlátozást eltávolítottuk. Olyan `true` értéket adott meg ennél a korlátozásnál, amely nem járt semmilyen hatással, de a kód rendben tartása érdekében eltávolíthatja."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` felismerve. A `Session Description Protocol` e dialektusa többé nem támogatott. Használja helyette a következőt: `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "A `Plan B SDP semantics`, amelyet `{sdpSemantics:plan-b}` attribútummal rendelkező `RTCPeerConnection` összeállításához használnak, a webes platformról véglegesen törölt `Session Description Protocol` egy régi, nem szabványos verziója. Az `IS_FUCHSIA` használatával történő összeállításkor még rendelkezésre áll, de elképzeléseink szerint a lehető leghamarabb törölni fogjuk. Ne támaszkodjon rá. Az állapotot megtekintheti itt: https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Az `rtcpMuxPolicy` lehetőséget megszüntettük, és el fogjuk távolítani."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "A `SharedArrayBuffer` objektum megköveteli az eltérő eredetek elkülönítését. További részletek: https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "A felhasználói aktiválás nélküli `speechSynthesis.speak()` függvényt megszüntettük, és el fogjuk távolítani."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Megszüntetett funkció használata"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "A `SharedArrayBuffer` használatának folytatásához a bővítményeknél engedélyezni kell az eltérő eredetek elkülönítését. További információ: https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "A {PH1} szolgáltatóspecifikus. Használja helyette a szabványos {PH2} megoldást."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "Az `XMLHttpRequest` esetében az UTF-16 kódolást nem támogatja a válasz-JSON."
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "A fő szálon futó szinkron `XMLHttpRequest` függvényt megszüntettük, mert hátrányos hatással van a végfelhasználói élményre. További információ: https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "A `supportsSession()` paramétert megszüntettük. Használja helyette az `isSessionSupported()` függvényt, és ellenőrizze inkább a feloldott logikai értéket."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Fő szál akadályozásának időtartama"
   },
@@ -2760,31 +2610,31 @@
     "message": "Az [Ezoic Leap](https://pubdash.ezoic.com/speed) használatával bekapcsolhatja a(z) `Resize Images` beállítást, amely segítségével átméretezhet képeket az adott eszköznek megfelelő méretűre, csökkentve ezzel a hálózaton továbbított adatok méretét."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Használja a `gatsby-plugin-image` összetevőt az `<img>` helyett a képformátum automatikus optimalizálásához. [További információ](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Használja a `gatsby-plugin-image` összetevőt az `<img>` helyett a képek automatikus késleltetett betöltéséhez. [További információ](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Használja a `gatsby-plugin-image` összetevőt, és állítsa a `loading` tulajdonságot `eager` értékre. [További információ](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Használja a `Gatsby Script API` összetevőt a nem kritikus fontosságú, harmadik félhez tartozó szkriptek betöltésének késleltetéséhez. [További információ](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Használja a `PurgeCSS` `Gatsby` beépülő modult a nem használt szabályok stíluslapokból való eltávolításához. [További információ](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Használja a `Webpack Bundle Analyzer` eszközt a nem használt JavaScript-kód észleléséhez. [További információ](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Konfigurálja a gyorsítótárazást az állandó tartalmakhoz. [További információ](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "A képminőség beállításához használja a `gatsby-plugin-image` összetevőt az `<img>` helyett. [További információ](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Használja az `gatsby-plugin-image` összetevőt a megfelelő `sizes` beállításához. [További információ](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Fontolja meg a GIF-fájlok olyan szolgáltatóhoz való feltöltését, amely lehetővé teszi a fájlok HTML5-videóként történő beágyazását."
@@ -2865,10 +2715,10 @@
     "message": "`<link rel=preload>` címkéket [valamelyik téma elrendezésének módosításával](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) adhat hozzá."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Használja a `next/image` összetevőt az `<img>` helyett a képformátum automatikus optimalizálásához. [További információ](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Használja a `next/image` összetevőt az `<img>` helyett a képek automatikus késleltetett betöltéséhez. [További információ](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "A(z) `next/image` összetevő használatával a „prioritást” igaz értékre állíthatja az LCP-kép előtöltése érdekében. [További információ](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Fontolja meg a(z) `PurgeCSS` beállítását a(z) `Next.js` konfigurációban a nem használt szabályok stíluslapokból való eltávolításához. [További információ](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Használja a `Webpack Bundle Analyzer` eszközt a nem használt JavaScript-kód észleléséhez. [További információ](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Fontolja meg a(z) `Next.js Analytics` használatát az alkalmazás valós teljesítményének méréséhez. [További információ](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Konfigurálja a gyorsítótárazást állandó tartalmakhoz és `Server-side Rendered` (SSR) oldalakhoz. [További információ](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "A képminőség beállításához használja a `next/image` összetevőt az `<img>` helyett. [További információ](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Használja a(z) `next/image` összetevőt a megfelelő `sizes` beállításához. [További információ](https://nextjs.org/docs/api-reference/next/image#sizes)."

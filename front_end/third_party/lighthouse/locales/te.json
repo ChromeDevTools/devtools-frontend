@@ -981,25 +981,25 @@
     "message": "హెచ్చరికతో అనుమతించబడింది"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "LCPలో %"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "ఫేజ్"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "సమయం"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "ఇది వీక్షణ పోర్ట్‌లో పెయింట్ చేయబడిన, అన్నింటి కన్నా ఎక్కువ కంటెంట్ ఉన్న ఎలిమెంట్. [లార్జెస్ట్ కంటెంట్‌ఫుల్ పెయింట్ ఎలిమెంట్ గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "లోడ్ ఆలస్యం అయ్యే సమయం"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "లోడ్ అయ్యే సమయం"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "ఐటెమ్ రెండర్ ఆలస్యం అయ్యే సమయం"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "పాత బ్రౌజర్‌లతో అనుకూలంగా ఉండటానికి 'unsafe-inline' (nonces/hashes సపోర్ట్ చేసే బ్రౌజర్‌ల ద్వారా విస్మరించబడినవి) జోడించడాన్ని పరిగణించండి."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "CORS `Access-Control-Allow-Headers` హ్యాండ్లింగ్‌లో ప్రామాణీకరణ అనేది వైల్డ్ కార్డ్ చిహ్నం (*) ద్వారా కవర్ కాదు."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "ఏ రిసోర్స్ రిక్వెస్ట్‌ల URLలలో అయితే తీసివేయబడిన వైట్‌స్పేస్ `(n|r|t)` అక్షరాలతో పాటు 'దీని కంటే తక్కువ' అక్షరాలు (`<`) కూడా ఉంటాయో, అవి బ్లాక్ చేయబడ్డాయి. ఈ రిసోర్స్‌లను లోడ్ చేయడానికి, ఎలిమెంట్ లక్షణం విలువల వంటి స్థలాల నుండి దయచేసి కొత్త లైన్‌లను తీసివేయండి, ఇంకా 'దీని కంటే తక్కువ' అక్షరాలను ఎన్‌కోడ్ చేయండి."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` విస్మరించబడింది, దీనికి బదులుగా స్టాండర్డైజ్ చేయబడిన APIని ఉపయోగించండి: నావిగేషన్ టైమింగ్ 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` విస్మరించబడింది, అందుకు బదులుగా స్టాండర్డైజ్ చేయబడిన APIని ఉపయోగించండి: పెయింట్ టైమింగ్."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` విస్మరించబడింది, దీనికి బదులుగా స్టాండర్డైజ్ చేయబడిన APIని ఉపయోగించండి: నావిగేషన్ టైమింగ్ 2లో `nextHopProtocol`."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "`(0|r|n)` అక్షరం ఉన్న కుక్కీలు కుదించబడటానికి బదులుగా తిరస్కరించబడతాయి."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "`document.domain`‌ను సెట్ చేయడం ద్వారా ఒకే ఆరిజిన్ పాలసీని సడలించడం అనేది విస్మరించబడింది, అది ఆటోమేటిక్‌గా డిజేబుల్ చేయబడుతుంది. `document.domain`‌ను సెట్ చేయడం ద్వారా ఎనేబుల్ చేయబడిన క్రాస్-ఆరిజిన్ యాక్సెస్‌కు సంబంధించినది ఈ విస్మరణ హెచ్చరిక."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "క్రాస్ ఆరిజిన్ iframeల నుండి {PH1}‌ను ట్రిగ్గర్ చేయడం విస్మరించబడింది, భవిష్యత్తులో ఈ ఆప్షన్ తీసివేయబడుతుంది."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "ఆటోమేటిక్‌గా సెట్ చేయబడి ఉండే కాస్ట్ ఇంటిగ్రేషన్‌ను డిజేబుల్ చేయడానికి `-internal-media-controls-overlay-cast-button` ఎంపిక సాధనానికి బదులుగా `disableRemotePlayback` లక్షణాన్ని ఉపయోగించాలి."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} విస్మరించబడింది. అందుకు బదులుగా దయచేసి {PH2}‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "విస్మరించబడిన ఫీచర్‌కు సంబంధించిన సమస్యను వివరించే, అనువదించిన మెసేజ్‌కు ఉదాహరణ ఇది."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "`document.domain`‌ను సెట్ చేయడం ద్వారా ఒకే ఆరిజిన్ పాలసీని సడలించడం అనేది విస్మరించబడింది, అది ఆటోమేటిక్‌గా డిజేబుల్ చేయబడుతుంది. ఈ ఫీచర్‌ను ఉపయోగించడం కొనసాగించడానికి, డాక్యుమెంట్, ఫ్రేమ్‌లకు సంబంధించిన HTTP ప్రతిస్పందనతో పాటు `Origin-Agent-Cluster: ?0` హెడర్‌ను పంపడం ద్వారా ఆరిజిన్ ఆధారిత ఏజెంట్ క్లస్టర్‌లకు దయచేసి సమ్మతి నిలిపివేయండి. మరిన్ని వివరాల కోసం https://developer.chrome.com/blog/immutable-document-domain/ లింక్‌లోని కంటెంట్‌ను చూడండి."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` విస్మరించబడింది, అలాగే అది తీసివేయబడుతుంది. అందుకు బదులుగా దయచేసి `Event.composedPath()`‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "`Expect-CT` హెడర్ విస్మరించబడింది, అలాగే తీసివేయబడుతుంది. Chromeను ఉపయోగించే విషయంలో, ఏప్రిల్ 30, 2018 తర్వాత జారీ చేయబడిన, పబ్లిక్‌గా విశ్వసనీయమైన సర్టిఫికెట్‌లన్నింటికీ పారదర్శకత సర్టిఫికెట్ అవసరం అవుతుంది."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "మరిన్ని వివరాల కోసం ఫీచర్ స్టేటస్ పేజీని చెక్ చేయండి."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()`, `watchPosition()` ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయవు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చే అంశాన్ని మీరు పరిశీలించాలి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌లోని కంటెంట్‌ను చూడండి."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "సురక్షితం కాని ఆరిజిన్‌లలో `getCurrentPosition()`, `watchPosition()` విస్మరించబడ్డాయి. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చే అంశాన్ని మీరు పరిశీలించాలి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌లోని కంటెంట్‌ను చూడండి."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయదు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చే అంశాన్ని మీరు పరిశీలించాలి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌లోని కంటెంట్‌ను చూడండి."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` విస్మరించబడింది. బదులుగా దయచేసి `RTCPeerConnectionIceErrorEvent.address` లేదా `RTCPeerConnectionIceErrorEvent.port`‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "`canmakepayment` సర్వీస్ వర్కర్ ఈవెంట్‌లోని వ్యాపారి ఆరిజిన్, ఇంకా ఆర్బిట్రరీ డేటా విస్మరించబడ్డాయి, అవి తీసివేయబడతాయి: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "వెబ్‌సైట్ దాని యూజర్‌లకు ఉన్న ప్రత్యేకమైన నెట్‌వర్క్ స్థానం కారణంగా మాత్రమే అది యాక్సెస్ చేయగల నెట్‌వర్క్ నుండి సబ్‌రిసోర్స్‌ను రిక్వెస్ట్ చేసింది. ఈ రిక్వెస్ట్‌లు పబ్లిక్ కాని పరికరాలను, సర్వర్‌లను ఇంటర్నెట్‌కు బహిర్గతం చేస్తాయి, దీని వలన క్రాస్-సైట్ రిక్వెస్ట్ ఫోర్జరీ (CSRF) దాడి, మరియు/లేదా సమాచారం లీక్ అయ్యే రిస్క్ పెరుగుతుంది. ఈ రిస్క్‌లను తగ్గించడానికి, సురక్షితం కాని కాంటెక్స్ట్‌ల నుండి పబ్లిక్ కాని సబ్‌రిసోర్స్‌లకు చేసిన రిక్వెస్ట్‌లను Chrome విస్మరిస్తుంది, వాటిని బ్లాక్ చేయడం ప్రారంభిస్తుంది."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "`file:` URLల చివర `.css` ఫైల్ ఎక్స్‌టెన్షన్ ఉంటే మినహా, వాటి నుండి CSSను లోడ్ చేయడం సాధ్యపడదు."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "స్పెసిఫికేషన్‌లో మార్పు కారణంగా, `remove()`‌కు సంబంధించిన సింక్రనస్ కాని పరిధి తీసివేతను రద్దు చేయడానికి `SourceBuffer.abort()`‌ను ఉపయోగించడం విస్మరించబడింది. భవిష్యత్తులో సపోర్ట్ తీసివేయబడుతుంది. బదులుగా మీరు `updateend` ఈవెంట్‌ను వినాలి. సింక్రనస్ కాని మీడియా జోడింపును రద్దు చేయడానికి లేదా పార్సర్ స్టేట్‌ను రీసెట్ చేయడానికి మాత్రమే `abort()`‌ను ఉపయోగించవచ్చు."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "స్పెసిఫికేషన్‌లో మార్పు కారణంగా, బఫర్ చేయబడిన కోడెడ్ ఫ్రేమ్‌లలో ఏ ఫ్రేమ్‌కు సంబంధించిన అత్యధిక ప్రెజెంటేషన్ టైమ్ స్టాంప్ కంటే తక్కువకు అయినా `MediaSource.duration`‌ను సెట్ చేయడం అనేది విస్మరించబడింది. కుదించబడిన 'బఫర్ చేయబడిన మీడియా'ను పరోక్షంగా తీసివేయడానికి సపోర్ట్ భవిష్యత్తులో తీసివేయబడుతుంది. అందుకు బదులుగా, `newDuration < oldDuration` వద్ద ఉండే `sourceBuffers` అన్నింటిపై మీరు స్పష్టమైన `remove(newDuration, oldDuration)`‌ను అమలు చేయాలి."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "ఈ మార్పు {milestone} మైల్‌స్టోన్‌తో అమలులోకి వస్తుంది."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "`MIDIOptions`‌లో sysex పేర్కొనబడనప్పటికీ, ఉపయోగించడానికి వెబ్ MIDI అనుమతిని అడుగుతుంది."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "నోటిఫికేషన్ APIని ఇకపై సురక్షితం కాని ఆరిజిన్‌ల నుండి ఉపయోగించడం కుదరకపోవచ్చు. మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చే అంశాన్ని మీరు పరిశీలించాలి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌లోని కంటెంట్‌ను చూడండి."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "నోటిఫికేషన్ APIకి అనుమతిని ఇకపై క్రాస్-ఆరిజిన్ iframe నుండి రిక్వెస్ట్ చేయడం కుదరకపోవచ్చు. టాప్-లెవెల్ ఫ్రేమ్ నుండి అనుమతిని రిక్వెస్ట్ చేయడాన్ని, లేదా అందుకు బదులుగా కొత్త విండోను తెరవడాన్ని మీరు పరిశీలించాలి."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "మీ పార్ట్‌నర్ వాడుకలో లేని (D)TLS వెర్షన్‌ను నెగోషియేట్ చేస్తున్నారు. దీన్ని పరిష్కరించడం కోసం దయచేసి మీ పార్ట్‌నర్‌ను సంప్రదించండి."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "సురక్షితం కాని సందర్భాలలో WebSQL వినియోగం విస్మరించబడుతుంది, అలాగే ఇది త్వరలోనే తీసివేయబడుతుంది. దయచేసి వెబ్ స్టోరేజ్‌ను లేదా ఇండెక్స్ చేయబడిన డేటాబేస్‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "`overflow: visible`ను img, వీడియో, కాన్వాస్ ట్యాగ్‌లలో పేర్కొనడం వలన అవి ఎలిమెంట్ పరిధికి వెలుపల విజువల్ కంటెంట్‌ను క్రియేట్ చేయవచ్చు. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md‌ని చూడండి."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` విస్మరించబడింది. బదులుగా పేమెంట్ హ్యాండ్లర్‌ల కోసం దయచేసి జస్ట్ ఇన్-టైమ్ ఇన్‌స్టాల్‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "మీ `PaymentRequest` కాల్, కంటెంట్-సెక్యూరిటీ-పాలసీ (CSP) `connect-src` డైరెక్టివ్‌ను బైపాస్ చేసింది. ఈ బైపాస్ విస్మరించబడింది. దయచేసి API `PaymentRequest` (`supportedMethods` ఫీల్డ్‌లో) నుండి CSP `connect-src` డైరెక్టివ్‌కు పేమెంట్ ఆప్షన్ ఐడెంటిఫైయర్‌ను జోడించండి."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` విస్మరించబడింది. బదులుగా దయచేసి స్టాండర్డైజ్ చేయబడిన `navigator.storage`‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<picture>` పేరెంట్ గల `<source src>` చెల్లదు, కాబట్టి అది విస్మరించబడింది. అందుకు బదులుగా దయచేసి `<source srcset>`‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` విస్మరించబడింది. బదులుగా దయచేసి స్టాండర్డైజ్ చేయబడిన `navigator.storage`‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "ఏ సబ్‌రిసోర్స్ రిక్వెస్ట్‌ల URLలలో అయితే పొందుపరిచిన ఆధారాలు (ఉదా. `https://user:pass@host/`) ఉన్నాయో, అవి బ్లాక్ చేయబడ్డాయి."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "`DtlsSrtpKeyAgreement` పరిమితి తీసివేయబడింది. మీరు ఈ పరిమితికి `false` విలువను పేర్కొన్నారు, అంటే తీసివేసిన `SDES key negotiation` విధానాన్ని మీరు ఉపయోగించడానికి ప్రయత్నించారని అర్ఠం. ఈ ఫంక్షనాలిటీ తీసివేయబడింది; బదులుగా `DTLS key negotiation`‌ను సపోర్ట్ చేసే సర్వీస్‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "`DtlsSrtpKeyAgreement` పరిమితి తీసివేయబడింది. మీరు ఈ పరిమితికి `true` విలువను పేర్కొన్నారు, ఇది ఎటువంటి ప్రభావమూ చూపలేదు, కానీ స్పష్టంగా, సింపుల్‌గా ఉంచటానికి మీరు దీన్ని తీసివేయవచ్చు."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` గుర్తించబడింది. `Session Description Protocol`‌కు సంబంధించిన ఈ వెర్షన్ ఇకపై సపోర్ట్ చేయబడదు. అందుకు బదులుగా దయచేసి `Unified Plan SDP`‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`{sdpSemantics:plan-b}`‌తో `RTCPeerConnection`‌ను క్రియేట్ చేయడానికి ఉపయోగించబడిన `Plan B SDP semantics`, వెబ్ ప్లాట్‌ఫామ్ నుండి శాశ్వతంగా తొలగించబడిన `Session Description Protocol`‌కు లెగసీ నాన్-స్టాండర్డ్ వెర్షన్. `IS_FUCHSIA`‌తో బిల్డ్ చేస్తున్నప్పుడు కూడా ఇది అందుబాటులో ఉంది, కానీ వీలైనంత త్వరగా దీన్ని తొలగించాలనుకుంటున్నాము. దీని మీద ఆధారపడటం ఆపివేయండి. స్టేటస్ కోసం https://crbug.com/1302249 లింక్‌ను రెఫర్ చేయండి."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "`rtcpMuxPolicy` ఆప్షన్ విస్మరించబడింది, అలాగే అది తీసివేయబడుతుంది."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer`‌కు క్రాస్-ఆరిజిన్ ఐసోలేషన్ అవసరం అవుతుంది. మరిన్ని వివరాల కోసం https://developer.chrome.com/blog/enabling-shared-array-buffer/ లింక్‌లోని కంటెంట్‌ను చూడండి."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "యూజర్ యాక్టివేషన్ లేని `speechSynthesis.speak()` విస్మరించబడింది, అలాగే అది తీసివేయబడుతుంది."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "విస్మరించబడిన ఫీచర్ ఉపయోగించబడింది"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "`SharedArrayBuffer`‌ను ఉపయోగించడం కొనసాగించడానికి, ఎక్స్‌టెన్షన్‌లు క్రాస్-ఆరిజిన్ ఐసోలేషన్‌కు సమ్మతించాలి. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ లింక్‌లోని కంటెంట్‌ను చూడండి."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1}, ప్రత్యేకంగా వెండార్‌కు మాత్రమే సంబంధించినది. అందుకు బదులుగా దయచేసి స్టాండర్డ్ {PH2}‌ను ఉపయోగించండి."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "`XMLHttpRequest`‌లో రెస్పాన్స్ json, UTF-16ను సపోర్ట్ చేయదు"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "ప్రధాన థ్రెడ్‌లో సింక్రనస్ `XMLHttpRequest` ఉపయోగం విస్మరించబడింది, ఎందుకంటే ఇది ఎండ్ యూజర్ అనుభవంపై ప్రతికూల ప్రభావం చూపుతోంది. మరింత సహాయం కోసం, https://xhr.spec.whatwg.org/ లింక్‌లోని కంటెంట్‌ను రెఫర్ చేయండి."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` విస్మరించబడింది. దయచేసి `isSessionSupported()`‌ను ఉపయోగించి, బదులుగా పరిష్కరించబడిన బూలియన్ విలువను చెక్ చేయండి."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "ప్రధాన థ్రెడ్ బ్లాక్ చేయబడే సమయం"
   },
@@ -2760,31 +2610,31 @@
     "message": "[Ezoic Leap](https://pubdash.ezoic.com/speed) ఫ్రేమ్‌వర్క్‌ను ఉపయోగించండి, పరికరానికి తగ్గట్టు ఇమేజ్‌ల సైజ్ మార్చడానికి, నెట్‌వర్క్ పేలోడ్ సైజ్‌లను తగ్గించడానికి `Resize Images`‌ను ఎనేబుల్ చేయండి."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "ఇమేజ్ ఫార్మాట్‌ను ఆటోమేటిక్‌గా ఆప్టిమైజ్ చేయడానికి `<img>`కు బదులుగా `gatsby-plugin-image` కాంపోనెంట్‌ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "ప్రాధాన్యతను బట్టి ఇమేజ్‌లను ఆటోమేటిక్‌గా లోడ్ చేయడానికి `<img>`కు బదులుగా `gatsby-plugin-image`ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "`gatsby-plugin-image` కాంపోనెంట్‌ను ఉపయోగించి, `loading` ప్రాపర్టీని `eager`‌కు సెట్ చేయండి. [మరింత తెలుసుకోండి](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "`Gatsby Script API` ఉపయోగించి ముఖ్యం-కానటువంటి థర్డ్-పార్టీ స్క్రిప్ట్‌ల లోడింగ్‌ను మినహాయించండి. [మరింత తెలుసుకోండి](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "స్టైల్‌షీట్‌ల నుండి ఉపయోగించని నియమాలను తీసివేయడానికి `PurgeCSS` `Gatsby` ప్లగ్ఇన్‌ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "ఉపయోగించని JavaScript కోడ్‌ను గుర్తించడానికి `Webpack Bundle Analyzer`ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "మారకుండా ఉండే అస్సెట్‌ల కోసం కాషింగ్‌ను కాన్ఫిగర్ చేయండి. [మరింత తెలుసుకోండి](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "ఇమేజ్ క్వాలిటీని సర్దుబాటు చేయడానికి `<img>`కు బదులుగా `gatsby-plugin-image` కాంపోనెంట్‌ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "సరైన `sizes`ను సెట్ చేయడానికి `gatsby-plugin-image` కాంపోనెంట్‌ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "మీ GIFను HTML5 వీడియోగా పొందుపరచడానికి అందుబాటులో ఉండేలా చేసే సర్వీస్‌కు దానిని అప్‌లోడ్ చేయవచ్చు, దాన్ని పరిశీలించండి."
@@ -2865,10 +2715,10 @@
     "message": "[థీమ్ లేఅవుట్‌ను ఎడిట్ చేయడం](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html) ద్వారా `<link rel=preload>` ట్యాగ్‌లను జోడించవచ్చు."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "ఇమేజ్ ఫార్మాట్‌ను ఆటోమేటిక్‌గా ఆప్టిమైజ్ చేయడానికి `<img>`కు బదులుగా `next/image` కాంపోనెంట్‌ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "ప్రాధాన్యతను బట్టి ఇమేజ్‌లను ఆటోమేటిక్‌గా లోడ్ చేయడానికి `<img>`కు బదులుగా `next/image`ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "LCP ఇమేజ్‌ను ప్రీ - లోడ్ చేయడానికి `next/image` కాంపోనెంట్‌ను ఉపయోగించండి, \"ప్రాధాన్యతను\" ఒప్పునకు సెటప్ చేయండి. [మరింత తెలుసుకోండి](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "వినియోగంలో లేని నియమాలను స్టైల్‌షీట్‌ల నుండి తీసివేయడానికి `Next.js`లో `PurgeCSS` కాన్ఫిగరేషన్‌ను సెటప్ చేయవచ్చు, దాన్ని పరిశీలించండి. [మరింత తెలుసుకోండి](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "ఉపయోగించని JavaScript కోడ్‌ను గుర్తించడానికి `Webpack Bundle Analyzer`ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "మీ యాప్ వాస్తవ పనితీరును అంచనా వేయడానికి `Next.js Analytics`ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి. [మరింత తెలుసుకోండి](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "మారకుండా ఉండే అస్సెట్‌లు, `Server-side Rendered` (SSR) పేజీలకు కాష్‌ను కాన్ఫిగర్ చేయండి. [మరింత తెలుసుకోండి](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "ఇమేజ్ క్వాలిటీని సర్దుబాటు చేయడానికి `<img>`కు బదులుగా `next/image` కాంపోనెంట్‌ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "సరైన `sizes`ను సెట్ చేయడానికి `next/image` కాంపోనెంట్‌ను ఉపయోగించండి. [మరింత తెలుసుకోండి](https://nextjs.org/docs/api-reference/next/image#sizes)."

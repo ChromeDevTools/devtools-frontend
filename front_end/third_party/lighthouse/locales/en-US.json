@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>` element has a valid value for its `[lang]` attribute"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "If the webpage does not specify a consistent language, then the screen reader might not announce the page's text correctly. [Learn more about the `lang` attribute](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>` element does not have an `[xml:lang]` attribute with the same base language as the `[lang]` attribute."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>` element has an `[xml:lang]` attribute with the same base language as the `[lang]` attribute."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informative elements should aim for short, descriptive alternate text. Decorative elements can be ignored with an empty alt attribute. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Image elements have `[alt]` attributes"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Adding discernable and accessible text to input buttons may help screen reader users understand the purpose of the input button. [Learn more about input buttons](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Input buttons do not have discernible text."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Input buttons have discernible text."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "When an image is being used as an `<input>` button, providing alternative text can help screen reader users understand the purpose of the button. [Learn about input image alt text](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "No element has a `[tabindex]` value greater than 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Screen readers have features to make navigating tables easier. Ensuring that tables use the actual caption element instead of cells with the `[colspan]` attribute may improve the experience for screen reader users. [Learn more about captions](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tables do not use `<caption>` instead of cells with the `[colspan]` attribute to indicate a caption."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tables use `<caption>` instead of cells with the `[colspan]` attribute to indicate a caption."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Screen readers have features to make navigating tables easier. Ensuring that `<td>` elements in a large table (3 or more cells in width and height) have an associated table header may improve the experience for screen reader users. [Learn more about table headers](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "`<td>` elements in a large `<table>` do not have table headers."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "`<td>` elements in a large `<table>` have one or more table headers."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Screen readers have features to make navigating tables easier. Ensuring `<td>` cells using the `[headers]` attribute only refer to other cells in the same table may improve the experience for screen reader users. [Learn more about the `headers` attribute](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1742,6 +1778,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Pages that requested an AppBanner are not currently eligible for back/forward cache."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Back/forward cache is disabled due to a keepalive request."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Back/forward cache is disabled by flags. Visit chrome://flags/#back-forward-cache to enable it locally on this device."
   },
@@ -1807,6 +1846,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Pages that use WebUSB API are not eligible for back/forward cache."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Back/forward cache is disabled because cookies are disabled on a page that uses `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Pages that use a dedicated worker or worklet are not currently eligible for back/forward cache."
@@ -1889,14 +1931,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Pages that have an open IndexedDB connection are not currently eligible for back/forward cache."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Back/forward cache is disabled due to an IndexedDB event."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Ineligible APIs were used."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Pages that JavaScript is injected into by extensions are not currently eligible for back/forward cache."
+    "message": "Pages that `JavaScript` is injected into by extensions are not currently eligible for back/forward cache."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Pages that StyleSheet is injected into by extensions are not currently eligible for back/forward cache."
+    "message": "Pages that a `StyleSheet` is injected into by extensions are not currently eligible for back/forward cache."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Internal error."
@@ -2138,154 +2183,190 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Consider adding 'unsafe-inline' (ignored by browsers supporting nonces/hashes) to be backward compatible with older browsers."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS `Access-Control-Allow-Headers` handling."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Resource requests whose URLs contained both removed whitespace `(n|r|t)` characters and less-than characters (`<`) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: `nextHopProtocol` in Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Cookies containing a `(0|r|n)` character will be rejected instead of truncated."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Triggering {PH1} from cross origin iframes has been deprecated and will be removed in the future."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "The `disableRemotePlayback` attribute should be used in order to disable the default Cast integration instead of using `-internal-media-controls-overlay-cast-button` selector."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} is deprecated. Please use {PH2} instead."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "This is an example of a translated deprecation issue message."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an `Origin-Agent-Cluster: ?0` header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` is deprecated and will be removed. Please use `Event.composedPath()` instead."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
+  "core/lib/deprecation-description.js | feature": {
     "message": "Check the feature status page for more details."
   },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` and `watchPosition()` no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` and `watchPosition()` are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` is deprecated. Please use `RTCPeerConnectionIceErrorEvent.address` or `RTCPeerConnectionIceErrorEvent.port` instead."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "The merchant origin and arbitrary data from the `canmakepayment` service worker event are deprecated and will be removed: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Using `SourceBuffer.abort()` to abort `remove()`'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should listen to the `updateend` event instead. `abort()` is intended to only abort an asynchronous media append or reset parser state."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Setting `MediaSource.duration` below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit `remove(newDuration, oldDuration)` on all `sourceBuffers`, where `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
+  "core/lib/deprecation-description.js | milestone": {
     "message": "This change will go into effect with milestone {milestone}."
   },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "WebSQL in non-secure contexts is deprecated and will be removed soon. Please use Web Storage or Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Specifying `overflow: visible` on img, video and canvas tags may cause them to produce visual content outside of the element bounds. See https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` is deprecated. Please use just-in-time install for payment handlers instead."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Your `PaymentRequest` call bypassed Content-Security-Policy (CSP) `connect-src` directive. This bypass is deprecated. Please add the payment method identifier from the `PaymentRequest` API (in `supportedMethods` field) to your CSP `connect-src` directive."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` is deprecated. Please use standardized `navigator.storage` instead."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<source src>` with a `<picture>` parent is invalid and therefore ignored. Please use `<source srcset>` instead."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` is deprecated. Please use standardized `navigator.storage` instead."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `false` value for this constraint, which is interpreted as an attempt to use the removed `SDES key negotiation` method. This functionality is removed; use a service that supports `DTLS key negotiation` instead."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `true` value for this constraint, which had no effect, but you can remove this constraint for tidiness."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` detected. This dialect of the `Session Description Protocol` is no longer supported. Please use `Unified Plan SDP` instead."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`Plan B SDP semantics`, which is used when constructing an `RTCPeerConnection` with `{sdpSemantics:plan-b}`, is a legacy non-standard version of the `Session Description Protocol` that has been permanently deleted from the Web Platform. It is still available when building with `IS_FUCHSIA`, but we intend to delete it as soon as possible. Stop depending on it. See https://crbug.com/1302249 for status."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "The `rtcpMuxPolicy` option is deprecated and will be removed."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "`speechSynthesis.speak()` without user activation is deprecated and will be removed."
-  },
-  "core/lib/deprecations-strings.js | title": {
+  "core/lib/deprecation-description.js | title": {
     "message": "Deprecated Feature Used"
   },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Authorization will not be covered by the wildcard symbol (*) in CORS `Access-Control-Allow-Headers` handling."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Resource requests whose URLs contained both removed whitespace `(n|r|t)` characters and less-than characters (`<`) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: `nextHopProtocol` in Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookies containing a `(0|r|n)` character will be rejected instead of truncated."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. This deprecation warning is for a cross-origin access that was enabled by setting `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Triggering window.alert from cross origin iframes has been deprecated and will be removed in the future."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Triggering window.confirm from cross origin iframes has been deprecated and will be removed in the future."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "The `disableRemotePlayback` attribute should be used in order to disable the default Cast integration instead of using `-internal-media-controls-overlay-cast-button` selector."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Support for data: URLs in SVG <use> element is deprecated and it will be removed in the future."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Relaxing the same-origin policy by setting `document.domain` is deprecated, and will be disabled by default. To continue using this feature, please opt-out of origin-keyed agent clusters by sending an `Origin-Agent-Cluster: ?0` header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM Mutation Events, including `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, and `DOMCharacterDataModified` are deprecated (https://w3c.github.io/uievents/#legacy-event-types) and will be removed. Please use `MutationObserver` instead."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after April 30, 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` and `watchPosition()` no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` and `watchPosition()` are deprecated on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` is deprecated. Please use `RTCPeerConnectionIceErrorEvent.address` or `RTCPeerConnectionIceErrorEvent.port` instead."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "The merchant origin and arbitrary data from the `canmakepayment` service worker event are deprecated and will be removed: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "The `dailyUpdateUrl` field of `InterestGroups` passed to `joinAdInterestGroup()` has been renamed to `updateUrl`, to more accurately reflect its behavior."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Using `SourceBuffer.abort()` to abort `remove()`'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should listen to the `updateend` event instead. `abort()` is intended to only abort an asynchronous media append or reset parser state."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Setting `MediaSource.duration` below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit `remove(newDuration, oldDuration)` on all `sourceBuffers`, where `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "The older, non-standardized `shadowroot` attribute is deprecated, and will *no longer function* in M119. Please use the new, standardized `shadowrootmode` attribute instead."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "The Notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Permission for the Notification API may no longer be requested from a cross-origin iframe. You should consider requesting permission from a top-level frame or opening a new window instead."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Option `imageOrientation: 'none'` in createImageBitmap is deprecated. Please use createImageBitmap with option \\{imageOrientation: 'from-image'\\} instead."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Specifying `overflow: visible` on img, video and canvas tags may cause them to produce visual content outside of the element bounds. See https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` is deprecated. Please use just-in-time install for payment handlers instead."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Your `PaymentRequest` call bypassed Content-Security-Policy (CSP) `connect-src` directive. This bypass is deprecated. Please add the payment method identifier from the `PaymentRequest` API (in `supportedMethods` field) to your CSP `connect-src` directive."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` is deprecated. Please use standardized `navigator.storage` instead."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` with a `<picture>` parent is invalid and therefore ignored. Please use `<source srcset>` instead."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame is vendor-specific. Please use the standard cancelAnimationFrame instead."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame is vendor-specific. Please use the standard requestAnimationFrame instead."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen is deprecated. Please use Document.fullscreenElement instead."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() is deprecated. Please use Element.requestFullscreen() instead."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() is deprecated. Please use Element.requestFullscreen() instead."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() is deprecated. Please use Document.exitFullscreen() instead."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() is deprecated. Please use Document.exitFullscreen() instead."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen is deprecated. Please use Document.fullscreenEnabled instead."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "We're deprecating the API `chrome.privacy.websites.privacySandboxEnabled`, though it will remain active for backward compatibility until release M113. Instead, please use `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` and `chrome.privacy.websites.adMeasurementEnabled`. See https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() is deprecated. Please use Selection.modify() instead."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `false` value for this constraint, which is interpreted as an attempt to use the removed `SDES key negotiation` method. This functionality is removed; use a service that supports `DTLS key negotiation` instead."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "The constraint `DtlsSrtpKeyAgreement` is removed. You have specified a `true` value for this constraint, which had no effect, but you can remove this constraint for tidiness."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "The callback-based getStats() is deprecated and will be removed. Use the spec-compliant getStats() instead."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "The `rtcpMuxPolicy` option is deprecated and will be removed."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` will require cross-origin isolation. See https://developer.chrome.com/blog/enabling-shared-array-buffer/ for more details."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` without user activation is deprecated and will be removed."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1} is vendor-specific. Please use the standard {PH2} instead."
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL is deprecated. Please use SQLite WebAssembly or Indexed Database"
   },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "The permission descriptor `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "The permission policy `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response json in `XMLHttpRequest`"
   },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Synchronous `XMLHttpRequest` on the main thread is deprecated because of its detrimental effects to the end user’s experience. For more help, check https://xhr.spec.whatwg.org/."
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synchronous `XMLHttpRequest` on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/."
   },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
     "message": "`supportsSession()` is deprecated. Please use `isSessionSupported()` and check the resolved boolean value instead."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {

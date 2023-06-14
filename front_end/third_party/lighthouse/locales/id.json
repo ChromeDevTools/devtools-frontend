@@ -981,25 +981,25 @@
     "message": "Diizinkan dengan peringatan"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "% LCP"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Fase"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Pengaturan Waktu"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Ini adalah elemen contentful terbesar yang di-paint dalam area pandang. [Pelajari lebih lanjut elemen Largest Contentful Paint (LCP)](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Penundaan Pemuatan"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Waktu Pemuatan"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Penundaan Render"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Sebaiknya tambahkan 'unsafe-inline' (diabaikan oleh browser yang mendukung nonce/hash) agar kompatibel dengan browser versi lama."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Otorisasi tidak akan dicakup oleh simbol karakter pengganti (*) dalam penanganan `Access-Control-Allow-Headers` CORS."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Permintaan resource yang URL-nya berisi karakter `(n|r|t)` spasi kosong yang dihapus dan karakter kurang dari (`<`) akan diblokir. Hapus baris baru dan enkode karakter kurang dari, dari tempat seperti nilai atribut elemen untuk memuat resource ini."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` tidak digunakan lagi. Sebagai gantinya, gunakan API standar: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` tidak digunakan lagi. Sebagai gantinya, gunakan API standar: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` tidak digunakan lagi. Sebagai gantinya, gunakan API standar: `nextHopProtocol` di Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Cookie yang berisi karakter `(0|r|n)` akan ditolak, bukan dipotong."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Melonggarkan kebijakan origin yang sama dengan menyetel `document.domain` sudah tidak digunakan lagi, dan akan dinonaktifkan secara default. Peringatan penghentian ini ditujukan untuk akses lintas origin yang diaktifkan dengan menyetel `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Memicu {PH1} dari iframe lintas asal tidak digunakan lagi dan akan dihapus pada masa mendatang."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Daripada menggunakan pemilih `-internal-media-controls-overlay-cast-button`, sebaiknya gunakan `disableRemotePlayback` untuk menonaktifkan integrasi Cast default."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} tidak digunakan lagi. Sebagai gantinya, gunakan {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Ini adalah contoh terjemahan pesan masalah penghentian penggunaan."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Melonggarkan kebijakan origin yang sama dengan menyetel `document.domain` sudah tidak digunakan lagi, dan akan dinonaktifkan secara default. Untuk terus menggunakan fitur ini, pilih untuk tidak menggunakan cluster agen dengan kunci origin dengan mengirimkan header `Origin-Agent-Cluster: ?0` bersama respons HTTP untuk dokumen dan bingkai. Lihat https://developer.chrome.com/blog/immutable-document-domain/ untuk detail selengkapnya."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` tidak digunakan lagi dan akan dihapus. Sebagai gantinya, gunakan `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Header `Expect-CT` tidak digunakan lagi dan akan dihapus. Chrome mewajibkan Transparansi Sertifikat untuk semua sertifikat tepercaya publik yang diterbitkan setelah 30 April 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Periksa halaman status fitur untuk mendapatkan detail selengkapnya."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` dan `watchPosition()` tidak lagi berfungsi pada origin yang tidak aman. Untuk menggunakan fitur ini, sebaiknya alihkan aplikasi ke origin yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` dan `watchPosition()` tidak digunakan lagi karena origin yang tidak aman. Untuk menggunakan fitur ini, sebaiknya alihkan aplikasi ke origin yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` tidak lagi berfungsi pada origin yang tidak aman. Untuk menggunakan fitur ini, sebaiknya alihkan aplikasi ke origin yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` tidak digunakan lagi. Sebagai gantinya, gunakan `RTCPeerConnectionIceErrorEvent.address` atau `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Data arbitrer dan origin penjual dari peristiwa pekerja layanan `canmakepayment` tidak digunakan lagi dan akan dihapus: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Situs meminta subresource dari jaringan yang hanya dapat diakses karena posisi jaringan istimewa penggunanya. Permintaan ini mengekspos perangkat dan server non-publik ke internet, yang meningkatkan risiko serangan pemalsuan permintaan lintas situs (CSRF), dan/atau kebocoran informasi. Untuk mengurangi risiko tersebut, Chrome menghentikan permintaan ke subresource non-publik saat dimulai dari konteks yang tidak aman, dan akan mulai memblokirnya."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS tidak dapat dimuat dari URL `file:` kecuali jika diakhiri dengan ekstensi file `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Penggunaan `SourceBuffer.abort()` untuk membatalkan penghapusan rentang asinkron `remove()` tidak digunakan lagi karena perubahan spesifikasi. Dukungan akan dihapus pada masa mendatang. Sebagai gantinya, Anda harus memproses peristiwa `updateend`. `abort()` dimaksudkan untuk hanya membatalkan penambahan media asinkron atau mereset status parser."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Menyetel `MediaSource.duration` di bawah stempel waktu presentasi tertinggi dari semua bingkai berkode dan yang di-buffer kini tidak digunakan lagi karena perubahan spesifikasi. Dukungan untuk penghapusan implisit media yang di-buffer dan terpotong akan dihapus pada masa mendatang. Anda harus menjalankan `remove(newDuration, oldDuration)` eksplisit pada semua `sourceBuffers`, saat status menunjukkan `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Perubahan ini akan berlaku dengan milestone {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI akan meminta izin untuk menggunakan sysex meskipun sysex tidak ditentukan dalam `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Notification API mungkin tidak lagi digunakan dari origin yang tidak aman. Sebaiknya Anda mengalihkan aplikasi Anda ke origin yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Izin untuk Notification API mungkin tidak lagi diminta dari iframe lintas asal. Sebaiknya Anda meminta izin dari bingkai level teratas atau membuka jendela baru."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Partner Anda sedang menegosiasikan versi (D)TLS yang usang. Hubungi partner Anda untuk memperbaikinya."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "WebSQL dalam konteks yang tidak aman tidak digunakan lagi dan akan segera dihapus. Gunakan Web Storage atau Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Menentukan `overflow: visible` pada tag img, video, dan canvas dapat menyebabkannya menghasilkan konten visual di luar batas elemen. Lihat https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` tidak digunakan lagi. Sebagai gantinya, gunakan penginstalan tepat waktu untuk pengendali pembayaran."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Panggilan `PaymentRequest` mengabaikan perintah `connect-src` Kebijakan Keamanan Konten (CSP). Pengabaian ini tidak digunakan lagi. Tambahkan ID metode pembayaran dari `PaymentRequest` API (di kolom `supportedMethods`) ke perintah `connect-src` CSP."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` tidak digunakan lagi. Sebagai gantinya, gunakan `navigator.storage` standar."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<source src>` dengan induk `<picture>` tidak valid dan akan diabaikan. Sebagai gantinya, gunakan `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` tidak digunakan lagi. Sebagai gantinya, gunakan `navigator.storage` standar."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Permintaan subresource yang URL-nya berisi kredensial yang disematkan (mis. `https://user:pass@host/`) akan diblokir."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Batasan `DtlsSrtpKeyAgreement` dihapus. Anda telah menentukan nilai `false` untuk batasan ini, yang ditafsirkan sebagai upaya untuk menggunakan metode `SDES key negotiation` yang dihapus. Fungsi ini dihapus. Sebagai gantinya, gunakan layanan yang mendukung `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Batasan `DtlsSrtpKeyAgreement` dihapus. Anda telah menentukan nilai `true` untuk batasan ini, yang tidak berpengaruh, tetapi Anda dapat menghapus batasan ini agar rapi."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "`Complex Plan B SDP` terdeteksi. Dialek `Session Description Protocol` ini tidak lagi didukung. Sebagai gantinya, gunakan `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`Plan B SDP semantics`, yang digunakan saat membuat `RTCPeerConnection` dengan `{sdpSemantics:plan-b}`, adalah versi non-standar lama dari `Session Description Protocol` yang telah dihapus secara permanen dari Web Platform. Protokol ini masih tersedia saat membuat dengan `IS_FUCHSIA`, tetapi kami ingin menghapusnya sesegera mungkin. Jangan mengandalkan protokol ini. Lihat https://crbug.com/1302249 untuk mengetahui statusnya."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Opsi `rtcpMuxPolicy` tidak digunakan lagi dan akan dihapus."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` akan memerlukan isolasi lintas asal. Lihat https://developer.chrome.com/blog/enabling-shared-array-buffer/ untuk detail selengkapnya."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "`speechSynthesis.speak()` tanpa aktivasi pengguna tidak digunakan lagi dan akan dihapus."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Menggunakan Fitur yang Tidak Digunakan Lagi"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Ekstensi harus ikut serta dalam isolasi lintas asal untuk terus menggunakan `SharedArrayBuffer`. Lihat https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "{PH1} adalah metode khusus vendor. Sebagai gantinya, gunakan {PH2} standar."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "UTF-16 tidak didukung oleh respons JSON di `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "`XMLHttpRequest` sinkron pada thread utama tidak digunakan lagi karena efeknya yang merugikan terhadap pengalaman pengguna akhir. Untuk mendapatkan bantuan lebih lanjut, buka https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "`supportsSession()` tidak digunakan lagi. Sebagai gantinya, gunakan `isSessionSupported()` dan periksa nilai boolean yang di-resolve."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Waktu Pemblokiran Thread Utama"
   },
@@ -2760,31 +2610,31 @@
     "message": "Gunakan [Ezoic Leap](https://pubdash.ezoic.com/speed) dan aktifkan `Resize Images` untuk mengubah ukuran gambar menjadi ukuran yang sesuai dengan perangkat, sehingga mengurangi ukuran payload jaringan."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Gunakan komponen `gatsby-plugin-image`, bukan `<img>`, untuk mengoptimalkan format gambar secara otomatis. [Pelajari lebih lanjut](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Gunakan komponen `gatsby-plugin-image`, bukan `<img>`, untuk otomatis memuat gambar secara lambat. [Pelajari lebih lanjut](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Gunakan komponen `gatsby-plugin-image` dan setel properti `loading` ke `eager`. [Pelajari lebih lanjut](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Gunakan `Gatsby Script API` untuk menunda pemuatan skrip pihak ketiga yang tidak penting. [Pelajari lebih lanjut](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Gunakan plugin `PurgeCSS` `Gatsby` untuk menghapus aturan yang tidak digunakan dari stylesheet. [Pelajari lebih lanjut](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Gunakan `Webpack Bundle Analyzer` untuk mendeteksi kode JavaScript yang tidak digunakan. [Pelajari lebih lanjut](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Mengonfigurasi cache untuk aset yang tidak dapat diubah. [Pelajari lebih lanjut](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Gunakan komponen `gatsby-plugin-image`, bukan `<img>`, untuk menyesuaikan kualitas gambar. [Pelajari lebih lanjut](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Gunakan komponen `gatsby-plugin-image` untuk menyetel `sizes` yang benar. [Pelajari lebih lanjut](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Sebaiknya upload GIF ke layanan yang akan menyediakannya untuk disematkan sebagai video HTML5."
@@ -2865,10 +2715,10 @@
     "message": "Tag `<link rel=preload>` dapat ditambahkan dengan [mengubah tata letak tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Gunakan komponen `next/image`, bukan `<img>`, untuk mengoptimalkan format gambar secara otomatis. [Pelajari lebih lanjut](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Gunakan komponen `next/image`, bukan `<img>`, untuk otomatis memuat gambar secara lambat. [Pelajari lebih lanjut](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Gunakan komponen `next/image` dan setel \"priority\" ke benar (true) untuk melakukan pramuat gambar LCP. [Pelajari lebih lanjut](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Sebaiknya siapkan `PurgeCSS` di konfigurasi `Next.js` untuk menghapus aturan yang tidak digunakan dari stylesheet. [Pelajari lebih lanjut](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Gunakan `Webpack Bundle Analyzer` untuk mendeteksi kode JavaScript yang tidak digunakan. [Pelajari lebih lanjut](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Sebaiknya gunakan `Next.js Analytics` untuk mengukur performa aplikasi Anda yang sebenarnya. [Pelajari lebih lanjut](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Konfigurasi cache untuk aset dan halaman `Server-side Rendered` (SSR) yang tidak dapat diubah. [Pelajari lebih lanjut](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Gunakan komponen `next/image`, bukan `<img>`, untuk menyesuaikan kualitas gambar. [Pelajari lebih lanjut](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Gunakan komponen `next/image` untuk menyetel `sizes` yang benar. [Pelajari lebih lanjut](https://nextjs.org/docs/api-reference/next/image#sizes)."

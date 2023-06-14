@@ -92,9 +92,12 @@ export class DOM {
     clearComponentCache(): void;
     /**
      * @param {string} text
+     * @param {{alwaysAppendUtmSource?: boolean}} opts
      * @return {Element}
      */
-    convertMarkdownLinkSnippets(text: string): Element;
+    convertMarkdownLinkSnippets(text: string, opts?: {
+        alwaysAppendUtmSource?: boolean;
+    }): Element;
     /**
      * Set link href, but safely, preventing `javascript:` protocol, etc.
      * @see https://github.com/google/safevalues/

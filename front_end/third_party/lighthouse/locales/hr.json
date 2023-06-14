@@ -981,25 +981,25 @@
     "message": "Dopušteno uz upozorenje"
   },
   "core/audits/largest-contentful-paint-element.js | columnPercentOfLCP": {
-    "message": "% of LCP"
+    "message": "Postotak vremena učitavanja punog sadržaja (LCP)"
   },
   "core/audits/largest-contentful-paint-element.js | columnPhase": {
-    "message": "Phase"
+    "message": "Faza"
   },
   "core/audits/largest-contentful-paint-element.js | columnTiming": {
-    "message": "Timing"
+    "message": "Vrijeme"
   },
   "core/audits/largest-contentful-paint-element.js | description": {
     "message": "Ovo je element s najvećim renderiranjem sadržaja unutar vidljivog dijela. [Saznajte više o elementu s najvećim renderiranjem sadržaja](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadDelay": {
-    "message": "Load Delay"
+    "message": "Kašnjenje učitavanja"
   },
   "core/audits/largest-contentful-paint-element.js | itemLoadTime": {
-    "message": "Load Time"
+    "message": "Vrijeme učitavanja"
   },
   "core/audits/largest-contentful-paint-element.js | itemRenderDelay": {
-    "message": "Render Delay"
+    "message": "Kašnjenje renderiranja"
   },
   "core/audits/largest-contentful-paint-element.js | itemTTFB": {
     "message": "TTFB"
@@ -2138,156 +2138,6 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Savjetujemo vam da koristite unsafe-inline (koji ignoriraju preglednici koji podržavaju nonceove/hasheve) radi kompatibilnosti s prijašnjim verzijama preglednika."
   },
-  "core/lib/deprecations-strings.js | authorizationCoveredByWildcard": {
-    "message": "Autorizacija neće biti pokrivena zamjenskim znakom (*) u rukovanju CORS zaglavljem `Access-Control-Allow-Headers`."
-  },
-  "core/lib/deprecations-strings.js | canRequestURLHTTPContainingNewline": {
-    "message": "Blokirani su zahtjevi za resurse čiji su URL-ovi sadržavali uklonjene znakove razmaka `(n|r|t)` i znakove \"manje od\" (`<`). Uklonite nove retke i kodirajte znakove \"manje od\" s mjesta kao što su vrijednosti atributa elemenata kako bi se ti resursi učitali."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesConnectionInfo": {
-    "message": "`chrome.loadTimes()` je obustavljen, upotrijebite standardizirani API: Navigation Timing 2."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesFirstPaintAfterLoadTime": {
-    "message": "`chrome.loadTimes()` je obustavljen, upotrijebite standardizirani API: Paint Timing."
-  },
-  "core/lib/deprecations-strings.js | chromeLoadTimesWasAlternateProtocolAvailable": {
-    "message": "`chrome.loadTimes()` je obustavljen, upotrijebite standardizirani API: `nextHopProtocol` u Navigation Timingu 2."
-  },
-  "core/lib/deprecations-strings.js | cookieWithTruncatingChar": {
-    "message": "Kolačići koji sadrže znak `(0|r|n)` neće se skratiti već će se odbiti."
-  },
-  "core/lib/deprecations-strings.js | crossOriginAccessBasedOnDocumentDomain": {
-    "message": "Popuštanje pravila istog porijekla postavljanjem `document.domain` obustavlja se i onemogućit će se prema zadanim postavkama. Ovo upozorenje o obustavljanju odnosi se na pristupanje iz više izvora koje je bilo omogućeno postavkom `document.domain`."
-  },
-  "core/lib/deprecations-strings.js | crossOriginWindowApi": {
-    "message": "Pokretanje {PH1} iz iframesa različitih izvora obustavlja se i ubuduće će biti uklonjeno."
-  },
-  "core/lib/deprecations-strings.js | cssSelectorInternalMediaControlsOverlayCastButton": {
-    "message": "Atribut `disableRemotePlayback` trebao bi se koristiti kako bi se onemogućila zadana integracija Casta umjesto upotrebe selektora `-internal-media-controls-overlay-cast-button`."
-  },
-  "core/lib/deprecations-strings.js | deprecatedWithReplacement": {
-    "message": "{PH1} je obustavljen. Umjesto njega upotrijebite {PH2}."
-  },
-  "core/lib/deprecations-strings.js | deprecationExample": {
-    "message": "Ovo je primjer prevedene poruke o poteškoći zbog obustave."
-  },
-  "core/lib/deprecations-strings.js | documentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Popuštanje pravila istog porijekla postavljanjem `document.domain` obustavlja se i onemogućit će se prema zadanim postavkama. Da biste nastavili koristiti tu značajku, isključite grupe agenata s ključem porijekla slanjem zaglavlja `Origin-Agent-Cluster: ?0` uz HTTP odgovor za dokument i okvire. Više pojedinosti pročitajte na vezi https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | eventPath": {
-    "message": "`Event.path` se obustavlja i uklonit će se. Umjesto njega upotrijebite `Event.composedPath()`."
-  },
-  "core/lib/deprecations-strings.js | expectCTHeader": {
-    "message": "Zaglavlje `Expect-CT` obustavlja se i uklonit će se. Chrome zahtijeva Transparentnost certifikata za sve javno pouzdane certifikate izdane nakon 30. travnja 2018."
-  },
-  "core/lib/deprecations-strings.js | feature": {
-    "message": "Više pojedinosti potražite na stranici statusa značajki."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOrigin": {
-    "message": "`getCurrentPosition()` i `watchPosition()` više ne rade na nesigurnim izvorima. Da biste upotrebljavali tu značajku, trebali biste razmisliti o prebacivanju svoje aplikacije na siguran izvor kao što je HTTPS. Više pojedinosti pročitajte na vezi https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | geolocationInsecureOriginDeprecatedNotRemoved": {
-    "message": "`getCurrentPosition()` i `watchPosition()` obustavljaju se na nesigurnim izvorima. Da biste upotrebljavali tu značajku, trebali biste razmisliti o prebacivanju svoje aplikacije na siguran izvor kao što je HTTPS. Više pojedinosti pročitajte na vezi https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | getUserMediaInsecureOrigin": {
-    "message": "`getUserMedia()` više ne funkcionira na nesigurnim izvorima. Da biste upotrebljavali tu značajku, trebali biste razmisliti o prebacivanju svoje aplikacije na siguran izvor kao što je HTTPS. Više pojedinosti pročitajte na vezi https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | hostCandidateAttributeGetter": {
-    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` je obustavljen. Upotrijebite `RTCPeerConnectionIceErrorEvent.address` ili `RTCPeerConnectionIceErrorEvent.port`."
-  },
-  "core/lib/deprecations-strings.js | identityInCanMakePaymentEvent": {
-    "message": "Podaci o izvoru trgovca i proizvoljni podaci o događaju uslužnog alata `canmakepayment` obustavljeni su te će se ukloniti: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
-  },
-  "core/lib/deprecations-strings.js | insecurePrivateNetworkSubresourceRequest": {
-    "message": "Web-lokacija je zatražila podresurs s mreže kojem može pristupiti samo zbog privilegiranog položaja svojih korisnika u mreži. Ti zahtjevi internetu izlažu uređaje i poslužitelje koji nisu javni, povećavajući opasnost od napada krivotvorenjem zahtjeva s druge web-lokacije (CSRF) i/ili curenja informacija. Da bi smanjio te opasnosti, Chrome obustavlja zahtjeve podresursima koji nisu javni kad se pokreću iz nesigurnih konteksta i počet će ih blokirati."
-  },
-  "core/lib/deprecations-strings.js | localCSSFileExtensionRejected": {
-    "message": "CSS se ne može učitati s `file:` URL-ova osim ako završavaju na datotečni nastavak `.css`."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceAbortRemove": {
-    "message": "Upotreba `SourceBuffer.abort()` za prekid uklanjanja asinkronog raspona za `remove()` obustavljena je zbog promjene specifikacija. Podrška će se ukloniti u budućnosti. Umjesto toga trebali biste osluškivati događaj `updateend`. `abort()` može prekinuti samo stanje dodavanja asinkronog medija ili raščlanjivača vraćanja na zadano."
-  },
-  "core/lib/deprecations-strings.js | mediaSourceDurationTruncatingBuffered": {
-    "message": "Postavljanje atributa `MediaSource.duration` ispod najviše vremenske oznake prezentacije bilo kojeg kodiranog okvira spremljenog u međuspremnik obustavljeno je zbog promjene specifikacija. Podrška za implicitno uklanjanje skraćenog medija spremljenog u međuspremnik uklonit će se. Umjesto toga trebali biste izvesti eksplicitni `remove(newDuration, oldDuration)` na svim `sourceBuffers`, gdje je `newDuration < oldDuration`."
-  },
-  "core/lib/deprecations-strings.js | milestone": {
-    "message": "Promjena će stupiti na snagu uz prekretnicu {milestone}."
-  },
-  "core/lib/deprecations-strings.js | noSysexWebMIDIWithoutPermission": {
-    "message": "Web MIDI tražit će dopuštenje za upotrebu čak i ako sysex nije naveden u `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | notificationInsecureOrigin": {
-    "message": "Notification API možda se više neće upotrebljavati iz nesigurnih izvora. Savjetujemo vam da svoju aplikaciju prebacite na siguran izvor kao što je HTTPS. Više pojedinosti pročitajte na vezi https://goo.gle/chrome-insecure-origins."
-  },
-  "core/lib/deprecations-strings.js | notificationPermissionRequestedIframe": {
-    "message": "Možda se više neće tražiti dopuštenje za Notification API iz iframea različitih izvora. Trebali biste razmisliti o traženju dopuštenja okvira najviše razine ili o otvaranju novog prozora."
-  },
-  "core/lib/deprecations-strings.js | obsoleteWebRtcCipherSuite": {
-    "message": "Vaš partner pregovara o zastarjeloj verziji (D)TLS-a. Provjerite s partnerom kako biste to ispravili."
-  },
-  "core/lib/deprecations-strings.js | openWebDatabaseInsecureContext": {
-    "message": "WebSQL u nesigurnim je kontekstima obustavljen i uskoro će biti uklonjen. Upotrijebite web-pohranu ili indeksiranu bazu podataka."
-  },
-  "core/lib/deprecations-strings.js | overflowVisibleOnReplacedElement": {
-    "message": "Ako navedete `overflow: visible` za oznake img, video i canvas, te oznake mogu proizvesti vizualni sadržaj izvan granica elemenata. Pogledajte https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
-  },
-  "core/lib/deprecations-strings.js | paymentInstruments": {
-    "message": "`paymentManager.instruments` je obustavljen. Umjesto toga koristite just-in-time instalaciju za rukovatelje plaćanjem."
-  },
-  "core/lib/deprecations-strings.js | paymentRequestCSPViolation": {
-    "message": "Vaš je poziv `PaymentRequest` zaobilazio direktivu `connect-src` Pravila o sigurnosti sadržaja (CSP). To je zaobilaženje obustavljeno. Dodajte identifikator načina plaćanja iz `PaymentRequest` API-ja (u polju `supportedMethods`) direktivi `connect-src` CSP-a."
-  },
-  "core/lib/deprecations-strings.js | persistentQuotaType": {
-    "message": "`StorageType.persistent` je obustavljen. Umjesto njega upotrijebite standardizirani `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | pictureSourceSrc": {
-    "message": "`<source src>` s nadređenim `<picture>` nevažeći je i stoga se zanemaruje. Umjesto toga koristite `<source srcset>`."
-  },
-  "core/lib/deprecations-strings.js | prefixedStorageInfo": {
-    "message": "`window.webkitStorageInfo` je obustavljen. Umjesto njega upotrijebite standardizirani `navigator.storage`."
-  },
-  "core/lib/deprecations-strings.js | requestedSubresourceWithEmbeddedCredentials": {
-    "message": "Blokirani su zahtjevi podresursa čiji URL-ovi sadrže ugrađene vjerodajnice (npr. `https://user:pass@host/`)."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpFalse": {
-    "message": "Uklonjeno je ograničenje `DtlsSrtpKeyAgreement`. Naveli ste vrijednost `false` za ograničenje, što se tumači kao pokušaj korištenja uklonjene metode `SDES key negotiation`. Ta je funkcija uklonjena. Umjesto nje koristite uslugu koja podržava `DTLS key negotiation`."
-  },
-  "core/lib/deprecations-strings.js | rtcConstraintEnableDtlsSrtpTrue": {
-    "message": "Uklonjeno je ograničenje `DtlsSrtpKeyAgreement`. Naveli ste vrijednost `true` za to ograničenje, što nije imalo učinka, ali možete ukloniti to ograničenje radi jasnoće."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics": {
-    "message": "Otkriven je `Complex Plan B SDP`. Ovaj dijalekt protokola `Session Description Protocol` više nije podržan. Umjesto toga koristite `Unified Plan SDP`."
-  },
-  "core/lib/deprecations-strings.js | rtcPeerConnectionSdpSemanticsPlanB": {
-    "message": "`Plan B SDP semantics`, koji se upotrebljava za konstruiranje `RTCPeerConnection` s `{sdpSemantics:plan-b}`, naslijeđena je nestandardna verzija protokola `Session Description Protocol` koji je trajno izbrisan s web-platforme. I dalje je dostupan kad se za razvoj koristi `IS_FUCHSIA`, no namjeravamo ga što prije izbrisati. Prestanite se oslanjati na njega. Status provjerite na stranici https://crbug.com/1302249."
-  },
-  "core/lib/deprecations-strings.js | rtcpMuxPolicyNegotiate": {
-    "message": "Opcija `rtcpMuxPolicy` obustavlja se i uklonit će se."
-  },
-  "core/lib/deprecations-strings.js | sharedArrayBufferConstructedWithoutIsolation": {
-    "message": "`SharedArrayBuffer` će zahtijevati izoliranje unakrsnih izvora. Više pojedinosti pročitajte na vezi https://developer.chrome.com/blog/enabling-shared-array-buffer/."
-  },
-  "core/lib/deprecations-strings.js | textToSpeech_DisallowedByAutoplay": {
-    "message": "`speechSynthesis.speak()` bez aktivacije korisnika obustavlja se i uklonit će se."
-  },
-  "core/lib/deprecations-strings.js | title": {
-    "message": "Koristi se obustavljena značajka"
-  },
-  "core/lib/deprecations-strings.js | v8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
-    "message": "Proširenja se trebaju uključiti u izoliranje unakrsnih izvora da bi se nastavio upotrebljavati `SharedArrayBuffer`. Posjetite https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
-  },
-  "core/lib/deprecations-strings.js | vendorSpecificApi": {
-    "message": "Funkcija {PH1} povezana je s dobavljačem. Umjesto toga koristite standardnu funkciju {PH2}."
-  },
-  "core/lib/deprecations-strings.js | xhrJSONEncodingDetection": {
-    "message": "JSON odgovor ne podržava UTF-16 u `XMLHttpRequest`"
-  },
-  "core/lib/deprecations-strings.js | xmlHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
-    "message": "Sinkroni `XMLHttpRequest` na glavnoj niti obustavlja se zbog negativnog utjecaja na doživljaj krajnjeg korisnika. Za dodatnu pomoć posjetite https://xhr.spec.whatwg.org/."
-  },
-  "core/lib/deprecations-strings.js | xrSupportsSession": {
-    "message": "Metoda `supportsSession()` je obustavljena. Umjesto toga koristite `isSessionSupported()` i označite riješenu Booleovu vrijednost."
-  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Vrijeme blokiranja glavne niti"
   },
@@ -2760,31 +2610,31 @@
     "message": "Koristite [Ezoic Leap](https://pubdash.ezoic.com/speed) i omogućite `Resize Images` da bi se veličina slika promijenila ovisno o uređaju i time smanjila veličina mrežnih resursa."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | modern-image-formats": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically optimize image format. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Upotrijebite komponentu `gatsby-plugin-image` umjesto komponente `<img>` da biste automatski optimizirali format slike. [Saznajte više](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | offscreen-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Upotrijebite komponentu `gatsby-plugin-image` umjesto komponente `<img>` da bi se slike automatski učitale s odgodom. [Saznajte više](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | prioritize-lcp-image": {
-    "message": "Use the `gatsby-plugin-image` component and set the `loading` prop to `eager`. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
+    "message": "Upotrijebite komponentu `gatsby-plugin-image` i postavite objekt `loading` na `eager`. [Saznajte više](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image#shared-props)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | render-blocking-resources": {
-    "message": "Use the `Gatsby Script API` to defer loading of non-critical third-party scripts. [Learn more](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
+    "message": "Pomoću komponente `Gatsby Script API` odgodite učitavanje nekritičnih skripti trećih strana. [Saznajte više](https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-script/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-css-rules": {
-    "message": "Use the `PurgeCSS` `Gatsby` plugin to remove unused rules from stylesheets. [Learn more](https://purgecss.com/plugins/gatsby.html)."
+    "message": "Pomoću dodatka `PurgeCSS` `Gatsby` uklonite nekorištena pravila s listova stilova. [Saznajte više](https://purgecss.com/plugins/gatsby.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
+    "message": "Koristite `Webpack Bundle Analyzer` za otkrivanje nekorištenog JavaScript koda. [Saznajte više](https://www.gatsbyjs.com/plugins/gatsby-plugin-webpack-bundle-analyser-v2/)"
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-long-cache-ttl": {
-    "message": "Configure caching for immutable assets. [Learn more](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
+    "message": "Konfigurirajte predmemoriranje za nepromjenjive elemente. [Saznajte više](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/caching/)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-optimized-images": {
-    "message": "Use the `gatsby-plugin-image` component instead of `<img>` to adjust image quality. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Upotrijebite komponentu `gatsby-plugin-image` umjesto komponente `<img>` da biste prilagodili kvalitetu slike. [Saznajte više](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/gatsby.js | uses-responsive-images": {
-    "message": "Use the `gatsby-plugin-image` component to set appropriate `sizes`. [Learn more](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
+    "message": "Koristite komponentu `gatsby-plugin-image` da biste postavili odgovarajuće `sizes`. [Saznajte više](https://www.gatsbyjs.com/docs/how-to/images-and-media/using-gatsby-plugin-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | efficient-animated-content": {
     "message": "Savjetujemo vam da prenesete GIF na uslugu na kojoj će se kodirati za ugrađivanje kao HTML5 videozapis."
@@ -2865,10 +2715,10 @@
     "message": "`<link rel=preload>` oznake mogu se dodati [promjenom izgleda tema](https://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | modern-image-formats": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically optimize image format. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Upotrijebite komponentu `next/image` umjesto komponente `<img>` da biste automatski optimizirali format slike. [Saznajte više](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | offscreen-images": {
-    "message": "Use the `next/image` component instead of `<img>` to automatically lazy-load images. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Upotrijebite komponentu `next/image` umjesto komponente `<img>` da bi se slike automatski učitale s odgodom. [Saznajte više](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | prioritize-lcp-image": {
     "message": "Koristite komponentu `next/image` i postavite \"priority\" na \"true\" kako bi se LCP slika predučitala. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#priority)."
@@ -2883,7 +2733,7 @@
     "message": "Savjetujemo vam da postavite `PurgeCSS` u `Next.js` konfiguraciji da biste uklonili nekorištena pravila s listova stilova. [Saznajte više](https://purgecss.com/guides/next.html)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | unused-javascript": {
-    "message": "Use `Webpack Bundle Analyzer` to detect unused JavaScript code. [Learn more](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
+    "message": "Koristite `Webpack Bundle Analyzer` za otkrivanje nekorištenog JavaScript koda. [Saznajte više](https://github.com/vercel/next.js/tree/canary/packages/next-bundle-analyzer)"
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | user-timings": {
     "message": "Savjetujemo vam da koristite `Next.js Analytics` radi mjerenja izvedbe aplikacije u stvarnom svijetu. [Saznajte više](https://nextjs.org/docs/advanced-features/measuring-performance)."
@@ -2892,7 +2742,7 @@
     "message": "Konfigurirajte predmemoriranje za nepromjenjive elemente i stranice `Server-side Rendered` (SSR). [Saznajte više](https://nextjs.org/docs/going-to-production#caching)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-optimized-images": {
-    "message": "Use the `next/image` component instead of `<img>` to adjust image quality. [Learn more](https://nextjs.org/docs/basic-features/image-optimization)."
+    "message": "Upotrijebite komponentu `next/image` umjesto komponente `<img>` da biste prilagodili kvalitetu slike. [Saznajte više](https://nextjs.org/docs/basic-features/image-optimization)."
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-responsive-images": {
     "message": "Koristite komponentu `next/image` da biste postavili odgovarajuće `sizes`. [Saznajte više](https://nextjs.org/docs/api-reference/next/image#sizes)."

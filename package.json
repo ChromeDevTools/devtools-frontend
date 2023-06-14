@@ -26,8 +26,8 @@
     "auto-e2etest-parallel": "npm run build && npm run e2etest-parallel --",
     "auto-interactionstest": "npm run build && npm run interactionstest --",
     "auto-screenshotstest": "npm run build && third_party/node/node.py --output scripts/test/run_test_suite.js --config test/interactions/test-runner-config.json --mocha-fgrep '[screenshot]'",
-    "auto-unittest": "vpython scripts/test/run_auto_unittests.py --no-text-coverage",
-    "auto-unittest-coverage": "vpython scripts/test/run_auto_unittests.py --no-text-coverage --coverage",
+    "auto-unittest": "vpython3 scripts/test/run_auto_unittests.py --no-text-coverage",
+    "auto-unittest-coverage": "vpython3 scripts/test/run_auto_unittests.py --no-text-coverage --coverage",
     "bake-strings": "npm run collect-strings && vpython third_party/node/node.py --output third_party/i18n/bake-strings.js front_end/core/i18n/locales",
     "build": "autoninja -C out/Default",
     "build-release": "autoninja -C out/Release",
@@ -58,7 +58,7 @@
     "test": "vpython third_party/node/node.py --output scripts/npm_test.js",
     "test-local": "vpython third_party/node/node.py --output scripts/npm_test.js --layout-tests-directory=test/webtests/",
     "ts_library-test": "./third_party/typescript/tests/verify_ts_libary.sh",
-    "unittest": "vpython scripts/test/run_unittests.py --no-text-coverage",
+    "unittest": "vpython3 scripts/test/run_unittests.py --no-text-coverage",
     "watch": "vpython third_party/node/node.py --output scripts/watch_build.js"
   }
 }

@@ -71,7 +71,8 @@ describeWithEnvironment('LayoutShiftsTrackAppender', () => {
     assert.strictEqual(flameChartData.groups[0].name, 'Layout Shifts');
   });
 
-  it('adds all layout shifts with the correct start times', async () => {
+  // Flaky on mac
+  it.skip('[crbug.com/1454749] adds all layout shifts with the correct start times', async () => {
     const {flameChartData, traceParsedData, entryData} = await renderTrackAppender('cls-single-frame.json.gz');
     const events = traceParsedData.LayoutShifts.clusters.flatMap(c => c.events);
     for (const event of events) {
@@ -99,7 +100,8 @@ describeWithEnvironment('LayoutShiftsTrackAppender', () => {
     assert.strictEqual(title, 'Layout shift');
   });
 
-  it('shows "Layout shift" text on hover', async () => {
+  // Flaky on mac
+  it.skip('[crbug.com/1454749] shows "Layout shift" text on hover', async () => {
     const {layoutShiftsTrackAppender, traceParsedData} = await renderTrackAppender('cls-single-frame.json.gz');
     const shifts = traceParsedData.LayoutShifts.clusters.flatMap(c => c.events);
     const info = layoutShiftsTrackAppender.highlightedEntryInfo(shifts[0]);

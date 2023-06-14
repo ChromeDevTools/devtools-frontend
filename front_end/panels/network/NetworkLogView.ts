@@ -844,9 +844,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
     }
-    const targetManager = SDK.TargetManager.TargetManager.instance();
     for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
-      if (targetManager.isInScope(SDK.NetworkManager.NetworkManager.forRequest(request))) {
+      if (this.isInScope(request)) {
         this.refreshRequest(request);
       }
     }
@@ -1179,9 +1178,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private invalidateAllItems(deferUpdate?: boolean): void {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    this.staleRequests = new Set(Logs.NetworkLog.NetworkLog.instance().requests().filter(
-        r => targetManager.isInScope(SDK.NetworkManager.NetworkManager.forRequest(r))));
+    this.staleRequests = new Set(Logs.NetworkLog.NetworkLog.instance().requests().filter(this.isInScope));
     if (deferUpdate) {
       this.scheduleRefresh();
     } else {
@@ -1449,10 +1446,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     return node;
   }
 
+  private isInScope(request: SDK.NetworkRequest.NetworkRequest): boolean {
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
+    return !networkManager || SDK.TargetManager.TargetManager.instance().isInScope(networkManager);
+  }
+
   private onRequestUpdated(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
     const request = event.data;
-    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
-    if (!networkManager || SDK.TargetManager.TargetManager.instance().isInScope(networkManager)) {
+    if (this.isInScope(request)) {
       this.refreshRequest(request);
     }
   }

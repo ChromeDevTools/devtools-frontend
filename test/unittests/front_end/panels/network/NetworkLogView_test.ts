@@ -155,7 +155,7 @@ describeWithMockConnection('NetworkLogView', () => {
         }
       });
 
-      it('can import from HAR', async () => {
+      it('can import and filter from HAR', async () => {
         const URL_1 = 'http://example.com/' as Platform.DevToolsPath.UrlString;
         const URL_2 = 'http://example.com/favicon.ico' as Platform.DevToolsPath.UrlString;
         function makeHarEntry(url: Platform.DevToolsPath.UrlString) {
@@ -185,6 +185,10 @@ describeWithMockConnection('NetworkLogView', () => {
         assert.deepEqual(
             rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
             [URL_1, URL_2]);
+
+        networkLogView.setTextFilterValue('favicon');
+        assert.deepEqual(
+            rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [URL_2]);
 
         networkLogView.detach();
       });

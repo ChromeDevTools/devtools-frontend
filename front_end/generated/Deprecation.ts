@@ -47,9 +47,9 @@ export const UIStrings = {
    */
   CSSSelectorInternalMediaControlsOverlayCastButton: "The `disableRemotePlayback` attribute should be used in order to disable the default Cast integration instead of using `-internal-media-controls-overlay-cast-button` selector.",
   /**
-   * @description Warning displayed to developers when a data: URL is assigned to SVG <use> to let them know that the support is deprecated.
+   * @description Warning displayed to developers when a data: URL is assigned to SVGUseElement to let them know that the support is deprecated.
    */
-  DataUrlInSvgUse: "Support for data: URLs in SVG <use> element is deprecated and it will be removed in the future.",
+  DataUrlInSvgUse: "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future.",
   /**
    * @description This warning occurs when a script modifies `document.domain` without having set on `Origin-Agent-Cluster` http header. In other words, when a script relies on the default behaviour of `Origin-Agent-Cluster` when setting document.domain.
    */

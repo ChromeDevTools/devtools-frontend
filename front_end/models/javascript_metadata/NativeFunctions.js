@@ -1053,11 +1053,6 @@ export const NativeFunctions = [
     receivers: ['SmartCardContext']
   },
   {
-    name: 'connect',
-    signatures: [['accessMode','?preferredProtocols']],
-    receivers: ['SmartCardReader']
-  },
-  {
     name: 'disconnect',
     signatures: [['?output'],['destinationNode','?output','?input'],['destinationParam','?output'],['destination','?output','?input']],
     receivers: ['AudioNode']
@@ -6166,6 +6161,10 @@ export const NativeFunctions = [
     signatures: [['milliseconds']]
   },
   {
+    name: 'ChildNodePart',
+    signatures: [['previousSibling','nextSibling','?init']]
+  },
+  {
     name: 'Comment',
     signatures: [['?data']]
   },
@@ -6176,6 +6175,10 @@ export const NativeFunctions = [
   {
     name: 'CSSToggle',
     signatures: [['?options']]
+  },
+  {
+    name: 'DocumentPart',
+    signatures: [['document']]
   },
   {
     name: 'requestStorageAccessFor',
@@ -6216,6 +6219,10 @@ export const NativeFunctions = [
   {
     name: 'MutationObserver',
     signatures: [['callback']]
+  },
+  {
+    name: 'NodePart',
+    signatures: [['node','?init']]
   },
   {
     name: 'setApplyScroll',
@@ -6528,6 +6535,10 @@ export const NativeFunctions = [
   {
     name: 'CloseWatcher',
     signatures: [['?options']]
+  },
+  {
+    name: 'getName',
+    signatures: [['constructor']]
   },
   {
     name: 'reportEvent',
@@ -6859,7 +6870,7 @@ export const NativeFunctions = [
   },
   {
     name: 'joinAdInterestGroup',
-    signatures: [['group','durationSeconds']]
+    signatures: [['group','?durationSeconds']]
   },
   {
     name: 'leaveAdInterestGroup',
@@ -7819,6 +7830,10 @@ export const NativeFunctions = [
   {
     name: 'InstallEvent',
     signatures: [['type','?eventInitDict']]
+  },
+  {
+    name: 'registerRouter',
+    signatures: [['rules']]
   },
   {
     name: 'BarcodeDetector',

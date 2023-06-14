@@ -1287,7 +1287,7 @@
     "message": "API Event.path tugi on katkestatud ja see eemaldatakse. Kasutage selle asemel API-t Event.composedPath()."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "API Expect-CT tugi on katkestatud ja see eemaldatakse. Chrome nõuab, et kõik avalikud usaldusväärsed sertifikaadid, mis on välja antud pärast 30. aprilli 2018, peavad järgima sertifikaadi läbipaistvuse eeskirju."
+    "message": "Päist Expect-CT enam ei toetata. Chrome nõuab, et kõik avalikud usaldusväärsed sertifikaadid, mis on välja antud pärast 2018. aasta 30. aprilli, peavad järgima sertifikaadi läbipaistvuse eeskirju."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() ja watchPosition() ei tööta enam ebaturvalistes lähtekohtades. Selle funktsiooni kasutamiseks soovitame teil oma rakenduse ümber lülitada turvalisele lähtekohale, nt HTTPS-ile. Vaadake lisateavet aadressilt https://goo.gle/chrome-insecure-origins."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Laiendused peavad lubama lähtekohaülese isoleerimise, et üksuse SharedArrayBuffer kasutamist jätkata. Vt https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "Web SQL-i tugi on katkestatud. Kasutage SQLite WebAssemblyt või indekseeritud andmebaasi"
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "Loa deskriptori window-placement tugi on katkestatud. Kasutage selle asemel deskriptorit window-management. Lisaabi saamiseks külastage saiti https://bit.ly/window-placement-rename."
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] Üksuse {PH2} silumissümbolite laadimine (üksuse {PH3} kaudu) …"
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Lisa kõik sisuskriptid eiramisloendisse"
+    "message": "Kõikide laiendusskriptide eiramisloendisse lisamine"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "Lisa kõik kolmanda osapoole skriptid eiramisloendisse"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Üksuse SharedArrayBuffer lubamine"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "Usaldusväärseid veebitegevusi kasutavate PWA-de kvaliteedikriteeriumite muudatused"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonüümne>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Oksjoni töök — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "Kasutaja interaktsioonid"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Ajatempel"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "Põrkumise jälgimise leevendused"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Kõikide küpsisefailide kustutamine"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Võti"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "Laadimine …"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objektisalved"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "Värskenda andmebaasi"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "Turbe lähtekoht"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "Kuva järgmine leht"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "Tabelit värskendati"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "Saidi andmed kustutati"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "Rakendus"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "Arv ei tohi olla negatiivne"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "Arv peab olema väiksem kui {PH1}"
   },
   "panels/application/StorageView.ts | other": {
     "message": "Muu"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "Põrkumise jälgimise leevendused"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "Võimalike põrkumise jälgimise saitide kontrollimine."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "Sundkäivitus"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "Lisateave: põrkumise jälgimise leevendused"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "Olekut ei kustutatud ühegi võimaliku põrkumise jälgimise saidi jaoks. Kas neid ei tuvastatud, põrkumise jälgimise leevendused pole lubatud või kolmanda osapoole küpsised pole blokeeritud."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "Töötavad"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "Olek kustutati järgmistel saitidel."
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Lõpp-punkte kuvamiseks pole"
   },
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "Loomise aeg"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Kirjed"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "Tarastatud kaadrite entroopia eelarve"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metaandmed"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Pole veel loodud"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Sisestuste arv"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Päritolu"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "Lähtesta eelarve"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Virna jälge ei õnnestu renderdada"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "Kuva vähem"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Kuva veel # raam}other{Kuva veel # raami}}"
@@ -4109,6 +4124,15 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Privaatse oleku märgid"
   },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "Filtreerige valitud reeglistiku järgi"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "Laienduste seaded"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "Lehtede eellaadimise seaded"
+  },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Tõrge"
   },
@@ -4122,7 +4146,7 @@
     "message": "Valmis"
   },
   "panels/application/preloading/PreloadingView.ts | statusRunning": {
-    "message": "Pooleli"
+    "message": "Töötab"
   },
   "panels/application/preloading/PreloadingView.ts | statusSuccess": {
     "message": "Õnnestus"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Kehtiv"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "Eellaadimine on keelatud operatsioonisüsteemi akusäästja režiimi tõttu."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "Eellaadimine on keelatud operatsioonisüsteemi andmemahu säästja režiimi tõttu."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Eellaadimine on sundlubatud, kuna DevTools on avatud. Kui DevTools suletakse, keelatakse eelrenderdus, kuna see brauseriseanss on osa isoleerimisgrupist, mida kasutatakse toimivuse võrdlemisel."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "Eellaadimine on kasutaja seadete või laienduse tõttu keelatud. Lisateabe saamiseks minge aadressile {PH1} või laienduse keelamiseks minge aadressile {PH2}."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "Eelrenderdus on sundlubatud, kuna DevTools on avatud. Kui DevTools suletakse, keelatakse eelrenderdus, kuna see brauseriseanss on osa isoleerimisgrupist, mida kasutatakse toimivuse võrdlemisel."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "Eellaadimine oli keelatud, kuid see on nüüd sundlubatud"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "Eellaadimine on keelatud"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Eelrenderdus oli keelatud, kuid see on nüüd sundlubatud"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Üksikasjalik teave"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "Ebaõnnestumise põhjus"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Reeglite komplekt"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Olek"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Eelrenderdatud leht aktiveeriti algatava lehe põhiraami navigeerimise ajal."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Eelrenderdust ei kasutatud, kuna algatava lehe liivakasti lipud või lubade eeskirjad ei ühildu eelrenderduse lehe omadega."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Eelrenderdust ei kasutatud, kuna aktiveerimise ajal arvutati teistsugused navigeerimisparameetrid (nt HTTP päised) kui algse eelrenderduse navigeerimispäringu ajal."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Eelrenderdatud leht taotles heliväljundit, mida praegu ei toetata."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Eelrenderdust ei tehtud, kuna kasutaja soovis, et brauser kasutaks vähem akut."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Osa ressursi laadimist blokeeriti."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Eelrenderduse navigeerimiseks oli vaja HTTP kliendisertifikaati."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Eelrenderdamise navigeerimine ebaõnnestus, kuna see sihtis saidiülest URL-i."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Eelrenderdatud leht navigeeris saidiülesele URL-ile."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Eelrenderdamise navigeerimine ebaõnnestus, kuna eelrenderdatud URL suunati saidiülesele URL-ile."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Eelrenderdatud leht navigeeris URL-ile, mis suunati ümber saidiülesele URL-ile."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Eelrenderdust ei tehtud, kuna kasutaja soovis, et brauser kasutaks vähem andmeid."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "Eelrenderdatud leht üritas algatada allalaadimist, mida praegu ei toetata."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Eelrenderdust ei tehtud, kuna brauseris tekkis sisemine viga, püüdes määratleda praegust mälukasutust."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "Algatavat lehte ei saa eelrenderdada, kuna selle kehtiv URL erineb tavalisest URL-ist. (Näiteks uue vahelehe leht või hostitud rakendused.)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URL ei olnud eelrenderdamiseks sobilik, kuna selle skeem ei olnud http: või https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Eelrenderdamise navigeerimine ebaõnnestus, kuna see suunati ümber URL-ile, mille skeem ei olnud http: või https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Eelrenderduse navigeerimine nõudis HTTP autentimist, mida praegu ei toetata."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Eelrenderdust ei tehtud, kuna sellel seadmel ei ole eelrenderduse toetamiseks piisavalt süsteemimälu."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Eelrenderdatud leht navigeeris ise teisele URL-ile, mida praegu ei toetata."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Eelrenderdust ei tehtud, kuna algataval lehel on juba liiga palju eelrenderdusi pooleli. Edasise eelrenderduse võimaldamiseks eemaldage muud spekulatsioonireeglid."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Eelrenderdust ei tehtud, kuna brauser ületas eelrenderduse mälupiirangu."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Eelrenderdatud leht laaditi maha, kuna brauser sattus kriitilise mälusurve alla."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Eelrenderdust ei tehtud, kuna brauser oli kriitilise mälusurve all."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "Eelrenderdatud lehel oli erinevat sisu."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Eelrenderdatud leht kasutas keelatud JavaScripti API-t, mida praegu ei toetata."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "Eelrenderdamise navigeerimine ebaõnnestus mitte-2xx HTTP-vastuse olekukoodi tõttu."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Eelrenderdamise navigeerimine blokeeriti sisu turvalisuse eeskirjadega."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Eelrenderduse navigeerimisel ilmnes võrgu viga."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Eelrenderdust ei tehtud, kuna kasutaja keelas brauseri seadetes eellaadimise."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "Algatav leht jooksis kokku."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "Algatava lehe protsess lõpetati."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Eelrenderdatud leht jooksis kokku."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Lehe eelrenderdusprotsess lõpetati."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Eelrenderdatud leht navigeeris ise samal saidil erineva päritoluga URL-ile, kuid sihtkoha vastus ei sisaldanud õiget päist Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Eelrenderdatud leht navigeeris samal saidil erineva päritoluga URL-ile, kuid sihtkoha vastus ei sisaldanud õiget päist Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Eelrenderdamise navigeerimine ebaõnnestus, kuna eelrenderdatud URL suunati ümber sama saidi URL-ile, kuid sihtkoha vastus ei sisaldanud sobivat päist Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Eelrenderdatud leht navigeeris URL-ile, mis suunas samal saidil erineva päritoluga URL-ile, kuid sihtkoha vastus ei sisaldanud õiget päist Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "Eelrenderdamise navigeerimine ebaõnnestus kehtetu SSL-sertifikaadi tõttu."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Algatav leht oli pikka aega taustal, seega jäeti eelrenderdatud leht kõrvale."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Algatav leht oli taustal, seega jäeti eelrenderdatud leht kõrvale."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Kasutaja-agendi muutmine toimus eelrenderdamise navigeerimisel."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Lisateabe saamiseks valige element"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Olek"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "Klõpsake elementide paneelil kuvamiseks"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "Klõpsake võrgupaneelil kuvamiseks"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Üksikasjalik teave"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "Viga"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "Asukoht"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Allikas"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "Kehtiv"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "Asukoht"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Kehtivus"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "Luba sihtmärgi kaudu laadimine"
+    "message": "Laadige veebisaidi kaudu"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "Sisestage tekst, et otsida veergudest URL ja Viga"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "Laadi protokolli HTTP(S) arendaja ressursid uuritava sihtmärgi kaudu"
+    "message": "Laadige arendaja HTTP(S) ressursse kontrollitud veebisaidi kaudu, mitte arendaja tööriistade kaudu"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# ressurss}other{# ressurssi}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudoelement ::{PH1}"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "Täpsus: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Lülita üldised renderdamise emulatsioonid sisse/välja"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1 potentsiaalselt jälgiv veebisait}other{# potentsiaalselt jälgivat veebisaiti}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# ressurss}other{# ressurssi}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "Paketi nimi"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "Paketi allkiri"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "Olekukood"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "URL"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite'i küpsisefail"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "Usaldusväärne veebitegevus"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Peida probleemid"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Jäädvusta lehe laadimisel ekraanipildid"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "Kustuta"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "Sule"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "WebBundle'i ressurss"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "Tühjenda võrgulogi"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "värvikood"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Kuva protokollimonitor"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "Jätka"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "Salvestise või valitud toimingu kopeerimine"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "Uue salvestise loomine"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "Kustuta salvestis"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "Eksportimine"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "Eksportimine"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "Eksportimine laienduste kaudu"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "Laienduste hankimine …"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "Impordi salvestis"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "Esita salvestis uuesti"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "Saada tagasisidet"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "Salvestuse alustamine/katkestamine"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "Käivita üks etapp"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "Kuva Koodi vahetamine"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "Tühista salvestamine"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "Uue salvestise loomine"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "Peate ühe valikuna valima CSS-i, Pierce'i või XPathi. Ainult nende valijate salvestamine on tagatud, kuna ARIA ja teksti valijad ei pruugi olla kordumatud."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "Salvestise nimi"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "Salvestise nimi on nõutav"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "Valija atribuut"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "Tekst"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "Valijate tüübid, mida salvestada"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "Alusta salvestamist"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "Sule"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "Sisu pakub brauserilaiendus"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "Uue salvestise loomine"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "Kustuta salvestis"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "Ava salvestis"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "Esita salvestis"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "Talletatud salvestised"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "Lisa kinnitamine"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "Tühista taasesitus"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "Vaikeväärtus"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "Lauaarvuti"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "Allalaadimine: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "Muuda taasesituse seadeid"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "Pealkirja muutmine"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "Lõpeta salvestamine"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "Keskkond"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "Peida kood"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "Latentsusaeg: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "Mobiilseade"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "Võrk"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "Toimivuse paneel"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "Salvestamine …"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "Salvestamise peatamine …"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "Taasesituse seaded"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "Pealkiri on nõutav"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "Selle jaotise ekraanipilt"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "Kuva kood"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "Ajalõpp: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "Ajalõpu seade (millisekundites) rakendub salvestise taasesitamisel kõikidele toimingutele. Näiteks kui CSS-valija tuvastatud DOM-element ei kuvata lehel seadistatud ajalõpu jooksul, nurjub taasesitus veateatega."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "Ajalõpp"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "Üleslaadimine: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Väga aeglane taasesitus"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Äärmiselt aeglane"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "Esita"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "Tavaline (vaikeseade)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "Aeglane taasesitus"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "Aeglane"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "Väga aeglane taasesitus"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "Väga aeglane"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "Laiendused"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "Kiirus"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "Uue salvestise loomine"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "Toimivuse mõõtmine kogu kasutaja teekonna jooksul"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "Lühijuhend: tutvuge arendaja tööriistade uue Salvesti paneeliga"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "Salvestage oma veebisaidil või rakenduses tavapärane kasutaja teekond"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "Esitage salvestis uuesti, et kontrollida voo toimivust"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "Looge üksikasjalik toimivuse jälg või eksportige Puppeteeri skript testimiseks"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "Lisa {attributeName}"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "Lisa raamipuus raamile indeks"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "Lisa valija"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "Lisa valija osa"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "Kustuta rida"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "Salvestamata: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "Eemalda raami indeks"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "Eemalda valija"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "Eemalda valija osa"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "Valijate värskendamiseks lehel elemendi valimine"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "Tundmatu toimingutüüp."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "Lisa katkestuspunkt"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "Lisa etapp praeguse järele"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "Lisa etapp praeguse ette"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "Katkestuspunktid"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "Muutmine"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "Klõpsamine"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "Sulgemine"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "Kopeeri vormingus"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "Kohandatud etapp"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "Topeltklikk"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "Nupp"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "Element"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "Sisend"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "Võrgu tingimuste emuleerimine"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "Kursori hõljutamine"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "Klahvi vajutamine"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "Klahvi vabastamine"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "Navigeerimine"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "Ava etapi toimingute menüü"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "Eemalda katkestuspunkt"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "Eemalda etapp"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "Kerimine"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "Vaatevälja seadistamine"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "Toimingute haldamine"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "Elemendi ootamine"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "Avaldise ootamine"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "Salvestis ({DATE} kell {TIME})"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "Uue salvestise loomine"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Salvesti"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "Esita salvestis uuesti"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "Salvesti kuvamine"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "Salvestuse alustamine/katkestamine"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "Kuva Koodi vahetamine"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Ekraaniülekande lüliti"
   },
@@ -9861,10 +10377,7 @@
     "message": "Lisa muster …"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "Lisa teadaolevad kolmanda osapoole skriptid automaatselt eiramisloendisse"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "Lisa välja x_google_ignoreList allikad lähtekoodi kaartidelt eiramisloendisse"
+    "message": "Tuntud kolmanda osapoole skriptid lähtekaartidelt"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Kohandatud välistamisreeglid:"
@@ -9885,13 +10398,13 @@
     "message": "Üldised välistamisreeglid:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "Lisa sisuskriptid eiramisloendisse"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "Lisa sisu skriptid eiramisloendisse (lehel olevad laienduse skriptid)"
+    "message": "Laiendustega sisestatud sisuskriptid"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Eira skripte, mille nimed kattuvad järgmisega: „{PH1}“"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "Lisateave"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "Lisage muster"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "Dekrüpteeri vastus"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "Deserialiseerige koodi vahemälu"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "Veebipesa hävitamine"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Veeru {PH1} sortimine tühistati"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "Sule"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "Klaviatuuri otseteed"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "Kuva otseteed"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "(… {PH1} ühtivat rida jäetakse vahele …)"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "Eemalda eiramisloendist"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "Kuva vähem"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Kuva veel # raam}other{Kuva veel # raami}}"

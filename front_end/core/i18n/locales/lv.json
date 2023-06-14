@@ -753,7 +753,7 @@
     "message": "Paplašināt režģa rindas"
   },
   "core/sdk/sdk-meta.ts | hideCoreWebVitalsOverlay": {
-    "message": "Paslēpt tīmekļa pamatrādītāju pārklājumu"
+    "message": "Paslēpt Core Web Vitals pārklājumu"
   },
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "Paslēpt kadru skaitu sekundē"
@@ -858,7 +858,7 @@
     "message": "Cilne"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
-    "message": "Tīmekļa pamatrādītāji"
+    "message": "Core Web Vitals"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "Atspējot AVIF attēla formātu"
@@ -945,7 +945,7 @@
     "message": "Ritināšanas veiktspējas problēmas"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
-    "message": "Rāda tīmekļa pamatrādītāju pārklājumu"
+    "message": "Rāda Core Web Vitals pārklājumu"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "Rāda slāņa robežas (oranža/olīvzaļa krāsa) un elementus (ciānzilā krāsā)."
@@ -1287,7 +1287,7 @@
     "message": "Saskarne Event.path vairs netiek izmantota un tiks noņemta. Tās vietā, lūdzu, izmantojiet metodi Event.composedPath()."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Galvene Expect-CT vairs netiek atbalstīta un tiks noņemta. Pārlūkā Chrome visiem sertifikātiem, kas izdoti pēc 2018. gada 30. aprīļa un publiski atzīti par uzticamiem, ir jāizmanto sertifikāta pārredzamība."
+    "message": "Galvene Expect-CT vairs netiek atbalstīta. Pārlūkā Chrome visiem sertifikātiem, kas izdoti pēc 2018. gada 30. aprīļa un publiski atzīti par uzticamiem, ir jāizmanto sertifikāta pārredzamība."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "Metodes getCurrentPosition() un watchPosition() vairs nedarbojas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "Saskarne Web SQL vairs netiek izmantota. Lūdzu, izmantojiet SQLite WebAssembly vai Indexed Database."
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "Atļaujas deskriptors window-placement vairs netiek atbalstīts. Tā vietā izmantojiet politiku window-management. Plašāku informāciju skatiet vietnē https://bit.ly/window-placement-rename."
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] Notiek vietnes {PH2} atkļūdošanas simbolu ielāde (no vietnes {PH3})..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Pievienot visus satura skriptus ignorēto sarakstam"
+    "message": "Pievienot visus paplašinājumu skriptus ignorēto sarakstam"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "Pievienot visus trešo pušu skriptus ignorēto sarakstam"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Notiek SharedArrayBuffer iespējošana"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "Kvalitātes kritēriju izmaiņas progresīvā tīmekļa lietotnēm, kurās tiek izmantots uzticamas tīmekļa darbības režīms."
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Viena uzdevuma konteksts izsolei — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "Lietotāju mijiedarbība"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Laikspiedols"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "Atlēcienu izsekošanas mazināšana"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Dzēst visus sīkfailus"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Atslēga"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "Notiek ielāde…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objektu krātuves"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "Atsvaidzināt datu bāzi"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "Drošības avots"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "Rādīt nākamo lapu"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "Tabula atsvaidzināta"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "Vietnes dati notīrīti"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "Lietojumprogramma"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "Skaitlis nedrīkst būt negatīvs"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "Skaitlim jābūt mazākam par {PH1}"
   },
   "panels/application/StorageView.ts | other": {
     "message": "Cits"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "Atlēcienu izsekošanas mazināšana"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "Notiek iespējamo atlēcienu izsekošanas vietņu meklēšana."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "Izpildīt piespiedu kārtā"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "Uzzināt vairāk: atlēcienu izsekošanas mazināšana"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "Nevienai no iespējamajām atlēcienu izsekošanas vietnēm netika notīrīts statuss. Netika atrasta neviena lapa, atlēcienu izsekošanas mazināšana bija izslēgta, vai trešo pušu sīkfaili nav bloķēti."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "Darbojas"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "Statuss tika dzēsts šādām vietnēm:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Nav beigu punktu, ko parādīt"
   },
@@ -3663,7 +3684,7 @@
     "message": "Noklikšķiniet, lai skatītu panelī Elements (Elementi)"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
-    "message": "Noklikšķiniet, lai skatītu panelī Network (Tīkls)"
+    "message": "Noklikšķiniet, lai skatītu panelī Tīkls"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
     "message": "Noklikšķiniet, lai skatītu panelī Network (Tīkls) (var būt nepieciešams atkārtoti ielādēt lapu)"
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "Izveides laiks"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Ieraksti"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "Norobežotu ietvaru entropijas budžets"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadati"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Vēl nav izveidots"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Ierakstu skaits"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Izcelsme"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "Atiestatīt budžetu"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Nevar renderēt steka trasējumu."
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "Rādīt mazāk"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Rādīt vēl # ietvaru}zero{Rādīt vēl # ietvarus}one{Rādīt vēl # ietvaru}other{Rādīt vēl # ietvarus}}"
@@ -4109,6 +4124,15 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Privāta stāvokļa pilnvaras"
   },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "Filtrēt pēc atlasītās kārtulu kopas"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "Paplašinājumu iestatījumi"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "Iepriekš ielādētu lapu iestatījumi"
+  },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Kļūme"
   },
@@ -4122,7 +4146,7 @@
     "message": "Gatavs"
   },
   "panels/application/preloading/PreloadingView.ts | statusRunning": {
-    "message": "Notiek izpilde"
+    "message": "Darbojas"
   },
   "panels/application/preloading/PreloadingView.ts | statusSuccess": {
     "message": "Sekmīgi pabeigts"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Derīga"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "Iepriekšēja ielāde ir atspējota operētājsistēmas akumulatora enerģijas taupīšanas režīma dēļ."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "Iepriekšēja ielāde ir atspējota operētājsistēmas datu lietojuma samazinātāja režīma dēļ."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Iepriekšēja ielāde ir piespiedu kārtā iespējota, jo ir atvērti izstrādātāja rīki. Aizverot izstrādātāja rīkus, iepriekšēja atveidošana tiks atspējota, jo šī pārlūkprogrammas sesija ir ietverta aizturēšanas grupā, kas tiek izmantota veiktspējas salīdzinājumiem."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "Iepriekšēja ielāde ir atspējota lietotāja iestatījumu vai paplašinājuma dēļ. Pārejiet uz vietni {PH1}, lai uzzinātu vairāk, vai {PH2}, lai atspējotu paplašinājumu."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "Iepriekšēja atveidošana ir piespiedu kārtā iespējota, jo ir atvērti izstrādātāja rīki. Aizverot izstrādātāja rīkus, iepriekšēja atveidošana tiks atspējota, jo šī pārlūkprogrammas sesija ir ietverta aizturēšanas grupā, kas tiek izmantota veiktspējas salīdzinājumiem."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "Iepriekšēja ielāde bija atspējota, taču tagad ir piespiedu kārtā iespējota"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "Iepriekšēja ielāde ir atspējota"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Iepriekšēja atveidošana bija atspējota, taču tagad ir piespiedu kārtā iespējota"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Detalizēta informācija"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "Atteices iemesls"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Kārtula ir iestatīta"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Statuss"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Iepriekš atveidotā lapa tika aktivizēta, sākot navigāciju lapas galvenajā ietvarā."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Iepriekšēja atveidošana netika izmantota, jo aktivizācijas lapas smilškastes karodziņi vai atļauju politika nebija saderīga ar iepriekšējas atveidošanas lapas karodziņiem vai politikām."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Iepriekšēja atveidošana netika izmantota, jo aktivizācijas laikā aprēķinātie navigācijas parametri (piem., HTTP galvenes) atšķīrās no iepriekšējas atveidošanas navigācijas sākotnējā pieprasījuma laikā aprēķinātajiem parametriem."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Iepriekš atveidotajā lapā tika pieprasīta audio izvade, kas pašlaik netiek atbalstīta."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Iepriekšēja atveidošana netika veikta, jo lietotājs pieprasīja, lai pārlūks izmantotu mazāk akumulatora jaudas."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Daļa resursu ielādes tika bloķēta."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Iepriekšējas atveidošanas navigācijai bija nepieciešams HTTP klienta sertifikāts."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo tās mērķis bija citas vietnes URL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz citas vietnes URL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo iepriekš atveidotais URL novirzīja uz citas vietnes URL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Iepriekš atveidotajā lapā tika pāriets uz vietrādi URL, kurš novirzīja uz citas vietnes URL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Iepriekšēja atveidošana netika veikta, jo lietotājs pieprasīja, lai pārlūks izmantotu mazāk datu."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "Iepriekš atveidotajā lapā tika mēģināts sākt lejupielādi, kas pašlaik netiek atbalstīta."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Iepriekšēja atveidošana netika veikta, jo, mēģinot noteikt pašreizējo atmiņas lietojumu, pārlūkā radās iekšēja kļūda."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "Aktivizācijas lapā nevar veikt iepriekšēju atveidošanu, jo tās faktiskais URL atšķiras no parastā URL. (Piemēram, jaunas cilnes lapa vai mitinātas lietotnes.)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "Vietrādi URL nevarēja iepriekš atveidot, jo tā shēma nav “http:” vai “https:”."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo tā novirzīja uz URL, kura shēma nav “http:” vai “https:”."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Iepriekšējas atveidošanas navigācijai bija nepieciešama HTTP autentifikācija, kas pašlaik netiek atbalstīta."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Iepriekšēja atveidošana netika veikta, jo šai ierīcei nav pietiekami daudz sistēmas atmiņas, lai atbalstītu iepriekšēju atveidošanu."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz citu URL, kas pašlaik netiek atbalstīts."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Iepriekšēja atveidošana netika veikta, jo aktivizācijas lapā jau notiek pārāk daudz iepriekšējas atveidošanas darbību. Lai iespējotu turpmāku iepriekšējo atveidošanu, noņemiet citas spekulācijas kārtulas."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Iepriekšēja atveidošana netika veikta, jo pārlūkā tika pārsniegts iepriekšējas atveidošanas atmiņas ierobežojums."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Iepriekš atveidotās lapas ielāde tika atcelta, jo pārlūkā bija kritiski mazs atmiņas apjoms."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Iepriekšēja atveidošana netika veikta, jo pārlūkā bija kritiski mazs atmiņas apjoms."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "Iepriekšējas atveidošanas lapā bija ietverts jaukts saturs."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Iepriekš atveidotajā lapā tika izmantota neatļauta JavaScript API, kas pašlaik netiek atbalstīta."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo saņemtais HTTP atbildes statusa kods nav 2xx kods."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Iepriekšējas atveidošanas navigāciju bloķēja satura drošības politika."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Iepriekšējas atveidošanas navigācijas laikā radās tīkla kļūda."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Iepriekšēja atveidošana netika veikta, jo lietotājs pārlūka iestatījumos atspējoja iepriekšēju ielādi."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "Aktivizācijas lapa avarēja."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "Aktivizācijas lapas darbība tika pārtraukta."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Iepriekš atveidotā lapa avarēja."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Iepriekš atveidotās lapas darbība tika pārtraukta."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz citas izcelsmes tās pašas vietnes URL, bet galamērķa atbildē nebija iekļauta atbilstošā galvene “Supports-Loading-Mode”."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz citas izcelsmes tās pašas vietnes URL, bet galamērķa atbildē nebija iekļauta atbilstošā galvene “Supports-Loading-Mode”."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo iepriekš atveidotais URL novirzīja uz citas izcelsmes tās pašas vietnes URL, bet galamērķa atbildē nebija iekļauta atbilstošā galvene “Supports-Loading-Mode”."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz URL, kurš novirzīja uz citas izcelsmes tās pašas vietnes URL, bet galamērķa atbildē nebija iekļauta atbilstošā galvene “Supports-Loading-Mode”."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "Iepriekšējas atveidošanas navigācija neizdevās nederīga SSL sertifikāta dēļ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Aktivizācijas lapa ilgi darbojās fonā, tāpēc iepriekš atveidotā lapa tika atmesta."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Aktivizācijas lapa darbojās fonā, tāpēc iepriekš atveidotā lapa tika atmesta."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Iepriekšējas atveidošanas navigācijā tika mainīts lietotāja aģents."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Lai skatītu plašāku informāciju, atlasiet elementu"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Statuss"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "Noklikšķiniet, lai skatītu panelī Elementi"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "Noklikšķiniet, lai skatītu panelī Tīkls"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Detalizēta informācija"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "Kļūda"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "Atrašanās vieta"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Avots"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "Derīga"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "Atrašanās vieta"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Derīgums"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "Iespējot ielādi, izmantojot mērķi"
+    "message": "Ielādēt, izmantojot vietni"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "Ievadiet tekstu, ko meklēt kolonnās URL un Kļūda"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "Ielādēt HTTP(S) izstrādātāju resursus, izmantojot pārbaudīto mērķi"
+    "message": "Ielādēt HTTP(S) izstrādātāju resursus, izmantojot pārbaudāmo vietni, nevis izstrādātāja rīkus"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# resurss}zero{# resursu}one{# resurss}other{# resursi}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseidovienums: {PH1} elements"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "Specifiskums: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Pārslēgt vispārējās atveidošanas emulācijas funkciju"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1 vietne, kurā, iespējams, tiek izmantota izsekošana}zero{# vietnes, kurās, iespējams, tiek izmantota izsekošana}one{# vietne, kurā, iespējams, tiek izmantota izsekošana}other{# vietnes, kurās, iespējams, tiek izmantota izsekošana}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# resurss}zero{# resursu}one{# resurss}other{# resursi}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "Pakotnes nosaukums"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "Pakotnes paraksts"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "Statusa kods"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "URL"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Elements"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite sīkfails"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "Uzticama tīmekļa darbība"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Problēmu paslēpšana"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Tvert ekrānuzņēmumus, kad notiek lapas ielāde"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "Notīrīt"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "Aizvērt"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Resursu komplekts"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "Notīrīt tīkla žurnālu"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "krāsu kods"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Rādīt Protokola pārraugu"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "Turpināt"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "Kopēt ierakstu vai atlasīto darbību"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "Izveidot jaunu ierakstu"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "Dzēst ierakstu"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "Eksportēt"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "Eksportēt"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "Eksportēt, izmantojot paplašinājumus"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "Iegūt paplašinājumus…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "Importēt ierakstu"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "Atskaņot ierakstu vēlreiz"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "Sūtīt atsauksmes"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "Sākt/apturēt ierakstīšanu"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "Izpildīt vienu darbību"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "Pārslēgt koda skatu"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "Atcelt ierakstīšanu"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "Jauna ieraksta izveide"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "Jums ir jāizvēlas opcija CSS, Pierce vai XPath. Tiek garantēta tikai šo atlasītāju ierakstīšana, jo ARIA un teksta atlasītāji var nebūt unikāli."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "Ieraksta nosaukums"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "Jānorāda ieraksta nosaukums"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "Atlasītāja atribūts"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "Teksts"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "Reģistrējamo atlasītāju veidi"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "Sākt ierakstīšanu"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "Aizvērt"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "Pārlūkprogrammas paplašinājuma nodrošināts saturs"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "Izveidot jaunu ierakstu"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "Dzēst ierakstu"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "Atvērt ierakstu"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "Atskaņot ierakstu"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "Saglabātie ieraksti"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "Pievienot apliecinājumu"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "Atcelt atkārtotu atskaņošanu"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "Noklusējums"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "Dators"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "Lejupielāde: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "Rediģēt atkārtotas atskaņošanas iestatījumus"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "Rediģēt nosaukumu"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "Beigt ierakstīšanu"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "Vide"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "Paslēpt kodu"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "Latentums: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "Mobilā ierīce"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "Tīkls"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "Veiktspējas panelis"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "Notiek ierakstīšana…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "Ierakstīšana tiek pārtraukta…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "Atkārtotas atskaņošanas iestatījumi"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "Jānorāda nosaukums"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "Šīs sadaļas ekrānuzņēmums"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "Rādīt kodu"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "Noildze: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "Noildzes iestatījums (milisekundēs) attiecas uz katru darbību ieraksta atkārtotas atskaņošanas laikā. Piemēram, ja paiet norādītais noildzes laiks un lapā nav parādīts CSS atlasītāja identificēts DOM elements, atkārtota atskaņošana neizdodas un tiek parādīts kļūdas ziņojums."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "Noildze"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "Augšupielāde: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Atskaņot vēlreiz ārkārtīgi lēni"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Ārkārtīgi lēni"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "Atskaņot vēlreiz"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "Normāli (noklusējums)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "Atskaņot vēlreiz lēni"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "Lēni"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "Atskaņot vēlreiz ļoti lēni"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "Ļoti lēni"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "Paplašinājumi"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "Ātrums"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "Izveidot jaunu ierakstu"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "Veiktspējas novērtēšana visā lietotāja ceļā"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "Ātrā sākšana: uzziniet vairāk par jauno ierakstītāja paneli Izstrādātāja rīkos"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "Ierakstiet bieži veiktu lietotāja ceļu jūsu vietnē vai lietotnē."
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "Atkārtoti atskaņojiet ierakstu, lai pārbaudītu, vai plūsma darbojas."
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "Izveidojiet detalizētu veiktspējas trasējumu vai eksportējiet Puppeteer skriptu testēšanai."
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "Pievienot: {attributeName}"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "Pievienot ietvara indeksu ietvaru kokā"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "Pievienot atlasītāju"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "Pievienot atlasītāja daļu"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "Dzēst rindu"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "Nav saglabātas: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "Noņemt ietvara indeksu"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "Noņemt atlasītāju"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "Noņemt atlasītāja daļu"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "Izvēlēties elementu lapā, lai atjauninātu atlasītājus"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "Nezināms darbības veids."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "Pievienot pārtraukumpunktu"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "Pievienot darbību pēc šīs"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "Pievienot darbību pirms šīs"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "Pārtraukumpunkti"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "Izmaiņas"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "Klikšķis"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "Aizvērt"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "Kopēt kā"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "Pielāgota darbība"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "Dubultklikšķis"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "Poga"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "Elements"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "Ievade"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "Tīkla apstākļu emulēšana"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "Kursora virzīšana"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "Taustiņa nospiešana"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "Taustiņa atlaišana"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "Navigācija"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "Atvērt darbības"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "Noņemt pārtraukumpunktu"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "Noņemt darbību"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "Ritināšana"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "Skatvietas iestatīšana"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "Darbību pārvaldība"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "Elementa gaidīšana"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "Izteiksmes gaidīšana"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "Ierakstīts: {DATE}, {TIME}"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "Izveidot jaunu ierakstu"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Ierakstītājs"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "Atskaņot ierakstu vēlreiz"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "Rādīt ierakstītāja paneli"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "Sākt/apturēt ierakstīšanu"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "Pārslēgt koda skatu"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Pārslēgt ekrānierakstu"
   },
@@ -9861,10 +10377,7 @@
     "message": "Pievienot rakstu…"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "Automātiski pievienot zināmus trešo pušu skriptus ignorēšanas sarakstam"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "Pievienot ignorēšanas sarakstam avotus no lauka x_google_ignoreList no avotu kartēm"
+    "message": "Zināmi trešo pušu skripti no avota kartēm"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Pielāgotas izslēgšanas kārtulas:"
@@ -9885,13 +10398,13 @@
     "message": "Vispārējas izslēgšanas kārtulas:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "Pievienot satura skriptus ignorēto sarakstam"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "Pievienot satura skriptus ignorēto sarakstam (lapā esošie paplašinājuma skripti)"
+    "message": "Satura skripti, kurus ievietoja paplašinājumi"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Tādu skriptu ignorēšana, kuru nosaukumi atbilst rakstam “{PH1}”"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "Uzzināt vairāk"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "Pievienot rakstu"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "Atšifrēt atbildi"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "Atcelt koda kešatmiņas serializāciju"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "Iznīcināt WebSocket protokolu"
   },
@@ -11670,7 +12186,7 @@
     "message": "Aktivizēt dīkstāves atzvanīšanu"
   },
   "panels/timeline/TimelineUIUtils.ts | firstContentfulPaint": {
-    "message": "Pirmais satura atveidojums"
+    "message": "First Contentful Paint"
   },
   "panels/timeline/TimelineUIUtils.ts | firstInvalidated": {
     "message": "Pirmais nederīgais vienums"
@@ -11769,7 +12285,7 @@
     "message": "JS sistēmas ietvars"
   },
   "panels/timeline/TimelineUIUtils.ts | largestContentfulPaint": {
-    "message": "Lielākais satura atveidojums"
+    "message": "Largest Contentful Paint"
   },
   "panels/timeline/TimelineUIUtils.ts | layerRoot": {
     "message": "Slāņa sakne"
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Slejas “{PH1}” kārtošana ir atcelta"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "Aizvērt"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "Īsinājumtaustiņi"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "Rādīt īsinājumtaustiņus"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Tiek izlaistas {PH1} atbilstošas rindiņas … )"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "Noņemt no ignorēto saraksta"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "Rādīt mazāk"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Rādīt vēl # ietvaru}zero{Rādīt vēl # ietvarus}one{Rādīt vēl # ietvaru}other{Rādīt vēl # ietvarus}}"

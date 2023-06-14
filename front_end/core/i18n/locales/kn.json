@@ -303,7 +303,7 @@
     "message": "ಮೌಸ್"
   },
   "core/sdk/DOMDebuggerModel.ts | notification": {
-    "message": "ಅಧಿಸೂಚನೆ"
+    "message": "ನೋಟಿಫಿಕೇಶನ್"
   },
   "core/sdk/DOMDebuggerModel.ts | parse": {
     "message": "ವಿಶ್ಲೇಷಿಸಿ"
@@ -1287,7 +1287,7 @@
     "message": "Event.path ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ Event.composedPath() ಬಳಸಿ."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT ಶಿರೋಲೇಖವನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. 30 ಏಪ್ರಿಲ್, 2018 ರ ನಂತರ ನೀಡಲಾದ ಎಲ್ಲಾ ಸಾರ್ವಜನಿಕ ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಮಾಣಪತ್ರಗಳಿಗಾಗಿ Chrome ಗೆ ಪ್ರಮಾಣಪತ್ರ ಪಾರದರ್ಶಕತೆಯ ಅಗತ್ಯವಿದೆ."
+    "message": "Expect-CT ಹೆಡರ್ ಅನ್ನು ಇನ್ನು ಮುಂದೆ ಬೆಂಬಲಿಸಲಾಗುವುದಿಲ್ಲ. 30 ಏಪ್ರಿಲ್, 2018 ರ ನಂತರ ನೀಡಲಾದ ಎಲ್ಲಾ ಸಾರ್ವಜನಿಕ ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಮಾಣಪತ್ರಗಳಿಗಾಗಿ Chrome ಗೆ ಪ್ರಮಾಣಪತ್ರ ಪಾರದರ್ಶಕತೆಯ ಅಗತ್ಯವಿದೆ."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() ಮತ್ತು watchPosition(), ಇನ್ನು ಮುಂದೆ ಅಸುರಕ್ಷಿತ ಮೂಲಗಳಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ. ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು, ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
@@ -1344,7 +1344,7 @@
     "message": "paymentManager.instruments ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪಾವತಿ ಹ್ಯಾಂಡಲರ್‌ಗಳಿಗಾಗಿ ಜಸ್ಟ್-ಇನ್-ಟೈಮ್ ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಅನ್ನು ಬಳಸಿ"
   },
   "generated/Deprecation.ts | PaymentRequestCSPViolation": {
-    "message": "ನಿಮ್ಮ PaymentRequest ಕರೆಯು ವಿಷಯ-ಭದ್ರತೆ-ನೀತಿ (CSP) connect-src ನಿರ್ದೇಶನವನ್ನು ಬೈಪಾಸ್ ಮಾಡಿದೆ. ಈ ಬೈಪಾಸ್ ಅನ್ನು ಅಸಮ್ಮತಿಸಲಾಗಿದೆ. ಪಾವತಿ ವಿಧಾನದ ಗುರುತಿಸುವಿಕೆಯನ್ನು PaymentRequest API ನಿಂದ (supportedMethods ಕ್ಷೇತ್ರದಲ್ಲಿ) CSP connect-src ನಿರ್ದೇಶನಕ್ಕೆ ಸೇರಿಸಿ."
+    "message": "ನಿಮ್ಮ PaymentRequest ಕರೆಯು ಕಂಟೆಂಟ್‌-ಭದ್ರತೆ-ನೀತಿ (CSP) connect-src ನಿರ್ದೇಶನವನ್ನು ಬೈಪಾಸ್ ಮಾಡಿದೆ. ಈ ಬೈಪಾಸ್ ಅನ್ನು ಅಸಮ್ಮತಿಸಲಾಗಿದೆ. ಪಾವತಿ ವಿಧಾನದ ಗುರುತಿಸುವಿಕೆಯನ್ನು PaymentRequest API ನಿಂದ (supportedMethods ಕ್ಷೇತ್ರದಲ್ಲಿ) CSP connect-src ನಿರ್ದೇಶನಕ್ಕೆ ಸೇರಿಸಿ."
   },
   "generated/Deprecation.ts | PersistentQuotaType": {
     "message": "StorageType.persistent ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ ಪ್ರಮಾಣಿತ navigator.storage ಅನ್ನು ಬಳಸಿ."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer ಬಳಕೆಯನ್ನು ಮುಂದುವರಿಸಲು ಎಕ್ಸ್‌ಟೆನ್ಷನ್‌‌ಗಳು ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಐಸೋಲೇಶನ್ ಅನ್ನು ಆರಿಸಿಕೊಳ್ಳಬೇಕು. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ ನೋಡಿ."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "ವೆಬ್ SQL ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. SQLite WebAssembly ಅಥವಾ ಸೂಚಿಕೆ ಮಾಡಲಾದ ಡೇಟಾಬೇಸ್ ಅನ್ನು ಬಳಸಿ"
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "ಅನುಮತಿ ಡಿಸ್ಕ್ರಿಪ್ಟರ್ window-placement ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ. ಬದಲಿಗೆ window-management ಬಳಸಿ. ಹೆಚ್ಚಿನ ಸಹಾಯಕ್ಕಾಗಿ, https://bit.ly/window-placement-rename ಅನ್ನು ಪರಿಶೀಲಿಸಿ."
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] {PH2} ಗಾಗಿ ({PH3} ಮೂಲಕ) ಡೀಬಗ್ ಸಂಕೇತಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "ಪಟ್ಟಿಯನ್ನು ನಿರ್ಲಕ್ಷಿಸಲು ಎಲ್ಲಾ ಕಂಟೆಂಟ್ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
+    "message": "ನಿರ್ಲಕ್ಷಿಸಬೇಕಾದವುಗಳ ಪಟ್ಟಿಗೆ ಎಲ್ಲಾ ವಿಸ್ತರಣೆ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "ಪಟ್ಟಿಯನ್ನು ನಿರ್ಲಕ್ಷಿಸಲು ಎಲ್ಲಾ ಥರ್ಡ್-ಪಾರ್ಟಿ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
@@ -1512,7 +1515,7 @@
     "message": "ಫೈಲ್ ಅನ್ನು ಬರೆಯಲಾಗುತ್ತಿದೆ…"
   },
   "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
-    "message": "Bounce Tracking Mitigations"
+    "message": "ಬೌನ್ಸ್ ಟ್ರ್ಯಾಕಿಂಗ್ ಪರಿಹಾರಗಳು"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "ಕ್ಲೈಂಟ್ ಸೂಚನೆಗಳ ಮೂಲಸೌಕರ್ಯ"
@@ -1621,9 +1624,6 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer ಸಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತಿದೆ"
-  },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "ವಿಶ್ವಾಸಾರ್ಹ ವೆಬ್ ಚಟುವಟಿಕೆಯನ್ನು ಬಳಸುವ PWA ಗಳಿಗಾಗಿ ಗುಣಮಟ್ಟ ಮಾನದಂಡದಲ್ಲಿ ಬದಲಾವಣೆಗಳು"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ಅನಾಮಧೇಯ>"
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "ಬಳಕೆದಾರರ ಸಂವಹನಗಳು"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "ಟೈಮ್‌ಸ್ಟ್ಯಾಂಪ್"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "ಬೌನ್ಸ್ ಟ್ರ್ಯಾಕಿಂಗ್ ಪರಿಹಾರಗಳು"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "ಎಲ್ಲಾ ಕುಕೀಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "ಕೀ"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "ಲೋಡ್ ಆಗುತ್ತಿದೆ…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ಆಬ್ಜೆಕ್ಟ್ ಸ್ಟೋರ್‌ಗಳು"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "ಡೇಟಾಬೇಸ್ ಅನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "ಭದ್ರತೆ ಮೂಲ"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "ಮುಂದಿನ ಪುಟವನ್ನು ತೋರಿಸಿ"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "ಟೇಬಲ್ ರಿಫ್ರೆಶ್ ಮಾಡಲಾಗಿದೆ"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "ಸೈಟ್ ಡೇಟಾವನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "ಅಪ್ಲಿಕೇಶನ್"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "ಸಂಖ್ಯೆಯು ಋಣಾತ್ಮಕವಾಗಿರಬಾರದು"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "ಸಂಖ್ಯೆ {PH1} ಕ್ಕಿಂತ ಚಿಕ್ಕದಾಗಿರಬೇಕು"
   },
   "panels/application/StorageView.ts | other": {
     "message": "ಇತರ"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "ಬೌನ್ಸ್ ಟ್ರ್ಯಾಕಿಂಗ್ ಪರಿಹಾರಗಳು"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "ಸಂಭಾವ್ಯ ಬೌನ್ಸ್ ಟ್ರ್ಯಾಕಿಂಗ್ ಸೈಟ್‌ಗಳಿಗಾಗಿ ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "ಒತ್ತಾಯವಾಗಿ ರನ್ ಮಾಡಿ"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ: ಬೌನ್ಸ್ ಟ್ರ್ಯಾಕಿಂಗ್ ಪರಿಹಾರಗಳು"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "ಯಾವುದೇ ಸಂಭಾವ್ಯ ಬೌನ್ಸ್ ಟ್ರ್ಯಾಕಿಂಗ್ ಸೈಟ್‌ಗಳಿಗಾಗಿ ಸ್ಥಿತಿಯನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿಲ್ಲ. ಯಾವುದನ್ನೂ ಗುರುತಿಸಲಾಗಿಲ್ಲ, ಬೌನ್ಸ್ ಟ್ರ್ಯಾಕಿಂಗ್ ಪರಿಹಾರಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿಲ್ಲ ಅಥವಾ ಥರ್ಡ್-ಪಾರ್ಟಿ ಕುಕಿಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿಲ್ಲ."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "ರನ್ ಆಗುತ್ತಿದೆ"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "ಈ ಕೆಳಗಿನ ಸೈಟ್‌ಗಳಿಗಾಗಿ ಸ್ಥಿತಿಯನ್ನು ಅಳಿಸಲಾಗಿದೆ:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "ಡಿಸ್‌ಪ್ಲೇ ಮಾಡಲು ಯಾವುದೇ ಎಂಡ್‌ಪಾಯಿಂಟ್‌ಗಳಿಲ್ಲ"
   },
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "ರಚನೆಯ ಸಮಯ"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "ನಮೂದುಗಳು"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "Fenced Frames ಗಾಗಿ ಎಂಟ್ರೊಪಿ ಬಜೆಟ್"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "ಮೆಟಾಡೇಟಾ"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "ಇನ್ನೂ ರಚಿಸಿಲ್ಲ"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "ನಮೂದುಗಳ ಸಂಖ್ಯೆ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ಮೂಲ"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "ಬಜೆಟ್ ರೀಸೆಟ್ ಮಾಡಿ"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "ಸ್ಟಾಕ್ ಟ್ರೇಸ್ ರೆಂಡರ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "ಕಡಿಮೆ ತೋರಿಸಿ"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{ಇನ್ನೂ # ಫ್ರೇಮ್ ತೋರಿಸಿ}one{ಇನ್ನೂ # ಫ್ರೇಮ್‌ಗಳನ್ನು ತೋರಿಸಿ}other{ಇನ್ನೂ # ಫ್ರೇಮ್‌ಗಳನ್ನು ತೋರಿಸಿ}}"
@@ -4109,6 +4124,15 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "ಖಾಸಗಿ ಸ್ಥಿತಿಯ ಟೋಕನ್‌ಗಳು"
   },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "ಆಯ್ಕೆಮಾಡಿದ ನಿಯಮ ಸೆಟ್ ಪ್ರಕಾರ ಫಿಲ್ಟರ್ ಮಾಡಿ"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "ವಿಸ್ತರಣೆಗಳ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "ಪುಟಗಳ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಪ್ರಿಲೋಡ್ ಮಾಡಿ"
+  },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "ವಿಫಲವಾಗಿದೆ"
   },
@@ -4122,7 +4146,7 @@
     "message": "ಸಿದ್ಧವಾಗಿದೆ"
   },
   "panels/application/preloading/PreloadingView.ts | statusRunning": {
-    "message": "ರನ್‌ ಆಗುತ್ತಿದೆ"
+    "message": "ರನ್ ಆಗುತ್ತಿದೆ"
   },
   "panels/application/preloading/PreloadingView.ts | statusSuccess": {
     "message": "ಯಶಸ್ವಿಯಾಗಿದೆ"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "ಮಾನ್ಯವಾಗಿದೆ"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್‌ನ ಬ್ಯಾಟರಿ ಸೇವರ್ ಮೋಡ್‌ನಿಂದಾಗಿ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್‌ನ ಡೇಟಾ ಉಳಿಸುವಿಕೆ ಮೋಡ್‌ನಿಂದಾಗಿ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "DevTools ತೆರೆದಿರುವ ಕಾರಣ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. DevTools ಅನ್ನು ಮುಚ್ಚಿದಾಗ, ಈ ಬ್ರೌಸರ್ ಸೆಶನ್ ಕಾರ್ಯಕ್ಷಮತೆಯನ್ನು ಹೋಲಿಸಲು ಬಳಸಲಾಗುವ ಹೋಲ್ಡ್‌ಬ್ಯಾಕ್ ಗುಂಪಿನ ಭಾಗವಾಗಿರುವುದರಿಂದ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "ಬಳಕೆದಾರರ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಅಥವಾ ವಿಸ್ತರಣೆಯೊಂದರ ಕಾರಣ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ಇನ್ನಷ್ಟು ತಿಳಿಯಲು {PH1} ಗೆ ಹೋಗಿ, ವಿಸ್ತರಣೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು {PH2} ಗೆ ಹೋಗಿ."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "DevTools ತೆರೆದಿರುವ ಕಾರಣ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. DevTools ಅನ್ನು ಮುಚ್ಚಿದಾಗ, ಈ ಬ್ರೌಸರ್ ಸೆಶನ್ ಕಾರ್ಯಕ್ಷಮತೆಯನ್ನು ಹೋಲಿಸಲು ಬಳಸಲಾಗುವ ಹೋಲ್ಡ್‌ಬ್ಯಾಕ್ ಗುಂಪಿನ ಭಾಗವಾಗಿರುವುದರಿಂದ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ, ಆದರೆ ಈಗ ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ, ಆದರೆ ಈಗ ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "ವಿವರವಾದ ಮಾಹಿತಿ"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "ವಿಫಲವಾದ ಕಾರಣ"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "ನಿಯಮ ಸಿದ್ಧವಾಗಿದೆ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ಸ್ಥಿತಿ"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "ಪುಟದ ಮುಖ್ಯ ಫ್ರೇಮ್ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಪ್ರಾರಂಭಿಸುವಾಗ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಸಕ್ರಿಯಗೊಂಡಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಬಳಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಸ್ಯಾಂಡ್‌ಬಾಕ್ಸಿಂಗ್ ಫ್ಲ್ಯಾಗ್‌ಗಳು ಅಥವಾ ಪ್ರಾರಂಭಿಕ ಪುಟದ ಅನುಮತಿಗಳ ನೀತಿಯು ಪ್ರೀರೆಂಡರಿಂಗ್ ಪುಟದೊಂದಿಗೆ ಹೊಂದಾಣಿಕೆಯಾಗಲಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಬಳಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಮೂಲ ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಷನ್ ವಿನಂತಿಗಿಂತ ಸಕ್ರಿಯಗೊಳಿಸುವ ಸಮಯದಲ್ಲಿ ವಿಭಿನ್ನ ನ್ಯಾವಿಗೇಷನ್ ಪ್ಯಾರಾಮೀಟರ್‌ಗಳನ್ನು (ಉದಾ., HTTP ಹೆಡರ್‌ಗಳು) ಲೆಕ್ಕಹಾಕಲಾಗುತ್ತದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಆಡಿಯೊ ಔಟ್‌ಪುಟ್ ಅನ್ನು ವಿನಂತಿಸಿದೆ, ಇದು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಬ್ರೌಸರ್ ಕಡಿಮೆ ಬ್ಯಾಟರಿಯನ್ನು ಬಳಸಬೇಕೆಂದು ಬಳಕೆದಾರರು ವಿನಂತಿಸಿದ್ದಾರೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "ಕೆಲವು ಮಾಹಿತಿಯ ಮೂಲದ ಲೋಡ್ ಮಾಡುವಿಕೆಯನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್‌ಗೆ HTTP ಕ್ಲೈಂಟ್ ಪ್ರಮಾಣಪತ್ರದ ಅಗತ್ಯವಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ವಿಫಲವಾಗಿದೆ ಏಕೆಂದರೆ ಇದು ಕ್ರಾಸ್-ಸೈಟ್ URL ಒಂದನ್ನು ಟಾರ್ಗೆಟ್ ಮಾಡಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಕ್ರಾಸ್-ಸೈಟ್ URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ವಿಫಲವಾಗಿದೆ ಏಕೆಂದರೆ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ URL ಅನ್ನು ಕ್ರಾಸ್-ಸೈಟ್ URL ಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು URL ಒಂದಕ್ಕೆ ನ್ಯಾವಿಗೇಟ್ ಆಗಿದೆ, ಇದು ಕ್ರಾಸ್-ಸೈಟ್ URL ಒಂದಕ್ಕೆ ಮರುನಿರ್ದೇಶಿಸಿತು."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಡೆಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಬ್ರೌಸರ್ ಕಡಿಮೆ ಡೇಟಾವನ್ನು ಬಳಸಬೇಕೆಂದು ಬಳಕೆದಾರರು ವಿನಂತಿಸಿದ್ದಾರೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಡೌನ್‌ಲೋಡ್ ಒಂದನ್ನು ಪ್ರಾರಂಭಿಸಲು ಪ್ರಯತ್ನಿಸಿದೆ, ಇದು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಬ್ರೌಸರ್ ಪ್ರಸ್ತುತ ಮೆಮೊರಿ ಬಳಕೆಯನ್ನು ಗೊತ್ತುಪಡಿಸಲು ಪ್ರಯತ್ನಿಸುವಾಗ ಆಂತರಿಕ ದೋಷವೊಂದನ್ನು ಎದುರಿಸಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿರ್ವಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ, ಏಕೆಂದರೆ ಇದು ಅದರ ಸಾಮಾನ್ಯ URL ಗಿಂತ ವಿಭಿನ್ನವಾದ ಪರಿಣಾಮಕಾರಿ URL ಅನ್ನು ಹೊಂದಿದೆ. (ಉದಾಹರಣೆಗೆ, ಹೊಸ ಟ್ಯಾಬ್ ಪುಟ, ಅಥವಾ ಹೋಸ್ಟ್ ಮಾಡಿದ ಆ್ಯಪ್‌ಗಳು.)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲು URL ಅರ್ಹವಾಗಿರಲಿಲ್ಲ ಏಕೆಂದರೆ ಅದರ ಸ್ಕೀಮ್ http: ಅಥವಾ https: ಆಗಿರಲಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಷನ್ ವಿಫಲವಾಗಿದೆ ಏಕೆಂದರೆ ಅದು http: ಅಥವಾ https: ಅಲ್ಲದ ಸ್ಕೀಮ್‌ಗೆ ಮರುನಿರ್ದೇಶಿಸಲ್ಪಟ್ಟಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್‌ಗೆ HTTP ಪ್ರಮಾಣೀಕರಣದ ಅಗತ್ಯವಿದೆ, ಇದು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಬೆಂಬಲಿಸಲು ಈ ಸಾಧನವು ಸಾಕಷ್ಟು ಒಟ್ಟು ಸಿಸ್ಟಮ್ ಮೆಮೊರಿಯನ್ನು ಹೊಂದಿಲ್ಲದ ಕಾರಣ ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಸ್ವತಃ ಮತ್ತೊಂದು URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿದೆ, ಇದು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಪ್ರಾರಂಭಿಕ ಪುಟವು ಈಗಾಗಲೇ ಹಲವಾರು ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಪ್ರೀರೆಂಡರ್‌ಗಳನ್ನು ಹೊಂದಿದೆ. ಮತ್ತಷ್ಟು ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ಇತರ ಊಹೆಗೆ ಸಂಬಂಧಿಸಿದ ನಿಯಮಗಳನ್ನು ತೆಗೆದುಹಾಕಿ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಪ್ರೀರೆಂಡರಿಂಗ್ ಮೆಮೊರಿ ಮಿತಿಯನ್ನು ಬ್ರೌಸರ್ ಮೀರಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "ಬ್ರೌಸರ್ ನಿರ್ಣಾಯಕ ಮೆಮೊರಿ ಒತ್ತಡಕ್ಕೆ ಒಳಗಾದ ಕಾರಣ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಅನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಮಾಡಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಬ್ರೌಸರ್ ಪ್ರಸ್ತುತ ಮೆಮೊರಿ ಬಳಕೆಯನ್ನು ಗೊತ್ತುಪಡಿಸಲು ಪ್ರಯತ್ನಿಸುವಾಗ ಆಂತರಿಕ ದೋಷವೊಂದನ್ನು ಎದುರಿಸಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಪುಟವು ಮಿಶ್ರ ಕಂಟೆಂಟ್ ಅನ್ನು ಒಳಗೊಂಡಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿಸದಿರುವ ನಿಷೇಧಿತ JavaScript API ಒಂದನ್ನು ಬಳಸಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "2xx ಅಲ್ಲದ HTTP ಪ್ರತಿಕ್ರಿಯೆಯ ಸ್ಥಿತಿ ಕೋಡ್‌ನಿಂದಾಗಿ ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಷನ್ ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಕಂಟೆಂಟ್‌ ಭದ್ರತಾ ನೀತಿಯೊಂದರ ಮೂಲಕ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ನೆಟ್‌ವರ್ಕ್ ದೋಷವೊಂದನ್ನು ಎದುರಿಸಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "ಬಳಕೆದಾರರು ತಮ್ಮ ಬ್ರೌಸರ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಪ್ರಿಲೋಡಿಂಗ್ ಮಾಡುವುದನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿರುವ ಕಾರಣ ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಕ್ರ್ಯಾಶ್ ಆಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವನ್ನು ಕೊನೆಗೊಳಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಿದ ಪುಟವು ಕ್ರ್ಯಾಶ್ ಆಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಕೊನೆಗೊಳಿಸಲಾಯಿತು."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆದ ಅದೇ ಸೈಟ್ URL ಗೆ ಸ್ವತಃ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿದೆ, ಆದರೆ ಗಮ್ಯಸ್ಥಾನದ ಪ್ರತಿಕ್ರಿಯೆಯು ಸೂಕ್ತವಾದ Supports-Loading-Mode ಹೆಡರ್ ಅನ್ನು ಒಳಗೊಂಡಿರಲಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆದ ಅದೇ ಸೈಟ್ URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿದೆ, ಆದರೆ ಗಮ್ಯಸ್ಥಾನದ ಪ್ರತಿಕ್ರಿಯೆಯು ಸೂಕ್ತವಾದ Supports-Loading-Mode ಹೆಡರ್ ಅನ್ನು ಒಳಗೊಂಡಿರಲಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ವಿಫಲವಾಗಿದೆ ಏಕೆಂದರೆ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ URL ಅನ್ನು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆದ ಅದೇ ಸೈಟ್ URL ಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ, ಆದರೆ ಗಮ್ಯಸ್ಥಾನದ ಪ್ರತಿಕ್ರಿಯೆಯು ಸೂಕ್ತವಾದ Supports-Loading-Mode ಹೆಡರ್ ಅನ್ನು ಒಳಗೊಂಡಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲ್ಪಟ್ಟಿದೆ, ಇದು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆದ ಅದೇ ಸೈಟ್ URL ಗೆ ಮರುನಿರ್ದೇಶಿಸಿತು, ಆದರೆ ಗಮ್ಯಸ್ಥಾನದ ಪ್ರತಿಕ್ರಿಯೆಯು ಸೂಕ್ತವಾದ Supports-Loading-Mode ಹೆಡರ್ ಅನ್ನು ಒಳಗೊಂಡಿರಲಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "ಅಮಾನ್ಯವಾದ SSL ಪ್ರಮಾಣಪತ್ರವೊಂದರ ಕಾರಣ ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಷನ್ ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವನ್ನು ದೀರ್ಘಕಾಲಕ್ಕಾಗಿ ಹಿನ್ನೆಲೆ ಮಾಡಲಾಗಿದೆ, ಆದ್ದರಿಂದ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ತ್ಯಜಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವನ್ನು ಹಿನ್ನೆಲೆ ಮಾಡಲಾಗಿದೆ, ಆದ್ದರಿಂದ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ತ್ಯಜಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್‌ನಲ್ಲಿ ಬಳಕೆದಾರರ ಏಜೆಂಟ್ ಬದಲಾವಣೆಯಾಗಿದೆ."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ ಘಟಕವೊಂದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ಸ್ಥಿತಿ"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "ಎಲಿಮೆಂಟ್‌ಗಳ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಬಹಿರಂಗಪಡಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "ನೆಟ್‌ವರ್ಕ್ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಪ್ರದರ್ಶಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "ವಿವರವಾದ ಮಾಹಿತಿ"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "ದೋಷ"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "ಸ್ಥಳ"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "ಮೂಲ"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "ಮಾನ್ಯವಾಗಿದೆ"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "ಸ್ಥಳ"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "ವಾಯಿದೆ"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "ಟಾರ್ಗೆಟ್ ಮೂಲಕ ಲೋಡ್ ಮಾಡುವುದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
+    "message": "ವೆಬ್‌ಸೈಟ್ ಮೂಲಕ ಲೋಡ್ ಮಾಡಿ"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "URL ಮತ್ತು ದೋಷ ಕಾಲಮ್‌ಗಳನ್ನು ಹುಡುಕಲು ಪಠ್ಯವನ್ನು ನಮೂದಿಸಿ"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "ತಪಾಸಣೆ ಮಾಡಲಾದ ಲಕ್ಷ್ಯದ ಮೂಲಕ HTTP(S) ಡೆವಲಪರ್ ಮಾಹಿತಿ ಮೂಲಗಳನ್ನು ಲೋಡ್ ಮಾಡಿ"
+    "message": "ನೀವು ತಪಾಸಣೆ ಮಾಡುವ ವೆಬ್‌ಸೈಟ್ ಮೂಲಕ HTTP(S) ಡೆವಲಪರ್ ಮಾಹಿತಿಯ ಮೂಲಗಳನ್ನು ಲೋಡ್ ಮಾಡಿ, DevTools ಮೂಲಕ ಅಲ್ಲ"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# ಮಾಹಿತಿಯ ಮೂಲ}one{# ಮಾಹಿತಿಯ ಮೂಲಗಳು}other{# ಮಾಹಿತಿಯ ಮೂಲಗಳು}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "ಸ್ಯೂಡೋ ::{PH1} ಘಟಕ"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "ನಿರ್ದಿಷ್ಟತೆ: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "ಸಾಮಾನ್ಯ ರೆಂಡರಿಂಗ್ ಅನುಕರಣೆಗಳನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1 ಸಂಭಾವ್ಯ ಟ್ರ್ಯಾಕಿಂಗ್ ವೆಬ್‌ಸೈಟ್}one{# ಸಂಭಾವ್ಯ ಟ್ರ್ಯಾಕಿಂಗ್ ವೆಬ್‌ಸೈಟ್‌ಗಳು}other{# ಸಂಭಾವ್ಯ ಟ್ರ್ಯಾಕಿಂಗ್ ವೆಬ್‌ಸೈಟ್‌ಗಳು}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# ಮಾಹಿತಿಯ ಮೂಲ}one{# ಮಾಹಿತಿಯ ಮೂಲಗಳು}other{# ಮಾಹಿತಿಯ ಮೂಲಗಳು}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "ಪ್ಯಾಕೇಜ್ ಹೆಸರು"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "ಪ್ಯಾಕೇಜ್ ಸಹಿ"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "ಸ್ಥಿತಿ ಕೋಡ್"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "Url"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "ಎಲಿಮೆಂಟ್"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite ಕುಕೀ"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "ವಿಶ್ವಾಸಾರ್ಹ ವೆಬ್ ಚಟುವಟಿಕೆ"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "ಸಮಸ್ಯೆಗಳನ್ನು ಮರೆಮಾಡಿ"
@@ -6531,7 +6693,7 @@
     "message": "ಜಾಹೀರಾತು ವೇಗ ಮತ್ತು ಗುಣಮಟ್ಟಕ್ಕಾಗಿ ಈ ಪುಟವನ್ನು ಆಪ್ಟಿಮೈಸ್ ಮಾಡಲಾಗಿದೆಯೇ?"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageOptimizedForSearch": {
-    "message": "ಹುಡುಕಾಟ ಎಂಜಿನ್ ಫಲಿತಾಂಶಗಳ ರ‍್ಯಾಂಕಿಂಗ್‌ಗಾಗಿ ಈ ಪುಟವನ್ನು ಆಪ್ಟಿಮೈಸ್ ಮಾಡಲಾಗಿದೆಯೇ?"
+    "message": "ಸರ್ಚ್ ಎಂಜಿನ್ ಫಲಿತಾಂಶಗಳ ರ‍್ಯಾಂಕಿಂಗ್‌ಗಾಗಿ ಈ ಪುಟವನ್ನು ಆಪ್ಟಿಮೈಸ್ ಮಾಡಲಾಗಿದೆಯೇ?"
   },
   "panels/lighthouse/LighthouseController.ts | isThisPageUsableByPeopleWith": {
     "message": "ವಿಕಲತೆಗಳನ್ನು ಹೊಂದಿರುವ ಜನರು ಈ ಪುಟವನ್ನು ಬಳಸಬಹುದೇ"
@@ -7257,7 +7419,7 @@
     "message": "(ಡೇಟಾ)"
   },
   "panels/network/NetworkDataGridNode.ts | devtools": {
-    "message": "ಡೆವ್ ಪರಿಕರಗಳು"
+    "message": "devtools"
   },
   "panels/network/NetworkDataGridNode.ts | diskCache": {
     "message": "(ಡಿಸ್ಕ್ ಕ್ಯಾಷ್)"
@@ -7711,9 +7873,6 @@
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "ಪುಟವನ್ನು ಲೋಡ್ ಮಾಡುವಾಗ ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳನ್ನು ಕ್ಯಾಪ್ಚರ್ ಮಾಡಿ"
-  },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "ತೆರವುಗೊಳಿಸಿ"
   },
   "panels/network/NetworkPanel.ts | close": {
     "message": "ಮುಚ್ಚಿ"
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "ಬಂಡಲ್ ಮಾಡಿದ ಮಾಹಿತಿಯ ಮೂಲ"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "ನೆಟ್‌ವರ್ಕ್ ಲಾಗ್ ಅನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "ಬಣ್ಣದ ಕೋಡ್"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "ಪ್ರೊಟೊಕಾಲ್ ಮಾನಿಟರ್ ಅನ್ನು ತೋರಿಸಿ"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "ಮುಂದುವರಿಸಿ"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅಥವಾ ಆಯ್ಕೆಮಾಡಿದ ಹಂತವನ್ನು ನಕಲಿಸಿ"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "ಹೊಸ ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ರಚಿಸಿ"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಅಳಿಸಿ"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "ರಫ್ತು ಮಾಡಿ"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "ರಫ್ತು ಮಾಡಿ"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "ವಿಸ್ತರಣೆಗಳ ಮೂಲಕ ರಫ್ತು ಮಾಡಿ"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "ವಿಸ್ತರಣೆಗಳನ್ನು ಪಡೆಯಿರಿ…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಆಮದು ಮಾಡಿ"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಮರುಪ್ಲೇ ಮಾಡಿ"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "ರೆಕಾರ್ಡ್ ಮಾಡುವುದನ್ನು ಪ್ರಾರಂಭಿಸಿ/ನಿಲ್ಲಿಸಿ"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "ಒಂದು ಹಂತವನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸಿ"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "ಕೋಡ್ ವೀಕ್ಷಣೆಯನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ರದ್ದುಮಾಡಿ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "ಹೊಸ ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ರಚಿಸಿ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "ನೀವು CSS, Pierce ಅಥವಾ XPath ಅನ್ನು ನಿಮ್ಮ ಆಯ್ಕೆಗಳಲ್ಲಿ ಒಂದನ್ನಾಗಿ ಆರಿಸಬೇಕು. ARIA ಮತ್ತು ಟೆಕ್ಸ್ಟ್ ಸೆಲೆಕ್ಟರ್‌ಗಳು ಅನನ್ಯವಾಗಿಲ್ಲದಿರಬಹುದಾದ ಕಾರಣ ಈ ಸೆಲೆಕ್ಟರ್‌ಗಳು ಮಾತ್ರ ರೆಕಾರ್ಡ್ ಆಗುವ ಖಾತ್ರಿ ಇದೆ."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಹೆಸರು"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಹೆಸರಿನ ಅಗತ್ಯವಿದೆ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "ಸೆಲೆಕ್ಟರ್ ಗುಣಲಕ್ಷಣ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "ಪಠ್ಯ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "ರೆಕಾರ್ಡ್ ಮಾಡಲು ಸೆಲೆಕ್ಟರ್ ಪ್ರಕಾರಗಳು"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "ಮುಚ್ಚಿರಿ"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "ಕಂಟೆಂಟ್ ಅನ್ನು ಬ್ರೌಸರ್ ವಿಸ್ತರಣೆಯಿಂದ ಪಡೆದುಕೊಳ್ಳಲಾಗಿದೆ"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "ಹೊಸ ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ರಚಿಸಿ"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಅಳಿಸಿ"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ತೆರೆಯಿರಿ"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಪ್ಲೇ ಮಾಡಿ"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "ಉಳಿಸಲಾದ ರೆಕಾರ್ಡಿಂಗ್‌ಗಳು"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "ಅಸರ್ಷನ್ ಅನ್ನು ಸೇರಿಸಿ"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "ಮರುಪ್ಲೇಯನ್ನು ರದ್ದುಮಾಡಿ"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "ಡೀಫಾಲ್ಟ್"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "ಡೆಸ್ಕ್‌ಟಾಪ್"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "ಡೌನ್‌ಲೋಡ್: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "ಮರುಪ್ಲೇ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಎಡಿಟ್ ಮಾಡಿ"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "ಶೀರ್ಷಿಕೆಯನ್ನು ಎಡಿಟ್ ಮಾಡಿ"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅಂತ್ಯಗೊಳಿಸಿ"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "ಪರಿಸರ"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "ಕೋಡ್ ಅನ್ನು ಮರೆಮಾಡಿ"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "ವಿಳಂಬ: {value} ಮಿಸೆ"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "ಮೊಬೈಲ್"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "ನೆಟ್‌ವರ್ಕ್"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "ಪರ್ಫಾರ್ಮೆನ್ಸ್ ಪ್ಯಾನೆಲ್"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "ರೆಕಾರ್ಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "ಮರುಪ್ಲೇ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "ಶೀರ್ಷಿಕೆ ಅಗತ್ಯವಿದೆ"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "ಈ ವಿಭಾಗದ ಸ್ಕ್ರೀನ್‌ಶಾಟ್"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "ಕೋಡ್ ತೋರಿಸಿ"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "ಅವಧಿ ಮೀರಿದೆ: {value} ಮಿಸೆ"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಮರುಪ್ಲೇ ಮಾಡುವಾಗ ಅವಧಿ ಮೀರುವ ಸೆಟ್ಟಿಂಗ್ (ಮಿಲಿಸೆಕೆಂಡ್‌ಗಳಲ್ಲಿ) ಪ್ರತಿ ಕ್ರಿಯೆಗೆ ಅನ್ವಯಿಸುತ್ತದೆ. ಉದಾಹರಣೆಗೆ, CSS ಸೆಲೆಕ್ಟರ್‌ನಿಂದ ಗುರುತಿಸಲಾದ DOM ಎಲಿಮೆಂಟ್ ನಿರ್ದಿಷ್ಟಪಡಿಸಿದ ಅವಧಿಯೊಳಗೆ ಪುಟದಲ್ಲಿ ಗೋಚರಿಸದಿದ್ದರೆ, ಮರುಪ್ಲೇ ದೋಷದೊಂದಿಗೆ ವಿಫಲಗೊಳ್ಳುತ್ತದೆ."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "ಅವಧಿ ಮೀರಿದೆ"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "ಅಪ್‌ಲೋಡ್: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "ಅತ್ಯಂತ ನಿಧಾನವಾದ ಮರುಪ್ಲೇ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "ಅತ್ಯಂತ ನಿಧಾನ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "ಮರುಪ್ಲೇ ಮಾಡಿ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "ಸಾಧಾರಣ (ಡೀಫಾಲ್ಟ್)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "ನಿಧಾನಗತಿಯ ಮರುಪ್ಲೇ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "ನಿಧಾನ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "ತುಂಬಾ ನಿಧಾನಗತಿಯ ಮರುಪ್ಲೇ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "ತುಂಬಾ ನಿಧಾನ"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "ಎಕ್ಸ್‌ಟೆನ್ಷನ್‌‌ಗಳು"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "ವೇಗ"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "ಹೊಸ ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ರಚಿಸಿ"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "ಸಂಪೂರ್ಣ ಬಳಕೆದಾರರ ಪ್ರಯಾಣದಾದ್ಯಂತ ಪರ್ಫಾರ್ಮೆನ್ಸ್ ಅನ್ನು ಅಳೆಯಿರಿ"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "ತ್ವರಿತ ಆರಂಭ: DevTools ನಲ್ಲಿ ಹೊಸ ರೆಕಾರ್ಡರ್ ಪ್ಯಾನೆಲ್ ಅನ್ನು ಕಲಿಯಿರಿ"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "ನಿಮ್ಮ ವೆಬ್‌ಸೈಟ್ ಅಥವಾ ಆ್ಯಪ್‌ನಲ್ಲಿ ಸಾಮಾನ್ಯ ಬಳಕೆದಾರರ ಪ್ರಯಾಣವನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಿ"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "ಫ್ಲೋ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದೆಯೇ ಎಂದು ಪರಿಶೀಲಿಸಲು ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಮರುಪ್ಲೇ ಮಾಡಿ"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "ವಿವರವಾದ ಪರ್ಫಾರ್ಮೆನ್ಸ್ ಟ್ರೇಸ್ ಅನ್ನು ರಚಿಸಿ ಅಥವಾ ಪರೀಕ್ಷೆಗಾಗಿ ಪಪಿಟೀರ್ ಸ್ಕ್ರಿಪ್ಟ್ ಅನ್ನು ರಫ್ತು ಮಾಡಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "{attributeName} ಅನ್ನು ಸೇರಿಸಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "ಫ್ರೇಮ್ ಟ್ರೀ ಒಳಗೆ ಫ್ರೇಮ್ ಇಂಡೆಕ್ಸ್ ಸೇರಿಸಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "ಸೆಲೆಕ್ಟರ್ ಅನ್ನು ಸೇರಿಸಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "ಸೆಲೆಕ್ಟರ್ ಭಾಗವನ್ನು ಸೇರಿಸಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "ಸಾಲು ಅಳಿಸಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "ಉಳಿಸದಿರುವುದು: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "ಫ್ರೇಮ್ ಇಂಡೆಕ್ಸ್ ಅನ್ನು ತೆಗೆದುಹಾಕಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "ಸೆಲೆಕ್ಟರ್ ಅನ್ನು ತೆಗೆದುಹಾಕಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "ಸೆಲೆಕ್ಟರ್ ಭಾಗವನ್ನು ತೆಗೆದುಹಾಕಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "ಸೆಲೆಕ್ಟರ್‌ಗಳನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲು ಪುಟದಲ್ಲಿನ ಎಲಿಮೆಂಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "ಅಪರಿಚಿತ ಕ್ರಿಯೆ ಪ್ರಕಾರ."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್ ಅನ್ನು ಸೇರಿಸಿ"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "ನಂತರ ಹಂತವನ್ನು ಸೇರಿಸಿ"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "ಮೊದಲು ಹಂತವನ್ನು ಸೇರಿಸಿ"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳು"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "ಬದಲಾಯಿಸಿ"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "ಕ್ಲಿಕ್"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "ಮುಚ್ಚಿ"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "ಈ ರೀತಿ ನಕಲಿಸಿ"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "ಕಸ್ಟಮ್ ಹಂತ"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "ಡಬಲ್ ಕ್ಲಿಕ್ ಮಾಡಿ"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "ಬಟನ್"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "ಎಲಿಮೆಂಟ್"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "ಇನ್‌ಪುಟ್"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "ನೆಟ್‌ವರ್ಕ್ ಪರಿಸ್ಥಿತಿಗಳನ್ನು ಅನುಕರಿಸಿ"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "ಹೋವರ್"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "ಕೀ ಡೌನ್"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "ಕೀ ಅಪ್"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿ"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "ಹಂತ ಕ್ರಿಯೆಗಳನ್ನು ತೆರೆಯಿರಿ"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್ ತೆಗೆದುಹಾಕಿ"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "ಹಂತವನ್ನು ತೆಗೆದುಹಾಕಿ"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "ಸ್ಕ್ರಾಲ್ ಮಾಡಿ"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "ವ್ಯೂವ್‍ಪೋರ್ಟ್ ಸೆಟ್ ಮಾಡಿ"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "ಹಂತಗಳನ್ನು ನಿರ್ವಹಿಸಿ"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "ಎಲಿಮೆಂಟ್‌ಗಾಗಿ ನಿರೀಕ್ಷಿಸಿ"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "ಅಭಿವ್ಯಕ್ತಿಗಾಗಿ ನಿರೀಕ್ಷಿಸಿ"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "{DATE} ರಂದು {TIME} ಸಮಯಕ್ಕೆ ರೆಕಾರ್ಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "ಹೊಸ ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ರಚಿಸಿ"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "ರೆಕಾರ್ಡರ್"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಮರುಪ್ಲೇ ಮಾಡಿ"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "ರೆಕಾರ್ಡರ್ ಅನ್ನು ತೋರಿಸಿ"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "ರೆಕಾರ್ಡ್ ಮಾಡುವುದನ್ನು ಪ್ರಾರಂಭಿಸಿ/ನಿಲ್ಲಿಸಿ"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "ಕೋಡ್ ವೀಕ್ಷಣೆಯನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "ಸ್ಕ್ರೀನ್‌ಕ್ಯಾಸ್ಟ್ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
   },
@@ -9861,10 +10377,7 @@
     "message": "ಪ್ಯಾಟರ್ನ್ ಸೇರಿಸಿ..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "'ನಿರ್ಲಕ್ಷಿಸಿ' ಎಂಬ ಪಟ್ಟಿಗೆ ಪರಿಚಿತ ಥರ್ಡ್ ಪಾರ್ಟಿ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸೇರಿಸಿ"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "ಮೂಲ ನಕ್ಷೆಯಲ್ಲಿನ x_google_ignoreList ಫೀಲ್ಡ್‌ನಿಂದ ಮೂಲಗಳನ್ನು 'ನಿರ್ಲಕ್ಷಿಸಿ' ಎಂಬ ಪಟ್ಟಿಗೆ ಸೇರಿಸಿ"
+    "message": "ಮೂಲ ನಕ್ಷೆಗಳಿಂದ ಪರಿಚಿತ ಥರ್ಡ್-ಪಾರ್ಟಿಯ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳು"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "ಕಸ್ಟಮ್ ಹೊರಗಿಡುವ ನಿಯಮಗಳು:"
@@ -9885,13 +10398,13 @@
     "message": "ಸಾಮಾನ್ಯ ಹೊರಗಿಡುವ ನಿಯಮಗಳು:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "ಪಟ್ಟಿಯನ್ನು ನಿರ್ಲಕ್ಷಿಸಲು ಕಂಟೆಂಟ್ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "ಪಟ್ಟಿಯನ್ನು ನಿರ್ಲಕ್ಷಿಸಲು ವಿಷಯ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಸೇರಿಸಿ (ಪುಟದಲ್ಲಿನ ವಿಸ್ತರಣೆ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳು)"
+    "message": "ವಿಸ್ತರಣೆಗಳಿಂದ ಇಂಜೆಕ್ಟ್ ಮಾಡಲಾದ ಕಂಟೆಂಟ್‌ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳು"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "''{PH1}'' ಗೆ ಹೊಂದಾಣಿಕೆಯಾಗುವ ಹೆಸರು ಇರುವ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ನಿರ್ಲಕ್ಷಿಸಿ"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "ಪ್ಯಾಟರ್ನ್ ಸೇರಿಸಿ"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "ಪ್ರತ್ಯುತ್ತರವನ್ನು ಡೀಕ್ರಿಪ್ಟ್ ಮಾಡಿ"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "ಕೋಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ಡೀಸೀರಿಯಲೈಸ್ ಮಾಡಿ"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "ವೆಬ್‌ಸಾಕೆಟ್ ನಾಶಪಡಿಸಿ"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} ವಿಂಗಡಣೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "ಮುಚ್ಚಿ"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "ಕೀಬೋರ್ಡ್ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} ಹೊಂದಾಣಿಕೆಯಾಗುವ ಸಾಲುಗಳನ್ನು ಸ್ಕಿಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ … )"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "ನಿರ್ಲಕ್ಷಿಸಬೇಕಾದವುಗಳ ಪಟ್ಟಿಯಿಂದ ತೆಗೆದುಹಾಕಿ"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "ಕಡಿಮೆ ತೋರಿಸಿ"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{ಇನ್ನೂ # ಫ್ರೇಮ್ ತೋರಿಸಿ}one{ಇನ್ನೂ # ಫ್ರೇಮ್‌ಗಳನ್ನು ತೋರಿಸಿ}other{ಇನ್ನೂ # ಫ್ರೇಮ್‌ಗಳನ್ನು ತೋರಿಸಿ}}"

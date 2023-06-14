@@ -1287,7 +1287,7 @@
     "message": "Το Event.path καταργήθηκε και θα αποσυρθεί. Εναλλακτικά, χρησιμοποιήστε το Event.composedPath()."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Η κεφαλίδα Expect-CT καταργήθηκε και θα αποσυρθεί. Το Chrome απαιτεί Διαφάνεια πιστοποιητικών για όλα τα πιστοποιητικά που θεωρούνται αξιόπιστα δημοσίως και έχουν εκδοθεί μετά τις 30 Απριλίου 2018."
+    "message": "Η κεφαλίδα Expect-CT δεν υποστηρίζεται πλέον. Το Chrome απαιτεί Διαφάνεια πιστοποιητικών για όλα τα πιστοποιητικά που θεωρούνται αξιόπιστα δημοσίως και έχουν εκδοθεί μετά τις 30 Απριλίου 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "Τα getCurrentPosition() και watchPosition() δεν λειτουργούν πλέον σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτήν τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη σελίδα https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "Το SQL ιστού έχει καταργηθεί. Χρησιμοποιήστε το SQLite WebAssembly ή την καταλογοποιημένη βάση δεδομένων."
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "Το περιγραφικό στοιχείο άδειας window-placement έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε την πολιτική window-management. Για περισσότερη βοήθεια, ανατρέξτε στη διεύθυνση https://bit.ly/window-placement-rename."
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] Φόρτωση συμβόλων εντοπισμού σφαλμάτων για {PH2} (μέσω {PH3})..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Προσθήκη όλων των σεναρίων περιεχομένου στη λίστα παράβλεψης"
+    "message": "Προσθήκη όλων των σεναρίων επεκτάσεων στη λίστα παράβλεψης"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "Προσθήκη όλων των σεναρίων τρίτου μέρους στη λίστα παράβλεψης"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Ενεργοποίηση SharedArrayBuffer"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "Αλλαγές σε κριτήρια ποιότητας για PWA με χρήση της Αξιόπιστης δραστηριότητας ιστού"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ανώνυμο>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet δημοπρασίας — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "Αλληλεπιδράσεις χρήστη"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Χρονική σήμανση"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "Μετριασμοί παρακολούθησης εγκατάλειψης"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Διαγραφή όλων των cookie"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Κλειδί"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "Φόρτωση…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Χώροι αποθήκευσης αντικειμένων"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "Ανανέωση βάσης δεδομένων"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "Προέλευση ασφάλειας"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "Εμφάνιση επόμενης σελίδας"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "Έγινε ανανέωση του πίνακα"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "Τα δεδομένα ιστοτόπου διαγράφηκαν"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "Εφαρμογή"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "Ο αριθμός δεν πρέπει να είναι αρνητικός"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "Ο αριθμός πρέπει να είναι μικρότερος από {PH1}"
   },
   "panels/application/StorageView.ts | other": {
     "message": "Άλλο"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "Μετριασμοί παρακολούθησης εγκατάλειψης"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "Έλεγχος για πιθανούς ιστοτόπους παρακολούθησης εγκατάλειψης."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "Αναγκαστική εκτέλεση"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "Μάθετε περισσότερα: Μετριασμοί παρακολούθησης εγκατάλειψης"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "Δεν έγινε εκκαθάριση κατάστασης για τυχόν ιστοτόπους παρακολούθησης εγκατάλειψης. Είτε δεν εντοπίστηκε καμία ενέργεια, είτε οι μετριασμοί παρακολούθησης εγκατάλειψης δεν είναι ενεργοποιημένοι, είτε τα cookie τρίτου μέρους δεν αποκλείονται."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "Εκτελείται"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "Η κατάσταση διαγράφηκε για τους ακόλουθους ιστοτόπους:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Δεν υπάρχουν τελικά σημεία για προβολή"
   },
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "Χρόνος δημιουργίας"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Καταχωρίσεις"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "Προϋπολογισμός εντροπίας για περιφραγμένα πλαίσια"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Μεταδεδομένα"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Δεν έχει δημιουργηθεί ακόμη"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Αριθμός καταχωρίσεων"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Προέλευση"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "Επαναφορά προϋπολογισμού"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Δεν είναι δυνατή η απόδοση της ιχνηλάτησης στοίβας."
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "Εμφάνιση λιγότερων"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Εμφάνιση # ακόμη πλαισίου}other{Εμφάνιση # ακόμη πλαισίων}}"
@@ -4108,6 +4123,15 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Διακριτικά ιδιωτικής κατάστασης"
+  },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "Φιλτράρισμα κατά επιλεγμένο σύνολο κανόνων"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "Ρυθμίσεις επεκτάσεων"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "Ρυθμίσεις προφόρτωσης σελίδων"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Αποτυχία"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Έγκυρο"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "Η προφόρτωση είναι απενεργοποιημένη, λόγω της λειτουργίας Εξοικονόμηση μπαταρίας του λειτουργικού συστήματος."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "Η προφόρτωση είναι απενεργοποιημένη, λόγω της λειτουργίας Εξοικονόμηση δεδομένων του λειτουργικού συστήματος."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Η προφόρτωση ενεργοποιείται υποχρεωτικά, επειδή τα Εργαλεία για προγραμματιστές είναι ανοιχτά. Όταν τα Εργαλεία για προγραμματιστές κλείσουν, η προαπόδοση θα απενεργοποιηθεί επειδή αυτή η περίοδος λειτουργίας προγράμματος περιήγησης είναι μέρος μιας ομάδας Holdback που χρησιμοποιείται για συγκρίσεις απόδοσης."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "Η προφόρτωση έχει απενεργοποιηθεί λόγω των ρυθμίσεων χρήστη ή μιας επέκτασης. Μεταβείτε στο {PH1} για να μάθετε περισσότερα ή στο {PH2} για να απενεργοποιήσετε την επέκταση."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "Η προαπόδοση ενεργοποιείται υποχρεωτικά, επειδή τα Εργαλεία για προγραμματιστές είναι ανοιχτά. Όταν τα Εργαλεία για προγραμματιστές κλείσουν, η προαπόδοση θα απενεργοποιηθεί επειδή αυτή η περίοδος λειτουργίας προγράμματος περιήγησης είναι μέρος μιας ομάδας Holdback που χρησιμοποιείται για συγκρίσεις απόδοσης."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "Η προφόρτωση ήταν απενεργοποιημένη αλλά τώρα ενεργοποιήθηκε υποχρεωτικά"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "Η προφόρτωση είναι απενεργοποιημένη"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Η προαπόδοση ήταν απενεργοποιημένη αλλά τώρα ενεργοποιήθηκε υποχρεωτικά"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Λεπτομερείς πληροφορίες"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "Αιτία αποτυχίας"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Σετ κανόνων"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Κατάσταση"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Η σελίδα που προαποδόθηκε ενεργοποιήθηκε κατά την πλοήγηση κύριου πλαισίου της σελίδας εκκίνησης."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Η προαπόδοση δεν χρησιμοποιήθηκε, επειδή οι επισημάνσεις ή η πολιτική αδειών του περιβάλλοντος δοκιμών (sandbox) της σελίδας εκκίνησης δεν ήταν συμβατές με τις αντίστοιχες της σελίδας προαπόδοσης."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Η προαπόδοση δεν χρησιμοποιήθηκε, επειδή κατά τη διάρκεια της ενεργοποίησης, υπολογίστηκαν διαφορετικές παράμετροι πλοήγησης (π.χ. κεφαλίδες HTTP) σε σχέση με το αρχικό αίτημα πλοήγησης προαπόδοσης."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Η σελίδα που προαποδόθηκε ζήτησε έξοδο ήχου, η οποία δεν υποστηρίζεται προς το παρόν."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή ο χρήστης ζήτησε το πρόγραμμα περιήγησης να χρησιμοποιεί λιγότερη μπαταρία."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Κάποια φόρτωση πόρου αποκλείστηκε."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Η πλοήγηση προαπόδοσης απαίτησε ένα πιστοποιητικό πελάτη HTTP."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Η πλοήγηση προαπόδοσης απέτυχε, επειδή στόχευε URL πολλών ιστοτόπων."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Η σελίδα που προαποδόθηκε έκανε πλοήγηση σε URL πολλών ιστοτόπων."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Η πλοήγηση προαπόδοσης απέτυχε, επειδή το URL προαπόδοσης ανακατεύθυνε σε URL πολλών ιστοτόπων."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Η σελίδα που προαποδόθηκε έκανε πλοήγηση σε ένα URL που ανακατεύθυνε σε URL πολλών ιστοτόπων."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή ο χρήστης ζήτησε το πρόγραμμα περιήγησης να χρησιμοποιεί λιγότερα δεδομένα."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "Η σελίδα που προαποδόθηκε προσπάθησε να ξεκινήσει μια λήψη, η οποία δεν υποστηρίζεται προς το παρόν."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή το πρόγραμμα περιήγησης αντιμετώπισε ένα εσωτερικό σφάλμα κατά την προσπάθεια προσδιορισμού της τρέχουσας χρήσης μνήμης."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "Η σελίδα εκκίνησης δεν μπορεί να πραγματοποιήσει προαπόδοση, επειδή έχει ένα ισχύον URL το οποίο διαφέρει από το κανονικό URL της. (Για παράδειγμα, η Σελίδα σε νέα καρτέλα ή φιλοξενούμενες εφαρμογές.)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "Το URL δεν ήταν κατάλληλο για προαπόδοση, επειδή το σχήμα του δεν ήταν http: ή https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Η πλοήγηση προαπόδοσης απέτυχε, επειδή ανακατεύθυνε σε URL του οποίου το σχήμα δεν ήταν http: ή https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Η πλοήγηση προαπόδοσης απαιτούσε έλεγχο ταυτότητας HTTP, ο οποίος δεν υποστηρίζεται προς το παρόν."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή αυτή η συσκευή δεν έχει αρκετή συνολική μνήμη συστήματος για να υποστηρίξει την προαπόδοση."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Η σελίδα που προαποδόθηκε πλοηγήθηκε σε άλλο URL, που δεν υποστηρίζεται προς το παρόν."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή η σελίδα εκκίνησης έχει ήδη πάρα πολλές προαποδόσεις σε εξέλιξη. Καταργήστε άλλους κανόνες εικασιών για να ενεργοποιήσετε την περαιτέρω προαπόδοση."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή το πρόγραμμα περιήγησης υπερέβη το όριο μνήμης προαπόδοσης."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Η σελίδα που προαποδόθηκε έκανε unload επειδή το πρόγραμμα περιήγησης αντιμετώπισε κρίσιμη πίεση μνήμης."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή το πρόγραμμα περιήγησης αντιμετώπισε κρίσιμη πίεση μνήμης."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "Η σελίδα που προαποδόθηκε περιείχε μικτό περιεχόμενο."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Η σελίδα που προαποδόθηκε χρησιμοποίησε απαγορευμένο JavaScript API που δεν υποστηρίζεται προς το παρόν."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "Η πλοήγηση προαπόδοσης απέτυχε, λόγω κατάστασης κωδικού απόκρισης HTTP που δεν είναι 2xx."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Η πλοήγηση προαπόδοσης αποκλείστηκε από μια Πολιτική ασφάλειας περιεχομένου."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Η πλοήγηση προαπόδοσης αντιμετώπισε σφάλμα δικτύου."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή ο χρήστης απενεργοποίησε την προφόρτωση στις ρυθμίσεις του προγράμματος περιήγησης."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "Η σελίδα εκκίνησης παρουσίασε σφάλμα."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "Η σελίδα εκκίνησης τερματίστηκε."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Η σελίδα που προαποδόθηκε παρουσίασε σφάλμα."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Η σελίδα που προαποδόθηκε τερματίστηκε."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Η σελίδα που προαποδόθηκε πλοηγήθηκε σε URL διασταυρούμενων προελεύσεων ίδιου ιστοτόπου, αλλά η απόκριση προορισμού δεν περιείχε την κατάλληλη κεφαλίδα Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Η σελίδα που προαποδόθηκε έκανε πλοήγηση σε URL διασταυρούμενων προελεύσεων ίδιου ιστοτόπου, αλλά η απόκριση προορισμού δεν περιείχε την κατάλληλη κεφαλίδα Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Η πλοήγηση προαπόδοσης απέτυχε, επειδή το URL προαπόδοσης ανακατεύθυνε σε URL διασταυρούμενων προελεύσεων ίδιου ιστοτόπου, αλλά η απόκριση προορισμού δεν περιείχε την κατάλληλη κεφαλίδα Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Η σελίδα που προαποδόθηκε έκανε πλοήγηση σε ένα URL που ανακατεύθυνε σε URL διασταυρούμενων προελεύσεων ίδιου ιστοτόπου, αλλά η απόκριση προορισμού δεν περιείχε την κατάλληλη κεφαλίδα Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "Η πλοήγηση προαπόδοσης απέτυχε, λόγω μη έγκυρου πιστοποιητικού SSL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Η σελίδα εκκίνησης τοποθετήθηκε στο παρασκήνιο για μεγάλο χρονικό διάστημα, επομένως η σελίδα που προαποδόθηκε απορρίφθηκε."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Η σελίδα εκκίνησης βρισκόταν στο παρασκήνιο, επομένως η σελίδα που προαποδόθηκε απορρίφθηκε."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Η αλλαγή του παράγοντα χρήστη πραγματοποιήθηκε στην πλοήγηση προαπόδοσης."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Επιλέξτε ένα στοιχείο για περισσότερες λεπτομέρειες"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Κατάσταση"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "Κάντε κλικ για να αποκαλύψετε το πλαίσιο Στοιχεία"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "Κάντε κλικ για να αποκαλύψετε το Πλαίσιο δικτύου"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Λεπτομερείς πληροφορίες"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "Σφάλμα"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "Τοποθεσία"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Πηγή"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "Έγκυρο"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "Τοποθεσία"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Ισχύς"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "Ενεργοποίηση φόρτωσης μέσω στόχου"
+    "message": "Φόρτωση μέσω ιστοτόπου"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "Εισαγάγετε κείμενο για να αναζητήσετε τις στήλες URL και Σφάλμα"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "Φόρτωση πόρων προγραμματιστή HTTP(S) μέσω του επιθεωρημένου στόχου"
+    "message": "Φόρτωση πόρων προγραμματιστή HTTP(S) μέσω του ιστοτόπου που επιθεωρείτε και όχι μέσω των Εργαλείων για προγραμματιστές"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# πόρος}other{# πόροι}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Ψεύδο-στοιχείο ::{PH1}"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "Ιδιαιτερότητα: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Εναλλαγή συνήθων προσομοιώσεων απόδοσης"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1 πιθανός ιστότοπος με παρακολούθηση}other{# πιθανοί ιστότοποι με παρακολούθηση}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# πόρος}other{# πόροι}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "Όνομα πακέτου"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "Υπογραφή πακέτου"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "Κωδικός κατάστασης"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "Url"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Στοιχείο"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "Cookie SameSite"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "Αξιόπιστη δραστηριότητα ιστού"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Απόκρυψη ζητημάτων"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Λήψη στιγμιότυπων κατά τη φόρτωση μιας σελίδας"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "Διαγραφή"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "Κλείσιμο"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Ομαδοποιημένος πόρος"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "Διαγραφή αρχείου καταγραφής δικτύου"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "κωδικοποίηση με χρώμα"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Εμφάνιση Παρακολούθησης πρωτοκόλλου"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "Συνέχεια"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "Αντιγραφή εγγραφής ή επιλεγμένου βήματος"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "Δημιουργία νέας εγγραφής"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "Διαγραφή εγγραφής"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "Εξαγωγή"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "Εξαγωγή"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "Εξαγωγή μέσω επεκτάσεων"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "Λήψη επεκτάσεων…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "Εισαγωγή εγγραφής"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "Επανάληψη εγγραφής"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "Αποστολή σχολίων"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "Έναρξη/Διακοπή εγγραφής"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "Εκτέλεση ενός βήματος"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "Εναλλαγή προβολής κώδικα"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "Ακύρωση εγγραφής"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "Δημιουργία νέας εγγραφής"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "Πρέπει να επιλέξετε μία από τις επιλογές CSS, Pierce ή XPath. Μόνο αυτοί οι επιλογείς διασφαλίζεται ότι θα καταγράφονται, καθώς οι επιλογείς ARIA και οι επιλογείς κειμένου ενδέχεται να μην είναι μοναδικοί."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "Όνομα εγγραφής"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "Απαιτείται όνομα εγγραφής"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "Χαρακτηριστικό επιλογέα"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "Κείμενο"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "Τύποι επιλογέα για εγγραφή"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "Έναρξη εγγραφής"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "Κλείσιμο"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "Το περιεχόμενο παρέχεται από μια επέκταση προγράμματος περιήγησης"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "Δημιουργία νέας εγγραφής"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "Διαγραφή εγγραφής"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "Άνοιγμα εγγραφής"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "Αναπαραγωγή καταγραφής"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "Αποθηκευμένες εγγραφές"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "Προσθήκη επιβεβαίωσης"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "Ακύρωση επανάληψης"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "Προεπιλογή"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "Υπολογιστής"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "Λήψη: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "Επεξεργασία ρυθμίσεων επανάληψης"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "Επεξεργασία τίτλου"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "Τερματισμός εγγραφής"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "Περιβάλλον"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "Απόκρυψη κώδικα"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "Λανθάνων χρόνος: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "Κινητή συσκευή"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "Δίκτυο"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "Πλαίσιο απόδοσης"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "Εγγραφή…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "Διακοπή εγγραφής…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "Ρυθμίσεις επανάληψης"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "Απαιτείται τίτλος"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "Στιγμιότυπο οθόνης για αυτήν την ενότητα"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "Εμφάνιση κώδικα"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "Χρονικό όριο: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "Η ρύθμιση χρονικού ορίου λήξης (σε χιλιοστά του δευτερολέπτου) ισχύει για κάθε ενέργεια κατά την επανάληψη της εγγραφής. Για παράδειγμα, αν ένα στοιχείο DOM που προσδιορίζεται από έναν επιλογέα CSS δεν εμφανίζεται στη σελίδα εντός του καθορισμένου χρονικού ορίου λήξης, η επανάληψη αποτυγχάνει με σφάλμα."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "Χρονικό όριο"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "Μεταφόρτωση: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Εξαιρετικά αργή επανάληψη"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Εξαιρετικά αργή"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "Επανάληψη"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "Κανονική (προεπιλογή)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "Αργή επανάληψη"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "Αργή"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "Πολύ αργή επανάληψη"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "Πολύ αργή"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "Επεκτάσεις"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "Ταχύτητα"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "Δημιουργία νέας εγγραφής"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "Μέτρηση της απόδοσης σε ολόκληρη τη διαδρομή χρήστη"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "Γρήγορη εκκίνηση: Γνωρίστε το νέο πλαίσιο Εγγραφή στα Εργαλεία για προγραμματιστές"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "Καταγράψτε μια συνήθη διαδρομή χρήστη στον ιστότοπο ή την εφαρμογή σας"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "Επαναλάβετε την εγγραφή για να ελέγξετε αν η ροή λειτουργεί"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "Δημιουργήστε ένα λεπτομερές ίχνος απόδοσης ή εξαγάγετε ένα σενάριο Puppeteer για δοκιμή"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "Προσθήκη {attributeName}"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "Προσθήκη δείκτη πλαισίου μέσα στην προβολή δέντρου πλαισίου"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "Προσθήκη επιλογέα"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "Προσθήκη τμήματος επιλογέα"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "Διαγραφή σειράς"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "Δεν έγινε αποθήκευση: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "Κατάργηση δείκτη πλαισίου"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "Κατάργηση επιλογέα"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "Κατάργηση τμήματος επιλογέα"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "Επιλέξτε ένα στοιχείο στη σελίδα για να ενημερώσετε τους επιλογείς"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "Άγνωστος τύπος ενέργειας."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "Προσθήκη σημείου διακοπής"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "Προσθήκη βήματος μετά"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "Προσθήκη βήματος πριν"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "Σημεία διακοπής"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "Αλλαγή"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "Κλικ"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "Κλείσιμο"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "Αντιγραφή ως"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "Προσαρμοσμένο βήμα"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "Διπλό κλικ"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "Κουμπί"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "Στοιχείο"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "Είσοδος"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "Προσομοίωση συνθηκών δικτύου"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "Τοποθέτηση δείκτη"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "Πάτημα πλήκτρου"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "Αποδέσμευση πλήκτρου"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "Πλοήγηση"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "Άνοιγμα ενεργειών βήματος"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "Κατάργηση σημείου διακοπής"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "Κατάργηση βήματος"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "Κύλιση"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "Ορισμός θύρας προβολής"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "Διαχείριση βημάτων"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "Αναμονή για στοιχείο"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "Αναμονή για έκφραση"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "Εγγραφή στις {DATE}, {TIME}"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "Δημιουργία νέας εγγραφής"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Εγγραφή"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "Επανάληψη εγγραφής"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "Εμφάνιση Εγγραφής"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "Έναρξη/Διακοπή εγγραφής"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "Εναλλαγή προβολής κώδικα"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Εναλλαγή ψηφιακής εγγραφής οθόνης"
   },
@@ -9861,10 +10377,7 @@
     "message": "Προσθήκη μοτίβου…"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "Αυτόματη προσθήκη σεναρίων τρίτου μέρους στη λίστα παράβλεψης"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "Προσθήκη πηγών από το πεδίο x_google_ignoreList από αντιστοιχίσεις πηγών στη λίστα παράβλεψης"
+    "message": "Γνωστά σενάρια τρίτου μέρους από αντιστοιχίσεις πηγών"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Προσαρμοσμένοι κανόνες εξαίρεσης:"
@@ -9885,13 +10398,13 @@
     "message": "Γενικοί κανόνες εξαίρεσης:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "Προσθήκη σεναρίων περιεχομένου στη λίστα παράβλεψης"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "Προσθήκη σεναρίων περιεχομένου στη λίστα παράβλεψης (σενάρια επέκτασης στη σελίδα)"
+    "message": "Σενάρια περιεχομένου που έχουν εισαχθεί από επεκτάσεις"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Παράβλεψη σεναρίων με όνομα που αντιστοιχεί στο \"{PH1}\""
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "Μάθετε περισσότερα"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "Προσθήκη μοτίβου"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "Αποκρυπτογράφηση απάντησης"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "Αποσειριοποίηση κρυφής μνήμης κώδικα"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "Καταστροφή WebSocket"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Η ταξινόμηση της στήλης {PH1} ακυρώθηκε"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "Κλείσιμο"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "Συντομεύσεις πληκτρολογίου"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "Εμφάνιση συντομεύσεων"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Παράβλεψη {PH1} γραμμών που αντιστοιχούν … )"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "Κατάργηση από τη λίστα παράβλεψης"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "Εμφάνιση λιγότερων"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Εμφάνιση # ακόμη πλαισίου}other{Εμφάνιση # ακόμη πλαισίων}}"

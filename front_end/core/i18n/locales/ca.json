@@ -1287,7 +1287,7 @@
     "message": "Event.path està obsoleta i se suprimirà. Substitueix-la per Event.composedPath()."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "La capçalera Expect-CT està obsoleta i se suprimirà. Chrome requereix Transparència de certificats per a tots els certificats considerats de confiança públicament que s'hagin emès després del 30 d'abril de 2018."
+    "message": "La capçalera Expect-CT ja no s'admet. Chrome requereix Transparència de certificats per a tots els certificats considerats de confiança públicament que s'hagin emès després del 30 d'abril de 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() i watchPosition() ja no funcionen en orígens no segurs. Per utilitzar aquesta funció, t'has de plantejar canviar l'aplicació a un origen segur, com ara HTTPS. Consulta https://goo.gle/chrome-insecure-origins per obtenir més informació."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Les extensions han d'activar l'aïllament d'altres orígens per continuar utilitzant SharedArrayBuffer. Consulta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "Web SQL està obsolet. Utilitza SQLite WebAssembly o la base de dades indexada."
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "El descriptor del permís window-placement està obsolet. Substitueix-lo per window-management. Per obtenir més ajuda, consulta https://bit.ly/window-placement-rename."
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] S'estan carregant els símbols de depuració per a {PH2} (mitjançant {PH3})..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Afegeix tots els scripts de contingut a la llista d'elements ignorats"
+    "message": "Afegeix tots els scripts d'extensions a la llista d'elements ignorats"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "Afegeix tots els scripts de tercers a la llista d'elements ignorats"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Activar SharedArrayBuffer"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "Canvis als criteris de qualitat per a PWA utilitzant Activitat web de confiança"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anònim>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet de subhasta: {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "Interaccions dels usuaris"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker-{PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Marca de temps"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "Mitigacions del seguiment de rebots"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Esborra totes les galetes"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Clau"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "S'està carregant…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Emmagatzematges d'objectes"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "Actualitza la base de dades"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "Origen de seguretat"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "Mostra la pàgina següent"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "S'ha actualitzat la taula"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "S'han esborrat les dades del lloc web"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "Aplicació"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "El número no ha de ser negatiu"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "El número ha de ser inferior a {PH1}"
   },
   "panels/application/StorageView.ts | other": {
     "message": "Altres"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "Mitigacions del seguiment de rebots"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "S'està comprovant si hi ha llocs web de seguiment de rebots potencials."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "Força l'execució"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "Més informació: mitigacions del seguiment de rebots"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "L'estat no s'ha esborrat per a cap possible lloc web de seguiment de rebots. O no se n'ha identificat cap, o les mitigacions de seguiment de rebots no estan activades o bé les galetes de tercers no estan bloquejades."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "En execució"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "S'ha suprimit l'estat dels llocs web següents:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "No hi ha punts finals per mostrar"
   },
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "Hora de creació"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Entrades"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "Pressupost d'entropia per als marcs tancats"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadades"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Encara no s'ha creat"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Nombre d'entrades"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Origen"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "Restableix el pressupost"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "No es pot renderitzar la traça de la pila"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "Mostra'n menys"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Mostra # marc més}other{Mostra # marcs més}}"
@@ -4109,6 +4124,15 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Testimonis d'estat privats"
   },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "Filtra pel conjunt de regles seleccionat"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "Configuració d'extensions"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "Configuració de la precàrrega de pàgines"
+  },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Error"
   },
@@ -4122,7 +4146,7 @@
     "message": "A punt"
   },
   "panels/application/preloading/PreloadingView.ts | statusRunning": {
-    "message": "S'està executant"
+    "message": "En execució"
   },
   "panels/application/preloading/PreloadingView.ts | statusSuccess": {
     "message": "Correcte"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Vàlid"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "La precàrrega està desactivada a causa del mode Estalvi de bateria del sistema operatiu."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "La precàrrega està desactivada a causa del mode Estalvi de dades del sistema operatiu."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "La precàrrega s'ha activat de manera forçada perquè DevTools està obert. Quan es tanqui, la renderització prèvia es desactivarà perquè aquesta sessió del navegador forma part d'un grup de retenció utilitzat per a les comparacions de rendiment."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "La precàrrega està desactivada a causa de la configuració de l'usuari o d'una extensió. Ves a {PH1} per obtenir més informació o ves a {PH2} per desactivar l'extensió."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "La renderització prèvia s'ha activat de manera forçada perquè DevTools està obert. Quan es tanqui, la renderització prèvia es desactivarà perquè aquesta sessió del navegador forma part d'un grup de retenció utilitzat per a les comparacions de rendiment."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "La precàrrega estava desactivada, però ara s'ha activat de manera forçada"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "La precàrrega està desactivada"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "La renderització prèvia estava desactivada, però ara s'ha activat de manera forçada"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Informació detallada"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "Motiu de l'error"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Conjunt de regles"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Estat"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "La pàgina renderitzada prèviament s'ha activat durant la navegació del marc principal de la pàgina d'inici."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "No s'ha utilitzat la renderització prèvia perquè la política de permisos o de marques de la zona de proves de la pàgina d'inici no era compatible amb les de la pàgina de renderització prèvia."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "La renderització prèvia no s'ha utilitzat perquè, durant l'hora d'activació, s'han calculat paràmetres de navegació diferents (p. ex., capçaleres HTTP) dels que s'han calculat durant la sol·licitud de navegació de la renderització prèvia original."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "La pàgina renderitzada prèviament ha sol·licitat una sortida d'àudio, que actualment no s'admet."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "La renderització prèvia no s'ha dut a terme perquè l'usuari ha sol·licitat que el navegador consumeixi menys bateria."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "S'ha bloquejat una part de la càrrega de recursos."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "La navegació per la renderització prèvia requeria un certificat de client HTTP."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "La navegació per la renderització prèvia ha fallat perquè estava orientada a un URL d'altres llocs web."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "La pàgina renderitzada prèviament ha navegat fins a un URL d'altres llocs web."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "La navegació per la renderització prèvia ha fallat perquè l'URL renderitzat prèviament redirigeix a un URL d'altres llocs web."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "La pàgina renderitzada prèviament ha navegat fins a un URL que redirigeix a un URL d'altres llocs web."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "La renderització prèvia no s'ha dut a terme perquè l'usuari ha sol·licitat que el navegador consumeixi menys dades."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "La pàgina renderitzada prèviament ha provat d'iniciar una baixada i això no s'admet en aquests moments."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "La renderització prèvia no s'ha dut a terme perquè el navegador ha detectat un error intern en provar de determinar l'ús de memòria actual."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "La pàgina d'inici no pot dur a terme la renderització prèvia perquè té un URL efectiu diferent del seu URL normal. Per exemple, la pàgina Pestanya nova o les aplicacions allotjades."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "L'URL no s'ha pogut renderitzar prèviament perquè el seu esquema no era http: ni https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "La navegació per la renderització prèvia ha fallat perquè redirigia a un URL l'esquema del qual no era http: ni https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "La navegació per la renderització prèvia requeria una autenticació HTTP, que actualment no s'admet."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "La renderització prèvia no s'ha dut a terme perquè aquest dispositiu no té prou memòria total del sistema per admetre la renderització prèvia."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "La pàgina renderitzada prèviament ha navegat fins a un altre URL, que actualment no s'admet."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "La renderització prèvia no s'ha dut a terme perquè la pàgina d'inici ja té massa renderitzacions prèvies en curs. Suprimeix altres regles d'especulació per permetre noves renderitzacions prèvies."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "La renderització prèvia no s'ha dut a terme perquè el navegador ha superat el límit de renderització prèvia de la memòria."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "La pàgina renderitzada prèviament ha deixat de carregar-se perquè el navegador tenia una pressió crítica sobre la memòria."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "La renderització prèvia no s'ha dut a terme perquè el navegador tenia una pressió crítica sobre la memòria."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "La pàgina renderitzada prèviament incloïa contingut mixt."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "La pàgina renderitzada prèviament ha utilitzat una API de JavaScript prohibida que actualment no s'admet."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "La navegació per la renderització prèvia ha fallat a causa d'un codi d'estat de resposta HTTP que no era 2xx."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "La política de seguretat del contingut ha bloquejat el procés de navegació per la renderització prèvia."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "La navegació per la renderització prèvia ha detectat un error de la xarxa."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "La renderització prèvia no s'ha dut a terme perquè l'usuari ha desactivat la precàrrega a la configuració del seu navegador."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "La pàgina d'inici ha fallat."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "La pàgina d'inici s'ha cancel·lat."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "La pàgina renderitzada prèviament ha fallat."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "La pàgina renderitzada prèviament s'ha cancel·lat."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "La pàgina renderitzada prèviament ha navegat fins a un URL del mateix lloc web d'altres orígens, però la resposta de destinació no inclou la capçalera Supports-Loading-Mode corresponent."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "La pàgina renderitzada prèviament ha navegat fins a un URL del mateix lloc web d'altres orígens, però la resposta de destinació no inclou la capçalera Supports-Loading-Mode corresponent."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "La navegació per la renderització prèvia ha fallat perquè l'URL renderitzat prèviament redirigeix a un URL del mateix lloc web d'altres orígens, però la resposta de destinació no inclou la capçalera Supports-Loading-Mode corresponent."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "La pàgina renderitzada prèviament ha navegat fins a un URL que redirigeix a un URL del mateix lloc web d'altres orígens, però la resposta de destinació no inclou la capçalera Supports-Loading-Mode corresponent."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "La navegació per la renderització prèvia ha fallat perquè un certificat SSL no era vàlid."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Com que la pàgina d'inici s'ha executat en segon pla durant molt de temps, la pàgina renderitzada prèviament s'ha descartat."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Com que la pàgina d'inici s'ha executat en segon pla, la pàgina renderitzada prèviament s'ha descartat."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "S'ha produït un canvi en l'agent d'usuari durant la navegació per la renderització prèvia."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Selecciona un element per obtenir més informació"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Estat"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "Fes clic perquè es mostri al tauler Elements"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "Fes clic perquè es mostri al tauler Xarxa"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Informació detallada"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "Error"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "Ubicació"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Font"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "Vàlid"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "Ubicació"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Validesa"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "Activa la càrrega a través de l'objectiu"
+    "message": "Carrega a través del lloc web"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "Introdueix el text per cercar les columnes URL i Error"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "Carrega els recursos HTTP(S) del desenvolupador mitjançant l'objectiu inspeccionat"
+    "message": "Carrega els recursos HTTP(S) del desenvolupador mitjançant el lloc web que inspecciones, no a través de DevTools"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# recurs}other{# recursos}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudoelement ::{PH1}"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "Especificitat: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Commuta les emulacions de renderització habituals"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1 lloc web de seguiment potencial}other{# llocs web de seguiment potencial}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# recurs}other{# recursos}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "Nom del paquet"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "Signatura del paquet"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "Codi d'estat"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "URL"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "Galeta SameSite"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "Activitat web de confiança"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Amaga els problemes"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Fes captures de pantalla en carregar una pàgina"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "Esborra"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "Tanca"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Recurs empaquetat"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "Esborra el registre de xarxa"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "codi de color"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Mostra Monitoratge del protocol"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "Continua"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "Copia la gravació o el pas seleccionat"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "Crea una gravació"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "Suprimeix la gravació"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "Exporta"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "Exporta"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "Exporta mitjançant extensions"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "Obtén extensions…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "Importa una gravació"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "Torna a reproduir la gravació"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "Envia suggeriments"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "Inicia o atura la gravació"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "Executa un pas"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "Commuta la visualització del codi"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "Cancel·la la gravació"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "Crea una gravació"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "Has de triar CSS, Pierce o XPath com una de les opcions. Només es garanteix el registre d'aquests selectors, ja que és possible que els selectors d'ARIA i text no siguin únics."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "Nom de la gravació"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "El nom de la gravació és obligatori"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "Atribut del selector"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "Text"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "Tipus de selectors per gravar"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "Inicia la gravació"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "Tanca"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "Contingut proporcionat per una extensió del navegador"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "Crea una gravació"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "Suprimeix la gravació"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "Obre la gravació"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "Reprodueix la gravació"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "Gravacions desades"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "Afegeix una asserció"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "Cancel·la la nova reproducció"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "Predeterminat"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "Ordinador"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "Baixada: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "Edita la configuració de la nova reproducció"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "Edita el títol"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "Finalitza la gravació"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "Entorn"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "Amaga el codi"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "Latència: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "Mòbil"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "Xarxa"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "Tauler de rendiment"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "S'està gravant…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "S'està aturant la gravació…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "Configuració de la nova reproducció"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "El títol és obligatori"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "Captura de pantalla d'aquesta secció"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "Mostra el codi"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "Temps d'espera: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "L'opció de configuració de temps d'espera (en mil·lisegons) s'aplica a totes les accions quan es torna a reproduir la gravació. Per exemple, si un element DOM que un selector CSS ha identificat no apareix a la pàgina en el temps d'espera especificat, es produeix un error de reproducció."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "Temps d'espera"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "Pujada: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Nova reproducció extremament lenta"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Extremament lenta"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "Torna a reproduir"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "Normal (opció predeterminada)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "Nova reproducció lenta"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "Lenta"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "Nova reproducció molt lenta"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "Molt lenta"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "Extensions"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "Velocitat"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "Crea una gravació"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "Mesura el rendiment durant un recorregut complet de l'usuari"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "Inici ràpid: descobreix el nou tauler Gravadora a DevTools"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "Grava un recorregut habitual de l'usuari al teu lloc web o aplicació"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "Torna a reproduir la gravació per comprovar si el flux funciona"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "Genera una traça de rendiment detallada o exporta un script de Puppeteer per fer proves"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "Afegeix {attributeName}"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "Afegeix un índex de marcs a l'arbre de marcs"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "Afegeix un selector"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "Afegeix una part del selector"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "Suprimeix la fila"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "No s'ha desat: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "Suprimeix l'índex de marcs"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "Suprimeix un selector"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "Suprimeix una part del selector"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "Selecciona un element a la pàgina per actualitzar els selectors"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "Tipus d'acció desconegut."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "Afegeix un punt de ruptura"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "Afegeix un pas després"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "Afegeix un pas abans"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "Punts de ruptura"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "Canvia"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "Clic"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "Tanca"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "Copia com a"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "Pas personalitzat"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "Fes doble clic"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "Botó"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "Element"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "Entrada"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "Emula les condicions de la xarxa"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "Passa el cursor per sobre"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "Tecla premuda"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "Tecla no premuda"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "Navega"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "Obre les accions del pas"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "Suprimeix el punt de ruptura"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "Suprimeix el pas"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "Desplaça"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "Defineix la finestra gràfica"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "Gestiona els passos"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "Espera l'element"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "Espera l'expressió"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "Gravació del dia {DATE} a les {TIME}"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "Crea una gravació"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Gravadora"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "Torna a reproduir la gravació"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "Mostra el tauler Gravadora"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "Inicia o atura la gravació"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "Commuta la visualització del codi"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Commuta la captura de pantalla de vídeo"
   },
@@ -9861,10 +10377,7 @@
     "message": "Afegeix un patró..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "Afegeix automàticament scripts de tercers coneguts a la llista d'elements ignorats"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "Afegeix fonts del camp x_google_ignoreList de mapes font a la llista d'elements ignorats"
+    "message": "Scripts de tercers coneguts de mapes d'origen"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Regles d'exclusió personalitzades:"
@@ -9885,13 +10398,13 @@
     "message": "Regles d'exclusió generals:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "Afegeix scripts de contingut per ignorar la llista"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "Afegeix scripts de contingut a la llista d'elements ignorats (scripts d'extensió a la pàgina)"
+    "message": "Scripts de contingut injectats per extensions"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Ignora scripts el noms dels quals coincideixin amb \"{PH1}\""
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "Més informació"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "Afegeix un patró"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "Desencripta la resposta"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "Desserialitza la memòria cau del codi"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "Destrueix WebSocket"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "S'ha cancel·lat l'ordenació de: {PH1}"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "Tanca"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "Tecles de drecera"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "Mostra les dreceres"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … S'estan ometent {PH1} línies coincidents … )"
@@ -13472,8 +13997,11 @@
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "Suprimeix de la llista d'elements ignorats"
   },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "Mostra'n menys"
+  },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{Mostra # marc més}other{Mostra # marcs més}}"
+    "message": "{n,plural, =1{Mostra # marc més}other{Mostra # marcs més}}"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "desconegut"

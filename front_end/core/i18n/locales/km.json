@@ -1287,7 +1287,7 @@
     "message": "Event.path ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។ សូមប្រើ Event.composedPath() ជំនួសវិញ។"
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "ផ្នែកក្បាល Expect-CT ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានលុបចេញ។ Chrome ត្រូវការតម្លាភាព​នៃវិញ្ញាបនបត្រ​សម្រាប់គ្រប់​វិញ្ញាបនបត្រដែលមាន​ការជឿទុកចិត្តជាសាធារណៈ ដែល​បាន​ចេញ​ផ្សាយក្រោយថ្ងៃ​ទី 30 ខែមេសា ឆ្នាំ 2018។"
+    "message": "មិនអាចប្រើ​ផ្នែកក្បាល Expect-CT បានទៀតទេ។ Chrome ត្រូវការតម្លាភាព​នៃវិញ្ញាបនបត្រ​សម្រាប់គ្រប់​វិញ្ញាបនបត្រដែលមាន​ការជឿទុកចិត្តជាសាធារណៈ ដែល​បាន​ចេញ​ក្រោយថ្ងៃ​ទី 30 ខែមេសា ឆ្នាំ 2018។"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() និង watchPosition() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "កម្មវិធីបន្ថែម​គួរតែភ្ជាប់ការដាក់ប្រភពដើមផ្សេងឱ្យនៅដោយឡែក ដើម្បីបន្តប្រើប្រាស់ SharedArrayBuffer។ សូមមើល https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/។"
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "SQL បណ្ដាញ​ត្រូវបាន​បញ្ឈប់។ សូមប្រើ SQLite WebAssembly ឬ​មូលដ្ឋាន​ទិន្នន័យ​ដែល​បានធ្វើ​សន្ទស្សន៍"
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "ព័ត៌មានពណ៌នាការ​អនុញ្ញាត window-placement ត្រូវ​បាន​បញ្ឈប់។ ប្រើ ​window-management​ ជំនួសវិញ។ សម្រាប់​ជំនួយបន្ថែម សូម​ពិនិត្យមើល https://bit.ly/window-placement-rename។"
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] កំពុងផ្ទុក​និមិត្តសញ្ញា​ជួសជុល​សម្រាប់ {PH2} (តាមរយៈ {PH3})..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "បញ្ចូល​ស្គ្រីបខ្លឹមសារ​ទាំងអស់​ទៅក្នុង​បញ្ជីមិនអើពើ"
+    "message": "បញ្ចូល​ស្គ្រីប​កម្មវិធីបន្ថែម​ទាំងអស់​ទៅក្នុង​បញ្ជីមិនអើពើ"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "បញ្ចូលគ្រប់​ស្គ្រីប​ភាគីទីបី​ទៅ​ក្នុង​បញ្ជី​មិនអើពើ"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "ការបើក SharedArrayBuffer"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "ការផ្លាស់ប្ដូរ​ចំពោះ​លក្ខខណ្ឌ​គុណភាព​សម្រាប់ PWA ដោយប្រើ​សកម្មភាព​បណ្ដាញ​ដែលទុកចិត្តបាន"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<អនាមិក>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "សំណុំ​ការងារ​ដេញថ្លៃ — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "អន្តរកម្មអ្នកប្រើប្រាស់"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "ពេលវេលា"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "ការកាត់បន្ថយ​ការតាមដាន​ដែលគេចវេះពីការរារាំង"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "សម្អាត​ខូគីទាំងអស់"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "សោ"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "កំពុងផ្ទុក…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "កន្លែងផ្ទុកវត្ថុ"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "ផ្ទុកមូលដ្ឋាន​ទិន្នន័យឡើងវិញ"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "ប្រភពដើម​នៃសុវត្ថិភាព"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "បង្ហាញទំព័របន្ទាប់"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "បានផ្ទុកតារាងឡើងវិញ"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "បានសម្អាត​ទិន្នន័យ​គេហទំព័រ"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "កម្មវិធី"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "លេខ​ត្រូវតែ​មិនមែន​ជាចំនួនអវិជ្ជមាន"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "ចំនួន​ត្រូវតែ​តិចជាង {PH1}"
   },
   "panels/application/StorageView.ts | other": {
     "message": "ផ្សេងៗ"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL៖"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "ការកាត់បន្ថយ​ការតាមដាន​ដែលគេចវេះពីការរារាំង"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "កំពុង​រកមើល​គេហទំព័រ​តាមដាន​ដែលគេចវេះពីការរារាំង​ដែលអាចមាន។"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "បង្ខំឱ្យ​ដំណើរការ"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "ស្វែងយល់​បន្ថែម៖ ការកាត់បន្ថយ​ការតាមដាន​ដែលគេចវេះពី​ការរារាំង"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "ស្ថានភាព​មិនត្រូវបាន​សម្អាត​សម្រាប់​គេហទំព័រ​តាមដាន​ទាំងឡាយដែលគេចវេះពីការរារាំង​ដែលអាច​មានឡើយ។ អាចដោយសារតែ​រកមិនឃើញអ្វី​ទាំងអស់ ការកាត់បន្ថយ​ការតាមដាន​ដែលគេចវេះពីការរារាំង​មិនត្រូវ​បានបើក ឬ​ខូគី​ភាគីទីបី​មិនត្រូវបាន​ទប់ស្កាត់។"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "កំពុង​ដំណើរការ"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "ស្ថានភាព​ត្រូវបានលុប​សម្រាប់​គេហទំព័រ​ខាងក្រោម៖"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "មិនមាន​ចំណុចបញ្ចប់ ដើម្បីបង្ហាញទេ"
   },
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "ពេល​បង្កើត"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "ធាតុ"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "ថវិកា​អង់ត្រូពី​សម្រាប់ Fenced Frame"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "ទិន្នន័យមេតា"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "មិនទាន់បាន​បង្កើត​ទេ"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "ចំនួននៃ​​ការ​បញ្ចូល"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ប្រភពដើម"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "កំណត់​ថវិកា​ឡើងវិញ"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "មិនអាចបំប្លែងដានបង្គរបានទេ"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "បង្ហាញ​តិចជាង"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{បង្ហាញ​ស៊ុម # ទៀត}other{បង្ហាញ​ស៊ុម # ទៀត}}"
@@ -4109,6 +4124,15 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "ថូខិនស្ថានភាពឯកជន"
   },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "ត្រងតាម​សំណុំ​វិធាន​ដែលបាន​ជ្រើសរើស"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "ការកំណត់​កម្មវិធីបន្ថែម"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "ការកំណត់​ការផ្ទុកទំព័រ​ជាមុន"
+  },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "មិន​បាន​សម្រេច"
   },
@@ -4122,7 +4146,7 @@
     "message": "រួចរាល់"
   },
   "panels/application/preloading/PreloadingView.ts | statusRunning": {
-    "message": "កំពុងដំណើរការ"
+    "message": "កំពុង​ដំណើរការ"
   },
   "panels/application/preloading/PreloadingView.ts | statusSuccess": {
     "message": "ជោគជ័យ"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "មានសុពលភាព"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ ដោយសារតែ​មុខងារ​សន្សំថ្ម​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ។"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ ដោយសារតែ​មុខងារ​សន្សំសំចៃទិន្នន័យ​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ។"
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "ការផ្ទុកជាមុនត្រូវ​បានបើក​ដោយ​បង្ខំ ដោយសារឧបករណ៍អ្នកអភិវឌ្ឍន៍​បើក។ នៅ​ពេល​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ត្រូវ​បានបិទ ការបំប្លែង​ជា​មុន​នឹង​ត្រូវ​បានបិទ ដោយសារ​វគ្គកម្មវិធីរុករកតាមអ៊ីនធឺណិត​នេះ​គឺ​ជា​ផ្នែក​មួយរបស់​ក្រុម​ដែលស្ថិតក្រោមការដាក់កំហិត​ ដែលត្រូវ​បាន​ប្រើសម្រាប់​ការ​ប្រៀបធៀប​ប្រតិបត្តិការ។"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ ដោយសារតែ​ការកំណត់​របស់​អ្នកប្រើប្រាស់ ឬ​កម្មវិធីបន្ថែម។ សូមចូល​ទៅកាន់ {PH1} ដើម្បី​ស្វែងយល់បន្ថែម ឬ​ចូលទៅកាន់ {PH2} ដើម្បី​បិទកម្មវិធីបន្ថែម​នោះ។"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "ការបំប្លែង​ជា​មុនត្រូវ​បានបើក​ដោយ​បង្ខំ ដោយសារឧបករណ៍អ្នកអភិវឌ្ឍន៍បើក។ នៅ​ពេល​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ត្រូវ​បានបិទ ការបំប្លែង​ជា​មុន​នឹង​ត្រូវ​បានបិទ ដោយសារ​វគ្គកម្មវិធីរុករកតាមអ៊ីនធឺណិត​នេះ​គឺ​ជា​ផ្នែក​មួយរបស់​ក្រុម​ដែលស្ថិតក្រោមការដាក់កំហិត​ ដែលត្រូវ​បាន​ប្រើសម្រាប់​ការ​ប្រៀបធៀប​ប្រតិបត្តិការ។"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "ការផ្ទុកជា​មុន​ត្រូវ​បាន​បិទ ប៉ុន្តែ​ឥឡូវ​ត្រូ​វបានបើក​ដោយ​បង្ខំ"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ការបំប្លែង​ជា​មុន​ត្រូវ​បាន​បិទ ប៉ុន្តែ​ឥឡូវ​ត្រូ​វបានបើក​ដោយ​បង្ខំ"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "ព័ត៌មានលម្អិត"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "មូលហេតុនៃ​ការដំណើរការមិនបានសម្រេច"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "បានកំណត់​វិធាន"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ស្ថានភាព"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "បានបើក​ដំណើរការ​ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន អំឡុងពេលនៃ​ការរុករកស៊ុមចម្បង​របស់ទំព័រ​ចាប់ផ្ដើម។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "មិនបានប្រើការបំប្លែង​ជាមុនទេ ដោយសារ​ទង់ប្រអប់សុវត្ថិភាព ឬគោលការណ៍​ការអនុញ្ញាត​របស់​ទំព័រចាប់ផ្ដើម​មិនត្រូវគ្នា​ជាមួយ​ទង់ប្រអប់សុវត្ថិភាព ឬគោលការណ៍​ការអនុញ្ញាត​របស់ទំព័រ​ដែលបំប្លែង​ជាមុន។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​អំឡុងពេលបើកដំណើរការ ប៉ារ៉ាម៉ែត្រ​រុករកខុសគ្នា (ឧ. ផ្នែកក្បាល HTTP) ត្រូវបាន​គណនា បើធៀបនឹងអំឡុងពេល​ស្នើសុំការរុករក​ដែលបំប្លែង​ជាមុនដើមដំបូង។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានស្នើសុំ​ឧបករណ៍​បញ្ចេញសំឡេង ដែល​បច្ចុប្បន្ននេះមិនអាចប្រើបានទេ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​អ្នកប្រើប្រាស់​បានស្នើឱ្យ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ប្រើថ្មតិចជាងនេះ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "ការផ្ទុក​ធនធាន​មួយចំនួន​ត្រូវបាន​ទប់ស្កាត់។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​បានតម្រូវឱ្យមាន​វិញ្ញាបនបត្រ​កុំព្យូទ័រភ្ញៀវ HTTP។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារវា​បានកំណត់ URL ឆ្លងគេហទំព័រជាគោលដៅ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL ឆ្លងគេហទំព័រ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារ URL ដែលបាន​បំប្លែង​ជាមុន​បានបញ្ជូនបន្ត​ទៅកាន់ URL ឆ្លងគេហទំព័រ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL ដែលបញ្ជូនបន្ត​ទៅ URL ឆ្លងគេហទំព័រ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​អ្នកប្រើប្រាស់​បានស្នើឱ្យ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ប្រើទិន្នន័យតិចជាងនេះ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានព្យាយាម​ចាប់ផ្ដើម​ការទាញយក ដែល​បច្ចុប្បន្ននេះមិនអាចប្រើបានទេ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​កម្មវិធីរុករកតាម​អ៊ីនធឺណិត​បានជួបបញ្ហា​ផ្នែកខាងក្នុង នៅពេល​ព្យាយាម​កំណត់​ការប្រើប្រាស់​អង្គចងចាំ​បច្ចុប្បន្ន។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "ទំព័រ​ចាប់ផ្ដើម​មិនអាច​ធ្វើការបំប្លែង​ជាមុន​បានទេ ដោយសារ​វាមាន URL ដែលមាន​ប្រសិទ្ធភាព​ខុសពី URL ធម្មតា​របស់វា។ (ឧទាហរណ៍ កម្មវិធី​ដែលបានបង្ហោះ ឬទំព័រ​ផ្ទាំងថ្មី​ជាដើម។)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URL មិនមានសិទ្ធិ​ក្នុងការបំប្លែង​ជាមុនទេ ដោយសារ​ទម្រង់របស់វា​មិនមែនជា http: ឬ https:។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារវា​បានបញ្ជូនបន្ត​ទៅកាន់ URL ដែលទម្រង់​របស់វា​មិនមែនជា http: ឬ https:។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​បានតម្រូវឱ្យមាន​ការផ្ទៀងផ្ទាត់ HTTP ដែល​បច្ចុប្បន្ននេះមិនអាចប្រើបានទេ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​ឧបករណ៍នេះ​មិនមាន​អង្គចងចាំ​ប្រព័ន្ធ​សរុបគ្រប់គ្រាន់ ដើម្បីដំណើរការការបំប្លែង​ជាមុន។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL ផ្សេងទៀត​ដោយខ្លួនវា ដែលបច្ចុប្បន្ននេះ​មិនអាចប្រើបានទេ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​ទំព័រចាប់ផ្ដើម​មានការបំប្លែង​ជាមុន​ច្រើនពេកដែលកំពុងធ្វើឡើង​ស្រាប់ហើយ។ សូមដក​វិធាន​នៃការប៉ាន់ស្មាន​ផ្សេងទៀត​ចេញ ដើម្បី​បើកការបំប្លែង​ជាមុន​បន្ថែម។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​កម្មវិធីរុករកតាម​អ៊ីនធឺណិត​បានប្រើលើស​ដែនកំណត់​អង្គចងចាំ​សម្រាប់ការបំប្លែង​ជាមុន។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "បាន​ឈប់ផ្ទុកទំព័រ​ដែលបាន​បំប្លែង​ជាមុន ដោយសារ​មានសម្ពាធ​អង្គចងចាំ​ខ្លាំង​លើ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​មានសម្ពាធ​អង្គចងចាំ​ខ្លាំង​លើ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​មានខ្លឹមសារ​ចម្រុះ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានប្រើ JavaScript API ដែលត្រូវបាន​ហាមឃាត់ ដែលបច្ចុប្បន្ននេះ​មិនអាចប្រើបានទេ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "ការរុករក​ដែល​បំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារតែ​លេខកូដ​ស្ថានភាព​នៃការឆ្លើយតប HTTP ដែលមិនមែនជា 2xx។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​ត្រូវបាន​ទប់ស្កាត់​ដោយគោលការណ៍​ស្ដីពីសុវត្ថិភាព​ខ្លឹមសារ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​បានជួប​បញ្ហាបណ្ដាញ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​អ្នកប្រើប្រាស់​បានបិទ​ការផ្ទុកជាមុន​នៅក្នុង​ការកំណត់​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​របស់គាត់។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "ទំព័រ​ចាប់ផ្ដើម​បានគាំង។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "ទំព័រ​ចាប់ផ្ដើម​ត្រូវបាន​បញ្ឈប់។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "ទំព័រ​ដែល​បាន​បំប្លែង​ជាមុន​បានគាំង។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​ត្រូវបានបញ្ឈប់។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL គេហទំព័រតែមួយ​ដែលមាន​ប្រភពដើមផ្សេង​ដោយខ្លួនវា ប៉ុន្តែ​ការឆ្លើយតប​ពីគោលដៅ​មិនបាន​រួមបញ្ចូល​ផ្នែកក្បាល​ដែលសមស្របនៃ​មុខងារផ្ទុកដែល​អាចប្រើបានឡើយ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL គេហទំព័រតែមួយ​ដែលមាន​ប្រភពដើមផ្សេង ប៉ុន្តែ​ការឆ្លើយតប​ពី​គោលដៅ​មិនបាន​រួមបញ្ចូល​ផ្នែកក្បាល​ដែលសមស្របនៃ​មុខងារផ្ទុកដែល​អាចប្រើបានឡើយ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារ URL ដែលបាន​បំប្លែង​ជាមុន​បានបញ្ជូនបន្ត​ទៅកាន់ URL គេហទំព័រតែមួយ​ដែលមាន​ប្រភពដើមផ្សេង ប៉ុន្តែ​ការឆ្លើយតប​ពីគោលដៅ​មិនបាន​រួមបញ្ចូល​ផ្នែកក្បាល​ដែលសមស្របនៃ​មុខងារផ្ទុកដែល​អាចប្រើបានឡើយ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL ដែល​បញ្ជូនបន្ត​ទៅកាន់ URL គេហទំព័រតែមួយ​ដែលមាន​ប្រភពដើមផ្សេង ប៉ុន្តែ​ការឆ្លើយតប​ពី​គោលដៅ​មិនបាន​រួមបញ្ចូល​ផ្នែកក្បាល​ដែលសមស្របនៃ​មុខងារផ្ទុកដែល​អាចប្រើបានឡើយ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារតែ​វិញ្ញាបនបត្រ SSL មិនត្រឹមត្រូវ។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "ទំព័រ​ចាប់ផ្ដើម​ត្រូវបាន​ផ្លាស់ទីទៅ​ផ្ទៃខាងក្រោយ​យូរមកហើយ ដូច្នេះ​ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​ត្រូវបាន​លុបចោល។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "ទំព័រ​ចាប់ផ្ដើម​ត្រូវបាន​ផ្លាស់ទីទៅ​ផ្ទៃខាងក្រោយ ដូច្នេះ​ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​ត្រូវបាន​លុបចោល។"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "ការប្ដូរ​ភ្នាក់ងារ​អ្នកប្រើប្រាស់​បានកើតឡើង​នៅក្នុង​ការរុករក​ដែលបំប្លែង​ជាមុន។"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ជ្រើសរើស​ធាតុ ដើម្បីទទួលបានព័ត៌មានលម្អិត​បន្ថែម"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ស្ថានភាព"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "ចុចដើម្បីបង្ហាញផ្ទាំងធាតុ"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "ចុចដើម្បីបង្ហាញផ្ទាំងបណ្ដាញ"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "ព័ត៌មានលម្អិត"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "មានបញ្ហា"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "ទីតាំង"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "ប្រភព"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "មានសុពលភាព"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "ទីតាំង"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "សុពលភាព"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "បើក​ការផ្ទុកតាម​គោលដៅ"
+    "message": "ផ្ទុក​តាមរយៈ​គេហទំព័រ"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "បញ្ចូល​អត្ថបទ ដើម្បីស្វែងរក​ជួរឈរបញ្ហា និង URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "ផ្ទុក​ធនធានសម្រាប់អ្នក​អភិវឌ្ឍន៍ HTTP(S) តាមរយៈគោលដៅដែលបានត្រួតពិនិត្យ"
+    "message": "ផ្ទុក​ធនធាន​សម្រាប់​អ្នកអភិវឌ្ឍន៍ HTTP(S) តាមរយៈ​គេហទំព័រ​ដែលអ្នក​ត្រួតពិនិត្យ មិនមែន​តាមរយៈ​ឧបករណ៍​អ្នកអភិវឌ្ឍន៍ទេ"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{ធនធាន #}other{ធនធាន #}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "ធាតុ​មិនពិត ::{PH1}"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "ភាពជាក់លាក់៖ {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "ប៊ូតុងបិទ/បើក​ការត្រាប់តាម​ការបំប្លែងទូទៅ"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{មានគេហទំព័រ 1 ដែលអាច​កំពុងតែ​តាមដាន}other{មានគេហទំព័រ # ដែលអាច​កំពុងតែ​តាមដាន}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{ធនធាន #}other{ធនធាន #}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "ឈ្មោះ​កញ្ចប់"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "ហត្ថលេខាកញ្ចប់"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "លេខ​កូដ​ស្ថានភាព"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "Url"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "ធាតុ"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "ខូគី SameSite"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "សកម្មភាព​បណ្ដាញ​ដែលទុកចិត្តបាន"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "លាក់បញ្ហា"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "ថត​រូបថត​អេក្រង់ នៅពេលផ្ទុក​ទំព័រ"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "សម្អាត"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "បិទ"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "ធនធាន​ជាកញ្ចប់"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "សម្អាត​កំណត់ហេតុ​បណ្ដាញ"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "កូដពណ៌"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "បង្ហាញ​កម្មវិធីតាមដាន​ប្រូតូកូល"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "បន្ត"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "ចម្លង​ខ្លឹមសារថត ឬ​ជំហាន​ដែលបាន​ជ្រើសរើស"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "បង្កើតការថតថ្មី"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "លុបខ្លឹមសារថត"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "នាំចេញ"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "នាំ​ចេញ"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "នាំចេញតាមរយៈកម្មវិធីបន្ថែម"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "យកកម្មវិធីបន្ថែម…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "នាំចូលខ្លឹមសារថត"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "ចាក់​ខ្លឹមសារថត​ឡើងវិញ"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "ផ្ញើមតិកែលម្អ"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "ចាប់ផ្ដើម/បញ្ឈប់​ការថត"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "ដំណើរការមួយជំហាន"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "បិទ/បើក​ទិដ្ឋភាព​កូដ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "បោះបង់​ការថត"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "បង្កើតការថតថ្មី"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "អ្នកត្រូវតែជ្រើសរើស CSS, Pierce ឬ XPath ជាជម្រើសមួយក្នុងចំណោមជម្រើសរបស់អ្នក។ មានតែផ្ទាំងជ្រើសរើសទាំងនេះប៉ុណ្ណោះត្រូវបានធានាថាបានថត ដោយសារផ្ទាំងជ្រើសរើស ARIA និងអក្សរប្រហែលមិនខុសប្លែកពីគេទេ។"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "ឈ្មោះខ្លឹមសារថត"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "តម្រូវឱ្យមានឈ្មោះខ្លឹមសារថត"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "លក្ខណៈផ្ទាំងជ្រើសរើស"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "អក្សរ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "ប្រភេទផ្ទាំងជ្រើសរើសសម្រាប់ថត"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "ចាប់ផ្តើមថត"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "បិទ"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "ខ្លឹមសារដែលផ្ដល់ដោយកម្មវិធីបន្ថែមលើកម្មវិធីរុករកតាមអ៊ីនធឺណិត"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "បង្កើតការថតថ្មី"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "លុបខ្លឹមសារថត"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "បើកខ្លឹមសារថត"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "ចាក់ខ្លឹមសារថត"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "ខ្លឹមសារថតដែលបានរក្សាទុក"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "បញ្ចូលការ​អះអាង"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "បោះបង់ការចាក់​​ឡើងវិញ"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "លំនាំដើម"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "កុំព្យូទ័រ"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "ការទាញយក៖ {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "កែការកំណត់ការចាក់​​ឡើងវិញ"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "កែចំណងជើង"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "បញ្ចប់​ការថត"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "មជ្ឈដ្ឋាន"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "លាក់​កូដ"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "ការ​ពន្យារ៖ {value} មិល្លីវិនាទី"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "ឧបករណ៍​ចល័ត"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "បណ្ដាញ"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "ផ្ទាំងប្រតិបត្តិការ"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "កំពុងថត…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "កំពុង​បញ្ឈប់​ការថត…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "ការ​កំណត់ការចាក់​​ឡើងវិញ"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "តម្រូវ​ឱ្យ​មាន​ចំណង​ជើង"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "រូបថត​អេក្រង់សម្រាប់ផ្នែកនេះ"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "បង្ហាញកូដ"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "អស់ម៉ោង៖ {value} មិល្លីវិនាទី"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "ការកំណត់​ការអស់ម៉ោង (គិត​ជា​មិល្លីវិនាទី) អនុវត្ត​ចំពោះ​គ្រប់សកម្មភាព​នៅ​ពេល​ចាក់​អ្វីដែលបាន​ថតឡើងវិញ។ ឧទាហរណ៍ ប្រសិនបើ​ធាតុ DOM មួយ​ដែល​បាន​កំណត់​​ដោយ​ផ្ទាំងជ្រើសរើស CSS មិន​បង្ហាញ​នៅលើ​ទំព័រ​ក្នុង​ពេលអស់ម៉ោង​ដែល​បានបញ្ជាក់ទេ នោះមិនអាចចាក់ឡើងវិញ​ ដោយ​មាន​បញ្ហា។"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "អស់ម៉ោង"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "ការបង្ហោះ៖ {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "ការចាក់​​ឡើងវិញយឺតខ្លាំងណាស់"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "យឺតខ្លាំងណាស់"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "ចាក់​ឡើងវិញ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "ធម្មតា (លំនាំដើម)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "ការចាក់​​ឡើងវិញយឺត"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "យឺត"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "ការចាក់ឡើងវិញយឺតខ្លាំង"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "យឺត​ខ្លាំង"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "កម្មវិធីបន្ថែម"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "ល្បឿន"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "បង្កើតការថតថ្មី"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "វាស់ស្ទង់ប្រតិបត្តិការនៅក្នុងបទពិសោធន៍អ្នកប្រើប្រាស់ទាំងមូល"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "ការចាប់ផ្តើមរហ័ស​៖ ស្វែងយល់ពីផ្ទាំងកម្មវិធីថតថ្មីនៅក្នុងឧបករណ៍អ្នកអភិវឌ្ឍន៍"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "ថតបទពិសោធន៍អ្នកប្រើប្រាស់ទូទៅនៅលើគេហទំព័រ ឬកម្មវិធីរបស់អ្នក"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "ចាក់ខ្លឹមសារថតឡើងវិញ ដើម្បីពិនិត្យមើលថាតើលំហូរដំណើរការឬអត់"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "បង្កើតដានប្រតិបត្តិការលម្អិត ឬនាំចេញស្គ្រីប Puppeteer សម្រាប់ធ្វើតេស្ត"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "បញ្ចូល {attributeName}"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "បញ្ចូលសន្ទស្សន៍ស៊ុមនៅក្នុងមែកធាងស៊ុម"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "បញ្ចូលផ្ទាំងជ្រើសរើស"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "បញ្ចូលផ្នែកផ្ទាំងជ្រើសរើស"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "លុបជួរដេក"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "Not saved: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "ដកសន្ទស្សន៍ស៊ុមចេញ"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "ដកផ្ទាំងជ្រើសរើសចេញ"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "ដកផ្នែកផ្ទាំងជ្រើសរើសចេញ"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "ជ្រើសរើសធាតុនៅក្នុងទំព័រដើម្បីធ្វើបច្ចុប្បន្នភាពផ្ទាំងជ្រើសរើស"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "មិន​ស្គាល់​ប្រភេទ​សកម្មភាព។"
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "បញ្ចូល​ចំណុចផ្អាក"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "បញ្ចូលជំហានក្រោយពេល"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "បញ្ចូលជំហានមុនពេល"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "ចំណុចផ្អាក"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "ការផ្លាស់ប្ដូរ"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "ចុច"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "បិទ"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "ចម្លង​ជា"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "ជំហានផ្ទាល់ខ្លួន"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "ចុចពីរដង"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "ប៊ូតុង"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "ធាតុ"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "បញ្ចូល"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "ត្រាប់តាមស្ថានភាពបណ្តាញ"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "ដាក់ព្រួញ"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "គ្រាប់ចុចចុះក្រោម"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "គ្រាប់ចុចឡើងលើ"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "រុករក"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "បើកសកម្មភាពជំហាន"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "ដកចំណុចផ្អាកចេញ"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "ដកជំហានចេញ"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "រំកិល"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "កំណត់ផ្ទាំងមើលឃើញ"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "គ្រប់គ្រង​ជំហាន"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "រង់ចាំធាតុ"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "រង់ចាំការបង្ហាញ"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "ការថត​នៅ {DATE} ម៉ោង {TIME}"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "បង្កើតការថតថ្មី"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "កម្មវិធីថត"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "ចាក់​ខ្លឹមសារថត​ឡើងវិញ"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "បង្ហាញកម្មវិធីថត"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "ចាប់ផ្ដើម/បញ្ឈប់​ការថត"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "បិទ/បើក​ទិដ្ឋភាព​កូដ"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "បិទ/បើក​ការថតអេក្រង់"
   },
@@ -9861,10 +10377,7 @@
     "message": "បញ្ចូលលំនាំ..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "បញ្ចូល​ស្គ្រីប​ភាគីទីបី​ដែលស្គាល់​ទៅ​បញ្ជី​មិនអើពើ​ដោយស្វ័យប្រវត្តិ។"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "បញ្ចូល​ប្រភព​ពីកន្លែងបញ្ចូល x_google_ignoreList ពី​ផែនទី​ប្រភព​ទៅ​បញ្ជី​មិន​អើពើ"
+    "message": "ស្គ្រីប​ភាគីទីបី​ដែលស្គាល់​ពីផែនទី​ប្រភព"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "វិធានមិនរួមបញ្ចូលផ្ទាល់ខ្លួន៖"
@@ -9885,13 +10398,13 @@
     "message": "វិធាន​មិនរួមបញ្ចូល​ទូទៅ៖"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "បញ្ចូល​ស្គ្រីបខ្លឹមសារ​ទៅក្នុង​បញ្ជីមិនអើពើ"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "បញ្ចូលស្គ្រីបខ្លឹមសារទៅក្នុងបញ្ជីមិនអើពើ (ស្គ្រីបកម្មវិធីបន្ថែម​នៅក្នុងទំព័រ)"
+    "message": "បានបញ្ចូល​ស្គ្រីបខ្លឹមសារ​ដោយ​កម្មវិធីបន្ថែម"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "មិនអើពើនឹងស្គ្រីបដែលមានឈ្មោះត្រូវនឹង ''{PH1}''"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "ស្វែងយល់បន្ថែម"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "បញ្ចូលលំនាំ"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "ឌិគ្រីប​ការឆ្លើយតប"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "បញ្ច្រាស​ស៊េរីកម្ម​ឃ្លាំងបម្រុង​កូដ"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "បំផ្លាញ WebSocket"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} បានបោះបង់​ការ​តម្រៀប"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "បិទ"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "ផ្លូវកាត់​ក្តារចុច"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "បង្ហាញផ្លូវកាត់"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … កំពុងរំលងជួរដែលត្រូវគ្នា {PH1} … )"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "ដកចេញពី​បញ្ជីមិនអើពើ"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "បង្ហាញ​តិចជាង"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{បង្ហាញ​ស៊ុម # ទៀត}other{បង្ហាញ​ស៊ុម # ទៀត}}"

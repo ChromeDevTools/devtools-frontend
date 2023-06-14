@@ -1287,7 +1287,7 @@
     "message": "Event.path është zhvlerësuar dhe do të hiqet. Përdor Event.composedPath() më mirë."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Koka Expect-CT është zhvlerësuar dhe do të hiqet. Chrome kërkon transparencën e certifikatave për të gjitha certifikatat e besuara në mënyrë publike të lëshuara pas datës 30 prill 2018."
+    "message": "Koka Expect-CT nuk mbështetet më. Chrome kërkon transparencën e certifikatave për të gjitha certifikatat e besuara në mënyrë publike të lëshuara pas datës 30 prill 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() dhe watchPosition() nuk funksionojnë më në origjina të pasigurta. Për të përdorur këtë veçori, duhet të marrësh në konsideratë ta kalosh aplikacionin tënd te një origjinë më e sigurt, si p,.sh. HTTPS. Shiko https://goo.gle/chrome-insecure-origins për më shumë detaje."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Shtesat duhet të zgjedhin izolimin e origjinës së kryqëzuar për të vazhduar të përdoret SharedArrayBuffer. Shiko https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "Web SQL është zhvlerësuar. Përdor SQLite WebAssembly ose Indexed Database."
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "Përshkrimi i lejeve window-placement është zhvlerësuar. Përdor window-management më mirë. Për më shumë ndihmë, kontrollo https://bit.ly/window-placement-rename."
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] Po ngarkohen simbolet e korrigjimit për {PH2} (nëpërmjet {PH3})..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Shto të gjitha skriptet e përmbajtjes në listën e shpërfilljes"
+    "message": "Shto të gjitha skriptet e shtesave në listën e shpërfilljes"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "Shto të gjitha skriptet e palëve të treta te lista e shpërfilljeve"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer po aktivizohet"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "Ndryshimet në kriteret e cilësisë për PWA që përdorin aktivitetin e besuar të uebit"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Worklet-i i ankandit - {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "Ndërveprimet e përdoruesit"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Vula kohore"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "Masat parandaluese ndaj gjurmimit me ridrejtim"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Pastro të gjitha kukit"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Çelësi"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "Po ngarkohet…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Dyqane objektesh"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "Rifresko bazën e të dhënave"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "Origjina e sigurisë"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "Shfaq faqen tjetër"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "Tabela u rifreskua"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "Të dhënat e sajtit u pastruan"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "Aplikacioni"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "Numri duhet të jetë jonegativ"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "Numri duhet të jetë më i vogël se {PH1}"
   },
   "panels/application/StorageView.ts | other": {
     "message": "Tjetër"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL-ja:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "Masat parandaluese ndaj gjurmimit me ridrejtim"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "Po kontrollon për sajtet e mundshme të gjurmimit me ridrejtim."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "Zbato me forcë ekzekutimin"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "Mëso më shumë: Masat parandaluese ndaj gjurmimit me ridrejtim"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "Gjendja nuk u pastrua për asnjë sajt të mundshëm të gjurmimit me ridrejtim. Asnjë nuk është identifikuar, masat parandaluese ndaj gjurmimit me ridrejtim nuk janë aktivizuar ose kukit e palëve të treta nuk janë bllokuar."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "Në ekzekutim"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "Gjendja është fshirë për sajtet e mëposhtme:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Nuk ka pika përfundimtare për të shfaqur"
   },
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "Koha e krijimit"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Hyrjet"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "Buxheti i entropisë për kuadrot e izoluara"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Të dhënat meta"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Nuk është krijuar ende"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Numri i hyrjeve"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Origjina"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "Rivendos buxhetin"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Gjurmimi i stivës nuk mund të paraqitet"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "Shfaq më pak"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Shfaq # kuadër më shumë}other{Shfaq # kuadro më shumë}}"
@@ -4108,6 +4123,15 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Kodet e gjendjes private"
+  },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "Filtro sipas grupit të zgjedhur të rregullave"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "Cilësimet e shtesave"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "Cilësimet për ngarkimin paraprak të faqeve"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Dështim"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "E vlefshme"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "Ngarkimi paraprak është çaktivizuar për shkak të modalitetit të \"Kursyesit të baterisë\" të sistemit operativ."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "Ngarkimi paraprak është çaktivizuar për shkak të modalitetit të \"Kursyesit të të dhënave\" të sistemit operativ."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Ngarkimi paraprak është aktivizuar me detyrim sepse DevTools është hapur. Kur DevTools është i mbyllur, paraqitja paraprake do të çaktivizohet sepse kjo seancë shfletuesi është pjesë e një grupi kontrolli që përdoret për krahasimet e performancës."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "Ngarkimi paraprak është çaktivizuar për shkak të cilësimeve të përdoruesit ose një shtese. Shko te {PH1} për të mësuar më shumë ose shko te {PH2} për të çaktivizuar shtesën."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "Paraqitja paraprake është aktivizuar me detyrim sepse DevTools është hapur. Kur DevTools është i mbyllur, paraqitja paraprake do të çaktivizohet sepse kjo seancë shfletuesi është pjesë e një grupi kontrolli që përdoret për krahasimet e performancës."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "Ngarkimi paraprak ishte i çaktivizuar, por tani është aktivizuar me detyrim"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "Ngarkimi paraprak është çaktivizuar"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Paraqitja paraprake ishte e çaktivizuar, por tani është aktivizuar me detyrim"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Informacione të detajuara"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "Arsyeja e gabimit"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Paketa e rregullave"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Statusi"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Faqja e paraqitur paraprakisht u aktivizua gjatë navigimit të kuadrit kryesor në faqen e nisjes."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Paraqitja paraprake nuk u përdor sepse flamurët e kufizuesit ose politika e lejeve të faqes së nisjes nuk ishin në përputhje me ato të faqes së paraqitjes paraprake."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Paraqitja paraprake nuk u përdor për shkak se gjatë kohës së aktivizimit u përllogaritën parametra navigimi (p.sh. kokat HTTP) që ishin të ndryshëm në krahasim me kërkesën origjinale për navigimin e paraqitjes paraprake."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Faqja e paraqitur paraprakisht kërkoi daljen e audios, e cila nuk mbështetet aktualisht."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Paraqitja paraprake nuk u krye sepse përdoruesi kërkoi që shfletuesi të përdorë më pak bateri."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Disa ngarkime të burimeve u bllokuan."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Navigimi i paraqitjes paraprake kërkoi një certifikatë të klientit HTTP."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Navigimi i paraqitjes paraprake dështoi sepse kishte si objektiv një URL të sajteve të kryqëzuara."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Faqja e paraqitur paraprakisht u drejtua te një URL e sajteve të kryqëzuara."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Navigimi i paraqitjes paraprake dështoi për shkak se URL-ja e paraqitur paraprakisht të ridrejtoi te një URL e sajteve të kryqëzuara."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Faqja e paraqitur paraprakisht të drejtoi te një URL, e cila të ridrejtoi te një URL e sajteve të kryqëzuara."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Paraqitja paraprake nuk u krye sepse përdoruesi kërkoi që shfletuesi të përdorë më pak të dhëna."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "Faqja e paraqitur paraprakisht u përpoq të niste një shkarkim, i cili nuk mbështetet aktualisht."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Paraqitja paraprake nuk u krye sepse shfletuesi ndeshi një gabim të brendshëm gjatë përpjekjes për të përcaktuar përdorimin aktual të memories."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "Faqja e nisjes nuk mund të kryejë paraqitjen paraprake sepse ka një URL efektive, por është e ndryshme nga URL-ja e saj normale. (Për shembull, faqja e skedës së re ose aplikacionet e strehuara.)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URL-ja nuk kualifikohej për t'u paraqitur paraprakisht sepse skema e saj nuk ishte http: apo https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Navigimi i paraqitjes paraprake dështoi për shkak se të ridrejtoi te një URL skema e së cilës nuk ishte http: ose https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Navigimi për paraqitjen paraprake kërkoi vërtetimin me HTTP, i cili nuk mbështetet aktualisht."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Paraqitja paraprake nuk u krye sepse kjo pajisje nuk ka memorie të mjaftueshme sistemi në total për të mbështetur paraqitjen paraprake."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Faqja e paraqitur paraprakisht u drejtua vetë te një URL tjetër, e cila nuk mbështetet aktualisht."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Paraqitja paraprake nuk u krye sepse faqja e nisjes ka tashmë shumë paraqitje paraprake në vazhdim. Hiq rregullat e tjera të spekulimit për të aktivizuar paraqitjen e mëtejshme paraprake."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Paraqitja paraprake nuk u krye sepse shfletuesi e kaloi kufirin e memories për paraqitjen paraprake."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Faqja e paraqitur paraprakisht u shkarkua sepse shfletuesi u vendos nën presionin e memories në nivel kritik."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Paraqitja paraprake nuk u krye sepse shfletuesi ishte nën presionin e memories në nivel kritik."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "Faqja e paraqitur paraprakisht përfshinte përmbajtje të përziera."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Faqja e paraqitur paraprakisht përdori një API të ndaluar të JavaScript që nuk mbështetet aktualisht."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "Navigimi i paraqitjes paraprake dështoi për shkak të një kodi statusi të përgjigjes HTTP që nuk është i kategorisë 2xx."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Navigimi i paraqitjes paraprake u bllokua nga një politikë për sigurinë e përmbajtjes."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Navigimi i paraqitjes paraprake ndeshi një gabim rrjeti."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Paraqitja paraprake nuk u krye sepse përdoruesi e çaktivizoi ngarkimin paraprak te cilësimet e shfletuesit."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "Faqja e nisjes pësoi një ndërprerje aksidentale."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "Faqja e nisjes është mbyllur."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Faqja e paraqitur paraprakisht pësoi një ndërprerje aksidentale."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Faqja e paraqitur paraprakisht u mbyll."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Faqja e paraqitur paraprakisht u drejtua vetë te një URL me origjinë të kryqëzuar nga i njëjti sajt, por përgjigja e destinacionit nuk përfshinte kokën e duhur Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Faqja e paraqitur paraprakisht u drejtua te një URL me origjinë të kryqëzuar nga i njëjti sajt, por përgjigja e destinacionit nuk përfshinte kokën e duhur Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Navigimi i paraqitjes paraprake dështoi për shkak se URL-ja e paraqitur paraprakisht të ridrejtoi te një URL e të njëjtit sajt me origjinë të kryqëzuar, por përgjigjja e destinacionit nuk përfshinte kokën e duhur Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Faqja e paraqitur paraprakisht u drejtua te një URL që u ridrejtua te një URL me origjinë të kryqëzuar nga i njëjti sajt, por përgjigja e destinacionit nuk përfshinte kokën e duhur Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "Navigimi i paraqitjes paraprake dështoi për shkak të një certifikate të pavlefshme SSL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Faqja e nisjes është vendosur në sfond për një kohë të gjatë, prandaj faqja e paraqitur paraprakisht është hequr."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Faqja e nisjes është vendosur në sfond, prandaj faqja e paraqitur paraprakisht është hequr."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Ndryshimi i agjentit të përdoruesit ndodhi gjatë navigimit të paraqitjes paraprake."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Zgjidh një element për më shumë detaje"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Statusi"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "Kliko për të zbuluar në panelin e \"Elementeve\""
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "Kliko për të zbuluar në panelin \"Rrjeti\""
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Informacione të detajuara"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "Gabim"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "Vendndodhja"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Burimi"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "E vlefshme"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "Vendndodhja"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Vlefshmëria"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "Aktivizo ngarkimin përmes objektivit"
+    "message": "Ngarko nëpërmjet sajtit të uebit"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "Fut tekstin për të kërkuar në kolonat \"URL\" dhe \"Gabimi\""
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "Ngarko burimet e zhvilluesit HTTP(S) përmes objektivit të inspektuar"
+    "message": "Ngarko burimet e zhvilluesit HTTP(S) nëpërmjet sajtit të uebit që ti inspekton dhe jo nëpërmjet DevTools"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# burim}other{# burime}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudoelement ::{PH1}"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "Specifika: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Aktivizo/çaktivizo imitimet e zakonshme të paraqitjes"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1 sajt uebi ndoshta gjurmues}other{# sajte uebi ndoshta gjurmuese}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# burim}other{# burime}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "Emri i paketës"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "Nënshkrimi i paketës"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "Kodi i statusit"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "URL"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "Kuki SameSite"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "Aktiviteti i besuar i uebit"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Fshih problemet"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Regjistro pamje të ekranit kur ngarkon një faqe"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "Pastro"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "Mbyll"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Burim në paketë"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "Pastro evidencën e rrjetit"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "kodi i ngjyrës"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Shfaq monitorin e protokollit"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "Vazhdo"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "Kopjo regjistrimin ose hapin e zgjedhur"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "Krijo një regjistrim të ri"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "Fshi regjistrimin"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "Eksporto"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "Eksporto"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "Eksporto nëpërmjet shtesave"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "Merr shtesat…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "Importo regjistrimin"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "Riluaj regjistrimin"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "Dërgo komente"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "Fillo/ndalo regjistrimin"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "Ekzekuto një hap"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "Aktivizo/çaktivizo pamjen e kodit"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "Anulo regjistrimin"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "Krijo një regjistrim të ri"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "Duhet të zgjedhësh CSS, Pierce ose XPath si një nga opsionet e tua. Vetëm këta përzgjedhës garantohet se do të regjistrohen, pasi përzgjedhësit e tekstit dhe ARIA mund të mos jenë unikë."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "Emri i regjistrimit"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "Kërkohet emri i regjistrimit"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "Atributi i përzgjedhësit"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "Teksti"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "Llojet e përzgjedhësit për të regjistruar"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "Nis regjistrimin"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "Mbyll"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "Përmbajtja ofrohet nga një shtesë e shfletuesit"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "Krijo një regjistrim të ri"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "Fshi regjistrimin"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "Hap regjistrimin"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "Luaj regjistrimin"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "Regjistrimet e ruajtura"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "Shto deklaratën"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "Anulo riluajtjen"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "Parazgjedhja"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "Desktop"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "Shkarkimi: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "Modifiko cilësimet e riluajtjes"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "Modifiko titullin"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "Përfundo regjistrimin"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "Mjedisi"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "Fshi kodin"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "Vonesa: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "Pajisje celulare"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "Rrjeti"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "Paneli i performancës"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "Po regjistron…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "Regjistrimi po ndalohet…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "Cilësimet e riluajtjes"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "Kërkohet titulli."
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "Pamja e çastit për këtë seksion"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "Shfaq kodin"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "Koha e pritjes: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "Cilësimi i kohës së pritjes (në milisekonda) zbatohet për çdo veprim kur riluhet regjistrimi. Për shembull, nëse një element i modelit DOM i identifikuar nga një përzgjedhës i CSS-së nuk shfaqet në faqe brenda kohës së specifikuar të pritjes, riluajtja dështon me një gabim."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "Koha e pritjes"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "Ngarkimi: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Riluajtje jashtëzakonisht e ngadaltë"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Jashtëzakonisht e ngadaltë"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "Riluaj"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "Normale (e parazgjedhur)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "Riluajtje e ngadaltë"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "E ngadaltë"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "Riluajtje shumë e ngadaltë"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "Shumë e ngadaltë"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "Shtesat"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "Shpejtësia"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "Krijo një regjistrim të ri"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "Mat performancën në të gjithë përvojën e përdoruesit"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "Nisja e shpejtë: mëso për panelin e ri të \"Regjistruesit\" në DevTools"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "Regjistro një udhëtim të zakonshëm të përdoruesit në sajtin e uebit ose aplikacionin tënd"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "Riluaj regjistrimin për të kontrolluar nëse rrjedha po funksionon"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "Gjenero një gjurmim të detajuar të performancës ose eksporto një skript të Puppeteer për testim"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "Shto {attributeName}"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "Shto indeksin e kuadrove brenda pemës së kuadrove"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "Shto një përzgjedhës"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "Shto një pjesë të përzgjedhësit"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "Fshi rreshtin"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "Nuk është ruajtur: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "Hiq indeksin e kuadrove"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "Hiq një përzgjedhës"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "Hiq një pjesë të përzgjedhësit"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "Zgjidh një element në faqe për të përditësuar përzgjedhësit"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "Lloj i panjohur veprimi."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "Shto pikën e ndërprerjes"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "Shto një hap prapa"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "Shto një hap përpara"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "Pikat e ndërprerjes"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "Ndrysho"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "Kliko"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "Mbyll"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "Kopjo si"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "Hapi i personalizuar"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "Kliko dy herë"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "Butoni"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "Element"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "Hyrja"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "Imito kushtet e rrjetit"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "Mbaje kursorin pezull"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "Tasti për poshtë"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "Tasti për lart"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "Navigo"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "Hap veprimet e hapit"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "Hiq pikën e ndërprerjes"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "Hiqe hapin"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "Lëviz"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "Cakto portën e pamjes"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "Menaxho hapat"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "Prit për elementin"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "Prit për shprehjen"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "Regjistrimi më {DATE} në {TIME}"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "Krijo një regjistrim të ri"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Regjistruesi"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "Riluaj regjistrimin"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "Shfaq \"Regjistruesin\""
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "Fillo/ndalo regjistrimin"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "Aktivizo/çaktivizo pamjen e kodit"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Aktivizo/çaktivizo transmetimin e ekranit"
   },
@@ -9861,10 +10377,7 @@
     "message": "Shto motiv..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "Shto automatikisht skriptet e njohura të palëve të treta te lista e shpërfilljeve"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "Shto burime nga fusha x_google_ignoreList nga hartat e burimeve te lista e shpërfilljeve"
+    "message": "Skriptet e njohura të palëve të treta nga hartat e burimit"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Rregullat e personalizuara të përjashtimit:"
@@ -9885,13 +10398,13 @@
     "message": "Rregullat e përgjithshme të përjashtimit:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "Shto sistemet e shkrimit të përmbajtjes në listën e shpërfilljeve"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "Shto skripte të përmbajtjes për të shpërfillur listën (skripte shtesë në faqe)"
+    "message": "Skriptet e përmbajtjes të injektuara nga shtesat"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Shpërfilli skriptet, emrat e të cilëve përputhen me \"{PH1}\""
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "Mëso më shumë"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "Shto një motiv"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "Dekripto përgjigjen"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "Lexo memorien specifike të kodit"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "Elimino WebSocket"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Renditja e {PH1} u anulua"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "Mbyll"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "Shkurtoret e tastierës"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "Shfaq shkurtoret"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "(…Duke kapërcyer {PH1} linja të përputhshme…)"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "Hiqe nga lista e shpërfilljeve"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "Shfaq më pak"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Shfaq # kuadër më shumë}other{Shfaq # kuadro më shumë}}"

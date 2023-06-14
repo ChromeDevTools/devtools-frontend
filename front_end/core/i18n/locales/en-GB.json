@@ -1287,7 +1287,7 @@
     "message": "Event.path is deprecated and will be removed. Please use Event.composedPath() instead."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "The Expect-CT header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after 30 April 2018."
+    "message": "The Expect-CT header is no longer supported. Chrome requires Certificate Transparency for all publicly trusted certificates issued after 30 April 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() and watchPosition() no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt in to cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "Web SQL is deprecated. Please use SQLite WebAssembly or Indexed Database"
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "The permission descriptor window-placement is deprecated. Use window-management instead. For more help, check https://bit.ly/window-placement-rename."
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] Loading debug symbols for {PH2} (via {PH3})…"
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Add all content scripts to ignore list"
+    "message": "Add all extension scripts to ignore list"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "Add all third-party scripts to ignore list"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Enabling SharedArrayBuffer"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "Changes to quality criteria for PWAs using Trusted Web Activity"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Auction worklet – {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "User interactions"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Timestamp"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "Bounce tracking mitigations"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Clear all cookies"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Key"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "Loading…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Object stores"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "Refresh database"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "Security origin"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "Show next page"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "Table refreshed"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "Site data cleared"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "Application"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "Number must be non-negative"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "Number must be smaller than {PH1}"
   },
   "panels/application/StorageView.ts | other": {
     "message": "Other"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "Bounce tracking mitigations"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "Checking for potential bounce tracking sites."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "Force run"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "Learn more: Bounce tracking mitigations"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "State was not cleared for any potential bounce tracking sites. Either none were identified, bounce tracking mitigations are not enabled or third-party cookies are not blocked."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "Running"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "State was deleted for the following sites:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "No endpoints to display"
   },
@@ -3663,7 +3684,7 @@
     "message": "Click to reveal in elements panel"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
-    "message": "Click to reveal in network panel"
+    "message": "Click to reveal in Network panel"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
     "message": "Click to reveal in network panel (might require page reload)"
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "Creation time"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Entries"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "Entropy budget for fenced frames"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Metadata"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Not yet created"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Number of entries"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Origin"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "Reset budget"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Cannot render stack trace"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "Show less"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Show # more frame}other{Show # more frames}}"
@@ -4108,6 +4123,15 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Private state tokens"
+  },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "Filter by selected rule set"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "Extensions settings"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "Preload pages settings"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Failure"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Valid"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "Preloading is disabled because of the operating system's Battery Saver mode."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "Preloading is disabled because of the operating system's Data Saver mode."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "Preloading is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "Preloading is disabled because of user settings or an extension. Go to {PH1} to learn more, or go to {PH2} to disable the extension."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "Prerendering is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "Preloading was disabled, but is force-enabled now"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "Preloading is disabled"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Prerendering was disabled, but is force-enabled now"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Detailed information"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "Reason for failure"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Rule set"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Prerendered page activated during initiating page's main frame navigation."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "The prerender was not used because the sandboxing flags or permissions policy of the initiating page was not compatible with those of the prerendering page."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "The prerender was not used because during activation time, different navigation parameters (e.g. HTTP headers) were calculated than during the original prerendering navigation request."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "The prerendered page requested audio output, which is not currently supported."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "The prerender was not performed because the user requested that the browser use less battery."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Some resource load was blocked."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "The prerendering navigation required an HTTP client certificate."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "The prerendering navigation failed because it targeted a cross-site URL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "The prerendered page navigated to a cross-site URL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "The prerendering navigation failed because the prerendered URL redirected to a cross-site URL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "The prerendered page navigated to a URL that redirected to a cross-site URL."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "The prerender was not performed because the user requested that the browser use less data."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "The prerendered page attempted to initiate a download, which is not currently supported."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "The prerender was not performed because the browser encountered an internal error while attempting to determine current memory usage."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "The initiating page cannot perform prerendering because it has an effective URL that is different from its normal URL. (For example, the New Tab Page or hosted apps.)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "The URL was not eligible to be prerendered because its scheme was not http: or https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "The prerendering navigation failed because it redirected to a URL whose scheme was not http: or https:."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "The prerendering navigation required HTTP authentication, which is not currently supported."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "The prerender was not performed because this device does not have enough total system memory to support prerendering."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "The prerendered page navigated itself to another URL, which is not currently supported."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "The prerender was not performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules to enable further prerendering."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "The prerender was not performed because the browser exceeded the prerendering memory limit."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "The prerendered page was unloaded because the browser came under critical memory pressure."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "The prerender was not performed because the browser was under critical memory pressure."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "The prerendered page contained mixed content."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "The prerendered page used a forbidden JavaScript API that is not currently supported."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "The prerendering navigation failed because of a non-2xx HTTP response status code."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "The prerendering navigation was blocked by a Content Security Policy."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "The prerendering navigation encountered a network error."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "The prerender was not performed because the user disabled preloading in their browser settings."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "The initiating page crashed."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "The initiating page was killed."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "The prerendered page crashed."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "The prerendered page was killed."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "The prerendered page navigated itself to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "The prerendered page navigated to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "The prerendering navigation failed because the prerendered URL redirected to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "The prerendered page navigated to a URL that redirected to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "The prerendering navigation failed because of an invalid SSL certificate."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "The initiating page was backgrounded for a long time, so the prerendered page was discarded."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "The initiating page was backgrounded, so the prerendered page was discarded."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Changing user agent occurred in prerendering navigation."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Select an element for more details"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "Click to reveal in Elements panel"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "Click to reveal in Network panel"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Detailed information"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "Error"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "Location"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Source"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "Valid"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "Location"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Validity"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "Enable loading through target"
+    "message": "Load through website"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "Enter text to search the URL and error columns"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "Load HTTP(S) developer resources through the inspected target"
+    "message": "Load HTTP(S) developer resources through the website you inspect, not through DevTools"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# resource}other{# resources}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} element"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "Specificity: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Toggle common rendering emulations"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1 potentially tracking website}other{# potentially tracking websites}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# resource}other{# resources}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "Package name"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "Package signature"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "Status code"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "URL"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Element"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite cookie"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "Trusted web activity"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Hide issues"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Capture screenshots when loading a page"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "Clear"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "Close"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Bundled resource"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "Clear network log"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "colour code"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Show protocol monitor"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "Continue"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "Copy recording or selected step"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "Create a new recording"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "Delete recording"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "Export"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "Export"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "Export via extensions"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "Get extensions…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "Import recording"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "Replay recording"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "Send feedback"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "Start/Stop recording"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "Execute one step"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "Toggle Code view"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "Cancel recording"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "Create a new recording"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "You must choose CSS, Pierce or XPath as one of your options. Only these selectors are guaranteed to be recorded since ARIA and text selectors may not be unique."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "Recording name"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "Recording name is required"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "Selector attribute"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "Text"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "Selector types to record"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "Start recording"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "Close"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "Content provided by a browser extension"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "Create a new recording"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "Delete recording"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "Open recording"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "Play recording"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "Saved recordings"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "Add assertion"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "Cancel replay"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "Default"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "Desktop"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "Download: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "Edit replay settings"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "Edit title"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "End recording"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "Environment"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "Hide code"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "Latency: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "Mobile"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "Network"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "Performance panel"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "Recording…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "Stopping recording…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "Replay settings"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "Title is required"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "Screenshot for this section"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "Show code"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "Timeout: {value} ms"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "The timeout setting (in milliseconds) applies to every action when replaying the recording. For example, if a DOM element identified by a CSS selector does not appear on the page within the specified timeout, the replay fails with an error."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "Timeout"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "Upload: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Extremely slow replay"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Extremely slow"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "Replay"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "Normal (default)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "Slow replay"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "Slow"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "Very slow replay"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "Very slow"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "Extensions"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "Speed"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "Create a new recording"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "Measure performance across an entire user journey"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "Quick start: Learn the new Recorder panel in DevTools"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "Record a common user journey on your website or app"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "Replay the recording to check if the flow is working"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "Generate a detailed performance trace or export a Puppeteer script for testing"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "Add {attributeName}"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "Add frame index within the frame tree"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "Add a selector"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "Add a selector part"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "Delete row"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "Not saved: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "Remove frame index"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "Remove a selector"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "Remove a selector part"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "Select an element in the page to update selectors"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "Unknown action type."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "Add breakpoint"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "Add step after"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "Add step before"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "Breakpoints"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "Change"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "Click"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "Close"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "Copy as"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "Custom step"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "Double click"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "Button"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "Element"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "Input"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "Emulate network conditions"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "Hover"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "Key down"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "Key up"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "Navigate"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "Open step actions"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "Remove breakpoint"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "Remove step"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "Scroll"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "Set viewport"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "Manage steps"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "Wait for element"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "Wait for expression"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "Recording {DATE} at {TIME}"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "Create a new recording"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Recorder"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "Replay recording"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "Show Recorder"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "Start/Stop recording"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "Toggle Code view"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Toggle screencast"
   },
@@ -9861,10 +10377,7 @@
     "message": "Add pattern…"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "Automatically add known third-party scripts to ignore list"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "Add sources from the x_google_ignoreList field from source maps to the ignore list"
+    "message": "Known third-party scripts from source maps"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Custom exclusion rules:"
@@ -9885,13 +10398,13 @@
     "message": "General exclusion rules:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "Add content scripts to ignore list"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "Add content scripts to ignore list (extension scripts in the page)"
+    "message": "Content scripts injected by extensions"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Ignore scripts whose names match '{PH1}'"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "Learn more"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "Add pattern"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "Decrypt reply"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "Deserialise code cache"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "Destroy WebSocket"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} sorting cancelled"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "Close"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "Keyboard shortcuts"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "Show shortcuts"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … Skipping {PH1} matching lines … )"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "Remove from ignore list"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "Show less"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Show # more frame}other{Show # more frames}}"

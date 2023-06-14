@@ -1287,7 +1287,7 @@
     "message": "Event.path は非推奨であり、削除される予定です。代わりに Event.composedPath() を使用してください。"
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT ヘッダーは非推奨であり、削除される予定です。Chrome では、2018 年 4 月 30 日以降に発行されたすべての公的に信頼されている証明書に対して、Certificate Transparency（証明書の透明性）を設定する必要があります。"
+    "message": "Expect-CT ヘッダーはサポートされなくなりました。Chrome では、2018 年 4 月 30 日以降に発行されたすべての公的に信頼されている証明書に対して、Certificate Transparency（証明書の透明性）を設定する必要があります。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() と watchPosition() は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "拡張機能で引き続き SharedArrayBuffer を使用するは、クロスオリジン分離を有効にする必要があります。https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ をご覧ください。"
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "ウェブ SQL は非推奨となっています。SQLite WebAssembly または Indexed Database を使用してください"
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "権限記述子 window-placement は非推奨になりました。代わりに window-management を使用してください。詳しくは、https://bit.ly/window-placement-rename をご覧ください。"
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] {PH2} のデバッグ シンボルを（{PH3} を介して）読み込んでいます..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "無視リストにコンテンツ スクリプトをすべて追加"
+    "message": "無視リストに拡張機能スクリプトをすべて追加"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "無視リストにすべてのサードパーティ スクリプトを追加"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer を有効にしています"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "Trusted Web Activity の使用による PWA の品質基準の変更"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<匿名>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "オークション ワークレット - {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "ユーザー操作"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "タイムスタンプ"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "バウンス トラッキング対策"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "すべての Cookie を削除する"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "キー"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "読み込んでいます…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "オブジェクト記憶領域"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "データベースを更新"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "セキュリティ オリジン"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "次のページを表示"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "表を更新しました"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "サイトデータを消去しました"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "アプリケーション"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "負の数を指定しないでください"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "{PH1} より小さい数を指定してください"
   },
   "panels/application/StorageView.ts | other": {
     "message": "その他"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "バウンス トラッキング対策"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "バウンス トラッキング サイトの可能性を確認しています。"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "強制実行"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "詳細: バウンス トラッキング対策"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "バウンス トラッキング サイトの可能性があるどのサイトについても、状態は消去されませんでした。バウンス トラッキング サイトが特定されなかったか、バウンス トラッキング対策が有効でないか、サードパーティ Cookie がブロックされていません。"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "実行中"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "次のサイトの状態が削除されました。"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "表示するエンドポイントがありません"
   },
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "作成時間"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "エントリ"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "フェンス付きフレームのエントロピー収支"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "メタデータ"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "まだ作成されていません"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "エントリ数"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "オリジン"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "予算をリセット"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "スタック トレースをレンダリングできません"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "一部表示"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{他 # 件のフレームを表示}other{他 # 件のフレームを表示}}"
@@ -4108,6 +4123,15 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "プライベート ステート トークン"
+  },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "選択したルールセットでフィルタ"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "拡張機能の設定"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "ページのプリロード設定"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "エラー"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "有効"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "オペレーティング システムのバッテリー セーバー モードが原因で、プリロードが無効になっています。"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "オペレーティング システムのデータセーバー モードが原因で、プリロードが無効になっています。"
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "DevTools が開いているため、プリロードが強制的に有効になっています。このブラウザ セッションはパフォーマンスの比較に使用されるホールドバック グループの一部であるため、DevTools を閉じると事前レンダリングは無効になります。"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "ユーザー設定または拡張機能が原因で、プリロードが無効になっています。詳細を確認するには {PH1} に、拡張機能を無効にするには {PH2} に移動してください。"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "DevTools が開いているため、事前レンダリングが強制的に有効になっています。このブラウザ セッションはパフォーマンスの比較に使用されるホールドバック グループの一部であるため、DevTools を閉じると事前レンダリングは無効になります。"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "プリロードは無効でしたが、現在は強制的に有効になっています"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "プリロードは無効になっています"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "事前レンダリングは無効でしたが、現在は強制的に有効になっています"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "詳細情報"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "失敗の理由"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "ルールセット"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ステータス"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "事前レンダリングされたページは、開始ページのメインフレーム ナビゲーション時に有効になりました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "開始ページのサンドボックス化のフラグまたは許可ポリシーが事前レンダリング ページのものに対応していなかったため、事前レンダリングは使用されませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "有効化時に、元の事前レンダリング ナビゲーションのリクエスト時とは異なるナビゲーション パラメータ（HTTP ヘッダーなど）が計算されたため、事前レンダリングは使用されませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "事前レンダリングされたページでリクエストされたオーディオ出力は、現在サポートされていません。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "ブラウザによるバッテリー使用量の削減をユーザーがリクエストしたため、事前レンダリングは行われませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "一部のリソースの読み込みがブロックされました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "事前レンダリング ナビゲーションには HTTP クライアント証明書が必要です。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "クロスサイト URL がターゲットに設定されていたため、事前レンダリング ナビゲーションに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "事前レンダリングされたページは、クロスサイト URL にナビゲーションされました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "事前レンダリングされた URL がクロスサイト URL にリダイレクトされたため、事前レンダリング ナビゲーションに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "事前レンダリングされたページは、クロスサイト URL にリダイレクトされる URL にナビゲーションされました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "ブラウザによるデータ使用量の削減をユーザーがリクエストしたため、事前レンダリングは行われませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "事前レンダリングされたページでダウンロードを開始しようとしましたが、現在ダウンロードはサポートされていません。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "ブラウザで現在のメモリ使用量を判断する際に内部エラーが発生したため、事前レンダリングは行われませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "通常の URL とは異なる有効な URL（新しいタブページ、ホストされているアプリなど）が含まれているため、開始ページで事前レンダリングを行えません。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "スキームが http: でも https: でもないため、この URL を事前レンダリングできませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "スキームが http: でも https: でもない URL にリダイレクトされたため、事前レンダリング ナビゲーションに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "事前レンダリング ナビゲーションには HTTP 認証が必要ですが、現在 HTTP 認証はサポートされていません。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "このデバイスは事前レンダリングに対応するためのシステムメモリの合計容量が不足しているため、事前レンダリングは行われませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "事前レンダリングされたページが自己ナビゲーションした別の URL は、現在サポートされていません。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "開始ページですでに多数の事前レンダリングが進行中だったため、事前レンダリングは行われませんでした。事前レンダリングをさらに行えるようにするには、他の事前予測ルールを削除してください。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "ブラウザが事前レンダリングのメモリ上限を超えたため、事前レンダリングは行われませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "ブラウザに重大なメモリ負荷がかかったため、事前レンダリングされたページはアンロードされました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "ブラウザに重大なメモリ負荷がかかっていたため、事前レンダリングは行われませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "事前レンダリングされたページに、混合コンテンツが含まれていました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "事前レンダリングされたページで、現在サポートされていない、禁止された JavaScript API が使用されました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "2xx 以外の HTTP レスポンス ステータス コードが原因で事前レンダリング ナビゲーションに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "事前レンダリング ナビゲーションはコンテンツ セキュリティ ポリシーによってブロックされました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "事前レンダリング ナビゲーションでネットワーク エラーが発生しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "ユーザーがブラウザ設定でプリロードを無効にしたため、事前レンダリングは行われませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "開始ページで問題が発生しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "開始ページは強制終了されました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "事前レンダリングされたページで問題が発生しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "事前レンダリングされたページは強制終了されました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "事前レンダリングされたページは、クロスオリジンの同一サイト URL に自己ナビゲーションしましたが、ナビゲーション先のレスポンスに適切な Supports-Loading-Mode ヘッダーが含まれていませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "事前レンダリングされたページは、クロスオリジンの同一サイト URL にナビゲーションされましたが、ナビゲーション先のレスポンスに適切な Supports-Loading-Mode ヘッダーが含まれていませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "事前レンダリングされた URL がクロスオリジンの同一サイト URL にリダイレクトされましたが、リダイレクト先のレスポンスに適切な Supports-Loading-Mode ヘッダーが含まれていなかったため、事前レンダリング ナビゲーションに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "事前レンダリングされたページは、クロスオリジンの同一サイト URL にリダイレクトされる URL にナビゲーションされましたが、ナビゲーション先のレスポンスに適切な Supports-Loading-Mode ヘッダーが含まれていませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "SSL 証明書が無効なため、事前レンダリング ナビゲーションに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "開始ページは長い間バックグラウンドで動作していたため、事前レンダリングされたページは破棄されました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "開始ページはバックグラウンドで動作していたため、事前レンダリングされたページは破棄されました。"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "事前レンダリング ナビゲーションでユーザー エージェントが変更されました。"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "要素を選択すると詳細が表示されます"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ステータス"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "クリックして要素パネルに表示"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "クリックしてネットワーク パネルに表示"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "詳細情報"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "エラー"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "場所"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "ソース"
@@ -4208,8 +4382,11 @@
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "有効"
   },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "場所"
+  },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "有効期間"
+    "message": "有効性"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "プリフェッチされた {PH1} 個のリソースがこのページで使用されています"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "ターゲットを通じた読み込みを有効にする"
+    "message": "ウェブサイトを介して読み込む"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "URL とエラー列を検索するテキストを入力"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "検査済みのターゲットを介して HTTP(S) デベロッパー リソースを読み込みます"
+    "message": "DevTools ではなく、検査するウェブサイトを介して HTTP(S) デベロッパー リソースを読み込みます"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# 件のリソース}other{# 件のリソース}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "疑似 ::{PH1} 要素"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "特異性: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "一般的なレンダリング エミュレーションを切り替え"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1 件のトラッキング ウェブサイト}other{# 件のトラッキング ウェブサイト}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# 件のリソース}other{# 件のリソース}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "パッケージ名"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "パッケージの署名"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "ステータス コード"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "URL"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "要素"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite Cookie"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "Trusted Web Activity"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "問題を非表示"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "ページの読み込み中にスクリーンショットをキャプチャする"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "消去"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "閉じる"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "バンドルされたリソース"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "ネットワーク ログを消去"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "カラーコード"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "プロトコル モニターを表示"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "続行"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "記録または選択したステップをコピー"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "新しい記録を作成"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "記録を削除"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "エクスポート"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "エクスポート"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "拡張機能によるエクスポート"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "拡張機能を取得…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "記録をインポート"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "記録を再生"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "フィードバックを送信"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "記録を開始 / 停止"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "1 つのステップを実行"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "コードビューを切り替える"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "記録をキャンセル"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "新しい記録を作成"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "オプションとして CSS、Pierce、XPath のいずれかを選択する必要があります。ARIA とテキスト セレクタが一意ではない場合があるため、確実に記録されるのはこれらのセレクタのみです。"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "記録名"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "記録名は必須です"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "セレクタの属性"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "テキスト"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "記録するセレクタの種類"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "記録を開始"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "閉じる"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "ブラウザの拡張機能によって提供されたコンテンツ"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "新しい記録を作成"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "記録を削除"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "記録を開く"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "記録を再生"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "保存済みの記録"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "アサーションを追加"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "リプレイをキャンセル"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "デフォルト"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "デスクトップ"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "ダウンロード: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "リプレイ設定を編集"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "タイトルを編集"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "記録を終了"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "環境"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "コードを非表示"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "レイテンシ: {value} ミリ秒"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "モバイル"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "ネットワーク"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "[パフォーマンス] パネル"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "記録しています…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "記録を停止しています…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "リプレイの設定"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "タイトルを入力してください"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "このセクションのスクリーンショット"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "コードを表示"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "タイムアウト: {value} ミリ秒"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "タイムアウト設定（ミリ秒単位）は、記録を再生する際のすべてのアクションに適用されます。たとえば、CSS セレクタで識別された DOM 要素が指定したタイムアウト内にページに表示されない場合、再生はエラーとなり失敗します。"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "タイムアウト"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "アップロード: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "極めて遅いリプレイ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "極めて遅い"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "リプレイ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "普通（デフォルト）"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "遅いリプレイ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "遅い"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "とても遅いリプレイ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "とても遅い"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "拡張機能"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "速度"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "新しい記録を作成"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "ユーザー ジャーニー全体のパフォーマンスの測定"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "クイック スタート: DevTools の新しい [レコーダー] パネルについて学ぶ"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "ウェブサイトやアプリでの一般的なユーザー ジャーニーを記録する"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "記録をリプレイして、フローが機能しているかどうかを確認する"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "詳細なパフォーマンス トレースを生成するか、テスト用の Puppeteer スクリプトをエクスポートする"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "{attributeName} を追加"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "フレームツリー内にフレーム インデックスを追加"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "セレクタを追加"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "セレクタの一部を追加"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "行を削除"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "保存できませんでした: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "フレーム インデックスを削除"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "セレクタを削除"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "セレクタの一部を削除"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "ページ内の要素を選択してセレクタを更新"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "不明なアクション タイプです。"
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "ブレークポイントを追加"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "この後にステップを追加"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "この前にステップを追加"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "ブレークポイント"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "変更"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "クリック"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "閉じる"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "形式を指定してコピー"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "カスタム ステップ"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "ダブルクリック"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "ボタン"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "要素"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "入力"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "ネットワーク条件のエミュレーション"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "マウスオーバー"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "キーダウン"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "キーアップ"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "ナビゲーション"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "ステップの操作を開く"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "ブレークポイントを削除"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "ステップを削除"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "スクロール"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "ビューポートの設定"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "ステップの管理"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "要素を待機"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "式の待機"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "記録（{DATE} {TIME}）"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "新しい記録を作成"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "レコーダー"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "記録を再生"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "レコーダーの表示"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "記録を開始 / 停止"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "コードビューを切り替える"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "スクリーンキャストを切り替える"
   },
@@ -9861,10 +10377,7 @@
     "message": "パターンを追加..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "既知の第三者のスクリプトを無視リストに自動追加"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "ソースマップの x_google_ignoreList フィールドから無視リストにソースを追加"
+    "message": "ソースマップの既知のサードパーティ スクリプト"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "カスタムの除外ルール:"
@@ -9885,13 +10398,13 @@
     "message": "全般の除外ルール:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "無視リストにコンテンツ スクリプトを追加"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "無視リストにコンテンツ スクリプトを追加（ページ内の拡張機能スクリプト）"
+    "message": "拡張機能によって挿入されたコンテンツ スクリプト"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "名前が「{PH1}」と一致するスクリプトを無視"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "詳細"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "パターンを追加"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "返信を復号"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "コード キャッシュの逆シリアル化"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "WebSocket を破棄"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} の並べ替えをキャンセルしました"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "閉じる"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "キーボード ショートカット"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "ショートカットを表示"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "（… {PH1} 件の一致行をスキップ …）"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "無視リストから削除"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "一部表示"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{他 # 件のフレームを表示}other{他 # 件のフレームを表示}}"

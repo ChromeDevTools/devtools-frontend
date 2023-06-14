@@ -1287,7 +1287,7 @@
     "message": "Event.path நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். இதற்குப் பதிலாக Event.composedPath() ஐப் பயன்படுத்தவும்."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT தலைப்பு நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். ஏப்ரல் 30, 2018க்குப் பிறகு வெளியிடப்பட்ட பொதுவில் நம்பப்படும் சான்றிதழ்கள் அனைத்திற்கும் சான்றிதழ் வெளிப்படைத்தன்மை Chromeமிற்குத் தேவை."
+    "message": "Expect-CT தலைப்பு ஆதரிக்கப்படாது. ஏப்ரல் 30, 2018க்குப் பிறகு வெளியிடப்பட்ட பொதுவில் நம்பப்படும் சான்றிதழ்கள் அனைத்திற்குமான சான்றிதழ் வெளிப்படைத்தன்மை Chromeமிற்குத் தேவை."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "பாதுகாப்பற்ற ஆரிஜின்களில் getCurrentPosition() மற்றும் watchPosition() இனி செயல்படாது. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer ஐத் தொடர்ந்து பயன்படுத்த நீட்டிப்புகள் கிராஸ் ஆரிஜின் ஐசொலேஷனைப் பயன்படுத்த வேண்டும். https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ தளத்தைப் பார்வையிடவும்."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "இணைய SQL நிறுத்தப்பட்டது. SQLite WebAssembly அல்லது இன்டெக்ஸ் செய்யப்பட்ட தரவுத்தளத்தைப் பயன்படுத்தவும்"
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "window-placement அனுமதி விவரக்குறிப்பு நிறுத்தப்பட்டது. அதற்குப் பதில் window-managementஐப் பயன்படுத்தவும். கூடுதல் உதவிக்கு https://bit.ly/window-placement-rename தளத்தைப் பார்க்கவும்."
   },
@@ -1449,7 +1452,7 @@
     "message": "{PH2} தளத்திற்கான பிழைதிருத்தக் குறியீடுகளை [{PH1}] ஏற்றுகிறது ({PH3} மூலம்)..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "உள்ளடக்க ஸ்கிரிப்ட்டுகள் அனைத்தையும் புறக்கணிப்புப் பட்டியலில் சேர்"
+    "message": "நீட்டிப்பு ஸ்கிரிப்ட்டுகள் அனைத்தையும் தவிர்க்க வேண்டியவற்றின் பட்டியலில் சேர்"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "புறக்கணிப்புப் பட்டியலில் அனைத்து மூன்றாம் தரப்பு ஸ்கிரிப்ட்டுகளையும் சேர்"
@@ -1512,7 +1515,7 @@
     "message": "ஃபைலை எழுதுகிறது…"
   },
   "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
-    "message": "பவுன்ஸ் டிராக்கிங் மிடிகேஷன்கள்"
+    "message": "பவுன்ஸ் டிராக்கிங் மிட்டிகேஷன்கள்"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "கிளையண்ட் குறிப்புகள் உள்கட்டமைப்பு"
@@ -1621,9 +1624,6 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer அம்சத்தை இயக்குதல்"
-  },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "நம்பகமான இணையச் செயல்பாட்டைப் பயன்படுத்தி PWAக்களுக்கான தர நிபந்தனைகளில் செய்யப்பட்ட மாற்றங்கள்"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<அறியப்படாதது>"
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "ஏலப் பணித் தொகுப்பு — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "பயனர் செயல்பாடுகள்"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "நேரமுத்திரை"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "பவுன்ஸ் டிராக்கிங் மிட்டிகேஷன்கள்"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "எல்லா குக்கீகளையும் அழி"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "குறியீடு"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "ஏற்றுகிறது…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ஆப்ஜெக்ட் சேமிப்பு"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "தரவுத்தளத்தை ரெஃப்ரெஷ் செய்"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "பாதுகாப்பு மூலம்"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "அடுத்த பக்கத்தைக் காட்டும்"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "ஸ்டோரேஜ் டேபிள் புதுப்பிக்கப்பட்டது"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "தளத் தரவு அழிக்கப்பட்டது"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "ஆப்ஸ்"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "எண் நேர்மறையானதாக இருக்க வேண்டும்"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "எண் {PH1}க்குள் இருக்க வேண்டும்"
   },
   "panels/application/StorageView.ts | other": {
     "message": "பிற"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "பவுன்ஸ் டிராக்கிங் மிட்டிகேஷன்கள்"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "சாத்தியமான பவுன்ஸ் டிராக்கிங் தளங்கள் உள்ளனவா எனத் தேடுகிறது."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "இயக்கு"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "பவுன்ஸ் டிராக்கிங் மிட்டிகேஷன்கள் குறித்து மேலும் அறிக"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "சாத்தியமுள்ள எந்தவொரு பவுன்ஸ் டிராக்கிங் தளத்திற்கும் நிலை அழிக்கப்படவில்லை. எதுவும் அடையாளம் காணப்படவில்லை அல்லது பவுன்ஸ் டிராக்கிங் மிட்டிகேஷன்கள் இயக்கப்படவில்லை அல்லது மூன்றாம் தரப்புக் குக்கீகள் தடுக்கப்படவில்லை."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "இயங்குகிறது"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "இந்தத் தளங்களுக்கு நிலை நீக்கப்பட்டுள்ளது:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "காட்டுவதற்கு எண்ட்பாயிண்ட்டுகள் எதுவுமில்லை"
   },
@@ -3663,7 +3684,7 @@
     "message": "உறுப்புகள் பேனலைக் காட்ட கிளிக் செய்க"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
-    "message": "நெட்வொர்க் பேனலைப் பார்க்க கிளிக் செய்க"
+    "message": "நெட்வொர்க் பேனலைப் பார்க்க கிளிக் செய்யுங்கள்"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
     "message": "நெட்வொர்க் பேனலைக் காட்ட கிளிக் செய்க (பக்கத்தை ரெஃப்ரெஷ் செய்ய வேண்டியிருக்கும்)"
@@ -3957,7 +3978,7 @@
     "message": "ப்ரீரெண்டரிங் செயலிலுள்ளது"
   },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
-    "message": "ப்ரீரெண்டரிங் செய்யப்பட்ட பக்கம் சிதைந்துவிட்டது."
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் சிதைந்துவிட்டது."
   },
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "ப்ரீரெண்டரிங் பக்கத்திற்கான ரெண்டரிங் செயலாக்கம் நிறுத்தப்பட்டது."
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "உருவாக்கப்பட்ட நேரம்:"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "உள்ளீடுகள்"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "ஃபென்ஸ்டு ஃபிரேம்களுக்கான என்ட்ரோபி பட்ஜெட்"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "தரவுத்தகவல்"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "இன்னும் உருவாக்கப்படவில்லை"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "உள்ளீடுகளின் எண்ணிக்கை"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ஆரிஜின்"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "பட்ஜெட்டை ரீசெட் செய்"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "ஸ்டாக் டிரேஸை ரெண்டர் செய்ய முடியவில்லை"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "குறைவாகக் காட்டு"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{மேலும் # ஃபிரேமைக் காட்டு}other{மேலும் # ஃபிரேம்களைக் காட்டு}}"
@@ -4108,6 +4123,15 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "தனிப்பட்ட நிலை டோக்கன்கள்"
+  },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "தேர்ந்தெடுக்கப்பட்ட ரூல் செட்டின்படி வடிகட்டு"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "நீட்டிப்பு அமைப்புகள்"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "பக்கங்களை முன்கூட்டியே ஏற்றுவதற்கான அமைப்புகள்"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "தோல்வி"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "செல்லுபடியாகும்"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "ஆப்ரேட்டிங் சிஸ்டம் பேட்டரி சேமிப்புப் பயன்முறையில் இருப்பதால் முன்கூட்டியே ஏற்றுதல் முடக்கப்பட்டுள்ளது."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "ஆப்ரேட்டிங் சிஸ்டம் ‘தரவு சேமிப்பான்’ பயன்முறையில் இருப்பதால் முன்கூட்டியே ஏற்றுதல் முடக்கப்பட்டுள்ளது."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "டெவெலப்பர் கருவிகள் திறந்திருப்பதால் 'முன்கூட்டியே ஏற்றுதல்' கட்டாயமாக இயக்கப்பட்டுள்ளது. செயல்திறன் ஒப்பீடுகளுக்காகப் பயன்படுத்தப்படும் ஹோல்டுபேக் குழுவின் பகுதியாக இந்த உலாவி அமர்வு இருப்பதால் டெவெலப்பர் கருவிகள் மூடப்பட்டிருக்கும்போது ப்ரீரெண்டரிங் முடக்கப்பட்டிருக்கும்."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "பயனர் அமைப்புகள் அல்லது நீட்டிப்பின் காரணமாக முன்கூட்டியே ஏற்றுதல் முடக்கப்பட்டுள்ளது. மேலும் தெரிந்துகொள்ள {PH1} என்பதற்குச் செல்லவும் அல்லது நீட்டிப்பை முடக்க {PH2} என்பதற்குச் செல்லவும்."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "டெவெலப்பர் கருவிகள் திறந்திருப்பதால் ப்ரீரெண்டரிங் கட்டாயமாக இயக்கப்பட்டுள்ளது. செயல்திறன் ஒப்பீடுகளுக்காகப் பயன்படுத்தப்படும் ஹோல்டுபேக் குழுவின் பகுதியாக இந்த உலாவி அமர்வு இருப்பதால் டெவெலப்பர் கருவிகள் மூடப்பட்டிருக்கும்போது ப்ரீரெண்டரிங் முடக்கப்பட்டிருக்கும்."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "'முன்கூட்டியே ஏற்றுதல்' முடக்கப்பட்டிருந்தது. ஆனால் தற்போது கட்டாயமாக இயக்கப்பட்டுள்ளது"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "முன்கூட்டியே ஏற்றுதல் முடக்கப்பட்டுள்ளது"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ப்ரீரெண்டரிங் முடக்கப்பட்டிருந்தது. ஆனால் தற்போது கட்டாயமாக இயக்கப்பட்டுள்ளது"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "விரிவான தகவல்கள்"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "தோல்விக்கான காரணம்"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "ரூல் செட்"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "நிலை"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "தொடங்குதல் பக்கத்தின் முதன்மை ஃபிரேமின் வழிசெலுத்தலின்போது ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் இயக்கப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "தொடங்குதல் பக்கத்தின் சாண்ட்பாக்ஸிங் கொடிகள் அல்லது அனுமதிகள் கொள்கையானது ப்ரீரெண்டரிங் பக்கத்துடன் இணங்கவில்லை என்பதால் ப்ரீரெண்டர் பயன்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "செயல்பாட்டு நேரத்தின்போது வழிசெலுத்தல் அளவுருக்கள் (எ.கா. HTTP தலைப்புகள்) கணக்கிடப்பட்டதால் ப்ரீரெண்டர் பயன்படுத்தப்படவில்லை. இந்த அளவுருக்கள் அசல் ப்ரீரெண்டரிங் வழிசெலுத்தல் கோரிக்கையின்போது கணக்கிடப்பட்டவற்றிலிருந்து வேறுபட்டவையாகும்."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் ஆடியோ அவுட்புட்டைக் கோரியுள்ளது ஆனால் அது தற்போது ஆதரிக்கப்படுவதில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "பேட்டரியை உலாவி குறைவாகப் பயன்படுத்த வேண்டுமென பயனர் கோரிக்கை விடுத்துள்ளதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "சில ஆதாரங்கள் ஏற்றப்படுவது தடுக்கப்பட்டுள்ளது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "ப்ரீரெண்டரிங் வழிசெலுத்தலுக்கு HTTP கிளையண்ட் சான்றிதழ் தேவை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "கிராஸ் சைட் URLலை இலக்காகக் கொண்டிருந்ததால் ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் கிராஸ் சைட் URLலுக்கு வழிசெலுத்தப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட URL, கிராஸ் சைட் URLலுக்குத் திசைதிருப்பப்பட்டதால் ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "கிராஸ் சைட் URLலுக்குத் திசைதிருப்பப்பட்ட URLலுக்கு ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் வழிசெலுத்தப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "தரவை உலாவி குறைவாகப் பயன்படுத்த வேண்டுமென பயனர் கோரிக்கை விடுத்துள்ளதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் பதிவிறக்கத்தைத் தொடங்க முயற்சி செய்துள்ளது. ஆனால் அது தற்போது ஆதரிக்கப்படுவதில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "உலாவி தற்போதைய நினைவக உபயோகத்தைத் தீர்மானிக்க முயற்சி செய்யும்போது அகப் பிழை ஏற்பட்டதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "தொடங்குதல் பக்கத்தில் தற்போதுள்ள URL அதன் வழக்கமான URLலில் இருந்து வேறுபட்டதாக இருப்பதால் ப்ரீரெண்டரிங்கை அது செயல்படுத்த முடியவில்லை. (உதாரணமாக, புதிய பக்கம் அல்லது ஹோஸ்ட் செய்யப்பட்ட ஆப்ஸ்.)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "http: அல்லது https: என்ற ஸ்கீம் இல்லாததால் ப்ரீரெண்டர் செய்வதற்கு URL தகுதிபெறவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "http: அல்லது https: என்ற ஸ்கீம் இல்லாத URLலுக்குத் திசைதிருப்பப்பட்டதால் ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "ப்ரீரெண்டரிங் வழிசெலுத்தலுக்கு HTTP அங்கீகரிப்பு தேவை, ஆனால் அது தற்போது ஆதரிக்கப்படுவதில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "ப்ரீட்ரெண்டரிங்கை ஆதரிக்கும் அளவிற்கு இந்தச் சாதனத்தில் மொத்த சிஸ்டம் நினைவகம் இல்லாததால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் அதுவாகவே மற்றொரு URLலுக்கு வழிசெலுத்தப்பட்டது, இது தற்போது ஆதரிக்கப்படுவதில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "தொடங்குதல் பக்கத்தில் ஏற்கெனவே பல ப்ரீரெண்டர்கள் செயலில் இருப்பதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை. கூடுதல் ப்ரீரெண்டரிங்கை இயக்க பிற குறிப்பிட்ட விதிகளை அகற்றவும்."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "ப்ரீரெண்டரிங் நினைவக வரம்பை உலாவி தாண்டிவிட்டதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "உலாவி கிரிட்டிகல் மெமரி பிரஷரில் இருந்ததால் ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் அகற்றப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "உலாவி கிரிட்டிகல் மெமரி பிரஷரில் இருந்ததால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கத்தில் கலவையான உள்ளடக்கம் இருந்தது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "தற்போது ஆதரிக்கப்படாத தடுக்கப்பட்ட JavaScript APIயை ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் பயன்படுத்தியுள்ளது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "2xx அல்லாத HTTP பதில் நிலைக் குறியீடு காரணமாக ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "உள்ளடக்கப் பாதுகாப்புக் கொள்கையினால் ப்ரீரெண்டரிங் வழிசெலுத்தல் தடுக்கப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "ப்ரீரெண்டரிங் வழிசெலுத்தலில் நெட்வொர்க் பிழை ஏற்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "பயனர் அவரது உலாவி அமைப்புகளில் ‘முன்கூட்டியே ஏற்றுதலை’ முடக்கியுள்ளதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "தொடங்குதல் பக்கம் சிதைந்துவிட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "தொடங்குதல் பக்கம் நிறுத்தப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் சிதைந்துவிட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் நிறுத்தப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் தானாகவே ஒரே தளத்தின் கிராஸ் ஆரிஜின் URLலுக்கு வழிசெலுத்தப்பட்டது, ஆனால் டெஸ்டினேஷன் ரெஸ்பான்ஸில் சரியான Supports-Loading-Mode தலைப்பு இல்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கமானது ஒரே தளத்தின் கிராஸ் ஆரிஜின் URLலுக்கு வழிசெலுத்தப்பட்டது, ஆனால் டெஸ்டினேஷன் ரெஸ்பான்ஸில் சரியான Supports-Loading-Mode தலைப்பு இல்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட URL, ஒரே தளத்தின் கிராஸ் ஆரிஜின் URLலுக்குத் திசைதிருப்பப்படுவதால் ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை, ஆனால் டெஸ்டினேஷன் ரெஸ்பான்ஸில் சரியான Supports-Loading-Mode தலைப்பு இல்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கமானது ஒரே தளத்தின் கிராஸ் ஆரிஜின் URLலுக்குத் திசைதிருப்பப்பட்ட URLலுக்கு வழிசெலுத்தப்பட்டது, ஆனால் டெஸ்டினேஷன் ரெஸ்பான்ஸில் சரியான Supports-Loading-Mode தலைப்பு இல்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "தவறான SSL சான்றிதழ் காரணமாக ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "தொடங்குதல் பக்கம் நீண்ட நேரமாக பின்னணியில் இயக்கப்பட்டதால் ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் நிராகரிக்கப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "தொடங்குதல் பக்கம் பின்னணியில் இயக்கப்பட்டதால் ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் நிராகரிக்கப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "ப்ரீரெண்டரிங் வழிசெலுத்தலில் பயனர் ஏஜெண்ட் மாற்றப்பட்டுள்ளது."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "கூடுதல் விவரங்களுக்கு உறுப்பைத் தேர்ந்தெடுக்கவும்"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "நிலை"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "உறுப்புகள் பேனலைப் பார்க்க கிளிக் செய்யுங்கள்"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "நெட்வொர்க் பேனலைப் பார்க்க கிளிக் செய்யுங்கள்"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "விரிவான தகவல்கள்"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "பிழை"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "இடம்"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "ஆதாரம்"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "செல்லுபடியாகும்"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "இடம்"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "செல்லுபடி நிலை"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "இலக்கு வழியாக ஏற்றுவதை இயக்கு"
+    "message": "இணையதளம் மூலம் ஏற்று"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "URLலையும் பிழை நெடுவரிசைகளையும் தேட உரையை உள்ளிடுக"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "கண்காணிக்கப்பட்ட இலக்கு மூலம் HTTP(S) டெவெலப்பர் ஆதாரங்களை ஏற்றும்"
+    "message": "டெவெலப்பர் கருவிகள் மூலம் அல்லாமல் நீங்கள் கண்காணிக்கும் இணையதளம் மூலம் HTTP(S) டெவெலப்பர் ஆதாரங்களை ஏற்றும்"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# ஆதாரம்}other{# ஆதாரங்கள்}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Pseudo ::{PH1} உறுப்பு"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "ஸ்பெசிஃபிசிட்டி: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "பொதுவான ரெண்டரிங் மாதிரி இயக்கங்களை நிலைமாற்றும்"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{கண்காணித்தல் அம்சம் இருக்கக்கூடிய ஓர் இணையதளம்}other{கண்காணித்தல் அம்சம் இருக்கக்கூடிய # இணையதளங்கள்}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# பாதிக்கப்பட்ட ஆதாரம்}other{# பாதிக்கப்பட்ட ஆதாரங்கள்}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "பேக்கேஜின் பெயர்"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "பேக்கேஜ் சிக்னேச்சர்"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "நிலைக் குறியீடு"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "Url"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "உறுப்பு"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite குக்கீ"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "நம்பகமான இணையச் செயல்பாடு"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "சிக்கல்களை மறைக்கும்"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "ஒரு பக்கத்தை ஏற்றும்போது ஸ்கிரீன்ஷாட்டுகளைப் படமெடுக்கும்"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "அழி"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "மூடுக"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "தொகுக்கப்பட்ட ஆதாரம்"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "நெட்வொர்க் பதிவை அழி"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "வண்ணக் குறியீடு"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "நெறிமுறை மானிட்டரைக் காட்டு"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "தொடர்க"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "ரெக்கார்டிங் அல்லது தேர்ந்தெடுத்த படியை நகலெடுத்தல்"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "புதிய ரெக்கார்டிங்கை உருவாக்கு"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "ரெக்கார்டிங்கை நீக்கு"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "ஏற்றுதல்"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "பதிவிறக்கு"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "நீட்டிப்பின் மூலம் ஏற்றுதல்"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "நீட்டிப்புகளைப் பெறுக…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "ரெக்கார்டிங்கைப் பதிவேற்று"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "ரெக்கார்டிங்கை மீண்டும் பிளே செய்"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "கருத்தை அனுப்பு"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "ரெக்கார்டிங்கைத் தொடங்குதல் அல்லது நிறுத்துதல்"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "ஒரு படியைச் செயல்படுத்து"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "குறியீட்டுக் காட்சியைக் காட்டுதல் அல்லது மறைத்தல்"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "ரெக்கார்டிங்கை ரத்துசெய்"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "புதிய ரெக்கார்டிங்கை உருவாக்குதல்"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "CSS, பியர்ஸ் அல்லது XPath தேர்வியை உங்கள் விருப்பங்களில் ஒன்றாகத் தேர்ந்தெடுக்க வேண்டும். ARIA மற்றும் வார்த்தைத் தேர்விகள் தனித்துவமின்றி இருக்கலாம் என்பதால் ரெக்கார்டு செய்வதற்கு இந்தத் தேர்விகள் மட்டுமே உத்திரவாதமானவை."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "ரெக்கார்டிங்கின் பெயர்"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "ரெக்கார்டிங்கின் பெயர் தேவை"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "தேர்விப் பண்புக்கூறு"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "பியர்ஸ்"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "வார்த்தைகள்"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "ரெக்கார்டு செய்வதற்கான தேர்வி வகைகள்"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "ரெக்கார்டிங்கைத் தொடங்கு"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "மூடுக"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "உலாவி நீட்டிப்பு வழங்கிய உள்ளடக்கம்"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "புதிய ரெக்கார்டிங்கை உருவாக்கு"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "ரெக்கார்டிங்கை நீக்கு"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "ரெக்கார்டிங்கைத் திற"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "ரெக்கார்டிங்கைப் பிளே செய்"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "சேமித்துள்ள ரெக்கார்டிங்குகள்"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "அசெர்ஷெனைச் சேர்"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "மீண்டும் பிளே செய்வதை ரத்துசெய்"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "இயல்பு"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "டெஸ்க்டாப்"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "பதிவிறக்கம்: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "மீண்டும் பிளே செய்தல் அமைப்புகளைத் திருத்து"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "தலைப்பைத் திருத்து"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "ரெக்கார்டிங்கை நிறுத்து"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "சூழல்"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "குறியீட்டை மறை"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "தாமதம்: {value} மிவி"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "மொபைல்"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "நெட்வொர்க்"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "செயல்திறன் பேனல்"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "ரெக்கார்டு செய்கிறது…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "ரெக்கார்டிங்கை நிறுத்துகிறது…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "மீண்டும் பிளே செய்தல் அமைப்புகள்"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "தலைப்பு தேவை"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "இந்தப் பிரிவிற்கான ஸ்கிரீன்ஷாட்"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "குறியீட்டைக் காட்டு"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "நேர முடிவு: {value} மிவி"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "ரெக்கார்டிங்கை மீண்டும் பிளேசெய்யும்போது ஒவ்வொரு செயலுக்கும் நேர முடிவு அமைப்பு (மில்லி வினாடிகளில்) பயன்படுத்தப்படும். உதாரணமாக, CSS தேர்வியால் அடையாளம் காணப்பட்ட DOM உறுப்பு குறிப்பிட்ட நேர முடிவிற்குள் பக்கத்தில் காட்டப்படவில்லை எனில் பிழைச் செய்தி காட்டப்பட்டு மீண்டும் பிழைசெய்வது நிறுத்தப்படும்."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "நேர முடிவு"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "பதிவேற்றம்: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "மிக மிக மெதுவாக மீண்டும் பிளே செய்"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "மிக மிக மெதுவாக"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "மீண்டும் பிளே செய்"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "இயல்பான வேகம் (இயல்பு)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "மெதுவாக மீண்டும் பிளே செய்"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "மெதுவாக"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "மிக மெதுவாக மீண்டும் பிளே செய்"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "மிக மெதுவாக"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "நீட்டிப்புகள்"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "வேகம்"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "புதிய ரெக்கார்டிங்கை உருவாக்கு"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "ஒட்டுமொத்த பயனர் அனுபவத்தில் செயல்திறனை முழுவதுமாக அளவிடுங்கள்"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "விரைவுத் தொடக்கம்: டெவெலப்பர் கருவிகளில் உள்ள புதிய ரெக்கார்டர் பேனலைத் தெரிந்துகொள்ளுதல்"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "உங்கள் இணையதளத்திலோ ஆப்ஸிலோ பயனர் அனுபவத்தை ரெக்கார்டு செய்யவும்"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "ரெக்கார்டிங் சரியாகப் பிளே ஆகிறதா என்பதைப் பார்க்க மீண்டும் பிளே செய்யவும்"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "சோதனை செய்ய விரிவான செயல்திறன் டிரேஸை உருவாக்கவும் அல்லது Puppeteer ஸ்கிரிப்ட்டைப் பதிவேற்றவும்"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "{attributeName} ஐச் சேர்"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "ஃபிரேம் பிரிவிற்குள் ஃபிரேம் இன்டெக்ஸைச் சேர்"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "தேர்வியைத் தேர்ந்தெடு"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "தேர்வியின் பகுதியைச் சேர்"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "வரிசையை நீக்கு"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "சேமிக்கப்படவில்லை: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "ஃபிரேம் இன்டெக்ஸை அகற்று"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "தேர்வியை அகற்று"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "தேர்வியின் பகுதியை அகற்று"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "தேர்விகளைப் புதுப்பிக்க பக்கத்தில் உள்ள உறுப்பைத் தேர்ந்தெடு"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "அறியப்படாத செயல் வகை."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "பிரேக்பாயிண்ட்டைச் சேர்"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "இதற்குப் பின் படியைச் சேர்"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "இதற்கு முன்பு படியைச் சேர்"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "பிரேக்பாயிண்ட்டுகள்"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "மாற்றம்"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "கிளிக்"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "மூடுக"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "இவ்வாறு நகலெடு:"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "பிரத்தியேகப் படி"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "இரு கிளிக்"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "பட்டன்"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "உறுப்பு"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "உள்ளீடு"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "நெட்வொர்க் நிலைகளைச் செயல்படுத்துதல்"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "கர்சரை மேலே கொண்டுசெல்லுதல்"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "பட்டன் அழுத்தப்பட்டது"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "பட்டன் விடுவிக்கப்பட்டது"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "வழிசெலுத்துதல்"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "படி செயல்களைத் திற"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "பிரேக்பாயிண்ட்டை அகற்று"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "படியை அகற்று"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "ஸ்க்ரோல்"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "காட்சிப் பகுதியை அமைத்தல்"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "படிகளை நிர்வகியுங்கள்"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "உறுப்பிற்காகக் காத்திருத்தல்"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "எக்ஸ்ப்ரெஷனுக்குக் காத்திருத்தல்"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "ரெக்கார்டிங்: {DATE} அன்று {TIME}க்கு"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "புதிய ரெக்கார்டிங்கை உருவாக்கு"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "ரெக்கார்டர்"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "புதிய ரெக்கார்டிங்கைத் தொடங்கு"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "ரெக்கார்டரைக் காட்டு"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "ரெக்கார்டிங்கைத் தொடங்குதல் அல்லது நிறுத்துதல்"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "குறியீட்டுக் காட்சியைக் காட்டுதல் அல்லது மறைத்தல்"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "ஸ்க்ரீன்காஸ்ட்டை நிலைமாற்றும்"
   },
@@ -9861,10 +10377,7 @@
     "message": "பேட்டர்னைச் சேர்..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "தெரிந்த மூன்றாம் தரப்பு ஸ்கிரிப்ட்டுகளைப் புறக்கணிப்புப் பட்டியலில் தானாகச் சேர்"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "சோர்ஸ் மேப்ஸில் உள்ள x_google_ignoreList புலத்தில் இருந்து புறக்கணிப்புப் பட்டியலுக்கு ஆதாரங்களைச் சேர்"
+    "message": "சோர்ஸ் மேப்களில் உள்ள அறியப்பட்ட மூன்றாம் தரப்பு ஸ்கிரிப்ட்டுகள்"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "பிரத்தியேகத் தவிர்ப்பு விதிகள்:"
@@ -9885,13 +10398,13 @@
     "message": "பொதுத் தவிர்ப்பு விதிகள்:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "புறக்கணிப்புப் பட்டியலுக்கு உள்ளடக்க ஸ்கிரிப்ட்டுகளைச் சேர்"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "புறக்கணிப்புப் பட்டியலில் உள்ளடக்க ஸ்கிரிப்ட்டுகளைச் சேர் (பக்கத்தில் இருக்கும் நீட்டிப்பு ஸ்க்ரிப்ட்டுகள்)"
+    "message": "நீட்டிப்புகள் மூலம் சேர்க்கப்பட்ட உள்ளடக்க ஸ்கிரிப்ட்டுகள்"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "“{PH1}” உடன் பொருந்தும் ஸ்கிரிப்ட் பெயர்களைத் தவிர்"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "மேலும் அறிக"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "பேட்டர்னைச் சேர்க்கும்"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "பதிலை டீகிரிப்ட் செய்"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "குறியீட்டுத் தற்காலிகச் சேமிப்பைப் படி"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "WebSocketடை அழி"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} வரிசைப்படுத்துதல் ரத்துசெய்யப்பட்டது"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "மூடும்"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "கீபோர்டு ஷார்ட்கட்கள்"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "ஷார்ட்கட்களைக் காட்டு"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … பொருந்தும் {PH1} வரிகளைத் தவிர்க்கிறது … )"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "புறக்கணிப்புப் பட்டியலில் இருந்து அகற்று"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "குறைவாகக் காட்டு"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{மேலும் # ஃபிரேமைக் காட்டு}other{மேலும் # ஃபிரேம்களைக் காட்டு}}"

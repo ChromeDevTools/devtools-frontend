@@ -1287,7 +1287,7 @@
     "message": "Event.path ଅସମର୍ଥିତ ଅଟେ ଏବଂ ଏହାକୁ କାଢ଼ି ଦିଆଯିବ। ଦୟାକରି ଏହା ପରିବର୍ତ୍ତେ Event.composedPath() ବ୍ୟବହାର କରନ୍ତୁ।"
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT ହେଡର ଅସମର୍ଥିତ ଅଟେ ଏବଂ ଏହାକୁ କାଢ଼ି ଦିଆଯିବ। ଏପ୍ରିଲ 30, 2018 ପରେ ଜାରି କରାଯାଇଥିବା ସମସ୍ତ ସାର୍ବଜନୀନ ଭାବେ ବିଶ୍ୱସ୍ତ ସାର୍ଟିଫିକେଟ ପାଇଁ Chromeର ସାର୍ଟିଫିକେଟ ଟ୍ରାନ୍ସପେରେନ୍ସି ଆବଶ୍ୟକ ଅଟେ।"
+    "message": "Expect-CT ହେଡର ଆଉ ସମର୍ଥିତ ନୁହେଁ। ଏପ୍ରିଲ 30, 2018 ପରେ ଜାରି କରାଯାଇଥିବା ସମସ୍ତ ସାର୍ବଜନୀନ ଭାବେ ବିଶ୍ୱସ୍ତ ସାର୍ଟିଫିକେଟ ପାଇଁ Chromeର ସାର୍ଟିଫିକେଟ ଟ୍ରାନ୍ସପେରେନ୍ସି ଆବଶ୍ୟକ ଅଟେ।"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() ଏବଂ watchPosition() ଆଉ ଅସୁରକ୍ଷିତ ଅରିଜିନରେ କାମ କରେ ନାହିଁ। ଏହି ଫିଚର ବ୍ୟବହାର କରିବାକୁ, ଆପଣ ଆପଣଙ୍କ ଆପ୍ଲିକେସନକୁ HTTPS ପରି ଏକ ସୁରକ୍ଷିତ ଅରିଜିନକୁ ସ୍ୱିଚ କରିବା ପାଇଁ ବିଚାର କରିବା ଉଚିତ। ଅଧିକ ବିବରଣୀ ପାଇଁ https://goo.gle/chrome-insecure-origins ଦେଖନ୍ତୁ।"
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBufferକୁ ବ୍ୟବହାର କରିବା ଜାରି ରଖିବା ପାଇଁ, ଏକ୍ସଟେନସନଗୁଡ଼ିକୁ କ୍ରସ-ଅରିଜିନ ଆଇସୋଲେସନରେ ଅପ୍ଟ ଇନ କରିବା ଉଚିତ। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ ଦେଖନ୍ତୁ।"
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "ୱେବ SQL ଅସମର୍ଥିତ ଅଟେ। ଦୟାକରି SQLite WebAssembly କିମ୍ବା ଇଣ୍ଡେକ୍ସ କରାଯାଇଥିବା ଡାଟାବେସ ବ୍ୟବହାର କରନ୍ତୁ"
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "ଅନୁମତି ଡେସ୍କ୍ରିପ୍ଟର window-placement ଅସମର୍ଥିତ ଅଟେ। ଏହା ପରିବର୍ତ୍ତେ window-managementକୁ ବ୍ୟବହାର କରନ୍ତୁ ଅଧିକ ସହାୟତା ପାଇଁ, https://bit.ly/window-placement-rename ଦେଖନ୍ତୁ।"
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] ଡିବଗ୍ ଚିହ୍ନଗୁଡ଼ିକୁ {PH2} ପାଇଁ ଲୋଡ୍ କରୁଛି (via {PH3})..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "'ଅଣଦେଖା' ତାଲିକାରେ ସମସ୍ତ ବିଷୟବସ୍ତୁ ସ୍କ୍ରିପ୍ଟକୁ ଯୋଗ କରନ୍ତୁ"
+    "message": "ଅଣଦେଖା ତାଲିକାରେ ସମସ୍ତ ଏକ୍ସଟେନସନ ସ୍କ୍ରିପ୍ଟ ଯୋଗ କରନ୍ତୁ"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "ଅଣଦେଖା ତାଲିକାରେ ସମସ୍ତ ତୃତୀୟ-ପକ୍ଷ ସ୍କ୍ରିପ୍ଟ ଯୋଗ କରନ୍ତୁ"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBufferକୁ ସକ୍ଷମ କରାଯାଉଛି"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "ବିଶ୍ୱସନୀୟ ୱେବ୍ କାର୍ଯ୍ୟକଳାପ ବ୍ୟବହାର କରି PWA ପାଇଁ ଗୁଣାତ୍ମକ ମାନଦଣ୍ଡରେ ପରିବର୍ତ୍ତନ"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<ବେନାମୀ>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "ନିଲାମ ୱାର୍କଲେଟ — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "ଉପଯୋଗକର୍ତ୍ତାଙ୍କ ଇଣ୍ଟରାକ୍ସନ"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "ଟାଇମଷ୍ଟାମ୍ପ୍"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "ବାଉନ୍ସ ଟ୍ରାକିଂ ମିଟିଗେସନ୍ସ"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "ସମସ୍ତ କୁକୀକୁ ଖାଲି କରନ୍ତୁ"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "କୀ"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "ଲୋଡ୍ ହେଉଛି…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ଅବଜେକ୍ଟ ଷ୍ଟୋରଗୁଡ଼ିକ"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "ଡାଟାବେସ୍ ରିଫ୍ରେସ୍ କରନ୍ତୁ"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "ସୁରକ୍ଷା ଅରିଜିନ୍"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "ପରବର୍ତ୍ତୀ ପୃଷ୍ଠା ଦେଖାନ୍ତୁ"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "ଟେବୁଲକୁ ରିଫ୍ରେସ୍ କରାଯାଇଛି"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "ସାଇଟ ଡାଟା ଖାଲି କରାଯାଇଛି"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "ଆପ୍ଲିକେସନ୍"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "ସଂଖ୍ୟାଟି ଧନାତ୍ମକ ହୋଇଥିବା ଆବଶ୍ୟକ"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "ସଂଖ୍ୟାଟି {PH1}ଠାରୁ ଛୋଟ ହେବା ଆବଶ୍ୟକ"
   },
   "panels/application/StorageView.ts | other": {
     "message": "ଅନ୍ୟ"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "ବାଉନ୍ସ ଟ୍ରାକିଂ ମିଟିଗେସନ୍ସ"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "ସମ୍ଭାବ୍ୟ ବାଉନ୍ସ ଟ୍ରାକିଂ ସାଇଟଗୁଡ଼ିକ ପାଇଁ ଯାଞ୍ଚ କରାଯାଉଛି।"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "ଫୋର୍ସ ରନ"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "ଅଧିକ ଜାଣନ୍ତୁ: ବାଉନ୍ସ ଟ୍ରାକିଂ ମିଟିଗେସନ୍ସ"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "କୌଣସି ବାଉନ୍ସ ଟ୍ରାକିଂ ସାଇଟ ପାଇଁ ସ୍ଥିତିକୁ ଖାଲି କରାଯାଇନାହିଁ। କିଛି ଚିହ୍ନଟ କରାଯାଇନାହିଁ, ବାଉନ୍ସ ଟ୍ରାକିଂ ମିଟିଗେସନ୍ସକୁ ସକ୍ଷମ କରାଯାଇନାହିଁ କିମ୍ବା ତୃତୀୟ ପକ୍ଷ କୁକୀଗୁଡ଼ିକୁ ବ୍ଲକ କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "ଚାଲୁଛି"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "ନିମ୍ନୋକ୍ତ ସାଇଟଗୁଡ଼ିକ ପାଇଁ ସ୍ଥିତିକୁ ଡିଲିଟ କରାଯାଇଛି:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "ଡିସପ୍ଲେ କରିବାକୁ କୌଣସି ଏଣ୍ଡପଏଣ୍ଟ ନାହିଁ"
   },
@@ -3663,7 +3684,7 @@
     "message": "ଉପାଦାନ ପ୍ୟାନେଲରେ ଦେଖାଇବାକୁ କ୍ଲିକ୍ କରନ୍ତୁ"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
-    "message": "ନେଟୱାର୍କ ପ୍ୟାନେଲକୁ ଦେଖାଇବା ପାଇଁ କ୍ଲିକ୍ କରନ୍ତୁ"
+    "message": "ନେଟୱାର୍କ ପେନେଲରେ ପ୍ରକାଶ କରିବାକୁ କ୍ଲିକ କରନ୍ତୁ"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
     "message": "ନେଟୱାର୍କ ପ୍ୟାନେଲ୍ ଦେଖାଇବାକୁ କ୍ଲିକ୍ କରନ୍ତୁ (ପୃଷ୍ଠାକୁ ପୁଣି ଲୋଡ୍ କରିବା ଦରକାର ହୋଇପାରେ)"
@@ -3957,7 +3978,7 @@
     "message": "ପ୍ରିରେଣ୍ଡରିଂ ଚାଲିଛି"
   },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
-    "message": "ପ୍ରିରେଣ୍ଡର କରାଯାଇଥିବା ପୃଷ୍ଠା କ୍ରାସ ହୋଇଛି।"
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା କ୍ରାସ ହୋଇଯାଇଛି।"
   },
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "ପ୍ରିରେଣ୍ଡରିଂ ପୃଷ୍ଠା ପାଇଁ ରେଣ୍ଡରର ପ୍ରକ୍ରିୟାକୁ ବନ୍ଦ କରାଯାଇଛି।"
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "ତିଆରି କରିବାର ସମୟ"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "ଏଣ୍ଟ୍ରିଗୁଡ଼ିକ"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "ଫେନ୍ସ କରାଯାଇଥିବା ଫ୍ରେମ ପାଇଁ ଏଣ୍ଟ୍ରପି ବଜେଟ"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "ମେଟାଡାଟା"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "ଏପର୍ଯ୍ୟନ୍ତ ତିଆରି କରାଯାଇନାହିଁ"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "ଏଣ୍ଟ୍ରିଗୁଡ଼ିକର ସଂଖ୍ୟା"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "ଅରିଜିନ"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "ବଜେଟକୁ ରିସେଟ କରନ୍ତୁ"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "ଷ୍ଟାକ୍ ଟ୍ରେସକୁ ରେଣ୍ଡର୍ କରାଯାଇପାରିବ ନାହିଁ"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "ଅଳ୍ପ ଦେଖାନ୍ତୁ"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{ଅଧିକ #ଟି ଫ୍ରେମ୍ ଦେଖାନ୍ତୁ}other{ଅଧିକ #ଟି ଫ୍ରେମ୍ ଦେଖାନ୍ତୁ}}"
@@ -4108,6 +4123,15 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "ପ୍ରାଇଭେଟ ଷ୍ଟେଟ ଟୋକନ"
+  },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "ଚୟନିତ ନିୟମ ସେଟ ଅନୁସାରେ ଫିଲ୍ଟର କରନ୍ତୁ"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "ଏକ୍ସଟେନସନ ସେଟିଂସ"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "ପ୍ରିଲୋଡ ପୃଷ୍ଠା ସେଟିଂସ"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "ବିଫଳ"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "ବୈଧ"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "ଅପରେଟିଂ ସିଷ୍ଟମର ବେଟେରୀ ସେଭର ମୋଡ ଯୋଗୁଁ ପ୍ରିଲୋଡିଂକୁ ଅକ୍ଷମ କରାଯାଇଛି।"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "ଅପରେଟିଂ ସିଷ୍ଟମର ଡାଟା ସେଭର ମୋଡ ଯୋଗୁଁ ପ୍ରିଲୋଡିଂକୁ ଅକ୍ଷମ କରାଯାଇଛି।"
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "DevTools ଖୋଲା ଥିବା ଯୋଗୁଁ ପ୍ରିଲୋଡିଂକୁ ବାଧ୍ୟତାମୂଳକ ଭାବରେ-ସକ୍ଷମ କରାଯାଇଛି। DevTools ବନ୍ଦ ଥିବା ବେଳେ ସେସନ ପରଫରମାନ୍ସର ତୁଳନା ପାଇଁ ବ୍ୟବହାର କରାଯାଇଥିବା ଏକ ହୋଲ୍ଡବେକ ଗୋଷ୍ଠୀର ଏହି ବ୍ରାଉଜର ଅଂଶ ହୋଇଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡରିଂକୁ ଅକ୍ଷମ କରିଦିଆଯିବ।"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "ୟୁଜର ସେଟିଂସ କିମ୍ବା ଏକ ଏକ୍ସଟେନସନ ଯୋଗୁଁ ପ୍ରିଲୋଡିଂକୁ ଅକ୍ଷମ କରାଯାଇଛି। ଅଧିକ ଜାଣିବା ପାଇଁ {PH1}କୁ ଯାଆନ୍ତୁ କିମ୍ବା ଏକ୍ସଟେନସକୁ ଅକ୍ଷମ କରିବା ପାଇଁ {PH2}କୁ ଯାଆନ୍ତୁ।"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "DevTools ଖୋଲା ଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡରିଂକୁ ବାଧ୍ୟତାମୂଳକ ଭାବରେ-ସକ୍ଷମ କରାଯାଇଛି। DevTools ବନ୍ଦ ଥିବା ବେଳେ ସେସନ ପରଫରମାନ୍ସର ତୁଳନା ପାଇଁ ବ୍ୟବହାର କରାଯାଇଥିବା ଏକ ହୋଲ୍ଡବେକ ଗୋଷ୍ଠୀର ଏହି ବ୍ରାଉଜର ଅଂଶ ହୋଇଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡରିଂକୁ ଅକ୍ଷମ କରିଦିଆଯିବ।"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "ପ୍ରିଲୋଡିଂକୁ ଅକ୍ଷମ କରାଯାଇଥିଲା, କିନ୍ତୁ ଏହାକୁ ବର୍ତ୍ତମାନ ବାଧ୍ୟତାମୂଳକ ଭାବରେ-ସକ୍ଷମ କରାଯାଇଛି"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "ପ୍ରିଲୋଡିଂକୁ ଅକ୍ଷମ କରାଯାଇଛି"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ପ୍ରିରେଣ୍ଡରିଂକୁ ଅକ୍ଷମ କରାଯାଇଥିଲା, କିନ୍ତୁ ଏହାକୁ ବର୍ତ୍ତମାନ ବାଧ୍ୟତାମୂଳକ ଭାବରେ-ସକ୍ଷମ କରାଯାଇଛି"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "ସବିଶେଷ ସୂଚନା"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "ବିଫଳତାର କାରଣ"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "ନିୟମର ସେଟ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ସ୍ଥିତି"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠାର ମୁଖ୍ୟ ଫ୍ରେମ ନାଭିଗେସନ ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ସକ୍ରିୟ ହୋଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠାର ସେଣ୍ଡବକ୍ସିଂ ଫ୍ଲାଗ କିମ୍ବା ଅନୁମତି ନୀତି ପ୍ରିରେଣ୍ଡରିଂ ପୃଷ୍ଠା ସହିତ କମ୍ପାଟିବଲ ହୋଇନଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ବ୍ୟବହାର କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "ସକ୍ରିୟକରଣ ସମୟରେ ଏବଂ ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ ଅନୁରୋଧ ସମୟରେ ଭିନ୍ନ ନାଭିଗେସନ ପାରାମିଟର (ଉ.ଦା. HTTP ହେଡର) ଗଣନା କରାଯାଇଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ବ୍ୟବହାର କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ଅଡିଓ ଆଉଟପୁଟ ପାଇଁ ଅନୁରୋଧ କରିଛି, ଯାହା ବର୍ତ୍ତମାନ ସମର୍ଥିତ ନୁହେଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "ବ୍ରାଉଜର କମ ବେଟେରୀ ବ୍ୟବହାର କରୁ ବୋଲି ୟୁଜର ଅନୁରୋଧ କରିଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ପରଫର୍ମ କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "କିଛି ରିସୋର୍ସ ଲୋଡକୁ ବ୍ଲକ କରାଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ ଏକ HTTP କ୍ଲାଏଣ୍ଟ ସାର୍ଟିଫିକେଟ ଆବଶ୍ୟକ କରିଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ ଏକ କ୍ରସ-ସାଇଟ URLକୁ ଟାର୍ଗେଟ କରିଥିବା ଯୋଗୁଁ ଏହା ବିଫଳ ହୋଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ଏକ କ୍ରସ-ସାଇଟ URLକୁ ନାଭିଗେଟ କରିଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା URL ଏକ କ୍ରସ-ସାଇଟ URLକୁ ରିଡାଇରେକ୍ଟ ହୋଇଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ ବିଫଳ ହୋଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ଏକ କ୍ରସ-ସାଇଟ URLକୁ ରିଡାଇରେକ୍ଟ କରୁଥିବା ଗୋଟିଏ URLକୁ ନାଭିଗେଟ କରିଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "ବ୍ରାଉଜର କମ ଡାଟା ବ୍ୟବହାର କରୁ ବୋଲି ୟୁଜର ଅନୁରୋଧ କରିଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ପରଫର୍ମ କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "ଏକ ଡାଉନଲୋଡ ଆରମ୍ଭ କରିବାକୁ ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ପ୍ରଚେଷ୍ଟା କରିଛି, ଯାହା ବର୍ତ୍ତମାନ ସମର୍ଥିତ ନୁହେଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "ବର୍ତ୍ତମାନର ମେମୋରୀ ବ୍ୟବହାର ସ୍ଥିର କରିବାରେ ବ୍ରାଉଜର ଏକ ଇଣ୍ଟର୍ନଲ ତ୍ରୁଟିର ସମ୍ମୁଖୀନ ହୋଇଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ପରଫର୍ମ କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠାରେ ଏହାର ସାଧାରଣ URLଠାରୁ ଭିନ୍ନ ଏକ ପ୍ରଭାବଶାଳୀ URL ଥିବା ଯୋଗୁଁ ଏହା ଏକ ପ୍ରିରେଣ୍ଡରିଂ ପରଫର୍ମ କରିପାରିବ ନାହିଁ। (ଉଦାହରଣ ସ୍ୱରୂପ, ନୂଆ ଟାବ ପୃଷ୍ଠା କିମ୍ବା ହୋଷ୍ଟ ହୋଇଥିବା ଆପ୍ସ।)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URLର ସ୍କିମ http: କିମ୍ବା https: ହୋଇନଥିବା ଯୋଗୁଁ ଏହା ପ୍ରିରେଣ୍ଡର ହେବା ପାଇଁ ଯୋଗ୍ୟ ନୁହେଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ ଏକ http: କିମ୍ବା https: ସ୍କିମ ନଥିବା ଏକ URLକୁ ରିଡାଇରେକ୍ଟ ହୋଇଥିବା ଯୋଗୁଁ ଏହା ବିଫଳ ହୋଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ HTTP ଅଥେଣ୍ଟିକେସନ ଆବଶ୍ୟକ କରିଛି, ଯାହା ବର୍ତ୍ତମାନ ସମର୍ଥିତ ନୁହେଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "ପ୍ରିରେଣ୍ଡରିଂକୁ ସମର୍ଥନ କରିବା ପାଇଁ ଏହି ଡିଭାଇସରେ ଯଥେଷ୍ଟ ମୋଟ ସିଷ୍ଟମ ମେମୋରୀ ନଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ପରଫର୍ମ କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ସ୍ୱତଃ ଅନ୍ୟ ଏକ URLକୁ ନାଭିଗେଟ କରିଛି, ଯାହା ବର୍ତ୍ତମାନ ସମର୍ଥିତ ନୁହେଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠାରେ ପୂର୍ବରୁ ଅନେକଗୁଡ଼ିଏ ପ୍ରିରେଣ୍ଡର ଚାଲୁଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ପରଫର୍ମ କରାଯାଇନାହିଁ। ଅଧିକ ପ୍ରିରେଣ୍ଡରିଂ ସକ୍ଷମ କରିବାକୁ ଅନ୍ୟ କଳ୍ପନାଜଳ୍ପନା ନିୟମାଗଗୁଡ଼ିକୁ କାଢ଼ି ଦିଅନ୍ତୁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "ବ୍ରାଉଜର ପ୍ରେରେଣ୍ଡରିଂ ମେମୋରୀ ସୀମାକୁ ଅତିକ୍ରମ କରିଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡରିଂ ପରଫର୍ମ କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "ବ୍ରାଉଜର ଗମ୍ଭୀର ମେମୋରୀ ଚାପର ସମ୍ମୁଖୀନ ହୋଇଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ଅନଲୋଡ କରାଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "ବ୍ରାଉଜର ଗମ୍ଭୀର ମେମୋରୀ ଚାପରେ ଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ପରଫର୍ମ କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠାରେ ମିଶ୍ରିତ ବିଷୟବସ୍ତୁ ଅଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ବର୍ତ୍ତମାନ ସମର୍ଥିତ ନଥିବା ଏକ ନିଷେଧ JavaScript API ବ୍ୟବହାର କରିଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "ଏକ ଅଣ-2xx HTTP ରେସପନ୍ସ ସ୍ଥିତି କୋଡ ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ ବିଫଳ ହୋଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "ଏକ ବିଷୟବସ୍ତୁ ସୁରକ୍ଷା ନୀତି ଦ୍ୱାରା ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନକୁ ବ୍ଲକ କରାଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ ଏକ ନେଟୱାର୍କ ତ୍ରୁଟିର ସମ୍ମୁଖୀନ ହୋଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "ୟୁଜର ତା'ର ବ୍ରାଉଜର ସେଟିଂସରେ ପ୍ରିଲୋଡିଂକୁ ଅକ୍ଷମ କରିଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡର ପରଫର୍ମ କରାଯାଇନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠା କ୍ରାସ ହୋଇଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠାକୁ ବନ୍ଦ କରାଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା କ୍ରାସ ହୋଇଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠାକୁ ବନ୍ଦ କରାଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ସ୍ୱତଃ ଏକ କ୍ରସ-ଅରିଜିନ ସମାନ-ସାଇଟ URLକୁ ନାଭିଗେଟ କରିଛି, କିନ୍ତୁ ଡେଷ୍ଟିନେସନ ରେସପନ୍ସ ସଠିକ ସପୋର୍ଟ୍ସ-ଲୋଡିଂ-ମୋଡ ହେଡରକୁ ଅନ୍ତର୍ଭୁକ୍ତ କରିନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ଏକ କ୍ରସ-ଅରିଜିନ ସମାନ-ସାଇଟ URLକୁ ନାଭିଗେଟ କରିଛି, କିନ୍ତୁ ଡେଷ୍ଟିନେସନ ରେସପନ୍ସ ସଠିକ ସପୋର୍ଟ୍ସ-ଲୋଡିଂ-ମୋଡ ହେଡରକୁ ଅନ୍ତର୍ଭୁକ୍ତ କରିନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା URL ଏକ କ୍ରସ-ଅରିଜିନ ସମାନ-ସାଇଟ URLକୁ ରିଡାଇରେକ୍ଟ ହୋଇଥିବା ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ ବିଫଳ ହୋଇଛି, କିନ୍ତୁ ଡେଷ୍ଟିନେସନ ରେସପନ୍ସ ସଠିକ ସପୋର୍ଟ୍ସ-ଲୋଡିଂ ମୋଡ ହେଡରକୁ ଅନ୍ତର୍ଭୁକ୍ତ କରିନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠା ଏକ କ୍ରସ-ଅରିଜିନ ସମାନ-ସାଇଟ URLକୁ ରିଡାଇରେକ୍ଟ ହୋଇଥିବା ଏକ URLକୁ ନାଭିଗେଟ କରିଛି, କିନ୍ତୁ ଡେଷ୍ଟିନେସନ ରେସପନ୍ସ ସଠିକ ସପୋର୍ଟ୍ସ-ଲୋଡିଂ-ମୋଡ ହେଡରକୁ ଅନ୍ତର୍ଭୁକ୍ତ କରିନାହିଁ।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "ଏକ ଅବୈଧ SSL ସାର୍ଟିଫିକେଟ ଯୋଗୁଁ ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନ ବିଫଳ ହୋଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠାକୁ ଦୀର୍ଘ ସମୟ ଧରି ପୃଷ୍ଠପଟରେ ରଖାଯାଇଛି, ତେଣୁ ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠାକୁ ଖାରଜ କରାଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "ପ୍ରାରମ୍ଭିକ ପୃଷ୍ଠାକୁ ପୃଷ୍ଠପଟରେ ରଖାଯାଇଛି, ତେଣୁ ପ୍ରିରେଣ୍ଡର ହୋଇଥିବା ପୃଷ୍ଠାକୁ ଖାରଜ କରାଯାଇଛି।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "ପ୍ରିରେଣ୍ଡରିଂ ନାଭିଗେସନରେ ୟୁଜର ଏଜେଣ୍ଟ ପରିବର୍ତ୍ତନ ହେଉଛି।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ଅଧିକ ବିବରଣୀ ପାଇଁ ଏକ ଏଲିମେଣ୍ଟ ଚୟନ କରନ୍ତୁ"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ସ୍ଥିତି"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "ଏଲିମେଣ୍ଟ ପେନେଲରେ ପ୍ରକାଶ କରିବାକୁ କ୍ଲିକ କରନ୍ତୁ"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "ନେଟୱାର୍କ ପେନେଲରେ ପ୍ରକାଶ କରିବାକୁ କ୍ଲିକ କରନ୍ତୁ"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "ସବିଶେଷ ସୂଚନା"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "ତ୍ରୁଟି"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "ଲୋକେସନ"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "ସୋର୍ସ"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "ବୈଧ"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "ଲୋକେସନ"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "ବୈଧତା"
@@ -4569,7 +4746,7 @@
     "message": "କନସୋଲରେ CORS ତ୍ରୁଟିଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
   },
   "panels/console/ConsoleView.ts | treatEvaluationAsUserActivation": {
-    "message": "ମୂଲ୍ୟାଙ୍କନକୁ ଉପଯୋଗକର୍ତ୍ତା ସକ୍ରିୟକରଣ ଭାବେ ବିଚାର କରନ୍ତୁ"
+    "message": "ମୂଲ୍ୟାଙ୍କନକୁ ୟୁଜର ସକ୍ରିୟକରଣ ଭାବେ ବିଚାର କରନ୍ତୁ"
   },
   "panels/console/ConsoleView.ts | verbose": {
     "message": "ଶବ୍ଦବହୁଳ"
@@ -4749,7 +4926,7 @@
     "message": "ଟାଇମଷ୍ଟାମ୍ପ୍ ଦେଖାନ୍ତୁ"
   },
   "panels/console/console-meta.ts | treatEvaluationAsUserActivation": {
-    "message": "ମୂଲ୍ୟାଙ୍କନକୁ ଉପଯୋଗକର୍ତ୍ତା ସକ୍ରିୟକରଣ ଭାବେ ବିଚାର କରନ୍ତୁ"
+    "message": "ମୂଲ୍ୟାଙ୍କନକୁ ୟୁଜର ସକ୍ରିୟକରଣ ଭାବେ ବିଚାର କରନ୍ତୁ"
   },
   "panels/console_counters/WarningErrorCounter.ts | openConsoleToViewS": {
     "message": "{PH1}କୁ ଦେଖିବା ପାଇଁ କନସୋଲ୍ ଖୋଲନ୍ତୁ"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "ଟାର୍ଗେଟ୍ ମାଧ୍ୟମରେ ଲୋଡ୍ କରିବା ସକ୍ଷମ କରନ୍ତୁ"
+    "message": "ୱେବସାଇଟ ମାଧ୍ୟମରେ ଲୋଡ କରନ୍ତୁ"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "URLରେ ଏବଂ ତ୍ରୁଟି ସ୍ତମ୍ଭରେ ସନ୍ଧାନ କରିବାକୁ ଟେକ୍ସଟ୍ ଲେଖନ୍ତୁ"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "ନିରୀକ୍ଷଣ କରାଯାଇଥିବା ଟାର୍ଗେଟ୍ ମାଧ୍ୟମରେ HTTP(S) ଡେଭଲପର୍ ରିସୋର୍ସଗୁଡ଼ିକୁ ଲୋଡ୍ କରନ୍ତୁ"
+    "message": "DevTools ମାଧ୍ୟମରେ ଲୋଡ ନକରି ଆପଣ ନିରୀକ୍ଷଣ କରୁଥିବା ୱେବସାଇଟ ମାଧ୍ୟମରେ HTTP(S) ଡେଭେଲେପର ରିସୋର୍ସଗୁଡ଼ିକୁ ଲୋଡ କରନ୍ତୁ"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{#ଟି ରିସୋର୍ସ}other{#ଟି ରିସୋର୍ସ}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "ସୁଡୋ ::{PH1} ଉପାଦାନ"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "ସ୍ପେସିଫିସିଟି: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "ସାଧାରଣ ରେଣ୍ଡରିଂ ଏମ୍ୟୁଲେସନଗୁଡ଼ିକୁ ଟୋଗଲ କରନ୍ତୁ"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1ଟି ସମ୍ଭାବ୍ୟ ଟ୍ରାକିଂ ୱେବସାଇଟ}other{#ଟି ସମ୍ଭାବ୍ୟ ଟ୍ରାକିଂ ୱେବସାଇଟ}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{#ଟି ରିସୋର୍ସ}other{#ଟି ରିସୋର୍ସ}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "ପ୍ୟାକେଜର ନାମ"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "ପ୍ୟାକେଜ୍ ସିଗ୍ନେଚର୍"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "ସ୍ଥିତି କୋଡ୍"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "Url"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "ଉପାଦାନ"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite କୁକୀ"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "ବିଶ୍ଵସ୍ତ ୱେବ୍ କାର୍ଯ୍ୟକଳାପ"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "ସମସ୍ୟା ଲୁଚାନ୍ତୁ"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "ଏକ ପୃଷ୍ଠା ଲୋଡ୍ କରିବା ସମୟରେ ସ୍କ୍ରିନସଟ୍ କ୍ୟାପଚର୍ କରନ୍ତୁ"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "ଖାଲି କରନ୍ତୁ"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "ବନ୍ଦ କରନ୍ତୁ"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "ବଣ୍ଡଲ୍ କରାଯାଇଥିବା ରିସୋର୍ସ"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "ନେଟୱାର୍କ ଲଗ ଖାଲି କରନ୍ତୁ"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "ରଙ୍ଗ କୋଡ୍"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "ପ୍ରୋଟୋକଲ୍ ମନିଟର୍ ଦେଖାନ୍ତୁ"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "ଜାରି ରଖନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "ରେକର୍ଡିଂ କିମ୍ବା ଚୟନିତ ଷ୍ଟେପକୁ କପି କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "ଏକ ନୂଆ ରେକର୍ଡିଂ ତିଆରି କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "ରେକର୍ଡିଂ ଡିଲିଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "ଏକ୍ସପୋର୍ଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "ଏକ୍ସପୋର୍ଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "ଏକ୍ସଟେନସନଗୁଡ଼ିକ ମାଧ୍ୟମରେ ଏକ୍ସପୋର୍ଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "ଏକ୍ସଟେନସନଗୁଡ଼ିକ ପାଆନ୍ତୁ…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "ରେକର୍ଡିଂକୁ ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "ରେକର୍ଡିଂକୁ ରିପ୍ଲେ କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "ମତାମତ ପଠାନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "ରେକର୍ଡିଂକୁ ଆରମ୍ଭ/ବନ୍ଦ କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "ଗୋଟିଏ ଷ୍ଟେପ କାର୍ଯ୍ୟକାରୀ କରନ୍ତୁ"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "କୋଡ ଭ୍ୟୁକୁ ଟୋଗଲ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "ରେକର୍ଡିଂ ବାତିଲ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "ଏକ ନୂଆ ରେକର୍ଡିଂ ତିଆରି କରନ୍ତୁ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "ଆପଣ ଆପଣଙ୍କର ଗୋଟିଏ ବିକଳ୍ପ ଭାବେ CSS, Pierce କିମ୍ବା XPath ବାଛିବା ଆବଶ୍ୟକ। କେବଳ ଏହି ଚୟନକାରୀଗୁଡ଼ିକୁ ରେକର୍ଡ କରାଯିବା ପାଇଁ ଗ୍ୟାରେଣ୍ଟି ଦିଆଯାଏ ଯେହେତୁ ARIA ଏବଂ ଟେକ୍ସଟ ଚୟନକାରୀ ସ୍ୱତନ୍ତ୍ର ହୋଇନପାରେ।"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "ରେକର୍ଡିଂ ନାମ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "ରେକର୍ଡିଂ ନାମ ଆବଶ୍ୟକ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "ଚୟନକାରୀ ଆଟ୍ରିବ୍ୟୁଟ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "ଟେକ୍ସଟ"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "ରେକର୍ଡ କରିବାକୁ ଚୟନକାରୀ ପ୍ରକାର"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "ରେକର୍ଡିଂ ଆରମ୍ଭ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "ବନ୍ଦ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "ଏକ ବ୍ରାଉଜର ଏକ୍ସଟେନସନ ଦ୍ୱାରା ପ୍ରଦାନ କରାଯାଇଥିବା ବିଷୟବସ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "ଏକ ନୂଆ ରେକର୍ଡିଂ ତିଆରି କରନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "ରେକର୍ଡିଂ ଡିଲିଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "ରେକର୍ଡିଂ ଖୋଲନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "ରେକର୍ଡିଂକୁ ପ୍ଲେ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "ସେଭ କରାଯାଇଥିବା ରେକର୍ଡିଂଗୁଡ଼ିକ"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "ଆସର୍ସନ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "ରିପ୍ଲେ ବାତିଲ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "ଡିଫଲ୍ଟ"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "ଡେସ୍କଟପ"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "ଡାଉନଲୋଡ କରନ୍ତୁ: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "ରିପ୍ଲେ ସେଟିଂସ ଏଡିଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "ଟାଇଟେଲ ଏଡିଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "ରେକର୍ଡିଂ ଶେଷ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "ପରିବେଶ"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "କୋଡକୁ ଲୁଚାନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "ଲାଟେନ୍ସି: {value} ମିଲିସେକେଣ୍ଡ"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "ମୋବାଇଲ"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "ନେଟୱାର୍କ"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "ପରଫରମାନ୍ସ ପେନେଲ"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "ରେକର୍ଡ କରାଯାଉଛି…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "ରେକର୍ଡିଂ ବନ୍ଦ କରାଯାଉଛି…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "ରିପ୍ଲେ ସେଟିଂସ"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "ଟାଇଟେଲ ଆବଶ୍ୟକ"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "ଏହି ବିଭାଗ ପାଇଁ ସ୍କ୍ରିନସଟ"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "କୋଡ ଦେଖାନ୍ତୁ"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "ସମୟ ସମାପ୍ତି: {value} ମିଲିସେକେଣ୍ଡ"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "ରେକର୍ଡିଂକୁ ରିପ୍ଲେ କରିବା ବେଳେ ସମୟ ସମାପ୍ତି ସେଟିଂ (ମିଲିସେକେଣ୍ଡରେ) ପ୍ରତ୍ୟେକ କାର୍ଯ୍ୟ ପାଇଁ ପ୍ରଯୁଜ୍ୟ ହୋଇଥାଏ। ଉଦାହରଣ ସ୍ୱରୂପ, ଯଦି କୌଣସି CSS ଚୟନକର୍ତ୍ତା ଦ୍ୱାରା ଚିହ୍ନଟ କରାଯାଇଥିବା ଏକ DOM ଏଲିମେଣ୍ଟ ନିର୍ଦ୍ଦିଷ୍ଟ ସମୟ ସମାପ୍ତି ମଧ୍ୟରେ ପୃଷ୍ଠାରେ ଦେଖାଯାଏ ନାହିଁ, ତେବେ ରିପ୍ଲେଟି ଏକ ତ୍ରୁଟି ସହ ବିଫଳ ହୁଏ।"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "ସମୟ ସମାପ୍ତି"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "ଅପଲୋଡ କରନ୍ତୁ: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "ଅତ୍ୟଧିକ ସ୍ଲୋ ରିପ୍ଲେ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "ଅତ୍ୟଧିକ ସ୍ଲୋ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "ରିପ୍ଲେ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "ସାଧାରଣ (ଡିଫଲ୍ଟ)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "ସ୍ଲୋ ରିପ୍ଲେ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "ସ୍ଲୋ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "ବହୁତ ସ୍ଲୋ ରିପ୍ଲେ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "ବହୁତ ସ୍ଲୋ"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "ଏକ୍ସଟେନସନଗୁଡ଼ିକ"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "ସ୍ପିଡ"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "ଏକ ନୂଆ ରେକର୍ଡିଂ ତିଆରି କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "ୟୁଜରଙ୍କ ସମ୍ପୂର୍ଣ୍ଣ ଅନୁଭୂତି ଆଧାରରେ ପରଫରମାନ୍ସକୁ ମାପନ୍ତୁ"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "ଶୀଘ୍ର ଆରମ୍ଭ କରନ୍ତୁ: DevToolsରେ ନୂଆ ରେକର୍ଡର ପେନେଲକୁ ଜାଣନ୍ତୁ"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "ଆପଣଙ୍କ ୱେବସାଇଟ କିମ୍ବା ଆପରେ ଜଣେ ସାଧାରଣ ୟୁଜରଙ୍କ ଅନୁଭବକୁ ରେକର୍ଡ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "ଫ୍ଲୋ କାର୍ଯ୍ୟ କରୁଛି କି ନାହିଁ ଯାଞ୍ଚ କରିବା ପାଇଁ ରେକର୍ଡିଂକୁ ରିପ୍ଲେ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "ପରଫରମାନ୍ସ ଟ୍ରେସର ଏକ ବିବରଣୀ ତିଆରି କରନ୍ତୁ କିମ୍ବା ପରୀକ୍ଷଣ ପାଇଁ ଏକ Puppeteer ସ୍କ୍ରିପ୍ଟ ଏକ୍ସପୋର୍ଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "{attributeName} ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "ଫ୍ରେମ ଟ୍ରି ମଧ୍ୟରେ ଫ୍ରେମ ଇଣ୍ଡେକ୍ସ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "ଜଣେ ଚୟନକାରୀ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "ଏକ ଚୟନକାରୀ ଅଂଶ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "ଧାଡ଼ି ଡିଲିଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "ସେଭ କରାଯାଇନାହିଁ: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "ଫ୍ରେମ ଇଣ୍ଡେକ୍ସକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "ଜଣେ ଚୟନକାରୀଙ୍କୁ କାଢ଼ି ଦିଅନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "ଏକ ଚୟନକାରୀ ଅଂଶ କାଢ଼ି ଦିଅନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "ଚୟନକାରୀ ଅପଡେଟ କରିବା ପାଇଁ ଏକ ଉପାଦାନକୁ ଚୟନ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "ଅଜଣା କାର୍ଯ୍ୟ ପ୍ରକାର।"
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "ବ୍ରେକପଏଣ୍ଟ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "ପରେ ଷ୍ଟେପ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "ପୂର୍ବରୁ ଷ୍ଟେପ ଯୋଗ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "ବ୍ରେକପଏଣ୍ଟଗୁଡ଼ିକ"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "ପରିବର୍ତ୍ତନ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "କ୍ଲିକ୍ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "ବନ୍ଦ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "ଏହି ଭାବେ କପି କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "କଷ୍ଟମ ଷ୍ଟେପ"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "ଦୁଇଥର କ୍ଲିକ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "ବଟନ"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "ଉପାଦାନ"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "ଇନପୁଟ୍"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "ନେଟୱାର୍କ ସ୍ଥିତି ଏମ୍ୟୁଲେଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "ହୋଭର"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "କୀ ତଳକୁ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "କୀ ଉପରକୁ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "ନାଭିଗେଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "ଷ୍ଟେପ କାର୍ଯ୍ୟ ଖୋଲନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "ବ୍ରେକପଏଣ୍ଟକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "ଷ୍ଟେପ କାଢ଼ି ଦିଅନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "ସ୍କ୍ରୋଲ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "ଭ୍ୟୁପୋର୍ଟ ସେଟ କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "ଷ୍ଟେପଗୁଡ଼ିକୁ ପରିଚାଳନା କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "ଉପାଦାନ ପାଇଁ ଅପେକ୍ଷା କରନ୍ତୁ"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "ଏକ୍ସପ୍ରେସନ ପାଇଁ ଅପେକ୍ଷା କରନ୍ତୁ"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "{DATE} {TIME}ରେ ରେକର୍ଡିଂ କରାଯାଉଛି"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "ଏକ ନୂଆ ରେକର୍ଡିଂ ତିଆରି କରନ୍ତୁ"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "ରେକର୍ଡର"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "ରେକର୍ଡିଂକୁ ରିପ୍ଲେ କରନ୍ତୁ"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "ରେକର୍ଡର ଦେଖାନ୍ତୁ"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "ରେକର୍ଡିଂକୁ ଆରମ୍ଭ/ବନ୍ଦ କରନ୍ତୁ"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "କୋଡ ଭ୍ୟୁକୁ ଟୋଗଲ କରନ୍ତୁ"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "ସ୍କ୍ରିନକାଷ୍ଟ ଟୋଗଲ୍ କରନ୍ତୁ"
   },
@@ -9861,10 +10377,7 @@
     "message": "ପାଟର୍ନ ଯୋଗ କରନ୍ତୁ..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "ଜଣାଥିବା ତୃତୀୟ-ପକ୍ଷ ସ୍କ୍ରିପ୍ଟଗୁଡ଼ିକୁ ଅଣଦେଖା ତାଲିକାରେ ଯୋଗ କରନ୍ତୁ"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "ସୋର୍ସ ମ୍ୟାପଗୁଡ଼ିକର x_google_ignoreList ଫିଲ୍ଡରୁ ସୋର୍ସଗୁଡ଼ିକୁ ଅଣଦେଖା ତାଲିକାରେ ଯୋଗ କରନ୍ତୁ"
+    "message": "ସୋର୍ସ ମେପଗୁଡ଼ିକରୁ ଜଣାଶୁଣା ତୃତୀୟ-ପକ୍ଷ ସ୍କ୍ରିପ୍ଟଗୁଡ଼ିକ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "ବାହାର କରିବାର କଷ୍ଟମ ନିୟମଗୁଡ଼ିକ:"
@@ -9885,13 +10398,13 @@
     "message": "ବାହାର କରିବାର ସାଧାରଣ ନିୟମଗୁଡ଼ିକ:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "'ଅଣଦେଖା କରନ୍ତୁ' ତାଲିକାରେ ବିଷୟବସ୍ତୁ ସ୍କ୍ରିପ୍ଟଗୁଡ଼ିକୁ ଯୋଗ କରନ୍ତୁ"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "ତାଲିକାକୁ ଅଣଦେଖା କରିବା ପାଇଁ ବିଷୟବସ୍ତୁ ସ୍କ୍ରିପ୍ଟଗୁଡ଼ିକ ଯୋଗ କରନ୍ତୁ (ପୃଷ୍ଠାରେ ଥିବା ଏକ୍ସଟେନସନ୍ ସ୍କ୍ରିପ୍ଟ)"
+    "message": "ଏକ୍ସଟେନସନ ଦ୍ୱାରା ଇଞ୍ଜେକ୍ଟ କରାଯାଇଥିବା ବିଷୟବସ୍ତୁ ସ୍କ୍ରିପ୍ଟଗୁଡ଼ିକ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "ଯେଉଁ ସ୍କ୍ରିପ୍ଟଗୁଡ଼ିକର ନାମ ''{PH1}'' ସହ ମେଳ ହେଉଛି, ସେଗୁଡ଼ିକୁ ଅଣଦେଖା କରନ୍ତୁ"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "ଅଧିକ ଜାଣନ୍ତୁ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "ପାଟର୍ନ ଯୋଗ କରନ୍ତୁ"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "ଉତ୍ତରକୁ ଡିକ୍ରିପ୍ଟ କରନ୍ତୁ"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "କୋଡ କେଶେକୁ ଡିସିରିଆଲାଇଜ କରନ୍ତୁ"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "WebSocket ନଷ୍ଟ କରିଦିଅନ୍ତୁ"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} ସର୍ଟିଂକୁ ବାତିଲ କରାଯାଇଛି"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "ବନ୍ଦ କରନ୍ତୁ"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "କୀବୋର୍ଡ ସର୍ଟକଟଗୁଡ଼ିକ"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "ସର୍ଟକଟଗୁଡ଼ିକ ଦେଖାନ୍ତୁ"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1}ଟି ମେଳ ହେଉଥିବା ଲାଇନକୁ ବାଦ୍ ଦିଆଯାଉଛି … )"
@@ -13472,8 +13997,11 @@
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "ଅଣଦେଖା ତାଲିକାରୁ କାଢ଼ି ଦିଅନ୍ତୁ"
   },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "ଅଳ୍ପ ଦେଖାନ୍ତୁ"
+  },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{ଅଧିକ #ଟି ଫ୍ରେମ୍ ଦେଖାନ୍ତୁ}other{ଅଧିକ #ଟି ଫ୍ରେମ୍ ଦେଖାନ୍ତୁ}}"
+    "message": "{n,plural, =1{#ଟି ଅଧିକ ଫ୍ରେମ ଦେଖାନ୍ତୁ}other{#ଟି ଅଧିକ ଫ୍ରେମ ଦେଖାନ୍ତୁ}}"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "ଅଜଣା"

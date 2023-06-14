@@ -1287,7 +1287,7 @@
     "message": "تم إيقاف واجهة برمجة التطبيقات Event.path نهائيًا وستتم إزالتها. يُرجى استخدام الإجراء Event.composedPath() بدلاً منها."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "تم إيقاف عنوان Expect-CT نهائيًا وستتم إزالته. يتطلَّب Chrome توفُّر شهادة الشفافية لجميع الشهادات الموثوق بها التي تم إصدارها بشكل علني بعد 30 نيسان (أبريل) 2018."
+    "message": "لم يعُد عنوان Expect-CT متاحًا. يتطلَّب Chrome توفُّر شهادة الشفافية لجميع الشهادات الموثوق بها التي تم إصدارها بشكل علني بعد 30 نيسان (أبريل) 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "لم يعد الإجراءان getCurrentPosition() وwatchPosition() متوافقين مع المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "يجب أن تستخدم الإضافات ميزة حظر الوصول من نطاقات أخرى لمواصلة استخدام الكائن SharedArrayBuffer. يُرجى الاطّلاع على https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "تم إيقاف لغة الاستعلامات البنيوية (SQL) على الويب نهائيًا. يُرجى استخدام SQLite WebAssembly أو Indexed Database."
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "تم إيقاف واصف الأذونات window-placement نهائيًا. يمكنك استخدام window-management كبديل. للحصول على مزيد من المساعدة، يُرجى الاطّلاع على https://bit.ly/window-placement-rename."
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] جارٍ تحميل رموز تصحيح الأخطاء لعنوان URL {PH2} (عبر {PH3})..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "إضافة كل نصوص المحتوى البرمجية إلى قائمة التجاهل"
+    "message": "إضافة كل النصوص البرمجية للإضافة إلى قائمة التجاهل"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "إضافة جميع النصوص البرمجية التابعة لجهات خارجية إلى قائمة التجاهل"
@@ -1512,7 +1515,7 @@
     "message": "جارٍ الكتابة في الملف…"
   },
   "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
-    "message": "إجراءات الحدّ من التتبّع الارتدادي"
+    "message": "إجراءات الحدّ من التتبُّع الارتدادي"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints Infrastructure (البنية الأساسية لتعديلات البرامج)"
@@ -1621,9 +1624,6 @@
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "جارٍ تفعيل SharedArrayBuffer"
-  },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "التغيّرات في معايير الجودة لتطبيقات PWA باستخدام نشاط موثوق به على الويب"
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<مجهول المصدر>"
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "الوظيفة المصغّرة للمزاد - {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "تفاعلات المستخدمين"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "طابع زمني"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "إجراءات الحدّ من التتبُّع الارتدادي"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "محو جميع ملفات تعريف الارتباط"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "المفتاح"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "جارٍ التحميل…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "العناصر المخزّنة"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "إعادة تحميل قاعدة البيانات"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "المصدر الأمني"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "عرض الصفحة التالية"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "تمت إعادة تحميل الجدول"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "تم محو بيانات الموقع الإلكتروني."
+  },
   "panels/application/StorageView.ts | application": {
     "message": "تطبيق"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "يجب أن يكون الرقم غير سالب."
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "يجب أن يكون الرقم أقل من {PH1}."
   },
   "panels/application/StorageView.ts | other": {
     "message": "غير ذلك"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "عنوان URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "إجراءات الحدّ من التتبُّع الارتدادي"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "يجري التحقّق من المواقع الإلكترونية المحتمَلة للتتبُّع الارتدادي."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "فرض التنفيذ"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "مزيد من المعلومات: إجراءات الحدّ من التتبُّع الارتدادي"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "لم يتم محو الحالة الخاصة بأي مواقع إلكترونية محتمَلة للتتبُّع الارتدادي. ولم يتم تحديد أي موقع إلكتروني، أو تفعيل إجراءات الحدّ من التتبُّع الارتدادي، أو حظر ملفات تعريف الارتباط التابعة لجهات خارجية."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "جارٍ التنفيذ"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "تم حذف الحالة الخاصة بالمواقع الإلكترونية التالية:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "ما مِن نقاط نهاية لعرضها."
   },
@@ -3957,7 +3978,7 @@
     "message": "العرض المُسبَق مستمر"
   },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
-    "message": "تعطّلت الصفحة المعروضة مسبقًا."
+    "message": "تعطّلت الصفحة المعروضة مُسبقًا."
   },
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "تم إنهاء عملية العرض لصفحة العرض المُسبق."
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "وقت الإنشاء"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "الإدخالات"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "مقدار وحدات البت للترميز الإنتروبي والمتبقّية من التسرّب المسموح به لبيانات \"الإطارات المضمّنة المستقلة بذاتها\""
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "البيانات الوصفية"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "لم يتم الإنشاء بعد"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "عدد الإدخالات"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "المصدر"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "إعادة ضبط الميزانية"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "يتعذّر عرض تتبُّع تسلسل استدعاء الدوال البرمجية."
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "عرض إطارات أقل"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{عرض إطار واحد آخر}zero{عرض # إطار آخر}two{عرض إطارَين آخرَين}few{عرض # إطارات أخرى}many{عرض # إطارًا آخر}other{عرض # إطار آخر}}"
@@ -4109,6 +4124,15 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "الرموز المميّزة للحالة الخاصة"
   },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "الفلترة حسب مجموعة القواعد المحدَّدة"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "إعدادات الإضافات"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "إعدادات تحميل الصفحات مُسبقًا"
+  },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "تعذّر إتمام العملية."
   },
@@ -4122,7 +4146,7 @@
     "message": "النتيجة جاهزة."
   },
   "panels/application/preloading/PreloadingView.ts | statusRunning": {
-    "message": "يجري تنفيذ العملية."
+    "message": "جارٍ التحميل المُسبَق"
   },
   "panels/application/preloading/PreloadingView.ts | statusSuccess": {
     "message": "تمت العملية بنجاح."
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "صالحة"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "تم إيقاف التحميل المُسبَق بسبب وضع \"توفير شحن البطارية\" في نظام التشغيل."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "تم إيقاف التحميل المُسبَق بسبب وضع \"توفير البيانات\" في نظام التشغيل."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "تم فرض تفعيل ميزة \"التحميل المُسبَق\" لأنّ أدوات مطوّري البرامج مفتوحة. عند إغلاق أدوات مطوّري البرامج، سيتم إيقاف ميزة \"العرض المُسبَق\" لأنّ جلسة المتصفِّح هذه ضمن مجموعة جلسات مستثناة من تفعيل الميزة، وذلك لأغراض مقارنة الأداء."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "تم إيقاف التحميل المُسبَق بسبب إعدادات المستخدم أو الإضافة. انتقِل إلى {PH1} للتعرّف على مزيد من المعلومات، أو إلى {PH2} لإيقاف الإضافة."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "تم فرض تفعيل ميزة \"العرض المُسبَق\" لأنّ أدوات مطوّري البرامج مفتوحة. عند إغلاق أدوات مطوّري البرامج، سيتم إيقاف ميزة \"العرض المُسبَق\" لأنّ جلسة المتصفِّح هذه ضمن مجموعة جلسات مستثناة من تفعيل الميزة، وذلك لأغراض مقارنة الأداء."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "ميزة \"التحميل المُسبَق\" كانت غير مفعَّلة، ولكن تم فرض تفعيلها الآن"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "التحميل المُسبق غير مفعَّل"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "ميزة \"العرض المُسبَق\" كانت غير مفعَّلة، ولكن تم فرض تفعيلها الآن"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "معلومات مفصّلة"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "سبب عدم التنفيذ"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "مجموعة القواعد"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "الحالة"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "تم تفعيل الصفحة المعروضة مُسبقًا أثناء بدء التنقّل في الإطار الرئيسي للصفحة."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "لم يتم استخدام العرض المُسبَق لأنّ سياسة الأذونات أو الميزات التجريبية في وضع الحماية لصفحة البدء لم تكن متوافقة مع سياسة صفحة العرض المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "لم يتم استخدام العرض المُسبَق، لأنّه تم حساب مَعلَمات تنقُّل مختلفة أثناء وقت التفعيل (مثل عناوين HTTP) مقارنةً بالمَعلَمات المحسوبة أثناء طلب التنقّل الأصلي للعرض المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "تطلّبت الصفحة المعروضة مُسبقًا مصادر لإخراج الصوت، وهي غير متاحة حاليًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ المستخدم طلبَ أن يستهلك المتصفِّح طاقة بطارية أقل."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "تم حظر بعض عمليات تحميل الموارد."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "تطلَّبَ الانتقال إلى العرض المُسبَق شهادة عميل HTTP."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب استهداف عنوان URL لمواقع إلكترونية متعددة."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL لمواقع إلكترونية متعددة."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب إعادة توجيه عنوان URL المعروض مسبقًا إلى عنوان URL لمواقع إلكترونية متعددة."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL أُعيد توجيهه إلى عنوان URL من مواقع إلكترونية متعددة."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ المستخدم طلبَ أن يستهلك المتصفِّح بيانات أقل."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "حاولت الصفحة المعروضة مُسبقًا بدء عملية تنزيل، وهو إجراء غير متاح حاليًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "لم يتم تنفيذ العرض المُسبَق بسبب حدوث خطأ داخلي في المتصفِّح أثناء محاولة تحديد استخدام الذاكرة الحالي."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "لا يمكن تنفيذ العرض المُسبَق في صفحة البدء، لأنّها تحتوي على عنوان URL فعّال يختلف عن عنوان URL العادي. (على سبيل المثال، صفحة \"علامة تبويب جديدة\" أو التطبيقات المستضافة)."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "لم يكن عنوان URL مؤهَّلاً لعرض محتواه مُسبقًا لأنّ مخطَّطه لم يكن http:‎ أو https:‎."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق لأنّه تمت إعادة التوجيه إلى عنوان URL لم يكن مخطَّطه http:‎ أو https:‎."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "تطلَّبَ الانتقال إلى العرض المُسبَق مصادقة HTTP، وهي غير متاحة حاليًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ هذا الجهاز لا يتضمّن ذاكرة نظام إجمالية كافية لتوفير العرض المُسبق."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL آخر غير متاح حاليًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "لم يتم تنفيذ العرض المُسبَق بسبب إجراء عدد كبير جدًا من عمليات العرض المُسبَق في صفحة البدء حاليًا. عليك إزالة قواعد التوقُّع الأخرى لإتاحة المزيد من عمليات العرض المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ المتصفِّح تجاوزَ الحدّ الأقصى المسموح به لذاكرة العرض المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "تم إلغاء تحميل الصفحة المعروضة مُسبقًا لأنّ المتصفِّح تعرّضَ لضغط شديد في الذاكرة."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ المتصفِّح تعرّضَ لضغط شديد في الذاكرة."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "تضمّنت الصفحة المعروضة مُسبقًا محتوى مختلَطًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "استخدمت الصفحة المعروضة مُسبقًا واجهة برمجة تطبيقات JavaScript محظورة وغير متاحة حاليًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب توفُّر رمز حالة ليس من فئة 2xx لاستجابة HTTP."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "حظرت \"سياسة أمان المحتوى\" عملية الانتقال إلى العرض المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب خطأ في الشبكة."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "لم يتم تنفيذ العرض المُسبق لأنّ المستخدم أوقف التحميل المُسبَق في إعدادات المتصفِّح."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "تعطّلت صفحة البدء."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "تم إنهاء صفحة البدء."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "تعطّلت الصفحة المعروضة مُسبقًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "تم إنهاء الصفحة المعروضة مُسبقًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب إعادة توجيه عنوان URL المعروض مسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL أُعيد توجيهه إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب عدم توفُّر شهادة طبقة مقابس آمنة (SSL) صالحة."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "تمت إتاحة صفحة البدء في الخلفية لفترة طويلة، لذا تم تجاهل الصفحة المعروضة مُسبقًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "تمت إتاحة صفحة البدء في الخلفية، لذا تم تجاهل الصفحة المعروضة مُسبقًا."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "حدثَ تغيير لوكيل المستخدم أثناء الانتقال إلى العرض المُسبَق."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "اختَر عنصرًا لمعرفة مزيد من التفاصيل."
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "الحالة"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "انقر للعرض في لوحة \"العناصر\""
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "انقر للعرض في لوحة \"الشبكة\""
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "معلومات مفصّلة"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "خطأ"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "مصدر مجموعة القواعد"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "المصدر"
@@ -4208,8 +4382,11 @@
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "صالحة"
   },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "مصدر مجموعة القواعد"
+  },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "الصلاحية"
+    "message": "مدى صحة مجموعة القواعد"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "يتم استخدام {PH1} مورد تم جلبه مسبقًا في هذه الصفحة."
@@ -5076,13 +5253,13 @@
     "message": "عنوان URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "تفعيل التحميل من خلال الهدف"
+    "message": "تحميل من خلال الموقع الإلكتروني"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "أدخِل نصًا للبحث في أعمدة عناوين URL والأخطاء"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "تحميل موارد HTTP(S) لمطوري البرامج من الصفحة التي يتم فحصها"
+    "message": "يجب تحميل موارد HTTP(S) الخاصة بالمطوّرين من خلال الموقع الإلكتروني الذي تفحصه، وليس من خلال \"أدوات مطوري البرامج\"."
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{تم تحميل مورد واحد.}zero{تم تحميل # مورد.}two{تم تحميل موردَين.}few{تم تحميل # موارد.}many{تم تحميل # موردًا.}other{تم تحميل # مورد.}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "عنصر ::{PH1} المستعار"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "الدقة: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "التبديل إلى محاكاة العرض الرائجة"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{هناك موقع إلكتروني واحد يُحتمل أنّه يتتبّع نشاط المستخدم.}zero{هناك # موقع إلكتروني يُحتمل أنّه يتتبّع نشاط المستخدم.}two{هناك موقعان إلكترونيان يُحتمل أنّهما يتتبّعان نشاط المستخدم.}few{هناك # مواقع إلكترونية يُحتمل أنّها تتتبّع نشاط المستخدم.}many{هناك # موقعًا إلكترونيًا يُحتمل أنّه يتتبّع نشاط المستخدم.}other{هناك # موقع إلكتروني يُحتمل أنّه يتتبّع نشاط المستخدم.}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{مورد واحد}zero{# مورد}two{موردان}few{# موارد}many{# موردًا}other{# مورد}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "اسم الحزمة"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "توقيع الحزمة"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "رمز الحالة"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "عنوان URL"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "العنصر"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "ملف تعريف الارتباط SameSite"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "نشاط موثوق به على الويب"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "إخفاء المشاكل"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "التقاط لقطات شاشة عند تحميل صفحة."
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "محو"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "إغلاق"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "المصدر المجمّع"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "محو سجلّ الشبكة"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "رمز اللون"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "اعرِض أداة \"رصد البروتوكول\""
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "متابعة"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "نسخ التسجيل أو الخطوة المحدَّدة"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "إنشاء تسجيل جديد"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "حذف التسجيل"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "التصدير"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "تصدير"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "التصدير عبر الإضافات"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "الحصول على إضافات…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "استيراد التسجيل"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "إعادة تشغيل التسجيل"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "إرسال ملاحظات"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "بدء/إيقاف التسجيل"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "تنفيذ خطوة واحدة"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "تبديل طريقة عرض الرمز"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "إلغاء التسجيل"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "إنشاء تسجيل جديد"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "يجب اختيار CSS أو Pierce أو XPath كأحد الخيارات. إنّ أدوات الاختيار المذكورة هي فقط التي يمكن ضمان تسجيلها، إذ قد لا تكون أداتا الاختيار ARIA وText فريدتين."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "اسم التسجيل"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "يجب إدخال اسم للتسجيل."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "سمة أداة الاختيار"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "نص"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "أنواع أداة الاختيار المُستخدَمة أثناء التسجيل"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "بدء التسجيل"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "إغلاق"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "وفّرت إحدى إضافات المتصفِّح هذا المحتوى."
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "إنشاء تسجيل جديد"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "حذف التسجيل"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "فتح التسجيل"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "تشغيل التسجيل"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "التسجيلات التي تم حفظها"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "إضافة تأكيد"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "إلغاء إعادة التشغيل"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "الخيار التلقائي"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "الكمبيوتر المكتبي"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "سرعة التنزيل: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "تعديل إعدادات إعادة التشغيل"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "تعديل العنوان"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "إنهاء التسجيل"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "البيئة"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "إخفاء الرمز"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "وقت الاستجابة: {value} ملي ثانية"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "الجهاز الجوّال"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "الشبكة"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "لوحة الأداء"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "جارٍ التسجيل…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "جارٍ إيقاف التسجيل…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "إعدادات إعادة التشغيل"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "يجب إدخال عنوان."
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "لقطة شاشة لهذا القسم"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "عرض الرمز"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "المهلة: {value} ملي ثانية"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "تسري المهلة الزمنية (بالملي ثانية) على كل إجراء عند إعادة تشغيل التسجيل. على سبيل المثال، إذا لم يظهر عنصر DOM المحدَّد بواسطة أداة اختيار لغة CSS في الصفحة خلال المهلة الزمنية المحدّدة، لن تتم عملية إعادة التشغيل وستظهر رسالة خطأ."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "المهلة"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "سرعة التحميل: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "إعادة التشغيل بمستوى سرعة بطيء للغاية"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "مستوى سرعة بطيء للغاية"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "إعادة التشغيل"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "مستوى سرعة عادي (الخيار التلقائي)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "إعادة التشغيل بمستوى سرعة بطيء"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "مستوى سرعة بطيء"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "إعادة التشغيل بمستوى سرعة بطيء جدًا"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "مستوى سرعة بطيء جدًا"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "الإضافات"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "السرعة"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "إنشاء تسجيل جديد"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "قياس الأداء في تجربة المستخدم بأكملها"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "دليل البدء السريع: تعرّف على مزيد من المعلومات عن لوحة Recorder الجديدة في أدوات مطوري البرامج"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "تسجيل تجربة مستخدم شائعة على موقعك الإلكتروني أو تطبيقك"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "إعادة تشغيل التسجيل للتأكد من عمله بشكل سليم"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "إنشاء تتبُّع تفصيلي للأداء أو تصدير نص برمجي من مكتبة Puppeteer لاختباره"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "إضافة {attributeName}"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "إضافة فهرس إطارات ضِمن مجموعة إطارات الصفحة"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "إضافة أداة اختيار"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "إضافة أحد أجزاء أداة الاختيار"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "حذف صف"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "تعذَّر الحفظ: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "إزالة فهرس الإطارات"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "إزالة أداة اختيار"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "إزالة أحد أجزاء أداة الاختيار"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "اختيار عنصر في الصفحة لتعديل أدوات الاختيار"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "نوع الإجراء غير معروف."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "إضافة نقطة إيقاف"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "إضافة خطوة لاحقة"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "إضافة خطوة سابقة"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "نقاط الإيقاف"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "تغيير"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "النقر"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "إغلاق"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "نسخ التسجيل بتنسيق"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "خطوة مخصَّصة"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "النقر مرّتين"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "زرّ"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "العنصر"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "إدخال"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "محاكاة حالات الشبكة"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "التمرير"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "الضغط على المفتاح"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "رفع الإصبع عن المفتاح"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "تنقُّل"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "فتح إجراءات الخطوة"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "إزالة نقطة الإيقاف"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "إزالة الخطوة"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "الانتقال"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "ضبط إطار العرض"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "إدارة الخطوات"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "انتظار العنصر"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "انتظار التعبير"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "التسجيل في ‎{DATE} الساعة {TIME}"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "إنشاء تسجيل جديد"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Recorder"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "إعادة تشغيل التسجيل"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "عرض لوحة Recorder"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "بدء/إيقاف التسجيل"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "تبديل طريقة عرض الرمز"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "إيقاف/تفعيل التسجيل الرقمي للشاشة"
   },
@@ -9861,10 +10377,7 @@
     "message": "إضافة نمط..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "إضافة النصوص البرمجية المعروفة التابعة لجهات خارجية إلى قائمة التجاهل تلقائيًا"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "إضافة مصادر من الحقل x_google_ignoreList من خرائط المصادر إلى قائمة التجاهل"
+    "message": "النصوص البرمجية المعروفة التابعة لجهات خارجية من خرائط المصدر"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "قواعد الاستبعاد المخصَّصة:"
@@ -9885,13 +10398,13 @@
     "message": "قواعد الاستبعاد العامة:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "إضافة نصوص المحتوى البرمجية إلى قائمة التجاهل"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "إضافة نصوص المحتوى البرمجية إلى قائمة التجاهل (النصوص البرمجية الخاصة بالإضافة في الصفحة)"
+    "message": "النصوص البرمجية للمحتوى التي تم إدخالها من خلال الإضافات"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "تجاهل النصوص البرمجية التي تطابق أسماؤها \"{PH1}\""
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "مزيد من المعلومات"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "إضافة نمط"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "فك تشفير الرد"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "الاطّلاع على ذاكرة التخزين المؤقت لرمز بايت"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "محو WebSocket"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "تم إلغاء ترتيب العمود \"{PH1}\"."
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "إغلاق"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "اختصارات لوحة المفاتيح"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "عرض الاختصارات"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … جارٍ تخطّي {PH1} سطر مطابق … )"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "إزالة برنامج تصحيح الأخطاء من قائمة التجاهل"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "عرض إطارات أقل"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{عرض إطار واحد آخر}zero{عرض # إطار آخر}two{عرض إطارَين آخرَين}few{عرض # إطارات أخرى}many{عرض # إطارًا آخر}other{عرض # إطار آخر}}"

@@ -1287,7 +1287,7 @@
     "message": "Event.path বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে। এর পরিবর্তে Event.composedPath() ব্যবহার করুন।"
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT হেডার বন্ধ করে দেওয়া হয়েছে এবং তা সরিয়ে দেওয়া হবে। ৩০ এপ্রিল, ২০১৮-এর পরে ইস্যু করা সব সর্বজনীন বিশ্বস্ত শংসাপত্রের জন্য Chrome-এর, সার্টিফিকেট ট্রান্সপারেন্সি প্রয়োজন হয়।"
+    "message": "Expect-CT হেডার আর কাজ করবে না। ৩০ এপ্রিল, ২০১৮-এর পরে ইস্যু করা সব সর্বজনীন বিশ্বস্ত শংসাপত্রের জন্য Chrome-এর, সার্টিফিকেট ট্রান্সপারেন্সি প্রয়োজন হয়।"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "অসুরক্ষিত উৎসে getCurrentPosition() ও watchPosition() আর কাজ করে না। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer ব্যবহার করা চালিয়ে যেতে ক্রস-অরিজিন আইসোলেশ থেকে এক্সটেনশন বেছে নিতে হবে। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ দেখুন।"
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "ওয়েব এসকিউএল বন্ধ করা হয়েছে। SQLite WebAssembly বা Indexed Database ব্যবহার করুন"
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "window-placement সংক্রান্ত অনুমতি যাতে বর্ণনা করা হয়েছে সেটি বন্ধ করা হয়েছে। পরিবর্তে window-management ব্যবহার করুন। আরও সহায়তার জন্য, https://bit.ly/window-placement-rename দেখুন।"
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] {PH2}-এর জন্য ডিবাগ চিহ্ন লোড করা হচ্ছে ({PH3}-এর মাধ্যমে)..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "উপেক্ষা তালিকায় সব কন্টেন্ট স্ক্রিপ্ট যোগ করুন"
+    "message": "তালিকা উপেক্ষা করতে, সবকটি এক্সটেনশন স্ক্রিপ্ট যোগ করুন"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "উপেক্ষা তালিকায় সব থার্ড-পার্টি স্ক্রিপ্ট যোগ করুন"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer চালু করা হচ্ছে"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "ট্রাস্টেড ওয়েব অ্যাক্টিভিটি ব্যবহার করে PWA সংক্রান্ত কোয়ালিটির শর্তে পরিবর্তন হয়"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<পরিচয় গোপন করা>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "নিলামের ওয়ার্কলেট — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "ব্যবহারকারীর ইন্টার‍্যাকশন"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "টাইমস্ট্যাম্প"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "বাউন্স ট্র্যাকিং মিটিগেশন"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "সব কুকি মুছুন"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "কী"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "লোড করা হচ্ছে…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "অবজেক্ট স্টোর"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "ডেটাবেস রিফ্রেশ করুন"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "নিরাপত্তার মূল অরিজিন"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "পরের পৃষ্ঠা দেখুন"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "সারণী রিফ্রেশ করা হয়েছে"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "সাইট ডেটা সরানো হয়েছে"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "অ্যাপ্লিকেশন"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "ঋণাত্মক সংখ্যা লিখলে চলবে না"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "নম্বর {PH1} থেকে ছোট হতে হবে"
   },
   "panels/application/StorageView.ts | other": {
     "message": "অন্যান্য"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "বাউন্স ট্র্যাকিং মিটিগেশন"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "সম্ভাব্য বাউন্স ট্র্যাকিং সাইটের জন্য চেক করা হচ্ছে।"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "ফোর্স রান"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "আরও জানুন: বাউন্স ট্র্যাকিং মিটিগেশন"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "কোনও সম্ভাব্য বাউন্স ট্র্যাকিং সাইটের জন্য স্টেট সরানো যায়নি। হয় কোনও কিছু শনাক্ত করা যায়নি, বাউন্স ট্র্যাকিং মিটিগেশন চালু হয়নি বা থার্ড-পার্টি কুকি ব্লক করা হয়নি।"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "চলছে"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "নিম্নলিখিত সাইটগুলির ক্ষেত্রে স্ট্যাটাস মুছে ফেলা হয়েছে:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "দেখানোর মতো কোনও এন্ডপয়েন্ট নেই"
   },
@@ -3957,7 +3978,7 @@
     "message": "প্রিরেন্ডারিং চলছে"
   },
   "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
-    "message": "প্রিরেন্ডার করা পৃষ্ঠাটি ক্র্যাশ হয়ে গেছে।"
+    "message": "প্রিরেন্ডার করা পেজ ক্র্যাশ হয়ে গেছে।"
   },
   "panels/application/components/Prerender2.ts | RendererProcessKilled": {
     "message": "প্রিরেন্ডারিং পৃষ্ঠার জন্য রেন্ডারার প্রক্রিয়াটি বন্ধ করে দেওয়া হয়েছে।"
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "তৈরির সময়"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "এন্ট্রি"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "Fenced ফ্রেমের জন্য এনট্রপি বাজেট"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "মেটাডেটা"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "এখনও তৈরি হয়নি"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "এন্ট্রির সংখ্যা"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "অরিজিন"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "বাজেট রিসেট করুন"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "স্ট্যাক ট্রেস রেন্ডার করা যাচ্ছে না"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "কম দেখুন"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{আরও #টি ফ্রেম দেখুন}one{আরও #টি ফ্রেম দেখুন}other{আরও #টি ফ্রেম দেখুন}}"
@@ -4108,6 +4123,15 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "ব্যক্তিগত স্টেট টোকেন"
+  },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "বেছে নেওয়া রুল সেট গ্রিড অনুযায়ী ফিল্টার করুন"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "এক্সটেনশন সেটিংস"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "প্রিলোড পেজ সেটিংস"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "করা যায়নি"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "সঠিক"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "অপারেটিং সিস্টেমের 'ব্যাটারি সেভার' মোড চালু থাকার কারণে প্রিলোডিং বন্ধ হয়ে গেছে।"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "অপারেটিং সিস্টেমের 'ডেটা সেভার' মোডের কারণে প্রিলোডিং বন্ধ হয়ে গেছে।"
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "DevTools খোলা থাকার কারণে প্রিলোড করার ফিচার জোর করে চালু করা হয়েছে। যখন DevTools বন্ধ থাকে, তখন প্রি-রেন্ডারিং বন্ধ করা হয় কারণ এই ব্রাউজার সেশনটি হল কর্মক্ষমতা তুলনা করতে ব্যবহৃত হোল্ডব্যাক গ্রুপের অংশ।"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "ব্যবহারকারীর সেটিংস বা একটি এক্সটেনশনের জন্য প্রিলোডিং বন্ধ হয়ে গেছে। আরও জানতে {PH1} লিঙ্কে যান অথবা এক্সটেনশন বন্ধ করতে {PH2} লিঙ্কে যান।"
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "DevTools খোলা থাকার কারণে প্রিরেন্ডারিং জোর করে চালু করা হয়েছে। যখন DevTools বন্ধ থাকে, তখন প্রি-রেন্ডারিং বন্ধ করা হয় কারণ এই ব্রাউজার সেশনটি হল কর্মক্ষমতা তুলনা করতে ব্যবহৃত হোল্ডব্যাক গ্রুপের অংশ।"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "প্রিলোড করার ফিচার বন্ধ ছিল, কিন্তু এখন জোর করে চালু করা হয়েছে"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "প্রিলোডিং বন্ধ করা হয়েছে"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "প্রিরেন্ডারিং বন্ধ ছিল, কিন্তু এখন জোর করে চালু করা হয়েছে"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "বিস্তারিত তথ্য"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "বাতিল হওয়ার কারণ"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "নিয়ম সেট করুন"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "স্ট্যাটাস"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "ইনিশিয়েটিং পেজের মেন ফ্রেম নেভিগেশনের সময় প্রিরেন্ডার করা পেজ চালু করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ স্যান্ডবক্সিং ফ্ল্যাগ বা ইনিশিয়েটিং পেজের অনুমতি সংক্রান্ত নীতি প্রিরেন্ডারিং পেজের সাথে সামঞ্জস্যপূর্ণ ছিল না।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ চালু করার সময়, আসল প্রিরেন্ডার নেভিগেশন অনুরোধের পরিবর্তে  বিভিন্ন নেভিগেশন প্যারামিটার (যেমন HTTP হেডার) গণনা করা হয়েছিল।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "প্রিরেন্ডার করা পেজ অডিওর জন্য অনুরোধ করেছে, বর্তমানে যা কাজ করবে না।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্যবহারকারী অনুরোধ করেছিলেন যে ব্রাউজার যাতে কম ব্যাটারি ব্যবহার করে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "কিছু রিসোর্স লোড ব্লক করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "প্রিরেন্ডারিং নেভিগেশনে একটি HTTP ক্লায়েন্ট সার্টিফিকেট প্রয়োজন।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "প্রিরেন্ডারিং নেভিগেশন করা যায়নি, কারণ এটি ক্রস-সাইট URL টার্গেট করেছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "প্রিরেন্ডার করা পেজ একটি ক্রস-সাইট URL-এ নেভিগেট করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "প্রিরেন্ডারিং নেভিগেশন করা যায়নি, কারণ প্রিরেন্ডার করা URL ক্রস-সাইট URL-এ রিডাইরেক্ট করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "প্রিরেন্ডার করা পেজ একটি URL-এ নেভিগেট করা হয়েছে যা একটি ক্রস-সাইট URL-এ রিডাইরেক্ট করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্যবহারকারী, ব্রাউজার যাতে কম ডেটা ব্যবহার করে সেই অনুরোধ করেছেন।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "প্রিরেন্ডার করা পেজ ডাউনলোড করার চেষ্টা করেছে বর্তমানে যা কাজ করবে না।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজার বর্তমান মেমরির ব্যবহার নির্ধারণের চেষ্টা করার সময় একটি অভ্যন্তরীণ সমস্যার সম্মুখীন হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "ইনিশিয়েটিং পেজ প্রিরেন্ডারিং পারফর্ম করতে পারবে না, কারণ এতে একটি কার্যকর URL রয়েছে যা সাধারণ URL থেকে আলাদা। (যেমন, নতুন ট্যাব পেজ বা হোস্ট করা অ্যাপ।)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URL প্রিরেন্ডার করার জন্য উপযুক্ত নয়, কারণ এর স্কিম, HTTP বা HTTPS : নয়"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "প্রিরেন্ডারিং নেভিগেশন করা যায়নি, কারণ এটি এমন একটি URL-এ রিডাইরেক্ট করেছে যার স্কিম HTTP: বা HTTPS নয়:।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "প্রিরেন্ডারিং নেভিগেশনে HTTP সংক্রান্ত যাচাইকরণ প্রয়োজন যা বর্তমানে কাজ করবে না।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ প্রিরেন্ডার কাজ করার জন্য পর্যাপ্ত মোট সিস্টেম মেমরি এই ডিভাইসে নেই।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "প্রিরেন্ডার করা পেজ নিজে থেকে অন্য URL-এ নেভিগেট করেছে, যা বর্তমানে কাজ করবে না।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ইনিশিয়েটিং পেজে আগে থেকেই অনেকগুলি প্রিরেন্ডার চলছে। আরও প্রিরেন্ডারিং চালু করতে, অন্যান্য স্পেকুলেশন রুল সরিয়ে দিন।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজারটি প্রিরেন্ডারিং মেমরির সীমা অতিক্রম করে গেছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "প্রিরেন্ডার করা পেজ আনলোড করা হয়েছে, কারণ ব্রাউজারে মেমরি অত্যন্ত কম ছিল।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজারের মেমরি অত্যন্ত কম ছিল।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "প্রিরেন্ডার করা পেজে মিক্সড কন্টেন্ট রয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "প্রিরেন্ডার করা পেজ নিষিদ্ধ জাভাস্ক্রিপ্ট API ব্যবহার করেছে যা বর্তমানে কাজ করবে না।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "2xx HTTP রেসপন্স স্ট্যাটাস কোড না হওয়ার কারণে প্রিরেন্ডারিং নেভিগেশন করা যায়নি।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "প্রিরেন্ডারিং নেভিগেশন, কন্টেন্ট সুরক্ষা সংক্রান্ত নীতির মাধ্যমে ব্লক করা রয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "প্রিরেন্ডারিং নেভিগেশনে একটি নেটওয়ার্কের সমস্যা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্যবহারকারী ব্রাউজার সেটিংসে প্রিলোডিং বন্ধ করে দিয়েছেন।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "ইনিশিয়েটিং পেজ ক্র্যাশ করেছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "ইনিশিয়েটিং পেজ বন্ধ করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "প্রিরেন্ডার করা পেজ ক্র্যাশ হয়ে গেছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "প্রিরেন্ডার করা পেজ বন্ধ করে দেওয়া হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "প্রিরেন্ডার করা পেজ একটি ক্রস-অরিজিন একই ধরনের সাইট URL-এ নেভিগেট করেছে, কিন্তু ডেস্টিনেশন রেসপন্সে উপযুক্ত Supports-Loading-Mode হেডার অন্তর্ভুক্ত করা হয়নি।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "প্রিরেন্ডার করা পেজ একটি ক্রস-অরিজিন একই ধরনের সাইট URL-এ নেভিগেট করা হয়েছে কিন্তু ডেস্টিনেশন রেসপন্সে উপযুক্ত Supports-Loading-Mode হেডার অন্তর্ভুক্ত করা হয়নি।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "প্রিরেন্ডারিং নেভিগেশন সম্ভব হয়নি, কারণ প্রিরেন্ডার করা URL একটি ক্রস-অরিজিন একই ধরনের সাইট URL-এ রিডাইরেক্ট করা হয়েছে, কিন্তু ডেস্টিনেশন রেসপন্সে উপযুক্ত Supports-Loading-Mode হেডার অন্তর্ভুক্ত করেনি।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "প্রি-রেন্ডার করা পেজ একটি URL-এ নেভিগেট করা হয়েছে যা একটি ক্রস-অরিজিন একই ধরনের সাইট URL-এ রিডাইরেক্ট করা হয়েছে, কিন্তু ডেস্টিনেশন রেসপন্সে উপযুক্ত Supports-Loading-Mode হেডার অন্তর্ভুক্ত করা হয়নি।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "একটি ভুল SSL সার্টিফিকেটের কারণে প্রিরেন্ডারিং নেভিগেশন করা যায়নি।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "ইনিশিয়েটিং পেজ দীর্ঘ সময়ের জন্য ব্যাকগ্রাউন্ডে ছিল, তাই প্রিরেন্ডার করা পেজ বাতিল করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "ইনিশিয়েটিং পেজ ব্যাকগ্রাউন্ডে পাঠানো হয়েছে, তাই আগে থেকে রেন্ডার করা পেজটি বাতিল করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "প্রিরেন্ডারিং নেভিগেশনে ব্যবহারকারী এজেন্ট পরিবর্তন করা হয়েছে।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "আরও বিবরণের জন্য এলিমেন্ট বেছে নিন"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "স্ট্যাটাস"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "এলিমেন্ট প্যানেলে দেখতে ক্লিক করুন"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "নেটওয়ার্ক প্যানেলে দেখাতে ক্লিক করুন"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "বিস্তারিত তথ্য"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "সমস্যা"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "লোকেশন"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "সোর্স"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "সঠিক"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "লোকেশন"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "বৈধতা"
@@ -5076,13 +5253,13 @@
     "message": "ইউআরএল"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "টার্গেটের মাধ্যমে লোড করা চালু করুন"
+    "message": "ওয়েবসাইটের মাধ্যমে লোড করুন"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "ইউআরএল ও সমস্যা সংক্রান্ত কলাম সার্চ করতে টেক্সট লিখুন"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "পরীক্ষা করা টার্গেটের মাধ্যমে HTTP(S) ডেভেলপার রিসোর্স লোড করুন"
+    "message": "DevTools-এর মাধ্যমে না করে, আপনি যে ওয়েবসাইট দেখছেন সেখান থেকেHTTP(S) ডেভেলপার রিসোর্স লোড করুন"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{#টি রিসোর্স}one{#টি রিসোর্স}other{#টি রিসোর্স}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "সিউডো ::{PH1} এলিমেন্ট"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "নির্দিষ্ট তথ্য: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "সাধারণ রেন্ডারিং ইমুলেশন টগল করুন"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{সম্ভাব্য ১টি ট্র্যাকিং ওয়েবসাইট}one{সম্ভাব্য #টি ট্র্যাকিং ওয়েবসাইট}other{সম্ভাব্য #টি ট্র্যাকিং ওয়েবসাইট}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{#টি রিসোর্স}one{#টি রিসোর্স}other{#টি রিসোর্স}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "প্যাকেজের নাম"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "প্যাকেজ স্বাক্ষর"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "স্ট্যাটাস কোড"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "ইউআরএল"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "এলিমেন্ট"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite কুকি"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "বিশ্বস্ত ওয়েব অ্যাক্টিভিটি"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "সমস্যাগুলি লুকান"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "পৃষ্ঠা লোড করার সময় স্ক্রিনশট ক্যাপচার করুন"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "মুছুন"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "বন্ধ করুন"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "বান্ডেল করা রিসোর্স"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "নেটওয়ার্ক লগ সরিয়ে দিন"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "রঙের কোড"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "প্রোটোকল মনিটর দেখান"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "চালিয়ে যান"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "রেকর্ডিং বা বেছে নেওয়া ধাপ কপি করুন"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "নতুন রেকর্ডিং তৈরি করুন"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "রেকর্ডিং মুছে ফেলুন"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "এক্সপোর্ট"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "এক্সপোর্ট করুন"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "এক্সটেনশনের মাধ্যমে এক্সপোর্ট করুন"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "এক্সটেনশন পান…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "রেকর্ডিং ইমপোর্ট করুন"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "রেকর্ডিং আবার চালান"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "মতামত জানান"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "রেকর্ডিং শুরু/বন্ধ করুন"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "একটি ধাপ এক্সিকিউট করুন"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "কোড ভিউ টগল করুন"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "রেকর্ডিং বাতিল করুন"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "নতুন রেকর্ডিং তৈরি করুন"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "বিকল্প হিসেবে আপনাকে CSS, Pierce বা XPath-এর মধ্যে থেকে একটি বিকল্প বেছে নিতে হবে। শুধুমাত্র এইসব সিলেক্টরের রেকর্ড করার নিশ্চয়তা রয়েছে কারণ ARIA এবং টেক্সট সিলেক্টর অনন্য নাও হতে পারে।"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "রেকর্ডিংয়ের নাম"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "রেকর্ডিংয়ের নাম দিতে হবে"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "সিলেক্টর অ্যাট্রিবিউট"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "পিয়ার্স"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "টেক্সট"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "রেকর্ডের জন্য বাছাইয়ের ধরন"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "রেকর্ডিং শুরু করুন"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "বন্ধ করুন"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "ব্রাউজার এক্সটেনশন থেকে এই কন্টেন্ট পাওয়া গেছে"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "নতুন রেকর্ডিং তৈরি করুন"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "রেকর্ডিং মুছে ফেলুন"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "রেকর্ডিং খুলুন"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "রেকর্ডিং চালান"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "সেভ করা রেকর্ডিং"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "অ্যাসেট যোগ করুন"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "রিপ্লে বাতিল করুন"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "ডিফল্ট"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "ডেস্কটপ"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "ডাউনলোড: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "রিপ্লে সেটিংস এডিট করুন"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "টাইটেল এডিট করুন"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "রেকর্ডিং শেষ করুন"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "এনভায়রনমেন্ট"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "কোড লুকান"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "লেটেন্সি: {value} মিলি.সে."
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "মোবাইল"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "নেটওয়ার্ক"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "পারফর্ম্যান্স প্যানেল"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "রেকর্ড করা হচ্ছে…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "রেকর্ডিং বন্ধ করা হচ্ছে…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "রিপ্লে সেটিংস"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "টাইটেল দেখাতে হবে"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "এই বিভাগের জন্য স্ক্রিনশট"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "কোড দেখুন"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "সময় শেষ: {value} মিলি.সে."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "রেকর্ডিং রিপ্লে করার সময় টাইমআউট সেটিং (মিলিসেকেন্ডে) প্রতিটি অ্যাকশনের জন্য প্রযোজ্য। যেমন- যদি একটি CSS বাছাইকারী দ্বারা চিহ্নিত একটি DOM এলিমেন্ট নির্দিষ্ট সময়সীমার মধ্যে পৃষ্ঠায় উপস্থিত না হয় তাহলে রিপ্লেতে সমস্যা হয়।"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "সময় সমাপ্ত"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "আপলোড: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "অত্যন্ত স্লো রিপ্লে"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "খুবই স্লো"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "রিপ্লে"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "সাধারন (ডিফল্ট)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "স্লো রিপ্লে"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "স্লো"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "খুবই স্লো রিপ্লে"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "খুব স্লো"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "এক্সটেনশন"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "গতিবেগ"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "নতুন রেকর্ডিং তৈরি করুন"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "ব্যবহারকারীর অভিজ্ঞতা জুড়ে পারফর্ম্যান্স পরিমাপ করুন"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "কুইকস্টার্ট: DevTools-এ নতুন রেকর্ডার প্যানেল সম্পর্কে জানুন"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "আপনার ওয়েবসাইট বা অ্যাপে একটি সাধারণ ব্যবহারকারীর অভিজ্ঞতা রেকর্ড করুন"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "ফ্লো কাজ করছে কিনা তা যাচাই করার জন্য রেকর্ডিং রিপ্লে করুন"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "একটি বিস্তারিত পারফর্ম্যান্স ট্রেস তৈরি করুন বা পরীক্ষার জন্য Puppeteer স্ক্রিপ্ট এক্সপোর্ট করুন"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "{attributeName} যোগ করুন"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "ফ্রেম ট্রির মধ্যে ফ্রেম ইন্ডেক্স যোগ করুন"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "সিলেক্টর যোগ করুন"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "সিলেক্টরের অংশ যোগ করুন"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "সারি মুছুন"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "সেভ করা হয়নি: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "ফ্রেম ইন্ডেক্স সরিয়ে দিন"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "সিলেক্টর সরিয়ে দিন"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "সিলেক্টরের অংশ সরিয়ে দিন"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "সিলেক্টর আপডেট করার জন্য পৃষ্ঠার কোনও এলিমেন্ট বেছে নিন"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "অ্যাকশনের ধরন অজানা।"
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "ব্রেকপয়েন্ট যোগ করুন"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "এরপরে ধাপ যোগ করুন"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "এর আগে ধাপ যোগ করুন"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "ব্রেকপয়েন্ট"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "পরিবর্তন করুন"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "ক্লিক করুন"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "বন্ধ করুন"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "এই হিসেবে কপি করুন"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "কাস্টম ধাপ"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "ডবল ক্লিক করা"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "বোতাম"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "এলিমেন্ট"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "ইনপুট"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "নেটওয়ার্কের অবস্থা ইমুলেট করুন"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "উপরে নিয়ে যাওয়া"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "নিম্নমুখী তীরচিহ্ন যুক্ত কী"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "উর্ধমুখী তীরচিহ্ন যুক্ত কী"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "নেভিগেট করুন"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "ধাপের অ্যাকশন খুলুন"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "ব্রেকপয়েন্ট সরান"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "ধাপ সরিয়ে দিন"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "স্ক্রল করুন"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "ভিউপোর্ট সেট করুন"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "ধাপ ম্যানেজ করুন"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "এলিমেন্টের জন্য অপেক্ষা করুন"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "এক্সপ্রেশনের অপেক্ষা করা"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "{DATE} তারিখে {TIME}-এ রেকর্ড করা হয়েছে"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "নতুন রেকর্ডিং তৈরি করুন"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "রেকর্ডার"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "রেকর্ডিং আবার চালান"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "রেকর্ডার দেখান"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "রেকর্ডিং শুরু/বন্ধ করুন"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "কোড ভিউ টগল করুন"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "স্ক্রিনকাস্ট টগল করুন"
   },
@@ -9861,10 +10377,7 @@
     "message": "প্যাটার্ন যোগ করুন..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "উপেক্ষা তালিকাতে পরিচিত থার্ড-পার্টি স্ক্রিপ্ট অটোমেটিক যোগ করুন"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "তালিকা উপেক্ষা করার জন্য সোর্স ম্যাপ থেকে x_google_ignoreList ফিল্ড থেকে সোর্স যোগ করুন"
+    "message": "সোর্স ম্যাপ থেকে পাওয়া পরিচিত থার্ড-পার্টি স্ক্রিপ্ট"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "বাদ দেওয়ার কাস্টম নিয়ম:"
@@ -9885,13 +10398,13 @@
     "message": "বাদ দেওয়ার সাধারণ নিয়ম:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "তালিকা এড়িয়ে যেতে, কন্টেন্ট স্ক্রিপ্ট যোগ করুন"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "তালিকা উপেক্ষা করতে কন্টেন্ট স্ক্রিপ্ট যোগ করুন (পৃষ্ঠায় এক্সটেনশন স্ক্রিপ্ট)"
+    "message": "কন্টেন্ট স্ক্রিপ্ট, এক্সটেনশনের মাধ্যমে ইনজেক্ট করা হয়েছে"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "\"{PH1}\"-এর সাথে নাম মিলে যাওয়া স্ক্রিপ্ট এড়িয়ে যান"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "আরও জানুন"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "প্যাটার্ন যোগ করুন"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "উত্তর ডিক্রিপ্ট করুন"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "কোড ক্যাশে ডিসিরিয়ালাইজ করুন"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "WebSocket বাতিল করুন"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} সাজানো বাতিল করা হয়েছে"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "বন্ধ করুন"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "কীবোর্ড শর্টকাট"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "শর্টকাট দেখান"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … মিলছে এমন {PH1}টি লাইন এড়িয়ে যাওয়া হচ্ছে … )"
@@ -13472,8 +13997,11 @@
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "উপেক্ষা তালিকা থেকে সরান"
   },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "কম দেখুন"
+  },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{আরও #টি ফ্রেম দেখুন}one{আরও #টি ফ্রেম দেখুন}other{আরও #টি ফ্রেম দেখুন}}"
+    "message": "{n,plural, =1{আরও #টি ফ্রেম দেখান}one{আরও #টি ফ্রেম দেখান}other{আরও #টি ফ্রেম দেখান}}"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "অজানা"

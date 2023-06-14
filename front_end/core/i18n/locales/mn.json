@@ -1287,7 +1287,7 @@
     "message": "Event.path-г зогсоосон бөгөөд хасна. Оронд нь Event.composedPath()-г ашиглана уу."
   },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT толгой хэсгийг зогсоосон бөгөөд хасна. Chrome 2018 оны 4-р сарын 30-наас хойш олгосон олон нийтийн бүх итгэмжит сертификатад Сертификатын ил тод байдлыг шаардана."
+    "message": "Expect-CT толгой хэсгийг цаашид дэмжихээ больсон. Chrome 2018 оны 4-р сарын 30-наас хойш олгосон олон нийтийн бүх итгэмжит сертификатад Сертификатын ил тод байдлыг шаардана."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() болон watchPosition() цаашид аюултай эх дээр ажиллахаа больсон. Энэ онцлогийг ашиглахын тулд та аппликэйшнээ HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://goo.gle/chrome-insecure-origins дээрээс харна уу."
@@ -1406,6 +1406,9 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer-г үргэлжүүлэн ашиглахын тулд өргөтгөлүүд хөндлөнгийн эхийн тусгаарлалтад нэгдэх хэрэгтэй. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/-г харна уу."
   },
+  "generated/Deprecation.ts | WebSQL": {
+    "message": "Web SQL-г зогсоосон. SQLite WebAssembly эсвэл индексжүүлсэн өгөгдлийн бааз ашиглана уу"
+  },
   "generated/Deprecation.ts | WindowPlacementPermissionDescriptorUsed": {
     "message": "window-placement зөвшөөрлийн тайлбарлагчийг зогсоосон. Оронд нь window-management-г ашиглана уу. Илүү их тусламж авах бол https://bit.ly/window-placement-rename-г шалгана уу."
   },
@@ -1449,7 +1452,7 @@
     "message": "[{PH1}] {PH2}-н дебаг хийх тэмдгийг ачаалж байна ({PH3}-р)..."
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
-    "message": "Үл хэрэгсэх жагсаалтад контентын бүх скриптийг нэмэх"
+    "message": "Үл хэрэгсэх жагсаалтад өргөтгөлийн бүх скриптийг нэмэх"
   },
   "models/bindings/IgnoreListManager.ts | addAllThirdPartyScriptsToIgnoreList": {
     "message": "Үл хэрэгсэх жагсаалтын бүх гуравдагч талын скриптийг нэмнэ үү"
@@ -1622,9 +1625,6 @@
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "SharedArrayBuffer-г идэвхжүүлж байна"
   },
-  "models/issues_manager/TrustedWebActivityIssue.ts | changesToQualityCriteriaForPwas": {
-    "message": "Итгэмжлэгдсэн вебийн үйл ажиллагааг ашиглан PWA-н чанарын шалгуурт хийсэн өөрчлөлтүүд"
-  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<нэргүй>"
   },
@@ -1780,9 +1780,6 @@
   },
   "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
     "message": "Auction Worklet — {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | userInteractions": {
-    "message": "Хэрэглэгчийн харилцан үйлдлүүд"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
@@ -2660,6 +2657,9 @@
   "panels/application/BackgroundServiceView.ts | timestamp": {
     "message": "Хугацаа тэмдэглэгч"
   },
+  "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
+    "message": "Дахин чиглүүлэх хяналтыг багасгах"
+  },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Бүх күүкийг арилгах"
   },
@@ -2768,9 +2768,6 @@
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Түлхүүр"
   },
-  "panels/application/IndexedDBViews.ts | loading": {
-    "message": "Ачаалж байна…"
-  },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Объект хадгалалт"
   },
@@ -2785,9 +2782,6 @@
   },
   "panels/application/IndexedDBViews.ts | refreshDatabase": {
     "message": "Өгөгдлийн баазыг сэргээх"
-  },
-  "panels/application/IndexedDBViews.ts | securityOrigin": {
-    "message": "Аюулгүй байдлын эх"
   },
   "panels/application/IndexedDBViews.ts | showNextPage": {
     "message": "Дараагийн хуудсыг харуулах"
@@ -3101,6 +3095,9 @@
   "panels/application/StorageItemsView.ts | refreshedStatus": {
     "message": "Хүснэгтийг сэргээсэн"
   },
+  "panels/application/StorageView.ts | SiteDataCleared": {
+    "message": "Сайтын өгөгдлийг арилгасан"
+  },
   "panels/application/StorageView.ts | application": {
     "message": "Аппликейшн"
   },
@@ -3142,6 +3139,9 @@
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "Дугаар сөрөг бус байх ёстой"
+  },
+  "panels/application/StorageView.ts | numberMustBeSmaller": {
+    "message": "Тоо нь {PH1}-с бага байх ёстой"
   },
   "panels/application/StorageView.ts | other": {
     "message": "Бусад"
@@ -3626,6 +3626,27 @@
   "panels/application/components/BackForwardCacheView.ts | url": {
     "message": "URL:"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
+    "message": "Дахин чиглүүлэх хяналтыг багасгах"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
+    "message": "Боломжит дахин чиглүүлэхийг хянах сайтууд байгаа эсэхийг шалгаж байна."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
+    "message": "Хүчээр ажиллуулах"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | learnMore": {
+    "message": "Нэмэлт мэдээлэл авах: Дахин чиглүүлэх хяналтыг багасгах"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
+    "message": "Төлөвийг аливаа боломжит дахин чиглүүлэхийг хянах сайтуудтай эсэхийг нь шалгаагүй. Юуг ч тодорхойлоогүй, дахин чиглүүлэх хяналтыг багасгахыг идэвхжүүлээгүй эсвэл гуравдагч талын күүкиг блоклоогүй."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
+    "message": "Ажиллуулж байна"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
+    "message": "Дараах сайтуудын төлөвийг устгасан:"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Үзүүлэх эцсийн цэг байхгүй"
   },
@@ -3663,7 +3684,7 @@
     "message": "Элементийн түр зуурын самбарт харуулахын тулд товшино уу"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
-    "message": "Сүлжээний түр зуурын самбарт харуулахын тулд товшино уу"
+    "message": "Сүлжээний самбарт харуулахын тулд товшино уу"
   },
   "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
     "message": "Сүлжээний түр зуурын самбарт харуулахын тулд товшино уу (хуудсыг дахин ачаалах шаардлагатай байж болзошгүй)"
@@ -4061,23 +4082,14 @@
   "panels/application/components/SharedStorageMetadataView.ts | creation": {
     "message": "Үүсгэх цаг"
   },
-  "panels/application/components/SharedStorageMetadataView.ts | entries": {
-    "message": "Оруулгууд"
-  },
   "panels/application/components/SharedStorageMetadataView.ts | entropyBudget": {
     "message": "Хашаалагдсан хүрээний энтропи төсөв"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | metadata": {
-    "message": "Мета өгөгдөл"
   },
   "panels/application/components/SharedStorageMetadataView.ts | notYetCreated": {
     "message": "Одоогоор үүсгээгүй байна"
   },
   "panels/application/components/SharedStorageMetadataView.ts | numEntries": {
     "message": "Оролтын тоо"
-  },
-  "panels/application/components/SharedStorageMetadataView.ts | origin": {
-    "message": "Эх"
   },
   "panels/application/components/SharedStorageMetadataView.ts | resetBudget": {
     "message": "Төсвийг дахин тохируулах"
@@ -4087,6 +4099,9 @@
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Стекийн мөрийг буулгах боломжгүй"
+  },
+  "panels/application/components/StackTrace.ts | showLess": {
+    "message": "Товч харуулах"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Бусад # фреймийг харуулах}other{Бусад # фреймийг харуулах}}"
@@ -4108,6 +4123,15 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Хувийн төлөвийн токенууд"
+  },
+  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
+    "message": "Сонгосон дүрмийн багцаар шүүх"
+  },
+  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
+    "message": "Өргөтгөлүүдийн тохиргоо"
+  },
+  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
+    "message": "Хуудаснуудыг урьдчилан ачаалах тохиргоо"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Амжилтгүй"
@@ -4136,14 +4160,26 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Хүчинтэй"
   },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
+    "message": "Үйлдлийн системийн Батарей хэмнэгч горимын улмаас урьдчилан ачаалахыг идэвхгүй болгосон."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
+    "message": "Үйлдлийн системийн Дата хэмнэгч горимын улмаас урьдчилан ачаалахыг идэвхгүй болгосон."
+  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
     "message": "DevTools нээлттэй байгаа тул урьдчилан ачаалахыг албадан идэвхжүүлсэн. DevTools хаалттай үед энэ хөтчийн харилцан үйлдэл нь гүйцэтгэлийн харьцуулалт хийхэд ашигладаг саатуулах бүлгийн нэг хэсэг тул урьдчилан рэндэрлэхийг идэвхгүй болгоно."
+  },
+  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
+    "message": "Хэрэглэгчийн тохиргоо эсвэл өргөтгөлийн улмаас урьдчилан ачаалахыг идэвхгүй болгосон. Нэмэлт мэдээлэл авахын тулд {PH1} руу очих эсвэл өргөтгөлийг идэвхгүй болгохын тулд {PH2} руу очно уу."
   },
   "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
     "message": "DevTools нээлттэй байгаа тул урьдчилан рэндэрлэхийг албадан идэвхжүүлсэн. DevTools хаалттай үед энэ хөтчийн харилцан үйлдэл нь гүйцэтгэлийн харьцуулалт хийхэд ашигладаг саатуулах бүлгийн нэг хэсэг тул урьдчилан рэндэрлэхийг идэвхгүй болгоно."
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
     "message": "Урьдчилан ачаалахыг идэвхгүй болгосон боловч одоо албадан идэвхжүүлсэн"
+  },
+  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
+    "message": "Урьдчилан ачаалахыг идэвхгүй болгосон"
   },
   "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
     "message": "Урьдчилан рэндэрлэхийг идэвхгүй болгосон боловч одоо албадан идэвхжүүлсэн"
@@ -4172,11 +4208,140 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Нарийвчилсан мэдээлэл"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
+    "message": "Алдааны шалтгаан"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Дүрмийн багц"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Төлөв"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Урьдчилан рэндэрлэсэн хуудсыг эхлүүлэх хуудасны үндсэн фреймийн навигацын үеэр идэвхжүүлсэн."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Эхлүүлэх хуудасны туршилтын орчны дарцаг эсвэл зөвшөөрлийн бодлого тэдгээр урьдчилан рэндэрлэх хуудастай тохирохгүй байсан тул урьдчилсан рэндэрийг ашиглаагүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Идэвхжүүлэлтийн хугацааны үеэр эх урьдчилан рэндэрлэх навигацын хүсэлтийн үеийнхээс өөр навигацын параметрүүдийг (ж.нь HTTP толгой хэсэг) тооцоолсон тул урьдчилсан рэндэрийг ашиглаагүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас аудио гаралт хүссэн бөгөөд үүнийг одоогоор дэмждэггүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Хэрэглэгч хөтчийг батарей бага ашиглахыг хүссэн тул урьдчилсан рэндэрийг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Зарим нөөцийн ачааллыг блоклосон."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Урьдчилан рэндэрлэх навигацад HTTP клиентийн сертификат шаардлагатай."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Урьдчилан рэндэрлэх навигац нь сайт хоорондын URL-г онилсон тул амжилтгүй болсон."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас сайт хоорондын URL руу шилжүүлсэн."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Урьдчилан рэндэрлэсэн URL нь сайт хоорондын URL руу дахин чиглүүлсэн тул урьдчилан рэндэрлэх навигац амжилтгүй болсон."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас нь сайт хоорондын URL руу дахин чиглүүлсэн URL руу шилжүүлсэн."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Хэрэглэгч хөтчийг дата бага ашиглахыг хүссэн тул урьдчилсан рэндэрийг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
+    "message": "Урьдчилан рэндэрлэсэн хуудасны таталтыг эхлүүлэхээр оролдсон бөгөөд үүнийг одоогоор дэмждэггүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Хөтөч одоогийн санах ойн ашиглалтыг тодорхойлохоор оролдоход дотоод алдаатай тулгарсан тул урьдчилсан рэндэрийг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "Эхлүүлэх хуудас нь энгийн URL-саа ялгаатай үр дүнтэй URL-тай тул энэ нь урьдчилан рэндэрлэхийг гүйцэтгэх боломжгүй. (Жишээ нь Шинэ таб хуудас эсвэл хост хийсэн аппууд.)"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URL-н схем http: эсвэл https: биш байсан тул энэ нь урьдчилан рэндэрлүүлэх зохих эрхгүй байсан."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Схем нь http: эсвэл https: биш байсан URL руу дахин чиглүүлсэн тул урьдчилан рэндэрлэх навигац амжилтгүй болсон."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Урьдчилан рэндэрлэх навигацад HTTP баталгаажуулалт шаардлагатай бөгөөд үүнийг одоогоор дэмждэггүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Энэ төхөөрөмжид урьдчилан рэндэрлэхийг дэмжихэд хангалттай нийт системийн санах ой байгаагүй тул урьдчилсан рэндэрийг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас өөрийгөө өөр URL руу шилжүүлсэн бөгөөд үүнийг одоогоор дэмждэггүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Эхлүүлэх хуудсанд аль хэдийн хэт олон урьдчилсан рэндэр хийгдэж байсан тул урьдчилсан рэндэрийг гүйцэтгээгүй. Цаашид урьдчилан рэндэрлэхийг идэвхжүүлэхийн тулд бусад таамаглалын дүрмийг хасна уу."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Хөтөч урьдчилан рэндэрлэх санах ойн хязгаараас хэтэрсэн тул урьдчилсан рэндэрийг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Хөтөч санах ойн ноцтой ачаалалтай байсан тул урьдчилан рэндэрлэсэн хуудсыг ачаалахаа больсон."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Хөтөч санах ойн ноцтой ачаалалтай байсан тул урьдчилсан рэндэрийг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас холилдсон контент агуулсан."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас хориотой JavaScript API ашигласан бөгөөд үүнийг одоогоор дэмждэггүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "2xx бус HTTP хариуны статус кодын улмаас урьдчилан рэндэрлэх навигац амжилтгүй болсон."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Урьдчилан рэндэрлэх навигацыг Контентын аюулгүй байдлын бодлогоор блоклосон."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Урьдчилан рэндэрлэх навигац сүлжээний алдаатай тулгарлаа."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Хэрэглэгч хөтчийн тохиргоондоо урьдчилан ачаалахыг идэвхгүй болгосон тул урьдчилсан рэндэрийг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "Эхлүүлэх хуудас гэмтсэн."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "Эхлүүлэх хуудсыг устгасан."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас гэмтсэн."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Урьдчилан рэндэрлэсэн хуудсыг устгасан."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас нь эх хоорондын ижил сайтын URL руу өөрийгөө шилжүүлсэн ч очих газрын хариу нь зохих Supports-Loading-Mode-н толгой хэсгийг агуулаагүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас нь эх хоорондын ижил сайтын URL руу шилжүүлсэн ч очих газрын хариу нь зохих Supports-Loading-Mode-н толгой хэсгийг агуулаагүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Урьдчилан рэндэрлэсэн URL эх хоорондын ижил сайтын URL руу дахин чиглүүлсэн тул урьдчилан рэндэрлэх навигац амжилтгүй болсон ч очих газрын хариунд зохих Supports-Loading-Mode-н толгой хэсгийг агуулаагүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Урьдчилан рэндэрлэсэн хуудас нь эх хоорондын ижил сайтын URL руу дахин чиглүүлсэн URL руу шилжүүлсэн ч очих газрын хариу нь зохих Supports-Loading-Mode-н толгой хэсгийг агуулаагүй."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "SSL сертификат буруу байсан тул урьдчилан рэндэрлэх навигац амжилтгүй болсон."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Эхлүүлэх хуудсыг удаан хугацааны туршид дэвсгэрт оруулсан тул урьдчилан рэндэрлэсэн хуудсыг устгасан."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Эхлүүлэх хуудсыг дэвсгэрт оруулсан тул урьдчилан рэндэрлэсэн хуудсыг устгасан."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Урьдчилан рэндэрлэх навигацад хэрэглэгчийн агентыг өөрчилсөн."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Дэлгэрэнгүй мэдээлэл авахын тулд нэг элемент сонгоно уу"
@@ -4187,11 +4352,20 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Төлөв"
   },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+    "message": "Элементийн түр зуурын самбарт харуулахын тулд товшино уу"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "Сүлжээний самбарт харуулахын тулд товшино уу"
+  },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
     "message": "Нарийвчилсан мэдээлэл"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
     "message": "Алдаа"
+  },
+  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
+    "message": "Байршил"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
     "message": "Эх сурвалж"
@@ -4207,6 +4381,9 @@
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
     "message": "Хүчинтэй"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | location": {
+    "message": "Байршил"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | validity": {
     "message": "Хүчинтэй хугацаа"
@@ -5076,13 +5253,13 @@
     "message": "URL"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enableLoadingThroughTarget": {
-    "message": "Зорилтоор ачаалахыг идэвхжүүлэх"
+    "message": "Вебсайтаар ачаалах"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | enterTextToSearchTheUrlAndError": {
     "message": "URL болон Алдааны багануудыг хайхын тулд текст оруулна уу"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
-    "message": "Шалгасан зорилтоор HTTP(S) хөгжүүлэгчийн нөөцийг ачаалах"
+    "message": "HTTP(S) хөгжүүлэгчийн нөөцийг DevTools-р бус, харин шалгасан вебсайтаараа ачаална уу"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# нөөц}other{# нөөц}}"
@@ -5536,6 +5713,9 @@
   },
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Дуураймал ::{PH1} элемент"
+  },
+  "panels/elements/StylesSidebarPane.ts | specificity": {
+    "message": "Онцлог байдал: {PH1}"
   },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Рэндэрлэх нийтлэг эмуляцыг асаах/унтраах"
@@ -6041,21 +6221,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n,plural, =1{1 вебсайт хянаж байж болзошгүй}other{# вебсайт хянаж байж болзошгүй}}"
   },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | nResources": {
-    "message": "{n,plural, =1{# нөөц}other{# нөөц}}"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageName": {
-    "message": "Багцын нэр"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | packageSignature": {
-    "message": "Багцын гарын үсэг"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | statusCode": {
-    "message": "Статус код"
-  },
-  "panels/issues/AffectedTrustedWebActivityIssueDetailsView.ts | url": {
-    "message": "URL"
-  },
   "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
     "message": "Элемент"
   },
@@ -6271,9 +6436,6 @@
   },
   "panels/issues/IssuesPane.ts | samesiteCookie": {
     "message": "SameSite-н күүки"
-  },
-  "panels/issues/IssuesPane.ts | trustedWebActivity": {
-    "message": "Итгэмжит вебийн үйл ажиллагаа"
   },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Асуудлыг нуух"
@@ -7712,9 +7874,6 @@
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Хуудсыг ачаалах үед дэлгэцийн агшин авах"
   },
-  "panels/network/NetworkPanel.ts | clear": {
-    "message": "Арилгах"
-  },
   "panels/network/NetworkPanel.ts | close": {
     "message": "Хаах"
   },
@@ -8425,6 +8584,9 @@
   },
   "panels/network/components/WebBundleInfoView.ts | bundledResource": {
     "message": "Багцалсан нөөц"
+  },
+  "panels/network/network-meta.ts | clear": {
+    "message": "Сүлжээний логийг арилгах"
   },
   "panels/network/network-meta.ts | colorCode": {
     "message": "өнгөний код"
@@ -9233,6 +9395,360 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Протоколын мониторыг харуулах"
   },
+  "panels/recorder/RecorderController.ts | continueReplay": {
+    "message": "Үргэлжлүүлэх"
+  },
+  "panels/recorder/RecorderController.ts | copyShortcut": {
+    "message": "Бичлэг эсвэл сонгосон алхмыг хуулах"
+  },
+  "panels/recorder/RecorderController.ts | createRecording": {
+    "message": "Шинэ бичлэг үүсгэх"
+  },
+  "panels/recorder/RecorderController.ts | deleteRecording": {
+    "message": "Бичлэгийг устгах"
+  },
+  "panels/recorder/RecorderController.ts | export": {
+    "message": "Экспорт хийх"
+  },
+  "panels/recorder/RecorderController.ts | exportRecording": {
+    "message": "Экспорт хийх"
+  },
+  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+    "message": "Өргөтгөлүүдээр экспорт хийх"
+  },
+  "panels/recorder/RecorderController.ts | getExtensions": {
+    "message": "Өргөтгөлүүд авах…"
+  },
+  "panels/recorder/RecorderController.ts | importRecording": {
+    "message": "Бичлэг импорт хийх"
+  },
+  "panels/recorder/RecorderController.ts | replayRecording": {
+    "message": "Бичлэгийг дахин тоглуулах"
+  },
+  "panels/recorder/RecorderController.ts | sendFeedback": {
+    "message": "Санал хүсэлт илгээх"
+  },
+  "panels/recorder/RecorderController.ts | startStopRecording": {
+    "message": "Бичлэгийг эхлүүлэх/зогсоох"
+  },
+  "panels/recorder/RecorderController.ts | stepOverReplay": {
+    "message": "Нэг алхам гүйцэтгэх"
+  },
+  "panels/recorder/RecorderController.ts | toggleCode": {
+    "message": "Асаах/унтраах кодын харагдац"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+    "message": "Бичлэгийг цуцлах"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+    "message": "Шинэ бичлэг үүсгэх"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+    "message": "Та CSS, Pierce эсвэл XPath-г сонголтуудынхаа нэгээр сонгох ёстой. ARIA болон текст сонгогч өвөрмөц биш байж магадгүй тул зөвхөн эдгээр сонгогчийг бүртгэх баталгаатай байна."
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+    "message": "Бичлэгийн нэр"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+    "message": "Бичлэгийн нэр шаардлагатай"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+    "message": "Сонгогчийн атрибут"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+    "message": "ARIA"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+    "message": "CSS"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+    "message": "Pierce"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+    "message": "Текст"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+    "message": "XPath"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+    "message": "Бичих сонгогчийн төрлүүд"
+  },
+  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+    "message": "Бичиж эхлэх"
+  },
+  "panels/recorder/components/ExtensionView.ts | closeView": {
+    "message": "Хаах"
+  },
+  "panels/recorder/components/ExtensionView.ts | extension": {
+    "message": "Хөтчийн өргөтгөлийн олгосон контент"
+  },
+  "panels/recorder/components/RecordingListView.ts | createRecording": {
+    "message": "Шинэ бичлэг үүсгэх"
+  },
+  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
+    "message": "Бичлэгийг устгах"
+  },
+  "panels/recorder/components/RecordingListView.ts | openRecording": {
+    "message": "Бичлэгийг нээх"
+  },
+  "panels/recorder/components/RecordingListView.ts | playRecording": {
+    "message": "Бичлэг тоглуулах"
+  },
+  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
+    "message": "Хадгалсан бичлэгүүд"
+  },
+  "panels/recorder/components/RecordingView.ts | addAssertion": {
+    "message": "Баталгаа нэмэх"
+  },
+  "panels/recorder/components/RecordingView.ts | cancelReplay": {
+    "message": "Дахин тоглуулахыг цуцлах"
+  },
+  "panels/recorder/components/RecordingView.ts | default": {
+    "message": "Өгөгдмөл"
+  },
+  "panels/recorder/components/RecordingView.ts | desktop": {
+    "message": "Компьютер"
+  },
+  "panels/recorder/components/RecordingView.ts | download": {
+    "message": "Татах: {value}"
+  },
+  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
+    "message": "Дахин тоглуулах тохиргоог засах"
+  },
+  "panels/recorder/components/RecordingView.ts | editTitle": {
+    "message": "Гарчиг засах"
+  },
+  "panels/recorder/components/RecordingView.ts | endRecording": {
+    "message": "Бичлэгийг дуусгах"
+  },
+  "panels/recorder/components/RecordingView.ts | environment": {
+    "message": "Хүрээлэн буй орчин"
+  },
+  "panels/recorder/components/RecordingView.ts | hideCode": {
+    "message": "Кодыг нуух"
+  },
+  "panels/recorder/components/RecordingView.ts | latency": {
+    "message": "Хоцролт: {value} мс"
+  },
+  "panels/recorder/components/RecordingView.ts | mobile": {
+    "message": "Мобайл"
+  },
+  "panels/recorder/components/RecordingView.ts | network": {
+    "message": "Сүлжээ"
+  },
+  "panels/recorder/components/RecordingView.ts | performancePanel": {
+    "message": "Гүйцэтгэлийн түр зуурын самбар"
+  },
+  "panels/recorder/components/RecordingView.ts | recording": {
+    "message": "Бичиж байна…"
+  },
+  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "Бичлэг хийхийг зогсоож байна…"
+  },
+  "panels/recorder/components/RecordingView.ts | replaySettings": {
+    "message": "Дахин тоглуулах тохиргоо"
+  },
+  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
+    "message": "Нэр шаардлагатай"
+  },
+  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
+    "message": "Энэ хэсгийн дэлгэцийн агшин"
+  },
+  "panels/recorder/components/RecordingView.ts | showCode": {
+    "message": "Кодыг харуулах"
+  },
+  "panels/recorder/components/RecordingView.ts | timeout": {
+    "message": "Хугацаа: {value} мс"
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
+    "message": "Бичлэгийг дахин тоглуулах үед хугацааны тохиргоо (миллисекундээр) нь үйлдэл бүрд хамаарна. Жишээ нь, хэрэв CSS сонгогчоор тодорхойлсон DOM элемент нь заасан хугацаанд хуудсан дээр гарч ирэхгүй байвал дахин тоглуулахад алдаа гарна."
+  },
+  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
+    "message": "Хугацаа"
+  },
+  "panels/recorder/components/RecordingView.ts | upload": {
+    "message": "Байршуулах: {value}"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Маш удаан дахин тоглуулах"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Маш удаан"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalButtonLabel": {
+    "message": "Дахин тоглуулах"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayNormalItemLabel": {
+    "message": "Хэвийн (Өгөгдмөл)"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowButtonLabel": {
+    "message": "Удаан дахин тоглуулах"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplaySlowItemLabel": {
+    "message": "Удаан"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowButtonLabel": {
+    "message": "Маш удаан дахин тоглуулах"
+  },
+  "panels/recorder/components/ReplayButton.ts | ReplayVerySlowItemLabel": {
+    "message": "Маш удаан"
+  },
+  "panels/recorder/components/ReplayButton.ts | extensionGroup": {
+    "message": "Өргөтгөлүүд"
+  },
+  "panels/recorder/components/ReplayButton.ts | speedGroup": {
+    "message": "Хурд"
+  },
+  "panels/recorder/components/StartView.ts | createRecording": {
+    "message": "Шинэ бичлэг үүсгэх"
+  },
+  "panels/recorder/components/StartView.ts | header": {
+    "message": "Хэрэглэгчийн бүхий л туршлага дээрх гүйцэтгэлийг хэмжих"
+  },
+  "panels/recorder/components/StartView.ts | quickStart": {
+    "message": "Шуурхай эхлэх: DevTools-н Дуу хураагуурын шинэ түр зуурын самбарын талаар мэдэж авна уу"
+  },
+  "panels/recorder/components/StartView.ts | step1": {
+    "message": "Вебсайт эсвэл апп дээрээ хэрэглэгчийн нийтлэг туршлагыг бичих"
+  },
+  "panels/recorder/components/StartView.ts | step2": {
+    "message": "Урсгал ажиллаж байгаа эсэхийг шалгахын тулд бичлэгийг дахин тоглуулна уу"
+  },
+  "panels/recorder/components/StartView.ts | step3": {
+    "message": "Гүйцэтгэлийн нарийвчилсан ул мөр үүсгэх эсвэл туршихын тулд Puppeteer-н скриптийг экспорт хийх"
+  },
+  "panels/recorder/components/StepEditor.ts | addAttribute": {
+    "message": "{attributeName} нэмэх"
+  },
+  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
+    "message": "Фреймийн модон дотор фреймийн индекс нэмэх"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelector": {
+    "message": "Сонгогч нэмэх"
+  },
+  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
+    "message": "Сонгогчийн хэсэг нэмэх"
+  },
+  "panels/recorder/components/StepEditor.ts | deleteRow": {
+    "message": "Мөр устгах"
+  },
+  "panels/recorder/components/StepEditor.ts | notSaved": {
+    "message": "Хадгалаагүй: {error}"
+  },
+  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
+    "message": "Фреймийн индексийг хасах"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelector": {
+    "message": "Сонгогчийг хасах"
+  },
+  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
+    "message": "Сонгогчийн хэсгийг хасах"
+  },
+  "panels/recorder/components/StepEditor.ts | selectorPicker": {
+    "message": "Сонгогчийг шинэчлэхийн тулд хуудаснаас элемент сонгоно уу"
+  },
+  "panels/recorder/components/StepEditor.ts | unknownActionType": {
+    "message": "Тодорхойгүй үйлдлийн төрөл."
+  },
+  "panels/recorder/components/StepView.ts | addBreakpoint": {
+    "message": "Хугарлын цэг нэмэх"
+  },
+  "panels/recorder/components/StepView.ts | addStepAfter": {
+    "message": "Дараагийн алхам нэмэх"
+  },
+  "panels/recorder/components/StepView.ts | addStepBefore": {
+    "message": "Өмнөх алхам нэмэх"
+  },
+  "panels/recorder/components/StepView.ts | breakpoints": {
+    "message": "Хугарлын цэгүүд"
+  },
+  "panels/recorder/components/StepView.ts | changeStepTitle": {
+    "message": "Өөрчлөх"
+  },
+  "panels/recorder/components/StepView.ts | clickStepTitle": {
+    "message": "Товших"
+  },
+  "panels/recorder/components/StepView.ts | closeStepTitle": {
+    "message": "Хаах"
+  },
+  "panels/recorder/components/StepView.ts | copyAs": {
+    "message": "Хуулах формат"
+  },
+  "panels/recorder/components/StepView.ts | customStepTitle": {
+    "message": "Захиалгат алхам"
+  },
+  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
+    "message": "2 товших"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleButton": {
+    "message": "Товчлуур"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleFallback": {
+    "message": "Элемент"
+  },
+  "panels/recorder/components/StepView.ts | elementRoleInput": {
+    "message": "Оролт"
+  },
+  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "Сүлжээний нөхцөлийг эмуляц хийх"
+  },
+  "panels/recorder/components/StepView.ts | hoverStepTitle": {
+    "message": "Зөөх"
+  },
+  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
+    "message": "Товч дарах"
+  },
+  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
+    "message": "Товчийг суллах"
+  },
+  "panels/recorder/components/StepView.ts | navigateStepTitle": {
+    "message": "Шилжих"
+  },
+  "panels/recorder/components/StepView.ts | openStepActions": {
+    "message": "Алхмын үйлдлүүдийг нээх"
+  },
+  "panels/recorder/components/StepView.ts | removeBreakpoint": {
+    "message": "Хугарлын цэгийг хасах"
+  },
+  "panels/recorder/components/StepView.ts | removeStep": {
+    "message": "Алхмыг хасах"
+  },
+  "panels/recorder/components/StepView.ts | scrollStepTitle": {
+    "message": "Гүйлгэх"
+  },
+  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
+    "message": "Харагдах хэсгийг тохируулах"
+  },
+  "panels/recorder/components/StepView.ts | stepManagement": {
+    "message": "Алхмуудыг удирдах"
+  },
+  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
+    "message": "Элемент хүлээх"
+  },
+  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
+    "message": "Илэрхийлэл хүлээх"
+  },
+  "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
+    "message": "{DATE}-н {TIME}-н бичлэг"
+  },
+  "panels/recorder/recorder-meta.ts | createRecording": {
+    "message": "Шинэ бичлэг үүсгэх"
+  },
+  "panels/recorder/recorder-meta.ts | recorder": {
+    "message": "Дуу хураагуур"
+  },
+  "panels/recorder/recorder-meta.ts | replayRecording": {
+    "message": "Бичлэгийг дахин тоглуулах"
+  },
+  "panels/recorder/recorder-meta.ts | showRecorder": {
+    "message": "Дуу хураагуурыг харуулах"
+  },
+  "panels/recorder/recorder-meta.ts | startStopRecording": {
+    "message": "Бичлэгийг эхлүүлэх/зогсоох"
+  },
+  "panels/recorder/recorder-meta.ts | toggleCode": {
+    "message": "Асаах/унтраах кодын харагдац"
+  },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Дэлгэцийн видео бичлэгийг асаах/унтраах"
   },
@@ -9861,10 +10377,7 @@
     "message": "Хээ нэмэх..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
-    "message": "Мэдэгдэж буй гуравдагч талын скриптийг үл хэрэгсэх жагсаалт руу автоматаар нэмэх"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScriptsTooltip": {
-    "message": "Эх сурвалжийн газрын зургийн x_google_ignoreList талбарын эх сурвалжийг үл хэрэгсэх жагсаалтад нэмэх"
+    "message": "Эх сурвалжийн газрын зургийн гуравдагч талын мэдэгдэж буй скриптүүд"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
     "message": "Захиалгат хасах дүрэм:"
@@ -9885,13 +10398,13 @@
     "message": "Ерөнхий хасах дүрэм:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
-    "message": "Үл хэрэгсэх жагсаалтад контентын скрипт нэмэх"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScriptsExtension": {
-    "message": "Үл хэрэгсэх жагсаалтад (хуудасны өргөтгөлийн скрипт) контентын скрипт нэмэх"
+    "message": "Контентын скриптүүдийг өргөтгөлүүдээс оруулсан"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Нэр нь ''{PH1}''-тай таарч буй скриптийг үл хэрэгсэх"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
+    "message": "Нэмэлт мэдээлэл авах"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
     "message": "Хээ нэмэх"
@@ -11591,6 +12104,9 @@
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
     "message": "Хариуны кодыг тайлах"
   },
+  "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
+    "message": "Кодын завсрын санах ойн цувралыг арилгах"
+  },
   "panels/timeline/TimelineUIUtils.ts | destroyWebsocket": {
     "message": "WebSocket-г устгах"
   },
@@ -12430,6 +12946,15 @@
   },
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} эрэмбэлэхийг цуцалсан"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | close": {
+    "message": "Хаах"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
+    "message": "Товчлуурын шууд холбоос"
+  },
+  "ui/components/dialogs/ShortcutDialog.ts | showShortcutTitle": {
+    "message": "Товчлол харуулна уу"
   },
   "ui/components/diff_view/DiffView.ts | SkippingDMatchingLines": {
     "message": "( … {PH1} тохирох мөрийг алгасаж байна … )"
@@ -13471,6 +13996,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
     "message": "Үл хэрэгсэх жагсаалтаас хасах"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
+    "message": "Товч харуулах"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Бусад # фреймийг харуулах}other{Бусад # фреймийг харуулах}}"

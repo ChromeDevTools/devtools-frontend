@@ -42,10 +42,6 @@
         "[data-testid='shadow\\ button']"
       ],
       [
-        "xpath///*[@data-qa=\"custom-id\"]",
-        "xpath///*[@data-testid=\"shadow button\"]"
-      ],
-      [
         "pierce/[data-testid='shadow\\ button']"
       ],
       [
@@ -57,10 +53,6 @@
     [
       "main > shadow-css-selector-element",
       "#insideShadowRoot"
-    ],
-    [
-      "xpath//html/body/main/shadow-css-selector-element",
-      "xpath///*[@id=\"insideShadowRoot\"]"
     ],
     [
       "pierce/main > shadow-css-selector-element",
@@ -75,10 +67,6 @@
     [
       "div:nth-of-type(2) > shadow-aria-selector-element",
       "button"
-    ],
-    [
-      "xpath//html/body/div[2]/shadow-aria-selector-element",
-      "xpath//button"
     ],
     [
       "pierce/div:nth-of-type(2) > shadow-aria-selector-element",

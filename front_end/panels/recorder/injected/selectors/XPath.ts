@@ -159,7 +159,8 @@ export const computeXPath = (
     selectors.unshift((buffer[0].optimized ? '' : '/') + buffer.join('/'));
   }
 
-  if (!selectors.length) {
+  if (!selectors.length || selectors.length > 1) {
+    // XPath evaluation does not work on shadowRoot.
     return;
   }
 

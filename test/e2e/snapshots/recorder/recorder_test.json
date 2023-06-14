@@ -501,10 +501,6 @@
         "target": "main",
         "selectors": [
           ["#shadow-root > span", "#inner-span"],
-          [
-            "xpath///*[@id=\"shadow-root\"]/span",
-            "xpath///*[@id=\"inner-span\"]"
-          ],
           ["pierce/#inner-span"]
         ]
       }
@@ -1238,7 +1234,6 @@
         "target": "main",
         "selectors": [
           ["custom-input", "input"],
-          ["xpath//html/body/custom-input", "xpath//input"],
           ["pierce/input"]
         ]
       },
@@ -1247,7 +1242,6 @@
         "value": "works",
         "selectors": [
           ["custom-input", "input"],
-          ["xpath//html/body/custom-input", "xpath//input"],
           ["pierce/input"]
         ],
         "target": "main"

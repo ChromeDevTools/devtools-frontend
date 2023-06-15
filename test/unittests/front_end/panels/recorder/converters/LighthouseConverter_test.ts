@@ -19,8 +19,9 @@ describe('LighthouseConverter', () => {
         {type: Models.Schema.StepType.Scroll, selectors: [['.cls']]},
       ],
     });
-    assert.isTrue(
-        result.startsWith(`const fs = require('fs');
+    try {
+      assert.isTrue(
+          result.startsWith(`const fs = require('fs');
 const puppeteer = require('puppeteer'); // v13.0.0 or later
 
 (async () => {
@@ -63,7 +64,11 @@ const puppeteer = require('puppeteer'); // v13.0.0 or later
   fs.writeFileSync(__dirname + '/flow.report.html', lhFlowReport)
 
   await browser.close();`),
-    );
+      );
+    } catch (err) {
+      console.error('Actual result', result);
+      throw err;
+    }
     assert.deepStrictEqual(sourceMap, [1, 17, 6, 23, 15]);
   });
 

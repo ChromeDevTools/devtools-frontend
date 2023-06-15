@@ -16,8 +16,9 @@ describe('PuppeteerConverter', () => {
       title: 'test',
       steps: [{type: Models.Schema.StepType.Scroll, selectors: [['.cls']]}],
     });
-    assert.isTrue(
-        result.startsWith(`const puppeteer = require('puppeteer'); // v13.0.0 or later
+    try {
+      assert.isTrue(
+          result.startsWith(`const puppeteer = require('puppeteer'); // v13.0.0 or later
 
 (async () => {
   const browser = await puppeteer.launch();
@@ -41,7 +42,11 @@ describe('PuppeteerConverter', () => {
   }
 
   await browser.close();`),
-    );
+      );
+    } catch (err) {
+      console.error('Actual result', result);
+      throw err;
+    }
     assert.deepStrictEqual(sourceMap, [1, 8, 14]);
   });
 

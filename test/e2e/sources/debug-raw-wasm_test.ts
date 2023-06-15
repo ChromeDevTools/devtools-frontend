@@ -37,6 +37,7 @@ import {
   SELECTED_THREAD_SELECTOR,
   stepThroughTheCode,
   switchToCallFrame,
+  THREADS_SELECTOR,
   TURNED_OFF_PAUSE_BUTTON_SELECTOR,
 } from '../helpers/sources-helpers.js';
 
@@ -281,6 +282,13 @@ describe('Sources Tab', async function() {
       await openSourceCodeEditorForFile('stepping-with-state.wasm', 'wasm/stepping-with-state-and-threads.html');
     });
 
+    await step('expand the Threads list', async () => {
+      await Promise.all([
+        click(THREADS_SELECTOR),
+        waitFor(THREADS_SELECTOR + '[aria-expanded="true"]'),
+      ]);
+    });
+
     await step('check that the main thread is selected', async () => {
       const selectedThreadElement = await waitFor(SELECTED_THREAD_SELECTOR);
       const selectedThreadName = await selectedThreadElement.evaluate(element => {
@@ -394,6 +402,13 @@ describe('Sources Tab', async function() {
 
     await step('navigate to a page and open the Sources tab', async () => {
       await openSourceCodeEditorForFile(fileName, 'wasm/stepping-with-state-and-threads.html');
+    });
+
+    await step('expand the Threads list', async () => {
+      await Promise.all([
+        click(THREADS_SELECTOR),
+        waitFor(THREADS_SELECTOR + '[aria-expanded="true"]'),
+      ]);
     });
 
     await step('check that the main thread is selected', async () => {

@@ -367,7 +367,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (ThreadsSidebarPane.shouldBeShown() && !this.threadsSidebarPane) {
       this.threadsSidebarPane = UI.ViewManager.ViewManager.instance().view('sources.threads');
       if (this.sidebarPaneStack && this.threadsSidebarPane) {
-        void this.sidebarPaneStack.showView(
+        this.sidebarPaneStack.appendView(
             this.threadsSidebarPane, this.splitWidget.isVertical() ? this.watchSidebarPane : this.callstackPane);
       }
     }
@@ -1117,7 +1117,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.sidebarPaneStack.appendApplicableItems('sources.sidebar-top');
 
     if (this.threadsSidebarPane) {
-      void this.sidebarPaneStack.showView(this.threadsSidebarPane);
+      this.sidebarPaneStack.appendView(this.threadsSidebarPane);
     }
 
     const jsBreakpoints = UI.ViewManager.ViewManager.instance().view('sources.jsBreakpoints');

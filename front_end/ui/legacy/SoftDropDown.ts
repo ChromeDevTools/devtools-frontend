@@ -246,6 +246,10 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     this.updateGlasspaneSize();
   }
 
+  getSelectedItem(): T|null {
+    return this.selectedItem;
+  }
+
   selectItem(item: T|null): void {
     this.selectedItem = item;
     if (this.selectedItem) {

@@ -214,7 +214,7 @@ class NavigationEmulator {
     } catch (_) {
       dispatchEvent(this.primaryTarget, 'Preload.ruleSetUpdated', {
         ruleSet: {
-          id: `ruleSetId:${this.seq}`,
+          id: `ruleSetId:0.${this.seq}`,
           loaderId: this.loaderId,
           sourceText: specrules,
           backendNodeId: this.seq,
@@ -227,7 +227,7 @@ class NavigationEmulator {
 
     dispatchEvent(this.primaryTarget, 'Preload.ruleSetUpdated', {
       ruleSet: {
-        id: `ruleSetId:${this.seq}`,
+        id: `ruleSetId:0.${this.seq}`,
         loaderId: this.loaderId,
         sourceText: specrules,
         backendNodeId: this.seq,
@@ -448,7 +448,7 @@ describeWithMockConnection('PreloadingView', async () => {
     );
 
     const cells = [
-      {columnId: 'id', value: 'ruleSetId:2'},
+      {columnId: 'id', value: 'ruleSetId:0.2'},
       {columnId: 'Validity', value: 'Invalid'},
     ];
     ruleSetGridComponent.dispatchEvent(
@@ -608,7 +608,7 @@ describeWithMockConnection('PreloadingView', async () => {
     const view = createView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
-    // ruleSetId:2
+    // ruleSetId:0.2
     await emulator.addSpecRules(`
 {
   "prefetch": [
@@ -638,7 +638,7 @@ describeWithMockConnection('PreloadingView', async () => {
             action: Protocol.Preload.SpeculationAction.Prefetch,
             url: 'https://example.com/subresource2.js',
           },
-          ruleSetIds: ['ruleSetId:2'],
+          ruleSetIds: ['ruleSetId:0.2'],
           nodeIds: [2, 3],
         },
         {
@@ -647,7 +647,7 @@ describeWithMockConnection('PreloadingView', async () => {
             action: Protocol.Preload.SpeculationAction.Prerender,
             url: 'https://example.com/prerendered3.html',
           },
-          ruleSetIds: ['ruleSetId:3'],
+          ruleSetIds: ['ruleSetId:0.3'],
           nodeIds: [3],
         },
       ],
@@ -657,6 +657,7 @@ describeWithMockConnection('PreloadingView', async () => {
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
     assertShadowRoot(ruleSetGridComponent.shadowRoot);
+    const ruleSetSelectorToolbarItem = view.getRuleSetSelectorToolbarItemForTest();
     const preloadingGridComponent = view.getPreloadingGridForTest();
     assertShadowRoot(preloadingGridComponent.shadowRoot);
 
@@ -668,6 +669,8 @@ describeWithMockConnection('PreloadingView', async () => {
           ['Valid', '<script>'],
         ],
     );
+
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All rule sets');
 
     assertGridContents(
         preloadingGridComponent,
@@ -687,14 +690,11 @@ describeWithMockConnection('PreloadingView', async () => {
     );
 
     // Turn on filtering.
-    const cells = [
-      {columnId: 'id', value: 'ruleSetId:2'},
-      {columnId: 'Validity', value: 'valid'},
-    ];
-    ruleSetGridComponent.dispatchEvent(
-        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'Validity', value: 'valid'}, {cells}));
+    view.selectRuleSetOnFilterForTest('ruleSetId:0.2' as Protocol.Preload.RuleSetId);
 
     await coordinator.done();
+
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'Rule set: 2');
 
     assertGridContents(
         preloadingGridComponent,
@@ -709,9 +709,11 @@ describeWithMockConnection('PreloadingView', async () => {
     );
 
     // Turn off filtering.
-    view.setCheckboxFilterBySelectedRuleSetForTest(false);
+    view.selectRuleSetOnFilterForTest(null);
 
     await coordinator.done();
+
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All rule sets');
 
     assertGridContents(
         preloadingGridComponent,

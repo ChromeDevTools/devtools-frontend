@@ -9,25 +9,9 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Tracing_client, _Tracing_recording, _Tracing_path;
-/**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+var _Tracing_source, _Tracing_recording, _Tracing_path;
 import { assert } from '../util/assert.js';
-import { getReadableAsBuffer, getReadableFromProtocolStream } from './util.js';
-import { isErrorLike } from '../util/ErrorLike.js';
+import { getReadableAsBuffer, getReadableFromProtocolStream, } from './util.js';
 /**
  * The Tracing class exposes the tracing audit interface.
  * @remarks
@@ -48,11 +32,11 @@ export class Tracing {
     /**
      * @internal
      */
-    constructor(client) {
-        _Tracing_client.set(this, void 0);
+    constructor(source) {
+        _Tracing_source.set(this, void 0);
         _Tracing_recording.set(this, false);
         _Tracing_path.set(this, void 0);
-        __classPrivateFieldSet(this, _Tracing_client, client, "f");
+        __classPrivateFieldSet(this, _Tracing_source, source, "f");
     }
     /**
      * Starts a trace for the current page.
@@ -92,7 +76,7 @@ export class Tracing {
         });
         __classPrivateFieldSet(this, _Tracing_path, path, "f");
         __classPrivateFieldSet(this, _Tracing_recording, true, "f");
-        await __classPrivateFieldGet(this, _Tracing_client, "f").send('Tracing.start', {
+        await __classPrivateFieldGet(this, _Tracing_source, "f").start({
             transferMode: 'ReturnAsStream',
             traceConfig: {
                 excludedCategories,
@@ -105,31 +89,12 @@ export class Tracing {
      * @returns Promise which resolves to buffer with trace data.
      */
     async stop() {
-        let resolve;
-        let reject;
-        const contentPromise = new Promise((x, y) => {
-            resolve = x;
-            reject = y;
-        });
-        __classPrivateFieldGet(this, _Tracing_client, "f").once('Tracing.tracingComplete', async (event) => {
-            try {
-                const readable = await getReadableFromProtocolStream(__classPrivateFieldGet(this, _Tracing_client, "f"), event.stream);
-                const buffer = await getReadableAsBuffer(readable, __classPrivateFieldGet(this, _Tracing_path, "f"));
-                resolve(buffer !== null && buffer !== void 0 ? buffer : undefined);
-            }
-            catch (error) {
-                if (isErrorLike(error)) {
-                    reject(error);
-                }
-                else {
-                    reject(new Error(`Unknown error: ${error}`));
-                }
-            }
-        });
-        await __classPrivateFieldGet(this, _Tracing_client, "f").send('Tracing.end');
+        const result = await __classPrivateFieldGet(this, _Tracing_source, "f").stop();
+        const readable = await getReadableFromProtocolStream(__classPrivateFieldGet(this, _Tracing_source, "f"), result.stream);
+        const buffer = await getReadableAsBuffer(readable, __classPrivateFieldGet(this, _Tracing_path, "f"));
         __classPrivateFieldSet(this, _Tracing_recording, false, "f");
-        return contentPromise;
+        return buffer ?? undefined;
     }
 }
-_Tracing_client = new WeakMap(), _Tracing_recording = new WeakMap(), _Tracing_path = new WeakMap();
+_Tracing_source = new WeakMap(), _Tracing_recording = new WeakMap(), _Tracing_path = new WeakMap();
 //# sourceMappingURL=Tracing.js.map

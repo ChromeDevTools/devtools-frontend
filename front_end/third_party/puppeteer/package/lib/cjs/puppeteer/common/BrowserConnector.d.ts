@@ -15,7 +15,7 @@
  */
 import { IsPageTargetCallback, TargetFilterCallback } from '../api/Browser.js';
 import { CDPBrowser } from './Browser.js';
-import { ConnectionTransport } from './ConnectionTransport.js';
+import type { ConnectOptions } from './Puppeteer.js';
 import { Viewport } from './PuppeteerViewport.js';
 /**
  * Generic browser options that can be passed when launching any browser or when
@@ -25,7 +25,7 @@ import { Viewport } from './PuppeteerViewport.js';
 export interface BrowserConnectOptions {
     /**
      * Whether to ignore HTTPS errors during navigation.
-     * @defaultValue false
+     * @defaultValue `false`
      */
     ignoreHTTPSErrors?: boolean;
     /**
@@ -50,6 +50,12 @@ export interface BrowserConnectOptions {
      * @internal
      */
     protocol?: 'cdp' | 'webDriverBiDi';
+    /**
+     * Timeout setting for individual protocol (CDP) calls.
+     *
+     * @defaultValue `180_000`
+     */
+    protocolTimeout?: number;
 }
 /**
  * Users should never call this directly; it's called when calling
@@ -57,9 +63,5 @@ export interface BrowserConnectOptions {
  *
  * @internal
  */
-export declare function _connectToCDPBrowser(options: BrowserConnectOptions & {
-    browserWSEndpoint?: string;
-    browserURL?: string;
-    transport?: ConnectionTransport;
-}): Promise<CDPBrowser>;
+export declare function _connectToCDPBrowser(options: BrowserConnectOptions & ConnectOptions): Promise<CDPBrowser>;
 //# sourceMappingURL=BrowserConnector.d.ts.map

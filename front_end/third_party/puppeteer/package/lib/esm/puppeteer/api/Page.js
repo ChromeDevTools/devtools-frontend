@@ -20,10 +20,16 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _Page_handlerMap;
 import { EventEmitter } from '../common/EventEmitter.js';
+import { NetworkManagerEmittedEvents, } from '../common/NetworkManager.js';
+import { paperFormats, } from '../common/PDFOptions.js';
+import { importFSPromises, isNumber, isString, waitForEvent, withSourcePuppeteerURLIfNone, } from '../common/util.js';
+import { assert } from '../util/assert.js';
+import { Deferred } from '../util/Deferred.js';
+import { Locator } from './Locator.js';
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page}
- * in Chromium.
+ * in the browser.
  *
  * :::note
  *
@@ -35,7 +41,7 @@ import { EventEmitter } from '../common/EventEmitter.js';
  * This example creates a page, navigates it to a URL, and then saves a screenshot:
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -78,13 +84,19 @@ export class Page extends EventEmitter {
         _Page_handlerMap.set(this, new WeakMap());
     }
     /**
-     * @returns `true` if drag events are being intercepted, `false` otherwise.
+     * `true` if the service worker are being bypassed, `false` otherwise.
+     */
+    isServiceWorkerBypassed() {
+        throw new Error('Not implemented');
+    }
+    /**
+     * `true` if drag events are being intercepted, `false` otherwise.
      */
     isDragInterceptionEnabled() {
         throw new Error('Not implemented');
     }
     /**
-     * @returns `true` if the page has JavaScript enabled, `false` otherwise.
+     * `true` if the page has JavaScript enabled, `false` otherwise.
      */
     isJavaScriptEnabled() {
         throw new Error('Not implemented');
@@ -131,7 +143,7 @@ export class Page extends EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * @returns A target this page was created from.
+     * A target this page was created from.
      */
     target() {
         throw new Error('Not implemented');
@@ -149,7 +161,7 @@ export class Page extends EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * @returns The page's main frame.
+     * The page's main frame.
      *
      * @remarks
      * Page is guaranteed to have a main frame which persists during navigations.
@@ -157,29 +169,44 @@ export class Page extends EventEmitter {
     mainFrame() {
         throw new Error('Not implemented');
     }
+    /**
+     * {@inheritDoc Keyboard}
+     */
     get keyboard() {
         throw new Error('Not implemented');
     }
+    /**
+     * {@inheritDoc Touchscreen}
+     */
     get touchscreen() {
         throw new Error('Not implemented');
     }
+    /**
+     * {@inheritDoc Coverage}
+     */
     get coverage() {
         throw new Error('Not implemented');
     }
+    /**
+     * {@inheritDoc Tracing}
+     */
     get tracing() {
         throw new Error('Not implemented');
     }
+    /**
+     * {@inheritDoc Accessibility}
+     */
     get accessibility() {
         throw new Error('Not implemented');
     }
     /**
-     * @returns An array of all frames attached to the page.
+     * An array of all frames attached to the page.
      */
     frames() {
         throw new Error('Not implemented');
     }
     /**
-     * @returns all of the dedicated {@link
+     * All of the dedicated {@link
      * https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
      * WebWorkers} associated with the page.
      *
@@ -190,6 +217,9 @@ export class Page extends EventEmitter {
         throw new Error('Not implemented');
     }
     async setRequestInterception() {
+        throw new Error('Not implemented');
+    }
+    async setBypassServiceWorker() {
         throw new Error('Not implemented');
     }
     async setDragInterception() {
@@ -208,16 +238,42 @@ export class Page extends EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * @returns Maximum time in milliseconds.
+     * Maximum time in milliseconds.
      */
     getDefaultTimeout() {
         throw new Error('Not implemented');
     }
-    async $() {
-        throw new Error('Not implemented');
+    /**
+     * Creates a locator for the provided `selector`. See {@link Locator} for
+     * details and supported actions.
+     *
+     * @remarks
+     * Locators API is experimental and we will not follow semver for breaking
+     * change in the Locators API.
+     */
+    locator(selector) {
+        return Locator.create(this, selector);
     }
-    async $$() {
-        throw new Error('Not implemented');
+    /**
+     * Runs `document.querySelector` within the page. If no element matches the
+     * selector, the return value resolves to `null`.
+     *
+     * @param selector - A `selector` to query page for
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
+     * to query page for.
+     */
+    async $(selector) {
+        return this.mainFrame().$(selector);
+    }
+    /**
+     * The method runs `document.querySelectorAll` within the page. If no elements
+     * match the selector, the return value resolves to `[]`.
+     * @remarks
+     * Shortcut for {@link Frame.$$ | Page.mainFrame().$$(selector) }.
+     * @param selector - A `selector` to query page for
+     */
+    async $$(selector) {
+        return this.mainFrame().$$(selector);
     }
     async evaluateHandle() {
         throw new Error('Not implemented');
@@ -225,14 +281,150 @@ export class Page extends EventEmitter {
     async queryObjects() {
         throw new Error('Not implemented');
     }
-    async $eval() {
-        throw new Error('Not implemented');
+    /**
+     * This method runs `document.querySelector` within the page and passes the
+     * result as the first argument to the `pageFunction`.
+     *
+     * @remarks
+     *
+     * If no element is found matching `selector`, the method will throw an error.
+     *
+     * If `pageFunction` returns a promise `$eval` will wait for the promise to
+     * resolve and then return its value.
+     *
+     * @example
+     *
+     * ```ts
+     * const searchValue = await page.$eval('#search', el => el.value);
+     * const preloadHref = await page.$eval('link[rel=preload]', el => el.href);
+     * const html = await page.$eval('.main-container', el => el.outerHTML);
+     * ```
+     *
+     * If you are using TypeScript, you may have to provide an explicit type to the
+     * first argument of the `pageFunction`.
+     * By default it is typed as `Element`, but you may need to provide a more
+     * specific sub-type:
+     *
+     * @example
+     *
+     * ```ts
+     * // if you don't provide HTMLInputElement here, TS will error
+     * // as `value` is not on `Element`
+     * const searchValue = await page.$eval(
+     *   '#search',
+     *   (el: HTMLInputElement) => el.value
+     * );
+     * ```
+     *
+     * The compiler should be able to infer the return type
+     * from the `pageFunction` you provide. If it is unable to, you can use the generic
+     * type to tell the compiler what return type you expect from `$eval`:
+     *
+     * @example
+     *
+     * ```ts
+     * // The compiler can infer the return type in this case, but if it can't
+     * // or if you want to be more explicit, provide it as the generic type.
+     * const searchValue = await page.$eval<string>(
+     *   '#search',
+     *   (el: HTMLInputElement) => el.value
+     * );
+     * ```
+     *
+     * @param selector - the
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
+     * to query for
+     * @param pageFunction - the function to be evaluated in the page context.
+     * Will be passed the result of `document.querySelector(selector)` as its
+     * first argument.
+     * @param args - any additional arguments to pass through to `pageFunction`.
+     *
+     * @returns The result of calling `pageFunction`. If it returns an element it
+     * is wrapped in an {@link ElementHandle}, else the raw value itself is
+     * returned.
+     */
+    async $eval(selector, pageFunction, ...args) {
+        pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
+        return this.mainFrame().$eval(selector, pageFunction, ...args);
     }
-    async $$eval() {
-        throw new Error('Not implemented');
+    /**
+     * This method runs `Array.from(document.querySelectorAll(selector))` within
+     * the page and passes the result as the first argument to the `pageFunction`.
+     *
+     * @remarks
+     * If `pageFunction` returns a promise `$$eval` will wait for the promise to
+     * resolve and then return its value.
+     *
+     * @example
+     *
+     * ```ts
+     * // get the amount of divs on the page
+     * const divCount = await page.$$eval('div', divs => divs.length);
+     *
+     * // get the text content of all the `.options` elements:
+     * const options = await page.$$eval('div > span.options', options => {
+     *   return options.map(option => option.textContent);
+     * });
+     * ```
+     *
+     * If you are using TypeScript, you may have to provide an explicit type to the
+     * first argument of the `pageFunction`.
+     * By default it is typed as `Element[]`, but you may need to provide a more
+     * specific sub-type:
+     *
+     * @example
+     *
+     * ```ts
+     * // if you don't provide HTMLInputElement here, TS will error
+     * // as `value` is not on `Element`
+     * await page.$$eval('input', (elements: HTMLInputElement[]) => {
+     *   return elements.map(e => e.value);
+     * });
+     * ```
+     *
+     * The compiler should be able to infer the return type
+     * from the `pageFunction` you provide. If it is unable to, you can use the generic
+     * type to tell the compiler what return type you expect from `$$eval`:
+     *
+     * @example
+     *
+     * ```ts
+     * // The compiler can infer the return type in this case, but if it can't
+     * // or if you want to be more explicit, provide it as the generic type.
+     * const allInputValues = await page.$$eval<string[]>(
+     *   'input',
+     *   (elements: HTMLInputElement[]) => elements.map(e => e.textContent)
+     * );
+     * ```
+     *
+     * @param selector - the
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
+     * to query for
+     * @param pageFunction - the function to be evaluated in the page context.
+     * Will be passed the result of
+     * `Array.from(document.querySelectorAll(selector))` as its first argument.
+     * @param args - any additional arguments to pass through to `pageFunction`.
+     *
+     * @returns The result of calling `pageFunction`. If it returns an element it
+     * is wrapped in an {@link ElementHandle}, else the raw value itself is
+     * returned.
+     */
+    async $$eval(selector, pageFunction, ...args) {
+        pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
+        return this.mainFrame().$$eval(selector, pageFunction, ...args);
     }
-    async $x() {
-        throw new Error('Not implemented');
+    /**
+     * The method evaluates the XPath expression relative to the page document as
+     * its context node. If there are no such elements, the method resolves to an
+     * empty array.
+     *
+     * @remarks
+     * Shortcut for {@link Frame.$x | Page.mainFrame().$x(expression) }.
+     *
+     * @param expression - Expression to evaluate
+     */
+    async $x(expression) {
+        return this.mainFrame().$x(expression);
     }
     async cookies() {
         throw new Error('Not implemented');
@@ -252,6 +444,9 @@ export class Page extends EventEmitter {
     async exposeFunction() {
         throw new Error('Not implemented');
     }
+    async removeExposedFunction() {
+        throw new Error('Not implemented');
+    }
     async authenticate() {
         throw new Error('Not implemented');
     }
@@ -262,7 +457,9 @@ export class Page extends EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * @returns Object containing metrics as key/value pairs.
+     * Object containing metrics as key/value pairs.
+     *
+     * @returns
      *
      * - `Timestamp` : The timestamp when the metrics sample was taken.
      *
@@ -299,14 +496,16 @@ export class Page extends EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     *
-     * @returns
+     * The page's URL.
      * @remarks Shortcut for
      * {@link Frame.url | page.mainFrame().url()}.
      */
     url() {
         throw new Error('Not implemented');
     }
+    /**
+     * The full HTML contents of the page, including the DOCTYPE.
+     */
     async content() {
         throw new Error('Not implemented');
     }
@@ -330,6 +529,45 @@ export class Page extends EventEmitter {
     }
     async waitForNetworkIdle() {
         throw new Error('Not implemented');
+    }
+    /**
+     * @internal
+     */
+    async _waitForNetworkIdle(networkManager, idleTime, timeout, closedDeferred) {
+        const idleDeferred = Deferred.create();
+        const abortDeferred = Deferred.create();
+        let idleTimer;
+        const cleanup = () => {
+            clearTimeout(idleTimer);
+            abortDeferred.reject(new Error('abort'));
+        };
+        const evaluate = () => {
+            clearTimeout(idleTimer);
+            if (networkManager.inFlightRequestsCount() === 0) {
+                idleTimer = setTimeout(() => {
+                    return idleDeferred.resolve();
+                }, idleTime);
+            }
+        };
+        const listenToEvent = (event) => {
+            return waitForEvent(networkManager, event, () => {
+                evaluate();
+                return false;
+            }, timeout, abortDeferred.valueOrThrow());
+        };
+        const eventPromises = [
+            listenToEvent(NetworkManagerEmittedEvents.Request),
+            listenToEvent(NetworkManagerEmittedEvents.Response),
+            listenToEvent(NetworkManagerEmittedEvents.RequestFailed),
+        ];
+        evaluate();
+        await Deferred.race([idleDeferred, ...eventPromises, closedDeferred]).then(r => {
+            cleanup();
+            return r;
+        }, error => {
+            cleanup();
+            throw error;
+        });
     }
     async waitForFrame() {
         throw new Error('Not implemented');
@@ -410,13 +648,15 @@ export class Page extends EventEmitter {
         throw new Error('Not implemented');
     }
     /**
+     * Current page viewport settings.
+     *
      * @returns
      *
      * - `width`: page's width in pixels
      *
      * - `height`: page's height in pixels
      *
-     * - `deviceScalarFactor`: Specify device scale factor (can be though of as
+     * - `deviceScaleFactor`: Specify device scale factor (can be though of as
      *   dpr). Defaults to `1`.
      *
      * - `isMobile`: Whether the meta viewport tag is taken into account. Defaults
@@ -437,11 +677,68 @@ export class Page extends EventEmitter {
     async evaluateOnNewDocument() {
         throw new Error('Not implemented');
     }
+    async removeScriptToEvaluateOnNewDocument() {
+        throw new Error('Not implemented');
+    }
     async setCacheEnabled() {
         throw new Error('Not implemented');
     }
+    /**
+     * @internal
+     */
+    async _maybeWriteBufferToFile(path, buffer) {
+        if (!path) {
+            return;
+        }
+        const fs = await importFSPromises();
+        await fs.writeFile(path, buffer);
+    }
     async screenshot() {
         throw new Error('Not implemented');
+    }
+    /**
+     * @internal
+     */
+    _getPDFOptions(options = {}, lengthUnit = 'in') {
+        const defaults = {
+            scale: 1,
+            displayHeaderFooter: false,
+            headerTemplate: '',
+            footerTemplate: '',
+            printBackground: false,
+            landscape: false,
+            pageRanges: '',
+            preferCSSPageSize: false,
+            omitBackground: false,
+            timeout: 30000,
+        };
+        let width = 8.5;
+        let height = 11;
+        if (options.format) {
+            const format = paperFormats[options.format.toLowerCase()];
+            assert(format, 'Unknown paper format: ' + options.format);
+            width = format.width;
+            height = format.height;
+        }
+        else {
+            width = convertPrintParameterToInches(options.width, lengthUnit) ?? width;
+            height =
+                convertPrintParameterToInches(options.height, lengthUnit) ?? height;
+        }
+        const margin = {
+            top: convertPrintParameterToInches(options.margin?.top, lengthUnit) || 0,
+            left: convertPrintParameterToInches(options.margin?.left, lengthUnit) || 0,
+            bottom: convertPrintParameterToInches(options.margin?.bottom, lengthUnit) || 0,
+            right: convertPrintParameterToInches(options.margin?.right, lengthUnit) || 0,
+        };
+        const output = {
+            ...defaults,
+            ...options,
+            width,
+            height,
+            margin,
+        };
+        return output;
     }
     async createPDFStream() {
         throw new Error('Not implemented');
@@ -450,7 +747,8 @@ export class Page extends EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * @returns The page's title
+     * The page's title
+     *
      * @remarks
      * Shortcut for {@link Frame.title | page.mainFrame().title()}.
      */
@@ -467,6 +765,9 @@ export class Page extends EventEmitter {
     isClosed() {
         throw new Error('Not implemented');
     }
+    /**
+     * {@inheritDoc Mouse}
+     */
     get mouse() {
         throw new Error('Not implemented');
     }
@@ -488,16 +789,90 @@ export class Page extends EventEmitter {
     type() {
         throw new Error('Not implemented');
     }
-    waitForTimeout() {
-        throw new Error('Not implemented');
+    /**
+     * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
+     *
+     * Causes your script to wait for the given number of milliseconds.
+     *
+     * @remarks
+     * It's generally recommended to not wait for a number of seconds, but instead
+     * use {@link Frame.waitForSelector}, {@link Frame.waitForXPath} or
+     * {@link Frame.waitForFunction} to wait for exactly the conditions you want.
+     *
+     * @example
+     *
+     * Wait for 1 second:
+     *
+     * ```ts
+     * await page.waitForTimeout(1000);
+     * ```
+     *
+     * @param milliseconds - the number of milliseconds to wait.
+     */
+    waitForTimeout(milliseconds) {
+        return this.mainFrame().waitForTimeout(milliseconds);
     }
-    async waitForSelector() {
-        throw new Error('Not implemented');
+    /**
+     * Wait for the `selector` to appear in page. If at the moment of calling the
+     * method the `selector` already exists, the method will return immediately. If
+     * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
+     * function will throw.
+     *
+     * @example
+     * This method works across navigations:
+     *
+     * ```ts
+     * import puppeteer from 'puppeteer';
+     * (async () => {
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   let currentURL;
+     *   page
+     *     .waitForSelector('img')
+     *     .then(() => console.log('First URL with image: ' + currentURL));
+     *   for (currentURL of [
+     *     'https://example.com',
+     *     'https://google.com',
+     *     'https://bbc.com',
+     *   ]) {
+     *     await page.goto(currentURL);
+     *   }
+     *   await browser.close();
+     * })();
+     * ```
+     *
+     * @param selector - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
+     * of an element to wait for
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves when element specified by selector string
+     * is added to DOM. Resolves to `null` if waiting for hidden: `true` and
+     * selector is not found in DOM.
+     * @remarks
+     * The optional Parameter in Arguments `options` are:
+     *
+     * - `visible`: A boolean wait for element to be present in DOM and to be
+     *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     *   properties. Defaults to `false`.
+     *
+     * - `hidden`: Wait for element to not be found in the DOM or to be hidden,
+     *   i.e. have `display: none` or `visibility: hidden` CSS properties. Defaults to
+     *   `false`.
+     *
+     * - `timeout`: maximum time to wait for in milliseconds. Defaults to `30000`
+     *   (30 seconds). Pass `0` to disable timeout. The default value can be changed
+     *   by using the {@link Page.setDefaultTimeout} method.
+     */
+    async waitForSelector(selector, options = {}) {
+        return await this.mainFrame().waitForSelector(selector, options);
     }
     waitForXPath() {
         throw new Error('Not implemented');
     }
     waitForFunction() {
+        throw new Error('Not implemented');
+    }
+    waitForDevicePrompt() {
         throw new Error('Not implemented');
     }
 }
@@ -529,4 +904,35 @@ export const unitToPixels = {
     cm: 37.8,
     mm: 3.78,
 };
+function convertPrintParameterToInches(parameter, lengthUnit = 'in') {
+    if (typeof parameter === 'undefined') {
+        return undefined;
+    }
+    let pixels;
+    if (isNumber(parameter)) {
+        // Treat numbers as pixel values to be aligned with phantom's paperSize.
+        pixels = parameter;
+    }
+    else if (isString(parameter)) {
+        const text = parameter;
+        let unit = text.substring(text.length - 2).toLowerCase();
+        let valueText = '';
+        if (unit in unitToPixels) {
+            valueText = text.substring(0, text.length - 2);
+        }
+        else {
+            // In case of unknown unit try to parse the whole parameter as number of pixels.
+            // This is consistent with phantom's paperSize behavior.
+            unit = 'px';
+            valueText = text;
+        }
+        const value = Number(valueText);
+        assert(!isNaN(value), 'Failed to parse parameter value: ' + text);
+        pixels = value * unitToPixels[unit];
+    }
+    else {
+        throw new Error('page.pdf() Cannot handle parameter type: ' + typeof parameter);
+    }
+    return pixels / unitToPixels[lengthUnit];
+}
 //# sourceMappingURL=Page.js.map

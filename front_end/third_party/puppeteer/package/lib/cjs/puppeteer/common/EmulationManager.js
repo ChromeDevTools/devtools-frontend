@@ -27,7 +27,7 @@ class EmulationManager {
         const mobile = viewport.isMobile || false;
         const width = viewport.width;
         const height = viewport.height;
-        const deviceScaleFactor = viewport.deviceScaleFactor || 1;
+        const deviceScaleFactor = viewport.deviceScaleFactor ?? 1;
         const screenOrientation = viewport.isLandscape
             ? { angle: 90, type: 'landscapePrimary' }
             : { angle: 0, type: 'portraitPrimary' };

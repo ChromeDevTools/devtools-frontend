@@ -43,22 +43,23 @@ export declare class TimeoutError extends CustomError {
  */
 export declare class ProtocolError extends CustomError {
     #private;
-    /**
-     * @internal
-     */
     set code(code: number | undefined);
     /**
+     * @readonly
      * @public
      */
     get code(): number | undefined;
-    /**
-     * @internal
-     */
     set originalMessage(originalMessage: string);
     /**
+     * @readonly
      * @public
      */
     get originalMessage(): string;
+}
+/**
+ * @internal
+ */
+export declare class TargetCloseError extends ProtocolError {
 }
 /**
  * @deprecated Do not use.

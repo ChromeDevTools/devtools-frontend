@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Frame } from './Frame.js';
+import { Frame as BaseFrame } from '../api/Frame.js';
 /**
  * Keeps track of the page frame tree and it's is managed by
  * {@link FrameManager}. FrameTree uses frame IDs to reference frame and it
@@ -21,7 +21,7 @@ import type { Frame } from './Frame.js';
  * structure is eventually consistent.
  * @internal
  */
-export declare class FrameTree {
+export declare class FrameTree<Frame extends BaseFrame> {
     #private;
     getMainFrame(): Frame | undefined;
     getById(frameId: string): Frame | undefined;

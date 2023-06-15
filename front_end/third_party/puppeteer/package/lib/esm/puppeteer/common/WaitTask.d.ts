@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ElementHandle } from './ElementHandle.js';
+import { ElementHandle } from '../api/ElementHandle.js';
 import { IsolatedWorld } from './IsolatedWorld.js';
 import { HandleFor } from './types.js';
 /**
  * @internal
  */
 export interface WaitTaskOptions {
-    bindings?: Map<string, (...args: never[]) => unknown>;
     polling: 'raf' | 'mutation' | number;
     root?: ElementHandle<Node>;
     timeout: number;
+    signal?: AbortSignal;
 }
 /**
  * @internal
@@ -33,11 +33,11 @@ export declare class WaitTask<T = unknown> {
     constructor(world: IsolatedWorld, options: WaitTaskOptions, fn: ((...args: unknown[]) => Promise<T>) | string, ...args: unknown[]);
     get result(): Promise<HandleFor<T>>;
     rerun(): Promise<void>;
-    terminate(error?: unknown): Promise<void>;
+    terminate(error?: Error): Promise<void>;
     /**
      * Not all errors lead to termination. They usually imply we need to rerun the task.
      */
-    getBadError(error: unknown): unknown;
+    getBadError(error: unknown): Error | undefined;
 }
 /**
  * @internal

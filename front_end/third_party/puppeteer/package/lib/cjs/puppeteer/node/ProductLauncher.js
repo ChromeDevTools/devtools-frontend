@@ -52,9 +52,15 @@ exports.ProductLauncher = void 0;
  * limitations under the License.
  */
 const fs_1 = require("fs");
-const os_1 = __importStar(require("os"));
+const os_1 = require("os");
 const path_1 = require("path");
-const BrowserFetcher_js_1 = require("./BrowserFetcher.js");
+const browsers_1 = require("@puppeteer/browsers");
+const Browser_js_1 = require("../common/Browser.js");
+const Connection_js_1 = require("../common/Connection.js");
+const Errors_js_1 = require("../common/Errors.js");
+const NodeWebSocketTransport_js_1 = require("../common/NodeWebSocketTransport.js");
+const util_js_1 = require("../common/util.js");
+const PipeTransport_js_1 = require("./PipeTransport.js");
 /**
  * Describes a launcher - a class that is able to create and launch a browser instance.
  *
@@ -72,8 +78,86 @@ class ProductLauncher {
     get product() {
         return __classPrivateFieldGet(this, _ProductLauncher_product, "f");
     }
-    launch() {
-        throw new Error('Not implemented');
+    async launch(options = {}) {
+        const { dumpio = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocol, protocolTimeout, } = options;
+        const launchArgs = await this.computeLaunchArguments(options);
+        const usePipe = launchArgs.args.includes('--remote-debugging-pipe');
+        const onProcessExit = async () => {
+            await this.cleanUserDataDir(launchArgs.userDataDir, {
+                isTemp: launchArgs.isTempUserDataDir,
+            });
+        };
+        const browserProcess = (0, browsers_1.launch)({
+            executablePath: launchArgs.executablePath,
+            args: launchArgs.args,
+            handleSIGHUP,
+            handleSIGTERM,
+            handleSIGINT,
+            dumpio,
+            env,
+            pipe: usePipe,
+            onExit: onProcessExit,
+        });
+        let browser;
+        let connection;
+        let closing = false;
+        const browserCloseCallback = async () => {
+            if (closing) {
+                return;
+            }
+            closing = true;
+            await this.closeBrowser(browserProcess, connection);
+        };
+        try {
+            if (__classPrivateFieldGet(this, _ProductLauncher_product, "f") === 'firefox' && protocol === 'webDriverBiDi') {
+                browser = await this.createBiDiBrowser(browserProcess, browserCloseCallback, {
+                    timeout,
+                    protocolTimeout,
+                    slowMo,
+                    defaultViewport,
+                    ignoreHTTPSErrors,
+                });
+            }
+            else {
+                if (usePipe) {
+                    connection = await this.createCDPPipeConnection(browserProcess, {
+                        timeout,
+                        protocolTimeout,
+                        slowMo,
+                    });
+                }
+                else {
+                    connection = await this.createCDPSocketConnection(browserProcess, {
+                        timeout,
+                        protocolTimeout,
+                        slowMo,
+                    });
+                }
+                if (protocol === 'webDriverBiDi') {
+                    browser = await this.createBiDiOverCDPBrowser(browserProcess, connection, browserCloseCallback, {
+                        timeout,
+                        protocolTimeout,
+                        slowMo,
+                        defaultViewport,
+                        ignoreHTTPSErrors,
+                    });
+                }
+                else {
+                    browser = await Browser_js_1.CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter);
+                }
+            }
+        }
+        catch (error) {
+            void browserCloseCallback();
+            if (error instanceof browsers_1.TimeoutError) {
+                throw new Errors_js_1.TimeoutError(error.message);
+            }
+            throw error;
+        }
+        if (waitForInitialPage && protocol !== 'webDriverBiDi') {
+            await this.waitForPageTarget(browser, timeout);
+        }
+        return browser;
     }
     executablePath() {
         throw new Error('Not implemented');
@@ -82,47 +166,153 @@ class ProductLauncher {
         throw new Error('Not implemented');
     }
     /**
+     * Set only for Firefox, after the launcher resolves the `latest` revision to
+     * the actual revision.
+     * @internal
+     */
+    getActualBrowserRevision() {
+        return this.actualBrowserRevision;
+    }
+    async computeLaunchArguments() {
+        throw new Error('Not implemented');
+    }
+    async cleanUserDataDir() {
+        throw new Error('Not implemented');
+    }
+    /**
+     * @internal
+     */
+    async closeBrowser(browserProcess, connection) {
+        if (connection) {
+            // Attempt to close the browser gracefully
+            try {
+                await connection.closeBrowser();
+                await browserProcess.hasClosed();
+            }
+            catch (error) {
+                (0, util_js_1.debugError)(error);
+                await browserProcess.close();
+            }
+        }
+        else {
+            await browserProcess.close();
+        }
+    }
+    /**
+     * @internal
+     */
+    async waitForPageTarget(browser, timeout) {
+        try {
+            await browser.waitForTarget(t => {
+                return t.type() === 'page';
+            }, { timeout });
+        }
+        catch (error) {
+            await browser.close();
+            throw error;
+        }
+    }
+    /**
+     * @internal
+     */
+    async createCDPSocketConnection(browserProcess, opts) {
+        const browserWSEndpoint = await browserProcess.waitForLineOutput(browsers_1.CDP_WEBSOCKET_ENDPOINT_REGEX, opts.timeout);
+        const transport = await NodeWebSocketTransport_js_1.NodeWebSocketTransport.create(browserWSEndpoint);
+        return new Connection_js_1.Connection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout);
+    }
+    /**
+     * @internal
+     */
+    async createCDPPipeConnection(browserProcess, opts) {
+        // stdio was assigned during start(), and the 'pipe' option there adds the
+        // 4th and 5th items to stdio array
+        const { 3: pipeWrite, 4: pipeRead } = browserProcess.nodeProcess.stdio;
+        const transport = new PipeTransport_js_1.PipeTransport(pipeWrite, pipeRead);
+        return new Connection_js_1.Connection('', transport, opts.slowMo, opts.protocolTimeout);
+    }
+    /**
+     * @internal
+     */
+    async createBiDiOverCDPBrowser(browserProcess, connection, closeCallback, opts) {
+        // TODO: use other options too.
+        const BiDi = await Promise.resolve().then(() => __importStar(require(
+        /* webpackIgnore: true */ '../common/bidi/bidi.js')));
+        const bidiConnection = await BiDi.connectBidiOverCDP(connection);
+        return await BiDi.Browser.create({
+            connection: bidiConnection,
+            closeCallback,
+            process: browserProcess.nodeProcess,
+            defaultViewport: opts.defaultViewport,
+            ignoreHTTPSErrors: opts.ignoreHTTPSErrors,
+        });
+    }
+    /**
+     * @internal
+     */
+    async createBiDiBrowser(browserProcess, closeCallback, opts) {
+        const browserWSEndpoint = (await browserProcess.waitForLineOutput(browsers_1.WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, opts.timeout)) + '/session';
+        const transport = await NodeWebSocketTransport_js_1.NodeWebSocketTransport.create(browserWSEndpoint);
+        const BiDi = await Promise.resolve().then(() => __importStar(require(
+        /* webpackIgnore: true */ '../common/bidi/bidi.js')));
+        const bidiConnection = new BiDi.Connection(transport, opts.slowMo, opts.protocolTimeout);
+        // TODO: use other options too.
+        return await BiDi.Browser.create({
+            connection: bidiConnection,
+            closeCallback,
+            process: browserProcess.nodeProcess,
+            defaultViewport: opts.defaultViewport,
+            ignoreHTTPSErrors: opts.ignoreHTTPSErrors,
+        });
+    }
+    /**
      * @internal
      */
     getProfilePath() {
-        var _a;
-        return (0, path_1.join)((_a = this.puppeteer.configuration.temporaryDirectory) !== null && _a !== void 0 ? _a : (0, os_1.tmpdir)(), `puppeteer_dev_${this.product}_profile-`);
+        return (0, path_1.join)(this.puppeteer.configuration.temporaryDirectory ?? (0, os_1.tmpdir)(), `puppeteer_dev_${this.product}_profile-`);
     }
     /**
      * @internal
      */
     resolveExecutablePath() {
-        const executablePath = this.puppeteer.configuration.executablePath;
+        let executablePath = this.puppeteer.configuration.executablePath;
         if (executablePath) {
             if (!(0, fs_1.existsSync)(executablePath)) {
                 throw new Error(`Tried to find the browser at the configured path (${executablePath}), but no executable was found.`);
             }
             return executablePath;
         }
-        const ubuntuChromiumPath = '/usr/bin/chromium-browser';
-        if (this.product === 'chrome' &&
-            os_1.default.platform() !== 'darwin' &&
-            os_1.default.arch() === 'arm64' &&
-            (0, fs_1.existsSync)(ubuntuChromiumPath)) {
-            return ubuntuChromiumPath;
+        function productToBrowser(product) {
+            switch (product) {
+                case 'chrome':
+                    return browsers_1.Browser.CHROME;
+                case 'firefox':
+                    return browsers_1.Browser.FIREFOX;
+            }
+            return browsers_1.Browser.CHROME;
         }
-        const browserFetcher = new BrowserFetcher_js_1.BrowserFetcher({
-            product: this.product,
-            path: this.puppeteer.defaultDownloadPath,
+        executablePath = (0, browsers_1.computeExecutablePath)({
+            cacheDir: this.puppeteer.defaultDownloadPath,
+            browser: productToBrowser(this.product),
+            buildId: this.puppeteer.browserRevision,
         });
-        const revisionInfo = browserFetcher.revisionInfo(this.puppeteer.browserRevision);
-        if (!revisionInfo.local) {
+        if (!(0, fs_1.existsSync)(executablePath)) {
             if (this.puppeteer.configuration.browserRevision) {
-                throw new Error(`Tried to find the browser at the configured path (${revisionInfo.executablePath}) for revision ${this.puppeteer.browserRevision}, but no executable was found.`);
+                throw new Error(`Tried to find the browser at the configured path (${executablePath}) for revision ${this.puppeteer.browserRevision}, but no executable was found.`);
             }
             switch (this.product) {
                 case 'chrome':
-                    throw new Error(`Run \`npm install\` to download the correct Chromium revision (${this.puppeteer.browserRevision}).`);
+                    throw new Error(`Could not find Chrome (ver. ${this.puppeteer.browserRevision}). This can occur if either\n` +
+                        ' 1. you did not perform an installation before running the script (e.g. `npm install`) or\n' +
+                        ` 2. your cache path is incorrectly configured (which is: ${this.puppeteer.configuration.cacheDirectory}).\n` +
+                        'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
                 case 'firefox':
-                    throw new Error(`Run \`PUPPETEER_PRODUCT=firefox npm install\` to download a supported Firefox browser binary.`);
+                    throw new Error(`Could not find Firefox (rev. ${this.puppeteer.browserRevision}). This can occur if either\n` +
+                        ' 1. you did not perform an installation for Firefox before running the script (e.g. `PUPPETEER_PRODUCT=firefox npm install`) or\n' +
+                        ` 2. your cache path is incorrectly configured (which is: ${this.puppeteer.configuration.cacheDirectory}).\n` +
+                        'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
             }
         }
-        return revisionInfo.executablePath;
+        return executablePath;
     }
 }
 exports.ProductLauncher = ProductLauncher;

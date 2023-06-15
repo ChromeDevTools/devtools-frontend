@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 /**
- * Queries the given node for a node matching the given text selector.
- *
- * @internal
- */
-export declare const textQuerySelector: (root: Node, selector: string) => Element | null;
-/**
  * Queries the given node for all nodes matching the given text selector.
  *
  * @internal
  */
-export declare const textQuerySelectorAll: (root: Node, selector: string) => Element[];
+export declare const textQuerySelectorAll: (root: Node, selector: string) => Generator<Element>;
 //# sourceMappingURL=TextQuerySelector.d.ts.map

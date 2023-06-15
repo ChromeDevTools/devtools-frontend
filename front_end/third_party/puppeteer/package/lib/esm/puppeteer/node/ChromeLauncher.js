@@ -1,27 +1,54 @@
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _ChromeLauncher_instances, _ChromeLauncher_executablePathForChannel;
-import { accessSync } from 'fs';
+/**
+ * Copyright 2023 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { mkdtemp } from 'fs/promises';
-import os from 'os';
 import path from 'path';
-import { CDPBrowser } from '../common/Browser.js';
+import { computeSystemExecutablePath, Browser as SupportedBrowsers, ChromeReleaseChannel as BrowsersChromeReleaseChannel, } from '@puppeteer/browsers';
+import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
-import { BrowserRunner } from './BrowserRunner.js';
 import { ProductLauncher } from './ProductLauncher.js';
+import { rm } from './util/fs.js';
 /**
  * @internal
  */
 export class ChromeLauncher extends ProductLauncher {
     constructor(puppeteer) {
         super(puppeteer, 'chrome');
-        _ChromeLauncher_instances.add(this);
     }
-    async launch(options = {}) {
-        const { ignoreDefaultArgs = false, args = [], dumpio = false, channel, executablePath, pipe = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, debuggingPort, } = options;
+    launch(options = {}) {
+        const headless = options.headless ?? true;
+        if (headless === true &&
+            this.puppeteer.configuration.logLevel === 'warn' &&
+            !Boolean(process.env['PUPPETEER_DISABLE_HEADLESS_WARNING'])) {
+            console.warn([
+                '\x1B[1m\x1B[43m\x1B[30m',
+                'Puppeteer old Headless deprecation warning:\x1B[0m\x1B[33m',
+                '  In the near feature `headless: true` will default to the new Headless mode',
+                '  for Chrome instead of the old Headless implementation. For more',
+                '  information, please see https://developer.chrome.com/articles/new-headless/.',
+                '  Consider opting in early by passing `headless: "new"` to `puppeteer.launch()`',
+                '  If you encounter any bugs, please report them to https://github.com/puppeteer/puppeteer/issues/new/choose.\x1B[0m\n',
+            ].join('\n  '));
+        }
+        return super.launch(options);
+    }
+    /**
+     * @internal
+     */
+    async computeLaunchArguments(options = {}) {
+        const { ignoreDefaultArgs = false, args = [], pipe = false, debuggingPort, channel, executablePath, } = options;
         const chromeArguments = [];
         if (!ignoreDefaultArgs) {
             chromeArguments.push(...this.defaultArgs(options));
@@ -63,76 +90,60 @@ export class ChromeLauncher extends ProductLauncher {
             assert(channel || !this.puppeteer._isPuppeteerCore, `An \`executablePath\` or \`channel\` must be specified for \`puppeteer-core\``);
             chromeExecutable = this.executablePath(channel);
         }
-        const usePipe = chromeArguments.includes('--remote-debugging-pipe');
-        const runner = new BrowserRunner(this.product, chromeExecutable, chromeArguments, userDataDir, isTempUserDataDir);
-        runner.start({
-            handleSIGHUP,
-            handleSIGTERM,
-            handleSIGINT,
-            dumpio,
-            env,
-            pipe: usePipe,
-        });
-        let browser;
-        try {
-            const connection = await runner.setupConnection({
-                usePipe,
-                timeout,
-                slowMo,
-                preferredRevision: this.puppeteer.browserRevision,
-            });
-            browser = await CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, runner.proc, runner.close.bind(runner), options.targetFilter);
-        }
-        catch (error) {
-            runner.kill();
-            throw error;
-        }
-        if (waitForInitialPage) {
+        return {
+            executablePath: chromeExecutable,
+            args: chromeArguments,
+            isTempUserDataDir,
+            userDataDir,
+        };
+    }
+    /**
+     * @internal
+     */
+    async cleanUserDataDir(path, opts) {
+        if (opts.isTemp) {
             try {
-                await browser.waitForTarget(t => {
-                    return t.type() === 'page';
-                }, { timeout });
+                await rm(path);
             }
             catch (error) {
-                await browser.close();
+                debugError(error);
                 throw error;
             }
         }
-        return browser;
     }
     defaultArgs(options = {}) {
+        // See https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
         const chromeArguments = [
             '--allow-pre-commit-input',
             '--disable-background-networking',
-            '--enable-features=NetworkServiceInProcess2',
             '--disable-background-timer-throttling',
             '--disable-backgrounding-occluded-windows',
             '--disable-breakpad',
             '--disable-client-side-phishing-detection',
             '--disable-component-extensions-with-background-pages',
+            '--disable-component-update',
             '--disable-default-apps',
             '--disable-dev-shm-usage',
             '--disable-extensions',
-            // TODO: remove AvoidUnnecessaryBeforeUnloadCheckSync below
-            // once crbug.com/1324138 is fixed and released.
             // AcceptCHFrame disabled because of crbug.com/1348106.
-            '--disable-features=Translate,BackForwardCache,AcceptCHFrame,AvoidUnnecessaryBeforeUnloadCheckSync',
+            '--disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints',
             '--disable-hang-monitor',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',
             '--disable-prompt-on-repost',
             '--disable-renderer-backgrounding',
             '--disable-sync',
+            '--enable-automation',
+            // TODO(sadym): remove '--enable-blink-features=IdleDetection' once
+            // IdleDetection is turned on by default.
+            '--enable-blink-features=IdleDetection',
+            '--enable-features=NetworkServiceInProcess2',
+            '--export-tagged-pdf',
             '--force-color-profile=srgb',
             '--metrics-recording-only',
             '--no-first-run',
-            '--enable-automation',
             '--password-store=basic',
             '--use-mock-keychain',
-            // TODO(sadym): remove '--enable-blink-features=IdleDetection'
-            // once IdleDetection is turned on by default.
-            '--enable-blink-features=IdleDetection',
-            '--export-tagged-pdf',
         ];
         const { devtools = false, headless = !devtools, args = [], userDataDir, } = options;
         if (userDataDir) {
@@ -142,7 +153,7 @@ export class ChromeLauncher extends ProductLauncher {
             chromeArguments.push('--auto-open-devtools-for-tabs');
         }
         if (headless) {
-            chromeArguments.push(headless === 'chrome' ? '--headless=chrome' : '--headless', '--hide-scrollbars', '--mute-audio');
+            chromeArguments.push(headless === 'new' ? '--headless=new' : '--headless', '--hide-scrollbars', '--mute-audio');
         }
         if (args.every(arg => {
             return arg.startsWith('-');
@@ -154,77 +165,26 @@ export class ChromeLauncher extends ProductLauncher {
     }
     executablePath(channel) {
         if (channel) {
-            return __classPrivateFieldGet(this, _ChromeLauncher_instances, "m", _ChromeLauncher_executablePathForChannel).call(this, channel);
+            return computeSystemExecutablePath({
+                browser: SupportedBrowsers.CHROME,
+                channel: convertPuppeteerChannelToBrowsersChannel(channel),
+            });
         }
         else {
             return this.resolveExecutablePath();
         }
     }
 }
-_ChromeLauncher_instances = new WeakSet(), _ChromeLauncher_executablePathForChannel = function _ChromeLauncher_executablePathForChannel(channel) {
-    const platform = os.platform();
-    let chromePath;
-    switch (platform) {
-        case 'win32':
-            switch (channel) {
-                case 'chrome':
-                    chromePath = `${process.env['PROGRAMFILES']}\\Google\\Chrome\\Application\\chrome.exe`;
-                    break;
-                case 'chrome-beta':
-                    chromePath = `${process.env['PROGRAMFILES']}\\Google\\Chrome Beta\\Application\\chrome.exe`;
-                    break;
-                case 'chrome-canary':
-                    chromePath = `${process.env['PROGRAMFILES']}\\Google\\Chrome SxS\\Application\\chrome.exe`;
-                    break;
-                case 'chrome-dev':
-                    chromePath = `${process.env['PROGRAMFILES']}\\Google\\Chrome Dev\\Application\\chrome.exe`;
-                    break;
-            }
-            break;
-        case 'darwin':
-            switch (channel) {
-                case 'chrome':
-                    chromePath =
-                        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-                    break;
-                case 'chrome-beta':
-                    chromePath =
-                        '/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta';
-                    break;
-                case 'chrome-canary':
-                    chromePath =
-                        '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary';
-                    break;
-                case 'chrome-dev':
-                    chromePath =
-                        '/Applications/Google Chrome Dev.app/Contents/MacOS/Google Chrome Dev';
-                    break;
-            }
-            break;
-        case 'linux':
-            switch (channel) {
-                case 'chrome':
-                    chromePath = '/opt/google/chrome/chrome';
-                    break;
-                case 'chrome-beta':
-                    chromePath = '/opt/google/chrome-beta/chrome';
-                    break;
-                case 'chrome-dev':
-                    chromePath = '/opt/google/chrome-unstable/chrome';
-                    break;
-            }
-            break;
+function convertPuppeteerChannelToBrowsersChannel(channel) {
+    switch (channel) {
+        case 'chrome':
+            return BrowsersChromeReleaseChannel.STABLE;
+        case 'chrome-dev':
+            return BrowsersChromeReleaseChannel.DEV;
+        case 'chrome-beta':
+            return BrowsersChromeReleaseChannel.BETA;
+        case 'chrome-canary':
+            return BrowsersChromeReleaseChannel.CANARY;
     }
-    if (!chromePath) {
-        throw new Error(`Unable to detect browser executable path for '${channel}' on ${platform}.`);
-    }
-    // Check if Chrome exists and is accessible.
-    try {
-        accessSync(chromePath);
-    }
-    catch (error) {
-        throw new Error(`Could not find Google Chrome executable for channel '${channel}' at '${chromePath}'.`);
-    }
-    return chromePath;
-};
+}
 //# sourceMappingURL=ChromeLauncher.js.map

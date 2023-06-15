@@ -24,34 +24,406 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Page_connection, _Page_contextId;
-import { Page as PageBase } from '../../api/Page.js';
+var _Page_instances, _Page_accessibility, _Page_timeoutSettings, _Page_browserContext, _Page_connection, _Page_frameTree, _Page_networkManager, _Page_viewport, _Page_closedDeferred, _Page_subscribedEvents, _Page_networkManagerEvents, _Page_tracing, _Page_onFrameAttached, _Page_onFrameNavigated, _Page_onFrameDetached, _Page_removeFramesRecursively, _Page_onLogEntryAdded;
+import { Page as PageBase, } from '../../api/Page.js';
+import { assert } from '../../util/assert.js';
+import { Deferred } from '../../util/Deferred.js';
+import { Accessibility } from '../Accessibility.js';
+import { ConsoleMessage } from '../ConsoleMessage.js';
+import { TargetCloseError } from '../Errors.js';
+import { FrameManagerEmittedEvents } from '../FrameManager.js';
+import { FrameTree } from '../FrameTree.js';
+import { NetworkManagerEmittedEvents } from '../NetworkManager.js';
+import { TimeoutSettings } from '../TimeoutSettings.js';
+import { Tracing } from '../Tracing.js';
+import { debugError, isString, waitForEvent, waitWithTimeout, withSourcePuppeteerURLIfNone, } from '../util.js';
+import { BrowsingContext, getBidiHandle } from './BrowsingContext.js';
+import { Frame } from './Frame.js';
+import { NetworkManager } from './NetworkManager.js';
+import { BidiSerializer } from './Serializer.js';
 /**
  * @internal
  */
 export class Page extends PageBase {
-    constructor(connection, contextId) {
+    constructor(browserContext, info) {
         super();
+        _Page_instances.add(this);
+        _Page_accessibility.set(this, void 0);
+        _Page_timeoutSettings.set(this, new TimeoutSettings());
+        _Page_browserContext.set(this, void 0);
         _Page_connection.set(this, void 0);
-        _Page_contextId.set(this, void 0);
-        __classPrivateFieldSet(this, _Page_connection, connection, "f");
-        __classPrivateFieldSet(this, _Page_contextId, contextId, "f");
+        _Page_frameTree.set(this, new FrameTree());
+        _Page_networkManager.set(this, void 0);
+        _Page_viewport.set(this, null);
+        _Page_closedDeferred.set(this, Deferred.create());
+        _Page_subscribedEvents.set(this, new Map([
+            ['log.entryAdded', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onLogEntryAdded).bind(this)],
+            [
+                'browsingContext.load',
+                () => {
+                    return this.emit("load" /* PageEmittedEvents.Load */);
+                },
+            ],
+            [
+                'browsingContext.domContentLoaded',
+                () => {
+                    return this.emit("domcontentloaded" /* PageEmittedEvents.DOMContentLoaded */);
+                },
+            ],
+            ['browsingContext.contextCreated', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameAttached).bind(this)],
+            ['browsingContext.contextDestroyed', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameDetached).bind(this)],
+            ['browsingContext.fragmentNavigated', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameNavigated).bind(this)],
+        ]));
+        _Page_networkManagerEvents.set(this, new Map([
+            [
+                NetworkManagerEmittedEvents.Request,
+                event => {
+                    return this.emit("request" /* PageEmittedEvents.Request */, event);
+                },
+            ],
+            [
+                NetworkManagerEmittedEvents.RequestServedFromCache,
+                event => {
+                    return this.emit("requestservedfromcache" /* PageEmittedEvents.RequestServedFromCache */, event);
+                },
+            ],
+            [
+                NetworkManagerEmittedEvents.RequestFailed,
+                event => {
+                    return this.emit("requestfailed" /* PageEmittedEvents.RequestFailed */, event);
+                },
+            ],
+            [
+                NetworkManagerEmittedEvents.RequestFinished,
+                event => {
+                    return this.emit("requestfinished" /* PageEmittedEvents.RequestFinished */, event);
+                },
+            ],
+            [
+                NetworkManagerEmittedEvents.Response,
+                event => {
+                    return this.emit("response" /* PageEmittedEvents.Response */, event);
+                },
+            ],
+        ]));
+        _Page_tracing.set(this, void 0);
+        __classPrivateFieldSet(this, _Page_browserContext, browserContext, "f");
+        __classPrivateFieldSet(this, _Page_connection, browserContext.connection, "f");
+        __classPrivateFieldSet(this, _Page_networkManager, new NetworkManager(__classPrivateFieldGet(this, _Page_connection, "f"), this), "f");
+        __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameAttached).call(this, {
+            ...info,
+            url: 'about:blank',
+            children: [],
+        });
+        for (const [event, subscriber] of __classPrivateFieldGet(this, _Page_subscribedEvents, "f")) {
+            __classPrivateFieldGet(this, _Page_connection, "f").on(event, subscriber);
+        }
+        for (const [event, subscriber] of __classPrivateFieldGet(this, _Page_networkManagerEvents, "f")) {
+            __classPrivateFieldGet(this, _Page_networkManager, "f").on(event, subscriber);
+        }
+        // TODO: https://github.com/w3c/webdriver-bidi/issues/443
+        __classPrivateFieldSet(this, _Page_accessibility, new Accessibility({
+            describeNode: (id) => {
+                return this.mainFrame().context().sendCDPCommand('DOM.describeNode', {
+                    objectId: id,
+                });
+            },
+            getFullAXTree: () => {
+                return this.mainFrame()
+                    .context()
+                    .sendCDPCommand('Accessibility.getFullAXTree');
+            },
+        }), "f");
+        __classPrivateFieldSet(this, _Page_tracing, new Tracing({
+            read: opts => {
+                return this.mainFrame().context().sendCDPCommand('IO.read', opts);
+            },
+            close: opts => {
+                return this.mainFrame().context().sendCDPCommand('IO.close', opts);
+            },
+            start: opts => {
+                return this.mainFrame().context().sendCDPCommand('Tracing.start', opts);
+            },
+            stop: async () => {
+                const deferred = Deferred.create();
+                this.mainFrame()
+                    .context()
+                    .once('Tracing.tracingComplete', event => {
+                    deferred.resolve(event);
+                });
+                await this.mainFrame().context().sendCDPCommand('Tracing.end');
+                return deferred.valueOrThrow();
+            },
+        }), "f");
+    }
+    get accessibility() {
+        return __classPrivateFieldGet(this, _Page_accessibility, "f");
+    }
+    get tracing() {
+        return __classPrivateFieldGet(this, _Page_tracing, "f");
+    }
+    browser() {
+        return __classPrivateFieldGet(this, _Page_browserContext, "f").browser();
+    }
+    browserContext() {
+        return __classPrivateFieldGet(this, _Page_browserContext, "f");
+    }
+    mainFrame() {
+        const mainFrame = __classPrivateFieldGet(this, _Page_frameTree, "f").getMainFrame();
+        assert(mainFrame, 'Requesting main frame too early!');
+        return mainFrame;
+    }
+    frames() {
+        return Array.from(__classPrivateFieldGet(this, _Page_frameTree, "f").frames());
+    }
+    frame(frameId) {
+        return __classPrivateFieldGet(this, _Page_frameTree, "f").getById(frameId ?? '') || null;
+    }
+    childFrames(frameId) {
+        return __classPrivateFieldGet(this, _Page_frameTree, "f").childFrames(frameId);
+    }
+    getNavigationResponse(id) {
+        return __classPrivateFieldGet(this, _Page_networkManager, "f").getNavigationResponse(id);
     }
     async close() {
+        if (__classPrivateFieldGet(this, _Page_closedDeferred, "f").finished()) {
+            return;
+        }
+        __classPrivateFieldGet(this, _Page_closedDeferred, "f").resolve(new TargetCloseError('Page closed!'));
+        this.removeAllListeners();
+        __classPrivateFieldGet(this, _Page_networkManager, "f").dispose();
         await __classPrivateFieldGet(this, _Page_connection, "f").send('browsingContext.close', {
-            context: __classPrivateFieldGet(this, _Page_contextId, "f"),
+            context: this.mainFrame()._id,
         });
     }
-    async evaluate(pageFunction, ..._args) {
-        // TODO: re-use evaluate logic from Execution context.
-        const str = `(${pageFunction.toString()})()`;
-        const result = (await __classPrivateFieldGet(this, _Page_connection, "f").send('script.evaluate', {
-            expression: str,
-            target: { context: __classPrivateFieldGet(this, _Page_contextId, "f") },
-            awaitPromise: true,
-        }));
-        return result.result.value;
+    async evaluateHandle(pageFunction, ...args) {
+        pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
+        return this.mainFrame().evaluateHandle(pageFunction, ...args);
+    }
+    async evaluate(pageFunction, ...args) {
+        pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
+        return this.mainFrame().evaluate(pageFunction, ...args);
+    }
+    async goto(url, options) {
+        return this.mainFrame().goto(url, options);
+    }
+    async reload(options) {
+        const [response] = await Promise.all([
+            this.waitForResponse(response => {
+                return (response.request().isNavigationRequest() &&
+                    response.url() === this.url());
+            }),
+            this.mainFrame().context().reload(options),
+        ]);
+        return response;
+    }
+    url() {
+        return this.mainFrame().url();
+    }
+    setDefaultNavigationTimeout(timeout) {
+        __classPrivateFieldGet(this, _Page_timeoutSettings, "f").setDefaultNavigationTimeout(timeout);
+    }
+    setDefaultTimeout(timeout) {
+        __classPrivateFieldGet(this, _Page_timeoutSettings, "f").setDefaultTimeout(timeout);
+    }
+    getDefaultTimeout() {
+        return __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout();
+    }
+    async setContent(html, options = {}) {
+        await this.mainFrame().setContent(html, options);
+    }
+    async content() {
+        return this.mainFrame().content();
+    }
+    async setViewport(viewport) {
+        // TODO: use BiDi commands when available.
+        const mobile = false;
+        const width = viewport.width;
+        const height = viewport.height;
+        const deviceScaleFactor = 1;
+        const screenOrientation = { angle: 0, type: 'portraitPrimary' };
+        await this.mainFrame()
+            .context()
+            .sendCDPCommand('Emulation.setDeviceMetricsOverride', {
+            mobile,
+            width,
+            height,
+            deviceScaleFactor,
+            screenOrientation,
+        });
+        __classPrivateFieldSet(this, _Page_viewport, viewport, "f");
+    }
+    viewport() {
+        return __classPrivateFieldGet(this, _Page_viewport, "f");
+    }
+    async pdf(options = {}) {
+        const { path = undefined } = options;
+        const { printBackground: background, margin, landscape, width, height, pageRanges, scale, preferCSSPageSize, timeout, } = this._getPDFOptions(options, 'cm');
+        const { result } = await waitWithTimeout(__classPrivateFieldGet(this, _Page_connection, "f").send('browsingContext.print', {
+            context: this.mainFrame()._id,
+            background,
+            margin,
+            orientation: landscape ? 'landscape' : 'portrait',
+            page: {
+                width,
+                height,
+            },
+            pageRanges: pageRanges.split(', '),
+            scale,
+            shrinkToFit: !preferCSSPageSize,
+        }), 'browsingContext.print', timeout);
+        const buffer = Buffer.from(result.data, 'base64');
+        await this._maybeWriteBufferToFile(path, buffer);
+        return buffer;
+    }
+    async createPDFStream(options) {
+        const buffer = await this.pdf(options);
+        try {
+            const { Readable } = await import('stream');
+            return Readable.from(buffer);
+        }
+        catch (error) {
+            if (error instanceof TypeError) {
+                throw new Error('Can only pass a file path in a Node-like environment.');
+            }
+            throw error;
+        }
+    }
+    async screenshot(options = {}) {
+        const { path = undefined, encoding, ...args } = options;
+        if (Object.keys(args).length >= 1) {
+            throw new Error('BiDi only supports "encoding" and "path" options');
+        }
+        const { result } = await __classPrivateFieldGet(this, _Page_connection, "f").send('browsingContext.captureScreenshot', {
+            context: this.mainFrame()._id,
+        });
+        if (encoding === 'base64') {
+            return result.data;
+        }
+        const buffer = Buffer.from(result.data, 'base64');
+        await this._maybeWriteBufferToFile(path, buffer);
+        return buffer;
+    }
+    waitForRequest(urlOrPredicate, options = {}) {
+        const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
+        return waitForEvent(__classPrivateFieldGet(this, _Page_networkManager, "f"), NetworkManagerEmittedEvents.Request, async (request) => {
+            if (isString(urlOrPredicate)) {
+                return urlOrPredicate === request.url();
+            }
+            if (typeof urlOrPredicate === 'function') {
+                return !!(await urlOrPredicate(request));
+            }
+            return false;
+        }, timeout, __classPrivateFieldGet(this, _Page_closedDeferred, "f").valueOrThrow());
+    }
+    waitForResponse(urlOrPredicate, options = {}) {
+        const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
+        return waitForEvent(__classPrivateFieldGet(this, _Page_networkManager, "f"), NetworkManagerEmittedEvents.Response, async (response) => {
+            if (isString(urlOrPredicate)) {
+                return urlOrPredicate === response.url();
+            }
+            if (typeof urlOrPredicate === 'function') {
+                return !!(await urlOrPredicate(response));
+            }
+            return false;
+        }, timeout, __classPrivateFieldGet(this, _Page_closedDeferred, "f").valueOrThrow());
+    }
+    async waitForNetworkIdle(options = {}) {
+        const { idleTime = 500, timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
+        await this._waitForNetworkIdle(__classPrivateFieldGet(this, _Page_networkManager, "f"), idleTime, timeout, __classPrivateFieldGet(this, _Page_closedDeferred, "f"));
+    }
+    title() {
+        return this.mainFrame().title();
     }
 }
-_Page_connection = new WeakMap(), _Page_contextId = new WeakMap();
+_Page_accessibility = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Page_browserContext = new WeakMap(), _Page_connection = new WeakMap(), _Page_frameTree = new WeakMap(), _Page_networkManager = new WeakMap(), _Page_viewport = new WeakMap(), _Page_closedDeferred = new WeakMap(), _Page_subscribedEvents = new WeakMap(), _Page_networkManagerEvents = new WeakMap(), _Page_tracing = new WeakMap(), _Page_instances = new WeakSet(), _Page_onFrameAttached = function _Page_onFrameAttached(info) {
+    if (!this.frame(info.context) &&
+        (this.frame(info.parent ?? '') || !__classPrivateFieldGet(this, _Page_frameTree, "f").getMainFrame())) {
+        const context = new BrowsingContext(__classPrivateFieldGet(this, _Page_connection, "f"), __classPrivateFieldGet(this, _Page_timeoutSettings, "f"), info);
+        __classPrivateFieldGet(this, _Page_connection, "f").registerBrowsingContexts(context);
+        const frame = new Frame(this, context, info.parent);
+        __classPrivateFieldGet(this, _Page_frameTree, "f").addFrame(frame);
+        this.emit(FrameManagerEmittedEvents.FrameAttached, frame);
+    }
+}, _Page_onFrameNavigated = async function _Page_onFrameNavigated(info) {
+    const frameId = info.context;
+    let frame = this.frame(frameId);
+    // Detach all child frames first.
+    if (frame) {
+        for (const child of frame.childFrames()) {
+            __classPrivateFieldGet(this, _Page_instances, "m", _Page_removeFramesRecursively).call(this, child);
+        }
+        frame = await __classPrivateFieldGet(this, _Page_frameTree, "f").waitForFrame(frameId);
+        this.emit(FrameManagerEmittedEvents.FrameNavigated, frame);
+    }
+}, _Page_onFrameDetached = function _Page_onFrameDetached(info) {
+    const frame = this.frame(info.context);
+    if (frame) {
+        __classPrivateFieldGet(this, _Page_instances, "m", _Page_removeFramesRecursively).call(this, frame);
+    }
+}, _Page_removeFramesRecursively = function _Page_removeFramesRecursively(frame) {
+    for (const child of frame.childFrames()) {
+        __classPrivateFieldGet(this, _Page_instances, "m", _Page_removeFramesRecursively).call(this, child);
+    }
+    frame.dispose();
+    __classPrivateFieldGet(this, _Page_frameTree, "f").removeFrame(frame);
+    this.emit(FrameManagerEmittedEvents.FrameDetached, frame);
+}, _Page_onLogEntryAdded = function _Page_onLogEntryAdded(event) {
+    if (!this.frame(event.source.context)) {
+        return;
+    }
+    if (isConsoleLogEntry(event)) {
+        const args = event.args.map(arg => {
+            return getBidiHandle(this.mainFrame().context(), arg);
+        });
+        const text = args
+            .reduce((value, arg) => {
+            const parsedValue = arg.isPrimitiveValue
+                ? BidiSerializer.deserialize(arg.remoteValue())
+                : arg.toString();
+            return `${value} ${parsedValue}`;
+        }, '')
+            .slice(1);
+        this.emit("console" /* PageEmittedEvents.Console */, new ConsoleMessage(event.method, text, args, getStackTraceLocations(event.stackTrace)));
+    }
+    else if (isJavaScriptLogEntry(event)) {
+        let message = event.text ?? '';
+        if (event.stackTrace) {
+            for (const callFrame of event.stackTrace.callFrames) {
+                const location = callFrame.url +
+                    ':' +
+                    callFrame.lineNumber +
+                    ':' +
+                    callFrame.columnNumber;
+                const functionName = callFrame.functionName || '<anonymous>';
+                message += `\n    at ${functionName} (${location})`;
+            }
+        }
+        const error = new Error(message);
+        error.stack = ''; // Don't capture Puppeteer stacktrace.
+        this.emit("pageerror" /* PageEmittedEvents.PageError */, error);
+    }
+    else {
+        debugError(`Unhandled LogEntry with type "${event.type}", text "${event.text}" and level "${event.level}"`);
+    }
+};
+function isConsoleLogEntry(event) {
+    return event.type === 'console';
+}
+function isJavaScriptLogEntry(event) {
+    return event.type === 'javascript';
+}
+function getStackTraceLocations(stackTrace) {
+    const stackTraceLocations = [];
+    if (stackTrace) {
+        for (const callFrame of stackTrace.callFrames) {
+            stackTraceLocations.push({
+                url: callFrame.url,
+                lineNumber: callFrame.lineNumber,
+                columnNumber: callFrame.columnNumber,
+            });
+        }
+    }
+    return stackTraceLocations;
+}
 //# sourceMappingURL=Page.js.map

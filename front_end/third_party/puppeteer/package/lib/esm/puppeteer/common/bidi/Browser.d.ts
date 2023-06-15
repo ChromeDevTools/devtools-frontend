@@ -14,32 +14,35 @@
  * limitations under the License.
  */
 /// <reference types="node" />
+import { ChildProcess } from 'child_process';
 import { Browser as BrowserBase, BrowserCloseCallback, BrowserContextOptions } from '../../api/Browser.js';
 import { BrowserContext as BrowserContextBase } from '../../api/BrowserContext.js';
+import { Viewport } from '../PuppeteerViewport.js';
 import { Connection } from './Connection.js';
-import { ChildProcess } from 'child_process';
 /**
  * @internal
  */
 export declare class Browser extends BrowserBase {
     #private;
-    /**
-     * @internal
-     */
+    static readonly subscribeModules: string[];
     static create(opts: Options): Promise<Browser>;
-    /**
-     * @internal
-     */
-    constructor(opts: Options);
+    constructor(opts: Options & {
+        browserName: string;
+        browserVersion: string;
+    });
+    get connection(): Connection;
     close(): Promise<void>;
     isConnected(): boolean;
     process(): ChildProcess | null;
     createIncognitoBrowserContext(_options?: BrowserContextOptions): Promise<BrowserContextBase>;
+    version(): Promise<string>;
 }
 interface Options {
     process?: ChildProcess;
     closeCallback?: BrowserCloseCallback;
     connection: Connection;
+    defaultViewport: Viewport | null;
+    ignoreHTTPSErrors?: boolean;
 }
 export {};
 //# sourceMappingURL=Browser.d.ts.map

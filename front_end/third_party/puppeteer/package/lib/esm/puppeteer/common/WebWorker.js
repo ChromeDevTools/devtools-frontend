@@ -10,11 +10,11 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _WebWorker_executionContext, _WebWorker_client, _WebWorker_url;
+import { Deferred } from '../util/Deferred.js';
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
-import { JSHandle } from './JSHandle.js';
-import { debugError } from './util.js';
-import { createDeferredPromise } from '../util/DeferredPromise.js';
+import { CDPJSHandle } from './JSHandle.js';
+import { debugError, withSourcePuppeteerURLIfNone } from './util.js';
 /**
  * This class represents a
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API | WebWorker}.
@@ -47,7 +47,7 @@ export class WebWorker extends EventEmitter {
      */
     constructor(client, url, consoleAPICalled, exceptionThrown) {
         super();
-        _WebWorker_executionContext.set(this, createDeferredPromise());
+        _WebWorker_executionContext.set(this, Deferred.create());
         _WebWorker_client.set(this, void 0);
         _WebWorker_url.set(this, void 0);
         __classPrivateFieldSet(this, _WebWorker_client, client, "f");
@@ -57,10 +57,15 @@ export class WebWorker extends EventEmitter {
             __classPrivateFieldGet(this, _WebWorker_executionContext, "f").resolve(context);
         });
         __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.consoleAPICalled', async (event) => {
-            const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
-            return consoleAPICalled(event.type, event.args.map((object) => {
-                return new JSHandle(context, object);
-            }), event.stackTrace);
+            try {
+                const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f").valueOrThrow();
+                return consoleAPICalled(event.type, event.args.map((object) => {
+                    return new CDPJSHandle(context, object);
+                }), event.stackTrace);
+            }
+            catch (err) {
+                debugError(err);
+            }
         });
         __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.exceptionThrown', exception => {
             return exceptionThrown(exception.exceptionDetails);
@@ -72,13 +77,19 @@ export class WebWorker extends EventEmitter {
      * @internal
      */
     async executionContext() {
-        return __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
+        return __classPrivateFieldGet(this, _WebWorker_executionContext, "f").valueOrThrow();
     }
     /**
-     * @returns The URL of this web worker.
+     * The URL of this web worker.
      */
     url() {
         return __classPrivateFieldGet(this, _WebWorker_url, "f");
+    }
+    /**
+     * The CDP session client the WebWorker belongs to.
+     */
+    get client() {
+        return __classPrivateFieldGet(this, _WebWorker_client, "f");
     }
     /**
      * If the function passed to the `worker.evaluate` returns a Promise, then
@@ -95,7 +106,8 @@ export class WebWorker extends EventEmitter {
      * @returns Promise which resolves to the return value of `pageFunction`.
      */
     async evaluate(pageFunction, ...args) {
-        const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
+        pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
+        const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f").valueOrThrow();
         return context.evaluate(pageFunction, ...args);
     }
     /**
@@ -111,7 +123,8 @@ export class WebWorker extends EventEmitter {
      * @returns Promise which resolves to the return value of `pageFunction`.
      */
     async evaluateHandle(pageFunction, ...args) {
-        const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
+        pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
+        const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f").valueOrThrow();
         return context.evaluateHandle(pageFunction, ...args);
     }
 }

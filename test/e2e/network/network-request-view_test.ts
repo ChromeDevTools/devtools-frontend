@@ -523,8 +523,7 @@ describe('The Network Request view', async () => {
     await configureAndCheckHeaderOverrides();
   });
 
-  // Flaky test.
-  it.skipOnPlatforms(['mac'], '[crbug.com/1450486]: can search by headers name', async () => {
+  it('can search by headers name', async () => {
     await navigateToNetworkTab('headers-and-payload.html');
 
     await waitForSomeRequestsToAppear(2);

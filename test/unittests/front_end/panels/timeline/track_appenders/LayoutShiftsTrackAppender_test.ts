@@ -32,7 +32,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     layoutShiftsTrackAppender: Timeline.LayoutShiftsTrackAppender.LayoutShiftsTrackAppender,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
-    traceParsedData: Readonly<TraceModel.TraceModel.PartialTraceParseDataDuringMigration>,
+    traceParsedData: Readonly<TraceModel.Handlers.Migration.PartialTraceData>,
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];

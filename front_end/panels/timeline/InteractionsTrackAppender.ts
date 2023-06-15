@@ -33,12 +33,11 @@ export class InteractionsTrackAppender implements TrackAppender {
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
-  #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
+  #traceParsedData: Readonly<TraceEngine.Handlers.Migration.PartialTraceData>;
 
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      colorGenerator: Common.Color.Generator) {
+      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData, colorGenerator: Common.Color.Generator) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = colorGenerator;
     this.#flameChartData = flameChartData;

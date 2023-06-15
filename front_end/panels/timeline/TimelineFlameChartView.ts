@@ -76,7 +76,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private needsResizeToPreferredHeights?: boolean;
   private selectedSearchResult?: number;
   private searchRegex?: RegExp;
-  #traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null;
+  #traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null;
   #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
@@ -195,8 +195,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   setModel(
-      model: PerformanceModel|null,
-      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
+      model: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null,
       filmStripModel: SDK.FilmStripModel.FilmStripModel|null): void {
     if (model === this.model) {
       return;

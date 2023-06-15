@@ -151,7 +151,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private legacyPerformanceModel: PerformanceModel|null;
   private compatibilityTracksAppender: CompatibilityTracksAppender|null;
   private legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl|null;
-  private traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null;
+  private traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null;
   #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
   /**
    * Raster threads are tracked and enumerated with this property. This is also
@@ -236,8 +236,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   setModel(
-      performanceModel: PerformanceModel|null,
-      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
+      performanceModel: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null,
       filmStripModel: SDK.FilmStripModel.FilmStripModel|null): void {
     this.reset();
     this.legacyPerformanceModel = performanceModel;
@@ -258,7 +257,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * Sets the minimum time and total time span of a trace using the
    * new engine data.
    */
-  setTimingBoundsData(newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration): void {
+  setTimingBoundsData(newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData): void {
     const {traceBounds} = newTraceEngineData.Meta;
     const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
     const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);

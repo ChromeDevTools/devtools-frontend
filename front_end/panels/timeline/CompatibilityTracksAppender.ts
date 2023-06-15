@@ -84,7 +84,7 @@ export class CompatibilityTracksAppender {
   #eventsForTrack = new Map<TrackAppenderName, TraceEngine.Types.TraceEvents.TraceEventData[]>();
   #trackEventsForTreeview = new Map<TrackAppenderName, TraceEngine.Types.TraceEvents.TraceEventData[]>();
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
-  #traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration;
+  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
   #entryData: TimelineFlameChartEntry[];
   #colorGenerator: Common.Color.Generator;
   #indexForEvent = new WeakMap<TraceEngine.Types.TraceEvents.TraceEventData, number>();
@@ -118,9 +118,8 @@ export class CompatibilityTracksAppender {
    */
   constructor(
       flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[],
-      legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl) {
+      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData, entryData: TimelineFlameChartEntry[],
+      legacyEntryTypeByLevel: EntryType[], legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl) {
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
     this.#entryData = entryData;

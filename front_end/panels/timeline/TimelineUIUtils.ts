@@ -1872,7 +1872,7 @@ export class TimelineUIUtils {
       // awkward because to change them is to cause a lot of layout tests to be
       // updated. We should rewrite those tests as unit tests in this codebase,
       // and then we can more easily change this method.
-      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
+      traceParseData: TraceEngine.Handlers.Migration.PartialTraceData|null = null,
       ): Promise<DocumentFragment> {
     const maybeTarget = model.targetByEvent(event);
     const {duration, selfTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
@@ -3666,8 +3666,7 @@ export interface TimelineMarkerStyle {
  **/
 export function timeStampForEventAdjustedForClosestNavigationIfPossible(
     event: SDK.TracingModel.CompatibleTraceEvent, model: TimelineModel.TimelineModel.TimelineModelImpl,
-    traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|
-    null): TraceEngine.Types.Timing.MilliSeconds {
+    traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null): TraceEngine.Types.Timing.MilliSeconds {
   const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
   if (SDK.TracingModel.eventIsFromNewEngine(event) && traceParsedData) {
     const time = TraceEngine.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(

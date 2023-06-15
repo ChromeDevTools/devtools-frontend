@@ -59,7 +59,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   #priorityToValue?: Map<string, number>;
   // Ignored during the migration to new trace data engine.
   /* eslint-disable-next-line no-unused-private-class-members */
-  #traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null;
+  #traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null;
   constructor() {
     this.#font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
     this.#style = {
@@ -95,7 +95,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   setModel(
       performanceModel: PerformanceModel|null,
-      traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null): void {
+      traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null): void {
     this.#timelineDataInternal = null;
 
     this.#legacyTimelineModel = performanceModel && performanceModel.timelineModel();

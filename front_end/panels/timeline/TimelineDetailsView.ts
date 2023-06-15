@@ -84,7 +84,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private lazyLayersView?: TimelineLayersView|null;
   private preferredTabId?: string;
   private selection?: TimelineSelection|null;
-  #traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null;
+  #traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null = null;
   #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
@@ -124,7 +124,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   }
 
   setModel(
-      model: PerformanceModel|null, traceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null,
+      model: PerformanceModel|null, traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null,
       filmStripModel: SDK.FilmStripModel.FilmStripModel|null,
       selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null): void {
     if (this.model !== model) {

@@ -332,7 +332,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.primaryPageTargetPromiseCallback = res;
   });
 
-  #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.TraceModel.ENABLED_TRACE_HANDLERS>;
+  #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.Handlers.Migration.ENABLED_TRACE_HANDLERS>;
   // Tracks the index of the trace that the user is currently viewing.
   #traceEngineActiveTraceIndex = -1;
   constructor() {
@@ -1060,7 +1060,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private setModel(
       model: PerformanceModel|null, exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
-      newTraceEngineData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
+      newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null = null,
       filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null): void {
     if (this.performanceModel) {
       this.performanceModel.removeEventListener(Events.WindowChanged, this.onModelWindowChanged, this);

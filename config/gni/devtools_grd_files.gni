@@ -934,6 +934,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/handlers/LargestTextPaintHandler.js",
   "front_end/models/trace/handlers/LayoutShiftsHandler.js",
   "front_end/models/trace/handlers/MetaHandler.js",
+  "front_end/models/trace/handlers/Migration.js",
   "front_end/models/trace/handlers/ModelHandlers.js",
   "front_end/models/trace/handlers/NetworkRequestsHandler.js",
   "front_end/models/trace/handlers/PageLoadMetricsHandler.js",

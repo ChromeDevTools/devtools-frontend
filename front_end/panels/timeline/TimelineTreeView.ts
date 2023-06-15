@@ -176,7 +176,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   private currentResult?: number;
   textFilterUI?: UI.Toolbar.ToolbarInput;
 
-  #traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null;
+  #traceParseData: TraceEngine.Handlers.Migration.PartialTraceData|null = null;
 
   constructor() {
     super();
@@ -202,7 +202,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   setModelWithEvents(
       model: PerformanceModel|null,
       selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null,
-      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
+      traceParseData: TraceEngine.Handlers.Migration.PartialTraceData|null = null,
       ): void {
     this.modelInternal = model;
     this.#traceParseData = traceParseData;
@@ -230,7 +230,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     return this.modelInternal;
   }
 
-  traceParseData(): TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null {
+  traceParseData(): TraceEngine.Handlers.Migration.PartialTraceData|null {
     return this.#traceParseData;
   }
 
@@ -734,7 +734,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
   override setModelWithEvents(
       model: PerformanceModel|null,
       selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null,
-      traceParseData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration|null = null,
+      traceParseData: TraceEngine.Handlers.Migration.PartialTraceData|null = null,
       ): void {
     super.setModelWithEvents(model, selectedEvents, traceParseData);
   }

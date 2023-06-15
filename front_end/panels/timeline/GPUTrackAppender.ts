@@ -26,11 +26,11 @@ export class GPUTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'GPU';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
+  #traceParsedData: Readonly<TraceEngine.Handlers.Migration.PartialTraceData>;
 
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender,
-      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration) {
+      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#traceParsedData = traceParsedData;
   }

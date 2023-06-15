@@ -28,11 +28,11 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
 
   #compatibilityBuilder: CompatibilityTracksAppender;
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
-  #traceParsedData: Readonly<TraceEngine.TraceModel.PartialTraceParseDataDuringMigration>;
+  #traceParsedData: Readonly<TraceEngine.Handlers.Migration.PartialTraceData>;
 
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.TraceModel.PartialTraceParseDataDuringMigration) {
+      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;

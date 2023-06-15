@@ -15,17 +15,28 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.xpathQuerySelectorAll = void 0;
+exports.xpathQuerySelectorAll = exports.xpathQuerySelector = void 0;
 /**
  * @internal
  */
-const xpathQuerySelectorAll = function* (root, selector) {
+const xpathQuerySelector = (root, selector) => {
+    const doc = root.ownerDocument || document;
+    const result = doc.evaluate(selector, root, null, XPathResult.FIRST_ORDERED_NODE_TYPE);
+    return result.singleNodeValue;
+};
+exports.xpathQuerySelector = xpathQuerySelector;
+/**
+ * @internal
+ */
+const xpathQuerySelectorAll = (root, selector) => {
     const doc = root.ownerDocument || document;
     const iterator = doc.evaluate(selector, root, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE);
+    const array = [];
     let item;
     while ((item = iterator.iterateNext())) {
-        yield item;
+        array.push(item);
     }
+    return array;
 };
 exports.xpathQuerySelectorAll = xpathQuerySelectorAll;
 //# sourceMappingURL=XPathQuerySelector.js.map

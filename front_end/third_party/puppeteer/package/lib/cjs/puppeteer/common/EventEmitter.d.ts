@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { EventType, Handler } from '../../third_party/mitt/index.js';
 /**
  * @public
  */
-export type EventType = string | symbol;
-/**
- * @public
- */
-export type Handler<T = unknown> = (event: T) => void;
+export { EventType, Handler };
 /**
  * @public
  */
 export interface CommonEventEmitter {
-    on(event: EventType, handler: Handler): this;
-    off(event: EventType, handler: Handler): this;
-    addListener(event: EventType, handler: Handler): this;
-    removeListener(event: EventType, handler: Handler): this;
+    on(event: EventType, handler: Handler): CommonEventEmitter;
+    off(event: EventType, handler: Handler): CommonEventEmitter;
+    addListener(event: EventType, handler: Handler): CommonEventEmitter;
+    removeListener(event: EventType, handler: Handler): CommonEventEmitter;
     emit(event: EventType, eventData?: unknown): boolean;
-    once(event: EventType, handler: Handler): this;
+    once(event: EventType, handler: Handler): CommonEventEmitter;
     listenerCount(event: string): number;
-    removeAllListeners(event?: EventType): this;
+    removeAllListeners(event?: EventType): CommonEventEmitter;
 }
 /**
  * The EventEmitter class that many Puppeteer classes extend.
@@ -59,24 +56,24 @@ export declare class EventEmitter implements CommonEventEmitter {
      * @param handler - the function to be called when the event occurs.
      * @returns `this` to enable you to chain method calls.
      */
-    on(event: EventType, handler: Handler<any>): this;
+    on(event: EventType, handler: Handler): EventEmitter;
     /**
      * Remove an event listener from firing.
      * @param event - the event type you'd like to stop listening to.
      * @param handler - the function that should be removed.
      * @returns `this` to enable you to chain method calls.
      */
-    off(event: EventType, handler: Handler<any>): this;
+    off(event: EventType, handler: Handler): EventEmitter;
     /**
      * Remove an event listener.
      * @deprecated please use {@link EventEmitter.off} instead.
      */
-    removeListener(event: EventType, handler: Handler<any>): this;
+    removeListener(event: EventType, handler: Handler): EventEmitter;
     /**
      * Add an event listener.
      * @deprecated please use {@link EventEmitter.on} instead.
      */
-    addListener(event: EventType, handler: Handler<any>): this;
+    addListener(event: EventType, handler: Handler): EventEmitter;
     /**
      * Emit an event and call any associated listeners.
      *
@@ -91,7 +88,7 @@ export declare class EventEmitter implements CommonEventEmitter {
      * @param handler - the handler function to run when the event occurs
      * @returns `this` to enable you to chain method calls.
      */
-    once(event: EventType, handler: Handler<any>): this;
+    once(event: EventType, handler: Handler): EventEmitter;
     /**
      * Gets the number of listeners for a given event.
      *
@@ -105,7 +102,7 @@ export declare class EventEmitter implements CommonEventEmitter {
      * @param event - the event to remove listeners for.
      * @returns `this` to enable you to chain method calls.
      */
-    removeAllListeners(event?: EventType): this;
+    removeAllListeners(event?: EventType): EventEmitter;
     private eventListenersCount;
 }
 //# sourceMappingURL=EventEmitter.d.ts.map

@@ -25,98 +25,51 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Browser_browserName, _Browser_browserVersion, _Browser_process, _Browser_closeCallback, _Browser_connection, _Browser_defaultViewport;
+var _Browser_process, _Browser_closeCallback, _Browser_connection;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Browser = void 0;
 const Browser_js_1 = require("../../api/Browser.js");
 const BrowserContext_js_1 = require("./BrowserContext.js");
-const utils_js_1 = require("./utils.js");
 /**
  * @internal
  */
 class Browser extends Browser_js_1.Browser {
-    static async create(opts) {
-        let browserName = '';
-        let browserVersion = '';
-        // TODO: await until the connection is established.
-        try {
-            const { result } = await opts.connection.send('session.new', {
-                capabilities: {
-                    alwaysMatch: {
-                        acceptInsecureCerts: opts.ignoreHTTPSErrors,
-                    },
-                },
-            });
-            browserName = result.capabilities.browserName ?? '';
-            browserVersion = result.capabilities.browserVersion ?? '';
-        }
-        catch (err) {
-            // Chrome does not support session.new.
-            (0, utils_js_1.debugError)(err);
-        }
-        await opts.connection.send('session.subscribe', {
-            events: (browserName.toLocaleLowerCase().includes('firefox')
-                ? Browser.subscribeModules.filter(module => {
-                    return !['cdp'].includes(module);
-                })
-                : Browser.subscribeModules),
-        });
-        return new Browser({
-            ...opts,
-            browserName,
-            browserVersion,
-        });
-    }
+    /**
+     * @internal
+     */
     constructor(opts) {
         super();
-        _Browser_browserName.set(this, '');
-        _Browser_browserVersion.set(this, '');
         _Browser_process.set(this, void 0);
         _Browser_closeCallback.set(this, void 0);
         _Browser_connection.set(this, void 0);
-        _Browser_defaultViewport.set(this, void 0);
         __classPrivateFieldSet(this, _Browser_process, opts.process, "f");
         __classPrivateFieldSet(this, _Browser_closeCallback, opts.closeCallback, "f");
         __classPrivateFieldSet(this, _Browser_connection, opts.connection, "f");
-        __classPrivateFieldSet(this, _Browser_defaultViewport, opts.defaultViewport, "f");
-        __classPrivateFieldSet(this, _Browser_browserName, opts.browserName, "f");
-        __classPrivateFieldSet(this, _Browser_browserVersion, opts.browserVersion, "f");
-        __classPrivateFieldGet(this, _Browser_process, "f")?.once('close', () => {
-            __classPrivateFieldGet(this, _Browser_connection, "f").dispose();
-            this.emit("disconnected" /* BrowserEmittedEvents.Disconnected */);
-        });
     }
-    get connection() {
-        return __classPrivateFieldGet(this, _Browser_connection, "f");
+    /**
+     * @internal
+     */
+    static async create(opts) {
+        // TODO: await until the connection is established.
+        (await opts.connection.send('session.new', {}));
+        return new Browser(opts);
     }
     async close() {
-        if (__classPrivateFieldGet(this, _Browser_connection, "f").closed) {
-            return;
-        }
+        var _a;
+        await ((_a = __classPrivateFieldGet(this, _Browser_closeCallback, "f")) === null || _a === void 0 ? void 0 : _a.call(null));
         __classPrivateFieldGet(this, _Browser_connection, "f").dispose();
-        await __classPrivateFieldGet(this, _Browser_closeCallback, "f")?.call(null);
     }
     isConnected() {
         return !__classPrivateFieldGet(this, _Browser_connection, "f").closed;
     }
     process() {
-        return __classPrivateFieldGet(this, _Browser_process, "f") ?? null;
+        var _a;
+        return (_a = __classPrivateFieldGet(this, _Browser_process, "f")) !== null && _a !== void 0 ? _a : null;
     }
     async createIncognitoBrowserContext(_options) {
-        return new BrowserContext_js_1.BrowserContext(this, {
-            defaultViewport: __classPrivateFieldGet(this, _Browser_defaultViewport, "f"),
-        });
-    }
-    async version() {
-        return `${__classPrivateFieldGet(this, _Browser_browserName, "f")}/${__classPrivateFieldGet(this, _Browser_browserVersion, "f")}`;
+        return new BrowserContext_js_1.BrowserContext(__classPrivateFieldGet(this, _Browser_connection, "f"));
     }
 }
 exports.Browser = Browser;
-_Browser_browserName = new WeakMap(), _Browser_browserVersion = new WeakMap(), _Browser_process = new WeakMap(), _Browser_closeCallback = new WeakMap(), _Browser_connection = new WeakMap(), _Browser_defaultViewport = new WeakMap();
-Browser.subscribeModules = [
-    'browsingContext',
-    'network',
-    'log',
-    'cdp',
-];
+_Browser_process = new WeakMap(), _Browser_closeCallback = new WeakMap(), _Browser_connection = new WeakMap();
 //# sourceMappingURL=Browser.js.map

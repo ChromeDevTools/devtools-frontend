@@ -15,13 +15,13 @@
  */
 /// <reference types="node" />
 import { ChildProcess } from 'child_process';
-import { Browser as BrowserBase, BrowserCloseCallback, TargetFilterCallback, IsPageTargetCallback, BrowserContextOptions, WaitForTargetOptions, Permission } from '../api/Browser.js';
-import { BrowserContext } from '../api/BrowserContext.js';
-import { Page } from '../api/Page.js';
 import { Connection } from './Connection.js';
+import { Page } from '../api/Page.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
 import { TargetManager } from './TargetManager.js';
+import { Browser as BrowserBase, BrowserCloseCallback, TargetFilterCallback, IsPageTargetCallback, BrowserContextOptions, WaitForTargetOptions, Permission } from '../api/Browser.js';
+import { BrowserContext } from '../api/BrowserContext.js';
 /**
  * @internal
  */
@@ -156,13 +156,33 @@ export declare class CDPBrowser extends BrowserBase {
      * here. You can find them using {@link Target.page}.
      */
     pages(): Promise<Page[]>;
+    /**
+     * A string representing the browser name and version.
+     *
+     * @remarks
+     *
+     * For headless Chromium, this is similar to `HeadlessChrome/61.0.3153.0`. For
+     * non-headless, this is similar to `Chrome/61.0.3153.0`.
+     *
+     * The format of browser.version() might change with future releases of Chromium.
+     */
     version(): Promise<string>;
     /**
      * The browser's original user agent. Pages can override the browser user agent with
      * {@link Page.setUserAgent}.
      */
     userAgent(): Promise<string>;
+    /**
+     * Closes Chromium and all of its pages (if any were opened). The
+     * {@link CDPBrowser} object itself is considered to be disposed and cannot be
+     * used anymore.
+     */
     close(): Promise<void>;
+    /**
+     * Disconnects Puppeteer from the browser, but leaves the Chromium process running.
+     * After calling `disconnect`, the {@link CDPBrowser} object is considered disposed and
+     * cannot be used anymore.
+     */
     disconnect(): void;
     /**
      * Indicates that the browser is connected.
@@ -197,7 +217,7 @@ export declare class CDPBrowserContext extends BrowserContext {
      * ```
      *
      * @param predicate - A function to be run for every target
-     * @param options - An object of options. Accepts a timeout,
+     * @param options - An object of options. Accepts a timout,
      * which is the maximum wait time in milliseconds.
      * Pass `0` to disable the timeout. Defaults to 30 seconds.
      * @returns Promise which resolves to the first target found

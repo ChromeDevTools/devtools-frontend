@@ -11,8 +11,8 @@
 > Chrome/Chromium over the
 > [DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 > Puppeteer runs in
-> [headless](https://developer.chrome.com/articles/new-headless/)
-> mode by default, but can be configured to run in full ("headful")
+> [headless](https://developers.google.com/web/updates/2017/04/headless-chrome)
+> mode by default, but can be configured to run in full (non-headless)
 > Chrome/Chromium.
 
 #### What can I do?
@@ -29,7 +29,7 @@ Here are a few examples to get you started:
 - Capture a
   [timeline trace](https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/reference)
   of your site to help diagnose performance issues.
-- [Test Chrome Extensions](https://pptr.dev/guides/chrome-extensions).
+- Test Chrome Extensions.
 
 ## Getting Started
 
@@ -39,24 +39,14 @@ To use Puppeteer in your project, run:
 
 ```bash
 npm i puppeteer
-# or using yarn
-yarn add puppeteer
-# or using pnpm
-pnpm i puppeteer
+# or `yarn add puppeteer`
+# or `pnpm i puppeteer`
 ```
 
 When you install Puppeteer, it automatically downloads a recent version of
-[Chrome for Testing](https://goo.gle/chrome-for-testing) (~170MB macOS, ~282MB Linux, ~280MB Windows) that is [guaranteed to
-work](https://pptr.dev/faq#q-why-doesnt-puppeteer-vxxx-work-with-chromium-vyyy)
-with Puppeteer. The browser is downloaded to the `$HOME/.cache/puppeteer` folder
-by default (starting with Puppeteer v19.0.0).
-
-If you deploy a project using Puppeteer to a hosting provider, such as Render or
-Heroku, you might need to reconfigure the location of the cache to be within
-your project folder (see an example below) because not all hosting providers
-include `$HOME/.cache` into the project's deployment.
-
-For a version of Puppeteer without the browser installation, see
+Chromium (~170MB macOS, ~282MB Linux, ~280MB Windows) that is
+[guaranteed to work](https://pptr.dev/faq#q-why-doesnt-puppeteer-vxxx-work-with-chromium-vyyy)
+with Puppeteer. For a version of Puppeteer without installation, see
 [`puppeteer-core`](#puppeteer-core).
 
 #### Configuration
@@ -94,23 +84,23 @@ Every release since v1.7.0 we publish two packages:
 - [`puppeteer-core`](https://www.npmjs.com/package/puppeteer-core)
 
 `puppeteer` is a _product_ for browser automation. When installed, it downloads
-a version of Chrome, which it then drives using `puppeteer-core`. Being an
+a version of Chromium, which it then drives using `puppeteer-core`. Being an
 end-user product, `puppeteer` automates several workflows using reasonable
 defaults [that can be customized](https://pptr.dev/guides/configuration).
 
 `puppeteer-core` is a _library_ to help drive anything that supports DevTools
 protocol. Being a library, `puppeteer-core` is fully driven through its
 programmatic interface implying no defaults are assumed and `puppeteer-core`
-will not download Chrome when installed.
+will not download Chromium when installed.
 
 You should use `puppeteer-core` if you are
 [connecting to a remote browser](https://pptr.dev/api/puppeteer.puppeteer.connect)
-or [managing browsers yourself](https://pptr.dev/browsers-api/).
+or [managing browsers yourself](https://pptr.dev/api/puppeteer.browserfetcher).
 If you are managing browsers yourself, you will need to call
 [`puppeteer.launch`](https://pptr.dev/api/puppeteer.puppeteernode.launch) with
 an an explicit
-[`executablePath`](https://pptr.dev/api/puppeteer.launchoptions)
-(or [`channel`](https://pptr.dev/api/puppeteer.launchoptions) if it's
+[`executablePath`](https://pptr.dev/api/puppeteer.launchoptions.executablepath)
+(or [`channel`](https://pptr.dev/api/puppeteer.launchoptions.channel) if it's
 installed in a standard location).
 
 When using `puppeteer-core`, remember to change the import:
@@ -137,7 +127,9 @@ and [examples](https://github.com/puppeteer/puppeteer/tree/main/examples).
 
 #### Example
 
-The following example searches [developer.chrome.com](https://developer.chrome.com/) for blog posts with text "automate beyond recorder", click on the first result and print the full title of the blog post.
+The following example searches
+[developers.google.com/web](https://developers.google.com/web) for articles
+tagged "Headless Chrome" and scrape results from the results page.
 
 ```ts
 import puppeteer from 'puppeteer';
@@ -146,27 +138,30 @@ import puppeteer from 'puppeteer';
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  await page.goto('https://developer.chrome.com/');
+  await page.goto('https://developers.google.com/web/');
 
-  // Set screen size
-  await page.setViewport({width: 1080, height: 1024});
+  // Type into search box.
+  await page.type('.devsite-search-field', 'Headless Chrome');
 
-  // Type into search box
-  await page.type('.search-box__input', 'automate beyond recorder');
+  // Wait for suggest overlay to appear and click "show all results".
+  const allResultsSelector = '.devsite-suggest-all-results';
+  await page.waitForSelector(allResultsSelector);
+  await page.click(allResultsSelector);
 
-  // Wait and click on first result
-  const searchResultSelector = '.search-box__link';
-  await page.waitForSelector(searchResultSelector);
-  await page.click(searchResultSelector);
+  // Wait for the results page to load and display the results.
+  const resultsSelector = '.gsc-results .gs-title';
+  await page.waitForSelector(resultsSelector);
 
-  // Locate the full title with a unique string
-  const textSelector = await page.waitForSelector(
-    'text/Customize and automate'
-  );
-  const fullTitle = await textSelector?.evaluate(el => el.textContent);
+  // Extract the results from the page.
+  const links = await page.evaluate(resultsSelector => {
+    return [...document.querySelectorAll(resultsSelector)].map(anchor => {
+      const title = anchor.textContent.split('|')[0].trim();
+      return `${title} - ${anchor.href}`;
+    });
+  }, resultsSelector);
 
-  // Print the full title
-  console.log('The title of this blog post is "%s".', fullTitle);
+  // Print all the files.
+  console.log(links.join('\n'));
 
   await browser.close();
 })();
@@ -176,34 +171,19 @@ import puppeteer from 'puppeteer';
 
 **1. Uses Headless mode**
 
-By default Puppeteer launches Chrome in
-[old Headless mode](https://developer.chrome.com/articles/new-headless/).
-
-```ts
-const browser = await puppeteer.launch();
-// Equivalent to
-const browser = await puppeteer.launch({headless: true});
-```
-
-[Chrome 112 launched a new Headless mode](https://developer.chrome.com/articles/new-headless/) that might cause some differences in behavior compared to the old Headless implementation.
-In the future Puppeteer will start defaulting to new implementation.
-We recommend you try it out before the switch:
-
-```ts
-const browser = await puppeteer.launch({headless: 'new'});
-```
-
-To launch a "headful" version of Chrome, set the
-[`headless`](https://pptr.dev/api/puppeteer.browserlaunchargumentoptions) to `false`
+Puppeteer launches Chromium in
+[headless mode](https://developers.google.com/web/updates/2017/04/headless-chrome).
+To launch a full version of Chromium, set the
+[`headless`](https://pptr.dev/api/puppeteer.browserlaunchargumentoptions.headless)
 option when launching a browser:
 
 ```ts
-const browser = await puppeteer.launch({headless: false});
+const browser = await puppeteer.launch({headless: false}); // default is true
 ```
 
-**2. Runs a bundled version of Chrome**
+**2. Runs a bundled version of Chromium**
 
-By default, Puppeteer downloads and uses a specific version of Chrome so its
+By default, Puppeteer downloads and uses a specific version of Chromium so its
 API is guaranteed to work out of the box. To use Puppeteer with a different
 version of Chrome or Chromium, pass in the executable's path when creating a
 `Browser` instance:
@@ -212,8 +192,8 @@ version of Chrome or Chromium, pass in the executable's path when creating a
 const browser = await puppeteer.launch({executablePath: '/path/to/Chrome'});
 ```
 
-You can also use Puppeteer with Firefox. See
-[status of cross-browser support](https://pptr.dev/faq/#q-what-is-the-status-of-cross-browser-support) for
+You can also use Puppeteer with Firefox Nightly (experimental support). See
+[`Puppeteer.launch`](https://pptr.dev/api/puppeteer.puppeteernode.launch) for
 more information.
 
 See

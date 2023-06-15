@@ -15,39 +15,66 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.textQuerySelectorAll = void 0;
+exports.textQuerySelectorAll = exports.textQuerySelector = void 0;
 const TextContent_js_1 = require("./TextContent.js");
+/**
+ * Queries the given node for a node matching the given text selector.
+ *
+ * @internal
+ */
+const textQuerySelector = (root, selector) => {
+    for (const node of root.childNodes) {
+        if (node instanceof Element && (0, TextContent_js_1.isSuitableNodeForTextMatching)(node)) {
+            let matchedNode;
+            if (node.shadowRoot) {
+                matchedNode = (0, exports.textQuerySelector)(node.shadowRoot, selector);
+            }
+            else {
+                matchedNode = (0, exports.textQuerySelector)(node, selector);
+            }
+            if (matchedNode) {
+                return matchedNode;
+            }
+        }
+    }
+    if (root instanceof Element) {
+        const textContent = (0, TextContent_js_1.createTextContent)(root);
+        if (textContent.full.includes(selector)) {
+            return root;
+        }
+    }
+    return null;
+};
+exports.textQuerySelector = textQuerySelector;
 /**
  * Queries the given node for all nodes matching the given text selector.
  *
  * @internal
  */
-const textQuerySelectorAll = function* (root, selector) {
-    let yielded = false;
+const textQuerySelectorAll = (root, selector) => {
+    let results = [];
     for (const node of root.childNodes) {
-        if (node instanceof Element && (0, TextContent_js_1.isSuitableNodeForTextMatching)(node)) {
-            let matches;
-            if (!node.shadowRoot) {
-                matches = (0, exports.textQuerySelectorAll)(node, selector);
+        if (node instanceof Element) {
+            let matchedNodes;
+            if (node.shadowRoot) {
+                matchedNodes = (0, exports.textQuerySelectorAll)(node.shadowRoot, selector);
             }
             else {
-                matches = (0, exports.textQuerySelectorAll)(node.shadowRoot, selector);
+                matchedNodes = (0, exports.textQuerySelectorAll)(node, selector);
             }
-            for (const match of matches) {
-                yield match;
-                yielded = true;
-            }
+            results = results.concat(matchedNodes);
         }
     }
-    if (yielded) {
-        return;
+    if (results.length > 0) {
+        return results;
     }
-    if (root instanceof Element && (0, TextContent_js_1.isSuitableNodeForTextMatching)(root)) {
+    if (root instanceof Element) {
         const textContent = (0, TextContent_js_1.createTextContent)(root);
         if (textContent.full.includes(selector)) {
-            yield root;
+            return [root];
         }
     }
+    return [];
 };
 exports.textQuerySelectorAll = textQuerySelectorAll;
 //# sourceMappingURL=TextQuerySelector.js.map

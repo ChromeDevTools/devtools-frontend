@@ -1,28 +1,21 @@
-/**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 import { Protocol } from 'devtools-protocol';
 import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
-import { Deferred } from '../util/util.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
-import { ProtocolError } from './Errors.js';
 import { EventEmitter } from './EventEmitter.js';
+import { ProtocolError } from './Errors.js';
 /**
  * @public
  */
 export { ConnectionTransport, ProtocolMapping };
+/**
+ * @public
+ */
+export interface ConnectionCallback {
+    resolve(args: unknown): void;
+    reject(args: unknown): void;
+    error: ProtocolError;
+    method: string;
+}
 /**
  * Internal events that the Connection class emits.
  *
@@ -32,39 +25,12 @@ export declare const ConnectionEmittedEvents: {
     readonly Disconnected: symbol;
 };
 /**
- * @internal
- */
-export declare class Callback {
-    #private;
-    constructor(id: number, label: string, timeout?: number);
-    resolve(value: unknown): void;
-    reject(error: Error): void;
-    get id(): number;
-    get promise(): Deferred<unknown>;
-    get error(): ProtocolError;
-    get label(): string;
-}
-/**
- * Manages callbacks and their IDs for the protocol request/response communication.
- *
- * @internal
- */
-export declare class CallbackRegistry {
-    #private;
-    create(label: string, timeout: number | undefined, request: (id: number) => void): Promise<unknown>;
-    reject(id: number, message: string, originalMessage?: string): void;
-    _reject(callback: Callback, errorMessage: string | ProtocolError, originalMessage?: string): void;
-    resolve(id: number, value: unknown): void;
-    clear(): void;
-}
-/**
  * @public
  */
 export declare class Connection extends EventEmitter {
     #private;
-    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number);
+    constructor(url: string, transport: ConnectionTransport, delay?: number);
     static fromSession(session: CDPSession): Connection | undefined;
-    get timeout(): number;
     /**
      * @internal
      */
@@ -83,11 +49,7 @@ export declare class Connection extends EventEmitter {
     /**
      * @internal
      */
-    _rawSend<T extends keyof ProtocolMapping.Commands>(callbacks: CallbackRegistry, method: T, params: ProtocolMapping.Commands[T]['paramsType'][0], sessionId?: string): Promise<ProtocolMapping.Commands[T]['returnType']>;
-    /**
-     * @internal
-     */
-    closeBrowser(): Promise<void>;
+    _rawSend(message: Record<string, unknown>): number;
     /**
      * @internal
      */
@@ -108,7 +70,7 @@ export declare class Connection extends EventEmitter {
     createSession(targetInfo: Protocol.Target.TargetInfo): Promise<CDPSession>;
 }
 /**
- * @internal
+ * @public
  */
 export interface CDPSessionOnMessageObject {
     id?: number;
@@ -206,5 +168,5 @@ export declare class CDPSessionImpl extends CDPSession {
 /**
  * @internal
  */
-export declare function isTargetClosedError(error: Error): boolean;
+export declare function isTargetClosedError(err: Error): boolean;
 //# sourceMappingURL=Connection.d.ts.map

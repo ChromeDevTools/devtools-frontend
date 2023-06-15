@@ -44,31 +44,32 @@ export class ConsoleMessage {
         __classPrivateFieldSet(this, _ConsoleMessage_stackTraceLocations, stackTraceLocations, "f");
     }
     /**
-     * The type of the console message.
+     * @returns The type of the console message.
      */
     type() {
         return __classPrivateFieldGet(this, _ConsoleMessage_type, "f");
     }
     /**
-     * The text of the console message.
+     * @returns The text of the console message.
      */
     text() {
         return __classPrivateFieldGet(this, _ConsoleMessage_text, "f");
     }
     /**
-     * An array of arguments passed to the console.
+     * @returns An array of arguments passed to the console.
      */
     args() {
         return __classPrivateFieldGet(this, _ConsoleMessage_args, "f");
     }
     /**
-     * The location of the console message.
+     * @returns The location of the console message.
      */
     location() {
-        return __classPrivateFieldGet(this, _ConsoleMessage_stackTraceLocations, "f")[0] ?? {};
+        var _a;
+        return (_a = __classPrivateFieldGet(this, _ConsoleMessage_stackTraceLocations, "f")[0]) !== null && _a !== void 0 ? _a : {};
     }
     /**
-     * The array of locations on the stack of the console message.
+     * @returns The array of locations on the stack of the console message.
      */
     stackTrace() {
         return __classPrivateFieldGet(this, _ConsoleMessage_stackTraceLocations, "f");

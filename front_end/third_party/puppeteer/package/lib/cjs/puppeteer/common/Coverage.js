@@ -30,8 +30,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CSSCoverage = exports.JSCoverage = exports.Coverage = void 0;
 const assert_js_1 = require("../util/assert.js");
 const util_js_1 = require("./util.js");
+const ExecutionContext_js_1 = require("./ExecutionContext.js");
+const util_js_2 = require("./util.js");
 /**
- * The Coverage class provides methods to gather information about parts of
+ * The Coverage class provides methods to gathers information about parts of
  * JavaScript and CSS that were used by the page.
  *
  * @remarks
@@ -91,7 +93,7 @@ class Coverage {
         return await __classPrivateFieldGet(this, _Coverage_jsCoverage, "f").start(options);
     }
     /**
-     * Promise that resolves to the array of coverage reports for
+     * @returns Promise that resolves to the array of coverage reports for
      * all scripts.
      *
      * @remarks
@@ -110,9 +112,8 @@ class Coverage {
         return await __classPrivateFieldGet(this, _Coverage_cssCoverage, "f").start(options);
     }
     /**
-     * Promise that resolves to the array of coverage reports
+     * @returns Promise that resolves to the array of coverage reports
      * for all stylesheets.
-     *
      * @remarks
      * CSS Coverage doesn't include dynamically injected style tags
      * without sourceURLs.
@@ -171,7 +172,7 @@ class JSCoverage {
             __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Profiler.disable'),
             __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Debugger.disable'),
         ]);
-        (0, util_js_1.removeEventListeners)(__classPrivateFieldGet(this, _JSCoverage_eventListeners, "f"));
+        (0, util_js_2.removeEventListeners)(__classPrivateFieldGet(this, _JSCoverage_eventListeners, "f"));
         const coverage = [];
         const profileResponse = result[0];
         for (const entry of profileResponse.result) {
@@ -207,7 +208,7 @@ _JSCoverage_client = new WeakMap(), _JSCoverage_enabled = new WeakMap(), _JSCove
     __classPrivateFieldGet(this, _JSCoverage_scriptSources, "f").clear();
 }, _JSCoverage_onScriptParsed = async function _JSCoverage_onScriptParsed(event) {
     // Ignore puppeteer-injected scripts
-    if (util_js_1.PuppeteerURL.isPuppeteerURL(event.url)) {
+    if (event.url === ExecutionContext_js_1.EVALUATION_SCRIPT_URL) {
         return;
     }
     // Ignore other anonymous scripts unless the reportAnonymousScripts option is true.
@@ -265,7 +266,7 @@ class CSSCoverage {
             __classPrivateFieldGet(this, _CSSCoverage_client, "f").send('CSS.disable'),
             __classPrivateFieldGet(this, _CSSCoverage_client, "f").send('DOM.disable'),
         ]);
-        (0, util_js_1.removeEventListeners)(__classPrivateFieldGet(this, _CSSCoverage_eventListeners, "f"));
+        (0, util_js_2.removeEventListeners)(__classPrivateFieldGet(this, _CSSCoverage_eventListeners, "f"));
         // aggregate by styleSheetId
         const styleSheetIdToCoverage = new Map();
         for (const entry of ruleTrackingResponse.ruleUsage) {

@@ -23,15 +23,9 @@ import { Product } from '../common/Product.js';
 export interface BrowserLaunchArgumentOptions {
     /**
      * Whether to run the browser in headless mode.
-     *
-     * @remarks
-     * In the future `headless: true` will be equivalent to `headless: 'new'`.
-     * You can read more about the change {@link https://developer.chrome.com/articles/new-headless/ | here}.
-     * Consider opting in early by setting the value to `"new"`.
-     *
-     * @defaultValue `true`
+     * @defaultValue true
      */
-    headless?: boolean | 'new';
+    headless?: boolean | 'chrome';
     /**
      * Path to a user data directory.
      * {@link https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/user_data_dir.md | see the Chromium docs}
@@ -45,7 +39,7 @@ export interface BrowserLaunchArgumentOptions {
      */
     devtools?: boolean;
     /**
-     * Specify the debugging port number to use
+     *
      */
     debuggingPort?: number;
     /**
@@ -56,7 +50,7 @@ export interface BrowserLaunchArgumentOptions {
 /**
  * @public
  */
-export type ChromeReleaseChannel = 'chrome' | 'chrome-beta' | 'chrome-canary' | 'chrome-dev';
+export declare type ChromeReleaseChannel = 'chrome' | 'chrome-beta' | 'chrome-canary' | 'chrome-dev';
 /**
  * Generic launch options that can be passed when launching any browser.
  * @public
@@ -76,7 +70,7 @@ export interface LaunchOptions {
      * If `true`, do not use `puppeteer.defaultArgs()` when creating a browser. If
      * an array is provided, these args will be filtered out. Use this with care -
      * you probably want the default arguments Puppeteer uses.
-     * @defaultValue `false`
+     * @defaultValue false
      */
     ignoreDefaultArgs?: boolean | string[];
     /**
@@ -97,13 +91,13 @@ export interface LaunchOptions {
     /**
      * Maximum time in milliseconds to wait for the browser to start.
      * Pass `0` to disable the timeout.
-     * @defaultValue `30_000` (30 seconds).
+     * @defaultValue 30000 (30 seconds).
      */
     timeout?: number;
     /**
      * If true, pipes the browser process stdout and stderr to `process.stdout`
      * and `process.stderr`.
-     * @defaultValue `false`
+     * @defaultValue false
      */
     dumpio?: boolean;
     /**
@@ -113,7 +107,7 @@ export interface LaunchOptions {
     env?: Record<string, string | undefined>;
     /**
      * Connect to a browser over a pipe instead of a WebSocket.
-     * @defaultValue `false`
+     * @defaultValue false
      */
     pipe?: boolean;
     /**
@@ -128,7 +122,7 @@ export interface LaunchOptions {
     /**
      * Whether to wait for the initial page to be ready.
      * Useful when a user explicitly disables that (e.g. `--no-startup-window` for Chrome).
-     * @defaultValue `true`
+     * @defaultValue true
      */
     waitForInitialPage?: boolean;
 }
@@ -137,5 +131,5 @@ export interface LaunchOptions {
  * `puppeteer.launch` without having to list the set of all types.
  * @public
  */
-export type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & LaunchOptions & BrowserConnectOptions;
+export declare type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & LaunchOptions & BrowserConnectOptions;
 //# sourceMappingURL=LaunchOptions.d.ts.map

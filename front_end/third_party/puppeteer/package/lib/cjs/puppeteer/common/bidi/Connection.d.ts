@@ -13,107 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { ConnectionTransport } from '../ConnectionTransport.js';
 import { EventEmitter } from '../EventEmitter.js';
-import { BrowsingContext } from './BrowsingContext.js';
-type Capability = {
-    acceptInsecureCerts?: boolean;
-    browserName?: string;
-    browserVersion?: string;
-};
-/**
- * @internal
- */
-interface Commands {
-    'script.evaluate': {
-        params: Bidi.Script.EvaluateParameters;
-        returnType: Bidi.Script.EvaluateResult;
-    };
-    'script.callFunction': {
-        params: Bidi.Script.CallFunctionParameters;
-        returnType: Bidi.Script.CallFunctionResult;
-    };
-    'script.disown': {
-        params: Bidi.Script.DisownParameters;
-        returnType: Bidi.Script.DisownResult;
-    };
-    'browsingContext.create': {
-        params: Bidi.BrowsingContext.CreateParameters;
-        returnType: Bidi.BrowsingContext.CreateResult;
-    };
-    'browsingContext.close': {
-        params: Bidi.BrowsingContext.CloseParameters;
-        returnType: Bidi.Message.EmptyResult;
-    };
-    'browsingContext.getTree': {
-        params: Bidi.BrowsingContext.GetTreeParameters;
-        returnType: Bidi.BrowsingContext.GetTreeResult;
-    };
-    'browsingContext.navigate': {
-        params: Bidi.BrowsingContext.NavigateParameters;
-        returnType: Bidi.BrowsingContext.NavigateResult;
-    };
-    'browsingContext.reload': {
-        params: Bidi.BrowsingContext.ReloadParameters;
-        returnType: Bidi.Message.EmptyResult;
-    };
-    'browsingContext.print': {
-        params: Bidi.BrowsingContext.PrintParameters;
-        returnType: Bidi.BrowsingContext.PrintResult;
-    };
-    'browsingContext.captureScreenshot': {
-        params: Bidi.BrowsingContext.CaptureScreenshotParameters;
-        returnType: Bidi.BrowsingContext.CaptureScreenshotResult;
-    };
-    'session.new': {
-        params: {
-            capabilities?: {
-                alwaysMatch?: Capability;
-            };
-        };
-        returnType: {
-            result: {
-                sessionId: string;
-                capabilities: Capability;
-            };
-        };
-    };
-    'session.status': {
-        params: object;
-        returnType: Bidi.Session.StatusResult;
-    };
-    'session.subscribe': {
-        params: Bidi.Session.SubscriptionRequest;
-        returnType: Bidi.Session.SubscribeResult;
-    };
-    'session.unsubscribe': {
-        params: Bidi.Session.SubscriptionRequest;
-        returnType: Bidi.Session.UnsubscribeResult;
-    };
-    'cdp.sendCommand': {
-        params: Bidi.CDP.SendCommandParams;
-        returnType: Bidi.CDP.SendCommandResult;
-    };
-    'cdp.getSession': {
-        params: Bidi.CDP.GetSessionParams;
-        returnType: Bidi.CDP.GetSessionResult;
-    };
+interface CommandResponse {
+    id: number;
+    result: object;
 }
 /**
  * @internal
  */
 export declare class Connection extends EventEmitter {
     #private;
-    constructor(transport: ConnectionTransport, delay?: number, timeout?: number);
+    constructor(transport: ConnectionTransport, delay?: number);
     get closed(): boolean;
-    send<T extends keyof Commands>(method: T, params: Commands[T]['params']): Promise<Commands[T]['returnType']>;
+    send(method: string, params: object): Promise<CommandResponse['result']>;
     /**
      * @internal
      */
     protected onMessage(message: string): Promise<void>;
-    registerBrowsingContexts(context: BrowsingContext): void;
-    unregisterBrowsingContexts(id: string): void;
     dispose(): void;
 }
 export {};

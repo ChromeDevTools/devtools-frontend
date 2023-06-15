@@ -1,4 +1,18 @@
 "use strict";
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _Connection_instances, _Connection_url, _Connection_transport, _Connection_delay, _Connection_lastId, _Connection_sessions, _Connection_closed, _Connection_callbacks, _Connection_manuallyAttached, _Connection_onClose, _CDPSessionImpl_sessionId, _CDPSessionImpl_targetType, _CDPSessionImpl_callbacks, _CDPSessionImpl_connection;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isTargetClosedError = exports.CDPSessionImpl = exports.CDPSession = exports.CDPSessionEmittedEvents = exports.Connection = exports.ConnectionEmittedEvents = void 0;
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  *
@@ -14,28 +28,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Callback_id, _Callback_error, _Callback_deferred, _Callback_timer, _Callback_label, _CallbackRegistry_callbacks, _CallbackRegistry_idGenerator, _Connection_instances, _Connection_url, _Connection_transport, _Connection_delay, _Connection_timeout, _Connection_sessions, _Connection_closed, _Connection_manuallyAttached, _Connection_callbacks, _Connection_onClose, _CDPSessionImpl_sessionId, _CDPSessionImpl_targetType, _CDPSessionImpl_callbacks, _CDPSessionImpl_connection;
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isTargetClosedError = exports.CDPSessionImpl = exports.CDPSession = exports.CDPSessionEmittedEvents = exports.Connection = exports.CallbackRegistry = exports.Callback = exports.ConnectionEmittedEvents = void 0;
 const assert_js_1 = require("../util/assert.js");
-const util_js_1 = require("../util/util.js");
 const Debug_js_1 = require("./Debug.js");
-const Errors_js_1 = require("./Errors.js");
-const EventEmitter_js_1 = require("./EventEmitter.js");
-const util_js_2 = require("./util.js");
 const debugProtocolSend = (0, Debug_js_1.debug)('puppeteer:protocol:SEND ►');
 const debugProtocolReceive = (0, Debug_js_1.debug)('puppeteer:protocol:RECV ◀');
+const EventEmitter_js_1 = require("./EventEmitter.js");
+const Errors_js_1 = require("./Errors.js");
 /**
  * Internal events that the Connection class emits.
  *
@@ -45,145 +43,28 @@ exports.ConnectionEmittedEvents = {
     Disconnected: Symbol('Connection.Disconnected'),
 };
 /**
- * @internal
- */
-function createIncrementalIdGenerator() {
-    let id = 0;
-    return () => {
-        return ++id;
-    };
-}
-/**
- * @internal
- */
-class Callback {
-    constructor(id, label, timeout) {
-        _Callback_id.set(this, void 0);
-        _Callback_error.set(this, new Errors_js_1.ProtocolError());
-        _Callback_deferred.set(this, util_js_1.Deferred.create());
-        _Callback_timer.set(this, void 0);
-        _Callback_label.set(this, void 0);
-        __classPrivateFieldSet(this, _Callback_id, id, "f");
-        __classPrivateFieldSet(this, _Callback_label, label, "f");
-        if (timeout) {
-            __classPrivateFieldSet(this, _Callback_timer, setTimeout(() => {
-                __classPrivateFieldGet(this, _Callback_deferred, "f").reject(rewriteError(__classPrivateFieldGet(this, _Callback_error, "f"), `${label} timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.`));
-            }, timeout), "f");
-        }
-    }
-    resolve(value) {
-        clearTimeout(__classPrivateFieldGet(this, _Callback_timer, "f"));
-        __classPrivateFieldGet(this, _Callback_deferred, "f").resolve(value);
-    }
-    reject(error) {
-        clearTimeout(__classPrivateFieldGet(this, _Callback_timer, "f"));
-        __classPrivateFieldGet(this, _Callback_deferred, "f").reject(error);
-    }
-    get id() {
-        return __classPrivateFieldGet(this, _Callback_id, "f");
-    }
-    get promise() {
-        return __classPrivateFieldGet(this, _Callback_deferred, "f");
-    }
-    get error() {
-        return __classPrivateFieldGet(this, _Callback_error, "f");
-    }
-    get label() {
-        return __classPrivateFieldGet(this, _Callback_label, "f");
-    }
-}
-exports.Callback = Callback;
-_Callback_id = new WeakMap(), _Callback_error = new WeakMap(), _Callback_deferred = new WeakMap(), _Callback_timer = new WeakMap(), _Callback_label = new WeakMap();
-/**
- * Manages callbacks and their IDs for the protocol request/response communication.
- *
- * @internal
- */
-class CallbackRegistry {
-    constructor() {
-        _CallbackRegistry_callbacks.set(this, new Map());
-        _CallbackRegistry_idGenerator.set(this, createIncrementalIdGenerator());
-    }
-    create(label, timeout, request) {
-        const callback = new Callback(__classPrivateFieldGet(this, _CallbackRegistry_idGenerator, "f").call(this), label, timeout);
-        __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").set(callback.id, callback);
-        try {
-            request(callback.id);
-        }
-        catch (error) {
-            // We still throw sync errors synchronously and clean up the scheduled
-            // callback.
-            callback.promise
-                .valueOrThrow()
-                .catch(util_js_2.debugError)
-                .finally(() => {
-                __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").delete(callback.id);
-            });
-            callback.reject(error);
-            throw error;
-        }
-        // Must only have sync code up until here.
-        return callback.promise.valueOrThrow().finally(() => {
-            __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").delete(callback.id);
-        });
-    }
-    reject(id, message, originalMessage) {
-        const callback = __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").get(id);
-        if (!callback) {
-            return;
-        }
-        this._reject(callback, message, originalMessage);
-    }
-    _reject(callback, errorMessage, originalMessage) {
-        const isError = errorMessage instanceof Errors_js_1.ProtocolError;
-        const message = isError ? errorMessage.message : errorMessage;
-        const error = isError ? errorMessage : callback.error;
-        callback.reject(rewriteError(error, `Protocol error (${callback.label}): ${message}`, originalMessage));
-    }
-    resolve(id, value) {
-        const callback = __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").get(id);
-        if (!callback) {
-            return;
-        }
-        callback.resolve(value);
-    }
-    clear() {
-        for (const callback of __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").values()) {
-            // TODO: probably we can accept error messages as params.
-            this._reject(callback, new Errors_js_1.TargetCloseError('Target closed'));
-        }
-        __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").clear();
-    }
-}
-exports.CallbackRegistry = CallbackRegistry;
-_CallbackRegistry_callbacks = new WeakMap(), _CallbackRegistry_idGenerator = new WeakMap();
-/**
  * @public
  */
 class Connection extends EventEmitter_js_1.EventEmitter {
-    constructor(url, transport, delay = 0, timeout) {
+    constructor(url, transport, delay = 0) {
         super();
         _Connection_instances.add(this);
         _Connection_url.set(this, void 0);
         _Connection_transport.set(this, void 0);
         _Connection_delay.set(this, void 0);
-        _Connection_timeout.set(this, void 0);
+        _Connection_lastId.set(this, 0);
         _Connection_sessions.set(this, new Map());
         _Connection_closed.set(this, false);
+        _Connection_callbacks.set(this, new Map());
         _Connection_manuallyAttached.set(this, new Set());
-        _Connection_callbacks.set(this, new CallbackRegistry());
         __classPrivateFieldSet(this, _Connection_url, url, "f");
         __classPrivateFieldSet(this, _Connection_delay, delay, "f");
-        __classPrivateFieldSet(this, _Connection_timeout, timeout ?? 180000, "f");
         __classPrivateFieldSet(this, _Connection_transport, transport, "f");
         __classPrivateFieldGet(this, _Connection_transport, "f").onmessage = this.onMessage.bind(this);
         __classPrivateFieldGet(this, _Connection_transport, "f").onclose = __classPrivateFieldGet(this, _Connection_instances, "m", _Connection_onClose).bind(this);
     }
     static fromSession(session) {
         return session.connection();
-    }
-    get timeout() {
-        return __classPrivateFieldGet(this, _Connection_timeout, "f");
     }
     /**
      * @internal
@@ -215,28 +96,26 @@ class Connection extends EventEmitter_js_1.EventEmitter {
         // type-inference.
         // So now we check if there are any params or not and deal with them accordingly.
         const params = paramArgs.length ? paramArgs[0] : undefined;
-        return this._rawSend(__classPrivateFieldGet(this, _Connection_callbacks, "f"), method, params);
-    }
-    /**
-     * @internal
-     */
-    _rawSend(callbacks, method, params, sessionId) {
-        return callbacks.create(method, __classPrivateFieldGet(this, _Connection_timeout, "f"), id => {
-            const stringifiedMessage = JSON.stringify({
+        const id = this._rawSend({ method, params });
+        return new Promise((resolve, reject) => {
+            __classPrivateFieldGet(this, _Connection_callbacks, "f").set(id, {
+                resolve,
+                reject,
+                error: new Errors_js_1.ProtocolError(),
                 method,
-                params,
-                id,
-                sessionId,
             });
-            debugProtocolSend(stringifiedMessage);
-            __classPrivateFieldGet(this, _Connection_transport, "f").send(stringifiedMessage);
         });
     }
     /**
      * @internal
      */
-    async closeBrowser() {
-        await this.send('Browser.close');
+    _rawSend(message) {
+        var _a;
+        const id = __classPrivateFieldSet(this, _Connection_lastId, (_a = __classPrivateFieldGet(this, _Connection_lastId, "f"), ++_a), "f");
+        const stringifiedMessage = JSON.stringify(Object.assign({}, message, { id }));
+        debugProtocolSend(stringifiedMessage);
+        __classPrivateFieldGet(this, _Connection_transport, "f").send(stringifiedMessage);
+        return id;
     }
     /**
      * @internal
@@ -278,11 +157,16 @@ class Connection extends EventEmitter_js_1.EventEmitter {
             }
         }
         else if (object.id) {
-            if (object.error) {
-                __classPrivateFieldGet(this, _Connection_callbacks, "f").reject(object.id, createProtocolErrorMessage(object), object.error.message);
-            }
-            else {
-                __classPrivateFieldGet(this, _Connection_callbacks, "f").resolve(object.id, object.result);
+            const callback = __classPrivateFieldGet(this, _Connection_callbacks, "f").get(object.id);
+            // Callbacks could be all rejected if someone has called `.dispose()`.
+            if (callback) {
+                __classPrivateFieldGet(this, _Connection_callbacks, "f").delete(object.id);
+                if (object.error) {
+                    callback.reject(createProtocolError(callback.error, callback.method, object));
+                }
+                else {
+                    callback.resolve(object.result);
+                }
             }
         }
         else {
@@ -326,13 +210,16 @@ class Connection extends EventEmitter_js_1.EventEmitter {
     }
 }
 exports.Connection = Connection;
-_Connection_url = new WeakMap(), _Connection_transport = new WeakMap(), _Connection_delay = new WeakMap(), _Connection_timeout = new WeakMap(), _Connection_sessions = new WeakMap(), _Connection_closed = new WeakMap(), _Connection_manuallyAttached = new WeakMap(), _Connection_callbacks = new WeakMap(), _Connection_instances = new WeakSet(), _Connection_onClose = function _Connection_onClose() {
+_Connection_url = new WeakMap(), _Connection_transport = new WeakMap(), _Connection_delay = new WeakMap(), _Connection_lastId = new WeakMap(), _Connection_sessions = new WeakMap(), _Connection_closed = new WeakMap(), _Connection_callbacks = new WeakMap(), _Connection_manuallyAttached = new WeakMap(), _Connection_instances = new WeakSet(), _Connection_onClose = function _Connection_onClose() {
     if (__classPrivateFieldGet(this, _Connection_closed, "f")) {
         return;
     }
     __classPrivateFieldSet(this, _Connection_closed, true, "f");
     __classPrivateFieldGet(this, _Connection_transport, "f").onmessage = undefined;
     __classPrivateFieldGet(this, _Connection_transport, "f").onclose = undefined;
+    for (const callback of __classPrivateFieldGet(this, _Connection_callbacks, "f").values()) {
+        callback.reject(rewriteError(callback.error, `Protocol error (${callback.method}): Target closed.`));
+    }
     __classPrivateFieldGet(this, _Connection_callbacks, "f").clear();
     for (const session of __classPrivateFieldGet(this, _Connection_sessions, "f").values()) {
         session._onClosed();
@@ -415,7 +302,7 @@ class CDPSessionImpl extends CDPSession {
         super();
         _CDPSessionImpl_sessionId.set(this, void 0);
         _CDPSessionImpl_targetType.set(this, void 0);
-        _CDPSessionImpl_callbacks.set(this, new CallbackRegistry());
+        _CDPSessionImpl_callbacks.set(this, new Map());
         _CDPSessionImpl_connection.set(this, void 0);
         __classPrivateFieldSet(this, _CDPSessionImpl_connection, connection, "f");
         __classPrivateFieldSet(this, _CDPSessionImpl_targetType, targetType, "f");
@@ -426,22 +313,36 @@ class CDPSessionImpl extends CDPSession {
     }
     send(method, ...paramArgs) {
         if (!__classPrivateFieldGet(this, _CDPSessionImpl_connection, "f")) {
-            return Promise.reject(new Errors_js_1.TargetCloseError(`Protocol error (${method}): Session closed. Most likely the ${__classPrivateFieldGet(this, _CDPSessionImpl_targetType, "f")} has been closed.`));
+            return Promise.reject(new Error(`Protocol error (${method}): Session closed. Most likely the ${__classPrivateFieldGet(this, _CDPSessionImpl_targetType, "f")} has been closed.`));
         }
         // See the comment in Connection#send explaining why we do this.
         const params = paramArgs.length ? paramArgs[0] : undefined;
-        return __classPrivateFieldGet(this, _CDPSessionImpl_connection, "f")._rawSend(__classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f"), method, params, __classPrivateFieldGet(this, _CDPSessionImpl_sessionId, "f"));
+        const id = __classPrivateFieldGet(this, _CDPSessionImpl_connection, "f")._rawSend({
+            sessionId: __classPrivateFieldGet(this, _CDPSessionImpl_sessionId, "f"),
+            method,
+            params,
+        });
+        return new Promise((resolve, reject) => {
+            __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").set(id, {
+                resolve,
+                reject,
+                error: new Errors_js_1.ProtocolError(),
+                method,
+            });
+        });
     }
     /**
      * @internal
      */
     _onMessage(object) {
-        if (object.id) {
+        const callback = object.id ? __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").get(object.id) : undefined;
+        if (object.id && callback) {
+            __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").delete(object.id);
             if (object.error) {
-                __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").reject(object.id, createProtocolErrorMessage(object), object.error.message);
+                callback.reject(createProtocolError(callback.error, callback.method, object));
             }
             else {
-                __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").resolve(object.id, object.result);
+                callback.resolve(object.result);
             }
         }
         else {
@@ -465,6 +366,9 @@ class CDPSessionImpl extends CDPSession {
      * @internal
      */
     _onClosed() {
+        for (const callback of __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").values()) {
+            callback.reject(rewriteError(callback.error, `Protocol error (${callback.method}): Target closed.`));
+        }
         __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").clear();
         __classPrivateFieldSet(this, _CDPSessionImpl_connection, undefined, "f");
         this.emit(exports.CDPSessionEmittedEvents.Disconnected);
@@ -478,23 +382,24 @@ class CDPSessionImpl extends CDPSession {
 }
 exports.CDPSessionImpl = CDPSessionImpl;
 _CDPSessionImpl_sessionId = new WeakMap(), _CDPSessionImpl_targetType = new WeakMap(), _CDPSessionImpl_callbacks = new WeakMap(), _CDPSessionImpl_connection = new WeakMap();
-function createProtocolErrorMessage(object) {
-    let message = `${object.error.message}`;
+function createProtocolError(error, method, object) {
+    let message = `Protocol error (${method}): ${object.error.message}`;
     if ('data' in object.error) {
         message += ` ${object.error.data}`;
     }
-    return message;
+    return rewriteError(error, message, object.error.message);
 }
 function rewriteError(error, message, originalMessage) {
     error.message = message;
-    error.originalMessage = originalMessage ?? error.originalMessage;
+    error.originalMessage = originalMessage !== null && originalMessage !== void 0 ? originalMessage : error.originalMessage;
     return error;
 }
 /**
  * @internal
  */
-function isTargetClosedError(error) {
-    return error instanceof Errors_js_1.TargetCloseError;
+function isTargetClosedError(err) {
+    return (err.message.includes('Target closed') ||
+        err.message.includes('Session closed'));
 }
 exports.isTargetClosedError = isTargetClosedError;
 //# sourceMappingURL=Connection.js.map

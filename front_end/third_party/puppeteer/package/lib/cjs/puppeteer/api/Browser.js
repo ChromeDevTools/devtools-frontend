@@ -43,7 +43,7 @@ exports.WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
     ['midi-sysex', 'midiSysex'],
 ]);
 /**
- * A Browser is created when Puppeteer connects to a browser instance, either through
+ * A Browser is created when Puppeteer connects to a Chromium instance, either through
  * {@link PuppeteerNode.launch} or {@link Puppeteer.connect}.
  *
  * @remarks
@@ -55,7 +55,7 @@ exports.WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
  * An example of using a {@link Browser} to create a {@link Page}:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -69,18 +69,18 @@ exports.WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
  * An example of disconnecting from and reconnecting to a {@link Browser}:
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
- *   // Store the endpoint to be able to reconnect to the browser.
+ *   // Store the endpoint to be able to reconnect to Chromium
  *   const browserWSEndpoint = browser.wsEndpoint();
- *   // Disconnect puppeteer from the browser.
+ *   // Disconnect puppeteer from Chromium
  *   browser.disconnect();
  *
  *   // Use the endpoint to reestablish a connection
  *   const browser2 = await puppeteer.connect({browserWSEndpoint});
- *   // Close the browser.
+ *   // Close Chromium
  *   await browser2.close();
  * })();
  * ```
@@ -207,12 +207,10 @@ class Browser extends EventEmitter_js_1.EventEmitter {
      *
      * @remarks
      *
-     * For headless browser, this is similar to `HeadlessChrome/61.0.3153.0`. For
-     * non-headless or new-headless, this is similar to `Chrome/61.0.3153.0`. For
-     * Firefox, it is similar to `Firefox/116.0a1`.
+     * For headless Chromium, this is similar to `HeadlessChrome/61.0.3153.0`. For
+     * non-headless, this is similar to `Chrome/61.0.3153.0`.
      *
-     * The format of browser.version() might change with future releases of
-     * browsers.
+     * The format of browser.version() might change with future releases of Chromium.
      */
     version() {
         throw new Error('Not implemented');
@@ -225,15 +223,14 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * Closes the browser and all of its pages (if any were opened). The
-     * {@link Browser} object itself is considered to be disposed and cannot be
-     * used anymore.
+     * Closes Chromium and all of its pages (if any were opened). The {@link Browser} object
+     * itself is considered to be disposed and cannot be used anymore.
      */
     close() {
         throw new Error('Not implemented');
     }
     /**
-     * Disconnects Puppeteer from the browser, but leaves the browser process running.
+     * Disconnects Puppeteer from the browser, but leaves the Chromium process running.
      * After calling `disconnect`, the {@link Browser} object is considered disposed and
      * cannot be used anymore.
      */

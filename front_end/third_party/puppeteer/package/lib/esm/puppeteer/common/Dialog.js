@@ -34,7 +34,7 @@ import { assert } from '../util/assert.js';
  * @example
  *
  * ```ts
- * import puppeteer from 'puppeteer';
+ * const puppeteer = require('puppeteer');
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -66,30 +66,29 @@ export class Dialog {
         __classPrivateFieldSet(this, _Dialog_defaultValue, defaultValue, "f");
     }
     /**
-     * The type of the dialog.
+     * @returns The type of the dialog.
      */
     type() {
         return __classPrivateFieldGet(this, _Dialog_type, "f");
     }
     /**
-     * The message displayed in the dialog.
+     * @returns The message displayed in the dialog.
      */
     message() {
         return __classPrivateFieldGet(this, _Dialog_message, "f");
     }
     /**
-     * The default value of the prompt, or an empty string if the dialog
+     * @returns The default value of the prompt, or an empty string if the dialog
      * is not a `prompt`.
      */
     defaultValue() {
         return __classPrivateFieldGet(this, _Dialog_defaultValue, "f");
     }
     /**
-     * A promise that resolves when the dialog has been accepted.
-     *
      * @param promptText - optional text that will be entered in the dialog
      * prompt. Has no effect if the dialog's type is not `prompt`.
      *
+     * @returns A promise that resolves when the dialog has been accepted.
      */
     async accept(promptText) {
         assert(!__classPrivateFieldGet(this, _Dialog_handled, "f"), 'Cannot accept dialog which is already handled!');
@@ -100,7 +99,7 @@ export class Dialog {
         });
     }
     /**
-     * A promise which will resolve once the dialog has been dismissed
+     * @returns A promise which will resolve once the dialog has been dismissed
      */
     async dismiss() {
         assert(!__classPrivateFieldGet(this, _Dialog_handled, "f"), 'Cannot dismiss dialog which is already handled!');

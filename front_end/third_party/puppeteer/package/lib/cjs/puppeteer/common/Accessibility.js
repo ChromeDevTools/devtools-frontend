@@ -25,11 +25,11 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Accessibility_dataProvider, _AXNode_instances, _AXNode_richlyEditable, _AXNode_editable, _AXNode_focusable, _AXNode_hidden, _AXNode_name, _AXNode_role, _AXNode_ignored, _AXNode_cachedHasFocusableChild, _AXNode_isPlainTextField, _AXNode_isTextOnlyObject, _AXNode_hasFocusableChild;
+var _Accessibility_client, _AXNode_instances, _AXNode_richlyEditable, _AXNode_editable, _AXNode_focusable, _AXNode_hidden, _AXNode_name, _AXNode_role, _AXNode_ignored, _AXNode_cachedHasFocusableChild, _AXNode_isPlainTextField, _AXNode_isTextOnlyObject, _AXNode_hasFocusableChild;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Accessibility = void 0;
 /**
- * The Accessibility class provides methods for inspecting the browser's
+ * The Accessibility class provides methods for inspecting Chromium's
  * accessibility tree. The accessibility tree is used by assistive technology
  * such as {@link https://en.wikipedia.org/wiki/Screen_reader | screen readers} or
  * {@link https://en.wikipedia.org/wiki/Switch_access | switches}.
@@ -54,9 +54,9 @@ class Accessibility {
     /**
      * @internal
      */
-    constructor(dataProvider) {
-        _Accessibility_dataProvider.set(this, void 0);
-        __classPrivateFieldSet(this, _Accessibility_dataProvider, dataProvider, "f");
+    constructor(client) {
+        _Accessibility_client.set(this, void 0);
+        __classPrivateFieldSet(this, _Accessibility_client, client, "f");
     }
     /**
      * Captures the current state of the accessibility tree.
@@ -64,7 +64,7 @@ class Accessibility {
      *
      * @remarks
      *
-     * **NOTE** The Chrome accessibility tree contains nodes that go unused on
+     * **NOTE** The Chromium accessibility tree contains nodes that go unused on
      * most platforms and by most screen readers. Puppeteer will discard them as
      * well for an easier to process tree, unless `interestingOnly` is set to
      * `false`.
@@ -98,11 +98,14 @@ class Accessibility {
      * @returns An AXNode object representing the snapshot.
      */
     async snapshot(options = {}) {
+        var _a, _b;
         const { interestingOnly = true, root = null } = options;
-        const { nodes } = await __classPrivateFieldGet(this, _Accessibility_dataProvider, "f").getFullAXTree();
+        const { nodes } = await __classPrivateFieldGet(this, _Accessibility_client, "f").send('Accessibility.getFullAXTree');
         let backendNodeId;
-        if (root && root.id) {
-            const { node } = await __classPrivateFieldGet(this, _Accessibility_dataProvider, "f").describeNode(root.id);
+        if (root) {
+            const { node } = await __classPrivateFieldGet(this, _Accessibility_client, "f").send('DOM.describeNode', {
+                objectId: root.remoteObject().objectId,
+            });
             backendNodeId = node.backendNodeId;
         }
         const defaultRoot = AXNode.createTree(nodes);
@@ -116,14 +119,14 @@ class Accessibility {
             }
         }
         if (!interestingOnly) {
-            return this.serializeTree(needle)[0] ?? null;
+            return (_a = this.serializeTree(needle)[0]) !== null && _a !== void 0 ? _a : null;
         }
         const interestingNodes = new Set();
         this.collectInterestingNodes(interestingNodes, defaultRoot, false);
         if (!interestingNodes.has(needle)) {
             return null;
         }
-        return this.serializeTree(needle, interestingNodes)[0] ?? null;
+        return (_b = this.serializeTree(needle, interestingNodes)[0]) !== null && _b !== void 0 ? _b : null;
     }
     serializeTree(node, interestingNodes) {
         const children = [];
@@ -153,7 +156,7 @@ class Accessibility {
     }
 }
 exports.Accessibility = Accessibility;
-_Accessibility_dataProvider = new WeakMap();
+_Accessibility_client = new WeakMap();
 class AXNode {
     constructor(payload) {
         _AXNode_instances.add(this);
@@ -390,10 +393,7 @@ class AXNode {
         }
         for (const node of nodeById.values()) {
             for (const childId of node.payload.childIds || []) {
-                const child = nodeById.get(childId);
-                if (child) {
-                    node.children.push(child);
-                }
+                node.children.push(nodeById.get(childId));
             }
         }
         return nodeById.values().next().value;

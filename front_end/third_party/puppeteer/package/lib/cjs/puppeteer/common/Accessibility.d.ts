@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
-import { ElementHandle } from '../api/ElementHandle.js';
+import { CDPSession } from './Connection.js';
+import { ElementHandle } from './ElementHandle.js';
 /**
  * Represents a Node and the properties of it that are relevant to Accessibility.
  * @public
@@ -93,7 +93,7 @@ export interface SerializedAXNode {
 export interface SnapshotOptions {
     /**
      * Prune uninteresting nodes from the tree.
-     * @defaultValue `true`
+     * @defaultValue true
      */
     interestingOnly?: boolean;
     /**
@@ -103,14 +103,7 @@ export interface SnapshotOptions {
     root?: ElementHandle<Node>;
 }
 /**
- * @internal
- */
-export interface DataProvider {
-    getFullAXTree(): Promise<Protocol.Accessibility.GetFullAXTreeResponse>;
-    describeNode(id: string): Promise<Protocol.DOM.DescribeNodeResponse>;
-}
-/**
- * The Accessibility class provides methods for inspecting the browser's
+ * The Accessibility class provides methods for inspecting Chromium's
  * accessibility tree. The accessibility tree is used by assistive technology
  * such as {@link https://en.wikipedia.org/wiki/Screen_reader | screen readers} or
  * {@link https://en.wikipedia.org/wiki/Switch_access | switches}.
@@ -136,14 +129,14 @@ export declare class Accessibility {
     /**
      * @internal
      */
-    constructor(dataProvider: DataProvider);
+    constructor(client: CDPSession);
     /**
      * Captures the current state of the accessibility tree.
      * The returned object represents the root accessible node of the page.
      *
      * @remarks
      *
-     * **NOTE** The Chrome accessibility tree contains nodes that go unused on
+     * **NOTE** The Chromium accessibility tree contains nodes that go unused on
      * most platforms and by most screen readers. Puppeteer will discard them as
      * well for an easier to process tree, unless `interestingOnly` is set to
      * `false`.

@@ -24,12 +24,10 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _ChromeTargetManager_instances, _ChromeTargetManager_connection, _ChromeTargetManager_discoveredTargetsByTargetId, _ChromeTargetManager_attachedTargetsByTargetId, _ChromeTargetManager_attachedTargetsBySessionId, _ChromeTargetManager_ignoredTargets, _ChromeTargetManager_targetFilterCallback, _ChromeTargetManager_targetFactory, _ChromeTargetManager_targetInterceptors, _ChromeTargetManager_attachedToTargetListenersBySession, _ChromeTargetManager_detachedFromTargetListenersBySession, _ChromeTargetManager_initializeDeferred, _ChromeTargetManager_targetsIdsForInit, _ChromeTargetManager_storeExistingTargetsForInit, _ChromeTargetManager_setupAttachmentListeners, _ChromeTargetManager_removeAttachmentListeners, _ChromeTargetManager_onSessionDetached, _ChromeTargetManager_onTargetCreated, _ChromeTargetManager_onTargetDestroyed, _ChromeTargetManager_onTargetInfoChanged, _ChromeTargetManager_onAttachedToTarget, _ChromeTargetManager_finishInitializationIfReady, _ChromeTargetManager_onDetachedFromTarget;
+var _ChromeTargetManager_instances, _ChromeTargetManager_connection, _ChromeTargetManager_discoveredTargetsByTargetId, _ChromeTargetManager_attachedTargetsByTargetId, _ChromeTargetManager_attachedTargetsBySessionId, _ChromeTargetManager_ignoredTargets, _ChromeTargetManager_targetFilterCallback, _ChromeTargetManager_targetFactory, _ChromeTargetManager_targetInterceptors, _ChromeTargetManager_attachedToTargetListenersBySession, _ChromeTargetManager_detachedFromTargetListenersBySession, _ChromeTargetManager_initializeCallback, _ChromeTargetManager_initializePromise, _ChromeTargetManager_targetsIdsForInit, _ChromeTargetManager_storeExistingTargetsForInit, _ChromeTargetManager_setupAttachmentListeners, _ChromeTargetManager_removeAttachmentListeners, _ChromeTargetManager_onSessionDetached, _ChromeTargetManager_onTargetCreated, _ChromeTargetManager_onTargetDestroyed, _ChromeTargetManager_onTargetInfoChanged, _ChromeTargetManager_onAttachedToTarget, _ChromeTargetManager_finishInitializationIfReady, _ChromeTargetManager_onDetachedFromTarget;
 import { assert } from '../util/assert.js';
-import { Deferred } from '../util/Deferred.js';
 import { Connection } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
-import { InitializationStatus } from './Target.js';
 import { debugError } from './util.js';
 /**
  * ChromeTargetManager uses the CDP's auto-attach mechanism to intercept
@@ -60,6 +58,7 @@ export class ChromeTargetManager extends EventEmitter {
          */
         _ChromeTargetManager_attachedTargetsByTargetId.set(this, new Map());
         /**
+         *
          * Tracks which sessions attach to which target.
          */
         _ChromeTargetManager_attachedTargetsBySessionId.set(this, new Map());
@@ -73,7 +72,10 @@ export class ChromeTargetManager extends EventEmitter {
         _ChromeTargetManager_targetInterceptors.set(this, new WeakMap());
         _ChromeTargetManager_attachedToTargetListenersBySession.set(this, new WeakMap());
         _ChromeTargetManager_detachedFromTargetListenersBySession.set(this, new WeakMap());
-        _ChromeTargetManager_initializeDeferred.set(this, Deferred.create());
+        _ChromeTargetManager_initializeCallback.set(this, () => { });
+        _ChromeTargetManager_initializePromise.set(this, new Promise(resolve => {
+            __classPrivateFieldSet(this, _ChromeTargetManager_initializeCallback, resolve, "f");
+        }));
         _ChromeTargetManager_targetsIdsForInit.set(this, new Set());
         _ChromeTargetManager_storeExistingTargetsForInit.set(this, () => {
             for (const [targetId, targetInfo,] of __classPrivateFieldGet(this, _ChromeTargetManager_discoveredTargetsByTargetId, "f").entries()) {
@@ -106,7 +108,7 @@ export class ChromeTargetManager extends EventEmitter {
             const targetInfo = __classPrivateFieldGet(this, _ChromeTargetManager_discoveredTargetsByTargetId, "f").get(event.targetId);
             __classPrivateFieldGet(this, _ChromeTargetManager_discoveredTargetsByTargetId, "f").delete(event.targetId);
             __classPrivateFieldGet(this, _ChromeTargetManager_instances, "m", _ChromeTargetManager_finishInitializationIfReady).call(this, event.targetId);
-            if (targetInfo?.type === 'service_worker' &&
+            if ((targetInfo === null || targetInfo === void 0 ? void 0 : targetInfo.type) === 'service_worker' &&
                 __classPrivateFieldGet(this, _ChromeTargetManager_attachedTargetsByTargetId, "f").has(event.targetId)) {
                 // Special case for service workers: report TargetGone event when
                 // the worker is destroyed.
@@ -123,19 +125,10 @@ export class ChromeTargetManager extends EventEmitter {
                 return;
             }
             const target = __classPrivateFieldGet(this, _ChromeTargetManager_attachedTargetsByTargetId, "f").get(event.targetInfo.targetId);
-            if (!target) {
-                return;
-            }
-            const previousURL = target.url();
-            const wasInitialized = target._initializedDeferred.value() === InitializationStatus.SUCCESS;
-            target._targetInfoChanged(event.targetInfo);
-            if (wasInitialized && previousURL !== target.url()) {
-                this.emit("targetChanged" /* TargetManagerEmittedEvents.TargetChanged */, {
-                    target: target,
-                    wasInitialized,
-                    previousURL,
-                });
-            }
+            this.emit("targetChanged" /* TargetManagerEmittedEvents.TargetChanged */, {
+                target: target,
+                targetInfo: event.targetInfo,
+            });
         });
         _ChromeTargetManager_onAttachedToTarget.set(this, async (parentSession, event) => {
             const targetInfo = event.targetInfo;
@@ -200,7 +193,7 @@ export class ChromeTargetManager extends EventEmitter {
                     // present in #attachedTargetsBySessionId.
                     assert(__classPrivateFieldGet(this, _ChromeTargetManager_attachedTargetsBySessionId, "f").has(parentSession.id()));
                 }
-                interceptor(target, parentSession instanceof Connection
+                await interceptor(target, parentSession instanceof Connection
                     ? null
                     : __classPrivateFieldGet(this, _ChromeTargetManager_attachedTargetsBySessionId, "f").get(parentSession.id()));
             }
@@ -237,6 +230,8 @@ export class ChromeTargetManager extends EventEmitter {
         __classPrivateFieldGet(this, _ChromeTargetManager_connection, "f").on('Target.targetInfoChanged', __classPrivateFieldGet(this, _ChromeTargetManager_onTargetInfoChanged, "f"));
         __classPrivateFieldGet(this, _ChromeTargetManager_connection, "f").on('sessiondetached', __classPrivateFieldGet(this, _ChromeTargetManager_onSessionDetached, "f"));
         __classPrivateFieldGet(this, _ChromeTargetManager_instances, "m", _ChromeTargetManager_setupAttachmentListeners).call(this, __classPrivateFieldGet(this, _ChromeTargetManager_connection, "f"));
+        // TODO: remove `as any` once the protocol definitions are updated with the
+        // next Chromium roll.
         __classPrivateFieldGet(this, _ChromeTargetManager_connection, "f")
             .send('Target.setDiscoverTargets', {
             discover: true,
@@ -252,7 +247,7 @@ export class ChromeTargetManager extends EventEmitter {
             autoAttach: true,
         });
         __classPrivateFieldGet(this, _ChromeTargetManager_instances, "m", _ChromeTargetManager_finishInitializationIfReady).call(this);
-        await __classPrivateFieldGet(this, _ChromeTargetManager_initializeDeferred, "f").valueOrThrow();
+        await __classPrivateFieldGet(this, _ChromeTargetManager_initializePromise, "f");
     }
     dispose() {
         __classPrivateFieldGet(this, _ChromeTargetManager_connection, "f").off('Target.targetCreated', __classPrivateFieldGet(this, _ChromeTargetManager_onTargetCreated, "f"));
@@ -276,7 +271,7 @@ export class ChromeTargetManager extends EventEmitter {
         }));
     }
 }
-_ChromeTargetManager_connection = new WeakMap(), _ChromeTargetManager_discoveredTargetsByTargetId = new WeakMap(), _ChromeTargetManager_attachedTargetsByTargetId = new WeakMap(), _ChromeTargetManager_attachedTargetsBySessionId = new WeakMap(), _ChromeTargetManager_ignoredTargets = new WeakMap(), _ChromeTargetManager_targetFilterCallback = new WeakMap(), _ChromeTargetManager_targetFactory = new WeakMap(), _ChromeTargetManager_targetInterceptors = new WeakMap(), _ChromeTargetManager_attachedToTargetListenersBySession = new WeakMap(), _ChromeTargetManager_detachedFromTargetListenersBySession = new WeakMap(), _ChromeTargetManager_initializeDeferred = new WeakMap(), _ChromeTargetManager_targetsIdsForInit = new WeakMap(), _ChromeTargetManager_storeExistingTargetsForInit = new WeakMap(), _ChromeTargetManager_onSessionDetached = new WeakMap(), _ChromeTargetManager_onTargetCreated = new WeakMap(), _ChromeTargetManager_onTargetDestroyed = new WeakMap(), _ChromeTargetManager_onTargetInfoChanged = new WeakMap(), _ChromeTargetManager_onAttachedToTarget = new WeakMap(), _ChromeTargetManager_onDetachedFromTarget = new WeakMap(), _ChromeTargetManager_instances = new WeakSet(), _ChromeTargetManager_setupAttachmentListeners = function _ChromeTargetManager_setupAttachmentListeners(session) {
+_ChromeTargetManager_connection = new WeakMap(), _ChromeTargetManager_discoveredTargetsByTargetId = new WeakMap(), _ChromeTargetManager_attachedTargetsByTargetId = new WeakMap(), _ChromeTargetManager_attachedTargetsBySessionId = new WeakMap(), _ChromeTargetManager_ignoredTargets = new WeakMap(), _ChromeTargetManager_targetFilterCallback = new WeakMap(), _ChromeTargetManager_targetFactory = new WeakMap(), _ChromeTargetManager_targetInterceptors = new WeakMap(), _ChromeTargetManager_attachedToTargetListenersBySession = new WeakMap(), _ChromeTargetManager_detachedFromTargetListenersBySession = new WeakMap(), _ChromeTargetManager_initializeCallback = new WeakMap(), _ChromeTargetManager_initializePromise = new WeakMap(), _ChromeTargetManager_targetsIdsForInit = new WeakMap(), _ChromeTargetManager_storeExistingTargetsForInit = new WeakMap(), _ChromeTargetManager_onSessionDetached = new WeakMap(), _ChromeTargetManager_onTargetCreated = new WeakMap(), _ChromeTargetManager_onTargetDestroyed = new WeakMap(), _ChromeTargetManager_onTargetInfoChanged = new WeakMap(), _ChromeTargetManager_onAttachedToTarget = new WeakMap(), _ChromeTargetManager_onDetachedFromTarget = new WeakMap(), _ChromeTargetManager_instances = new WeakSet(), _ChromeTargetManager_setupAttachmentListeners = function _ChromeTargetManager_setupAttachmentListeners(session) {
     const listener = (event) => {
         return __classPrivateFieldGet(this, _ChromeTargetManager_onAttachedToTarget, "f").call(this, session, event);
     };
@@ -301,7 +296,7 @@ _ChromeTargetManager_connection = new WeakMap(), _ChromeTargetManager_discovered
 }, _ChromeTargetManager_finishInitializationIfReady = function _ChromeTargetManager_finishInitializationIfReady(targetId) {
     targetId !== undefined && __classPrivateFieldGet(this, _ChromeTargetManager_targetsIdsForInit, "f").delete(targetId);
     if (__classPrivateFieldGet(this, _ChromeTargetManager_targetsIdsForInit, "f").size === 0) {
-        __classPrivateFieldGet(this, _ChromeTargetManager_initializeDeferred, "f").resolve();
+        __classPrivateFieldGet(this, _ChromeTargetManager_initializeCallback, "f").call(this);
     }
 };
 //# sourceMappingURL=ChromeTargetManager.js.map

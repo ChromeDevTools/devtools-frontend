@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
-import { Point } from '../api/ElementHandle.js';
 import { CDPSession } from './Connection.js';
 import { KeyInput } from './USKeyboardLayout.js';
+import { Protocol } from 'devtools-protocol';
+import { Point } from './JSHandle.js';
 /**
  * Keyboard provides an api for managing a virtual keyboard.
  * The high level api is {@link Keyboard."type"},
@@ -91,13 +91,10 @@ export declare class Keyboard {
      * See {@link KeyInput} for a list of all key names.
      *
      * @param options - An object of options. Accepts text which, if specified,
-     * generates an input event with this text. Accepts commands which, if specified,
-     * is the commands of keyboard shortcuts,
-     * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
+     * generates an input event with this text.
      */
     down(key: KeyInput, options?: {
         text?: string;
-        commands?: string[];
     }): Promise<void>;
     /**
      * Dispatches a `keyup` event.
@@ -169,50 +166,23 @@ export declare class Keyboard {
      * @param options - An object of options. Accepts text which, if specified,
      * generates an input event with this text. Accepts delay which,
      * if specified, is the time to wait between `keydown` and `keyup` in milliseconds.
-     * Defaults to 0. Accepts commands which, if specified,
-     * is the commands of keyboard shortcuts,
-     * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
+     * Defaults to 0.
      */
     press(key: KeyInput, options?: {
         delay?: number;
         text?: string;
-        commands?: string[];
     }): Promise<void>;
 }
 /**
  * @public
  */
-export interface MouseOptions {
-    /**
-     * Determines which button will be pressed.
-     *
-     * @defaultValue `'left'`
-     */
-    button?: MouseButton;
-    /**
-     * @deprecated Use {@link MouseClickOptions.count}.
-     *
-     * Determines the click count for the mouse event. This does not perform
-     * multiple clicks.
-     *
-     * @defaultValue `1`
-     */
-    clickCount?: number;
-}
+export declare type MouseButton = 'left' | 'right' | 'middle' | 'back' | 'forward';
 /**
  * @public
  */
-export interface MouseClickOptions extends MouseOptions {
-    /**
-     * Time (in ms) to delay the mouse release after the mouse press.
-     */
-    delay?: number;
-    /**
-     * Number of clicks to perform.
-     *
-     * @defaultValue `1`
-     */
-    count?: number;
+export interface MouseOptions {
+    button?: MouseButton;
+    clickCount?: number;
 }
 /**
  * @public
@@ -221,34 +191,6 @@ export interface MouseWheelOptions {
     deltaX?: number;
     deltaY?: number;
 }
-/**
- * @public
- */
-export interface MouseMoveOptions {
-    /**
-     * Determines the number of movements to make from the current mouse position
-     * to the new one.
-     *
-     * @defaultValue `1`
-     */
-    steps?: number;
-}
-/**
- * Enum of valid mouse buttons.
- *
- * @public
- */
-export declare const MouseButton: Readonly<{
-    Left: "left";
-    Right: "right";
-    Middle: "middle";
-    Back: "back";
-    Forward: "forward";
-}>;
-/**
- * @public
- */
-export type MouseButton = (typeof MouseButton)[keyof typeof MouseButton];
 /**
  * The Mouse class operates in main-frame CSS pixels
  * relative to the top-left corner of the viewport.
@@ -327,38 +269,34 @@ export declare class Mouse {
      */
     constructor(client: CDPSession, keyboard: Keyboard);
     /**
-     * Resets the mouse to the default state: No buttons pressed; position at
-     * (0,0).
-     */
-    reset(): Promise<void>;
-    /**
-     * Moves the mouse to the given coordinate.
-     *
+     * Dispatches a `mousemove` event.
      * @param x - Horizontal position of the mouse.
      * @param y - Vertical position of the mouse.
-     * @param options - Options to configure behavior.
+     * @param options - Optional object. If specified, the `steps` property
+     * sends intermediate `mousemove` events when set to `1` (default).
      */
-    move(x: number, y: number, options?: MouseMoveOptions): Promise<void>;
+    move(x: number, y: number, options?: {
+        steps?: number;
+    }): Promise<void>;
     /**
-     * Presses the mouse.
-     *
-     * @param options - Options to configure behavior.
+     * Shortcut for `mouse.move`, `mouse.down` and `mouse.up`.
+     * @param x - Horizontal position of the mouse.
+     * @param y - Vertical position of the mouse.
+     * @param options - Optional `MouseOptions`.
+     */
+    click(x: number, y: number, options?: MouseOptions & {
+        delay?: number;
+    }): Promise<void>;
+    /**
+     * Dispatches a `mousedown` event.
+     * @param options - Optional `MouseOptions`.
      */
     down(options?: MouseOptions): Promise<void>;
     /**
-     * Releases the mouse.
-     *
-     * @param options - Options to configure behavior.
+     * Dispatches a `mouseup` event.
+     * @param options - Optional `MouseOptions`.
      */
     up(options?: MouseOptions): Promise<void>;
-    /**
-     * Shortcut for `mouse.move`, `mouse.down` and `mouse.up`.
-     *
-     * @param x - Horizontal position of the mouse.
-     * @param y - Vertical position of the mouse.
-     * @param options - Options to configure behavior.
-     */
-    click(x: number, y: number, options?: Readonly<MouseClickOptions>): Promise<void>;
     /**
      * Dispatches a `mousewheel` event.
      * @param options - Optional: `MouseWheelOptions`.
@@ -434,21 +372,5 @@ export declare class Touchscreen {
      * @param y - Vertical position of the tap.
      */
     tap(x: number, y: number): Promise<void>;
-    /**
-     * Dispatches a `touchstart` event.
-     * @param x - Horizontal position of the tap.
-     * @param y - Vertical position of the tap.
-     */
-    touchStart(x: number, y: number): Promise<void>;
-    /**
-     * Dispatches a `touchMove` event.
-     * @param x - Horizontal position of the move.
-     * @param y - Vertical position of the move.
-     */
-    touchMove(x: number, y: number): Promise<void>;
-    /**
-     * Dispatches a `touchend` event.
-     */
-    touchEnd(): Promise<void>;
 }
 //# sourceMappingURL=Input.d.ts.map

@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { HTTPResponse } from '../api/HTTPResponse.js';
 import { TimeoutError } from './Errors.js';
-import { Frame } from './Frame.js';
 import { FrameManager } from './FrameManager.js';
+import { Frame } from './Frame.js';
+import { HTTPResponse } from './HTTPResponse.js';
 /**
  * @public
  */
-export type PuppeteerLifeCycleEvent = 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2';
+export declare type PuppeteerLifeCycleEvent = 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2';
 /**
  * @public
  */
-export type ProtocolLifeCycleEvent = 'load' | 'DOMContentLoaded' | 'networkIdle' | 'networkAlmostIdle';
+export declare type ProtocolLifeCycleEvent = 'load' | 'DOMContentLoaded' | 'networkIdle' | 'networkAlmostIdle';
 /**
  * @internal
  */

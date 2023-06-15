@@ -125,7 +125,8 @@ class EventEmitter {
         return this;
     }
     eventListenersCount(event) {
-        return this.eventsMap.get(event)?.length || 0;
+        var _a;
+        return ((_a = this.eventsMap.get(event)) === null || _a === void 0 ? void 0 : _a.length) || 0;
     }
 }
 exports.EventEmitter = EventEmitter;

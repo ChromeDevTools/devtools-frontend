@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
+import Protocol from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
 import { Target } from './Target.js';
 /**
  * @internal
  */
-export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CDPSession) => Target;
+export declare type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CDPSession) => Target;
 /**
  * @internal
  */
-export type TargetInterceptor = (createdTarget: Target, parentTarget: Target | null) => void;
+export declare type TargetInterceptor = (createdTarget: Target, parentTarget: Target | null) => Promise<void>;
 /**
  * TargetManager encapsulates all interactions with CDP targets and is
  * responsible for coordinating the configuration of targets with the rest of
@@ -50,9 +50,6 @@ export declare const enum TargetManagerEmittedEvents {
     TargetDiscovered = "targetDiscovered",
     TargetAvailable = "targetAvailable",
     TargetGone = "targetGone",
-    /**
-     * Emitted after a target has been initialized and whenever its URL changes.
-     */
     TargetChanged = "targetChanged"
 }
 //# sourceMappingURL=TargetManager.d.ts.map

@@ -25,7 +25,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
 var _FrameTree_frames, _FrameTree_parentIds, _FrameTree_childIds, _FrameTree_mainFrame, _FrameTree_waitRequests;
-import { Deferred } from '../util/Deferred.js';
+import { createDeferredPromise, } from '../util/DeferredPromise.js';
 /**
  * Keeps track of the page frame tree and it's is managed by
  * {@link FrameManager}. FrameTree uses frame IDs to reference frame and it
@@ -58,15 +58,16 @@ export class FrameTree {
         if (frame) {
             return Promise.resolve(frame);
         }
-        const deferred = Deferred.create();
+        const deferred = createDeferredPromise();
         const callbacks = __classPrivateFieldGet(this, _FrameTree_waitRequests, "f").get(frameId) || new Set();
         callbacks.add(deferred);
-        return deferred.valueOrThrow();
+        return deferred;
     }
     frames() {
         return Array.from(__classPrivateFieldGet(this, _FrameTree_frames, "f").values());
     }
     addFrame(frame) {
+        var _a;
         __classPrivateFieldGet(this, _FrameTree_frames, "f").set(frame._id, frame);
         if (frame._parentId) {
             __classPrivateFieldGet(this, _FrameTree_parentIds, "f").set(frame._id, frame._parentId);
@@ -78,15 +79,16 @@ export class FrameTree {
         else {
             __classPrivateFieldSet(this, _FrameTree_mainFrame, frame, "f");
         }
-        __classPrivateFieldGet(this, _FrameTree_waitRequests, "f").get(frame._id)?.forEach(request => {
+        (_a = __classPrivateFieldGet(this, _FrameTree_waitRequests, "f").get(frame._id)) === null || _a === void 0 ? void 0 : _a.forEach(request => {
             return request.resolve(frame);
         });
     }
     removeFrame(frame) {
+        var _a;
         __classPrivateFieldGet(this, _FrameTree_frames, "f").delete(frame._id);
         __classPrivateFieldGet(this, _FrameTree_parentIds, "f").delete(frame._id);
         if (frame._parentId) {
-            __classPrivateFieldGet(this, _FrameTree_childIds, "f").get(frame._parentId)?.delete(frame._id);
+            (_a = __classPrivateFieldGet(this, _FrameTree_childIds, "f").get(frame._parentId)) === null || _a === void 0 ? void 0 : _a.delete(frame._id);
         }
         else {
             __classPrivateFieldSet(this, _FrameTree_mainFrame, undefined, "f");

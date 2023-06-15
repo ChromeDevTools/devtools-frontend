@@ -27,29 +27,29 @@ export declare class SecurityDetails {
      */
     constructor(securityPayload: Protocol.Network.SecurityDetails);
     /**
-     * The name of the issuer of the certificate.
+     * @returns The name of the issuer of the certificate.
      */
     issuer(): string;
     /**
-     * {@link https://en.wikipedia.org/wiki/Unix_time | Unix timestamp}
+     * @returns {@link https://en.wikipedia.org/wiki/Unix_time | Unix timestamp}
      * marking the start of the certificate's validity.
      */
     validFrom(): number;
     /**
-     * {@link https://en.wikipedia.org/wiki/Unix_time | Unix timestamp}
+     * @returns {@link https://en.wikipedia.org/wiki/Unix_time | Unix timestamp}
      * marking the end of the certificate's validity.
      */
     validTo(): number;
     /**
-     * The security protocol being used, e.g. "TLS 1.2".
+     * @returns The security protocol being used, e.g. "TLS 1.2".
      */
     protocol(): string;
     /**
-     * The name of the subject to which the certificate was issued.
+     * @returns The name of the subject to which the certificate was issued.
      */
     subjectName(): string;
     /**
-     * The list of {@link https://en.wikipedia.org/wiki/Subject_Alternative_Name | subject alternative names (SANs)} of the certificate.
+     * @returns The list of {@link https://en.wikipedia.org/wiki/Subject_Alternative_Name | subject alternative names (SANs)} of the certificate.
      */
     subjectAlternativeNames(): string[];
 }

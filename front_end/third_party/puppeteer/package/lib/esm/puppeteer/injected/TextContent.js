@@ -39,7 +39,8 @@ const UNSUITABLE_NODE_NAMES = new Set(['SCRIPT', 'STYLE']);
  * @internal
  */
 export const isSuitableNodeForTextMatching = (node) => {
-    return (!UNSUITABLE_NODE_NAMES.has(node.nodeName) && !document.head?.contains(node));
+    var _a;
+    return (!UNSUITABLE_NODE_NAMES.has(node.nodeName) && !((_a = document.head) === null || _a === void 0 ? void 0 : _a.contains(node)));
 };
 /**
  * Maps {@link Node}s to their computed {@link TextContent}.
@@ -75,6 +76,7 @@ const textChangeObserver = new MutationObserver(mutations => {
  * @internal
  */
 export const createTextContent = (root) => {
+    var _a, _b;
     let value = textContentCache.get(root);
     if (value) {
         return value;
@@ -94,8 +96,8 @@ export const createTextContent = (root) => {
     else {
         for (let child = root.firstChild; child; child = child.nextSibling) {
             if (child.nodeType === Node.TEXT_NODE) {
-                value.full += child.nodeValue ?? '';
-                currentImmediate += child.nodeValue ?? '';
+                value.full += (_a = child.nodeValue) !== null && _a !== void 0 ? _a : '';
+                currentImmediate += (_b = child.nodeValue) !== null && _b !== void 0 ? _b : '';
                 continue;
             }
             if (currentImmediate) {

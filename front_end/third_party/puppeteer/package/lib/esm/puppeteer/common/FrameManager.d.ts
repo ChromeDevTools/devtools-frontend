@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Page } from '../api/Page.js';
 import { CDPSession } from './Connection.js';
-import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { Frame } from './Frame.js';
 import { FrameTree } from './FrameTree.js';
 import { NetworkManager } from './NetworkManager.js';
+import { Page } from '../api/Page.js';
 import { Target } from './Target.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
 /**
@@ -49,7 +48,7 @@ export declare class FrameManager extends EventEmitter {
     /**
      * @internal
      */
-    _frameTree: FrameTree<Frame>;
+    _frameTree: FrameTree;
     get timeoutSettings(): TimeoutSettings;
     get networkManager(): NetworkManager;
     get client(): CDPSession;
@@ -57,15 +56,11 @@ export declare class FrameManager extends EventEmitter {
     private setupEventListeners;
     initialize(client?: CDPSession): Promise<void>;
     executionContextById(contextId: number, session?: CDPSession): ExecutionContext;
-    getExecutionContextById(contextId: number, session?: CDPSession): ExecutionContext | undefined;
     page(): Page;
     mainFrame(): Frame;
     frames(): Frame[];
     frame(frameId: string): Frame | null;
     onAttachedToTarget(target: Target): void;
-    /**
-     * @internal
-     */
-    _deviceRequestPromptManager(client: CDPSession): DeviceRequestPromptManager;
+    onDetachedFromTarget(target: Target): void;
 }
 //# sourceMappingURL=FrameManager.d.ts.map

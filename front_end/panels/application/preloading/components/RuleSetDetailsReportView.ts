@@ -9,10 +9,13 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
+import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as NetworkForward from '../../../network/forward/forward.js';
+
+import type * as UI from '../../../../ui/legacy/legacy.js';
 
 import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css.js';
 
@@ -82,7 +85,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export type RuleSetDetailsReportViewData = RuleSet|null;
 
-export class RuleSetDetailsReportView extends HTMLElement {
+export class RuleSetDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   static readonly litTagName = LitHtml.literal`devtools-resources-rulesets-details-report-view`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});

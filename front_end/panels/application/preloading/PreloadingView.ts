@@ -12,6 +12,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 
 import * as PreloadingComponents from './components/components.js';
 
@@ -263,16 +264,16 @@ export class PreloadingView extends UI.Widget.VBox {
     this.hsplit.setMainWidget(preloadingAttempts);
   }
 
-  private makeVsplit(left: HTMLElement, right: HTMLElement): UI.SplitWidget.SplitWidget {
-    const leftContainer = new UI.Widget.VBox();
+  private makeVsplit(
+      left: LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox>,
+      right: LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox>): UI.SplitWidget.SplitWidget {
+    const leftContainer = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, left);
     leftContainer.setMinimumSize(0, 40);
     leftContainer.contentElement.classList.add('overflow-auto');
-    leftContainer.contentElement.appendChild(left);
 
-    const rightContainer = new UI.Widget.VBox();
+    const rightContainer = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, right);
     rightContainer.setMinimumSize(0, 80);
     rightContainer.contentElement.classList.add('overflow-auto');
-    rightContainer.contentElement.appendChild(right);
 
     const vsplit = new UI.SplitWidget.SplitWidget(
         /* isVertical */ true,

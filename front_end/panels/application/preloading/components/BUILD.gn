@@ -40,6 +40,7 @@ devtools_module("components") {
     "../../../../ui/components/data_grid:bundle",
     "../../../../ui/components/expandable_list:bundle",
     "../../../../ui/components/icon_button:bundle",
+    "../../../../ui/components/legacy_wrapper:bundle",
     "../../../../ui/components/report_view:bundle",
     "../../../../ui/components/text_prompt:bundle",
     "../../../../ui/components/tree_outline:bundle",

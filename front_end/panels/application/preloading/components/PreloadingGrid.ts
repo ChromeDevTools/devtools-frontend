@@ -5,7 +5,10 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+
+import type * as UI from '../../../../ui/legacy/legacy.js';
 
 import preloadingGridStyles from './preloadingGrid.css.js';
 
@@ -32,7 +35,7 @@ export interface PreloadingGridRow {
 }
 
 // Grid component to show prerendering attempts.
-export class PreloadingGrid extends HTMLElement {
+export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   static readonly litTagName = LitHtml.literal`devtools-resources-preloading-grid`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});

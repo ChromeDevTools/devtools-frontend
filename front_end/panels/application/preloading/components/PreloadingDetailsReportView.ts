@@ -7,9 +7,12 @@ import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+
+import type * as UI from '../../../../ui/legacy/legacy.js';
 
 import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css.js';
 import {PrefetchReasonDescription} from './PreloadingString.js';
@@ -566,7 +569,7 @@ interface PreloadingDetailsReportViewDataInternal {
   ruleSets: Protocol.Preload.RuleSet[];
 }
 
-export class PreloadingDetailsReportView extends HTMLElement {
+export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   static readonly litTagName = LitHtml.literal`devtools-resources-preloading-details-report-view`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});

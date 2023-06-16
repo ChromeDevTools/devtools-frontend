@@ -375,6 +375,11 @@ export class UserMetrics {
         EnumeratedHistogram.SwatchActivated, swatch, SwatchType.MaxValue);
   }
 
+  badgeActivated(badge: BadgeType): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.BadgeActivated, badge, BadgeType.MaxValue);
+  }
+
   breakpointsRestoredFromStorage(count: number): void {
     const countBucket = this.#breakpointCountToBucket(count);
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
@@ -1358,4 +1363,18 @@ export const enum SwatchType {
   Length = 8,
   PositionFallbackLink = 9,
   MaxValue = 10,
+}
+
+/* eslint-enable @typescript-eslint/naming-convention */
+export const enum BadgeType {
+  GRID = 0,
+  SUBGRID = 1,
+  FLEX = 2,
+  AD = 3,
+  SCROLL_SNAP = 4,
+  CONTAINER = 5,
+  SLOT = 6,
+  TOP_LAYER = 7,
+  REVEAL = 8,
+  MaxValue = 9,
 }

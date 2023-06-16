@@ -33,6 +33,7 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -1795,6 +1796,7 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     };
     this.listItemElement.appendChild(adorner);
     const onClick = (((): void => {
+                       Host.userMetrics.badgeActivated(Host.UserMetrics.BadgeType.REVEAL);
                        this.nodeShortcut.deferredNode.resolve(
                            node => {
                              void Common.Revealer.reveal(node);

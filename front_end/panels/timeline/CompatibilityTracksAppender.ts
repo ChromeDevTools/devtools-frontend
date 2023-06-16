@@ -7,6 +7,8 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Common from '../../core/common/common.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+
 import {
   type TimelineFlameChartEntry,
   EntryType,
@@ -146,6 +148,14 @@ export class CompatibilityTracksAppender {
     // all it shows are layout shifts.
     this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(this, this.#flameChartData, this.#traceParsedData);
     this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
+
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
+      for (const group of this.#flameChartData.groups) {
+        // We only need to update the color here, because FlameChart will call `scheduleUpdate()` when theme is changed.
+        group.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+        group.style.backgroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
+      }
+    });
   }
 
   /**

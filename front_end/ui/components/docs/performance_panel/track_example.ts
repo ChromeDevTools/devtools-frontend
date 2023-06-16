@@ -14,6 +14,7 @@ const params = new URLSearchParams(window.location.search);
 const track = params.get('track');
 const fileName = params.get('fileName');
 const expanded = params.get('expanded');
+const darkMode = params.get('darkMode');
 
 const customStartWindowTime = params.get('windowStart');
 const customEndWindowTime = params.get('windowEnd');
@@ -27,6 +28,10 @@ type FlameChartData = {
               Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider,
 };
 async function renderContent(expanded: boolean) {
+  if (darkMode) {
+    document.documentElement.classList.add('-theme-with-dark-background');
+  }
+
   const container = document.getElementById('container');
   if (!container) {
     throw new Error('could not find container');

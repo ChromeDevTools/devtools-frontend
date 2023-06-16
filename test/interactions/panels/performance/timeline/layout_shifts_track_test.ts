@@ -10,9 +10,17 @@ import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/
 describe('Layout shifts track', () => {
   preloadForCodeCoverage('performance_panel/track_example.html');
 
+  const urlForTest = 'performance_panel/track_example.html?track=LayoutShifts&fileName=cls-single-frame';
+
   itScreenshot('renders the layout shifts track correctly', async () => {
-    await loadComponentDocExample('performance_panel/track_example.html?track=LayoutShifts&fileName=cls-single-frame');
+    await loadComponentDocExample(`${urlForTest}`);
     const flameChart = await waitFor('.flame-chart-main-pane');
     await assertElementScreenshotUnchanged(flameChart, 'performance/layout_shifts_track.png', 2);
+  });
+
+  itScreenshot('renders the track (dark mode)', async () => {
+    await loadComponentDocExample(`${urlForTest}&expanded=true&darkMode=true`);
+    const flameChart = await waitFor('.flame-chart-main-pane');
+    await assertElementScreenshotUnchanged(flameChart, 'performance/layout_shifts_track_dark_mode.png', 2);
   });
 });

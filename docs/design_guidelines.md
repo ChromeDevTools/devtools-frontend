@@ -24,7 +24,7 @@ This person is the creator of the feature and the creator of the design document
 
 _LGTM_: Required. May delegate.
 
-The Chrome DevTools TL is Benedikt Meurer (bmeurer@chromium.org). The TL ensures architectural consistency and good coverage by the right set of LGTM providers, and is required to sign off on the design. They may however explicitly delegate to other LGTM providers.
+The Chrome DevTools TL is Danil Somsikov (dsv@chromium.org). The TL ensures architectural consistency and good coverage by the right set of LGTM providers, and is required to sign off on the design. They may however explicitly delegate to other LGTM providers.
 
 In the absence of the TL, an EnReOw can act in their stead.
 

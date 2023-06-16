@@ -700,6 +700,19 @@ const InspectorFrontendHostImpl = class {
 
   /**
    * @override
+   * @param {string} histogramName
+   * @param {number} sample
+   * @param {number} min
+   * @param {number} exclusiveMax
+   * @param {number} bucketSize
+   */
+  recordCountHistogram(histogramName, sample, min, exclusiveMax, bucketSize) {
+    DevToolsAPI.sendMessageToEmbedder(
+        'recordCountHistogram', [histogramName, sample, min, exclusiveMax, bucketSize], null);
+  }
+
+  /**
+   * @override
    * @param {!InspectorFrontendHostAPI.EnumeratedHistogram} actionName
    * @param {number} actionCode
    * @param {number} bucketSize

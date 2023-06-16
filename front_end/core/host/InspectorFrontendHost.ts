@@ -77,6 +77,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   events!: Common.EventTarget.EventTarget<EventTypes>;
   #fileSystem: FileSystem|null = null;
 
+  recordedCountHistograms:
+      {histogramName: string, sample: number, min: number, exclusiveMax: number, bucketSize: number}[] = [];
   recordedEnumeratedHistograms: {actionName: EnumeratedHistogram, actionCode: number}[] = [];
   recordedPerformanceHistograms: {histogramName: string, duration: number}[] = [];
 
@@ -216,6 +218,14 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   sendMessageToBackend(message: string): void {
+  }
+
+  recordCountHistogram(histogramName: string, sample: number, min: number, exclusiveMax: number, bucketSize: number):
+      void {
+    if (this.recordedCountHistograms.length >= MAX_RECORDED_HISTOGRAMS_SIZE) {
+      this.recordedCountHistograms.shift();
+    }
+    this.recordedCountHistograms.push({histogramName, sample, min, exclusiveMax, bucketSize});
   }
 
   recordEnumeratedHistogram(actionName: EnumeratedHistogram, actionCode: number, bucketSize: number): void {

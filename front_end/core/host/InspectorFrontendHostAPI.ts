@@ -248,6 +248,9 @@ export interface InspectorFrontendHostAPI {
 
   platform(): string;
 
+  recordCountHistogram(histogramName: string, sample: number, min: number, exclusiveMax: number, bucketSize: number):
+      void;
+
   recordEnumeratedHistogram(actionName: EnumeratedHistogram, actionCode: number, bucketSize: number): void;
 
   recordPerformanceHistogram(histogramName: string, duration: number): void;

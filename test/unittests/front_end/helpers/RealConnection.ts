@@ -134,6 +134,7 @@ export async function getExecutionContext(runtimeModel: SDK.RuntimeModel.Runtime
 }
 
 function resetHostBindingStubState() {
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedCountHistograms.splice(0);
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedEnumeratedHistograms.splice(0);
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordedPerformanceHistograms.splice(0);
 }

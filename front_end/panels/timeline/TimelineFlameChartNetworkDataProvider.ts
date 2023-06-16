@@ -185,14 +185,22 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return this.#font;
   }
 
-  decorateEntry(
-      index: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number, barWidth: number,
-      barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean {
-    const request = (this.#requests[index] as TimelineModel.TimelineModel.NetworkRequest);
-    if (!request.timing) {
-      return false;
-    }
-
+  /**
+   * Returns the pixels needed to decorate the event.
+   * The pixels compare to the start of the earliest event of the request.
+   *
+   * Request.beginTime(), which is used in FlameChart to calculate the unclippedBarX
+   * v
+   *    |----------------[ (URL text)    waiting time   |   request  ]--------|
+   *    ^start           ^sendStart                     ^headersEnd  ^Finish  ^end
+   * @param request
+   * @param unclippedBarX The start pixel of the request. It is calculated with request.beginTime() in FlameChart.
+   * @param timeToPixelRatio
+   * @returns the pixels to draw waiting time and left and right whiskers and url text
+   */
+  getDecorationPixels(
+      request: TimelineModel.TimelineModel.NetworkRequest, unclippedBarX: number,
+      timeToPixelRatio: number): {sendStart: number, headersEnd: number, finish: number, start: number, end: number} {
     const beginTime = request.beginTime();
     const timeToPixel = (time: number): number => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
     const minBarWidthPx = 2;
@@ -204,6 +212,42 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const finish = Math.max(timeToPixel(request.finishTime || endTime), headersEnd + minBarWidthPx);
     const start = timeToPixel(startTime);
     const end = Math.max(timeToPixel(endTime), finish);
+
+    return {sendStart, headersEnd, finish, start, end};
+  }
+
+  /**
+   * Decorates the entry:
+   *   Draw a waiting time between |sendStart| and |headersEnd|
+   *     By adding a extra transparent white layer
+   *   Draw a whisk between |start| and |sendStart|
+   *   Draw a whisk between |finish| and |end|
+   *     By draw another layer of background color to "clear" the area
+   *     Then draw the whisk
+   *   Draw the URL after the |sendStart|
+   *
+   *   |----------------[ (URL text)    waiting time   |   request  ]--------|
+   *   ^start           ^sendStart                     ^headersEnd  ^Finish  ^end
+   * @param index
+   * @param context
+   * @param barX The x pixel of the visible part request
+   * @param barY The y pixel of the visible part request
+   * @param barWidth The width of the visible part request
+   * @param barHeight The height of the visible part request
+   * @param unclippedBarX The start pixel of the request compare to the visible area. It is calculated with request.beginTime() in FlameChart.
+   * @param timeToPixelRatio
+   * @returns if the entry needs to be decorate, which is alway true if the request has "timing" field
+   */
+  decorateEntry(
+      index: number, context: CanvasRenderingContext2D, _text: string|null, barX: number, barY: number,
+      barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean {
+    const request = (this.#requests[index] as TimelineModel.TimelineModel.NetworkRequest);
+    if (!request.timing) {
+      return false;
+    }
+
+    const {sendStart, headersEnd, finish, start, end} =
+        this.getDecorationPixels(request, unclippedBarX, timeToPixelRatio);
 
     // Draw waiting time.
     context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
@@ -245,15 +289,15 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const textWidth = finish - textStart;
     const /** @const */ minTextWidthPx = 20;
     if (textWidth >= minTextWidthPx) {
-      text = this.entryTitle(index) || '';
+      let title = this.entryTitle(index) || '';
       if (request.fromServiceWorker) {
-        text = '⚙ ' + text;
+        title = '⚙ ' + title;
       }
-      if (text) {
+      if (title) {
         const /** @const */ textPadding = 4;
         const /** @const */ textBaseline = 5;
         const textBaseHeight = barHeight - textBaseline;
-        const trimmedText = UI.UIUtils.trimTextEnd(context, text, textWidth - 2 * textPadding);
+        const trimmedText = UI.UIUtils.trimTextEnd(context, title, textWidth - 2 * textPadding);
         context.fillStyle = '#333';
         context.fillText(trimmedText, textStart + textPadding, barY + textBaseHeight);
       }

@@ -86,13 +86,33 @@ Build chromium as you normally would.
 Your new domain files should be generated in this folder:
 
 ```
-src/out/Default/gen/third_party/blink/renderer/core/inspector/protocol
+src/out/Default/gen/third_party/blink/renderer/core/inspector/protocol/your_new_domain.cc
+src/out/Default/gen/third_party/blink/renderer/core/inspector/protocol/your_new_domain.h
 ```
 
-#### 1.7- Add the newly generated protocol files to the BUILD.gn
-Open the file third_party/blink/renderer/core/inspector/BUILD.gn and add the
-newly generated protocol files. This will make them available to be used later
-in the Agent class.
+#### 1.7- Add the agent to the devtools-frontend/front_end/core/protocol_client/InspectorBackend.ts
+
+Open the file `devtools-frontend/front_end/core/protocol_client/InspectorBackend.ts` and add a new method to expose your Agent.
+
+```
+youNewDomainAgent(): ProtocolProxyApi.YourNewAgentApi {
+    return this.getAgent('YourNewAgent');
+}
+```
+
+#### 1.8- Add the newly generated protocol files to the BUILD.gn
+
+In your chromium repository, open the file
+`third_party/blink/renderer/core/inspector/BUILD.gn` and add the newly generated
+protocol files. This will make them available to be used later in the Agent
+class.
+
+```
+outputs = [
+...
+"inspector/protocol/your_new_domain.cc",
+"inspector/protocol/your_new_domain.h",
+```
 
 ### 2- Sync the previous modifications with the Chrome DevTools repository
 #### 2.1- Sync the browser_protocol files
@@ -145,5 +165,3 @@ initialize(target: SDK.Target.Target) {
     target.yourNewDomainAgent();
 }
 ```
-
-

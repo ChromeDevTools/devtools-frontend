@@ -11,6 +11,7 @@ export class FilmStripModel {
   #framesInternal: Frame[];
   #zeroTimeInternal: number;
   #spanTimeInternal: number;
+
   constructor(tracingModel: TracingModel, zeroTime?: number) {
     this.#framesInternal = [];
     this.#zeroTimeInternal = 0;

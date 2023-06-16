@@ -14,6 +14,7 @@ devtools_module("trace") {
 
   deps = [
     "../../core/platform:bundle",
+    "extras:bundle",
     "handlers:bundle",
     "helpers:bundle",
     "types:bundle",

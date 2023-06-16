@@ -201,7 +201,8 @@ const enum NearestSearchStart {
  *
  * Please note: this presupposes that the array is already ordered.
  */
-function nearestIndex<T>(arr: T[], predicate: (arrayItem: T) => boolean, searchStart: NearestSearchStart): number|null {
+function nearestIndex<T>(
+    arr: readonly T[], predicate: (arrayItem: T) => boolean, searchStart: NearestSearchStart): number|null {
   const searchFromEnd = searchStart === NearestSearchStart.END;
   if (arr.length === 0) {
     return null;
@@ -257,7 +258,7 @@ export function nearestIndexFromBeginning<T>(arr: T[], predicate: (arrayItem: T)
  * Please note: this presupposes that the array is already ordered.
  */
 
-export function nearestIndexFromEnd<T>(arr: T[], predicate: (arrayItem: T) => boolean): number|null {
+export function nearestIndexFromEnd<T>(arr: readonly T[], predicate: (arrayItem: T) => boolean): number|null {
   return nearestIndex(arr, predicate, NearestSearchStart.END);
 }
 

@@ -12,6 +12,7 @@
 // use require here due to
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
 import puppeteer = require('puppeteer');
+const path = require('path');
 
 const ALLOWED_ASSERTION_FAILURES = [
   // Failure during shutdown. crbug.com/1145969
@@ -87,6 +88,9 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
   });
 
   page.on('pageerror', error => {
+    if (error.message.includes(path.join('ui', 'components', 'docs'))) {
+      uiComponentDocErrors.push(error);
+    }
     throw new Error(`Page error in Frontend: ${error}`);
   });
 
@@ -179,8 +183,16 @@ export function dumpCollectedErrors(): void {
   if (fatalErrors.length) {
     throw new Error('Fatal errors logged:\n' + fatalErrors.join('\n'));
   }
+  if (uiComponentDocErrors.length) {
+    console.log(
+        '\nErrors from component examples during test run:\n', uiComponentDocErrors.map(e => e.message).join('\n  '));
+  }
 }
 
 const pendingErrorExpectations = new Set<ErrorExpectation>();
 export const fatalErrors: string[] = [];
 export const expectedErrors: string[] = [];
+// Gathered separately so we can surface them during screenshot tests to help
+// give an idea of failures, rather than having to guess purely based on the
+// screenshot.
+export const uiComponentDocErrors: Error[] = [];

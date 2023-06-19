@@ -18,10 +18,10 @@
 import { Protocol } from 'devtools-protocol';
 import type { Readable } from 'stream';
 import { CDPSession } from './Connection.js';
-import { ElementHandle } from './ElementHandle.js';
+import { ElementHandle } from '../api/ElementHandle.js';
 import { CommonEventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
-import { JSHandle } from './JSHandle.js';
+import { JSHandle } from '../api/JSHandle.js';
 /**
  * @internal
  */
@@ -69,6 +69,18 @@ export declare const isNumber: (obj: unknown) => obj is number;
 /**
  * @internal
  */
+export declare const isPlainObject: (obj: unknown) => obj is Record<any, unknown>;
+/**
+ * @internal
+ */
+export declare const isRegExp: (obj: unknown) => obj is RegExp;
+/**
+ * @internal
+ */
+export declare const isDate: (obj: unknown) => obj is Date;
+/**
+ * @internal
+ */
 export declare function waitForEvent<T>(emitter: CommonEventEmitter, eventName: string | symbol, predicate: (event: T) => Promise<boolean> | boolean, timeout: number, abortPromise: Promise<Error>): Promise<T>;
 /**
  * @internal
@@ -110,4 +122,8 @@ export declare function getReadableAsBuffer(readable: Readable, path?: string): 
  * @internal
  */
 export declare function getReadableFromProtocolStream(client: CDPSession, handle: string): Promise<Readable>;
+/**
+ * @internal
+ */
+export declare function stringifyFunction(expression: Function): string;
 //# sourceMappingURL=util.d.ts.map

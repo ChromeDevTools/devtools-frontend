@@ -27,6 +27,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _WaitTask_world, _WaitTask_bindings, _WaitTask_polling, _WaitTask_root, _WaitTask_fn, _WaitTask_args, _WaitTask_timeout, _WaitTask_result, _WaitTask_poller, _TaskManager_tasks;
 import { createDeferredPromise } from '../util/DeferredPromise.js';
 import { TimeoutError } from './Errors.js';
+import { LazyArg } from './LazyArg.js';
 /**
  * @internal
  */
@@ -86,7 +87,9 @@ export class WaitTask {
                         return new RAFPoller(() => {
                             return fun(...args);
                         });
-                    }, await __classPrivateFieldGet(this, _WaitTask_world, "f").puppeteerUtil, __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }, LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
                     break;
                 case 'mutation':
                     __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ MutationPoller, createFunction }, root, fn, ...args) => {
@@ -94,7 +97,9 @@ export class WaitTask {
                         return new MutationPoller(() => {
                             return fun(...args);
                         }, root || document);
-                    }, await __classPrivateFieldGet(this, _WaitTask_world, "f").puppeteerUtil, __classPrivateFieldGet(this, _WaitTask_root, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }, LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), __classPrivateFieldGet(this, _WaitTask_root, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
                     break;
                 default:
                     __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ IntervalPoller, createFunction }, ms, fn, ...args) => {
@@ -102,7 +107,9 @@ export class WaitTask {
                         return new IntervalPoller(() => {
                             return fun(...args);
                         }, ms);
-                    }, await __classPrivateFieldGet(this, _WaitTask_world, "f").puppeteerUtil, __classPrivateFieldGet(this, _WaitTask_polling, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }, LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), __classPrivateFieldGet(this, _WaitTask_polling, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
                     break;
             }
             await __classPrivateFieldGet(this, _WaitTask_poller, "f").evaluate(poller => {

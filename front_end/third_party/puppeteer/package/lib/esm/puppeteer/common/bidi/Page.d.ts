@@ -15,7 +15,7 @@
  */
 import { Page as PageBase } from '../../api/Page.js';
 import { Connection } from './Connection.js';
-import type { EvaluateFunc } from '..//types.js';
+import type { EvaluateFunc } from '../types.js';
 /**
  * @internal
  */
@@ -23,6 +23,6 @@ export declare class Page extends PageBase {
     #private;
     constructor(connection: Connection, contextId: string);
     close(): Promise<void>;
-    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ..._args: Params): Promise<Awaited<ReturnType<Func>>>;
+    evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
 }
 //# sourceMappingURL=Page.d.ts.map

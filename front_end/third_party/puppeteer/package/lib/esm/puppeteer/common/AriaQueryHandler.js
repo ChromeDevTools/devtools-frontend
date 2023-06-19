@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 import { assert } from '../util/assert.js';
-import { ElementHandle } from './ElementHandle.js';
-import { Frame } from './Frame.js';
-import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorld.js';
+import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
 async function queryAXTree(client, element, accessibleName, role) {
     const { nodes } = await client.send('Accessibility.queryAXTree', {
         objectId: element.remoteObject().objectId,
@@ -78,7 +76,7 @@ const queryOne = async (element, selector) => {
 const waitFor = async (elementOrFrame, selector, options) => {
     let frame;
     let element;
-    if (elementOrFrame instanceof Frame) {
+    if ('isOOPFrame' in elementOrFrame) {
         frame = elementOrFrame;
     }
     else {
@@ -98,11 +96,12 @@ const waitFor = async (elementOrFrame, selector, options) => {
     if (element) {
         await element.dispose();
     }
-    if (!(result instanceof ElementHandle)) {
+    const handle = result === null || result === void 0 ? void 0 : result.asElement();
+    if (!handle) {
         await (result === null || result === void 0 ? void 0 : result.dispose());
         return null;
     }
-    return result.frame.worlds[MAIN_WORLD].transferHandle(result);
+    return handle.frame.worlds[MAIN_WORLD].transferHandle(handle);
 };
 const queryAll = async (element, selector) => {
     const exeCtx = element.executionContext();

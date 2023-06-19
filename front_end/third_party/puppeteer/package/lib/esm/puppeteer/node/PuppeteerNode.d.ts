@@ -45,7 +45,7 @@ export interface PuppeteerLaunchOptions extends LaunchOptions, BrowserLaunchArgu
  * The following is a typical example of using Puppeteer to drive automation:
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -175,14 +175,15 @@ export declare class PuppeteerNode extends Puppeteer {
      */
     defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
     /**
-     * @deprecated If you are using `puppeteer-core`, do not use this method. Just
-     * construct {@link BrowserFetcher} manually.
-     *
      * @param options - Set of configurable options to specify the settings of the
      * BrowserFetcher.
      *
+     * @remarks
+     * If you are using `puppeteer-core`, do not use this method. Just
+     * construct {@link BrowserFetcher} manually.
+     *
      * @returns A new BrowserFetcher instance.
      */
-    createBrowserFetcher(options: Partial<BrowserFetcherOptions>): BrowserFetcher;
+    createBrowserFetcher(options?: Partial<BrowserFetcherOptions>): BrowserFetcher;
 }
 //# sourceMappingURL=PuppeteerNode.d.ts.map

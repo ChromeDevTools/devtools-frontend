@@ -16,16 +16,22 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getQueryHandlerAndSelector = exports.clearCustomQueryHandlers = exports.customQueryHandlerNames = exports.unregisterCustomQueryHandler = exports.registerCustomQueryHandler = void 0;
+const assert_js_1 = require("../util/assert.js");
 const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
-const ElementHandle_js_1 = require("./ElementHandle.js");
+const ElementHandle_js_1 = require("../api/ElementHandle.js");
 const Frame_js_1 = require("./Frame.js");
-const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
+const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
+const LazyArg_js_1 = require("./LazyArg.js");
 function createPuppeteerQueryHandler(handler) {
     const internalHandler = {};
     if (handler.queryOne) {
         const queryOne = handler.queryOne;
         internalHandler.queryOne = async (element, selector) => {
-            const jsHandle = await element.evaluateHandle(queryOne, selector, await element.executionContext()._world.puppeteerUtil);
+            const world = element.executionContext()._world;
+            (0, assert_js_1.assert)(world);
+            const jsHandle = await element.evaluateHandle(queryOne, selector, LazyArg_js_1.LazyArg.create(context => {
+                return context.puppeteerUtil;
+            }));
             const elementHandle = jsHandle.asElement();
             if (elementHandle) {
                 return elementHandle;
@@ -41,9 +47,9 @@ function createPuppeteerQueryHandler(handler) {
             }
             else {
                 frame = elementOrFrame.frame;
-                element = await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].adoptHandle(elementOrFrame);
+                element = await frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].adoptHandle(elementOrFrame);
             }
-            const result = await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD]._waitForSelectorInPage(queryOne, element, selector, options);
+            const result = await frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD]._waitForSelectorInPage(queryOne, element, selector, options);
             if (element) {
                 await element.dispose();
             }
@@ -54,13 +60,17 @@ function createPuppeteerQueryHandler(handler) {
                 await result.dispose();
                 return null;
             }
-            return frame.worlds[IsolatedWorld_js_1.MAIN_WORLD].transferHandle(result);
+            return frame.worlds[IsolatedWorlds_js_1.MAIN_WORLD].transferHandle(result);
         };
     }
     if (handler.queryAll) {
         const queryAll = handler.queryAll;
         internalHandler.queryAll = async (element, selector) => {
-            const jsHandle = await element.evaluateHandle(queryAll, selector, await element.executionContext()._world.puppeteerUtil);
+            const world = element.executionContext()._world;
+            (0, assert_js_1.assert)(world);
+            const jsHandle = await element.evaluateHandle(queryAll, selector, LazyArg_js_1.LazyArg.create(context => {
+                return context.puppeteerUtil;
+            }));
             const properties = await jsHandle.getProperties();
             await jsHandle.dispose();
             const result = [];

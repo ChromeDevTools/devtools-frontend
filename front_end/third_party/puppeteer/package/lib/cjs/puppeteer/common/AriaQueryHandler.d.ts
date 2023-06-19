@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PuppeteerQueryHandler } from './QueryHandler.js';
+import type { PuppeteerQueryHandler } from './QueryHandler.js';
 /**
  * @internal
  */

@@ -26,6 +26,8 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _Page_connection, _Page_contextId;
 import { Page as PageBase } from '../../api/Page.js';
+import { isString, stringifyFunction } from '../util.js';
+import { BidiSerializer } from './Serializer.js';
 /**
  * @internal
  */
@@ -42,15 +44,28 @@ export class Page extends PageBase {
             context: __classPrivateFieldGet(this, _Page_contextId, "f"),
         });
     }
-    async evaluate(pageFunction, ..._args) {
-        // TODO: re-use evaluate logic from Execution context.
-        const str = `(${pageFunction.toString()})()`;
-        const result = (await __classPrivateFieldGet(this, _Page_connection, "f").send('script.evaluate', {
-            expression: str,
-            target: { context: __classPrivateFieldGet(this, _Page_contextId, "f") },
-            awaitPromise: true,
-        }));
-        return result.result.value;
+    async evaluate(pageFunction, ...args) {
+        let responsePromise;
+        if (isString(pageFunction)) {
+            responsePromise = __classPrivateFieldGet(this, _Page_connection, "f").send('script.evaluate', {
+                expression: pageFunction,
+                target: { context: __classPrivateFieldGet(this, _Page_contextId, "f") },
+                awaitPromise: true,
+            });
+        }
+        else {
+            responsePromise = __classPrivateFieldGet(this, _Page_connection, "f").send('script.callFunction', {
+                functionDeclaration: stringifyFunction(pageFunction),
+                arguments: await Promise.all(args.map(BidiSerializer.serialize)),
+                target: { context: __classPrivateFieldGet(this, _Page_contextId, "f") },
+                awaitPromise: true,
+            });
+        }
+        const { result } = await responsePromise;
+        if ('type' in result && result.type === 'exception') {
+            throw new Error(result.exceptionDetails.text);
+        }
+        return BidiSerializer.deserialize(result.result);
     }
 }
 _Page_connection = new WeakMap(), _Page_contextId = new WeakMap();

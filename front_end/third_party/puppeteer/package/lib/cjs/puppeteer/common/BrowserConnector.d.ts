@@ -15,8 +15,8 @@
  */
 import { IsPageTargetCallback, TargetFilterCallback } from '../api/Browser.js';
 import { CDPBrowser } from './Browser.js';
-import { ConnectionTransport } from './ConnectionTransport.js';
 import { Viewport } from './PuppeteerViewport.js';
+import type { ConnectOptions } from './Puppeteer.js';
 /**
  * Generic browser options that can be passed when launching any browser or when
  * connecting to an existing browser instance.
@@ -57,9 +57,5 @@ export interface BrowserConnectOptions {
  *
  * @internal
  */
-export declare function _connectToCDPBrowser(options: BrowserConnectOptions & {
-    browserWSEndpoint?: string;
-    browserURL?: string;
-    transport?: ConnectionTransport;
-}): Promise<CDPBrowser>;
+export declare function _connectToCDPBrowser(options: BrowserConnectOptions & ConnectOptions): Promise<CDPBrowser>;
 //# sourceMappingURL=BrowserConnector.d.ts.map

@@ -62,7 +62,7 @@ class WebWorker extends EventEmitter_js_1.EventEmitter {
         __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.consoleAPICalled', async (event) => {
             const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f");
             return consoleAPICalled(event.type, event.args.map((object) => {
-                return new JSHandle_js_1.JSHandle(context, object);
+                return new JSHandle_js_1.CDPJSHandle(context, object);
             }), event.stackTrace);
         });
         __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.exceptionThrown', exception => {

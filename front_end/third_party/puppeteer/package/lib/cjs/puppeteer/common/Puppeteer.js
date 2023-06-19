@@ -14,17 +14,6 @@ const QueryHandler_js_1 = require("./QueryHandler.js");
  */
 class Puppeteer {
     /**
-     * @internal
-     */
-    constructor(settings) {
-        /**
-         * @internal
-         */
-        this._changedProduct = false;
-        this._isPuppeteerCore = settings.isPuppeteerCore;
-        this.connect = this.connect.bind(this);
-    }
-    /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
      *
      * @remarks
@@ -66,6 +55,17 @@ class Puppeteer {
      */
     static clearCustomQueryHandlers() {
         return (0, QueryHandler_js_1.clearCustomQueryHandlers)();
+    }
+    /**
+     * @internal
+     */
+    constructor(settings) {
+        /**
+         * @internal
+         */
+        this._changedProduct = false;
+        this._isPuppeteerCore = settings.isPuppeteerCore;
+        this.connect = this.connect.bind(this);
     }
     /**
      * This method attaches Puppeteer to an existing browser instance.

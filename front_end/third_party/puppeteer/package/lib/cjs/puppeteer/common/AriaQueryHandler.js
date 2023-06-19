@@ -17,9 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ariaHandler = void 0;
 const assert_js_1 = require("../util/assert.js");
-const ElementHandle_js_1 = require("./ElementHandle.js");
-const Frame_js_1 = require("./Frame.js");
-const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
+const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 async function queryAXTree(client, element, accessibleName, role) {
     const { nodes } = await client.send('Accessibility.queryAXTree', {
         objectId: element.remoteObject().objectId,
@@ -76,36 +74,37 @@ const queryOne = async (element, selector) => {
     if (!id) {
         return null;
     }
-    return (await element.frame.worlds[IsolatedWorld_js_1.MAIN_WORLD].adoptBackendNode(id));
+    return (await element.frame.worlds[IsolatedWorlds_js_1.MAIN_WORLD].adoptBackendNode(id));
 };
 const waitFor = async (elementOrFrame, selector, options) => {
     let frame;
     let element;
-    if (elementOrFrame instanceof Frame_js_1.Frame) {
+    if ('isOOPFrame' in elementOrFrame) {
         frame = elementOrFrame;
     }
     else {
         frame = elementOrFrame.frame;
-        element = await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].adoptHandle(elementOrFrame);
+        element = await frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].adoptHandle(elementOrFrame);
     }
     const ariaQuerySelector = async (selector) => {
-        const id = await queryOneId(element || (await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].document()), selector);
+        const id = await queryOneId(element || (await frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].document()), selector);
         if (!id) {
             return null;
         }
-        return (await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD].adoptBackendNode(id));
+        return (await frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].adoptBackendNode(id));
     };
-    const result = await frame.worlds[IsolatedWorld_js_1.PUPPETEER_WORLD]._waitForSelectorInPage((_, selector) => {
+    const result = await frame.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD]._waitForSelectorInPage((_, selector) => {
         return globalThis.ariaQuerySelector(selector);
     }, element, selector, options, new Map([['ariaQuerySelector', ariaQuerySelector]]));
     if (element) {
         await element.dispose();
     }
-    if (!(result instanceof ElementHandle_js_1.ElementHandle)) {
+    const handle = result === null || result === void 0 ? void 0 : result.asElement();
+    if (!handle) {
         await (result === null || result === void 0 ? void 0 : result.dispose());
         return null;
     }
-    return result.frame.worlds[IsolatedWorld_js_1.MAIN_WORLD].transferHandle(result);
+    return handle.frame.worlds[IsolatedWorlds_js_1.MAIN_WORLD].transferHandle(handle);
 };
 const queryAll = async (element, selector) => {
     const exeCtx = element.executionContext();

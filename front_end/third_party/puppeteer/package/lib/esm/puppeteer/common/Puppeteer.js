@@ -11,17 +11,6 @@ import { clearCustomQueryHandlers, customQueryHandlerNames, registerCustomQueryH
  */
 export class Puppeteer {
     /**
-     * @internal
-     */
-    constructor(settings) {
-        /**
-         * @internal
-         */
-        this._changedProduct = false;
-        this._isPuppeteerCore = settings.isPuppeteerCore;
-        this.connect = this.connect.bind(this);
-    }
-    /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
      *
      * @remarks
@@ -63,6 +52,17 @@ export class Puppeteer {
      */
     static clearCustomQueryHandlers() {
         return clearCustomQueryHandlers();
+    }
+    /**
+     * @internal
+     */
+    constructor(settings) {
+        /**
+         * @internal
+         */
+        this._changedProduct = false;
+        this._isPuppeteerCore = settings.isPuppeteerCore;
+        this.connect = this.connect.bind(this);
     }
     /**
      * This method attaches Puppeteer to an existing browser instance.

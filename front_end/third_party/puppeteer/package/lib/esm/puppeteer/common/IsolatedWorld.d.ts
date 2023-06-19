@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 import { Protocol } from 'devtools-protocol';
-import type PuppeteerUtil from '../injected/injected.js';
-import { ElementHandle } from './ElementHandle.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { Frame } from './Frame.js';
 import { MouseButton } from './Input.js';
-import { JSHandle } from './JSHandle.js';
+import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
+import { JSHandle } from '../api/JSHandle.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
 import { EvaluateFunc, HandleFor, InnerLazyParams, NodeFor } from './types.js';
 import { TaskManager } from './WaitTask.js';
+import type { ElementHandle } from '../api/ElementHandle.js';
 /**
  * @public
  */
@@ -58,20 +58,6 @@ export interface PageBinding {
     pptrFunction: Function;
 }
 /**
- * A unique key for {@link IsolatedWorldChart} to denote the default world.
- * Execution contexts are automatically created in the default world.
- *
- * @internal
- */
-export declare const MAIN_WORLD: unique symbol;
-/**
- * A unique key for {@link IsolatedWorldChart} to denote the puppeteer world.
- * This world contains all puppeteer-internal bindings/code.
- *
- * @internal
- */
-export declare const PUPPETEER_WORLD: unique symbol;
-/**
  * @internal
  */
 export interface IsolatedWorldChart {
@@ -84,7 +70,6 @@ export interface IsolatedWorldChart {
  */
 export declare class IsolatedWorld {
     #private;
-    get puppeteerUtil(): Promise<JSHandle<PuppeteerUtil>>;
     get taskManager(): TaskManager;
     get _boundFunctions(): Map<string, Function>;
     constructor(frame: Frame);

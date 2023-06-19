@@ -17,9 +17,9 @@ import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { debug } from './Debug.js';
-import { ElementHandle } from './ElementHandle.js';
+import { CDPElementHandle } from './ElementHandle.js';
 import { TimeoutError } from './Errors.js';
-import { JSHandle } from './JSHandle.js';
+import { CDPJSHandle } from './JSHandle.js';
 /**
  * @internal
  */
@@ -116,6 +116,24 @@ export const isNumber = (obj) => {
 /**
  * @internal
  */
+export const isPlainObject = (obj) => {
+    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === Object;
+};
+/**
+ * @internal
+ */
+export const isRegExp = (obj) => {
+    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === RegExp;
+};
+/**
+ * @internal
+ */
+export const isDate = (obj) => {
+    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === Date;
+};
+/**
+ * @internal
+ */
 export async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise) {
     let eventTimeout;
     let resolveCallback;
@@ -156,9 +174,9 @@ export async function waitForEvent(emitter, eventName, predicate, timeout, abort
  */
 export function createJSHandle(context, remoteObject) {
     if (remoteObject.subtype === 'node' && context._world) {
-        return new ElementHandle(context, remoteObject, context._world.frame());
+        return new CDPElementHandle(context, remoteObject, context._world.frame());
     }
-    return new JSHandle(context, remoteObject);
+    return new CDPJSHandle(context, remoteObject);
 }
 /**
  * @internal
@@ -332,5 +350,33 @@ export async function getReadableFromProtocolStream(client, handle) {
             }
         },
     });
+}
+/**
+ * @internal
+ */
+export function stringifyFunction(expression) {
+    let functionText = expression.toString();
+    try {
+        new Function('(' + functionText + ')');
+    }
+    catch (error) {
+        // This means we might have a function shorthand. Try another
+        // time prefixing 'function '.
+        if (functionText.startsWith('async ')) {
+            functionText =
+                'async function ' + functionText.substring('async '.length);
+        }
+        else {
+            functionText = 'function ' + functionText;
+        }
+        try {
+            new Function('(' + functionText + ')');
+        }
+        catch (error) {
+            // We tried hard to serialize, but there's a weird beast here.
+            throw new Error('Passed function is not well-serializable!');
+        }
+    }
+    return functionText;
 }
 //# sourceMappingURL=util.js.map

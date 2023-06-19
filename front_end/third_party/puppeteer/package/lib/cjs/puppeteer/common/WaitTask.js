@@ -30,6 +30,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskManager = exports.WaitTask = void 0;
 const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
 const Errors_js_1 = require("./Errors.js");
+const LazyArg_js_1 = require("./LazyArg.js");
 /**
  * @internal
  */
@@ -89,7 +90,9 @@ class WaitTask {
                         return new RAFPoller(() => {
                             return fun(...args);
                         });
-                    }, await __classPrivateFieldGet(this, _WaitTask_world, "f").puppeteerUtil, __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }, LazyArg_js_1.LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
                     break;
                 case 'mutation':
                     __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ MutationPoller, createFunction }, root, fn, ...args) => {
@@ -97,7 +100,9 @@ class WaitTask {
                         return new MutationPoller(() => {
                             return fun(...args);
                         }, root || document);
-                    }, await __classPrivateFieldGet(this, _WaitTask_world, "f").puppeteerUtil, __classPrivateFieldGet(this, _WaitTask_root, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }, LazyArg_js_1.LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), __classPrivateFieldGet(this, _WaitTask_root, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
                     break;
                 default:
                     __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ IntervalPoller, createFunction }, ms, fn, ...args) => {
@@ -105,7 +110,9 @@ class WaitTask {
                         return new IntervalPoller(() => {
                             return fun(...args);
                         }, ms);
-                    }, await __classPrivateFieldGet(this, _WaitTask_world, "f").puppeteerUtil, __classPrivateFieldGet(this, _WaitTask_polling, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }, LazyArg_js_1.LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), __classPrivateFieldGet(this, _WaitTask_polling, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
                     break;
             }
             await __classPrivateFieldGet(this, _WaitTask_poller, "f").evaluate(poller => {

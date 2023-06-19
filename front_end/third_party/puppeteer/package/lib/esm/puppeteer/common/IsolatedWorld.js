@@ -13,44 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _IsolatedWorld_instances, _a, _IsolatedWorld_frame, _IsolatedWorld_document, _IsolatedWorld_context, _IsolatedWorld_detached, _IsolatedWorld_ctxBindings, _IsolatedWorld_boundFunctions, _IsolatedWorld_taskManager, _IsolatedWorld_puppeteerUtil, _IsolatedWorld_bindingIdentifier, _IsolatedWorld_client_get, _IsolatedWorld_frameManager_get, _IsolatedWorld_timeoutSettings_get, _IsolatedWorld_injectPuppeteerUtil, _IsolatedWorld_settingUpBinding, _IsolatedWorld_onBindingCalled;
-import { source as injectedSource } from '../generated/injected.js';
+var _IsolatedWorld_instances, _a, _IsolatedWorld_frame, _IsolatedWorld_document, _IsolatedWorld_context, _IsolatedWorld_detached, _IsolatedWorld_ctxBindings, _IsolatedWorld_boundFunctions, _IsolatedWorld_taskManager, _IsolatedWorld_bindingIdentifier, _IsolatedWorld_client_get, _IsolatedWorld_frameManager_get, _IsolatedWorld_timeoutSettings_get, _IsolatedWorld_settingUpBinding, _IsolatedWorld_onBindingCalled;
 import { assert } from '../util/assert.js';
 import { createDeferredPromise } from '../util/DeferredPromise.js';
 import { isErrorLike } from '../util/ErrorLike.js';
-import { LazyArg } from './LazyArg.js';
+import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
 import { LifecycleWatcher } from './LifecycleWatcher.js';
 import { createJSHandle, debugError, pageBindingInitString } from './util.js';
 import { TaskManager, WaitTask } from './WaitTask.js';
-/**
- * A unique key for {@link IsolatedWorldChart} to denote the default world.
- * Execution contexts are automatically created in the default world.
- *
- * @internal
- */
-export const MAIN_WORLD = Symbol('mainWorld');
-/**
- * A unique key for {@link IsolatedWorldChart} to denote the puppeteer world.
- * This world contains all puppeteer-internal bindings/code.
- *
- * @internal
- */
-export const PUPPETEER_WORLD = Symbol('puppeteerWorld');
+import { LazyArg } from './LazyArg.js';
 /**
  * @internal
  */
 export class IsolatedWorld {
+    get taskManager() {
+        return __classPrivateFieldGet(this, _IsolatedWorld_taskManager, "f");
+    }
+    get _boundFunctions() {
+        return __classPrivateFieldGet(this, _IsolatedWorld_boundFunctions, "f");
+    }
     constructor(frame) {
         _IsolatedWorld_instances.add(this);
         _IsolatedWorld_frame.set(this, void 0);
@@ -62,7 +54,6 @@ export class IsolatedWorld {
         // Contains mapping from functions that should be bound to Puppeteer functions.
         _IsolatedWorld_boundFunctions.set(this, new Map());
         _IsolatedWorld_taskManager.set(this, new TaskManager());
-        _IsolatedWorld_puppeteerUtil.set(this, createDeferredPromise());
         // If multiple waitFor are set up asynchronously, we need to wait for the
         // first one to set up the binding in the page before running the others.
         _IsolatedWorld_settingUpBinding.set(this, null);
@@ -103,7 +94,7 @@ export class IsolatedWorld {
             }
             catch (error) {
                 // The WaitTask may already have been resolved by timing out, or the
-                // exection context may have been destroyed.
+                // execution context may have been destroyed.
                 // In both caes, the promises above are rejected with a protocol error.
                 // We can safely ignores these, as the WaitTask is re-installed in
                 // the next execution context if needed.
@@ -118,27 +109,17 @@ export class IsolatedWorld {
         __classPrivateFieldSet(this, _IsolatedWorld_frame, frame, "f");
         __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_client_get).on('Runtime.bindingCalled', __classPrivateFieldGet(this, _IsolatedWorld_onBindingCalled, "f"));
     }
-    get puppeteerUtil() {
-        return __classPrivateFieldGet(this, _IsolatedWorld_puppeteerUtil, "f");
-    }
-    get taskManager() {
-        return __classPrivateFieldGet(this, _IsolatedWorld_taskManager, "f");
-    }
-    get _boundFunctions() {
-        return __classPrivateFieldGet(this, _IsolatedWorld_boundFunctions, "f");
-    }
     frame() {
         return __classPrivateFieldGet(this, _IsolatedWorld_frame, "f");
     }
     clearContext() {
         __classPrivateFieldSet(this, _IsolatedWorld_document, undefined, "f");
-        __classPrivateFieldSet(this, _IsolatedWorld_puppeteerUtil, createDeferredPromise(), "f");
         __classPrivateFieldSet(this, _IsolatedWorld_context, createDeferredPromise(), "f");
     }
     setContext(context) {
-        __classPrivateFieldGet(this, _IsolatedWorld_instances, "m", _IsolatedWorld_injectPuppeteerUtil).call(this, context);
         __classPrivateFieldGet(this, _IsolatedWorld_ctxBindings, "f").clear();
         __classPrivateFieldGet(this, _IsolatedWorld_context, "f").resolve(context);
+        __classPrivateFieldGet(this, _IsolatedWorld_taskManager, "f").rerunAll();
     }
     hasContext() {
         return __classPrivateFieldGet(this, _IsolatedWorld_context, "f").resolved();
@@ -320,14 +301,8 @@ export class IsolatedWorld {
                 polling: waitForVisible || waitForHidden ? 'raf' : 'mutation',
                 root,
                 timeout,
-            }, new LazyArg(async () => {
-                try {
-                    // In case CDP fails.
-                    return await this.puppeteerUtil;
-                }
-                catch {
-                    return undefined;
-                }
+            }, LazyArg.create(context => {
+                return context.puppeteerUtil;
             }), queryOne.toString(), selector, root, waitForVisible ? true : waitForHidden ? false : undefined);
             const elementHandle = handle.asElement();
             if (!elementHandle) {
@@ -384,24 +359,12 @@ export class IsolatedWorld {
         return result;
     }
 }
-_a = IsolatedWorld, _IsolatedWorld_frame = new WeakMap(), _IsolatedWorld_document = new WeakMap(), _IsolatedWorld_context = new WeakMap(), _IsolatedWorld_detached = new WeakMap(), _IsolatedWorld_ctxBindings = new WeakMap(), _IsolatedWorld_boundFunctions = new WeakMap(), _IsolatedWorld_taskManager = new WeakMap(), _IsolatedWorld_puppeteerUtil = new WeakMap(), _IsolatedWorld_settingUpBinding = new WeakMap(), _IsolatedWorld_onBindingCalled = new WeakMap(), _IsolatedWorld_instances = new WeakSet(), _IsolatedWorld_client_get = function _IsolatedWorld_client_get() {
+_a = IsolatedWorld, _IsolatedWorld_frame = new WeakMap(), _IsolatedWorld_document = new WeakMap(), _IsolatedWorld_context = new WeakMap(), _IsolatedWorld_detached = new WeakMap(), _IsolatedWorld_ctxBindings = new WeakMap(), _IsolatedWorld_boundFunctions = new WeakMap(), _IsolatedWorld_taskManager = new WeakMap(), _IsolatedWorld_settingUpBinding = new WeakMap(), _IsolatedWorld_onBindingCalled = new WeakMap(), _IsolatedWorld_instances = new WeakSet(), _IsolatedWorld_client_get = function _IsolatedWorld_client_get() {
     return __classPrivateFieldGet(this, _IsolatedWorld_frame, "f")._client();
 }, _IsolatedWorld_frameManager_get = function _IsolatedWorld_frameManager_get() {
     return __classPrivateFieldGet(this, _IsolatedWorld_frame, "f")._frameManager;
 }, _IsolatedWorld_timeoutSettings_get = function _IsolatedWorld_timeoutSettings_get() {
     return __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_frameManager_get).timeoutSettings;
-}, _IsolatedWorld_injectPuppeteerUtil = async function _IsolatedWorld_injectPuppeteerUtil(context) {
-    try {
-        __classPrivateFieldGet(this, _IsolatedWorld_puppeteerUtil, "f").resolve((await context.evaluateHandle(`(() => {
-              const module = {};
-              ${injectedSource}
-              return module.exports.default;
-            })()`)));
-        __classPrivateFieldGet(this, _IsolatedWorld_taskManager, "f").rerunAll();
-    }
-    catch (error) {
-        debugError(error);
-    }
 };
 _IsolatedWorld_bindingIdentifier = { value: (name, contextId) => {
         return `${name}_${contextId}`;

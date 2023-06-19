@@ -25,7 +25,7 @@ export interface BrowserLaunchArgumentOptions {
      * Whether to run the browser in headless mode.
      * @defaultValue true
      */
-    headless?: boolean | 'chrome';
+    headless?: boolean | 'new';
     /**
      * Path to a user data directory.
      * {@link https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/user_data_dir.md | see the Chromium docs}
@@ -50,7 +50,7 @@ export interface BrowserLaunchArgumentOptions {
 /**
  * @public
  */
-export declare type ChromeReleaseChannel = 'chrome' | 'chrome-beta' | 'chrome-canary' | 'chrome-dev';
+export type ChromeReleaseChannel = 'chrome' | 'chrome-beta' | 'chrome-canary' | 'chrome-dev';
 /**
  * Generic launch options that can be passed when launching any browser.
  * @public
@@ -131,5 +131,5 @@ export interface LaunchOptions {
  * `puppeteer.launch` without having to list the set of all types.
  * @public
  */
-export declare type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & LaunchOptions & BrowserConnectOptions;
+export type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & LaunchOptions & BrowserConnectOptions;
 //# sourceMappingURL=LaunchOptions.d.ts.map

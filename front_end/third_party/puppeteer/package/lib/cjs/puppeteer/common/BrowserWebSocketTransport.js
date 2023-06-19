@@ -17,6 +17,15 @@ exports.BrowserWebSocketTransport = void 0;
  * @internal
  */
 class BrowserWebSocketTransport {
+    static create(url) {
+        return new Promise((resolve, reject) => {
+            const ws = new WebSocket(url);
+            ws.addEventListener('open', () => {
+                return resolve(new BrowserWebSocketTransport(ws));
+            });
+            ws.addEventListener('error', reject);
+        });
+    }
     constructor(ws) {
         _BrowserWebSocketTransport_ws.set(this, void 0);
         __classPrivateFieldSet(this, _BrowserWebSocketTransport_ws, ws, "f");
@@ -32,15 +41,6 @@ class BrowserWebSocketTransport {
         });
         // Silently ignore all errors - we don't know what to do with them.
         __classPrivateFieldGet(this, _BrowserWebSocketTransport_ws, "f").addEventListener('error', () => { });
-    }
-    static create(url) {
-        return new Promise((resolve, reject) => {
-            const ws = new WebSocket(url);
-            ws.addEventListener('open', () => {
-                return resolve(new BrowserWebSocketTransport(ws));
-            });
-            ws.addEventListener('error', reject);
-        });
     }
     send(message) {
         __classPrivateFieldGet(this, _BrowserWebSocketTransport_ws, "f").send(message);

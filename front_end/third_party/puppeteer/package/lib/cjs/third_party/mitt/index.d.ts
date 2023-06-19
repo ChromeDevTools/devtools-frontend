@@ -1,23 +1,17 @@
-declare type EventType = string | symbol;
-declare type Handler<T = any> = (event?: T) => void;
-declare type WildcardHandler = (type: EventType, event?: any) => void;
-declare type EventHandlerList = Array<Handler>;
-declare type WildCardEventHandlerList = Array<WildcardHandler>;
-declare type EventHandlerMap = Map<EventType, EventHandlerList | WildCardEventHandlerList>;
-interface Emitter {
-    all: EventHandlerMap;
-    on<T = any>(type: EventType, handler: Handler<T>): void;
-    on(type: '*', handler: WildcardHandler): void;
-    off<T = any>(type: EventType, handler: Handler<T>): void;
-    off(type: '*', handler: WildcardHandler): void;
-    emit<T = any>(type: EventType, event?: T): void;
-    emit(type: '*', event?: any): void;
-}
 /**
- * Mitt: Tiny (~200b) functional event emitter / pubsub.
- * @name mitt
- * @returns {Mitt}
+ * Copyright 2022 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-declare function mitt(all?: EventHandlerMap): Emitter;
-
-export { Emitter, EventHandlerList, EventHandlerMap, EventType, Handler, WildCardEventHandlerList, WildcardHandler, mitt as default };
+export * from 'mitt';
+export { default as default } from 'mitt';

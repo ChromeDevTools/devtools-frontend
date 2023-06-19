@@ -38,7 +38,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFS = exports.waitWithTimeout = exports.pageBindingDeliverErrorValueString = exports.pageBindingDeliverErrorString = exports.pageBindingDeliverResultString = exports.pageBindingInitString = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getExceptionMessage = exports.debugError = void 0;
+exports.stringifyFunction = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFS = exports.waitWithTimeout = exports.pageBindingDeliverErrorValueString = exports.pageBindingDeliverErrorString = exports.pageBindingDeliverResultString = exports.pageBindingInitString = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getExceptionMessage = exports.debugError = void 0;
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
@@ -149,6 +149,27 @@ exports.isNumber = isNumber;
 /**
  * @internal
  */
+const isPlainObject = (obj) => {
+    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === Object;
+};
+exports.isPlainObject = isPlainObject;
+/**
+ * @internal
+ */
+const isRegExp = (obj) => {
+    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === RegExp;
+};
+exports.isRegExp = isRegExp;
+/**
+ * @internal
+ */
+const isDate = (obj) => {
+    return typeof obj === 'object' && (obj === null || obj === void 0 ? void 0 : obj.constructor) === Date;
+};
+exports.isDate = isDate;
+/**
+ * @internal
+ */
 async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise) {
     let eventTimeout;
     let resolveCallback;
@@ -190,9 +211,9 @@ exports.waitForEvent = waitForEvent;
  */
 function createJSHandle(context, remoteObject) {
     if (remoteObject.subtype === 'node' && context._world) {
-        return new ElementHandle_js_1.ElementHandle(context, remoteObject, context._world.frame());
+        return new ElementHandle_js_1.CDPElementHandle(context, remoteObject, context._world.frame());
     }
-    return new JSHandle_js_1.JSHandle(context, remoteObject);
+    return new JSHandle_js_1.CDPJSHandle(context, remoteObject);
 }
 exports.createJSHandle = createJSHandle;
 /**
@@ -377,4 +398,33 @@ async function getReadableFromProtocolStream(client, handle) {
     });
 }
 exports.getReadableFromProtocolStream = getReadableFromProtocolStream;
+/**
+ * @internal
+ */
+function stringifyFunction(expression) {
+    let functionText = expression.toString();
+    try {
+        new Function('(' + functionText + ')');
+    }
+    catch (error) {
+        // This means we might have a function shorthand. Try another
+        // time prefixing 'function '.
+        if (functionText.startsWith('async ')) {
+            functionText =
+                'async function ' + functionText.substring('async '.length);
+        }
+        else {
+            functionText = 'function ' + functionText;
+        }
+        try {
+            new Function('(' + functionText + ')');
+        }
+        catch (error) {
+            // We tried hard to serialize, but there's a weird beast here.
+            throw new Error('Passed function is not well-serializable!');
+        }
+    }
+    return functionText;
+}
+exports.stringifyFunction = stringifyFunction;
 //# sourceMappingURL=util.js.map

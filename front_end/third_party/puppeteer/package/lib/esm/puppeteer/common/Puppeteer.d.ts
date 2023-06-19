@@ -32,6 +32,12 @@ export interface ConnectOptions extends BrowserConnectOptions {
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;
+    /**
+     * Headers to use for the web socket connection.
+     * @remarks
+     * Only works in the Node.js environment.
+     */
+    headers?: Record<string, string>;
 }
 /**
  * The main Puppeteer class.

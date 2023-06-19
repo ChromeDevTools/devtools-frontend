@@ -389,7 +389,10 @@ class AXNode {
         }
         for (const node of nodeById.values()) {
             for (const childId of node.payload.childIds || []) {
-                node.children.push(nodeById.get(childId));
+                const child = nodeById.get(childId);
+                if (child) {
+                    node.children.push(child);
+                }
             }
         }
         return nodeById.values().next().value;

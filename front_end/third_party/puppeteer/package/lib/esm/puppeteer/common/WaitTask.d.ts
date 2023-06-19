@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ElementHandle } from './ElementHandle.js';
+import { ElementHandle } from '../api/ElementHandle.js';
 import { IsolatedWorld } from './IsolatedWorld.js';
 import { HandleFor } from './types.js';
 /**

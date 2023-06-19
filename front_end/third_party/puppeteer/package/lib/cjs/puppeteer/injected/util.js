@@ -47,12 +47,12 @@ const checkVisibility = (node, visible) => {
     const style = window.getComputedStyle(element);
     const isVisible = style &&
         !HIDDEN_VISIBILITY_VALUES.includes(style.visibility) &&
-        isBoundingBoxVisible(element);
+        !isBoundingBoxEmpty(element);
     return visible === isVisible ? node : false;
 };
 exports.checkVisibility = checkVisibility;
-function isBoundingBoxVisible(element) {
+function isBoundingBoxEmpty(element) {
     const rect = element.getBoundingClientRect();
-    return rect.width > 0 && rect.height > 0 && rect.right > 0 && rect.bottom > 0;
+    return rect.width === 0 || rect.height === 0;
 }
 //# sourceMappingURL=util.js.map

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { CDPSession } from './Connection.js';
-import { ElementHandle } from './ElementHandle.js';
+import { ElementHandle } from '../api/ElementHandle.js';
 /**
  * Represents a Node and the properties of it that are relevant to Accessibility.
  * @public

@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { assert } from '../util/assert.js';
 import { ariaHandler } from './AriaQueryHandler.js';
-import { ElementHandle } from './ElementHandle.js';
+import { ElementHandle } from '../api/ElementHandle.js';
 import { Frame } from './Frame.js';
-import { MAIN_WORLD, PUPPETEER_WORLD, } from './IsolatedWorld.js';
+import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
+import { LazyArg } from './LazyArg.js';
 function createPuppeteerQueryHandler(handler) {
     const internalHandler = {};
     if (handler.queryOne) {
         const queryOne = handler.queryOne;
         internalHandler.queryOne = async (element, selector) => {
-            const jsHandle = await element.evaluateHandle(queryOne, selector, await element.executionContext()._world.puppeteerUtil);
+            const world = element.executionContext()._world;
+            assert(world);
+            const jsHandle = await element.evaluateHandle(queryOne, selector, LazyArg.create(context => {
+                return context.puppeteerUtil;
+            }));
             const elementHandle = jsHandle.asElement();
             if (elementHandle) {
                 return elementHandle;
@@ -57,7 +63,11 @@ function createPuppeteerQueryHandler(handler) {
     if (handler.queryAll) {
         const queryAll = handler.queryAll;
         internalHandler.queryAll = async (element, selector) => {
-            const jsHandle = await element.evaluateHandle(queryAll, selector, await element.executionContext()._world.puppeteerUtil);
+            const world = element.executionContext()._world;
+            assert(world);
+            const jsHandle = await element.evaluateHandle(queryAll, selector, LazyArg.create(context => {
+                return context.puppeteerUtil;
+            }));
             const properties = await jsHandle.getProperties();
             await jsHandle.dispose();
             const result = [];

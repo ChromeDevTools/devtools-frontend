@@ -15,7 +15,7 @@
  */
 import { Protocol } from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
-import { ElementHandle } from './ElementHandle.js';
+import { ElementHandle } from '../api/ElementHandle.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { FrameManager } from './FrameManager.js';
 import { HTTPResponse } from './HTTPResponse.js';
@@ -113,7 +113,7 @@ export interface FrameAddStyleTagOptions {
  * An example of dumping frame tree:
  *
  * ```ts
- * const puppeteer = require('puppeteer');
+ * import puppeteer from 'puppeteer';
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
@@ -240,6 +240,7 @@ export declare class Frame {
      */
     goto(url: string, options?: {
         referer?: string;
+        referrerPolicy?: string;
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<HTTPResponse | null>;
@@ -375,7 +376,7 @@ export declare class Frame {
      * @example
      *
      * ```ts
-     * const puppeteer = require('puppeteer');
+     * import puppeteer from 'puppeteer';
      *
      * (async () => {
      *   const browser = await puppeteer.launch();
@@ -422,7 +423,7 @@ export declare class Frame {
      * an XPath.
      *
      * @param xpath - the XPath expression to wait for.
-     * @param options - options to configure the visiblity of the element and how
+     * @param options - options to configure the visibility of the element and how
      * long to wait before timing out.
      */
     waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
@@ -431,7 +432,7 @@ export declare class Frame {
      * The `waitForFunction` can be used to observe viewport size change:
      *
      * ```ts
-     * const puppeteer = require('puppeteer');
+     * import puppeteer from 'puppeteer';
      *
      * (async () => {
      * .  const browser = await puppeteer.launch();

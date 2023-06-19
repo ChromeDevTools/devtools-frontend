@@ -18,10 +18,17 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _ExecutionContext_instances, _ExecutionContext_evaluate;
-import { JSHandle } from './JSHandle.js';
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var _ExecutionContext_instances, _ExecutionContext_puppeteerUtil, _ExecutionContext_evaluate;
+import { source as injectedSource } from '../generated/injected.js';
+import { JSHandle } from '../api/JSHandle.js';
 import { LazyArg } from './LazyArg.js';
-import { createJSHandle, getExceptionMessage, isString, valueFromRemoteObject, } from './util.js';
+import { createJSHandle, getExceptionMessage, isString, stringifyFunction, valueFromRemoteObject, } from './util.js';
 /**
  * @public
  */
@@ -55,10 +62,21 @@ export class ExecutionContext {
      */
     constructor(client, contextPayload, world) {
         _ExecutionContext_instances.add(this);
+        _ExecutionContext_puppeteerUtil.set(this, void 0);
         this._client = client;
         this._world = world;
         this._contextId = contextPayload.id;
         this._contextName = contextPayload.name;
+    }
+    get puppeteerUtil() {
+        if (!__classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f")) {
+            __classPrivateFieldSet(this, _ExecutionContext_puppeteerUtil, this.evaluateHandle(`(() => {
+            const module = {};
+            ${injectedSource}
+            return module.exports.default;
+          })()`), "f");
+        }
+        return __classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f");
     }
     /**
      * Evaluates the given function.
@@ -156,7 +174,7 @@ export class ExecutionContext {
         return __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_evaluate).call(this, false, pageFunction, ...args);
     }
 }
-_ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async function _ExecutionContext_evaluate(returnByValue, pageFunction, ...args) {
+_ExecutionContext_puppeteerUtil = new WeakMap(), _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async function _ExecutionContext_evaluate(returnByValue, pageFunction, ...args) {
     const suffix = `//# sourceURL=${EVALUATION_SCRIPT_URL}`;
     if (isString(pageFunction)) {
         const contextId = this._contextId;
@@ -180,32 +198,10 @@ _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async 
             ? valueFromRemoteObject(remoteObject)
             : createJSHandle(this, remoteObject);
     }
-    let functionText = pageFunction.toString();
-    try {
-        new Function('(' + functionText + ')');
-    }
-    catch (error) {
-        // This means we might have a function shorthand. Try another
-        // time prefixing 'function '.
-        if (functionText.startsWith('async ')) {
-            functionText =
-                'async function ' + functionText.substring('async '.length);
-        }
-        else {
-            functionText = 'function ' + functionText;
-        }
-        try {
-            new Function('(' + functionText + ')');
-        }
-        catch (error) {
-            // We tried hard to serialize, but there's a weird beast here.
-            throw new Error('Passed function is not well-serializable!');
-        }
-    }
     let callFunctionOnPromise;
     try {
         callFunctionOnPromise = this._client.send('Runtime.callFunctionOn', {
-            functionDeclaration: functionText + '\n' + suffix + '\n',
+            functionDeclaration: stringifyFunction(pageFunction) + '\n' + suffix + '\n',
             executionContextId: this._contextId,
             arguments: await Promise.all(args.map(convertArgument.bind(this))),
             returnByValue,
@@ -229,7 +225,7 @@ _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async 
         : createJSHandle(this, remoteObject);
     async function convertArgument(arg) {
         if (arg instanceof LazyArg) {
-            arg = await arg.get();
+            arg = await arg.get(this);
         }
         if (typeof arg === 'bigint') {
             // eslint-disable-line valid-typeof

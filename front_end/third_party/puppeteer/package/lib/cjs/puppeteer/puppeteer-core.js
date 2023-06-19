@@ -30,15 +30,15 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.launch = exports.executablePath = exports.defaultArgs = exports.createBrowserFetcher = exports.connect = void 0;
-__exportStar(require("./common/Device.js"), exports);
-__exportStar(require("./common/Errors.js"), exports);
-__exportStar(require("./common/PredefinedNetworkConditions.js"), exports);
-__exportStar(require("./common/Puppeteer.js"), exports);
+__exportStar(require("./api/api.js"), exports);
+__exportStar(require("./common/common.js"), exports);
+__exportStar(require("./node/node.js"), exports);
+__exportStar(require("./revisions.js"), exports);
+__exportStar(require("./util/util.js"), exports);
 /**
  * @deprecated Use the query handler API defined on {@link Puppeteer}
  */
 __exportStar(require("./common/QueryHandler.js"), exports);
-__exportStar(require("./node/BrowserFetcher.js"), exports);
 const PuppeteerNode_js_1 = require("./node/PuppeteerNode.js");
 /**
  * @public
@@ -46,12 +46,6 @@ const PuppeteerNode_js_1 = require("./node/PuppeteerNode.js");
 const puppeteer = new PuppeteerNode_js_1.PuppeteerNode({
     isPuppeteerCore: true,
 });
-exports.connect = puppeteer.connect, 
-/**
- * @deprecated Construct {@link BrowserFetcher} manually.
- *
- * @public
- */
-exports.createBrowserFetcher = puppeteer.createBrowserFetcher, exports.defaultArgs = puppeteer.defaultArgs, exports.executablePath = puppeteer.executablePath, exports.launch = puppeteer.launch;
+exports.connect = puppeteer.connect, exports.createBrowserFetcher = puppeteer.createBrowserFetcher, exports.defaultArgs = puppeteer.defaultArgs, exports.executablePath = puppeteer.executablePath, exports.launch = puppeteer.launch;
 exports.default = puppeteer;
 //# sourceMappingURL=puppeteer-core.js.map

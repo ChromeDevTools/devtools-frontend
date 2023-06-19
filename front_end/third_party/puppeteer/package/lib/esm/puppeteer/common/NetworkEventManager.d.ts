@@ -18,7 +18,7 @@ import { HTTPRequest } from './HTTPRequest.js';
 /**
  * @internal
  */
-export declare type QueuedEventGroup = {
+export type QueuedEventGroup = {
     responseReceivedEvent: Protocol.Network.ResponseReceivedEvent;
     loadingFinishedEvent?: Protocol.Network.LoadingFinishedEvent;
     loadingFailedEvent?: Protocol.Network.LoadingFailedEvent;
@@ -26,18 +26,18 @@ export declare type QueuedEventGroup = {
 /**
  * @internal
  */
-export declare type FetchRequestId = string;
+export type FetchRequestId = string;
 /**
  * @internal
  */
-export declare type RedirectInfo = {
+export type RedirectInfo = {
     event: Protocol.Network.RequestWillBeSentEvent;
     fetchRequestId?: FetchRequestId;
 };
 /**
  * @internal
  */
-export declare type NetworkRequestId = string;
+export type NetworkRequestId = string;
 /**
  * Helper class to track network events by request ID
  *

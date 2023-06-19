@@ -62,6 +62,7 @@ export class UserMetrics {
   panelShown(panelName: string): void {
     const code = PanelCodes[panelName as keyof typeof PanelCodes] || 0;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(EnumeratedHistogram.PanelShown, code, PanelCodes.MaxValue);
+    InspectorFrontendHostInstance.recordUserMetricsAction('DevTools_PanelShown_' + panelName);
     // Store that the user has changed the panel so we know launch histograms should not be fired.
     this.#panelChangedSinceLaunch = true;
   }

@@ -12,6 +12,7 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {getCleanTextContentFromElements} from '../../helpers/DOMHelpers.js';
 
 const {assert} = chai;
 
@@ -61,6 +62,31 @@ describeWithMockConnection('AppManifestView', () => {
       });
       assert.isFalse(emptyView.isShowing());
       assert.isTrue(reportView.isShowing());
+    });
+
+    it('shows pwa wco if available', async () => {
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assertNotNullOrUndefined(resourceTreeModel);
+
+      const URL = 'https://www.example.com' as Platform.DevToolsPath.UrlString;
+      const fetchAppManifest = sinon.stub(resourceTreeModel, 'fetchAppManifest');
+      fetchAppManifest.resolves({url: URL, data: '{"display_override": ["window-controls-overlay"]}', errors: []});
+
+      sinon.stub(resourceTreeModel, 'getInstallabilityErrors').resolves([]);
+      sinon.stub(resourceTreeModel, 'getAppId').resolves({} as Protocol.Page.GetAppIdResponse);
+
+      view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
+      view.markAsRoot();
+      view.show(document.body);
+
+      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
+      await new Promise<Event>(resolve => {
+        view.contentElement.addEventListener('manifestDetection', resolve, {once: true});
+      });
+
+      const manifestSections = view.getStaticSections();
+      const values = getCleanTextContentFromElements(manifestSections[4].getFieldElement(), '.wco');
+      assert.deepEqual(values, ['window-controls-overlay']);
     });
   };
   describe('without tab target', () => tests(() => createTarget()));

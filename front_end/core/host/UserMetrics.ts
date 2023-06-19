@@ -1316,7 +1316,8 @@ export enum ManifestSectionCodes {
   'Presentation' = 2,
   'Protocol Handlers' = 3,
   'Icons' = 4,
-  MaxValue = 5,
+  'Window Controls Overlay' = 5,
+  MaxValue = 6,
 }
 
 // The names here match the CSSRuleValidator names in CSSRuleValidator.ts.

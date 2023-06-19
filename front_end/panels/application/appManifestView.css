@@ -19,15 +19,12 @@
 
 .inline-icon {
   margin-left: 4px;
+  margin-right: 4px;
   vertical-align: middle;
 }
 
 .multiline-value {
   white-space: normal;
-}
-
-.learn-more {
-  margin-left: 4px;
 }
 
 .inline-icon:focus-visible {

@@ -23,6 +23,10 @@ THIRD_PARTY_NPM_PACKAGE_NAMES = [{
     "package_name": "puppeteer-core",
     "folder_name": "puppeteer",
     "package_root": "lib/esm",
+}, {
+    "package_name": "@puppeteer/replay",
+    "folder_name": "puppeteer-replay",
+    "package_root": "lib",
 }]
 
 parser = argparse.ArgumentParser()

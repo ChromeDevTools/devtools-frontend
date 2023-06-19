@@ -183,7 +183,32 @@ class PreloadingUIUtils {
   }
 }
 
-export class PreloadingView extends UI.Widget.VBox {
+function makeHsplit(
+    left: LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox>,
+    right: LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox>): UI.SplitWidget.SplitWidget {
+  const leftContainer = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, left);
+  leftContainer.setMinimumSize(0, 40);
+  leftContainer.contentElement.classList.add('overflow-auto');
+
+  const rightContainer = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, right);
+  rightContainer.setMinimumSize(0, 80);
+  rightContainer.contentElement.classList.add('overflow-auto');
+
+  const hsplit = new UI.SplitWidget.SplitWidget(
+      /* isVertical */ false,
+      /* secondIsSidebar */ true,
+      /* settingName */ undefined,
+      /* defaultSidebarWidth */ 400,
+      /* defaultSidebarHeight */ undefined,
+      /* constraintsInDip */ undefined,
+  );
+  hsplit.setMainWidget(leftContainer);
+  hsplit.setSidebarWidget(rightContainer);
+
+  return hsplit;
+}
+
+export class PreloadingRuleSetView extends UI.Widget.VBox {
   private model: SDK.PreloadingModel.PreloadingModel;
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
   private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
@@ -191,9 +216,111 @@ export class PreloadingView extends UI.Widget.VBox {
   private readonly warningsContainer: HTMLDivElement;
   private readonly warningsView = new PreloadingWarningsView();
   private readonly hsplit: UI.SplitWidget.SplitWidget;
-  private readonly vsplitRuleSets: UI.SplitWidget.SplitWidget;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
   private readonly ruleSetDetails = new PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView();
+
+  constructor(model: SDK.PreloadingModel.PreloadingModel) {
+    super(/* isWebComponent */ true, /* delegatesFocus */ false);
+
+    this.model = model;
+    SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.ModelUpdated, this.render, this,
+        {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.PreloadingModel.PreloadingModel, SDK.PreloadingModel.Events.WarningsUpdated,
+        this.warningsView.onWarningsUpdated, this.warningsView, {scoped: true});
+
+    // this (VBox)
+    //   +- warningsContainer
+    //        +- PreloadingWarningsView
+    //   +- hsplit
+    //        +- leftContainer
+    //             +- RuleSetGrid
+    //        +- rightContainer
+    //             +- RuleSetDetailsReportView
+    //
+    // - If an row of RuleSetGrid selected, RuleSetDetailsReportView shows details of it.
+    // - If not, RuleSetDetailsReportView hides.
+
+    this.warningsContainer = document.createElement('div');
+    this.warningsContainer.classList.add('flex-none');
+    this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
+    this.warningsView.show(this.warningsContainer);
+
+    this.ruleSetGrid.addEventListener('cellfocused', this.onRuleSetsGridCellFocused.bind(this));
+    this.hsplit = makeHsplit(this.ruleSetGrid, this.ruleSetDetails);
+    this.hsplit.show(this.contentElement);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+
+    this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
+
+    this.render();
+  }
+
+  onScopeChange(): void {
+    const model = SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.PreloadingModel.PreloadingModel);
+    assertNotNullOrUndefined(model);
+    this.model = model;
+    this.render();
+  }
+
+  private updateRuleSetDetails(): void {
+    const id = this.focusedRuleSetId;
+    const ruleSet = id === null ? null : this.model.getRuleSetById(id);
+    this.ruleSetDetails.data = ruleSet;
+
+    if (ruleSet === null) {
+      this.hsplit.hideSidebar();
+    } else {
+      this.hsplit.showBoth();
+    }
+  }
+
+  render(): void {
+    // Update rule sets grid
+    //
+    // Currently, all rule sets that appear in DevTools are valid.
+    // TODO(https://crbug.com/1384419): Add property `validity` to the CDP.
+    const ruleSetRows = this.model.getAllRuleSets().map(({id, value}) => ({
+                                                          id,
+                                                          validity: PreloadingUIUtils.validity(value),
+                                                          location: PreloadingUIUtils.location(value),
+                                                        }));
+    this.ruleSetGrid.update(ruleSetRows);
+
+    this.updateRuleSetDetails();
+  }
+
+  private onRuleSetsGridCellFocused(event: Event): void {
+    const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
+    this.focusedRuleSetId =
+        focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as Protocol.Preload.RuleSetId;
+    this.render();
+  }
+
+  getInfobarContainerForTest(): HTMLDivElement {
+    return this.warningsView.contentElement;
+  }
+
+  getRuleSetGridForTest(): PreloadingComponents.RuleSetGrid.RuleSetGrid {
+    return this.ruleSetGrid;
+  }
+
+  getRuleSetDetailsForTest(): PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView {
+    return this.ruleSetDetails;
+  }
+}
+
+export class PreloadingAttemptView extends UI.Widget.VBox {
+  private model: SDK.PreloadingModel.PreloadingModel;
+  private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
+
+  private readonly warningsContainer: HTMLDivElement;
+  private readonly warningsView = new PreloadingWarningsView();
   private readonly preloadingGrid = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
   private readonly preloadingDetails =
       new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
@@ -214,22 +341,13 @@ export class PreloadingView extends UI.Widget.VBox {
     // this (VBox)
     //   +- warningsContainer
     //        +- PreloadingWarningsView
-    //   +- hsplit
-    //        +- vsplitRuleSets
+    //   +- VBox
+    //        +- toolbar (filtering)
+    //        +- hsplit
     //             +- leftContainer
-    //                  +- RuleSetGrid
+    //                  +- PreloadingGrid
     //             +- rightContainer
-    //                  +- RuleSetDetailsReportView
-    //        +- VBox
-    //             +- toolbar (filtering)
-    //             +- vsplitPreloadingAttempts
-    //                  +- leftContainer
-    //                       +- PreloadingGrid
-    //                  +- rightContainer
-    //                       +- PreloadingDetailsReportView
-    //
-    // - If an row of RuleSetGrid selected, RuleSetDetailsReportView shows details of it.
-    // - If not, RuleSetDetailsReportView hides.
+    //                  +- PreloadingDetailsReportView
     //
     // - If an row of PreloadingGrid selected, PreloadingDetailsReportView shows details of it.
     // - If not, PreloadingDetailsReportView shows some messages.
@@ -239,62 +357,23 @@ export class PreloadingView extends UI.Widget.VBox {
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
     this.warningsView.show(this.warningsContainer);
 
-    this.ruleSetGrid.addEventListener('cellfocused', this.onRuleSetsGridCellFocused.bind(this));
-    this.vsplitRuleSets = this.makeVsplit(this.ruleSetGrid, this.ruleSetDetails);
+    const vbox = new UI.Widget.VBox();
 
-    const preloadingAttempts = new UI.Widget.VBox();
-
-    const toolbar = new UI.Toolbar.Toolbar('preloading-toolbar', preloadingAttempts.contentElement);
+    const toolbar = new UI.Toolbar.Toolbar('preloading-toolbar', vbox.contentElement);
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
     toolbar.appendToolbarItem(this.ruleSetSelector.item());
 
     this.preloadingGrid.addEventListener('cellfocused', this.onPreloadingGridCellFocused.bind(this));
-    const vsplitPreloadingAttempts = this.makeVsplit(this.preloadingGrid, this.preloadingDetails);
-    vsplitPreloadingAttempts.show(preloadingAttempts.contentElement);
+    const hsplit = makeHsplit(this.preloadingGrid, this.preloadingDetails);
+    hsplit.show(vbox.contentElement);
 
-    this.hsplit = new UI.SplitWidget.SplitWidget(
-        /* isVertical */ false,
-        /* secondIsSidebar */ false,
-        /* settingName */ undefined,
-        /* defaultSidebarWidth */ undefined,
-        /* defaultSidebarHeight */ 200,
-        /* constraintsInDip */ undefined,
-    );
-    this.hsplit.setSidebarWidget(this.vsplitRuleSets);
-    this.hsplit.setMainWidget(preloadingAttempts);
-  }
-
-  private makeVsplit(
-      left: LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox>,
-      right: LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox>): UI.SplitWidget.SplitWidget {
-    const leftContainer = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, left);
-    leftContainer.setMinimumSize(0, 40);
-    leftContainer.contentElement.classList.add('overflow-auto');
-
-    const rightContainer = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, right);
-    rightContainer.setMinimumSize(0, 80);
-    rightContainer.contentElement.classList.add('overflow-auto');
-
-    const vsplit = new UI.SplitWidget.SplitWidget(
-        /* isVertical */ true,
-        /* secondIsSidebar */ true,
-        /* settingName */ undefined,
-        /* defaultSidebarWidth */ 400,
-        /* defaultSidebarHeight */ undefined,
-        /* constraintsInDip */ undefined,
-    );
-    vsplit.setMainWidget(leftContainer);
-    vsplit.setSidebarWidget(rightContainer);
-
-    return vsplit;
+    vbox.show(this.contentElement);
   }
 
   override wasShown(): void {
     super.wasShown();
 
     this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
-
-    this.hsplit.show(this.contentElement);
 
     this.render();
   }
@@ -304,18 +383,6 @@ export class PreloadingView extends UI.Widget.VBox {
     assertNotNullOrUndefined(model);
     this.model = model;
     this.render();
-  }
-
-  private updateRuleSetDetails(): void {
-    const id = this.focusedRuleSetId;
-    const ruleSet = id === null ? null : this.model.getRuleSetById(id);
-    this.ruleSetDetails.data = ruleSet;
-
-    if (ruleSet === null) {
-      this.vsplitRuleSets.hideSidebar();
-    } else {
-      this.vsplitRuleSets.showBoth();
-    }
   }
 
   private updatePreloadingDetails(): void {
@@ -334,19 +401,6 @@ export class PreloadingView extends UI.Widget.VBox {
   }
 
   render(): void {
-    // Update rule sets grid
-    //
-    // Currently, all rule sets that appear in DevTools are valid.
-    // TODO(https://crbug.com/1384419): Add property `validity` to the CDP.
-    const ruleSetRows = this.model.getAllRuleSets().map(({id, value}) => ({
-                                                          id,
-                                                          validity: PreloadingUIUtils.validity(value),
-                                                          location: PreloadingUIUtils.location(value),
-                                                        }));
-    this.ruleSetGrid.update(ruleSetRows);
-
-    this.updateRuleSetDetails();
-
     // Update preloaidng grid
     const filteringRuleSetId = this.ruleSetSelector.getSelected();
     const url = SDK.TargetManager.TargetManager.instance().inspectedURL();
@@ -368,30 +422,11 @@ export class PreloadingView extends UI.Widget.VBox {
     this.updatePreloadingDetails();
   }
 
-  private onRuleSetsGridCellFocused(event: Event): void {
-    const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
-    this.focusedRuleSetId =
-        focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as Protocol.Preload.RuleSetId;
-    this.render();
-  }
-
   private onPreloadingGridCellFocused(event: Event): void {
     const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
     this.focusedPreloadingAttemptId = focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as
         SDK.PreloadingModel.PreloadingAttemptId;
     this.render();
-  }
-
-  getInfobarContainerForTest(): HTMLDivElement {
-    return this.warningsView.contentElement;
-  }
-
-  getRuleSetGridForTest(): PreloadingComponents.RuleSetGrid.RuleSetGrid {
-    return this.ruleSetGrid;
-  }
-
-  getRuleSetDetailsForTest(): PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView {
-    return this.ruleSetDetails;
   }
 
   getRuleSetSelectorToolbarItemForTest(): UI.Toolbar.ToolbarItem {

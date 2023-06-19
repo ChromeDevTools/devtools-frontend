@@ -50,7 +50,11 @@ import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
 import {BounceTrackingMitigationsTreeElement} from './BounceTrackingMitigationsTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
-import {type PreloadingResultView, type PreloadingView} from './preloading/PreloadingView.js';
+import {
+  type PreloadingResultView,
+  type PreloadingRuleSetView,
+  type PreloadingAttemptView,
+} from './preloading/PreloadingView.js';
 import {PreloadingTreeElement} from './PreloadingTreeElement.js';
 import resourcesSidebarStyles from './resourcesSidebar.css.js';
 import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
@@ -265,7 +269,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   periodicBackgroundSyncTreeElement: BackgroundServiceTreeElement;
   pushMessagingTreeElement: BackgroundServiceTreeElement;
   reportingApiTreeElement: ReportingApiTreeElement;
-  preloadingTreeElement: PreloadingTreeElement<PreloadingView>|undefined;
+  preloadingRuleSetTreeElement: PreloadingTreeElement<PreloadingRuleSetView>|undefined;
+  preloadingAttemptTreeElement: PreloadingTreeElement<PreloadingAttemptView>|undefined;
   preloadingResultTreeElement: PreloadingTreeElement<PreloadingResultView>|undefined;
   private readonly resourcesSection: ResourcesSection;
   private readonly databaseTableViews: Map<DatabaseModelDatabase, {
@@ -402,9 +407,11 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       const preloadingSectionTitle = i18nString(UIStrings.preloading);
       const preloadingSectionTreeElement = this.addSidebarSection(preloadingSectionTitle);
 
-      this.preloadingTreeElement = PreloadingTreeElement.newForPreloadingView(panel);
+      this.preloadingRuleSetTreeElement = PreloadingTreeElement.newForPreloadingRuleSetView(panel);
+      this.preloadingAttemptTreeElement = PreloadingTreeElement.newForPreloadingAttemptView(panel);
       this.preloadingResultTreeElement = PreloadingTreeElement.newForPreloadingResultView(panel);
-      preloadingSectionTreeElement.appendChild(this.preloadingTreeElement);
+      preloadingSectionTreeElement.appendChild(this.preloadingRuleSetTreeElement);
+      preloadingSectionTreeElement.appendChild(this.preloadingAttemptTreeElement);
       preloadingSectionTreeElement.appendChild(this.preloadingResultTreeElement);
     }
 
@@ -568,7 +575,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL)) {
       const preloadingModel = this.target?.model(SDK.PreloadingModel.PreloadingModel);
       if (preloadingModel) {
-        this.preloadingTreeElement?.initialize(preloadingModel);
+        this.preloadingRuleSetTreeElement?.initialize(preloadingModel);
+        this.preloadingAttemptTreeElement?.initialize(preloadingModel);
         this.preloadingResultTreeElement?.initialize(preloadingModel);
       }
     }

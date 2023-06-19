@@ -71,7 +71,7 @@ async function testWarnings(warnings: SDK.PreloadingModel.PreloadWarnings, infoT
     model.addEventListener(SDK.PreloadingModel.Events.WarningsUpdated, _ => resolve());
   });
 
-  const view = createView(target);
+  const view = createRuleSetView(target);
 
   dispatchEvent(target, 'Preload.preloadEnabledStateUpdated', {
     disabledByPreference: warnings.disabledByPreference,
@@ -304,10 +304,22 @@ class NavigationEmulator {
   }
 }
 
-function createView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingView {
+function createRuleSetView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingRuleSetView {
   const model = target.model(SDK.PreloadingModel.PreloadingModel);
   assertNotNullOrUndefined(model);
-  const view = new Resources.PreloadingView.PreloadingView(model);
+  const view = new Resources.PreloadingView.PreloadingRuleSetView(model);
+  const container = new UI.Widget.VBox();
+  view.show(container.element);
+  // Ensure PreloadingModelProxy.initialize to be called.
+  view.wasShown();
+
+  return view;
+}
+
+function createAttemptView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingAttemptView {
+  const model = target.model(SDK.PreloadingModel.PreloadingModel);
+  assertNotNullOrUndefined(model);
+  const view = new Resources.PreloadingView.PreloadingAttemptView(model);
   const container = new UI.Widget.VBox();
   view.show(container.element);
   // Ensure PreloadingModelProxy.initialize to be called.
@@ -328,11 +340,11 @@ function createResultView(target: SDK.Target.Target): Resources.PreloadingView.P
   return view;
 }
 
-describeWithMockConnection('PreloadingView', async () => {
+describeWithMockConnection('PreloadingRuleSetView', async () => {
   it('renders grid and details', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
+    const view = createRuleSetView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
     await emulator.addSpecRules(`
@@ -350,10 +362,6 @@ describeWithMockConnection('PreloadingView', async () => {
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
     assertShadowRoot(ruleSetGridComponent.shadowRoot);
-    const preloadingGridComponent = view.getPreloadingGridForTest();
-    assertShadowRoot(preloadingGridComponent.shadowRoot);
-    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
-    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
@@ -362,67 +370,12 @@ describeWithMockConnection('PreloadingView', async () => {
           ['Valid', '<script>'],
         ],
     );
-
-    assertGridContents(
-        preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
-        [
-          [
-            '/prerendered.html',
-            'prerender',
-            'Running',
-          ],
-        ],
-    );
-
-    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
-
-    assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
-  });
-
-  it('shows full URL in attempts grid if cross-domain', async () => {
-    const emulator = new NavigationEmulator();
-    await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
-
-    await emulator.navigateAndDispatchEvents('');
-    await emulator.addSpecRules(`
-{
-  "prerender":[
-    {
-      "source": "list",
-      "urls": ["https://different-domain.example.com/prerendered.html"]
-    }
-  ]
-}
-`);
-
-    await coordinator.done();
-
-    const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assertShadowRoot(ruleSetGridComponent.shadowRoot);
-    const preloadingGridComponent = view.getPreloadingGridForTest();
-    assertShadowRoot(preloadingGridComponent.shadowRoot);
-    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
-    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
-
-    assertGridContents(
-        preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
-        [
-          [
-            'https://different-domain.example.com/prerendered.html',
-            'prerender',
-            'Running',
-          ],
-        ],
-    );
   });
 
   it('shows error of rule set', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
+    const view = createRuleSetView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
     await emulator.addSpecRules(`
@@ -474,7 +427,7 @@ describeWithMockConnection('PreloadingView', async () => {
   it('clears SpeculationRules for previous pages', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
+    const view = createRuleSetView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
     await emulator.addSpecRules(`
@@ -504,7 +457,7 @@ describeWithMockConnection('PreloadingView', async () => {
   it('clears SpeculationRules for previous pages when prerendered page activated', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
+    const view = createRuleSetView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
     await emulator.addSpecRules(`
@@ -535,7 +488,7 @@ describeWithMockConnection('PreloadingView', async () => {
   it('preserves information even if iframe loaded', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
+    const view = createRuleSetView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
     await emulator.addSpecRules(`
@@ -572,163 +525,12 @@ describeWithMockConnection('PreloadingView', async () => {
 
     const ruleSetGridComponent = view.getRuleSetGridForTest();
     assertShadowRoot(ruleSetGridComponent.shadowRoot);
-    const preloadingGridComponent = view.getPreloadingGridForTest();
-    assertShadowRoot(preloadingGridComponent.shadowRoot);
-    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
-    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
 
     assertGridContents(
         ruleSetGridComponent,
         ['Validity', 'Location'],
         [
           ['Valid', '<script>'],
-        ],
-    );
-
-    assertGridContents(
-        preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
-        [
-          [
-            '/prerendered.html',
-            'prerender',
-            'Running',
-          ],
-        ],
-    );
-
-    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
-
-    assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
-  });
-
-  it('filters preloading attempts by selected rule set', async () => {
-    const emulator = new NavigationEmulator();
-    await emulator.openDevTools();
-    const view = createView(emulator.primaryTarget);
-
-    await emulator.navigateAndDispatchEvents('');
-    // ruleSetId:0.2
-    await emulator.addSpecRules(`
-{
-  "prefetch": [
-    {
-      "source": "list",
-      "urls": ["/subresource2.js"]
-    }
-  ]
-}
-`);
-    await emulator.addSpecRules(`
-{
-  "prerender": [
-    {
-      "source": "list",
-      "urls": ["/prerendered3.html"]
-    }
-  ]
-}
-`);
-    dispatchEvent(emulator.primaryTarget, 'Preload.preloadingAttemptSourcesUpdated', {
-      loaderId: 'loaderId:1',
-      preloadingAttemptSources: [
-        {
-          key: {
-            loaderId: 'loaderId:1',
-            action: Protocol.Preload.SpeculationAction.Prefetch,
-            url: 'https://example.com/subresource2.js',
-          },
-          ruleSetIds: ['ruleSetId:0.2'],
-          nodeIds: [2, 3],
-        },
-        {
-          key: {
-            loaderId: 'loaderId:1',
-            action: Protocol.Preload.SpeculationAction.Prerender,
-            url: 'https://example.com/prerendered3.html',
-          },
-          ruleSetIds: ['ruleSetId:0.3'],
-          nodeIds: [3],
-        },
-      ],
-    });
-
-    await coordinator.done();
-
-    const ruleSetGridComponent = view.getRuleSetGridForTest();
-    assertShadowRoot(ruleSetGridComponent.shadowRoot);
-    const ruleSetSelectorToolbarItem = view.getRuleSetSelectorToolbarItemForTest();
-    const preloadingGridComponent = view.getPreloadingGridForTest();
-    assertShadowRoot(preloadingGridComponent.shadowRoot);
-
-    assertGridContents(
-        ruleSetGridComponent,
-        ['Validity', 'Location'],
-        [
-          ['Valid', '<script>'],
-          ['Valid', '<script>'],
-        ],
-    );
-
-    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All rule sets');
-
-    assertGridContents(
-        preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
-        [
-          [
-            '/subresource2.js',
-            'prefetch',
-            'Running',
-          ],
-          [
-            '/prerendered3.html',
-            'prerender',
-            'Running',
-          ],
-        ],
-    );
-
-    // Turn on filtering.
-    view.selectRuleSetOnFilterForTest('ruleSetId:0.2' as Protocol.Preload.RuleSetId);
-
-    await coordinator.done();
-
-    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'Rule set: 2');
-
-    assertGridContents(
-        preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
-        [
-          [
-            '/subresource2.js',
-            'prefetch',
-            'Running',
-          ],
-        ],
-    );
-
-    // Turn off filtering.
-    view.selectRuleSetOnFilterForTest(null);
-
-    await coordinator.done();
-
-    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All rule sets');
-
-    assertGridContents(
-        preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
-        [
-          [
-            '/subresource2.js',
-            'prefetch',
-            'Running',
-          ],
-          [
-            '/prerendered3.html',
-            'prerender',
-            'Running',
-          ],
         ],
     );
   });
@@ -806,6 +608,267 @@ describeWithMockConnection('PreloadingView', async () => {
   });
 });
 
+describeWithMockConnection('PreloadingAttemptView', async () => {
+  it('renders grid and details', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    await coordinator.done();
+
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            '/prerendered.html',
+            'prerender',
+            'Running',
+          ],
+        ],
+    );
+
+    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
+
+    assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+  });
+
+  it('shows full URL in attempts grid if cross-domain', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["https://different-domain.example.com/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    await coordinator.done();
+
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            'https://different-domain.example.com/prerendered.html',
+            'prerender',
+            'Running',
+          ],
+        ],
+    );
+  });
+
+  // See https://crbug.com/1432880
+  it('preserves information even if iframe loaded', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    const targetInfo = {
+      targetId: 'targetId' as Protocol.Target.TargetID,
+      type: 'iframe',
+      title: 'title',
+      url: 'https://example.com/iframe.html',
+      attached: true,
+      canAccessOpener: false,
+    };
+    const childTargetManager = emulator.primaryTarget.model(SDK.ChildTargetManager.ChildTargetManager);
+    assertNotNullOrUndefined(childTargetManager);
+
+    dispatchEvent(emulator.primaryTarget, 'Target.targetCreated', {targetInfo});
+
+    await childTargetManager.attachedToTarget({
+      sessionId: 'sessionId' as Protocol.Target.SessionID,
+      targetInfo,
+      waitingForDebugger: false,
+    });
+
+    await coordinator.done();
+
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            '/prerendered.html',
+            'prerender',
+            'Running',
+          ],
+        ],
+    );
+
+    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
+
+    assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+  });
+
+  it('filters preloading attempts by selected rule set', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    // ruleSetId:0.2
+    await emulator.addSpecRules(`
+{
+  "prefetch": [
+    {
+      "source": "list",
+      "urls": ["/subresource2.js"]
+    }
+  ]
+}
+`);
+    await emulator.addSpecRules(`
+{
+  "prerender": [
+    {
+      "source": "list",
+      "urls": ["/prerendered3.html"]
+    }
+  ]
+}
+`);
+    dispatchEvent(emulator.primaryTarget, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId: 'loaderId:1',
+      preloadingAttemptSources: [
+        {
+          key: {
+            loaderId: 'loaderId:1',
+            action: Protocol.Preload.SpeculationAction.Prefetch,
+            url: 'https://example.com/subresource2.js',
+          },
+          ruleSetIds: ['ruleSetId:0.2'],
+          nodeIds: [2, 3],
+        },
+        {
+          key: {
+            loaderId: 'loaderId:1',
+            action: Protocol.Preload.SpeculationAction.Prerender,
+            url: 'https://example.com/prerendered3.html',
+          },
+          ruleSetIds: ['ruleSetId:0.3'],
+          nodeIds: [3],
+        },
+      ],
+    });
+
+    await coordinator.done();
+
+    const ruleSetSelectorToolbarItem = view.getRuleSetSelectorToolbarItemForTest();
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All rule sets');
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            '/subresource2.js',
+            'prefetch',
+            'Running',
+          ],
+          [
+            '/prerendered3.html',
+            'prerender',
+            'Running',
+          ],
+        ],
+    );
+
+    // Turn on filtering.
+    view.selectRuleSetOnFilterForTest('ruleSetId:0.2' as Protocol.Preload.RuleSetId);
+
+    await coordinator.done();
+
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'Rule set: 2');
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            '/subresource2.js',
+            'prefetch',
+            'Running',
+          ],
+        ],
+    );
+
+    // Turn off filtering.
+    view.selectRuleSetOnFilterForTest(null);
+
+    await coordinator.done();
+
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All rule sets');
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            '/subresource2.js',
+            'prefetch',
+            'Running',
+          ],
+          [
+            '/prerendered3.html',
+            'prerender',
+            'Running',
+          ],
+        ],
+    );
+  });
+});
+
 describeWithMockConnection('PreloadingResultView', async () => {
   it('shows information of preloading of the last page', async () => {
     const emulator = new NavigationEmulator();
@@ -831,5 +894,79 @@ describeWithMockConnection('PreloadingResultView', async () => {
     assertShadowRoot(usedPreloadingComponent.shadowRoot);
 
     assert.include(usedPreloadingComponent.shadowRoot.textContent, 'This page was prerendered');
+  });
+});
+
+describeWithMockConnection('PreloadingWarningsView', async () => {
+  it('shows no warnings if holdback flags are disabled', async () => {
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: false,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: false,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: false,
+        },
+        []);
+  });
+
+  it('shows an warning if PreloadingHoldback enabled', async () => {
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: true,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: false,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: false,
+        },
+        ['Preloading was disabled, but is force-enabled now']);
+  });
+
+  it('shows two warnings if PreloadingHoldback and Prerender2Holdback enabled', async () => {
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: true,
+          featureFlagPrerender2Holdback: true,
+          disabledByPreference: false,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: false,
+        },
+        ['Preloading was disabled, but is force-enabled now', 'Prerendering was disabled, but is force-enabled now']);
+  });
+
+  it('shows an warning if PreloadEnabledState DisabledByPreference', async () => {
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: false,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: true,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: false,
+        },
+        ['Preloading is disabled']);
+  });
+
+  it('shows an warning if Preloading is disabled by DataSaver', async () => {
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: false,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: false,
+          disabledByDataSaver: true,
+          disabledByBatterySaver: false,
+        },
+        ['Preloading is disabled']);
+  });
+
+  it('shows an warning if Preloading is disabled by BatterySaver', async () => {
+    await testWarnings(
+        {
+          featureFlagPreloadingHoldback: false,
+          featureFlagPrerender2Holdback: false,
+          disabledByPreference: false,
+          disabledByDataSaver: false,
+          disabledByBatterySaver: true,
+        },
+        ['Preloading is disabled']);
   });
 });

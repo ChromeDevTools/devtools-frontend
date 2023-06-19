@@ -10,13 +10,17 @@ import type * as Platform from '../../core/platform/platform.js';
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {type ResourcesPanel} from './ResourcesPanel.js';
 
-import {PreloadingView, PreloadingResultView} from './preloading/PreloadingView.js';
+import {PreloadingRuleSetView, PreloadingAttemptView, PreloadingResultView} from './preloading/PreloadingView.js';
 
 const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  prefetchingAndPrerendering: 'Prefetching & Prerendering',
+  speculationRules: 'Speculation Rules',
+  /**
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
+  preloads: 'Preloads',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
@@ -27,25 +31,32 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type M = SDK.PreloadingModel.PreloadingModel;
 
-export class PreloadingTreeElement<V extends PreloadingView|PreloadingResultView> extends ApplicationPanelTreeElement {
+export class PreloadingTreeElement<V extends PreloadingRuleSetView|PreloadingAttemptView|PreloadingResultView> extends
+    ApplicationPanelTreeElement {
   private model?: M;
   private ctorV: {new(model: M): V};
   private view?: V;
+  private path: Platform.DevToolsPath.UrlString;
   #selectedInternal: boolean;
 
-  // TODO(https://crbug.com/1410709): Split this view into "SpeculationRules" and "Preload".
-  static newForPreloadingView(resourcesPanel: ResourcesPanel): PreloadingTreeElement<PreloadingView> {
-    return new PreloadingTreeElement(resourcesPanel, PreloadingView, i18nString(UIStrings.prefetchingAndPrerendering));
+  static newForPreloadingRuleSetView(resourcesPanel: ResourcesPanel): PreloadingTreeElement<PreloadingRuleSetView> {
+    return new PreloadingTreeElement(
+        resourcesPanel, PreloadingRuleSetView, 'rule-set', i18nString(UIStrings.speculationRules));
+  }
+
+  static newForPreloadingAttemptView(resourcesPanel: ResourcesPanel): PreloadingTreeElement<PreloadingAttemptView> {
+    return new PreloadingTreeElement(resourcesPanel, PreloadingAttemptView, 'attempt', i18nString(UIStrings.preloads));
   }
 
   static newForPreloadingResultView(resourcesPanel: ResourcesPanel): PreloadingTreeElement<PreloadingResultView> {
-    return new PreloadingTreeElement(resourcesPanel, PreloadingResultView, i18nString(UIStrings.thisPage));
+    return new PreloadingTreeElement(resourcesPanel, PreloadingResultView, 'result', i18nString(UIStrings.thisPage));
   }
 
-  constructor(resourcesPanel: ResourcesPanel, ctorV: {new(model: M): V}, title: string) {
+  constructor(resourcesPanel: ResourcesPanel, ctorV: {new(model: M): V}, path: string, title: string) {
     super(resourcesPanel, title, false);
 
     this.ctorV = ctorV;
+    this.path = 'preloading://{path}' as Platform.DevToolsPath.UrlString;
 
     const icon = UI.Icon.Icon.create('arrow-up-down', 'resource-tree-item');
     this.setLeadingIcons([icon]);
@@ -55,7 +66,7 @@ export class PreloadingTreeElement<V extends PreloadingView|PreloadingResultView
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'preloading://' as Platform.DevToolsPath.UrlString;
+    return this.path;
   }
 
   initialize(model: SDK.PreloadingModel.PreloadingModel): void {

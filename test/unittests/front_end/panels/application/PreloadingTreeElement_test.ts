@@ -21,12 +21,13 @@ describeWithMockConnection('PreloadingTreeElement', () => {
     const panel = {
       showView: spy,
     } as unknown as Resources.ResourcesPanel.ResourcesPanel;
-    const preloadingTreeElement = Application.PreloadingTreeElement.PreloadingTreeElement.newForPreloadingView(panel);
+    const preloadingRuleSetTreeElement =
+        Application.PreloadingTreeElement.PreloadingTreeElement.newForPreloadingRuleSetView(panel);
 
-    preloadingTreeElement.onselect(false);
+    preloadingRuleSetTreeElement.onselect(false);
     assert.isTrue(spy.notCalled);
 
-    preloadingTreeElement.initialize(model);
+    preloadingRuleSetTreeElement.initialize(model);
     assert.isTrue(spy.calledOnce);
   });
 });

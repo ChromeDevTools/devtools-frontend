@@ -808,7 +808,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     const hasScreenshots = Boolean(this.#filmStripModel && this.#filmStripModel.hasFrames());
     this.framesHeader.collapsible = hasScreenshots;
-    this.appendHeader(i18nString(UIStrings.frames), this.framesHeader, false /* selectable */);
+    const expanded = Root.Runtime.Runtime.queryParam('flamechart-force-expand') === 'frames';
+
+    this.appendHeader(i18nString(UIStrings.frames), this.framesHeader, false /* selectable */, expanded);
 
     this.entryTypeByLevel[this.currentLevel] = EntryType.Frame;
     for (const frame of this.legacyPerformanceModel.frames()) {

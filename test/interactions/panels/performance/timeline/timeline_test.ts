@@ -50,4 +50,11 @@ describe('Performance panel', () => {
     const panel = await waitFor('body');
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png', 2);
   });
+
+  itScreenshot('renders screenshots in the frames track', async () => {
+    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev&flamechart-force-expand=frames');
+    await waitFor('.timeline-flamechart');
+    const panel = await waitFor('body');
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-screenshot-frames.png', 2);
+  });
 });

@@ -260,3 +260,12 @@ export function assertNodeTextContent(component: NodeText.NodeText.NodeText, exp
   const content = Array.from(component.shadowRoot.querySelectorAll('span')).map(span => span.textContent).join('');
   assert.strictEqual(content, expectedContent);
 }
+
+export function querySelectorErrorOnMissing<T extends HTMLElement = HTMLElement>(
+    parent: HTMLElement, selector: string): T {
+  const elem = parent.querySelector<T>(selector);
+  if (!elem) {
+    throw new Error(`Expected element with selector ${selector} not found.`);
+  }
+  return elem;
+}

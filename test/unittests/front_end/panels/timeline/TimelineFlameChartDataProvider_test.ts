@@ -2,7 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
@@ -83,6 +87,50 @@ describeWithEnvironment('TimelineFlameChartDataProvider', () => {
         'Pointer',  // The interaction event in the Interactions track for the pointer event.
         'Task',     // The Long task that was caused by the pointer and contributed to the long time.
       ]);
+    });
+  });
+
+  describe('ignoring frames', () => {
+    it('removes entries from the data that match the ignored URL', async () => {
+      Root.Runtime.experiments.enableForTest('ignoreListJSFramesOnTimeline');
+
+      const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+
+      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+        forceNew: true,
+        resourceMapping,
+        targetManager,
+      });
+
+      const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({
+        forceNew: true,
+        debuggerWorkspaceBinding,
+      });
+
+      const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+      const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile('react-hello-world.json.gz');
+      dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
+
+      const eventCountBeforeIgnoreList = dataProvider.timelineData().entryStartTimes.length;
+
+      const SCRIPT_TO_IGNORE =
+          'https://unpkg.com/react@18.2.0/umd/react.development.js' as Platform.DevToolsPath.UrlString;
+      // Clear the data provider cache and add the React script to the ignore list.
+      dataProvider.reset();
+      ignoreListManager.ignoreListURL(SCRIPT_TO_IGNORE);
+
+      const eventCountAfterIgnoreList = dataProvider.timelineData().entryStartTimes.length;
+      // Ensure that the amount of events we show on the flame chart is less
+      // than before, now we have added the React URL to the ignore list.
+      assert.isBelow(eventCountAfterIgnoreList, eventCountBeforeIgnoreList);
+
+      // Clear the data provider cache and unignore the script again
+      dataProvider.reset();
+      ignoreListManager.unIgnoreListURL(SCRIPT_TO_IGNORE);
+      // Ensure that now we have un-ignored the URL that we get the full set of events again.
+      assert.strictEqual(dataProvider.timelineData().entryStartTimes.length, eventCountBeforeIgnoreList);
     });
   });
 });

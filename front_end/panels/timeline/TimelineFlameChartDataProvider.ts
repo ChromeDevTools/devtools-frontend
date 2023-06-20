@@ -757,7 +757,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return group;
   }
 
-  private isIgnoreListedEvent(event: SDK.TracingModel.Event): boolean {
+  isIgnoreListedEvent(event: SDK.TracingModel.Event): boolean {
     if (!TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
       return false;
     }

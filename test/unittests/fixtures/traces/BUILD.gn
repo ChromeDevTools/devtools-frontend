@@ -32,6 +32,7 @@ copy_to_gen("traces") {
     "nested-interactions.json.gz",
     "node-fibonacci-website.cpuprofile.gz",
     "one-second-interaction.json.gz",
+    "react-hello-world.json.gz",
     "recursive-blocking-js.json.gz",
     "recursive-counting-js.json.gz",
     "redirects-subresource-multiple.json.gz",

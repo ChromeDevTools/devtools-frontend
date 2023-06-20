@@ -38,3 +38,7 @@
 .padded.double {
   margin-left: 4em;
 }
+
+.colorBlue {
+  color: var(--color-syntax-3);
+}

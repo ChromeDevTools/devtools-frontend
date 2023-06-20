@@ -48,11 +48,19 @@ def parse_options(cli_args):
         dest='no_failure_screenshots_file',
         action='store_true',
         help='Does not save screenshots to failure_screenshots.html.')
+    parser.add_argument('--no-color',
+                        dest='no_color',
+                        action='store_true',
+                        help='Prints results without color.')
+    parser.add_argument('--no-indent',
+                        dest='no_indent',
+                        action='store_true',
+                        help='Prints results without indentation.')
     return parser.parse_args(cli_args)
 
 
 class ColoredPrint:
-    def __init__(self):
+    def __init__(self, no_color):
         self.color_codes = {
             'no_color': '0',
             'red': '0;31',
@@ -63,17 +71,18 @@ class ColoredPrint:
             'gray': '0;37',
             'white': '1;37',
         }
+        self.no_color = no_color
 
         if os.popen('tput colors').read().strip() == '256':
             self.supports_color = True
         else:
             self.supports_color = False
 
-    def cprint(self, text, color='no_color'):
-        if self.supports_color:
-            print(f'\033[{self.color_codes[color]}m {text} \033[0m')
+    def cprint(self, text, color='no_color', end='\n'):
+        if self.supports_color and not self.no_color:
+            print(f'\033[{self.color_codes[color]}m {text} \033[0m', end=end)
         else:
-            print(text)
+            print(text, end=end)
 
 
 def merge_files(file_path_list, new_file_path):
@@ -115,6 +124,8 @@ if __name__ == '__main__':
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT))
 
+    cprint = ColoredPrint(args.no_color).cprint
+
     start_time = time.time()
 
     while None in [p.poll() for p in processes]:
@@ -122,7 +133,22 @@ if __name__ == '__main__':
             line = processes[i].stdout.readline()
             if line:
                 results_log_files[i].write(line)
-                print(line.decode("utf-8"), end='')
+                decoded_line = line.decode("utf-8")
+                try:
+                    json_line = json.loads(decoded_line)
+                    formatted_line = json_line
+                    if not args.no_indent:
+                        formatted_line = json.dumps(json_line, indent=2)
+                    if 'pass' in json_line:
+                        cprint(formatted_line, color='green')
+                    elif 'fail' in json_line:
+                        cprint(formatted_line, color='red')
+                    elif 'end' in json_line:
+                        cprint(formatted_line, color='yellow')
+                    else:
+                        cprint(json_line)
+                except ValueError as e:
+                    cprint(decoded_line, end='')
 
     for f in results_log_files:
         f.close()
@@ -148,18 +174,16 @@ if __name__ == '__main__':
     for tf in results_log_files:
         tf.close()
 
-    colored_print = ColoredPrint()
-
     print('\n\nFailed tests:')
     for f in failed_tests:
         print(json.dumps(f, indent=2))
         print()
 
     print()
-    colored_print.cprint(f'Total tests: {tests}', 'yellow')
-    colored_print.cprint(f'Passed: {passes}', 'green')
-    colored_print.cprint(f'Pending: {pending}', 'blue')
-    colored_print.cprint(f'Failures: {failures}', 'red')
+    cprint(f'Total tests: {tests}', 'yellow')
+    cprint(f'Passed: {passes}', 'green')
+    cprint(f'Pending: {pending}', 'blue')
+    cprint(f'Failures: {failures}', 'red')
     print()
 
     if not args.no_failure_screenshots_file and failed_tests:
@@ -168,11 +192,11 @@ if __name__ == '__main__':
             for i in range(len(commands))
         ], f'{devtools_paths.devtools_root_path()}/out/failure_screenshots.html'
                     )
-        colored_print.cprint(
+        cprint(
             f'Failure screenshots: {devtools_paths.devtools_root_path()}/out/failure_screenshots.html',
             'white')
         print()
 
-    colored_print.cprint(
+    cprint(
         'Run Time: ' + str(round(
             (time.time() - start_time) / 60, 2)) + ' minutes', 'white')

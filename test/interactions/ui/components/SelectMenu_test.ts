@@ -195,7 +195,6 @@ describe('SelectMenu', () => {
     // Focus the second select menu, which deploys upwards and open it using the
     // up arrow key.
     await frontend.keyboard.press('Tab');
-    await frontend.keyboard.press('Tab');
     await frontend.keyboard.press('ArrowUp');
     await waitFor('dialog[open]');
   });
@@ -203,7 +202,6 @@ describe('SelectMenu', () => {
   it('can close a menu with ESC and open it again using the keyboard', async () => {
     const {frontend} = getBrowserAndPages();
     await loadComponentDocExample('select_menu/basic.html');
-
     // Focus the first select menu, which deploys downwards and open it using the
     // down arrow key.
     await frontend.keyboard.press('Tab');
@@ -214,7 +212,6 @@ describe('SelectMenu', () => {
     await frontend.keyboard.press('Escape');
     await waitFor('dialog:not([open])', placeHolder1);
 
-    await frontend.keyboard.press('Tab');
     // Wait until the focus is set on the button that opens the menu.
     await waitForFunction(async () => {
       const activeElementHandle = await activeElement();

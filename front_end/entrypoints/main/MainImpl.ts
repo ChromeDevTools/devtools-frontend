@@ -424,6 +424,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
       Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING,
       Root.Runtime.ExperimentName.HEADER_OVERRIDES,
+      Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
     ]);
 
     Root.Runtime.experiments.setNonConfigurableExperiments([

@@ -397,6 +397,11 @@ declare namespace ProtocolProxyApi {
      */
     invoke_trigger(params: Protocol.Autofill.TriggerRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Set addresses so that developers can verify their forms implementation.
+     */
+    invoke_setAddresses(params: Protocol.Autofill.SetAddressesRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface AutofillDispatcher {
   }

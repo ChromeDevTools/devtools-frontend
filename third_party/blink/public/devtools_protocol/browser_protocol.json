@@ -2006,6 +2006,36 @@
                             "type": "string"
                         }
                     ]
+                },
+                {
+                    "id": "AddressField",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "address field name, for example GIVEN_NAME.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "value",
+                            "description": "address field name, for example Jon Doe.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "Address",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "fields",
+                            "description": "fields and values defining a test address.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AddressField"
+                            }
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -2028,6 +2058,19 @@
                             "name": "card",
                             "description": "Credit card information to fill out the form. Credit card data is not saved.",
                             "$ref": "CreditCard"
+                        }
+                    ]
+                },
+                {
+                    "name": "setAddresses",
+                    "description": "Set addresses so that developers can verify their forms implementation.",
+                    "parameters": [
+                        {
+                            "name": "addresses",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Address"
+                            }
                         }
                     ]
                 }
@@ -16647,6 +16690,9 @@
                         "IndexedDBEvent",
                         "Dummy",
                         "JsNetworkRequestReceivedCacheControlNoStoreResource",
+                        "WebRTCSticky",
+                        "WebTransportSticky",
+                        "WebSocketSticky",
                         "ContentSecurityHandler",
                         "ContentWebAuthenticationAPI",
                         "ContentFileChooser",

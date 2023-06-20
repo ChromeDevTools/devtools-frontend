@@ -917,6 +917,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Set addresses so that developers can verify their forms implementation.
+     */
+    'Autofill.setAddresses': {
+      paramsType: [Protocol.Autofill.SetAddressesRequest];
+      returnType: void;
+    };
+    /**
      * Enables event updates for the service.
      */
     'BackgroundService.startObserving': {

@@ -487,11 +487,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   private reset(): void {
     this.clearTimeline();
-    if (this.#allPaused) {
-      this.togglePauseAll();
-    } else {
-      this.setPlaybackRate(this.#playbackRate);
-    }
+    this.setPlaybackRate(this.#playbackRate);
 
     for (const group of this.#groupBuffer) {
       group.release();

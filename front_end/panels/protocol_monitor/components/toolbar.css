@@ -1,0 +1,19 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 5px;
+  padding-right: 10px;
+  padding-top: 1px;
+  height: 27px;
+  background-color: var(--color-background);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid var(--color-button-secondary-border);
+}

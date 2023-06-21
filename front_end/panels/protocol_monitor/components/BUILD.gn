@@ -7,11 +7,17 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/generate_css.gni")
 
 generate_css("css_files") {
-  sources = [ "JSONEditor.css" ]
+  sources = [
+    "JSONEditor.css",
+    "toolbar.css",
+  ]
 }
 
 devtools_module("components") {
-  sources = [ "JSONEditor.ts" ]
+  sources = [
+    "JSONEditor.ts",
+    "Toolbar.ts",
+  ]
 
   deps = [
     "../../../ui/lit-html:bundle",

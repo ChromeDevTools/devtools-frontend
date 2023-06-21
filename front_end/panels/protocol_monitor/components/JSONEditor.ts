@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import '../../recorder/components/components.js';
 
+import * as Host from '../../../core/host/host.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as RecorderComponents from '../../recorder/components/components.js';
 
@@ -62,6 +63,18 @@ export class JSONEditor extends LitElement {
         }));
       }
     });
+  }
+
+  #copyToClipboard(): void {
+    const commandJson = JSON.stringify({command: this.command, parameters: this.getParameters()});
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(commandJson);
+  }
+
+  #handleCommandSend(): void {
+    this.dispatchEvent(new SubmitEditorEvent({
+      command: this.command,
+      parameters: this.getParameters(),
+    }));
   }
 
   getParameters(): {[x: string]: unknown} {
@@ -185,6 +198,7 @@ export class JSONEditor extends LitElement {
           ${this.#renderParameterRow()}
           ${this.#renderParameters(this.parameters)}
         ` : nothing}
+      <devtools-pm-toolbar @copycommand=${this.#copyToClipboard} @commandsent=${this.#handleCommandSend}></devtools-pm-toolbar>
     </div>`;
     // clang-format on
   }

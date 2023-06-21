@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../generated/protocol.js';
 import type * as TraceEngine from '../../models/trace/trace.js';
 /**
  * Generates a JSON representation of an array of objects with the objects
@@ -48,4 +49,11 @@ export function*
   yield* arrayOfObjectsJsonGenerator(traceEvents);
   yield `,\n"metadata": ${JSON.stringify(metadata || {}, null, 2)}`;
   yield '}\n';
+}
+
+/**
+ * Generates a JSON representation of CPU profile.
+ */
+export function cpuprofileJsonGenerator(cpuprofile: Protocol.Profiler.Profile): string {
+  return JSON.stringify(cpuprofile);
 }

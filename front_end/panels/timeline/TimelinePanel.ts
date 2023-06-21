@@ -69,7 +69,7 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {traceJsonGenerator} from './SaveFileFormatter.js';
+import {traceJsonGenerator, cpuprofileJsonGenerator} from './SaveFileFormatter.js';
 
 import {TimelineSelection} from './TimelineSelection.js';
 
@@ -682,8 +682,29 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         suggestedName: fileName,
       });
       const encoder = new TextEncoder();
-      const formattedTraceIter = traceJsonGenerator(traceEvents, metadata);
-      const traceAsString = Array.from(formattedTraceIter).join('');
+
+      // TODO(crbug.com/1456818): Extract this logic and add more tests.
+      let traceAsString;
+      if (isNode) {
+        const profileEvent = traceEvents.find(e => e.name === 'CpuProfile');
+        if (!profileEvent || !profileEvent.args?.data) {
+          return;
+        }
+        const profileEventData = profileEvent.args?.data;
+        if (profileEventData.hasOwnProperty('cpuProfile')) {
+          // TODO(crbug.com/1456799): Currently use a hack way because we can't differentiate
+          // cpuprofile from trace events when loading a file.
+          // The loader will directly add the fake trace created from CpuProfile to the tracingModel.
+          // And there is where the old saving logic saves the cpuprofile.
+          // This will be solved when the CPUProfileHandler is done. Then we can directly get it
+          // from the new traceEngine
+          const profile = (profileEventData as {cpuProfile: Protocol.Profiler.Profile}).cpuProfile;
+          traceAsString = cpuprofileJsonGenerator(profile as Protocol.Profiler.Profile);
+        }
+      } else {
+        const formattedTraceIter = traceJsonGenerator(traceEvents, metadata);
+        traceAsString = Array.from(formattedTraceIter).join('');
+      }
       const buffer = encoder.encode(traceAsString);
       const writable = await handler.createWritable();
       await writable.write(buffer);

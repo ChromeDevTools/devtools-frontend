@@ -14,8 +14,7 @@ describeWithEnvironment('FilmStripView', () => {
   async function renderView(filmStripModel: SDK.FilmStripModel.FilmStripModel):
       Promise<PerfUI.FilmStripView.FilmStripView> {
     const filmStrip = new PerfUI.FilmStripView.FilmStripView();
-    filmStrip.setModel(filmStripModel, filmStripModel.zeroTime(), filmStripModel.spanTime());
-    filmStrip.setMode(PerfUI.FilmStripView.Modes.FrameBased);
+    filmStrip.setModel(filmStripModel, filmStripModel.zeroTime());
     const container = document.createElement('div');
     renderElementIntoDOM(container);
     filmStrip.markAsRoot();

@@ -502,8 +502,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
     const calculator = this.networkLogView.timeCalculator();
     if (this.filmStripView) {
-      this.filmStripView.setModel(
-          filmStripModel, calculator.minimumBoundary() * 1000, calculator.boundarySpan() * 1000);
+      this.filmStripView.setModel(filmStripModel, calculator.minimumBoundary() * 1000);
     }
     const timestamps = filmStripModel.frames().map(mapTimestamp);
 
@@ -570,7 +569,6 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     const toggled = this.networkRecordFilmStripSetting.get();
     if (toggled && !this.filmStripRecorder) {
       this.filmStripView = new PerfUI.FilmStripView.FilmStripView();
-      this.filmStripView.setMode(PerfUI.FilmStripView.Modes.FrameBased);
       this.filmStripView.element.classList.add('network-film-strip');
       this.filmStripRecorder = new FilmStripRecorder(this.networkLogView.timeCalculator(), this.filmStripView);
       this.filmStripView.show(this.filmStripPlaceholderElement);

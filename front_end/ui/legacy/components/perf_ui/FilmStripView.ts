@@ -39,9 +39,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(UI.Widget.HBox) {
   private statusLabel: HTMLElement;
   private zeroTime!: number;
-  private spanTime!: number;
   private model!: SDK.FilmStripModel.FilmStripModel;
-  private mode?: string;
 
   constructor() {
     super(true);
@@ -49,7 +47,6 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.contentElement.classList.add('film-strip-view');
     this.statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();
-    this.setMode(Modes.TimeBased);
   }
 
   static setImageData(imageElement: HTMLImageElement, data: string|null): void {
@@ -58,16 +55,9 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
   }
 
-  setMode(mode: string): void {
-    this.mode = mode;
-    this.contentElement.classList.toggle('time-based', mode === Modes.TimeBased);
-    this.update();
-  }
-
-  setModel(filmStripModel: SDK.FilmStripModel.FilmStripModel, zeroTime: number, spanTime: number): void {
+  setModel(filmStripModel: SDK.FilmStripModel.FilmStripModel, zeroTime: number): void {
     this.model = filmStripModel;
     this.zeroTime = zeroTime;
-    this.spanTime = spanTime;
     const frames = filmStripModel.frames();
     if (!frames.length) {
       this.reset();
@@ -126,47 +116,13 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return;
     }
 
-    if (this.mode === Modes.FrameBased) {
-      void Promise.all(frames.map(this.createFrameElement.bind(this))).then(appendElements.bind(this));
-      return;
-    }
-
-    const width = this.contentElement.clientWidth;
-    const scale = this.spanTime / width;
-    void this.createFrameElement(frames[0]).then(
-        continueWhenFrameImageLoaded.bind(this));  // Calculate frame width basing on the first frame.
-
-    function continueWhenFrameImageLoaded(this: FilmStripView, element0: Element): void {
-      const frameWidth = Math.ceil(UI.UIUtils.measurePreferredSize(element0, this.contentElement).width);
-      if (!frameWidth) {
-        return;
-      }
-
-      const promises = [];
-      for (let pos = frameWidth; pos < width; pos += frameWidth) {
-        const time = pos * scale + this.zeroTime;
-        promises.push(this.createFrameElement(this.frameByTime(time)).then(fixWidth));
-      }
-      void Promise.all(promises).then(appendElements.bind(this));
-      function fixWidth(element: Element): Element {
-        (element as HTMLElement).style.width = frameWidth + 'px';
-        return element;
-      }
-    }
-
     function appendElements(this: FilmStripView, elements: Element[]): void {
       this.contentElement.removeChildren();
       for (let i = 0; i < elements.length; ++i) {
         this.contentElement.appendChild(elements[i]);
       }
     }
-  }
-
-  override onResize(): void {
-    if (this.mode === Modes.FrameBased) {
-      return;
-    }
-    this.update();
+    void Promise.all(frames.map(this.createFrameElement.bind(this))).then(appendElements.bind(this));
   }
 
   private onMouseEvent(eventName: string|symbol, timestamp: number): void {
@@ -202,11 +158,6 @@ export type EventTypes = {
   [Events.FrameSelected]: number,
   [Events.FrameEnter]: number,
   [Events.FrameExit]: number,
-};
-
-export const Modes = {
-  TimeBased: 'TimeBased',
-  FrameBased: 'FrameBased',
 };
 
 export class Dialog {

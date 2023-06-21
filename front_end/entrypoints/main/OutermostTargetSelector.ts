@@ -184,7 +184,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
     const title =
         item ? i18nString(UIStrings.targetS, {PH1: this.titleFor(item)}) : i18nString(UIStrings.targetNotSelected);
     this.#toolbarItem.setTitle(title);
-    if (item) {
+    if (item && item !== UI.Context.Context.instance().flavor(SDK.Target.Target)?.outermostTarget()) {
       UI.Context.Context.instance().setFlavor(SDK.Target.Target, item);
     }
   }

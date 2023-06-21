@@ -25,7 +25,6 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   private requestsList!: SDK.NetworkRequest.NetworkRequest[];
   private requestsSet!: Set<SDK.NetworkRequest.NetworkRequest>;
   private span!: number;
-  private filmStripModel?: SDK.FilmStripModel.FilmStripModel|null;
   private lastBoundary?: NetworkTimeBoundary|null;
 
   constructor() {
@@ -48,11 +47,6 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
 
   setHighlightedRequest(request: SDK.NetworkRequest.NetworkRequest|null): void {
     this.highlightedRequest = request;
-    this.scheduleUpdate();
-  }
-
-  setFilmStripModel(filmStripModel: SDK.FilmStripModel.FilmStripModel|null): void {
-    this.filmStripModel = filmStripModel;
     this.scheduleUpdate();
   }
 
@@ -123,8 +117,6 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
   }
 
   override reset(): void {
-    this.filmStripModel = null;
-
     this.span = 1;
     this.lastBoundary = null;
     this.nextBand = 0;

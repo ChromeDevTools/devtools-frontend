@@ -505,7 +505,6 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       this.filmStripView.setModel(
           filmStripModel, calculator.minimumBoundary() * 1000, calculator.boundarySpan() * 1000);
     }
-    this.networkOverview.setFilmStripModel(filmStripModel);
     const timestamps = filmStripModel.frames().map(mapTimestamp);
 
     function mapTimestamp(frame: SDK.FilmStripModel.Frame): number {

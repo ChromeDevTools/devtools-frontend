@@ -16,8 +16,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', () => {
   describe('groupTreeEvents', () => {
     it('returns the correct events for tree views given a flame chart group', async () => {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile('sync-like-timings.json.gz');
-      dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
+      const {traceParsedData, performanceModel} = await allModelsFromFile('sync-like-timings.json.gz');
+      dataProvider.setModel(performanceModel, traceParsedData);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
       if (!timingsTrackGroup) {
         assert.fail('Could not find Timings track flame chart group');
@@ -35,8 +35,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', () => {
 
     it('filters out async events if they cannot be added to the tree', async () => {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile('timings-track.json.gz');
-      dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
+      const {traceParsedData, performanceModel} = await allModelsFromFile('timings-track.json.gz');
+      dataProvider.setModel(performanceModel, traceParsedData);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
       if (!timingsTrackGroup) {
         assert.fail('Could not find Timings track flame chart group');
@@ -50,8 +50,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', () => {
 
     it('returns data from the old engine if necessary', async () => {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile('timings-track.json.gz');
-      dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
+      const {traceParsedData, performanceModel} = await allModelsFromFile('timings-track.json.gz');
+      dataProvider.setModel(performanceModel, traceParsedData);
       const mainTrack = dataProvider.timelineData().groups.find(g => g.name.includes('Main'));
       if (!mainTrack) {
         assert.fail('Could not find Main track flame chart group');
@@ -59,35 +59,58 @@ describeWithEnvironment('TimelineFlameChartDataProvider', () => {
       const groupTreeEvents = dataProvider.groupTreeEvents(mainTrack);
       assert.strictEqual(groupTreeEvents?.length, 28995);
     });
+  });
 
-    it('adds candy stripe decorations to long tasks in the main thread', async () => {
-      const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel, filmStripModel} =
-          await allModelsFromFile('one-second-interaction.json.gz');
-      dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
+  it('adds candy stripe decorations to long tasks in the main thread', async () => {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const {traceParsedData, performanceModel} = await allModelsFromFile('one-second-interaction.json.gz');
+    dataProvider.setModel(performanceModel, traceParsedData);
 
-      const {entryDecorations} = dataProvider.timelineData();
+    const {entryDecorations} = dataProvider.timelineData();
 
-      const definedDecorationIndexes: number[] = [];
-      entryDecorations.forEach((decorationsForEvent, index) => {
-        if (decorationsForEvent && decorationsForEvent.length > 0) {
-          definedDecorationIndexes.push(index);
-        }
-      });
-
-      // Expect two decorations: the striping on the interaction, and the
-      // striping on the long task.
-      assert.lengthOf(definedDecorationIndexes, 2);
-
-      const titles = definedDecorationIndexes.map(index => {
-        return dataProvider.entryTitle(index);
-      });
-
-      assert.deepEqual(titles, [
-        'Pointer',  // The interaction event in the Interactions track for the pointer event.
-        'Task',     // The Long task that was caused by the pointer and contributed to the long time.
-      ]);
+    const definedDecorationIndexes: number[] = [];
+    entryDecorations.forEach((decorationsForEvent, index) => {
+      if (decorationsForEvent && decorationsForEvent.length > 0) {
+        definedDecorationIndexes.push(index);
+      }
     });
+
+    // Expect two decorations: the striping on the interaction, and the
+    // striping on the long task.
+    assert.lengthOf(definedDecorationIndexes, 2);
+
+    const titles = definedDecorationIndexes.map(index => {
+      return dataProvider.entryTitle(index);
+    });
+
+    assert.deepEqual(titles, [
+      'Pointer',  // The interaction event in the Interactions track for the pointer event.
+      'Task',     // The Long task that was caused by the pointer and contributed to the long time.
+    ]);
+  });
+
+  it('populates the frames track with frames and screenshots', async () => {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const {traceParsedData, performanceModel} = await allModelsFromFile('web-dev.json.gz');
+    dataProvider.setModel(performanceModel, traceParsedData);
+    const framesTrack = dataProvider.timelineData().groups.find(g => {
+      return g.name.includes('Frames');
+    });
+    if (!framesTrack) {
+      throw new Error('Could not find expected Frames track');
+    }
+    const framesLevel = framesTrack.startLevel;
+    const screenshotsLevel = framesLevel + 1;
+    // The frames track first shows the frames, and then shows screenhots just below it.
+    assert.strictEqual(
+        dataProvider.getEntryTypeForLevel(framesLevel), Timeline.TimelineFlameChartDataProvider.EntryType.Frame);
+    assert.strictEqual(
+        dataProvider.getEntryTypeForLevel(screenshotsLevel),
+        Timeline.TimelineFlameChartDataProvider.EntryType.Screenshot);
+
+    // There are 5 screenshots in this trace, so we expect there to be 5 events on the screenshots track level.
+    const eventsOnScreenshotsLevel = dataProvider.timelineData().entryLevels.filter(e => e === screenshotsLevel);
+    assert.lengthOf(eventsOnScreenshotsLevel, 5);
   });
 
   describe('ignoring frames', () => {
@@ -110,8 +133,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', () => {
       });
 
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile('react-hello-world.json.gz');
-      dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
+      const {traceParsedData, performanceModel} = await allModelsFromFile('react-hello-world.json.gz');
+      dataProvider.setModel(performanceModel, traceParsedData);
 
       const eventCountBeforeIgnoreList = dataProvider.timelineData().entryStartTimes.length;
 

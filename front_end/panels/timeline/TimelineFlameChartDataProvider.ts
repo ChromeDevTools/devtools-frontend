@@ -152,7 +152,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private compatibilityTracksAppender: CompatibilityTracksAppender|null;
   private legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl|null;
   private traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null;
-  #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
   /**
    * Raster threads are tracked and enumerated with this property. This is also
    * used to group all raster threads together in the same track, instead of
@@ -171,7 +170,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private readonly flowEventIndexById: Map<string, number>;
   private entryData!: TimelineFlameChartEntry[];
   private entryTypeByLevel!: EntryType[];
-  private screenshotImageCache!: Map<SDK.FilmStripModel.Frame, HTMLImageElement|null>;
+  private screenshotImageCache!: Map<TraceEngine.Types.TraceEvents.TraceEventSnapshot, HTMLImageElement|null>;
   private entryIndexToTitle!: string[];
   private asyncColorByCategory!: Map<TimelineCategory, string>;
   private lastInitiatorEntry!: number;
@@ -236,13 +235,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   setModel(
-      performanceModel: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null,
-      filmStripModel: SDK.FilmStripModel.FilmStripModel|null): void {
+      performanceModel: PerformanceModel|null,
+      newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null): void {
     this.reset();
     this.legacyPerformanceModel = performanceModel;
     this.legacyTimelineModel = performanceModel && performanceModel.timelineModel();
     this.traceEngineData = newTraceEngineData;
-    this.#filmStripModel = filmStripModel;
     if (this.legacyTimelineModel) {
       this.minimumBoundaryInternal = this.legacyTimelineModel.minimumRecordTime();
       this.timeSpan = this.legacyTimelineModel.isEmpty() ?
@@ -802,11 +800,26 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return group;
   }
 
+  getEntryTypeForLevel(level: number): EntryType {
+    return this.entryTypeByLevel[level];
+  }
+
   private appendFrames(): void {
-    if (!this.legacyPerformanceModel || !this.timelineDataInternal || !this.legacyTimelineModel) {
+    if (!this.legacyPerformanceModel || !this.timelineDataInternal || !this.legacyTimelineModel ||
+        !this.traceEngineData) {
       return;
     }
-    const hasScreenshots = Boolean(this.#filmStripModel && this.#filmStripModel.hasFrames());
+
+    // TODO: Long term we want to move both the Frames track and the screenshots
+    // track into the TrackAppender system. However right now the frames track
+    // expects data in a different form to how the new engine parses frame
+    // information. Therefore we have migrated the screenshots to use the new
+    // data model in place without creating a new TrackAppender. When we can
+    // migrate the frames track to the new appender system, we can migrate the
+    // screnshots then as well.
+    const filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(this.traceEngineData);
+    const hasScreenshots = filmStrip.frames.length > 0;
+
     this.framesHeader.collapsible = hasScreenshots;
     const expanded = Root.Runtime.Runtime.queryParam('flamechart-force-expand') === 'frames';
 
@@ -818,23 +831,33 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     ++this.currentLevel;
 
-    if (!this.#filmStripModel || !hasScreenshots) {
+    if (!hasScreenshots) {
+      return;
+    }
+    this.#appendScreenshots(filmStrip);
+  }
+
+  #appendScreenshots(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData): void {
+    if (!this.timelineDataInternal || !this.legacyTimelineModel) {
       return;
     }
     this.appendHeader('', this.screenshotsHeader, false /* selectable */);
     this.entryTypeByLevel[this.currentLevel] = EntryType.Screenshot;
-    let prevTimestamp: number|undefined;
-    const screenshots = this.#filmStripModel.frames();
-    for (const screenshot of screenshots) {
-      this.entryData.push(screenshot);
+    let prevTimestamp: TraceEngine.Types.Timing.MilliSeconds|undefined = undefined;
+
+    for (const filmStripFrame of filmStrip.frames) {
+      const screenshotTimeInMilliSeconds =
+          TraceEngine.Helpers.Timing.microSecondsToMilliseconds(filmStripFrame.screenshotEvent.ts);
+      this.entryData.push(filmStripFrame.screenshotEvent);
       (this.timelineDataInternal.entryLevels as number[]).push(this.currentLevel);
-      (this.timelineDataInternal.entryStartTimes as number[]).push(screenshot.timestamp);
+      (this.timelineDataInternal.entryStartTimes as number[]).push(screenshotTimeInMilliSeconds);
       if (prevTimestamp) {
-        (this.timelineDataInternal.entryTotalTimes as number[]).push(screenshot.timestamp - prevTimestamp);
+        (this.timelineDataInternal.entryTotalTimes as number[]).push(screenshotTimeInMilliSeconds - prevTimestamp);
       }
-      prevTimestamp = screenshot.timestamp;
+      prevTimestamp = screenshotTimeInMilliSeconds;
     }
-    if (screenshots.length && prevTimestamp !== undefined) {
+    if (filmStrip.frames.length && prevTimestamp !== undefined) {
+      // Set the total time of the final screenshot so it takes up the remainder of the trace.
       (this.timelineDataInternal.entryTotalTimes as number[])
           .push(this.legacyTimelineModel.maximumRecordTime() - prevTimestamp);
     }
@@ -1060,10 +1083,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private async drawScreenshot(
       entryIndex: number, context: CanvasRenderingContext2D, barX: number, barY: number, barWidth: number,
       barHeight: number): Promise<void> {
-    const screenshot = (this.entryData[entryIndex] as SDK.FilmStripModel.Frame);
+    const screenshot = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventSnapshot);
     if (!this.screenshotImageCache.has(screenshot)) {
       this.screenshotImageCache.set(screenshot, null);
-      const data = await screenshot.imageDataPromise();
+      const data = screenshot.args.snapshot;
       const image = await UI.UIUtils.loadImageFromData(data);
       this.screenshotImageCache.set(screenshot, image);
       this.dispatchEventToListeners(Events.DataChanged);
@@ -1094,19 +1117,18 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       barWidth: number, barHeight: number, _unclippedBarX: number, _timeToPixels: number): boolean {
     const data = this.entryData[entryIndex];
     const entryType = this.entryType(entryIndex);
-    const entryTypes = EntryType;
 
-    if (entryType === entryTypes.Frame) {
+    if (entryType === EntryType.Frame) {
       this.drawFrame(entryIndex, context, text, barX, barY, barWidth, barHeight);
       return true;
     }
 
-    if (entryType === entryTypes.Screenshot) {
+    if (entryType === EntryType.Screenshot) {
       void this.drawScreenshot(entryIndex, context, barX, barY, barWidth, barHeight);
       return true;
     }
 
-    if (entryType === entryTypes.Event) {
+    if (entryType === EntryType.Event) {
       const event = (data as SDK.TracingModel.Event);
       if (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning) {
         this.#addDecorationToEvent(entryIndex, {type: 'WARNING_TRIANGLE'});

@@ -205,7 +205,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.model = model;
     this.#selectedEvents = null;
-    this.mainDataProvider.setModel(this.model, newTraceEngineData, filmStripModel);
+    this.mainDataProvider.setModel(this.model, newTraceEngineData);
     this.networkDataProvider.setModel(this.model, newTraceEngineData);
     if (this.model) {
       this.eventListeners = [

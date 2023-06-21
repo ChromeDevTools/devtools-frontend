@@ -184,12 +184,12 @@ export async function getMainFlameChartWithTracks(
 }> {
   await initializeGlobalVars();
 
-  const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile(traceFileName);
+  const {traceParsedData, performanceModel} = await allModelsFromFile(traceFileName);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   // The data provider still needs a reference to the legacy model to
   // work properly.
-  dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
+  dataProvider.setModel(performanceModel, traceParsedData);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
   dataProvider.buildFromTrackAppenders(/* expandedTracks?= */ expanded ? trackAppenderNames : undefined);
@@ -222,12 +222,12 @@ export async function getMainFlameChartWithLegacyTrack(
 }> {
   await initializeGlobalVars();
 
-  const {filmStripModel, traceParsedData, performanceModel, timelineModel} = await allModelsFromFile(traceFileName);
+  const {traceParsedData, performanceModel, timelineModel} = await allModelsFromFile(traceFileName);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   // The data provider still needs a reference to the legacy model to
   // work properly.
-  dataProvider.setModel(performanceModel, traceParsedData, filmStripModel);
+  dataProvider.setModel(performanceModel, traceParsedData);
   const track = timelineModel.tracks().find(track => track.type === trackType);
   if (!track) {
     throw new Error(`Legacy track with of type ${trackType} not found in timeline model.`);

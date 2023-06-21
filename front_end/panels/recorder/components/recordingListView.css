@@ -83,13 +83,6 @@ h1 {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-
-  --override-background-color: rgba(26 115 232 / 15%);
-}
-
-.actions button:hover,
-.actions button:focus-visible {
-  background-color: var(--override-background-color);
 }
 
 .actions .divider {

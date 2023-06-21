@@ -7,13 +7,15 @@ import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.
 import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {traceModelFromTraceFile} from '../../../helpers/TimelineHelpers.js';
-import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {loadModelDataFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
 import type * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('TimingTrackAppender', () => {
+describeWithEnvironment('TimingTrackAppender', function() {
+  setTraceModelTimeout(this);
+
   let traceParsedData: TraceModel.Handlers.Types.TraceParseData;
   let timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   let tracksAppender: Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender;

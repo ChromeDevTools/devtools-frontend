@@ -1447,6 +1447,58 @@ describeWithMockConnection('BreakpointManager', () => {
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
   });
 
+  it('Breakpoints are set only into network project', async () => {
+    const breakpointLine = 0;
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const persistence =
+        Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
+        {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
+
+    // Create a file system project and source code.
+    const fileName = Common.ParsedURL.ParsedURL.extractName(scriptDescription.url);
+    const fileSystemPath = 'file://path/to/filesystem' as Platform.DevToolsPath.UrlString;
+    const fileSystemFileUrl = fileSystemPath + '/' + fileName as Platform.DevToolsPath.UrlString;
+    createFileSystemFileForPersistenceTests(
+        {fileSystemFileUrl, fileSystemPath}, scriptDescription.url, scriptDescription.content, target);
+
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    // Add the same script with the same URL via the debugger protocol.
+    const bindingCreatedPromise = persistence.once(Persistence.Persistence.Events.BindingCreated);
+    const fileScriptDescription = {...scriptDescription, url: fileSystemFileUrl};
+    const script = await backend.addScript(target, fileScriptDescription, null);
+    const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
+    await bindingCreatedPromise;
+    assertNotNullOrUndefined(uiSourceCode);
+
+    let addedBreakpoint: Breakpoints.BreakpointManager.Breakpoint|null = null;
+    breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointAdded, ({data: {breakpoint}}) => {
+      assert.isNull(addedBreakpoint, 'More than one breakpoint was added');
+      addedBreakpoint = breakpoint;
+    });
+
+    // Set the breakpoint on the (network) script.
+    void backend.responderToBreakpointByUrlRequest(fileSystemFileUrl, breakpointLine)({
+      breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+      locations: [
+        {
+          scriptId: script.scriptId,
+          lineNumber: 3,
+          columnNumber: 3,
+        },
+      ],
+    });
+    const breakpoint =
+        await breakpointManager.setBreakpoint(uiSourceCode, breakpointLine, undefined, ...DEFAULT_BREAKPOINT);
+    assertNotNullOrUndefined(breakpoint);
+
+    // Expect that the breakpoint is only added to the network UI source code.
+    assert.strictEqual(breakpoint, addedBreakpoint);
+    assert.deepStrictEqual(Array.from(breakpoint.getUiSourceCodes()), [uiSourceCode]);
+  });
+
   it('updates a breakpoint after live editing the underlying script', async () => {
     const scriptInfo = {url: URL, content: 'console.log(\'hello\');'};
     const script = await backend.addScript(target, scriptInfo, null);

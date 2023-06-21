@@ -257,6 +257,9 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     const contentType = uiSourceCode.contentType();
     const result: UISourceCode[] = [];
     for (const project of this.projectsInternal.values()) {
+      if (uiSourceCode.project().type() !== project.type()) {
+        continue;
+      }
       const candidate = project.uiSourceCodeForURL(url);
       if (candidate && candidate.url() === url && candidate.contentType() === contentType) {
         result.push(candidate);

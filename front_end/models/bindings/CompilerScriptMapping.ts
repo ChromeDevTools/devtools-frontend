@@ -360,7 +360,8 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     const scripts = new Set<SDK.Script.Script>([script]);
     this.removeStubUISourceCode(script);
 
-    if (!IgnoreListManager.instance().isUserIgnoreListedURL(script.sourceURL, script.isContentScript())) {
+    if (!IgnoreListManager.instance().isUserIgnoreListedURL(
+            script.sourceURL, {isContentScript: script.isContentScript()})) {
       const target = script.target();
       const projectId = `jsSourceMaps:${script.isContentScript() ? 'extensions' : ''}:${target.id()}`;
       let project = this.#projects.get(projectId);

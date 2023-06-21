@@ -265,7 +265,7 @@ describe('Source Panel grouping', async function() {
     await click('[aria-label="More options"]');
     await click(`[aria-label="${folderMenuText}, checked"]`);
     await waitForNone('.soft-context-menu');
-    await waitForNone('[aria-label="test/e2e/resources/sources, nw-folder"]');
+    await waitForNone('[aria-label="test/e2e/resources/sources, nw-folder"]:not(.is-from-source-map)');
     await validateNavigationTree();
   }
 
@@ -276,7 +276,7 @@ describe('Source Panel grouping', async function() {
 
     // Switch to grouped
     await enableGroupByAuthored();
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, sm-folder"]');
+    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]');
     await expandFileTree(workerFileSelectors(6));
     assert.deepEqual(await readSourcesTreeView(), groupedExpectedTree);
 
@@ -287,7 +287,7 @@ describe('Source Panel grouping', async function() {
 
     // And switch to grouped again...
     await enableGroupByAuthored();
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, sm-folder"]');
+    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]');
     await expandFileTree(workerFileSelectors(6));
     assert.deepEqual(await readSourcesTreeView(), groupedExpectedTree);
   });
@@ -299,7 +299,7 @@ describe('Source Panel grouping', async function() {
 
     // Switch to grouped
     await enableGroupByAuthored();
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, sm-folder"]');
+    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]');
     await expandFileTree(workerFileSelectors(6));
     assert.deepEqual(await readSourcesTreeView(), groupedRedundantExpectedTree);
   });
@@ -318,7 +318,7 @@ describe('Source Panel grouping', async function() {
     await goToResource(targetPage);
     // Validate source tree
     await validateNavigationTree();
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, sm-folder"]');
+    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]');
     await expandFileTree(workerFileSelectors(6));
 
     assert.deepEqual(await readSourcesTreeView(), groupedExpectedTree);
@@ -333,18 +333,18 @@ describe('Source Panel grouping', async function() {
     await disableGroupByFolder();
     await expandSourceTreeItem(workerFileSelectors(6).rootSelector);
     await expandSourceTreeItem(
-        workerFileSelectors(6).rootSelector + ' + ol > [aria-label="test/e2e/resources/sources, sm-folder"]');
+        workerFileSelectors(6).rootSelector + ' + ol > [aria-label="test/e2e/resources/sources, nw-folder"]');
     assert.deepEqual(await readSourcesTreeView(), folderlessExpectedTree);
 
     // Switch to group by authored, folderless
     await enableGroupByAuthored();
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, sm-folder"]');
+    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]');
     await expandSourceTreeItem(workerFileSelectors(6).rootSelector);
     assert.deepEqual(await readSourcesTreeView(), folderlessGroupedExpectedTree);
 
     // Reenable folders
     await enableGroupByFolder();
-    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, sm-folder"]');
+    await expandSourceTreeItem('[aria-label="test/e2e/resources/sources, nw-folder"]');
     await expandFileTree(workerFileSelectors(6));
     assert.deepEqual(await readSourcesTreeView(), groupedExpectedTree);
   });

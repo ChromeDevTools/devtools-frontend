@@ -133,6 +133,7 @@ const UIStrings = {
    */
   sIgnoreListed: '{PH1} (ignore listed)',
 };
+
 const str_ = i18n.i18n.registerUIStrings('panels/sources/NavigatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const Types = {
@@ -145,7 +146,6 @@ export const Types = {
   Frame: 'frame',
   NetworkFolder: 'nw-folder',
   Root: 'root',
-  SourceMapFolder: 'sm-folder',
   Worker: 'worker',
 };
 
@@ -156,7 +156,6 @@ const TYPE_ORDERS = new Map([
   [Types.Domain, 10],
   [Types.FileSystemFolder, 1],
   [Types.NetworkFolder, 1],
-  [Types.SourceMapFolder, 2],
   [Types.File, 10],
   [Types.Frame, 70],
   [Types.Worker, 90],
@@ -507,6 +506,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     } else {
       folderNode.appendChild(uiSourceCodeNode);
       this.uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
+      uiSourceCodeNode.updateTitleBubbleUp();
     }
     this.selectDefaultTreeNode();
   }
@@ -644,7 +644,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
     const parentNode =
         this.folderNode(uiSourceCode, project, target, frame, projectOrigin, path.slice(0, -1), fromSourceMap);
-    let type: string = fromSourceMap ? Types.SourceMapFolder : Types.NetworkFolder;
+    let type: string = Types.NetworkFolder;
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
       type = Types.FileSystemFolder;
     }
@@ -854,7 +854,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
     while (currentNode) {
       parentNode = currentNode.parent;
-      if (!parentNode || !currentNode.isEmpty()) {
+      if (!parentNode) {
         break;
       }
       if ((parentNode === this.rootNode || parentNode === this.deployedNode) &&
@@ -862,6 +862,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
         break;
       }
       if (!(currentNode instanceof NavigatorGroupTreeNode || currentNode instanceof NavigatorFolderTreeNode)) {
+        break;
+      }
+      if (!currentNode.isEmpty()) {
+        currentNode.updateTitleBubbleUp();
         break;
       }
       if (currentNode.type === Types.Frame) {
@@ -1016,8 +1020,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       }
     } else if (node.origin && node.folderPath) {
       const url = Common.ParsedURL.ParsedURL.concatenate(node.origin, '/', node.folderPath);
+      const options = {
+        isContentScript: node.recursiveProperties.exclusivelyContentScripts || false,
+        isKnownThirdParty: node.recursiveProperties.exclusivelyThirdParty || false,
+      };
       for (const {text, callback} of Bindings.IgnoreListManager.IgnoreListManager.instance()
-               .getIgnoreListFolderContextMenuItems(url)) {
+               .getIgnoreListFolderContextMenuItems(url, options)) {
         contextMenu.defaultSection().appendItem(text, callback);
       }
     }
@@ -1164,6 +1172,7 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   node!: NavigatorTreeNode;
   private hovered?: boolean;
   private isIgnoreListed?: boolean;
+  private isFromSourceMap: boolean;
 
   constructor(navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => void)) {
     super('', true);
@@ -1174,6 +1183,7 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     this.tooltip = title;
     this.navigatorView = navigatorView;
     this.hoverCallback = hoverCallback;
+    this.isFromSourceMap = false;
 
     let iconType = 'folder';
 
@@ -1213,6 +1223,11 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
       this.listItemElement.classList.toggle('is-ignore-listed', isIgnoreListed);
       this.updateTooltip();
     }
+  }
+
+  setFromSourceMap(isFromSourceMap: boolean): void {
+    this.isFromSourceMap = isFromSourceMap;
+    this.listItemElement.classList.toggle('is-from-source-map', isFromSourceMap);
   }
 
   setNode(node: NavigatorTreeNode): void {
@@ -1401,6 +1416,13 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
+export type NavigatorRecursiveTreeNodeProperties = {
+  exclusivelySourceMapped: boolean|null,
+  exclusivelyIgnored: boolean|null,
+  exclusivelyThirdParty: boolean|null,
+  exclusivelyContentScripts: boolean|null,
+};
+
 export class NavigatorTreeNode {
   id: string;
   protected navigatorView: NavigatorView;
@@ -1411,6 +1433,7 @@ export class NavigatorTreeNode {
   parent!: NavigatorTreeNode|null;
   title!: string;
   tooltip?: string;
+  recursiveProperties: NavigatorRecursiveTreeNodeProperties;
 
   constructor(navigatorView: NavigatorView, id: string, type: string, tooltip?: string) {
     this.id = id;
@@ -1421,6 +1444,12 @@ export class NavigatorTreeNode {
 
     this.populated = false;
     this.isMerged = false;
+    this.recursiveProperties = {
+      exclusivelySourceMapped: null,
+      exclusivelyIgnored: null,
+      exclusivelyContentScripts: null,
+      exclusivelyThirdParty: null,
+    };
   }
 
   treeNode(): UI.TreeOutline.TreeElement {
@@ -1434,9 +1463,16 @@ export class NavigatorTreeNode {
   }
 
   updateTitleRecursive(): void {
-    this.updateTitle();
     for (const child of this.children()) {
       child.updateTitleRecursive();
+    }
+    this.updateTitle();
+  }
+
+  updateTitleBubbleUp(): void {
+    this.updateTitle();
+    if (this.parent) {
+      this.parent.updateTitleBubbleUp();
     }
   }
 
@@ -1546,6 +1582,13 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     this.treeElement = null;
     this.eventListeners = [];
     this.frameInternal = frame;
+    this.recursiveProperties.exclusivelySourceMapped = uiSourceCode.contentType().isFromSourceMap();
+    if (uiSourceCode.contentType().isScript()) {
+      // These properties affect ignore-listing menus and only matter when the UISourceCode is a script
+      this.recursiveProperties.exclusivelyThirdParty = uiSourceCode.isKnownThirdParty();
+      this.recursiveProperties.exclusivelyContentScripts =
+          uiSourceCode.project().type() === Workspace.Workspace.projectTypes.ContentScripts;
+    }
   }
 
   frame(): SDK.ResourceTreeModel.ResourceTreeFrame|null {
@@ -1574,6 +1617,13 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
   }
 
   override updateTitle(ignoreIsDirty?: boolean): void {
+    const isIgnoreListed =
+        Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+            this.uiSourceCodeInternal);
+    if (this.uiSourceCodeInternal.contentType().isScript() || isIgnoreListed) {
+      this.recursiveProperties.exclusivelyIgnored = isIgnoreListed;
+    }
+
     if (!this.treeElement) {
       return;
     }
@@ -1586,9 +1636,6 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     this.treeElement.title = titleText;
     this.treeElement.updateIcon();
 
-    const isIgnoreListed =
-        Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
-            this.uiSourceCodeInternal);
     this.treeElement.listItemElement.classList.toggle('is-ignore-listed', isIgnoreListed);
 
     let tooltip: string = this.uiSourceCodeInternal.url();
@@ -1715,13 +1762,26 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   }
 
   override updateTitle(): void {
+    let propName: keyof NavigatorRecursiveTreeNodeProperties;
+    for (propName in this.recursiveProperties) {
+      let propValue: boolean|null = null;
+      for (const child of this.children()) {
+        if (child.recursiveProperties[propName] === false) {
+          propValue = false;
+          break;
+        } else if (child.recursiveProperties[propName]) {
+          propValue = true;
+        }
+      }
+      this.recursiveProperties[propName] = propValue;
+    }
+
     if (!this.treeElement) {
       return;
     }
 
-    const url = Common.ParsedURL.ParsedURL.concatenate(this.origin, '/', this.folderPath, '/');
-    const isIgnoreListed = Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url);
-    this.treeElement.setIgnoreListed(isIgnoreListed);
+    this.treeElement.setFromSourceMap(this.recursiveProperties.exclusivelySourceMapped || false);
+    this.treeElement.setIgnoreListed(this.recursiveProperties.exclusivelyIgnored || false);
 
     if (!this.project || this.project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;

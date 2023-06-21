@@ -77,10 +77,6 @@
   --icon-color: var(--icon-force-white);
 }
 
-.navigator-sm-folder-tree-item .icons-container {
-  --override-folder-tree-item-color: var(--icon-folder-authored);
-}
-
 .navigator-fs-folder-tree-item .icons-container {
   --override-folder-tree-item-color: var(--icon-folder-workspace);
 }
@@ -123,6 +119,10 @@
 .navigator-image-tree-item .icons-container,
 .navigator-font-tree-item .icons-container {
   --override-file-tree-item-color: var(--icon-file-image);
+}
+
+.navigator-nw-folder-tree-item.is-from-source-map .icons-container {
+  --override-folder-tree-item-color: var(--icon-folder-authored);
 }
 
 .tree-outline:not(:has(.navigator-deployed-tree-item)) .navigator-sm-folder-tree-item .tree-element-title,

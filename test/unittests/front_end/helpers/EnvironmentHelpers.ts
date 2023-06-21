@@ -129,6 +129,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'enableIgnoreListing', true),
     createSettingValue(
         Common.Settings.SettingCategory.DEBUGGER, 'skipStackFramesPattern', '', Common.Settings.SettingType.REGEX),
+    createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigatorGroupByFolder', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'showDetailedInspectTooltip', true),
     createSettingValue(Common.Settings.SettingCategory.NETWORK, 'cacheDisabled', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'avifFormatDisabled', false),

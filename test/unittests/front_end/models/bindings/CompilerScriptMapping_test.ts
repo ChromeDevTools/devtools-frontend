@@ -174,6 +174,10 @@ describeWithMockConnection('CompilerScriptMapping', () => {
   });
 
   it('creates separate UISourceCodes for content scripts', async () => {
+    // By default content scripts are ignore listed, which will prevent processing the
+    // source map. We need to disable that option.
+    Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListContentScripts();
+
     const target = createTarget();
 
     const sourceRoot = 'http://example.com';

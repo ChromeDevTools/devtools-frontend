@@ -423,10 +423,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           this.consoleProfileFinished(message);
         }
       }
+      SDK.TargetManager.TargetManager.instance().observeModels(
+          SDK.CPUProfilerModel.CPUProfilerModel,
+          {
+            modelAdded: (model: SDK.CPUProfilerModel.CPUProfilerModel) => {
+              model.addEventListener(
+                  SDK.CPUProfilerModel.Events.ConsoleProfileFinished, event => this.consoleProfileFinished(event.data));
+            },
+            modelRemoved: (_model: SDK.CPUProfilerModel.CPUProfilerModel) => {
 
-      SDK.TargetManager.TargetManager.instance().addModelListener(
-          SDK.CPUProfilerModel.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished,
-          event => this.consoleProfileFinished(event.data), this);
+            },
+          },
+      );
     }
     SDK.TargetManager.TargetManager.instance().observeTargets({
       targetAdded: (target: SDK.Target.Target) => {

@@ -4,6 +4,9 @@
 import '../../recorder/components/components.js';
 
 import * as Host from '../../../core/host/host.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
+import * as Menus from '../../../ui/components/menus/menus.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as RecorderComponents from '../../recorder/components/components.js';
 
@@ -25,9 +28,10 @@ export interface Parameter {
   name: string;
 }
 
-interface Command {
+export interface Command {
   command: string;
-  parameters: object;
+  parameters: {[x: string]: unknown};
+  targetId?: string;
 }
 
 /**
@@ -48,18 +52,22 @@ export class SubmitEditorEvent extends Event {
 export class JSONEditor extends LitElement {
   static override styles = [editorWidgetStyles];
   @property() declare protocolMethodWithParametersMap: Map<string, Parameter[]>;
+  @property() declare targetManager;
   @state() declare parameters: Record<string, Parameter>;
   @state() command: string = '';
-
+  @state() targetId?: string;
   constructor() {
     super();
     this.parameters = {};
+    this.targetManager = SDK.TargetManager.TargetManager.instance();
+    this.targetId = this.targetManager.targets().length !== 0 ? this.targetManager.targets()[0].id() : undefined;
     this.addEventListener('keydown', (event: Event) => {
       if ((event as KeyboardEvent).key === 'Enter' &&
           ((event as KeyboardEvent).metaKey || (event as KeyboardEvent).ctrlKey)) {
         this.dispatchEvent(new SubmitEditorEvent({
           command: this.command,
           parameters: this.getParameters(),
+          targetId: this.targetId,
         }));
       }
     });
@@ -74,6 +82,7 @@ export class JSONEditor extends LitElement {
     this.dispatchEvent(new SubmitEditorEvent({
       command: this.command,
       parameters: this.getParameters(),
+      targetId: this.targetId,
     }));
   }
 
@@ -126,6 +135,49 @@ export class JSONEditor extends LitElement {
     }
     this.#populateParametersForCommand(this.command);
   };
+
+  #computeTargetLabel(target: SDK.Target.Target): string {
+    return `${target.name()} (${target.inspectedURL()})`;
+  }
+
+  #renderTargetSelectorRow(): LitHtml.TemplateResult|undefined {
+    const target = this.targetManager.targets().find(el => el.id() === this.targetId);
+    const targetLabel = target ? this.#computeTargetLabel(target) : '';
+    // clang-format off
+    return html`
+    <div class="row attribute padded" data-attribute="type">
+      <div>target<span class="separator">:</span></div>
+      <${Menus.SelectMenu.SelectMenu.litTagName}
+            class="target-select-menu"
+            @selectmenuselected=${this.#onTargetSelected}
+            .showDivider=${true}
+            .showArrow=${true}
+            .sideButton=${false}
+            .showSelectedItem=${true}
+            .showConnector=${false}
+            .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
+            .buttonTitle=${targetLabel}
+          >
+          ${LitHtml.Directives.repeat(
+              this.targetManager.targets(),
+              target => {
+                return LitHtml.html`<${Menus.Menu.MenuItem.litTagName}
+                .value=${target.id()}
+              >
+                  ${this.#computeTargetLabel(target)}
+              </${Menus.Menu.MenuItem.litTagName}>`;
+            },
+            )}
+          </${Menus.SelectMenu.SelectMenu.litTagName}>
+    </div>
+  `;
+    // clang-format on
+  }
+
+  #onTargetSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
+    this.targetId = event.itemValue as string;
+    this.requestUpdate();
+  }
 
   #renderCommandRow(): LitHtml.TemplateResult|undefined {
     // clang-format off
@@ -193,6 +245,7 @@ export class JSONEditor extends LitElement {
     // clang-format off
     return html`
     <div class="wrapper">
+      ${this.#renderTargetSelectorRow()}
       ${this.#renderCommandRow()}
       ${this.parameters && Object.keys((this.parameters)).length !== 0 ? html`
           ${this.#renderParameterRow()}

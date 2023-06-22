@@ -399,7 +399,11 @@ export class ProtocolMonitorDataGrid extends UI.Widget.VBox {
     const input = new UI.Toolbar.ToolbarInput(
         placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip,
         this.#commandAutocompleteSuggestionProvider.buildTextPromptCompletions, false);
-    input.addEventListener(UI.Toolbar.ToolbarInput.Event.EnterPressed, () => this.onCommandSend(input.value()));
+    input.addEventListener(UI.Toolbar.ToolbarInput.Event.EnterPressed, () => {
+      this.#commandAutocompleteSuggestionProvider.addEntry(input.value());
+      const {command, parameters} = parseCommandInput(input.value());
+      this.onCommandSend(command, parameters, this.#selectedTargetId);
+    });
     return input;
   }
 
@@ -420,17 +424,15 @@ export class ProtocolMonitorDataGrid extends UI.Widget.VBox {
     return selector;
   }
 
-  onCommandSend(input: string): void {
-    const {command, parameters} = parseCommandInput(input);
+  onCommandSend(command: string, parameters: object, target?: string): void {
     const test = ProtocolClient.InspectorBackend.test;
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    const selectedTarget = this.#selectedTargetId ? targetManager.targetById(this.#selectedTargetId) : null;
+    const selectedTarget = target ? targetManager.targetById(target) : null;
     const sessionId = selectedTarget ? selectedTarget.sessionId : '';
     // TS thinks that properties are read-only because
     // in TS test is defined as a namespace.
     // @ts-ignore
     test.sendRawMessage(command, parameters, () => {}, sessionId);
-    this.#commandAutocompleteSuggestionProvider.addEntry(input);
   }
 
   static instance(opts: {forceNew: null|boolean} = {forceNew: null}): ProtocolMonitorImpl {
@@ -441,6 +443,7 @@ export class ProtocolMonitorDataGrid extends UI.Widget.VBox {
 
     return protocolMonitorImplInstance;
   }
+
   override wasShown(): void {
     if (this.started) {
       return;
@@ -631,7 +634,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this.#split.setSidebarWidget(this.#editorWidget);
     this.#split.hideSidebar(true);
     this.#editorWidget.addEventListener(Events.CommandSent, event => {
-      this.#protocolMonitorDataGrid.onCommandSend(JSON.stringify(event.data));
+      this.#protocolMonitorDataGrid.onCommandSend(event.data.command, event.data.parameters, event.data.targetId);
     });
   }
 
@@ -724,13 +727,8 @@ export enum Events {
 }
 
 export type EventTypes = {
-  [Events.CommandSent]: ProtocolMonitorCommand,
+  [Events.CommandSent]: Components.JSONEditor.Command,
 };
-
-export interface ProtocolMonitorCommand {
-  command: string;
-  parameters: object;
-}
 
 export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
   readonly jsonEditor: Components.JSONEditor.JSONEditor;

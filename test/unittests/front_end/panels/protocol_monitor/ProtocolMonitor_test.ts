@@ -10,6 +10,7 @@ import {
 } from '../../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import * as ProtocolComponents from '../../../../../front_end/panels/protocol_monitor/components/components.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import * as Menus from '../../../../../front_end/ui/components/menus/menus.js';
 
 describe('ProtocolMonitor', () => {
   describe('parseCommandInput', () => {
@@ -18,7 +19,6 @@ describe('ProtocolMonitor', () => {
         command: 'Input.dispatchMouseEvent',
         parameters: {parameter1: 'value1'},
       };
-
       // "command" variations.
       assert.deepStrictEqual(
           ProtocolMonitor.ProtocolMonitor.parseCommandInput(JSON.stringify({
@@ -271,6 +271,20 @@ describe('ProtocolMonitor', () => {
       assert.deepStrictEqual(response.data.parameters, expectedParameters);
     });
 
+    it('checks that the selection of a target works', async () => {
+      const editorWidget = renderEditorWidget();
+      await editorWidget.jsonEditor.updateComplete;
+      const targetId = 'target1';
+      const event = new Menus.SelectMenu.SelectMenuItemSelectedEvent('target1');
+
+      const shadowRoot = editorWidget.jsonEditor.renderRoot;
+      const selectMenu = shadowRoot.querySelector('devtools-select-menu');
+      selectMenu?.dispatchEvent(event);
+      const expectedId = editorWidget.jsonEditor.targetId;
+
+      assert.deepStrictEqual(targetId, expectedId);
+    });
+
     it('checks that the command input field remains empty when there is no command parameter entered', async () => {
       const input = '{"parameters": {"urls" : ["chrome-extension://*"]}}';
       const {command, parameters} = ProtocolMonitor.ProtocolMonitor.parseCommandInput(input);
@@ -295,5 +309,4 @@ describe('ProtocolMonitor', () => {
       assert.deepStrictEqual(commandReceived, '');
     });
   });
-
 });

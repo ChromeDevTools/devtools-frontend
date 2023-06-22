@@ -159,7 +159,6 @@ export class TimelineModelImpl {
     this.maximumRecordTimeInternal = 0;
     this.totalBlockingTimeInternal = 0;
     this.estimatedTotalBlockingTime = 0;
-
     this.reset();
     this.resetProcessingState();
 
@@ -2521,6 +2520,11 @@ export class EventOnTimelineData {
   static forTraceEventData(event: TraceEngine.Types.TraceEvents.TraceEventData): EventOnTimelineData {
     return getOrCreateEventData(event);
   }
+  static reset(): void {
+    eventToData =
+        new Map<SDK.TracingModel.ConstructedEvent|TraceEngine.Types.TraceEvents.TraceEventData, EventOnTimelineData>();
+    eventToInvalidation = new WeakMap();
+  }
 }
 
 function getOrCreateEventData(event: SDK.TracingModel.ConstructedEvent|
@@ -2533,8 +2537,10 @@ function getOrCreateEventData(event: SDK.TracingModel.ConstructedEvent|
   return data;
 }
 
-const eventToData = new WeakMap<SDK.TracingModel.ConstructedEvent|TraceEngine.Types.TraceEvents.TraceEventData>();
-const eventToInvalidation = new WeakMap();
+let eventToData =
+    new Map<SDK.TracingModel.ConstructedEvent|TraceEngine.Types.TraceEvents.TraceEventData, EventOnTimelineData>();
+let eventToInvalidation = new WeakMap();
+
 export interface InvalidationCause {
   reason: string;
   stackTrace: Protocol.Runtime.CallFrame[]|null;

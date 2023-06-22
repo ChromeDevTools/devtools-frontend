@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
+import * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceModel from '../../../../front_end/models/trace/trace.js';
-import type * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
+
 import {initializeGlobalVars} from './EnvironmentHelpers.js';
 
 interface CompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
@@ -291,6 +292,7 @@ export async function allModelsFromFile(file: string): Promise<LoadedModels> {
   }
 
   const traceParsedData = await loadModelDataFromTraceFile(file);
+  TimelineModel.TimelineModel.EventOnTimelineData.reset();
   const events = await loadTraceEventsLegacyEventPayload(file);
   const tracingModel = new SDK.TracingModel.TracingModel();
   const performanceModel = new Timeline.PerformanceModel.PerformanceModel();

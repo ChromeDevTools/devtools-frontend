@@ -58,6 +58,7 @@ describeWithEnvironment('TimelineFlameChartView', () => {
       const object = selection.object;
       assert.strictEqual(object.name, name);
     }
+
   });
 
   it('Shows the network track correctly', async () => {

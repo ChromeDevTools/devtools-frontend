@@ -6,7 +6,9 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
 import type * as Protocol from '../../generated/protocol.js';
 
 import outermostTargetSelectorStyles from './outermostTargetSelector.css.js';
@@ -166,9 +168,9 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
       return '';
     }
     const components = [];
-    const url = Common.ParsedURL.ParsedURL.fromString(targetInfo.url);
+    const url = Bindings.ResourceUtils.displayNameForURL(targetInfo.url as Platform.DevToolsPath.UrlString);
     if (url) {
-      components.push(url.domain());
+      components.push(url);
     }
     if (targetInfo.subtype) {
       components.push(targetInfo.subtype);

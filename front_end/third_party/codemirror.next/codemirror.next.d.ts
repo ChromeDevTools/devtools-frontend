@@ -12,7 +12,7 @@ declare class TreeFragment {
     constructor(from: number, to: number, tree: Tree, offset: number, openStart?: boolean, openEnd?: boolean);
     get openStart(): boolean;
     get openEnd(): boolean;
-    static addTree(tree: Tree, fragments?: readonly TreeFragment[], partial?: boolean): TreeFragment[];
+    static addTree(tree: Tree, fragments?: readonly TreeFragment[], partial?: boolean): readonly TreeFragment[];
     static applyChanges(fragments: readonly TreeFragment[], changes: readonly ChangedRange[], minGap?: number): readonly TreeFragment[];
 }
 interface PartialParse {
@@ -5499,7 +5499,7 @@ declare class Line {
     countIndent(to: number, from?: number, indent?: number): number;
     findColumn(goal: number): number;
 }
-declare type BlockResult = boolean | null;
+type BlockResult = boolean | null;
 declare class BlockContext implements PartialParse {
     readonly parser: MarkdownParser;
     private line;
@@ -5560,7 +5560,7 @@ interface MarkdownConfig {
     remove?: readonly string[];
     wrap?: ParseWrapper;
 }
-declare type MarkdownExtension = MarkdownConfig | readonly MarkdownExtension[];
+type MarkdownExtension = MarkdownConfig | readonly MarkdownExtension[];
 declare class MarkdownParser extends Parser {
     readonly nodeSet: NodeSet;
     createParse(input: Input, fragments: readonly TreeFragment[], ranges: readonly {

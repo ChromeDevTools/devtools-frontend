@@ -30,7 +30,7 @@
     "@lezer/highlight": "1.1.4",
     "@lezer/html": "1.3.4",
     "@lezer/javascript": "1.4.3",
-    "@lezer/lr": "1.3.4",
+    "@lezer/lr": "1.3.7",
     "@replit/codemirror-lang-svelte": "6.0.0",
     "@rollup/plugin-node-resolve": "13.3.0",
     "@rollup/plugin-terser": "0.1.0",

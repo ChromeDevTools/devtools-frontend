@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import * as Main from '../../../../../front_end/entrypoints/main/main.js';
+import * as InspectorMain from '../../../../../front_end/entrypoints/inspector_main/inspector_main.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {
   createTarget,
@@ -20,14 +20,14 @@ describeWithMockConnection('OutermostTargetSelector', () => {
   let tabTarget: SDK.Target.Target;
   let primaryTarget: SDK.Target.Target;
   let prerenderTarget: SDK.Target.Target;
-  let selector: Main.OutermostTargetSelector.OutermostTargetSelector;
+  let selector: InspectorMain.OutermostTargetSelector.OutermostTargetSelector;
 
   beforeEach(() => {
     tabTarget = createTarget({type: SDK.Target.Type.Tab});
     primaryTarget = createTarget({parentTarget: tabTarget});
     prerenderTarget =
         createTarget({parentTarget: tabTarget, subtype: 'prerender', url: 'http://example.com/prerender1'});
-    selector = Main.OutermostTargetSelector.OutermostTargetSelector.instance({forceNew: true});
+    selector = InspectorMain.OutermostTargetSelector.OutermostTargetSelector.instance({forceNew: true});
   });
 
   it('creates drop-down with outermost targets', () => {
@@ -80,5 +80,14 @@ describeWithMockConnection('OutermostTargetSelector', () => {
     assert.strictEqual(UI.Context.Context.instance().flavor(SDK.Target.Target), primaryTarget);
     selector.itemSelected(prerenderTarget);
     assert.strictEqual(UI.Context.Context.instance().flavor(SDK.Target.Target), prerenderTarget);
+  });
+
+  it('does not change UI context flavor within the same page', () => {
+    const subtarget = createTarget({parentTarget: primaryTarget});
+    selector.itemSelected(primaryTarget);
+    assert.strictEqual(UI.Context.Context.instance().flavor(SDK.Target.Target), primaryTarget);
+    UI.Context.Context.instance().setFlavor(SDK.Target.Target, subtarget);
+    assert.strictEqual(selector.item().element.title, 'Page: Main');
+    assert.strictEqual(UI.Context.Context.instance().flavor(SDK.Target.Target), subtarget);
   });
 });

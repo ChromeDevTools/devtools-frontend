@@ -6,7 +6,10 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("inspector_main") {
   testonly = true
-  sources = [ "InspectorMain_test.ts" ]
+  sources = [
+    "InspectorMain_test.ts",
+    "OutermostTargetSelector_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/core/common:bundle",

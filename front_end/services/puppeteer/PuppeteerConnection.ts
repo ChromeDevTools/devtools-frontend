@@ -8,15 +8,12 @@ import type * as SDK from '../../core/sdk/sdk.js';
 
 class Transport implements puppeteer.ConnectionTransport {
   #connection: SDK.Connections.ParallelConnectionInterface;
-  #knownIds = new Set<number>();
 
   constructor(connection: SDK.Connections.ParallelConnectionInterface) {
     this.#connection = connection;
   }
 
   send(data: string): void {
-    const message = JSON.parse(data);
-    this.#knownIds.add(message.id);
     this.#connection.sendRawMessage(data);
   }
 
@@ -27,13 +24,11 @@ class Transport implements puppeteer.ConnectionTransport {
   set onmessage(cb: (message: string) => void) {
     this.#connection.setOnMessage((message: Object) => {
       const data = (message) as {id: number, method: string, params: unknown, sessionId?: string};
-      if (data.id && !this.#knownIds.has(data.id)) {
-        return;
-      }
-      this.#knownIds.delete(data.id);
+
       if (!data.sessionId) {
         return;
       }
+
       return cb(JSON.stringify({
         ...data,
         // Puppeteer is expecting to use the default session, but we give it a non-default session in #connection.

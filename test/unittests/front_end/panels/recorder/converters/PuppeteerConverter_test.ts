@@ -8,8 +8,7 @@ import * as Models from '../../../../../../front_end/panels/recorder/models/mode
 import * as Converters from '../../../../../../front_end/panels/recorder/converters/converters.js';
 
 describe('PuppeteerConverter', () => {
-  // Skip till the bots loosing the cache
-  it.skip('[crbug.com/1457240]: should stringify a flow', async () => {
+  it('should stringify a flow', async () => {
     const converter = new Converters.PuppeteerConverter.PuppeteerConverter(
         '  ',
     );

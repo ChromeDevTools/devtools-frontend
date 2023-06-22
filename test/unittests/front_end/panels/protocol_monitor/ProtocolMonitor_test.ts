@@ -226,7 +226,6 @@ describe('ProtocolMonitor', () => {
 
     it('should return the parameters in a format understandable by the ProtocolMonitor', async () => {
       const editorWidget = renderEditorWidget();
-      new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl();
       const inputParameters = {
         'test0': {
           'optional': true,

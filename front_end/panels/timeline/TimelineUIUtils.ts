@@ -554,6 +554,14 @@ const UIStrings = {
    */
   compilationCacheSize: 'Compilation cache size',
   /**
+   *@description Text in Timeline UIUtils of the Performance panel. "Compilation
+   * cache" refers to the code cache described at
+   * https://v8.dev/blog/code-caching-for-devs . This label is followed by the
+   * type of code cache data used, either "normal" or "full" as described in the
+   * linked article.
+   */
+  compilationCacheKind: 'Compilation cache kind',
+  /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
   scriptLoadedFromCache: 'script loaded from cache',
@@ -1845,6 +1853,7 @@ export class TimelineUIUtils {
       eventData: {
         consumedCacheSize?: number,
         cacheRejected?: boolean,
+        cacheKind?: string,
       },
       contentHelper: TimelineDetailsContentHelper): void {
     if (typeof eventData.consumedCacheSize === 'number') {
@@ -1853,6 +1862,10 @@ export class TimelineUIUtils {
       contentHelper.appendTextRow(
           i18nString(UIStrings.compilationCacheSize),
           Platform.NumberUtilities.bytesToString(eventData.consumedCacheSize));
+      const cacheKind = eventData.cacheKind;
+      if (cacheKind) {
+        contentHelper.appendTextRow(i18nString(UIStrings.compilationCacheKind), cacheKind);
+      }
     } else if ('cacheRejected' in eventData && eventData['cacheRejected']) {
       // Version mismatch or similar.
       contentHelper.appendTextRow(

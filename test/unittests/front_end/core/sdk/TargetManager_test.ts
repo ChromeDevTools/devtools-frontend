@@ -5,6 +5,9 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Host from '../../../../../front_end/core/host/host.js';
+
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 import {
   describeWithMockConnection,
@@ -237,6 +240,44 @@ describeWithMockConnection('TargetManager', () => {
     assert.isFalse(modelObserver.modelAdded.called);
     assert.isFalse(targetObserver.targetRemoved.called);
     assert.isFalse(modelObserver.modelRemoved.called);
+  });
+
+  it('notifies about inspected URL change', () => {
+    const targets = [createTarget(), createTarget()];
+    const inspectedURLChangedHostApi =
+        sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'inspectedURLChanged');
+    const inspectedURLChangedEventListener = sinon.spy();
+    targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, inspectedURLChangedEventListener);
+
+    targetManager.setScopeTarget(null);
+    assert.isTrue(inspectedURLChangedHostApi.notCalled && inspectedURLChangedEventListener.notCalled);
+
+    targets.forEach(t => t.setInspectedURL(`https://a.com/${t.id()}` as Platform.DevToolsPath.UrlString));
+    assert.isTrue(inspectedURLChangedHostApi.notCalled && inspectedURLChangedEventListener.notCalled);
+
+    targetManager.setScopeTarget(targets[0]);
+    assert.isTrue(inspectedURLChangedHostApi.calledOnce && inspectedURLChangedEventListener.calledOnce);
+    assert.strictEqual(inspectedURLChangedHostApi.lastCall.firstArg, `https://a.com/${targets[0].id()}`);
+    assert.strictEqual(inspectedURLChangedEventListener.lastCall.firstArg.data, targets[0]);
+
+    targetManager.setScopeTarget(targets[0]);
+    assert.isTrue(inspectedURLChangedHostApi.calledOnce && inspectedURLChangedEventListener.calledOnce);
+
+    targets.forEach(t => t.setInspectedURL(`https://b.com/${t.id()}` as Platform.DevToolsPath.UrlString));
+    assert.isTrue(inspectedURLChangedHostApi.calledTwice && inspectedURLChangedEventListener.calledTwice);
+    assert.strictEqual(inspectedURLChangedHostApi.lastCall.firstArg, `https://b.com/${targets[0].id()}`);
+    assert.strictEqual(inspectedURLChangedEventListener.lastCall.firstArg.data, targets[0]);
+
+    targetManager.setScopeTarget(targets[1]);
+    assert.isTrue(inspectedURLChangedHostApi.calledThrice && inspectedURLChangedEventListener.calledThrice);
+    assert.strictEqual(inspectedURLChangedHostApi.lastCall.firstArg, `https://b.com/${targets[1].id()}`);
+    assert.strictEqual(inspectedURLChangedEventListener.lastCall.firstArg.data, targets[1]);
+
+    targets.forEach(t => t.setInspectedURL(`https://c.com/${t.id()}` as Platform.DevToolsPath.UrlString));
+    assert.strictEqual(inspectedURLChangedHostApi.callCount, 4);
+    assert.strictEqual(inspectedURLChangedEventListener.callCount, 4);
+    assert.strictEqual(inspectedURLChangedHostApi.lastCall.firstArg, `https://c.com/${targets[1].id()}`);
+    assert.strictEqual(inspectedURLChangedEventListener.lastCall.firstArg.data, targets[1]);
   });
 
 });

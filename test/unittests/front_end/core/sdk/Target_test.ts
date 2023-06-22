@@ -6,7 +6,6 @@ const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
-import * as Host from '../../../../../front_end/core/host/host.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {
   describeWithMockConnection,
@@ -42,17 +41,16 @@ describeWithMockConnection('Target', () => {
   });
 
   it('notifies about inspected URL change', () => {
-    const inspectedURLChanged =
-        sinon.spy(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'inspectedURLChanged');
+    const inspectedURLChanged = sinon.spy(SDK.TargetManager.TargetManager.instance(), 'onInspectedURLChange');
 
     subframeTarget.setInspectedURL('https://example.com/' as Platform.DevToolsPath.UrlString);
-    assert.isTrue(inspectedURLChanged.notCalled);
-
-    mainFrameTargetWithoutTab.setInspectedURL('https://example.com/' as Platform.DevToolsPath.UrlString);
     assert.isTrue(inspectedURLChanged.calledOnce);
 
-    mainFrameTargetUnderTab.setInspectedURL('https://example.com/' as Platform.DevToolsPath.UrlString);
+    mainFrameTargetWithoutTab.setInspectedURL('https://example.com/' as Platform.DevToolsPath.UrlString);
     assert.isTrue(inspectedURLChanged.calledTwice);
+
+    mainFrameTargetUnderTab.setInspectedURL('https://example.com/' as Platform.DevToolsPath.UrlString);
+    assert.isTrue(inspectedURLChanged.calledThrice);
   });
 
   it('determines outermost target', () => {

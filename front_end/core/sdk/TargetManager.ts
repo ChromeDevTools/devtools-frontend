@@ -64,6 +64,11 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   onInspectedURLChange(target: Target): void {
+    if (target !== this.#scopeTarget) {
+      return;
+    }
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(
+        target.inspectedURL() || Platform.DevToolsPath.EmptyUrlString);
     this.dispatchEventToListeners(Events.InspectedURLChanged, target);
   }
 
@@ -395,6 +400,9 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
     for (const scopeChangeListener of this.#scopeChangeListeners) {
       scopeChangeListener();
+    }
+    if (scopeTarget && scopeTarget.inspectedURL()) {
+      this.onInspectedURLChange(scopeTarget);
     }
   }
 

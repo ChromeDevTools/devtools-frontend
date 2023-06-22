@@ -24,7 +24,7 @@ const UIStrings = {
    */
   targetS: 'Page: {PH1}',
 };
-const str_ = i18n.i18n.registerUIStrings('entrypoints/main/OutermostTargetSelector.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/OutermostTargetSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let outermostTargetSelectorInstance: OutermostTargetSelector;

@@ -9,7 +9,6 @@ ts_library("main") {
   sources = [
     "ExecutionContextSelector_test.ts",
     "MainImpl_test.ts",
-    "OutermostTargetSelector_test.ts",
   ]
 
   deps = [

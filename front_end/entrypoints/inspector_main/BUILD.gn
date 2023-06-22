@@ -10,6 +10,7 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "nodeIcon.css",
+    "outermostTargetSelector.css",
     "renderingOptions.css",
   ]
 }
@@ -17,6 +18,7 @@ generate_css("css_files") {
 devtools_module("inspector_main") {
   sources = [
     "InspectorMain.ts",
+    "OutermostTargetSelector.ts",
     "RenderingOptions.ts",
   ]
 

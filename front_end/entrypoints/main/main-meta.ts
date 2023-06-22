@@ -909,20 +909,6 @@ UI.Toolbar.registerToolbarItem({
 UI.Toolbar.registerToolbarItem({
   async loadItem() {
     const Main = await loadMainModule();
-    return Main.OutermostTargetSelector.OutermostTargetSelector.instance();
-  },
-  order: 98,
-  location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_RIGHT,
-  showLabel: undefined,
-  condition: undefined,
-  separator: undefined,
-  actionId: undefined,
-  experiment: Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
-});
-
-UI.Toolbar.registerToolbarItem({
-  async loadItem() {
-    const Main = await loadMainModule();
     return Main.MainImpl.SettingsButtonProvider.instance();
   },
   order: 99,

@@ -15,32 +15,36 @@
  */
 /// <reference types="node" />
 /// <reference types="node" />
-import { Protocol } from 'devtools-protocol';
 import type { Readable } from 'stream';
+import { Protocol } from 'devtools-protocol';
+import type { HTTPRequest } from '../api/HTTPRequest.js';
+import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Accessibility } from '../common/Accessibility.js';
 import type { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { Coverage } from '../common/Coverage.js';
 import { Device } from '../common/Device.js';
+import { DeviceRequestPrompt } from '../common/DeviceRequestPrompt.js';
 import type { Dialog } from '../common/Dialog.js';
-import type { ElementHandle } from './ElementHandle.js';
+import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { FileChooser } from '../common/FileChooser.js';
-import type { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions, FrameWaitForFunctionOptions } from '../common/Frame.js';
-import type { HTTPRequest } from '../common/HTTPRequest.js';
-import type { HTTPResponse } from '../common/HTTPResponse.js';
-import type { Keyboard, Mouse, MouseButton, Touchscreen } from '../common/Input.js';
 import type { WaitForSelectorOptions } from '../common/IsolatedWorld.js';
-import type { JSHandle } from './JSHandle.js';
 import type { PuppeteerLifeCycleEvent } from '../common/LifecycleWatcher.js';
-import type { Credentials, NetworkConditions } from '../common/NetworkManager.js';
-import type { PDFOptions } from '../common/PDFOptions.js';
+import { Credentials, NetworkConditions } from '../common/NetworkManager.js';
+import { ParsedPDFOptions, PDFOptions } from '../common/PDFOptions.js';
 import type { Viewport } from '../common/PuppeteerViewport.js';
 import type { Target } from '../common/Target.js';
 import type { Tracing } from '../common/Tracing.js';
-import type { EvaluateFunc, HandleFor, NodeFor } from '../common/types.js';
+import type { EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
 import type { WebWorker } from '../common/WebWorker.js';
+import { Deferred } from '../util/Deferred.js';
 import type { Browser } from './Browser.js';
 import type { BrowserContext } from './BrowserContext.js';
+import type { ClickOptions, ElementHandle } from './ElementHandle.js';
+import type { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions, FrameWaitForFunctionOptions } from './Frame.js';
+import { Keyboard, Mouse, Touchscreen, KeyboardTypeOptions } from './Input.js';
+import type { JSHandle } from './JSHandle.js';
+import { Locator } from './Locator.js';
 /**
  * @public
  */
@@ -122,7 +126,7 @@ export interface ScreenshotClip {
     width: number;
     height: number;
     /**
-     * @defaultValue 1
+     * @defaultValue `1`
      */
     scale?: number;
 }
@@ -183,7 +187,6 @@ export interface ScreenshotOptions {
 export declare const enum PageEmittedEvents {
     /**
      * Emitted when the page closes.
-     * @eventProperty
      */
     Close = "close",
     /**
@@ -360,9 +363,15 @@ export interface PageEventObject {
     workerdestroyed: WebWorker;
 }
 /**
+ * @public
+ */
+export interface NewDocumentScriptEvaluation {
+    identifier: string;
+}
+/**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page}
- * in Chromium.
+ * in the browser.
  *
  * :::note
  *
@@ -415,11 +424,15 @@ export declare class Page extends EventEmitter {
      */
     constructor();
     /**
-     * @returns `true` if drag events are being intercepted, `false` otherwise.
+     * `true` if the service worker are being bypassed, `false` otherwise.
+     */
+    isServiceWorkerBypassed(): boolean;
+    /**
+     * `true` if drag events are being intercepted, `false` otherwise.
      */
     isDragInterceptionEnabled(): boolean;
     /**
-     * @returns `true` if the page has JavaScript enabled, `false` otherwise.
+     * `true` if the page has JavaScript enabled, `false` otherwise.
      */
     isJavaScriptEnabled(): boolean;
     /**
@@ -433,9 +446,9 @@ export declare class Page extends EventEmitter {
      *
      * :::
      */
-    on<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): EventEmitter;
-    once<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): EventEmitter;
-    off<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): EventEmitter;
+    on<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): this;
+    once<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): this;
+    off<K extends keyof PageEventObject>(eventName: K, handler: (event: PageEventObject[K]) => void): this;
     /**
      * This method is typically coupled with an action that triggers file
      * choosing.
@@ -448,7 +461,7 @@ export declare class Page extends EventEmitter {
      * :::
      *
      * @remarks
-     * In non-headless Chromium, this method results in the native file picker
+     * In the "headful" browser, this method results in the native file picker
      * dialog `not showing up` for the user.
      *
      * @example
@@ -480,7 +493,7 @@ export declare class Page extends EventEmitter {
      */
     setGeolocation(options: GeolocationOptions): Promise<void>;
     /**
-     * @returns A target this page was created from.
+     * A target this page was created from.
      */
     target(): Target;
     /**
@@ -492,23 +505,38 @@ export declare class Page extends EventEmitter {
      */
     browserContext(): BrowserContext;
     /**
-     * @returns The page's main frame.
+     * The page's main frame.
      *
      * @remarks
      * Page is guaranteed to have a main frame which persists during navigations.
      */
     mainFrame(): Frame;
+    /**
+     * {@inheritDoc Keyboard}
+     */
     get keyboard(): Keyboard;
+    /**
+     * {@inheritDoc Touchscreen}
+     */
     get touchscreen(): Touchscreen;
+    /**
+     * {@inheritDoc Coverage}
+     */
     get coverage(): Coverage;
+    /**
+     * {@inheritDoc Tracing}
+     */
     get tracing(): Tracing;
+    /**
+     * {@inheritDoc Accessibility}
+     */
     get accessibility(): Accessibility;
     /**
-     * @returns An array of all frames attached to the page.
+     * An array of all frames attached to the page.
      */
     frames(): Frame[];
     /**
-     * @returns all of the dedicated {@link
+     * All of the dedicated {@link
      * https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
      * WebWorkers} associated with the page.
      *
@@ -553,6 +581,12 @@ export declare class Page extends EventEmitter {
      * @param value - Whether to enable request interception.
      */
     setRequestInterception(value: boolean): Promise<void>;
+    /**
+     * Toggles ignoring of service worker for each request.
+     *
+     * @param bypass - Whether to bypass service worker and load from network.
+     */
+    setBypassServiceWorker(bypass: boolean): Promise<void>;
     /**
      * @param enabled - Whether to enable drag interception.
      *
@@ -621,9 +655,18 @@ export declare class Page extends EventEmitter {
      */
     setDefaultTimeout(timeout: number): void;
     /**
-     * @returns Maximum time in milliseconds.
+     * Maximum time in milliseconds.
      */
     getDefaultTimeout(): number;
+    /**
+     * Creates a locator for the provided `selector`. See {@link Locator} for
+     * details and supported actions.
+     *
+     * @remarks
+     * Locators API is experimental and we will not follow semver for breaking
+     * change in the Locators API.
+     */
+    locator(selector: string): Locator;
     /**
      * Runs `document.querySelector` within the page. If no element matches the
      * selector, the return value resolves to `null`.
@@ -785,10 +828,7 @@ export declare class Page extends EventEmitter {
      * is wrapped in an {@link ElementHandle}, else the raw value itself is
      * returned.
      */
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        ElementHandle<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<NodeFor<Selector>, Params> = EvaluateFuncWith<NodeFor<Selector>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * This method runs `Array.from(document.querySelectorAll(selector))` within
      * the page and passes the result as the first argument to the `pageFunction`.
@@ -851,10 +891,7 @@ export declare class Page extends EventEmitter {
      * is wrapped in an {@link ElementHandle}, else the raw value itself is
      * returned.
      */
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        Array<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * The method evaluates the XPath expression relative to the page document as
      * its context node. If there are no such elements, the method resolves to an
@@ -897,7 +934,7 @@ export declare class Page extends EventEmitter {
      * a `<style type="text/css">` tag with the content.
      *
      * Shortcut for
-     * {@link Frame.addStyleTag | page.mainFrame().addStyleTag(options)}.
+     * {@link Frame.(addStyleTag:2) | page.mainFrame().addStyleTag(options)}.
      *
      * @returns An {@link ElementHandle | element handle} to the injected `<link>`
      * or `<style>` element.
@@ -979,6 +1016,11 @@ export declare class Page extends EventEmitter {
         default: Function;
     }): Promise<void>;
     /**
+     * The method removes a previously added function via ${@link Page.exposeFunction}
+     * called `name` from the page's `window` object.
+     */
+    removeExposedFunction(name: string): Promise<void>;
+    /**
      * Provide credentials for `HTTP authentication`.
      *
      * @remarks
@@ -1014,7 +1056,9 @@ export declare class Page extends EventEmitter {
      */
     setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
     /**
-     * @returns Object containing metrics as key/value pairs.
+     * Object containing metrics as key/value pairs.
+     *
+     * @returns
      *
      * - `Timestamp` : The timestamp when the metrics sample was taken.
      *
@@ -1049,14 +1093,18 @@ export declare class Page extends EventEmitter {
      */
     metrics(): Promise<Metrics>;
     /**
-     *
-     * @returns
+     * The page's URL.
      * @remarks Shortcut for
      * {@link Frame.url | page.mainFrame().url()}.
      */
     url(): string;
+    /**
+     * The full HTML contents of the page, including the DOCTYPE.
+     */
     content(): Promise<string>;
     /**
+     * Set the content of the page.
+     *
      * @param html - HTML markup to assign to the page.
      * @param options - Parameters that has some properties.
      * @remarks
@@ -1261,6 +1309,12 @@ export declare class Page extends EventEmitter {
         idleTime?: number;
         timeout?: number;
     }): Promise<void>;
+    /**
+     * @internal
+     */
+    protected _waitForNetworkIdle(networkManager: EventEmitter & {
+        inFlightRequestsCount: () => number;
+    }, idleTime: number, timeout: number, closedDeferred: Deferred<TargetCloseError>): Promise<void>;
     /**
      * @param urlOrPredicate - A URL or predicate to wait for.
      * @param options - Optional waiting parameters
@@ -1582,6 +1636,8 @@ export declare class Page extends EventEmitter {
      */
     setViewport(viewport: Viewport): Promise<void>;
     /**
+     * Current page viewport settings.
+     *
      * @returns
      *
      * - `width`: page's width in pixels
@@ -1681,15 +1737,27 @@ export declare class Page extends EventEmitter {
      * await page.evaluateOnNewDocument(preloadFile);
      * ```
      */
-    evaluateOnNewDocument<Params extends unknown[], Func extends (...args: Params) => unknown = (...args: Params) => unknown>(pageFunction: Func | string, ...args: Params): Promise<void>;
+    evaluateOnNewDocument<Params extends unknown[], Func extends (...args: Params) => unknown = (...args: Params) => unknown>(pageFunction: Func | string, ...args: Params): Promise<NewDocumentScriptEvaluation>;
+    /**
+     * Removes script that injected into page by Page.evaluateOnNewDocument.
+     *
+     * @param identifier - script identifier
+     */
+    removeScriptToEvaluateOnNewDocument(identifier: string): Promise<void>;
     /**
      * Toggles ignoring cache for each request based on the enabled state. By
      * default, caching is enabled.
      * @param enabled - sets the `enabled` state of cache
-     * @defaultValue true
+     * @defaultValue `true`
      */
     setCacheEnabled(enabled?: boolean): Promise<void>;
     /**
+     * @internal
+     */
+    _maybeWriteBufferToFile(path: string | undefined, buffer: Buffer): Promise<void>;
+    /**
+     * Captures screenshot of the current page.
+     *
      * @remarks
      * Options object which might have the following properties:
      *
@@ -1700,7 +1768,7 @@ export declare class Page extends EventEmitter {
      *   | current working directory}.
      *   If no path is provided, the image won't be saved to the disk.
      *
-     * - `type` : Specify screenshot type, can be either `jpeg` or `png`.
+     * - `type` : Specify screenshot type, can be `jpeg`, `png` or `webp`.
      *   Defaults to 'png'.
      *
      * - `quality` : The quality of the image, between 0-100. Not
@@ -1733,8 +1801,6 @@ export declare class Page extends EventEmitter {
      *   headful mode and ignores page viewport (but not browser window's
      *   bounds). Defaults to `true`.
      *
-     * NOTE: Screenshots take at least 1/6 second on OS X. See
-     * {@link https://crbug.com/741689} for discussion.
      * @returns Promise which resolves to buffer or a base64 string (depending on
      * the value of `encoding`) with captured screenshot.
      */
@@ -1746,10 +1812,12 @@ export declare class Page extends EventEmitter {
     }): Promise<Buffer>;
     screenshot(options?: ScreenshotOptions): Promise<Buffer | string>;
     /**
+     * @internal
+     */
+    _getPDFOptions(options?: PDFOptions, lengthUnit?: 'in' | 'cm'): ParsedPDFOptions;
+    /**
      * Generates a PDF of the page with the `print` CSS media type.
      * @remarks
-     *
-     * NOTE: PDF generation is only supported in Chrome headless mode.
      *
      * To generate a PDF with the `screen` media type, call
      * {@link Page.emulateMediaType | `page.emulateMediaType('screen')`} before
@@ -1764,12 +1832,12 @@ export declare class Page extends EventEmitter {
      */
     createPDFStream(options?: PDFOptions): Promise<Readable>;
     /**
-     * @param options -
-     * @returns
+     * {@inheritDoc Page.createPDFStream}
      */
     pdf(options?: PDFOptions): Promise<Buffer>;
     /**
-     * @returns The page's title
+     * The page's title
+     *
      * @remarks
      * Shortcut for {@link Frame.title | page.mainFrame().title()}.
      */
@@ -1782,10 +1850,13 @@ export declare class Page extends EventEmitter {
      * @returns
      */
     isClosed(): boolean;
+    /**
+     * {@inheritDoc Mouse}
+     */
     get mouse(): Mouse;
     /**
      * This method fetches an element with `selector`, scrolls it into view if
-     * needed, and then uses {@link Page.mouse} to click in the center of the
+     * needed, and then uses {@link Page | Page.mouse} to click in the center of the
      * element. If there's no element matching `selector`, the method throws an
      * error.
      * @remarks Bear in mind that if `click()` triggers a navigation event and
@@ -1808,11 +1879,7 @@ export declare class Page extends EventEmitter {
      * successfully clicked. The Promise will be rejected if there is no element
      * matching `selector`.
      */
-    click(selector: string, options?: {
-        delay?: number;
-        button?: MouseButton;
-        clickCount?: number;
-    }): Promise<void>;
+    click(selector: string, options?: Readonly<ClickOptions>): Promise<void>;
     /**
      * This method fetches an element with `selector` and focuses it. If there's no
      * element matching `selector`, the method throws an error.
@@ -1829,7 +1896,8 @@ export declare class Page extends EventEmitter {
     focus(selector: string): Promise<void>;
     /**
      * This method fetches an element with `selector`, scrolls it into view if
-     * needed, and then uses {@link Page.mouse} to hover over the center of the element.
+     * needed, and then uses {@link Page | Page.mouse}
+     * to hover over the center of the element.
      * If there's no element matching `selector`, the method throws an error.
      * @param selector - A
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | selector}
@@ -1868,7 +1936,8 @@ export declare class Page extends EventEmitter {
     select(selector: string, ...values: string[]): Promise<string[]>;
     /**
      * This method fetches an element with `selector`, scrolls it into view if
-     * needed, and then uses {@link Page.touchscreen} to tap in the center of the element.
+     * needed, and then uses {@link Page | Page.touchscreen}
+     * to tap in the center of the element.
      * If there's no element matching `selector`, the method throws an error.
      * @param selector - A
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | Selector}
@@ -1903,9 +1972,7 @@ export declare class Page extends EventEmitter {
      * @returns
      * @remarks
      */
-    type(selector: string, text: string, options?: {
-        delay: number;
-    }): Promise<void>;
+    type(selector: string, text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
     /**
      * @deprecated Replace with `new Promise(r => setTimeout(r, milliseconds));`.
      *
@@ -1933,6 +2000,7 @@ export declare class Page extends EventEmitter {
      * the `selector` doesn't appear after the `timeout` milliseconds of waiting, the
      * function will throw.
      *
+     * @example
      * This method works across navigations:
      *
      * ```ts
@@ -1984,6 +2052,7 @@ export declare class Page extends EventEmitter {
      * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
      * function will throw.
      *
+     * @example
      * This method works across navigation
      *
      * ```ts
@@ -2087,6 +2156,30 @@ export declare class Page extends EventEmitter {
      * @param options - Options for configuring waiting behavior.
      */
     waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: FrameWaitForFunctionOptions, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    /**
+     * This method is typically coupled with an action that triggers a device
+     * request from an api such as WebBluetooth.
+     *
+     * :::caution
+     *
+     * This must be called before the device request is made. It will not return a
+     * currently active device prompt.
+     *
+     * :::
+     *
+     * @example
+     *
+     * ```ts
+     * const [devicePrompt] = Promise.all([
+     *   page.waitForDevicePrompt(),
+     *   page.click('#connect-bluetooth'),
+     * ]);
+     * await devicePrompt.select(
+     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+     * );
+     * ```
+     */
+    waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
 }
 /**
  * @internal

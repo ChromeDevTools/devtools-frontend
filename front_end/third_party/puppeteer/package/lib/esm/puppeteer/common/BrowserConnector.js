@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { debugError } from './util.js';
-import { isErrorLike } from '../util/ErrorLike.js';
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
+import { isErrorLike } from '../util/ErrorLike.js';
 import { CDPBrowser } from './Browser.js';
 import { Connection } from './Connection.js';
 import { getFetch } from './fetch.js';
+import { debugError } from './util.js';
 const getWebSocketTransportClass = async () => {
     return isNode
         ? (await import('./NodeWebSocketTransport.js')).NodeWebSocketTransport
@@ -33,23 +33,23 @@ const getWebSocketTransportClass = async () => {
  * @internal
  */
 export async function _connectToCDPBrowser(options) {
-    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, headers = {}, slowMo = 0, targetFilter, _isPageTarget: isPageTarget, } = options;
+    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, headers = {}, slowMo = 0, targetFilter, _isPageTarget: isPageTarget, protocolTimeout, } = options;
     assert(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
         1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
     let connection;
     if (transport) {
-        connection = new Connection('', transport, slowMo);
+        connection = new Connection('', transport, slowMo, protocolTimeout);
     }
     else if (browserWSEndpoint) {
         const WebSocketClass = await getWebSocketTransportClass();
         const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers);
-        connection = new Connection(browserWSEndpoint, connectionTransport, slowMo);
+        connection = new Connection(browserWSEndpoint, connectionTransport, slowMo, protocolTimeout);
     }
     else if (browserURL) {
         const connectionURL = await getWSEndpoint(browserURL);
         const WebSocketClass = await getWebSocketTransportClass();
         const connectionTransport = await WebSocketClass.create(connectionURL);
-        connection = new Connection(connectionURL, connectionTransport, slowMo);
+        connection = new Connection(connectionURL, connectionTransport, slowMo, protocolTimeout);
     }
     const version = await connection.send('Browser.getVersion');
     const product = version.product.toLowerCase().includes('firefox')

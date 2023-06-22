@@ -18,4 +18,9 @@ export * from './BrowserContext.js';
 export * from './Page.js';
 export * from './JSHandle.js';
 export * from './ElementHandle.js';
+export * from './Input.js';
+export * from './Frame.js';
+export * from './HTTPResponse.js';
+export * from './HTTPRequest.js';
+export * from './Locator.js';
 //# sourceMappingURL=api.js.map

@@ -17,9 +17,9 @@
 import { ChildProcess } from 'child_process';
 import { Protocol } from 'devtools-protocol';
 import { EventEmitter } from '../common/EventEmitter.js';
-import type { Page } from './Page.js';
 import type { Target } from '../common/Target.js';
 import type { BrowserContext } from './BrowserContext.js';
+import type { Page } from './Page.js';
 /**
  * BrowserContext options.
  *
@@ -55,14 +55,14 @@ export declare const WEB_PERMISSION_TO_PROTOCOL_PERMISSION: Map<Permission, Prot
 /**
  * @public
  */
-export type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'payment-handler' | 'persistent-storage' | 'idle-detection' | 'midi-sysex';
+export type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'clipboard-sanitized-write' | 'payment-handler' | 'persistent-storage' | 'idle-detection' | 'midi-sysex';
 /**
  * @public
  */
 export interface WaitForTargetOptions {
     /**
      * Maximum wait time in milliseconds. Pass `0` to disable the timeout.
-     * @defaultValue 30 seconds.
+     * @defaultValue `30_000`
      */
     timeout?: number;
 }
@@ -73,10 +73,10 @@ export interface WaitForTargetOptions {
  */
 export declare const enum BrowserEmittedEvents {
     /**
-     * Emitted when Puppeteer gets disconnected from the Chromium instance. This
+     * Emitted when Puppeteer gets disconnected from the browser instance. This
      * might happen because of one of the following:
      *
-     * - Chromium is closed or crashed
+     * - browser is closed or crashed
      *
      * - The {@link Browser.disconnect | browser.disconnect } method was called.
      */
@@ -112,7 +112,7 @@ export declare const enum BrowserEmittedEvents {
     TargetDestroyed = "targetdestroyed"
 }
 /**
- * A Browser is created when Puppeteer connects to a Chromium instance, either through
+ * A Browser is created when Puppeteer connects to a browser instance, either through
  * {@link PuppeteerNode.launch} or {@link Puppeteer.connect}.
  *
  * @remarks
@@ -142,14 +142,14 @@ export declare const enum BrowserEmittedEvents {
  *
  * (async () => {
  *   const browser = await puppeteer.launch();
- *   // Store the endpoint to be able to reconnect to Chromium
+ *   // Store the endpoint to be able to reconnect to the browser.
  *   const browserWSEndpoint = browser.wsEndpoint();
- *   // Disconnect puppeteer from Chromium
+ *   // Disconnect puppeteer from the browser.
  *   browser.disconnect();
  *
  *   // Use the endpoint to reestablish a connection
  *   const browser2 = await puppeteer.connect({browserWSEndpoint});
- *   // Close Chromium
+ *   // Close the browser.
  *   await browser2.close();
  * })();
  * ```
@@ -283,10 +283,12 @@ export declare class Browser extends EventEmitter {
      *
      * @remarks
      *
-     * For headless Chromium, this is similar to `HeadlessChrome/61.0.3153.0`. For
-     * non-headless, this is similar to `Chrome/61.0.3153.0`.
+     * For headless browser, this is similar to `HeadlessChrome/61.0.3153.0`. For
+     * non-headless or new-headless, this is similar to `Chrome/61.0.3153.0`. For
+     * Firefox, it is similar to `Firefox/116.0a1`.
      *
-     * The format of browser.version() might change with future releases of Chromium.
+     * The format of browser.version() might change with future releases of
+     * browsers.
      */
     version(): Promise<string>;
     /**
@@ -295,12 +297,13 @@ export declare class Browser extends EventEmitter {
      */
     userAgent(): Promise<string>;
     /**
-     * Closes Chromium and all of its pages (if any were opened). The {@link Browser} object
-     * itself is considered to be disposed and cannot be used anymore.
+     * Closes the browser and all of its pages (if any were opened). The
+     * {@link Browser} object itself is considered to be disposed and cannot be
+     * used anymore.
      */
     close(): Promise<void>;
     /**
-     * Disconnects Puppeteer from the browser, but leaves the Chromium process running.
+     * Disconnects Puppeteer from the browser, but leaves the browser process running.
      * After calling `disconnect`, the {@link Browser} object is considered disposed and
      * cannot be used anymore.
      */

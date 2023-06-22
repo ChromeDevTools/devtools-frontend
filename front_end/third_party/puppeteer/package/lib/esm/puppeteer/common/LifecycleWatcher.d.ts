@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { HTTPResponse } from '../api/HTTPResponse.js';
 import { TimeoutError } from './Errors.js';
-import { FrameManager } from './FrameManager.js';
 import { Frame } from './Frame.js';
-import { HTTPResponse } from './HTTPResponse.js';
+import { FrameManager } from './FrameManager.js';
 /**
  * @public
  */

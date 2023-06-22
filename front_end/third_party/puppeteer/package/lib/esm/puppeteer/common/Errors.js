@@ -63,25 +63,21 @@ export class ProtocolError extends CustomError {
         _ProtocolError_code.set(this, void 0);
         _ProtocolError_originalMessage.set(this, '');
     }
-    /**
-     * @internal
-     */
     set code(code) {
         __classPrivateFieldSet(this, _ProtocolError_code, code, "f");
     }
     /**
+     * @readonly
      * @public
      */
     get code() {
         return __classPrivateFieldGet(this, _ProtocolError_code, "f");
     }
-    /**
-     * @internal
-     */
     set originalMessage(originalMessage) {
         __classPrivateFieldSet(this, _ProtocolError_originalMessage, originalMessage, "f");
     }
     /**
+     * @readonly
      * @public
      */
     get originalMessage() {
@@ -89,6 +85,11 @@ export class ProtocolError extends CustomError {
     }
 }
 _ProtocolError_code = new WeakMap(), _ProtocolError_originalMessage = new WeakMap();
+/**
+ * @internal
+ */
+export class TargetCloseError extends ProtocolError {
+}
 /**
  * @deprecated Import error classes directly.
  *

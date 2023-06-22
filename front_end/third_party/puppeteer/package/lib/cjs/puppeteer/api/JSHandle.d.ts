@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import Protocol from 'devtools-protocol';
-import { ElementHandle } from './ElementHandle.js';
-import { EvaluateFunc, HandleFor, HandleOr } from '../common/types.js';
-import { ExecutionContext } from '../common/ExecutionContext.js';
 import { CDPSession } from '../common/Connection.js';
+import { ExecutionContext } from '../common/ExecutionContext.js';
+import { EvaluateFuncWith, HandleFor, HandleOr } from '../common/types.js';
+import { ElementHandle } from './ElementHandle.js';
 declare const __JSHandleSymbol: unique symbol;
 /**
  * Represents a reference to a JavaScript object. Instances can be created using
@@ -64,18 +64,12 @@ export declare class JSHandle<T = unknown> {
     /**
      * Evaluates the given function with the current handle as its first argument.
      */
-    evaluate<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
-        this,
-        ...Params
-    ]>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    evaluate<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * Evaluates the given function with the current handle as its first argument.
      *
      */
-    evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
-        this,
-        ...Params
-    ]>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    evaluateHandle<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
      * Fetches a single property from the referenced object.
      */
@@ -102,7 +96,7 @@ export declare class JSHandle<T = unknown> {
      */
     getProperties(): Promise<Map<string, JSHandle>>;
     /**
-     * @returns A vanilla object representing the serializable portions of the
+     * A vanilla object representing the serializable portions of the
      * referenced object.
      * @throws Throws if the object cannot be serialized due to circularity.
      *
@@ -111,7 +105,7 @@ export declare class JSHandle<T = unknown> {
      */
     jsonValue(): Promise<T>;
     /**
-     * @returns Either `null` or the handle itself if the handle is an
+     * Either `null` or the handle itself if the handle is an
      * instance of {@link ElementHandle}.
      */
     asElement(): ElementHandle<Node> | null;
@@ -127,8 +121,13 @@ export declare class JSHandle<T = unknown> {
      */
     toString(): string;
     /**
+     * @internal
+     */
+    get id(): string | undefined;
+    /**
      * Provides access to the
-     * [Protocol.Runtime.RemoteObject](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject)
+     * {@link https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject | Protocol.Runtime.RemoteObject}
+     * backing this handle.
      */
     remoteObject(): Protocol.Runtime.RemoteObject;
 }

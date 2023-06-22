@@ -56,12 +56,14 @@ class CDPJSHandle extends JSHandle_js_1.JSHandle {
      * @see {@link ExecutionContext.evaluate} for more details.
      */
     async evaluate(pageFunction, ...args) {
+        pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluate.name, pageFunction);
         return await this.executionContext().evaluate(pageFunction, this, ...args);
     }
     /**
      * @see {@link ExecutionContext.evaluateHandle} for more details.
      */
     async evaluateHandle(pageFunction, ...args) {
+        pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluateHandle.name, pageFunction);
         return await this.executionContext().evaluateHandle(pageFunction, this, ...args);
     }
     async getProperty(propertyName) {
@@ -99,7 +101,7 @@ class CDPJSHandle extends JSHandle_js_1.JSHandle {
         return value;
     }
     /**
-     * @returns Either `null` or the handle itself if the handle is an
+     * Either `null` or the handle itself if the handle is an
      * instance of {@link ElementHandle}.
      */
     asElement() {
@@ -118,6 +120,9 @@ class CDPJSHandle extends JSHandle_js_1.JSHandle {
         }
         const type = __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").subtype || __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").type;
         return 'JSHandle@' + type;
+    }
+    get id() {
+        return __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").objectId;
     }
     remoteObject() {
         return __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f");

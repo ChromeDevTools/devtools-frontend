@@ -34,4 +34,9 @@ __exportStar(require("./BrowserContext.js"), exports);
 __exportStar(require("./Page.js"), exports);
 __exportStar(require("./JSHandle.js"), exports);
 __exportStar(require("./ElementHandle.js"), exports);
+__exportStar(require("./Input.js"), exports);
+__exportStar(require("./Frame.js"), exports);
+__exportStar(require("./HTTPResponse.js"), exports);
+__exportStar(require("./HTTPRequest.js"), exports);
+__exportStar(require("./Locator.js"), exports);
 //# sourceMappingURL=api.js.map

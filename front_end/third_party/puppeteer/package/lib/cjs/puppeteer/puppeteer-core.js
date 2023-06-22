@@ -29,7 +29,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.launch = exports.executablePath = exports.defaultArgs = exports.createBrowserFetcher = exports.connect = void 0;
+exports.launch = exports.executablePath = exports.defaultArgs = exports.connect = void 0;
 __exportStar(require("./api/api.js"), exports);
 __exportStar(require("./common/common.js"), exports);
 __exportStar(require("./node/node.js"), exports);
@@ -38,7 +38,7 @@ __exportStar(require("./util/util.js"), exports);
 /**
  * @deprecated Use the query handler API defined on {@link Puppeteer}
  */
-__exportStar(require("./common/QueryHandler.js"), exports);
+__exportStar(require("./common/CustomQueryHandler.js"), exports);
 const PuppeteerNode_js_1 = require("./node/PuppeteerNode.js");
 /**
  * @public
@@ -46,6 +46,21 @@ const PuppeteerNode_js_1 = require("./node/PuppeteerNode.js");
 const puppeteer = new PuppeteerNode_js_1.PuppeteerNode({
     isPuppeteerCore: true,
 });
-exports.connect = puppeteer.connect, exports.createBrowserFetcher = puppeteer.createBrowserFetcher, exports.defaultArgs = puppeteer.defaultArgs, exports.executablePath = puppeteer.executablePath, exports.launch = puppeteer.launch;
+/**
+ * @public
+ */
+exports.connect = puppeteer.connect, 
+/**
+ * @public
+ */
+exports.defaultArgs = puppeteer.defaultArgs, 
+/**
+ * @public
+ */
+exports.executablePath = puppeteer.executablePath, 
+/**
+ * @public
+ */
+exports.launch = puppeteer.launch;
 exports.default = puppeteer;
 //# sourceMappingURL=puppeteer-core.js.map

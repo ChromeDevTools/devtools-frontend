@@ -88,7 +88,7 @@ export class JSHandle {
         throw new Error('Not implemented');
     }
     /**
-     * @returns A vanilla object representing the serializable portions of the
+     * A vanilla object representing the serializable portions of the
      * referenced object.
      * @throws Throws if the object cannot be serialized due to circularity.
      *
@@ -99,7 +99,7 @@ export class JSHandle {
         throw new Error('Not implemented');
     }
     /**
-     * @returns Either `null` or the handle itself if the handle is an
+     * Either `null` or the handle itself if the handle is an
      * instance of {@link ElementHandle}.
      */
     asElement() {
@@ -121,8 +121,15 @@ export class JSHandle {
         throw new Error('Not implemented');
     }
     /**
+     * @internal
+     */
+    get id() {
+        throw new Error('Not implemented');
+    }
+    /**
      * Provides access to the
-     * [Protocol.Runtime.RemoteObject](https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject)
+     * {@link https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject | Protocol.Runtime.RemoteObject}
+     * backing this handle.
      */
     remoteObject() {
         throw new Error('Not implemented');

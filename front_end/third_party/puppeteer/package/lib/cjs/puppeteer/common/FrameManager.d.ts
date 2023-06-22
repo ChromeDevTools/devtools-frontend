@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Page } from '../api/Page.js';
 import { CDPSession } from './Connection.js';
+import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { Frame } from './Frame.js';
 import { FrameTree } from './FrameTree.js';
 import { NetworkManager } from './NetworkManager.js';
-import { Page } from '../api/Page.js';
 import { Target } from './Target.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
+/**
+ * @internal
+ */
+export declare const UTILITY_WORLD_NAME = "__puppeteer_utility_world__";
 /**
  * We use symbols to prevent external parties listening to these events.
  * They are internal to Puppeteer.
@@ -48,7 +53,7 @@ export declare class FrameManager extends EventEmitter {
     /**
      * @internal
      */
-    _frameTree: FrameTree;
+    _frameTree: FrameTree<Frame>;
     get timeoutSettings(): TimeoutSettings;
     get networkManager(): NetworkManager;
     get client(): CDPSession;
@@ -62,5 +67,9 @@ export declare class FrameManager extends EventEmitter {
     frames(): Frame[];
     frame(frameId: string): Frame | null;
     onAttachedToTarget(target: Target): void;
+    /**
+     * @internal
+     */
+    _deviceRequestPromptManager(client: CDPSession): DeviceRequestPromptManager;
 }
 //# sourceMappingURL=FrameManager.d.ts.map

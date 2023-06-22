@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Protocol } from 'devtools-protocol';
+import { GeolocationOptions, MediaFeature } from '../api/Page.js';
 import { CDPSession } from './Connection.js';
 import { Viewport } from './PuppeteerViewport.js';
 /**
@@ -21,6 +23,26 @@ import { Viewport } from './PuppeteerViewport.js';
 export declare class EmulationManager {
     #private;
     constructor(client: CDPSession);
+    get javascriptEnabled(): boolean;
     emulateViewport(viewport: Viewport): Promise<boolean>;
+    emulateIdleState(overrides?: {
+        isUserActive: boolean;
+        isScreenUnlocked: boolean;
+    }): Promise<void>;
+    emulateTimezone(timezoneId?: string): Promise<void>;
+    emulateVisionDeficiency(type?: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest['type']): Promise<void>;
+    emulateCPUThrottling(factor: number | null): Promise<void>;
+    emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;
+    emulateMediaType(type?: string): Promise<void>;
+    setGeolocation(options: GeolocationOptions): Promise<void>;
+    /**
+     * Resets default white background
+     */
+    resetDefaultBackgroundColor(): Promise<void>;
+    /**
+     * Hides default white background
+     */
+    setTransparentBackgroundColor(): Promise<void>;
+    setJavaScriptEnabled(enabled: boolean): Promise<void>;
 }
 //# sourceMappingURL=EmulationManager.d.ts.map

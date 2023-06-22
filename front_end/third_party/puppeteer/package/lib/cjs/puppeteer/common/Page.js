@@ -25,25 +25,26 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var _CDPPage_instances, _CDPPage_closed, _CDPPage_client, _CDPPage_target, _CDPPage_keyboard, _CDPPage_mouse, _CDPPage_timeoutSettings, _CDPPage_touchscreen, _CDPPage_accessibility, _CDPPage_frameManager, _CDPPage_emulationManager, _CDPPage_tracing, _CDPPage_pageBindings, _CDPPage_coverage, _CDPPage_javascriptEnabled, _CDPPage_viewport, _CDPPage_screenshotTaskQueue, _CDPPage_workers, _CDPPage_fileChooserPromises, _CDPPage_disconnectPromise, _CDPPage_userDragInterceptionEnabled, _CDPPage_onDetachedFromTarget, _CDPPage_onAttachedToTarget, _CDPPage_initialize, _CDPPage_onFileChooser, _CDPPage_onTargetCrashed, _CDPPage_onLogEntryAdded, _CDPPage_emitMetrics, _CDPPage_buildMetricsObject, _CDPPage_handleException, _CDPPage_onConsoleAPI, _CDPPage_onBindingCalled, _CDPPage_addConsoleMessage, _CDPPage_onDialog, _CDPPage_resetDefaultBackgroundColor, _CDPPage_setTransparentBackgroundColor, _CDPPage_sessionClosePromise, _CDPPage_go, _CDPPage_screenshotTask;
+var _CDPPage_instances, _CDPPage_closed, _CDPPage_client, _CDPPage_target, _CDPPage_keyboard, _CDPPage_mouse, _CDPPage_timeoutSettings, _CDPPage_touchscreen, _CDPPage_accessibility, _CDPPage_frameManager, _CDPPage_emulationManager, _CDPPage_tracing, _CDPPage_bindings, _CDPPage_exposedFunctions, _CDPPage_coverage, _CDPPage_viewport, _CDPPage_screenshotTaskQueue, _CDPPage_workers, _CDPPage_fileChooserDeferreds, _CDPPage_sessionCloseDeferred, _CDPPage_serviceWorkerBypassed, _CDPPage_userDragInterceptionEnabled, _CDPPage_onDetachedFromTarget, _CDPPage_onAttachedToTarget, _CDPPage_initialize, _CDPPage_onFileChooser, _CDPPage_onTargetCrashed, _CDPPage_onLogEntryAdded, _CDPPage_emitMetrics, _CDPPage_buildMetricsObject, _CDPPage_handleException, _CDPPage_onConsoleAPI, _CDPPage_onBindingCalled, _CDPPage_addConsoleMessage, _CDPPage_onDialog, _CDPPage_go, _CDPPage_screenshotTask;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CDPPage = void 0;
 const Page_js_1 = require("../api/Page.js");
 const assert_js_1 = require("../util/assert.js");
-const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
+const Deferred_js_1 = require("../util/Deferred.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Accessibility_js_1 = require("./Accessibility.js");
+const Binding_js_1 = require("./Binding.js");
 const Connection_js_1 = require("./Connection.js");
 const ConsoleMessage_js_1 = require("./ConsoleMessage.js");
 const Coverage_js_1 = require("./Coverage.js");
 const Dialog_js_1 = require("./Dialog.js");
 const EmulationManager_js_1 = require("./EmulationManager.js");
+const Errors_js_1 = require("./Errors.js");
 const FileChooser_js_1 = require("./FileChooser.js");
 const FrameManager_js_1 = require("./FrameManager.js");
 const Input_js_1 = require("./Input.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const NetworkManager_js_1 = require("./NetworkManager.js");
-const PDFOptions_js_1 = require("./PDFOptions.js");
 const TimeoutSettings_js_1 = require("./TimeoutSettings.js");
 const Tracing_js_1 = require("./Tracing.js");
 const util_js_1 = require("./util.js");
@@ -90,18 +91,18 @@ class CDPPage extends Page_js_1.Page {
         _CDPPage_frameManager.set(this, void 0);
         _CDPPage_emulationManager.set(this, void 0);
         _CDPPage_tracing.set(this, void 0);
-        _CDPPage_pageBindings.set(this, new Map());
+        _CDPPage_bindings.set(this, new Map());
+        _CDPPage_exposedFunctions.set(this, new Map());
         _CDPPage_coverage.set(this, void 0);
-        _CDPPage_javascriptEnabled.set(this, true);
         _CDPPage_viewport.set(this, void 0);
         _CDPPage_screenshotTaskQueue.set(this, void 0);
         _CDPPage_workers.set(this, new Map());
-        _CDPPage_fileChooserPromises.set(this, new Set());
-        _CDPPage_disconnectPromise.set(this, void 0);
+        _CDPPage_fileChooserDeferreds.set(this, new Set());
+        _CDPPage_sessionCloseDeferred.set(this, Deferred_js_1.Deferred.create());
+        _CDPPage_serviceWorkerBypassed.set(this, false);
         _CDPPage_userDragInterceptionEnabled.set(this, false);
         _CDPPage_onDetachedFromTarget.set(this, (target) => {
-            var _a;
-            const sessionId = (_a = target._session()) === null || _a === void 0 ? void 0 : _a.id();
+            const sessionId = target._session()?.id();
             const worker = __classPrivateFieldGet(this, _CDPPage_workers, "f").get(sessionId);
             if (!worker) {
                 return;
@@ -126,9 +127,9 @@ class CDPPage extends Page_js_1.Page {
         });
         __classPrivateFieldSet(this, _CDPPage_client, client, "f");
         __classPrivateFieldSet(this, _CDPPage_target, target, "f");
-        __classPrivateFieldSet(this, _CDPPage_keyboard, new Input_js_1.Keyboard(client), "f");
-        __classPrivateFieldSet(this, _CDPPage_mouse, new Input_js_1.Mouse(client, __classPrivateFieldGet(this, _CDPPage_keyboard, "f")), "f");
-        __classPrivateFieldSet(this, _CDPPage_touchscreen, new Input_js_1.Touchscreen(client, __classPrivateFieldGet(this, _CDPPage_keyboard, "f")), "f");
+        __classPrivateFieldSet(this, _CDPPage_keyboard, new Input_js_1.CDPKeyboard(client), "f");
+        __classPrivateFieldSet(this, _CDPPage_mouse, new Input_js_1.CDPMouse(client, __classPrivateFieldGet(this, _CDPPage_keyboard, "f")), "f");
+        __classPrivateFieldSet(this, _CDPPage_touchscreen, new Input_js_1.CDPTouchscreen(client, __classPrivateFieldGet(this, _CDPPage_keyboard, "f")), "f");
         __classPrivateFieldSet(this, _CDPPage_accessibility, new Accessibility_js_1.Accessibility(client), "f");
         __classPrivateFieldSet(this, _CDPPage_frameManager, new FrameManager_js_1.FrameManager(client, this, ignoreHTTPSErrors, __classPrivateFieldGet(this, _CDPPage_timeoutSettings, "f")), "f");
         __classPrivateFieldSet(this, _CDPPage_emulationManager, new EmulationManager_js_1.EmulationManager(client), "f");
@@ -167,6 +168,9 @@ class CDPPage extends Page_js_1.Page {
         networkManager.on(NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFinished, event => {
             return this.emit("requestfinished" /* PageEmittedEvents.RequestFinished */, event);
         });
+        client.once(Connection_js_1.CDPSessionEmittedEvents.Disconnected, () => {
+            return __classPrivateFieldGet(this, _CDPPage_sessionCloseDeferred, "f").resolve(new Errors_js_1.TargetCloseError('Target closed'));
+        });
         client.on('Page.domContentEventFired', () => {
             return this.emit("domcontentloaded" /* PageEmittedEvents.DOMContentLoaded */);
         });
@@ -197,7 +201,9 @@ class CDPPage extends Page_js_1.Page {
         client.on('Page.fileChooserOpened', event => {
             return __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_onFileChooser).call(this, event);
         });
-        __classPrivateFieldGet(this, _CDPPage_target, "f")._isClosedPromise.then(() => {
+        __classPrivateFieldGet(this, _CDPPage_target, "f")._isClosedDeferred
+            .valueOrThrow()
+            .then(() => {
             __classPrivateFieldGet(this, _CDPPage_target, "f")
                 ._targetManager()
                 .removeTargetInterceptor(__classPrivateFieldGet(this, _CDPPage_client, "f"), __classPrivateFieldGet(this, _CDPPage_onAttachedToTarget, "f"));
@@ -206,7 +212,8 @@ class CDPPage extends Page_js_1.Page {
                 .off("targetGone" /* TargetManagerEmittedEvents.TargetGone */, __classPrivateFieldGet(this, _CDPPage_onDetachedFromTarget, "f"));
             this.emit("close" /* PageEmittedEvents.Close */);
             __classPrivateFieldSet(this, _CDPPage_closed, true, "f");
-        });
+        })
+            .catch(util_js_1.debugError);
     }
     /**
      * @internal
@@ -214,51 +221,40 @@ class CDPPage extends Page_js_1.Page {
     _client() {
         return __classPrivateFieldGet(this, _CDPPage_client, "f");
     }
+    isServiceWorkerBypassed() {
+        return __classPrivateFieldGet(this, _CDPPage_serviceWorkerBypassed, "f");
+    }
     isDragInterceptionEnabled() {
         return __classPrivateFieldGet(this, _CDPPage_userDragInterceptionEnabled, "f");
     }
     isJavaScriptEnabled() {
-        return __classPrivateFieldGet(this, _CDPPage_javascriptEnabled, "f");
+        return __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").javascriptEnabled;
     }
     waitForFileChooser(options = {}) {
-        const needsEnable = __classPrivateFieldGet(this, _CDPPage_fileChooserPromises, "f").size === 0;
+        const needsEnable = __classPrivateFieldGet(this, _CDPPage_fileChooserDeferreds, "f").size === 0;
         const { timeout = __classPrivateFieldGet(this, _CDPPage_timeoutSettings, "f").timeout() } = options;
-        const promise = (0, DeferredPromise_js_1.createDeferredPromise)({
+        const deferred = Deferred_js_1.Deferred.create({
             message: `Waiting for \`FileChooser\` failed: ${timeout}ms exceeded`,
             timeout,
         });
-        __classPrivateFieldGet(this, _CDPPage_fileChooserPromises, "f").add(promise);
+        __classPrivateFieldGet(this, _CDPPage_fileChooserDeferreds, "f").add(deferred);
         let enablePromise;
         if (needsEnable) {
             enablePromise = __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.setInterceptFileChooserDialog', {
                 enabled: true,
             });
         }
-        return Promise.all([promise, enablePromise])
+        return Promise.all([deferred.valueOrThrow(), enablePromise])
             .then(([result]) => {
             return result;
         })
             .catch(error => {
-            __classPrivateFieldGet(this, _CDPPage_fileChooserPromises, "f").delete(promise);
+            __classPrivateFieldGet(this, _CDPPage_fileChooserDeferreds, "f").delete(deferred);
             throw error;
         });
     }
     async setGeolocation(options) {
-        const { longitude, latitude, accuracy = 0 } = options;
-        if (longitude < -180 || longitude > 180) {
-            throw new Error(`Invalid longitude "${longitude}": precondition -180 <= LONGITUDE <= 180 failed.`);
-        }
-        if (latitude < -90 || latitude > 90) {
-            throw new Error(`Invalid latitude "${latitude}": precondition -90 <= LATITUDE <= 90 failed.`);
-        }
-        if (accuracy < 0) {
-            throw new Error(`Invalid accuracy "${accuracy}": precondition 0 <= ACCURACY failed.`);
-        }
-        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setGeolocationOverride', {
-            longitude,
-            latitude,
-            accuracy,
-        });
+        return await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").setGeolocation(options);
     }
     target() {
         return __classPrivateFieldGet(this, _CDPPage_target, "f");
@@ -296,6 +292,10 @@ class CDPPage extends Page_js_1.Page {
     async setRequestInterception(value) {
         return __classPrivateFieldGet(this, _CDPPage_frameManager, "f").networkManager.setRequestInterception(value);
     }
+    async setBypassServiceWorker(bypass) {
+        __classPrivateFieldSet(this, _CDPPage_serviceWorkerBypassed, bypass, "f");
+        return __classPrivateFieldGet(this, _CDPPage_client, "f").send('Network.setBypassServiceWorker', { bypass });
+    }
     async setDragInterception(enabled) {
         __classPrivateFieldSet(this, _CDPPage_userDragInterceptionEnabled, enabled, "f");
         return __classPrivateFieldGet(this, _CDPPage_client, "f").send('Input.setInterceptDrags', { enabled });
@@ -315,34 +315,19 @@ class CDPPage extends Page_js_1.Page {
     getDefaultTimeout() {
         return __classPrivateFieldGet(this, _CDPPage_timeoutSettings, "f").timeout();
     }
-    async $(selector) {
-        return this.mainFrame().$(selector);
-    }
-    async $$(selector) {
-        return this.mainFrame().$$(selector);
-    }
     async evaluateHandle(pageFunction, ...args) {
+        pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluateHandle.name, pageFunction);
         const context = await this.mainFrame().executionContext();
         return context.evaluateHandle(pageFunction, ...args);
     }
     async queryObjects(prototypeHandle) {
         const context = await this.mainFrame().executionContext();
         (0, assert_js_1.assert)(!prototypeHandle.disposed, 'Prototype JSHandle is disposed!');
-        const remoteObject = prototypeHandle.remoteObject();
-        (0, assert_js_1.assert)(remoteObject.objectId, 'Prototype JSHandle must not be referencing primitive value');
+        (0, assert_js_1.assert)(prototypeHandle.id, 'Prototype JSHandle must not be referencing primitive value');
         const response = await context._client.send('Runtime.queryObjects', {
-            prototypeObjectId: remoteObject.objectId,
+            prototypeObjectId: prototypeHandle.id,
         });
         return (0, util_js_1.createJSHandle)(context, response.objects);
-    }
-    async $eval(selector, pageFunction, ...args) {
-        return this.mainFrame().$eval(selector, pageFunction, ...args);
-    }
-    async $$eval(selector, pageFunction, ...args) {
-        return this.mainFrame().$$eval(selector, pageFunction, ...args);
-    }
-    async $x(expression) {
-        return this.mainFrame().$x(expression);
     }
     async cookies(...urls) {
         const originalCookies = (await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Network.getCookies', {
@@ -391,27 +376,47 @@ class CDPPage extends Page_js_1.Page {
         return this.mainFrame().addStyleTag(options);
     }
     async exposeFunction(name, pptrFunction) {
-        if (__classPrivateFieldGet(this, _CDPPage_pageBindings, "f").has(name)) {
+        if (__classPrivateFieldGet(this, _CDPPage_bindings, "f").has(name)) {
             throw new Error(`Failed to add page binding with name ${name}: window['${name}'] already exists!`);
         }
-        let exposedFunction;
+        let binding;
         switch (typeof pptrFunction) {
             case 'function':
-                exposedFunction = pptrFunction;
+                binding = new Binding_js_1.Binding(name, pptrFunction);
                 break;
             default:
-                exposedFunction = pptrFunction.default;
+                binding = new Binding_js_1.Binding(name, pptrFunction.default);
                 break;
         }
-        __classPrivateFieldGet(this, _CDPPage_pageBindings, "f").set(name, exposedFunction);
+        __classPrivateFieldGet(this, _CDPPage_bindings, "f").set(name, binding);
         const expression = (0, util_js_1.pageBindingInitString)('exposedFun', name);
-        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Runtime.addBinding', { name: name });
-        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.addScriptToEvaluateOnNewDocument', {
+        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Runtime.addBinding', { name });
+        const { identifier } = await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.addScriptToEvaluateOnNewDocument', {
             source: expression,
         });
+        __classPrivateFieldGet(this, _CDPPage_exposedFunctions, "f").set(name, identifier);
         await Promise.all(this.frames().map(frame => {
             return frame.evaluate(expression).catch(util_js_1.debugError);
         }));
+    }
+    async removeExposedFunction(name) {
+        const exposedFun = __classPrivateFieldGet(this, _CDPPage_exposedFunctions, "f").get(name);
+        if (!exposedFun) {
+            throw new Error(`Failed to remove page binding with name ${name}: window['${name}'] does not exists!`);
+        }
+        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Runtime.removeBinding', { name });
+        await this.removeScriptToEvaluateOnNewDocument(exposedFun);
+        await Promise.all(this.frames().map(frame => {
+            return frame
+                .evaluate(name => {
+                // Removes the dangling Puppeteer binding wrapper.
+                // @ts-expect-error: In a different context.
+                globalThis[name] = undefined;
+            }, name)
+                .catch(util_js_1.debugError);
+        }));
+        __classPrivateFieldGet(this, _CDPPage_exposedFunctions, "f").delete(name);
+        __classPrivateFieldGet(this, _CDPPage_bindings, "f").delete(name);
     }
     async authenticate(credentials) {
         return __classPrivateFieldGet(this, _CDPPage_frameManager, "f").networkManager.authenticate(credentials);
@@ -430,13 +435,13 @@ class CDPPage extends Page_js_1.Page {
         return this.mainFrame().url();
     }
     async content() {
-        return await __classPrivateFieldGet(this, _CDPPage_frameManager, "f").mainFrame().content();
+        return await this.mainFrame().content();
     }
     async setContent(html, options = {}) {
-        await __classPrivateFieldGet(this, _CDPPage_frameManager, "f").mainFrame().setContent(html, options);
+        await this.mainFrame().setContent(html, options);
     }
     async goto(url, options = {}) {
-        return await __classPrivateFieldGet(this, _CDPPage_frameManager, "f").mainFrame().goto(url, options);
+        return await this.mainFrame().goto(url, options);
     }
     async reload(options) {
         const result = await Promise.all([
@@ -446,7 +451,7 @@ class CDPPage extends Page_js_1.Page {
         return result[0];
     }
     async waitForNavigation(options = {}) {
-        return await __classPrivateFieldGet(this, _CDPPage_frameManager, "f").mainFrame().waitForNavigation(options);
+        return await this.mainFrame().waitForNavigation(options);
     }
     async waitForRequest(urlOrPredicate, options = {}) {
         const { timeout = __classPrivateFieldGet(this, _CDPPage_timeoutSettings, "f").timeout() } = options;
@@ -458,7 +463,7 @@ class CDPPage extends Page_js_1.Page {
                 return !!(await urlOrPredicate(request));
             }
             return false;
-        }, timeout, __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_sessionClosePromise).call(this));
+        }, timeout, __classPrivateFieldGet(this, _CDPPage_sessionCloseDeferred, "f").valueOrThrow());
     }
     async waitForResponse(urlOrPredicate, options = {}) {
         const { timeout = __classPrivateFieldGet(this, _CDPPage_timeoutSettings, "f").timeout() } = options;
@@ -470,56 +475,11 @@ class CDPPage extends Page_js_1.Page {
                 return !!(await urlOrPredicate(response));
             }
             return false;
-        }, timeout, __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_sessionClosePromise).call(this));
+        }, timeout, __classPrivateFieldGet(this, _CDPPage_sessionCloseDeferred, "f").valueOrThrow());
     }
     async waitForNetworkIdle(options = {}) {
         const { idleTime = 500, timeout = __classPrivateFieldGet(this, _CDPPage_timeoutSettings, "f").timeout() } = options;
-        const networkManager = __classPrivateFieldGet(this, _CDPPage_frameManager, "f").networkManager;
-        let idleResolveCallback;
-        const idlePromise = new Promise(resolve => {
-            idleResolveCallback = resolve;
-        });
-        let abortRejectCallback;
-        const abortPromise = new Promise((_, reject) => {
-            abortRejectCallback = reject;
-        });
-        let idleTimer;
-        const onIdle = () => {
-            return idleResolveCallback();
-        };
-        const cleanup = () => {
-            idleTimer && clearTimeout(idleTimer);
-            abortRejectCallback(new Error('abort'));
-        };
-        const evaluate = () => {
-            idleTimer && clearTimeout(idleTimer);
-            if (networkManager.numRequestsInProgress() === 0) {
-                idleTimer = setTimeout(onIdle, idleTime);
-            }
-        };
-        evaluate();
-        const eventHandler = () => {
-            evaluate();
-            return false;
-        };
-        const listenToEvent = (event) => {
-            return (0, util_js_1.waitForEvent)(networkManager, event, eventHandler, timeout, abortPromise);
-        };
-        const eventPromises = [
-            listenToEvent(NetworkManager_js_1.NetworkManagerEmittedEvents.Request),
-            listenToEvent(NetworkManager_js_1.NetworkManagerEmittedEvents.Response),
-        ];
-        await Promise.race([
-            idlePromise,
-            ...eventPromises,
-            __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_sessionClosePromise).call(this),
-        ]).then(r => {
-            cleanup();
-            return r;
-        }, error => {
-            cleanup();
-            throw error;
-        });
+        await this._waitForNetworkIdle(__classPrivateFieldGet(this, _CDPPage_frameManager, "f").networkManager, idleTime, timeout, __classPrivateFieldGet(this, _CDPPage_sessionCloseDeferred, "f"));
     }
     async waitForFrame(urlOrPredicate, options = {}) {
         const { timeout = __classPrivateFieldGet(this, _CDPPage_timeoutSettings, "f").timeout() } = options;
@@ -538,9 +498,9 @@ class CDPPage extends Page_js_1.Page {
                 return value;
             };
         }
-        const eventRace = Promise.race([
-            (0, util_js_1.waitForEvent)(__classPrivateFieldGet(this, _CDPPage_frameManager, "f"), FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached, predicate, timeout, __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_sessionClosePromise).call(this)),
-            (0, util_js_1.waitForEvent)(__classPrivateFieldGet(this, _CDPPage_frameManager, "f"), FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated, predicate, timeout, __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_sessionClosePromise).call(this)),
+        const eventRace = Deferred_js_1.Deferred.race([
+            (0, util_js_1.waitForEvent)(__classPrivateFieldGet(this, _CDPPage_frameManager, "f"), FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached, predicate, timeout, __classPrivateFieldGet(this, _CDPPage_sessionCloseDeferred, "f").valueOrThrow()),
+            (0, util_js_1.waitForEvent)(__classPrivateFieldGet(this, _CDPPage_frameManager, "f"), FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated, predicate, timeout, __classPrivateFieldGet(this, _CDPPage_sessionCloseDeferred, "f").valueOrThrow()),
             ...this.frames().map(async (frame) => {
                 if (await predicate(frame)) {
                     return frame;
@@ -560,87 +520,28 @@ class CDPPage extends Page_js_1.Page {
         await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.bringToFront');
     }
     async setJavaScriptEnabled(enabled) {
-        if (__classPrivateFieldGet(this, _CDPPage_javascriptEnabled, "f") === enabled) {
-            return;
-        }
-        __classPrivateFieldSet(this, _CDPPage_javascriptEnabled, enabled, "f");
-        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setScriptExecutionDisabled', {
-            value: !enabled,
-        });
+        return await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").setJavaScriptEnabled(enabled);
     }
     async setBypassCSP(enabled) {
         await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.setBypassCSP', { enabled });
     }
     async emulateMediaType(type) {
-        (0, assert_js_1.assert)(type === 'screen' ||
-            type === 'print' ||
-            (type !== null && type !== void 0 ? type : undefined) === undefined, 'Unsupported media type: ' + type);
-        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setEmulatedMedia', {
-            media: type || '',
-        });
+        return await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").emulateMediaType(type);
     }
     async emulateCPUThrottling(factor) {
-        (0, assert_js_1.assert)(factor === null || factor >= 1, 'Throttling rate should be greater or equal to 1');
-        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setCPUThrottlingRate', {
-            rate: factor !== null ? factor : 1,
-        });
+        return await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").emulateCPUThrottling(factor);
     }
     async emulateMediaFeatures(features) {
-        if (!features) {
-            await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setEmulatedMedia', {});
-        }
-        if (Array.isArray(features)) {
-            for (const mediaFeature of features) {
-                const name = mediaFeature.name;
-                (0, assert_js_1.assert)(/^(?:prefers-(?:color-scheme|reduced-motion)|color-gamut)$/.test(name), 'Unsupported media feature: ' + name);
-            }
-            await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setEmulatedMedia', {
-                features: features,
-            });
-        }
+        return await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").emulateMediaFeatures(features);
     }
     async emulateTimezone(timezoneId) {
-        try {
-            await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setTimezoneOverride', {
-                timezoneId: timezoneId || '',
-            });
-        }
-        catch (error) {
-            if ((0, ErrorLike_js_1.isErrorLike)(error) && error.message.includes('Invalid timezone')) {
-                throw new Error(`Invalid timezone ID: ${timezoneId}`);
-            }
-            throw error;
-        }
+        return await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").emulateTimezone(timezoneId);
     }
     async emulateIdleState(overrides) {
-        if (overrides) {
-            await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setIdleOverride', {
-                isUserActive: overrides.isUserActive,
-                isScreenUnlocked: overrides.isScreenUnlocked,
-            });
-        }
-        else {
-            await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.clearIdleOverride');
-        }
+        return await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").emulateIdleState(overrides);
     }
     async emulateVisionDeficiency(type) {
-        const visionDeficiencies = new Set([
-            'none',
-            'achromatopsia',
-            'blurredVision',
-            'deuteranopia',
-            'protanopia',
-            'tritanopia',
-        ]);
-        try {
-            (0, assert_js_1.assert)(!type || visionDeficiencies.has(type), `Unsupported vision deficiency: ${type}`);
-            await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setEmulatedVisionDeficiency', {
-                type: type || 'none',
-            });
-        }
-        catch (error) {
-            throw error;
-        }
+        return await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").emulateVisionDeficiency(type);
     }
     async setViewport(viewport) {
         const needsReload = await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").emulateViewport(viewport);
@@ -653,12 +554,19 @@ class CDPPage extends Page_js_1.Page {
         return __classPrivateFieldGet(this, _CDPPage_viewport, "f");
     }
     async evaluate(pageFunction, ...args) {
-        return __classPrivateFieldGet(this, _CDPPage_frameManager, "f").mainFrame().evaluate(pageFunction, ...args);
+        pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluate.name, pageFunction);
+        return this.mainFrame().evaluate(pageFunction, ...args);
     }
     async evaluateOnNewDocument(pageFunction, ...args) {
         const source = (0, util_js_1.evaluationString)(pageFunction, ...args);
-        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.addScriptToEvaluateOnNewDocument', {
+        const { identifier } = await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.addScriptToEvaluateOnNewDocument', {
             source,
+        });
+        return { identifier };
+    }
+    async removeScriptToEvaluateOnNewDocument(identifier) {
+        await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.removeScriptToEvaluateOnNewDocument', {
+            identifier,
         });
     }
     async setCacheEnabled(enabled = true) {
@@ -722,26 +630,9 @@ class CDPPage extends Page_js_1.Page {
         });
     }
     async createPDFStream(options = {}) {
-        const { scale = 1, displayHeaderFooter = false, headerTemplate = '', footerTemplate = '', printBackground = false, landscape = false, pageRanges = '', preferCSSPageSize = false, margin = {}, omitBackground = false, timeout = 30000, } = options;
-        let paperWidth = 8.5;
-        let paperHeight = 11;
-        if (options.format) {
-            const format = PDFOptions_js_1._paperFormats[options.format.toLowerCase()];
-            (0, assert_js_1.assert)(format, 'Unknown paper format: ' + options.format);
-            paperWidth = format.width;
-            paperHeight = format.height;
-        }
-        else {
-            paperWidth = convertPrintParameterToInches(options.width) || paperWidth;
-            paperHeight =
-                convertPrintParameterToInches(options.height) || paperHeight;
-        }
-        const marginTop = convertPrintParameterToInches(margin.top) || 0;
-        const marginLeft = convertPrintParameterToInches(margin.left) || 0;
-        const marginBottom = convertPrintParameterToInches(margin.bottom) || 0;
-        const marginRight = convertPrintParameterToInches(margin.right) || 0;
+        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, timeout, } = this._getPDFOptions(options);
         if (omitBackground) {
-            await __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_setTransparentBackgroundColor).call(this);
+            await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").setTransparentBackgroundColor();
         }
         const printCommandPromise = __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.printToPDF', {
             transferMode: 'ReturnAsStream',
@@ -753,16 +644,16 @@ class CDPPage extends Page_js_1.Page {
             scale,
             paperWidth,
             paperHeight,
-            marginTop,
-            marginBottom,
-            marginLeft,
-            marginRight,
+            marginTop: margin.top,
+            marginBottom: margin.bottom,
+            marginLeft: margin.left,
+            marginRight: margin.right,
             pageRanges,
             preferCSSPageSize,
         });
         const result = await (0, util_js_1.waitWithTimeout)(printCommandPromise, 'Page.printToPDF', timeout);
         if (omitBackground) {
-            await __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_resetDefaultBackgroundColor).call(this);
+            await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").resetDefaultBackgroundColor();
         }
         (0, assert_js_1.assert)(result.stream, '`stream` is missing from `Page.printToPDF');
         return (0, util_js_1.getReadableFromProtocolStream)(__classPrivateFieldGet(this, _CDPPage_client, "f"), result.stream);
@@ -788,7 +679,7 @@ class CDPPage extends Page_js_1.Page {
             await connection.send('Target.closeTarget', {
                 targetId: __classPrivateFieldGet(this, _CDPPage_target, "f")._targetId,
             });
-            await __classPrivateFieldGet(this, _CDPPage_target, "f")._isClosedPromise;
+            await __classPrivateFieldGet(this, _CDPPage_target, "f")._isClosedDeferred.valueOrThrow();
         }
     }
     isClosed() {
@@ -797,39 +688,38 @@ class CDPPage extends Page_js_1.Page {
     get mouse() {
         return __classPrivateFieldGet(this, _CDPPage_mouse, "f");
     }
-    click(selector, options = {}) {
-        return this.mainFrame().click(selector, options);
-    }
-    focus(selector) {
-        return this.mainFrame().focus(selector);
-    }
-    hover(selector) {
-        return this.mainFrame().hover(selector);
-    }
-    select(selector, ...values) {
-        return this.mainFrame().select(selector, ...values);
-    }
-    tap(selector) {
-        return this.mainFrame().tap(selector);
-    }
-    type(selector, text, options) {
-        return this.mainFrame().type(selector, text, options);
-    }
-    waitForTimeout(milliseconds) {
-        return this.mainFrame().waitForTimeout(milliseconds);
-    }
-    async waitForSelector(selector, options = {}) {
-        return await this.mainFrame().waitForSelector(selector, options);
-    }
     waitForXPath(xpath, options = {}) {
         return this.mainFrame().waitForXPath(xpath, options);
     }
-    waitForFunction(pageFunction, options = {}, ...args) {
-        return this.mainFrame().waitForFunction(pageFunction, options, ...args);
+    /**
+     * This method is typically coupled with an action that triggers a device
+     * request from an api such as WebBluetooth.
+     *
+     * :::caution
+     *
+     * This must be called before the device request is made. It will not return a
+     * currently active device prompt.
+     *
+     * :::
+     *
+     * @example
+     *
+     * ```ts
+     * const [devicePrompt] = Promise.all([
+     *   page.waitForDevicePrompt(),
+     *   page.click('#connect-bluetooth'),
+     * ]);
+     * await devicePrompt.select(
+     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+     * );
+     * ```
+     */
+    waitForDevicePrompt(options = {}) {
+        return this.mainFrame().waitForDevicePrompt(options);
     }
 }
 exports.CDPPage = CDPPage;
-_CDPPage_closed = new WeakMap(), _CDPPage_client = new WeakMap(), _CDPPage_target = new WeakMap(), _CDPPage_keyboard = new WeakMap(), _CDPPage_mouse = new WeakMap(), _CDPPage_timeoutSettings = new WeakMap(), _CDPPage_touchscreen = new WeakMap(), _CDPPage_accessibility = new WeakMap(), _CDPPage_frameManager = new WeakMap(), _CDPPage_emulationManager = new WeakMap(), _CDPPage_tracing = new WeakMap(), _CDPPage_pageBindings = new WeakMap(), _CDPPage_coverage = new WeakMap(), _CDPPage_javascriptEnabled = new WeakMap(), _CDPPage_viewport = new WeakMap(), _CDPPage_screenshotTaskQueue = new WeakMap(), _CDPPage_workers = new WeakMap(), _CDPPage_fileChooserPromises = new WeakMap(), _CDPPage_disconnectPromise = new WeakMap(), _CDPPage_userDragInterceptionEnabled = new WeakMap(), _CDPPage_onDetachedFromTarget = new WeakMap(), _CDPPage_onAttachedToTarget = new WeakMap(), _CDPPage_instances = new WeakSet(), _CDPPage_initialize = async function _CDPPage_initialize() {
+_CDPPage_closed = new WeakMap(), _CDPPage_client = new WeakMap(), _CDPPage_target = new WeakMap(), _CDPPage_keyboard = new WeakMap(), _CDPPage_mouse = new WeakMap(), _CDPPage_timeoutSettings = new WeakMap(), _CDPPage_touchscreen = new WeakMap(), _CDPPage_accessibility = new WeakMap(), _CDPPage_frameManager = new WeakMap(), _CDPPage_emulationManager = new WeakMap(), _CDPPage_tracing = new WeakMap(), _CDPPage_bindings = new WeakMap(), _CDPPage_exposedFunctions = new WeakMap(), _CDPPage_coverage = new WeakMap(), _CDPPage_viewport = new WeakMap(), _CDPPage_screenshotTaskQueue = new WeakMap(), _CDPPage_workers = new WeakMap(), _CDPPage_fileChooserDeferreds = new WeakMap(), _CDPPage_sessionCloseDeferred = new WeakMap(), _CDPPage_serviceWorkerBypassed = new WeakMap(), _CDPPage_userDragInterceptionEnabled = new WeakMap(), _CDPPage_onDetachedFromTarget = new WeakMap(), _CDPPage_onAttachedToTarget = new WeakMap(), _CDPPage_instances = new WeakSet(), _CDPPage_initialize = async function _CDPPage_initialize() {
     try {
         await Promise.all([
             __classPrivateFieldGet(this, _CDPPage_frameManager, "f").initialize(),
@@ -846,7 +736,7 @@ _CDPPage_closed = new WeakMap(), _CDPPage_client = new WeakMap(), _CDPPage_targe
         }
     }
 }, _CDPPage_onFileChooser = async function _CDPPage_onFileChooser(event) {
-    if (!__classPrivateFieldGet(this, _CDPPage_fileChooserPromises, "f").size) {
+    if (!__classPrivateFieldGet(this, _CDPPage_fileChooserDeferreds, "f").size) {
         return;
     }
     const frame = __classPrivateFieldGet(this, _CDPPage_frameManager, "f").frame(event.frameId);
@@ -854,10 +744,10 @@ _CDPPage_closed = new WeakMap(), _CDPPage_client = new WeakMap(), _CDPPage_targe
     // This is guaranteed to be an HTMLInputElement handle by the event.
     const handle = (await frame.worlds[IsolatedWorlds_js_1.MAIN_WORLD].adoptBackendNode(event.backendNodeId));
     const fileChooser = new FileChooser_js_1.FileChooser(handle, event);
-    for (const promise of __classPrivateFieldGet(this, _CDPPage_fileChooserPromises, "f")) {
+    for (const promise of __classPrivateFieldGet(this, _CDPPage_fileChooserDeferreds, "f")) {
         promise.resolve(fileChooser);
     }
-    __classPrivateFieldGet(this, _CDPPage_fileChooserPromises, "f").clear();
+    __classPrivateFieldGet(this, _CDPPage_fileChooserDeferreds, "f").clear();
 }, _CDPPage_onTargetCrashed = function _CDPPage_onTargetCrashed() {
     this.emit('error', new Error('Page crashed!'));
 }, _CDPPage_onLogEntryAdded = function _CDPPage_onLogEntryAdded(event) {
@@ -884,10 +774,7 @@ _CDPPage_closed = new WeakMap(), _CDPPage_client = new WeakMap(), _CDPPage_targe
     }
     return result;
 }, _CDPPage_handleException = function _CDPPage_handleException(exceptionDetails) {
-    const message = (0, util_js_1.getExceptionMessage)(exceptionDetails);
-    const err = new Error(message);
-    err.stack = ''; // Don't report clientside error with a node stack attached
-    this.emit("pageerror" /* PageEmittedEvents.PageError */, err);
+    this.emit("pageerror" /* PageEmittedEvents.PageError */, (0, util_js_1.createClientError)(exceptionDetails));
 }, _CDPPage_onConsoleAPI = async function _CDPPage_onConsoleAPI(event) {
     if (event.executionContextId === 0) {
         // DevTools protocol stores the last 1000 console messages. These
@@ -924,31 +811,16 @@ _CDPPage_closed = new WeakMap(), _CDPPage_client = new WeakMap(), _CDPPage_targe
         // called before our wrapper was initialized.
         return;
     }
-    const { type, name, seq, args } = payload;
-    if (type !== 'exposedFun' || !__classPrivateFieldGet(this, _CDPPage_pageBindings, "f").has(name)) {
+    const { type, name, seq, args, isTrivial } = payload;
+    if (type !== 'exposedFun') {
         return;
     }
-    let expression = null;
-    try {
-        const pageBinding = __classPrivateFieldGet(this, _CDPPage_pageBindings, "f").get(name);
-        (0, assert_js_1.assert)(pageBinding);
-        const result = await pageBinding(...args);
-        expression = (0, util_js_1.pageBindingDeliverResultString)(name, seq, result);
+    const context = __classPrivateFieldGet(this, _CDPPage_frameManager, "f").executionContextById(event.executionContextId, __classPrivateFieldGet(this, _CDPPage_client, "f"));
+    if (!context) {
+        return;
     }
-    catch (error) {
-        if ((0, ErrorLike_js_1.isErrorLike)(error)) {
-            expression = (0, util_js_1.pageBindingDeliverErrorString)(name, seq, error.message, error.stack);
-        }
-        else {
-            expression = (0, util_js_1.pageBindingDeliverErrorValueString)(name, seq, error);
-        }
-    }
-    __classPrivateFieldGet(this, _CDPPage_client, "f")
-        .send('Runtime.evaluate', {
-        expression,
-        contextId: event.executionContextId,
-    })
-        .catch(util_js_1.debugError);
+    const binding = __classPrivateFieldGet(this, _CDPPage_bindings, "f").get(name);
+    await binding?.run(context, seq, args, isTrivial);
 }, _CDPPage_addConsoleMessage = function _CDPPage_addConsoleMessage(eventType, args, stackTrace) {
     if (!this.listenerCount("console" /* PageEmittedEvents.Console */)) {
         args.forEach(arg => {
@@ -992,29 +864,6 @@ _CDPPage_closed = new WeakMap(), _CDPPage_client = new WeakMap(), _CDPPage_targe
     (0, assert_js_1.assert)(dialogType, 'Unknown javascript dialog type: ' + event.type);
     const dialog = new Dialog_js_1.Dialog(__classPrivateFieldGet(this, _CDPPage_client, "f"), dialogType, event.message, event.defaultPrompt);
     this.emit("dialog" /* PageEmittedEvents.Dialog */, dialog);
-}, _CDPPage_resetDefaultBackgroundColor = 
-/**
- * Resets default white background
- */
-async function _CDPPage_resetDefaultBackgroundColor() {
-    await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setDefaultBackgroundColorOverride');
-}, _CDPPage_setTransparentBackgroundColor = 
-/**
- * Hides default white background
- */
-async function _CDPPage_setTransparentBackgroundColor() {
-    await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Emulation.setDefaultBackgroundColorOverride', {
-        color: { r: 0, g: 0, b: 0, a: 0 },
-    });
-}, _CDPPage_sessionClosePromise = function _CDPPage_sessionClosePromise() {
-    if (!__classPrivateFieldGet(this, _CDPPage_disconnectPromise, "f")) {
-        __classPrivateFieldSet(this, _CDPPage_disconnectPromise, new Promise(fulfill => {
-            return __classPrivateFieldGet(this, _CDPPage_client, "f").once(Connection_js_1.CDPSessionEmittedEvents.Disconnected, () => {
-                return fulfill(new Error('Target closed'));
-            });
-        }), "f");
-    }
-    return __classPrivateFieldGet(this, _CDPPage_disconnectPromise, "f");
 }, _CDPPage_go = async function _CDPPage_go(delta, options) {
     const history = await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.getNavigationHistory');
     const entry = history.entries[history.currentIndex + delta];
@@ -1027,12 +876,11 @@ async function _CDPPage_setTransparentBackgroundColor() {
     ]);
     return result[0];
 }, _CDPPage_screenshotTask = async function _CDPPage_screenshotTask(format, options = {}) {
-    var _a, _b;
     await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Target.activateTarget', {
         targetId: __classPrivateFieldGet(this, _CDPPage_target, "f")._targetId,
     });
     let clip = options.clip ? processClip(options.clip) : undefined;
-    let captureBeyondViewport = (_a = options.captureBeyondViewport) !== null && _a !== void 0 ? _a : true;
+    let captureBeyondViewport = options.captureBeyondViewport ?? true;
     const fromSurface = options.fromSurface;
     if (options.fullPage) {
         // Overwrite clip for full page.
@@ -1059,39 +907,29 @@ async function _CDPPage_setTransparentBackgroundColor() {
     }
     const shouldSetDefaultBackground = options.omitBackground && (format === 'png' || format === 'webp');
     if (shouldSetDefaultBackground) {
-        await __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_setTransparentBackgroundColor).call(this);
+        await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").setTransparentBackgroundColor();
     }
     const result = await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.captureScreenshot', {
         format,
         quality: options.quality,
         clip: clip && {
             ...clip,
-            scale: (_b = clip.scale) !== null && _b !== void 0 ? _b : 1,
+            scale: clip.scale ?? 1,
         },
         captureBeyondViewport,
         fromSurface,
     });
     if (shouldSetDefaultBackground) {
-        await __classPrivateFieldGet(this, _CDPPage_instances, "m", _CDPPage_resetDefaultBackgroundColor).call(this);
+        await __classPrivateFieldGet(this, _CDPPage_emulationManager, "f").resetDefaultBackgroundColor();
     }
     if (options.fullPage && __classPrivateFieldGet(this, _CDPPage_viewport, "f")) {
         await this.setViewport(__classPrivateFieldGet(this, _CDPPage_viewport, "f"));
     }
-    const buffer = options.encoding === 'base64'
-        ? result.data
-        : Buffer.from(result.data, 'base64');
-    if (options.path) {
-        try {
-            const fs = (await (0, util_js_1.importFS)()).promises;
-            await fs.writeFile(options.path, buffer);
-        }
-        catch (error) {
-            if (error instanceof TypeError) {
-                throw new Error('Screenshots can only be written to a file path in a Node-like environment.');
-            }
-            throw error;
-        }
+    if (options.encoding === 'base64') {
+        return result.data;
     }
+    const buffer = Buffer.from(result.data, 'base64');
+    await this._maybeWriteBufferToFile(options.path, buffer);
     return buffer;
     function processClip(clip) {
         const x = Math.round(clip.x);
@@ -1116,41 +954,4 @@ const supportedMetrics = new Set([
     'JSHeapUsedSize',
     'JSHeapTotalSize',
 ]);
-const unitToPixels = {
-    px: 1,
-    in: 96,
-    cm: 37.8,
-    mm: 3.78,
-};
-function convertPrintParameterToInches(parameter) {
-    if (typeof parameter === 'undefined') {
-        return undefined;
-    }
-    let pixels;
-    if ((0, util_js_1.isNumber)(parameter)) {
-        // Treat numbers as pixel values to be aligned with phantom's paperSize.
-        pixels = parameter;
-    }
-    else if ((0, util_js_1.isString)(parameter)) {
-        const text = parameter;
-        let unit = text.substring(text.length - 2).toLowerCase();
-        let valueText = '';
-        if (unit in unitToPixels) {
-            valueText = text.substring(0, text.length - 2);
-        }
-        else {
-            // In case of unknown unit try to parse the whole parameter as number of pixels.
-            // This is consistent with phantom's paperSize behavior.
-            unit = 'px';
-            valueText = text;
-        }
-        const value = Number(valueText);
-        (0, assert_js_1.assert)(!isNaN(value), 'Failed to parse parameter value: ' + text);
-        pixels = value * unitToPixels[unit];
-    }
-    else {
-        throw new Error('page.pdf() Cannot handle parameter type: ' + typeof parameter);
-    }
-    return pixels / 96;
-}
 //# sourceMappingURL=Page.js.map

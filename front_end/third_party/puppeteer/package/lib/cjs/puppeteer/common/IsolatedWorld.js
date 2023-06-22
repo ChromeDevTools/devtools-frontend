@@ -25,17 +25,15 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var _IsolatedWorld_instances, _a, _IsolatedWorld_frame, _IsolatedWorld_document, _IsolatedWorld_context, _IsolatedWorld_detached, _IsolatedWorld_ctxBindings, _IsolatedWorld_boundFunctions, _IsolatedWorld_taskManager, _IsolatedWorld_bindingIdentifier, _IsolatedWorld_client_get, _IsolatedWorld_frameManager_get, _IsolatedWorld_timeoutSettings_get, _IsolatedWorld_settingUpBinding, _IsolatedWorld_onBindingCalled;
+var _IsolatedWorld_instances, _IsolatedWorld_frame, _IsolatedWorld_document, _IsolatedWorld_context, _IsolatedWorld_detached, _IsolatedWorld_contextBindings, _IsolatedWorld_bindings, _IsolatedWorld_taskManager, _IsolatedWorld_client_get, _IsolatedWorld_frameManager_get, _IsolatedWorld_timeoutSettings_get, _IsolatedWorld_mutex, _IsolatedWorld_onBindingCalled, _Mutex_locked, _Mutex_acquirers;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IsolatedWorld = void 0;
 const assert_js_1 = require("../util/assert.js");
-const DeferredPromise_js_1 = require("../util/DeferredPromise.js");
-const ErrorLike_js_1 = require("../util/ErrorLike.js");
+const Deferred_js_1 = require("../util/Deferred.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const LifecycleWatcher_js_1 = require("./LifecycleWatcher.js");
 const util_js_1 = require("./util.js");
 const WaitTask_js_1 = require("./WaitTask.js");
-const LazyArg_js_1 = require("./LazyArg.js");
 /**
  * @internal
  */
@@ -43,29 +41,25 @@ class IsolatedWorld {
     get taskManager() {
         return __classPrivateFieldGet(this, _IsolatedWorld_taskManager, "f");
     }
-    get _boundFunctions() {
-        return __classPrivateFieldGet(this, _IsolatedWorld_boundFunctions, "f");
+    get _bindings() {
+        return __classPrivateFieldGet(this, _IsolatedWorld_bindings, "f");
     }
     constructor(frame) {
         _IsolatedWorld_instances.add(this);
         _IsolatedWorld_frame.set(this, void 0);
         _IsolatedWorld_document.set(this, void 0);
-        _IsolatedWorld_context.set(this, (0, DeferredPromise_js_1.createDeferredPromise)());
+        _IsolatedWorld_context.set(this, Deferred_js_1.Deferred.create());
         _IsolatedWorld_detached.set(this, false);
         // Set of bindings that have been registered in the current context.
-        _IsolatedWorld_ctxBindings.set(this, new Set());
+        _IsolatedWorld_contextBindings.set(this, new Set());
         // Contains mapping from functions that should be bound to Puppeteer functions.
-        _IsolatedWorld_boundFunctions.set(this, new Map());
+        _IsolatedWorld_bindings.set(this, new Map());
         _IsolatedWorld_taskManager.set(this, new WaitTask_js_1.TaskManager());
         // If multiple waitFor are set up asynchronously, we need to wait for the
         // first one to set up the binding in the page before running the others.
-        _IsolatedWorld_settingUpBinding.set(this, null);
+        _IsolatedWorld_mutex.set(this, new Mutex());
         _IsolatedWorld_onBindingCalled.set(this, async (event) => {
             let payload;
-            if (!this.hasContext()) {
-                return;
-            }
-            const context = await this.executionContext();
             try {
                 payload = JSON.parse(event.payload);
             }
@@ -74,37 +68,23 @@ class IsolatedWorld {
                 // called before our wrapper was initialized.
                 return;
             }
-            const { type, name, seq, args } = payload;
-            if (type !== 'internal' ||
-                !__classPrivateFieldGet(this, _IsolatedWorld_ctxBindings, "f").has(__classPrivateFieldGet(IsolatedWorld, _a, "f", _IsolatedWorld_bindingIdentifier).call(IsolatedWorld, name, context._contextId))) {
+            const { type, name, seq, args, isTrivial } = payload;
+            if (type !== 'internal') {
                 return;
             }
-            if (context._contextId !== event.executionContextId) {
+            if (!__classPrivateFieldGet(this, _IsolatedWorld_contextBindings, "f").has(name)) {
                 return;
             }
             try {
-                const fn = this._boundFunctions.get(name);
-                if (!fn) {
-                    throw new Error(`Bound function $name is not found`);
-                }
-                const result = await fn(...args);
-                await context.evaluate((name, seq, result) => {
-                    // @ts-expect-error Code is evaluated in a different context.
-                    const callbacks = self[name].callbacks;
-                    callbacks.get(seq).resolve(result);
-                    callbacks.delete(seq);
-                }, name, seq, result);
-            }
-            catch (error) {
-                // The WaitTask may already have been resolved by timing out, or the
-                // execution context may have been destroyed.
-                // In both caes, the promises above are rejected with a protocol error.
-                // We can safely ignores these, as the WaitTask is re-installed in
-                // the next execution context if needed.
-                if (error.message.includes('Protocol error')) {
+                const context = await __classPrivateFieldGet(this, _IsolatedWorld_context, "f").valueOrThrow();
+                if (event.executionContextId !== context._contextId) {
                     return;
                 }
-                (0, util_js_1.debugError)(error);
+                const binding = this._bindings.get(name);
+                await binding?.run(context, seq, args, isTrivial);
+            }
+            catch (err) {
+                (0, util_js_1.debugError)(err);
             }
         });
         // Keep own reference to client because it might differ from the FrameManager's
@@ -117,12 +97,12 @@ class IsolatedWorld {
     }
     clearContext() {
         __classPrivateFieldSet(this, _IsolatedWorld_document, undefined, "f");
-        __classPrivateFieldSet(this, _IsolatedWorld_context, (0, DeferredPromise_js_1.createDeferredPromise)(), "f");
+        __classPrivateFieldSet(this, _IsolatedWorld_context, Deferred_js_1.Deferred.create(), "f");
     }
     setContext(context) {
-        __classPrivateFieldGet(this, _IsolatedWorld_ctxBindings, "f").clear();
+        __classPrivateFieldGet(this, _IsolatedWorld_contextBindings, "f").clear();
         __classPrivateFieldGet(this, _IsolatedWorld_context, "f").resolve(context);
-        __classPrivateFieldGet(this, _IsolatedWorld_taskManager, "f").rerunAll();
+        void __classPrivateFieldGet(this, _IsolatedWorld_taskManager, "f").rerunAll();
     }
     hasContext() {
         return __classPrivateFieldGet(this, _IsolatedWorld_context, "f").resolved();
@@ -139,13 +119,15 @@ class IsolatedWorld {
         if (__classPrivateFieldGet(this, _IsolatedWorld_context, "f") === null) {
             throw new Error(`Execution content promise is missing`);
         }
-        return __classPrivateFieldGet(this, _IsolatedWorld_context, "f");
+        return __classPrivateFieldGet(this, _IsolatedWorld_context, "f").valueOrThrow();
     }
     async evaluateHandle(pageFunction, ...args) {
+        pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluateHandle.name, pageFunction);
         const context = await this.executionContext();
         return context.evaluateHandle(pageFunction, ...args);
     }
     async evaluate(pageFunction, ...args) {
+        pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluate.name, pageFunction);
         const context = await this.executionContext();
         return context.evaluate(pageFunction, ...args);
     }
@@ -172,36 +154,23 @@ class IsolatedWorld {
         return document.$x(expression);
     }
     async $eval(selector, pageFunction, ...args) {
+        pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.$eval.name, pageFunction);
         const document = await this.document();
         return document.$eval(selector, pageFunction, ...args);
     }
     async $$eval(selector, pageFunction, ...args) {
+        pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.$$eval.name, pageFunction);
         const document = await this.document();
         return document.$$eval(selector, pageFunction, ...args);
     }
     async content() {
-        return await this.evaluate(() => {
-            let retVal = '';
-            if (document.doctype) {
-                retVal = new XMLSerializer().serializeToString(document.doctype);
-            }
-            if (document.documentElement) {
-                retVal += document.documentElement.outerHTML;
-            }
-            return retVal;
-        });
+        return await this.evaluate(util_js_1.getPageContent);
     }
     async setContent(html, options = {}) {
         const { waitUntil = ['load'], timeout = __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_timeoutSettings_get).navigationTimeout(), } = options;
-        // We rely upon the fact that document.open() will reset frame lifecycle with "init"
-        // lifecycle event. @see https://crrev.com/608658
-        await this.evaluate(html => {
-            document.open();
-            document.write(html);
-            document.close();
-        }, html);
+        await (0, util_js_1.setPageContent)(this, html);
         const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(__classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_frameManager_get), __classPrivateFieldGet(this, _IsolatedWorld_frame, "f"), waitUntil, timeout);
-        const error = await Promise.race([
+        const error = await Deferred_js_1.Deferred.race([
             watcher.timeoutOrTerminationPromise(),
             watcher.lifecyclePromise(),
         ]);
@@ -248,90 +217,53 @@ class IsolatedWorld {
         await handle.dispose();
     }
     async _addBindingToContext(context, name) {
-        // Previous operation added the binding so we are done.
-        if (__classPrivateFieldGet(this, _IsolatedWorld_ctxBindings, "f").has(__classPrivateFieldGet(IsolatedWorld, _a, "f", _IsolatedWorld_bindingIdentifier).call(IsolatedWorld, name, context._contextId))) {
+        if (__classPrivateFieldGet(this, _IsolatedWorld_contextBindings, "f").has(name)) {
             return;
         }
-        // Wait for other operation to finish
-        if (__classPrivateFieldGet(this, _IsolatedWorld_settingUpBinding, "f")) {
-            await __classPrivateFieldGet(this, _IsolatedWorld_settingUpBinding, "f");
-            return this._addBindingToContext(context, name);
-        }
-        const bind = async (name) => {
-            const expression = (0, util_js_1.pageBindingInitString)('internal', name);
-            try {
-                // TODO: In theory, it would be enough to call this just once
-                await context._client.send('Runtime.addBinding', {
+        await __classPrivateFieldGet(this, _IsolatedWorld_mutex, "f").acquire();
+        try {
+            await context._client.send('Runtime.addBinding', context._contextName
+                ? {
                     name,
                     executionContextName: context._contextName,
+                }
+                : {
+                    name,
+                    executionContextId: context._contextId,
                 });
-                await context.evaluate(expression);
-            }
-            catch (error) {
-                // We could have tried to evaluate in a context which was already
-                // destroyed. This happens, for example, if the page is navigated while
-                // we are trying to add the binding
-                if (error instanceof Error) {
-                    // Destroyed context.
-                    if (error.message.includes('Execution context was destroyed')) {
-                        return;
-                    }
-                    // Missing context.
-                    if (error.message.includes('Cannot find context with specified id')) {
-                        return;
-                    }
-                }
-                (0, util_js_1.debugError)(error);
-                return;
-            }
-            __classPrivateFieldGet(this, _IsolatedWorld_ctxBindings, "f").add(__classPrivateFieldGet(IsolatedWorld, _a, "f", _IsolatedWorld_bindingIdentifier).call(IsolatedWorld, name, context._contextId));
-        };
-        __classPrivateFieldSet(this, _IsolatedWorld_settingUpBinding, bind(name), "f");
-        await __classPrivateFieldGet(this, _IsolatedWorld_settingUpBinding, "f");
-        __classPrivateFieldSet(this, _IsolatedWorld_settingUpBinding, null, "f");
-    }
-    async _waitForSelectorInPage(queryOne, root, selector, options, bindings = new Map()) {
-        const { visible: waitForVisible = false, hidden: waitForHidden = false, timeout = __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_timeoutSettings_get).timeout(), } = options;
-        try {
-            const handle = await this.waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {
-                if (!PuppeteerUtil) {
-                    return;
-                }
-                const node = (await PuppeteerUtil.createFunction(query)(root || document, selector, PuppeteerUtil));
-                return PuppeteerUtil.checkVisibility(node, visible);
-            }, {
-                bindings,
-                polling: waitForVisible || waitForHidden ? 'raf' : 'mutation',
-                root,
-                timeout,
-            }, LazyArg_js_1.LazyArg.create(context => {
-                return context.puppeteerUtil;
-            }), queryOne.toString(), selector, root, waitForVisible ? true : waitForHidden ? false : undefined);
-            const elementHandle = handle.asElement();
-            if (!elementHandle) {
-                await handle.dispose();
-                return null;
-            }
-            return elementHandle;
+            await context.evaluate(util_js_1.addPageBinding, 'internal', name);
+            __classPrivateFieldGet(this, _IsolatedWorld_contextBindings, "f").add(name);
         }
         catch (error) {
-            if (!(0, ErrorLike_js_1.isErrorLike)(error)) {
-                throw error;
+            // We could have tried to evaluate in a context which was already
+            // destroyed. This happens, for example, if the page is navigated while
+            // we are trying to add the binding
+            if (error instanceof Error) {
+                // Destroyed context.
+                if (error.message.includes('Execution context was destroyed')) {
+                    return;
+                }
+                // Missing context.
+                if (error.message.includes('Cannot find context with specified id')) {
+                    return;
+                }
             }
-            error.message = `Waiting for selector \`${selector}\` failed: ${error.message}`;
-            throw error;
+            (0, util_js_1.debugError)(error);
+        }
+        finally {
+            __classPrivateFieldGet(this, _IsolatedWorld_mutex, "f").release();
         }
     }
     waitForFunction(pageFunction, options = {}, ...args) {
-        const { polling = 'raf', timeout = __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_timeoutSettings_get).timeout(), bindings, root, } = options;
+        const { polling = 'raf', timeout = __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_timeoutSettings_get).timeout(), root, signal, } = options;
         if (typeof polling === 'number' && polling < 0) {
             throw new Error('Cannot poll with non-positive interval');
         }
         const waitTask = new WaitTask_js_1.WaitTask(this, {
-            bindings,
             polling,
             root,
             timeout,
+            signal,
         }, pageFunction, ...args);
         return waitTask.result;
     }
@@ -349,28 +281,57 @@ class IsolatedWorld {
         return (0, util_js_1.createJSHandle)(executionContext, object);
     }
     async adoptHandle(handle) {
-        const executionContext = await this.executionContext();
-        (0, assert_js_1.assert)(handle.executionContext() !== executionContext, 'Cannot adopt handle that already belongs to this execution context');
+        const context = await this.executionContext();
+        (0, assert_js_1.assert)(handle.executionContext() !== context, 'Cannot adopt handle that already belongs to this execution context');
         const nodeInfo = await __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_client_get).send('DOM.describeNode', {
-            objectId: handle.remoteObject().objectId,
+            objectId: handle.id,
         });
         return (await this.adoptBackendNode(nodeInfo.node.backendNodeId));
     }
     async transferHandle(handle) {
-        const result = await this.adoptHandle(handle);
+        const context = await this.executionContext();
+        if (handle.executionContext() === context) {
+            return handle;
+        }
+        const info = await __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_client_get).send('DOM.describeNode', {
+            objectId: handle.remoteObject().objectId,
+        });
+        const newHandle = (await this.adoptBackendNode(info.node.backendNodeId));
         await handle.dispose();
-        return result;
+        return newHandle;
     }
 }
 exports.IsolatedWorld = IsolatedWorld;
-_a = IsolatedWorld, _IsolatedWorld_frame = new WeakMap(), _IsolatedWorld_document = new WeakMap(), _IsolatedWorld_context = new WeakMap(), _IsolatedWorld_detached = new WeakMap(), _IsolatedWorld_ctxBindings = new WeakMap(), _IsolatedWorld_boundFunctions = new WeakMap(), _IsolatedWorld_taskManager = new WeakMap(), _IsolatedWorld_settingUpBinding = new WeakMap(), _IsolatedWorld_onBindingCalled = new WeakMap(), _IsolatedWorld_instances = new WeakSet(), _IsolatedWorld_client_get = function _IsolatedWorld_client_get() {
+_IsolatedWorld_frame = new WeakMap(), _IsolatedWorld_document = new WeakMap(), _IsolatedWorld_context = new WeakMap(), _IsolatedWorld_detached = new WeakMap(), _IsolatedWorld_contextBindings = new WeakMap(), _IsolatedWorld_bindings = new WeakMap(), _IsolatedWorld_taskManager = new WeakMap(), _IsolatedWorld_mutex = new WeakMap(), _IsolatedWorld_onBindingCalled = new WeakMap(), _IsolatedWorld_instances = new WeakSet(), _IsolatedWorld_client_get = function _IsolatedWorld_client_get() {
     return __classPrivateFieldGet(this, _IsolatedWorld_frame, "f")._client();
 }, _IsolatedWorld_frameManager_get = function _IsolatedWorld_frameManager_get() {
     return __classPrivateFieldGet(this, _IsolatedWorld_frame, "f")._frameManager;
 }, _IsolatedWorld_timeoutSettings_get = function _IsolatedWorld_timeoutSettings_get() {
     return __classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_frameManager_get).timeoutSettings;
 };
-_IsolatedWorld_bindingIdentifier = { value: (name, contextId) => {
-        return `${name}_${contextId}`;
-    } };
+class Mutex {
+    constructor() {
+        _Mutex_locked.set(this, false);
+        _Mutex_acquirers.set(this, []);
+    }
+    // This is FIFO.
+    acquire() {
+        if (!__classPrivateFieldGet(this, _Mutex_locked, "f")) {
+            __classPrivateFieldSet(this, _Mutex_locked, true, "f");
+            return Promise.resolve();
+        }
+        const deferred = Deferred_js_1.Deferred.create();
+        __classPrivateFieldGet(this, _Mutex_acquirers, "f").push(deferred.resolve.bind(deferred));
+        return deferred.valueOrThrow();
+    }
+    release() {
+        const resolve = __classPrivateFieldGet(this, _Mutex_acquirers, "f").shift();
+        if (!resolve) {
+            __classPrivateFieldSet(this, _Mutex_locked, false, "f");
+            return;
+        }
+        resolve();
+    }
+}
+_Mutex_locked = new WeakMap(), _Mutex_acquirers = new WeakMap();
 //# sourceMappingURL=IsolatedWorld.js.map

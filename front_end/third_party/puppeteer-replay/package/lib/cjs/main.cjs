@@ -875,10 +875,10 @@ class PuppeteerStringifyExtension extends StringifyExtension {
         _PuppeteerStringifyExtension_instances.add(this);
     }
     async beforeAllSteps(out, flow) {
-        out.appendLine("const puppeteer = require('puppeteer'); // v13.0.0 or later");
+        out.appendLine("const puppeteer = require('puppeteer'); // v19.11.1 or later");
         out.appendLine('');
         out.appendLine('(async () => {').startBlock();
-        out.appendLine('const browser = await puppeteer.launch();');
+        out.appendLine("const browser = await puppeteer.launch({headless: 'new'});");
         out.appendLine('const page = await browser.newPage();');
         out.appendLine(`const timeout = ${flow.timeout || defaultTimeout};`);
         out.appendLine('page.setDefaultTimeout(timeout);');
@@ -963,16 +963,7 @@ _PuppeteerStringifyExtension_instances = new WeakSet(), _PuppeteerStringifyExten
 }, _PuppeteerStringifyExtension_appendDoubleClickStep = function _PuppeteerStringifyExtension_appendDoubleClickStep(out, step) {
     __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
     out.appendLine('await element.click({');
-    if (step.button) {
-        out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
-    }
-    out.appendLine('  offset: {');
-    out.appendLine(`    x: ${step.offsetX},`);
-    out.appendLine(`    y: ${step.offsetY},`);
-    out.appendLine('  },');
-    out.appendLine('});');
-    out.appendLine('await element.click({');
-    out.appendLine(`  clickCount: 2,`);
+    out.appendLine(`  count: 2,`);
     if (step.duration) {
         out.appendLine(`  delay: ${step.duration},`);
     }
@@ -1562,14 +1553,7 @@ class PuppeteerRunnerExtension extends RunnerExtension {
                     }
                     startWaitingForEvents();
                     await element.click({
-                        button: step.button && mouseButtonMap.get(step.button),
-                        offset: {
-                            x: step.offsetX,
-                            y: step.offsetY,
-                        },
-                    });
-                    await element.click({
-                        clickCount: 2,
+                        count: 2,
                         button: step.button && mouseButtonMap.get(step.button),
                         delay: step.duration,
                         offset: {
@@ -2159,7 +2143,7 @@ async function createRunner(flowOrExtension, maybeExtension) {
 async function createPuppeteerRunnerOwningBrowserExtension() {
     const { default: puppeteer } = await import('puppeteer');
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: 'new',
     });
     const page = await browser.newPage();
     return new PuppeteerRunnerOwningBrowserExtension(browser, page);

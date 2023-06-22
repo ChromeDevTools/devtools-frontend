@@ -21,21 +21,7 @@ import { Product } from './Product.js';
  *
  * @public
  */
-export interface ExperimentsConfiguration {
-    /**
-     * Require Puppeteer to download Chromium for Apple M1.
-     *
-     * On Apple M1 devices Puppeteer by default downloads the version for
-     * Intel's processor which runs via Rosetta. It works without any problems,
-     * however, with this option, you should get more efficient resource usage
-     * (CPU and RAM) that could lead to a faster execution time.
-     *
-     * Can be overridden by `PUPPETEER_EXPERIMENTAL_CHROMIUM_MAC_ARM`.
-     *
-     * @defaultValue `false`
-     */
-    macArmChromiumEnabled?: boolean;
-}
+export type ExperimentsConfiguration = Record<string, never>;
 /**
  * Defines options to configure Puppeteer's behavior during installation and
  * runtime.
@@ -65,25 +51,24 @@ export interface Configuration {
      */
     cacheDirectory?: string;
     /**
-     * Specifies the URL prefix that is used to download Chromium.
+     * Specifies the URL prefix that is used to download the browser.
      *
-     * Can be overridden by `PUPPETEER_DOWNLOAD_HOST`.
+     * Can be overridden by `PUPPETEER_DOWNLOAD_BASE_URL`.
      *
      * @remarks
      * This must include the protocol and may even need a path prefix.
      *
-     * @defaultValue Either https://storage.googleapis.com or
+     * @defaultValue Either https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing or
      * https://archive.mozilla.org/pub/firefox/nightly/latest-mozilla-central,
      * depending on the product.
      */
-    downloadHost?: string;
+    downloadBaseUrl?: string;
     /**
      * Specifies the path for the downloads folder.
      *
      * Can be overridden by `PUPPETEER_DOWNLOAD_PATH`.
      *
-     * @defaultValue `<cache>/<product>` where `<cache>` is Puppeteer's cache
-     * directory and `<product>` is the name of the browser.
+     * @defaultValue `<cacheDirectory>`
      */
     downloadPath?: string;
     /**
@@ -92,7 +77,7 @@ export interface Configuration {
      *
      * Can be overridden by `PUPPETEER_EXECUTABLE_PATH`.
      *
-     * @defaultValue Auto-computed.
+     * @defaultValue **Auto-computed.**
      */
     executablePath?: string;
     /**
@@ -100,7 +85,7 @@ export interface Configuration {
      *
      * Can be overridden by `PUPPETEER_PRODUCT`.
      *
-     * @defaultValue `'chrome'`
+     * @defaultValue `chrome`
      */
     defaultProduct?: Product;
     /**
@@ -120,9 +105,7 @@ export interface Configuration {
     /**
      * Tells Puppeteer to log at the given level.
      *
-     * At the moment, any option silences logging.
-     *
-     * @defaultValue `undefined`
+     * @defaultValue `warn`
      */
     logLevel?: 'silent' | 'error' | 'warn';
     /**

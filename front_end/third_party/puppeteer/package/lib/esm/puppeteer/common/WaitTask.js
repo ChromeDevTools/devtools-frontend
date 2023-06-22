@@ -24,8 +24,10 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _WaitTask_world, _WaitTask_bindings, _WaitTask_polling, _WaitTask_root, _WaitTask_fn, _WaitTask_args, _WaitTask_timeout, _WaitTask_result, _WaitTask_poller, _TaskManager_tasks;
-import { createDeferredPromise } from '../util/DeferredPromise.js';
+var _WaitTask_world, _WaitTask_polling, _WaitTask_root, _WaitTask_fn, _WaitTask_args, _WaitTask_timeout, _WaitTask_result, _WaitTask_poller, _WaitTask_signal, _TaskManager_tasks;
+import { Deferred } from '../util/Deferred.js';
+import { isErrorLike } from '../util/ErrorLike.js';
+import { stringifyFunction } from '../util/Function.js';
 import { TimeoutError } from './Errors.js';
 import { LazyArg } from './LazyArg.js';
 /**
@@ -33,53 +35,46 @@ import { LazyArg } from './LazyArg.js';
  */
 export class WaitTask {
     constructor(world, options, fn, ...args) {
-        var _a;
         _WaitTask_world.set(this, void 0);
-        _WaitTask_bindings.set(this, void 0);
         _WaitTask_polling.set(this, void 0);
         _WaitTask_root.set(this, void 0);
         _WaitTask_fn.set(this, void 0);
         _WaitTask_args.set(this, void 0);
         _WaitTask_timeout.set(this, void 0);
-        _WaitTask_result.set(this, createDeferredPromise());
+        _WaitTask_result.set(this, Deferred.create());
         _WaitTask_poller.set(this, void 0);
+        _WaitTask_signal.set(this, void 0);
         __classPrivateFieldSet(this, _WaitTask_world, world, "f");
-        __classPrivateFieldSet(this, _WaitTask_bindings, (_a = options.bindings) !== null && _a !== void 0 ? _a : new Map(), "f");
         __classPrivateFieldSet(this, _WaitTask_polling, options.polling, "f");
         __classPrivateFieldSet(this, _WaitTask_root, options.root, "f");
+        __classPrivateFieldSet(this, _WaitTask_signal, options.signal, "f");
+        __classPrivateFieldGet(this, _WaitTask_signal, "f")?.addEventListener('abort', () => {
+            void this.terminate(__classPrivateFieldGet(this, _WaitTask_signal, "f")?.reason);
+        }, {
+            once: true,
+        });
         switch (typeof fn) {
             case 'string':
                 __classPrivateFieldSet(this, _WaitTask_fn, `() => {return (${fn});}`, "f");
                 break;
             default:
-                __classPrivateFieldSet(this, _WaitTask_fn, fn.toString(), "f");
+                __classPrivateFieldSet(this, _WaitTask_fn, stringifyFunction(fn), "f");
                 break;
         }
         __classPrivateFieldSet(this, _WaitTask_args, args, "f");
         __classPrivateFieldGet(this, _WaitTask_world, "f").taskManager.add(this);
         if (options.timeout) {
             __classPrivateFieldSet(this, _WaitTask_timeout, setTimeout(() => {
-                this.terminate(new TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`));
+                void this.terminate(new TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`));
             }, options.timeout), "f");
         }
-        if (__classPrivateFieldGet(this, _WaitTask_bindings, "f").size !== 0) {
-            for (const [name, fn] of __classPrivateFieldGet(this, _WaitTask_bindings, "f")) {
-                __classPrivateFieldGet(this, _WaitTask_world, "f")._boundFunctions.set(name, fn);
-            }
-        }
-        this.rerun();
+        void this.rerun();
     }
     get result() {
-        return __classPrivateFieldGet(this, _WaitTask_result, "f");
+        return __classPrivateFieldGet(this, _WaitTask_result, "f").valueOrThrow();
     }
     async rerun() {
         try {
-            if (__classPrivateFieldGet(this, _WaitTask_bindings, "f").size !== 0) {
-                const context = await __classPrivateFieldGet(this, _WaitTask_world, "f").executionContext();
-                await Promise.all([...__classPrivateFieldGet(this, _WaitTask_bindings, "f")].map(async ([name]) => {
-                    return await __classPrivateFieldGet(this, _WaitTask_world, "f")._addBindingToContext(context, name);
-                }));
-            }
             switch (__classPrivateFieldGet(this, _WaitTask_polling, "f")) {
                 case 'raf':
                     __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ RAFPoller, createFunction }, fn, ...args) => {
@@ -113,7 +108,7 @@ export class WaitTask {
                     break;
             }
             await __classPrivateFieldGet(this, _WaitTask_poller, "f").evaluate(poller => {
-                poller.start();
+                void poller.start();
             });
             const result = await __classPrivateFieldGet(this, _WaitTask_poller, "f").evaluateHandle(poller => {
                 return poller.result();
@@ -155,7 +150,7 @@ export class WaitTask {
      * Not all errors lead to termination. They usually imply we need to rerun the task.
      */
     getBadError(error) {
-        if (error instanceof Error) {
+        if (isErrorLike(error)) {
             // When frame is detached the task should have been terminated by the IsolatedWorld.
             // This can fail if we were adding this task while the frame was detached,
             // so we terminate here instead.
@@ -172,11 +167,15 @@ export class WaitTask {
             if (error.message.includes('Cannot find context with specified id')) {
                 return;
             }
+            return error;
         }
-        return error;
+        // @ts-expect-error TODO: uncomment once cause is supported in Node types.
+        return new Error('WaitTask failed with an error', {
+            cause: error,
+        });
     }
 }
-_WaitTask_world = new WeakMap(), _WaitTask_bindings = new WeakMap(), _WaitTask_polling = new WeakMap(), _WaitTask_root = new WeakMap(), _WaitTask_fn = new WeakMap(), _WaitTask_args = new WeakMap(), _WaitTask_timeout = new WeakMap(), _WaitTask_result = new WeakMap(), _WaitTask_poller = new WeakMap();
+_WaitTask_world = new WeakMap(), _WaitTask_polling = new WeakMap(), _WaitTask_root = new WeakMap(), _WaitTask_fn = new WeakMap(), _WaitTask_args = new WeakMap(), _WaitTask_timeout = new WeakMap(), _WaitTask_result = new WeakMap(), _WaitTask_poller = new WeakMap(), _WaitTask_signal = new WeakMap();
 /**
  * @internal
  */
@@ -192,7 +191,7 @@ export class TaskManager {
     }
     terminateAll(error) {
         for (const task of __classPrivateFieldGet(this, _TaskManager_tasks, "f")) {
-            task.terminate(error);
+            void task.terminate(error);
         }
         __classPrivateFieldGet(this, _TaskManager_tasks, "f").clear();
     }

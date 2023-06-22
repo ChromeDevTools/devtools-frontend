@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Page } from '../api/Page.js';
-import { WebWorker } from './WebWorker.js';
-import { CDPSession } from './Connection.js';
-import type { Browser, IsPageTargetCallback } from '../api/Browser.js';
-import type { BrowserContext } from '../api/BrowserContext.js';
-import { Viewport } from './PuppeteerViewport.js';
 import { Protocol } from 'devtools-protocol';
-import { TaskQueue } from './TaskQueue.js';
+import type { Browser } from '../api/Browser.js';
+import type { BrowserContext } from '../api/BrowserContext.js';
+import { Page } from '../api/Page.js';
+import { Deferred } from '../util/Deferred.js';
+import { CDPSession } from './Connection.js';
+import { Viewport } from './PuppeteerViewport.js';
 import { TargetManager } from './TargetManager.js';
+import { TaskQueue } from './TaskQueue.js';
+import { WebWorker } from './WebWorker.js';
+/**
+ * @internal
+ */
+export declare enum InitializationStatus {
+    SUCCESS = "success",
+    ABORTED = "aborted"
+}
 /**
  * Target represents a
  * {@link https://chromedevtools.github.io/devtools-protocol/tot/Target/ | CDP target}.
@@ -35,23 +43,11 @@ export declare class Target {
     /**
      * @internal
      */
-    _initializedPromise: Promise<boolean>;
+    _initializedDeferred: Deferred<InitializationStatus>;
     /**
      * @internal
      */
-    _initializedCallback: (x: boolean) => void;
-    /**
-     * @internal
-     */
-    _isClosedPromise: Promise<void>;
-    /**
-     * @internal
-     */
-    _closedCallback: () => void;
-    /**
-     * @internal
-     */
-    _isInitialized: boolean;
+    _isClosedDeferred: Deferred<void>;
     /**
      * @internal
      */
@@ -59,15 +55,15 @@ export declare class Target {
     /**
      * @internal
      */
-    _isPageTargetCallback: IsPageTargetCallback;
-    /**
-     * @internal
-     */
-    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue, isPageTargetCallback: IsPageTargetCallback);
+    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>);
     /**
      * @internal
      */
     _session(): CDPSession | undefined;
+    /**
+     * @internal
+     */
+    protected _sessionFactory(): (isAutoAttachEmulated: boolean) => Promise<CDPSession>;
     /**
      * Creates a Chrome Devtools Protocol session attached to the target.
      */
@@ -80,10 +76,6 @@ export declare class Target {
      * @internal
      */
     _getTargetInfo(): Protocol.Target.TargetInfo;
-    /**
-     * If the target is not of type `"page"` or `"background_page"`, returns `null`.
-     */
-    page(): Promise<Page | null>;
     /**
      * If the target is not of type `"service_worker"` or `"shared_worker"`, returns `null`.
      */
@@ -113,5 +105,44 @@ export declare class Target {
      * @internal
      */
     _targetInfoChanged(targetInfo: Protocol.Target.TargetInfo): void;
+    /**
+     * @internal
+     */
+    protected _initialize(): void;
+    /**
+     * @internal
+     */
+    protected _checkIfInitialized(): void;
+    /**
+     * If the target is not of type `"page"`, `"webview"` or `"background_page"`,
+     * returns `null`.
+     */
+    page(): Promise<Page | null>;
+}
+/**
+ * @internal
+ */
+export declare class PageTarget extends Target {
+    #private;
+    protected pagePromise?: Promise<Page>;
+    /**
+     * @internal
+     */
+    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue);
+    protected _initialize(): void;
+    page(): Promise<Page | null>;
+    _checkIfInitialized(): void;
+}
+/**
+ * @internal
+ */
+export declare class WorkerTarget extends Target {
+    #private;
+    worker(): Promise<WebWorker | null>;
+}
+/**
+ * @internal
+ */
+export declare class OtherTarget extends Target {
 }
 //# sourceMappingURL=Target.d.ts.map

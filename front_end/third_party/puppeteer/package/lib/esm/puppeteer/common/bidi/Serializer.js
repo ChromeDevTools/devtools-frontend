@@ -1,4 +1,22 @@
+/**
+ * Copyright 2023 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { LazyArg } from '../LazyArg.js';
 import { debugError, isDate, isPlainObject, isRegExp } from '../util.js';
+import { ElementHandle } from './ElementHandle.js';
+import { JSHandle } from './JSHandle.js';
 /**
  * @internal
  */
@@ -46,6 +64,16 @@ export class BidiSerializer {
             };
         }
         else if (isPlainObject(arg)) {
+            try {
+                JSON.stringify(arg);
+            }
+            catch (error) {
+                if (error instanceof TypeError &&
+                    error.message.startsWith('Converting circular structure to JSON')) {
+                    error.message += ' Recursive objects are not allowed.';
+                }
+                throw error;
+            }
             const parsedObject = [];
             for (const key in arg) {
                 parsedObject.push([
@@ -105,8 +133,23 @@ export class BidiSerializer {
                 };
         }
     }
-    static serialize(arg) {
-        // TODO: See use case of LazyArgs
+    static async serialize(arg, context) {
+        if (arg instanceof LazyArg) {
+            arg = await arg.get(context);
+        }
+        const objectHandle = arg && (arg instanceof JSHandle || arg instanceof ElementHandle)
+            ? arg
+            : null;
+        if (objectHandle) {
+            if (objectHandle.context() !== context &&
+                !('sharedId' in objectHandle.remoteValue())) {
+                throw new Error('JSHandles can be evaluated only in the context they were created!');
+            }
+            if (objectHandle.disposed) {
+                throw new Error('JSHandle is disposed!');
+            }
+            return objectHandle.remoteValue();
+        }
         return BidiSerializer.serializeRemoveValue(arg);
     }
     static deserializeNumber(value) {
@@ -116,7 +159,6 @@ export class BidiSerializer {
             case 'NaN':
                 return NaN;
             case 'Infinity':
-            case '+Infinity':
                 return Infinity;
             case '-Infinity':
                 return -Infinity;
@@ -125,17 +167,16 @@ export class BidiSerializer {
         }
     }
     static deserializeLocalValue(result) {
-        var _a;
         switch (result.type) {
             case 'array':
                 // TODO: Check expected output when value is undefined
-                return (_a = result.value) === null || _a === void 0 ? void 0 : _a.map(value => {
+                return result.value?.map(value => {
                     return BidiSerializer.deserializeLocalValue(value);
                 });
             case 'set':
                 // TODO: Check expected output when value is undefined
                 return result.value.reduce((acc, value) => {
-                    return acc.add(value);
+                    return acc.add(BidiSerializer.deserializeLocalValue(value));
                 }, new Set());
             case 'object':
                 if (result.value) {

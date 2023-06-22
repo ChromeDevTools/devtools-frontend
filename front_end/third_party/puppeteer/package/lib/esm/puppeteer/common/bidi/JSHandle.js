@@ -1,0 +1,131 @@
+/**
+ * Copyright 2023 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _JSHandle_disposed, _JSHandle_realm, _JSHandle_remoteValue;
+import { JSHandle as BaseJSHandle } from '../../api/JSHandle.js';
+import { withSourcePuppeteerURLIfNone } from '../util.js';
+import { BidiSerializer } from './Serializer.js';
+import { releaseReference } from './utils.js';
+export class JSHandle extends BaseJSHandle {
+    constructor(realm, remoteValue) {
+        super();
+        _JSHandle_disposed.set(this, false);
+        _JSHandle_realm.set(this, void 0);
+        _JSHandle_remoteValue.set(this, void 0);
+        __classPrivateFieldSet(this, _JSHandle_realm, realm, "f");
+        __classPrivateFieldSet(this, _JSHandle_remoteValue, remoteValue, "f");
+    }
+    context() {
+        return __classPrivateFieldGet(this, _JSHandle_realm, "f");
+    }
+    get disposed() {
+        return __classPrivateFieldGet(this, _JSHandle_disposed, "f");
+    }
+    async evaluate(pageFunction, ...args) {
+        pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
+        return await this.context().evaluate(pageFunction, this, ...args);
+    }
+    async evaluateHandle(pageFunction, ...args) {
+        pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
+        return this.context().evaluateHandle(pageFunction, this, ...args);
+    }
+    async getProperty(propertyName) {
+        return await this.evaluateHandle((object, propertyName) => {
+            return object[propertyName];
+        }, propertyName);
+    }
+    async getProperties() {
+        // TODO(lightning00blade): Either include return of depth Handles in RemoteValue
+        // or new BiDi command that returns array of remote value
+        const keys = await this.evaluate(object => {
+            const enumerableKeys = [];
+            const descriptors = Object.getOwnPropertyDescriptors(object);
+            for (const key in descriptors) {
+                if (descriptors[key]?.enumerable) {
+                    enumerableKeys.push(key);
+                }
+            }
+            return enumerableKeys;
+        });
+        const map = new Map();
+        const results = await Promise.all(keys.map(key => {
+            return this.getProperty(key);
+        }));
+        for (const [key, value] of Object.entries(keys)) {
+            const handle = results[key];
+            if (handle) {
+                map.set(value, handle);
+            }
+        }
+        return map;
+    }
+    async jsonValue() {
+        const value = BidiSerializer.deserialize(__classPrivateFieldGet(this, _JSHandle_remoteValue, "f"));
+        if (__classPrivateFieldGet(this, _JSHandle_remoteValue, "f").type !== 'undefined' && value === undefined) {
+            throw new Error('Could not serialize referenced object');
+        }
+        return value;
+    }
+    asElement() {
+        return null;
+    }
+    async dispose() {
+        if (__classPrivateFieldGet(this, _JSHandle_disposed, "f")) {
+            return;
+        }
+        __classPrivateFieldSet(this, _JSHandle_disposed, true, "f");
+        if ('handle' in __classPrivateFieldGet(this, _JSHandle_remoteValue, "f")) {
+            await releaseReference(__classPrivateFieldGet(this, _JSHandle_realm, "f"), __classPrivateFieldGet(this, _JSHandle_remoteValue, "f"));
+        }
+    }
+    get isPrimitiveValue() {
+        switch (__classPrivateFieldGet(this, _JSHandle_remoteValue, "f").type) {
+            case 'string':
+            case 'number':
+            case 'bigint':
+            case 'boolean':
+            case 'undefined':
+            case 'null':
+                return true;
+            default:
+                return false;
+        }
+    }
+    toString() {
+        if (this.isPrimitiveValue) {
+            return 'JSHandle:' + BidiSerializer.deserialize(__classPrivateFieldGet(this, _JSHandle_remoteValue, "f"));
+        }
+        return 'JSHandle@' + __classPrivateFieldGet(this, _JSHandle_remoteValue, "f").type;
+    }
+    get id() {
+        return 'handle' in __classPrivateFieldGet(this, _JSHandle_remoteValue, "f") ? __classPrivateFieldGet(this, _JSHandle_remoteValue, "f").handle : undefined;
+    }
+    remoteValue() {
+        return __classPrivateFieldGet(this, _JSHandle_remoteValue, "f");
+    }
+}
+_JSHandle_disposed = new WeakMap(), _JSHandle_realm = new WeakMap(), _JSHandle_remoteValue = new WeakMap();
+//# sourceMappingURL=JSHandle.js.map

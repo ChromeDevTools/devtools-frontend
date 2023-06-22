@@ -24,18 +24,22 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var _FrameManager_instances, _FrameManager_page, _FrameManager_networkManager, _FrameManager_timeoutSettings, _FrameManager_contextIdToContext, _FrameManager_isolatedWorlds, _FrameManager_client, _FrameManager_frameNavigatedReceived, _FrameManager_onLifecycleEvent, _FrameManager_onFrameStartedLoading, _FrameManager_onFrameStoppedLoading, _FrameManager_handleFrameTree, _FrameManager_onFrameAttached, _FrameManager_onFrameNavigated, _FrameManager_createIsolatedWorld, _FrameManager_onFrameNavigatedWithinDocument, _FrameManager_onFrameDetached, _FrameManager_onExecutionContextCreated, _FrameManager_onExecutionContextDestroyed, _FrameManager_onExecutionContextsCleared, _FrameManager_removeFramesRecursively;
+var _FrameManager_instances, _FrameManager_page, _FrameManager_networkManager, _FrameManager_timeoutSettings, _FrameManager_contextIdToContext, _FrameManager_isolatedWorlds, _FrameManager_client, _FrameManager_frameNavigatedReceived, _FrameManager_deviceRequestPromptManagerMap, _FrameManager_onLifecycleEvent, _FrameManager_onFrameStartedLoading, _FrameManager_onFrameStoppedLoading, _FrameManager_handleFrameTree, _FrameManager_onFrameAttached, _FrameManager_onFrameNavigated, _FrameManager_createIsolatedWorld, _FrameManager_onFrameNavigatedWithinDocument, _FrameManager_onFrameDetached, _FrameManager_onExecutionContextCreated, _FrameManager_onExecutionContextDestroyed, _FrameManager_onExecutionContextsCleared, _FrameManager_removeFramesRecursively;
 import { assert } from '../util/assert.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { isTargetClosedError } from './Connection.js';
+import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { EventEmitter } from './EventEmitter.js';
-import { EVALUATION_SCRIPT_URL, ExecutionContext } from './ExecutionContext.js';
-import { Frame } from './Frame.js';
+import { ExecutionContext } from './ExecutionContext.js';
+import { Frame as CDPFrame } from './Frame.js';
 import { FrameTree } from './FrameTree.js';
 import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
 import { NetworkManager } from './NetworkManager.js';
-import { debugError } from './util.js';
-const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
+import { debugError, PuppeteerURL } from './util.js';
+/**
+ * @internal
+ */
+export const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
 /**
  * We use symbols to prevent external parties listening to these events.
  * They are internal to Puppeteer.
@@ -86,6 +90,7 @@ export class FrameManager extends EventEmitter {
          * frameNavigated event usually contains the latest information.
          */
         _FrameManager_frameNavigatedReceived.set(this, new Set());
+        _FrameManager_deviceRequestPromptManagerMap.set(this, new WeakMap());
         __classPrivateFieldSet(this, _FrameManager_client, client, "f");
         __classPrivateFieldSet(this, _FrameManager_page, page, "f");
         __classPrivateFieldSet(this, _FrameManager_networkManager, new NetworkManager(client, ignoreHTTPSErrors, this), "f");
@@ -98,7 +103,7 @@ export class FrameManager extends EventEmitter {
         });
         session.on('Page.frameNavigated', event => {
             __classPrivateFieldGet(this, _FrameManager_frameNavigatedReceived, "f").add(event.frame.id);
-            __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameNavigated).call(this, event.frame);
+            void __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameNavigated).call(this, event.frame);
         });
         session.on('Page.navigatedWithinDocument', event => {
             __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameNavigatedWithinDocument).call(this, event.frameId, event.url);
@@ -183,10 +188,21 @@ export class FrameManager extends EventEmitter {
             frame.updateClient(target._session());
         }
         this.setupEventListeners(target._session());
-        this.initialize(target._session());
+        void this.initialize(target._session());
+    }
+    /**
+     * @internal
+     */
+    _deviceRequestPromptManager(client) {
+        let manager = __classPrivateFieldGet(this, _FrameManager_deviceRequestPromptManagerMap, "f").get(client);
+        if (manager === undefined) {
+            manager = new DeviceRequestPromptManager(client, __classPrivateFieldGet(this, _FrameManager_timeoutSettings, "f"));
+            __classPrivateFieldGet(this, _FrameManager_deviceRequestPromptManagerMap, "f").set(client, manager);
+        }
+        return manager;
     }
 }
-_FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap(), _FrameManager_timeoutSettings = new WeakMap(), _FrameManager_contextIdToContext = new WeakMap(), _FrameManager_isolatedWorlds = new WeakMap(), _FrameManager_client = new WeakMap(), _FrameManager_frameNavigatedReceived = new WeakMap(), _FrameManager_instances = new WeakSet(), _FrameManager_onLifecycleEvent = function _FrameManager_onLifecycleEvent(event) {
+_FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap(), _FrameManager_timeoutSettings = new WeakMap(), _FrameManager_contextIdToContext = new WeakMap(), _FrameManager_isolatedWorlds = new WeakMap(), _FrameManager_client = new WeakMap(), _FrameManager_frameNavigatedReceived = new WeakMap(), _FrameManager_deviceRequestPromptManagerMap = new WeakMap(), _FrameManager_instances = new WeakSet(), _FrameManager_onLifecycleEvent = function _FrameManager_onLifecycleEvent(event) {
     const frame = this.frame(event.frameId);
     if (!frame) {
         return;
@@ -211,7 +227,7 @@ _FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap()
         __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameAttached).call(this, session, frameTree.frame.id, frameTree.frame.parentId);
     }
     if (!__classPrivateFieldGet(this, _FrameManager_frameNavigatedReceived, "f").has(frameTree.frame.id)) {
-        __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameNavigated).call(this, frameTree.frame);
+        void __classPrivateFieldGet(this, _FrameManager_instances, "m", _FrameManager_onFrameNavigated).call(this, frameTree.frame);
     }
     else {
         __classPrivateFieldGet(this, _FrameManager_frameNavigatedReceived, "f").delete(frameTree.frame.id);
@@ -233,7 +249,7 @@ _FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap()
         }
         return;
     }
-    frame = new Frame(this, frameId, parentFrameId, session);
+    frame = new CDPFrame(this, frameId, parentFrameId, session);
     this._frameTree.addFrame(frame);
     this.emit(FrameManagerEmittedEvents.FrameAttached, frame);
 }, _FrameManager_onFrameNavigated = async function _FrameManager_onFrameNavigated(framePayload) {
@@ -255,7 +271,7 @@ _FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap()
         }
         else {
             // Initial main frame navigation.
-            frame = new Frame(this, frameId, undefined, __classPrivateFieldGet(this, _FrameManager_client, "f"));
+            frame = new CDPFrame(this, frameId, undefined, __classPrivateFieldGet(this, _FrameManager_client, "f"));
         }
         this._frameTree.addFrame(frame);
     }
@@ -268,7 +284,7 @@ _FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap()
         return;
     }
     await session.send('Page.addScriptToEvaluateOnNewDocument', {
-        source: `//# sourceURL=${EVALUATION_SCRIPT_URL}`,
+        source: `//# sourceURL=${PuppeteerURL.INTERNAL_URL}`,
         worldName: name,
     });
     await Promise.all(this.frames()
@@ -329,7 +345,7 @@ _FrameManager_page = new WeakMap(), _FrameManager_networkManager = new WeakMap()
             world = frame.worlds[PUPPETEER_WORLD];
         }
     }
-    const context = new ExecutionContext((frame === null || frame === void 0 ? void 0 : frame._client()) || __classPrivateFieldGet(this, _FrameManager_client, "f"), contextPayload, world);
+    const context = new ExecutionContext(frame?._client() || __classPrivateFieldGet(this, _FrameManager_client, "f"), contextPayload, world);
     if (world) {
         world.setContext(context);
     }

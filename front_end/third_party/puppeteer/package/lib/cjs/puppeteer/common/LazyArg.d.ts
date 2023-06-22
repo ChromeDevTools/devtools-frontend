@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ExecutionContext } from './ExecutionContext.js';
+import { JSHandle } from '../api/JSHandle.js';
+import PuppeteerUtil from '../injected/injected.js';
 /**
  * @internal
  */
-export declare class LazyArg<T> {
+export interface PuppeteerUtilWrapper {
+    puppeteerUtil: Promise<JSHandle<PuppeteerUtil>>;
+}
+/**
+ * @internal
+ */
+export declare class LazyArg<T, Context = PuppeteerUtilWrapper> {
     #private;
-    static create: <T_1>(get: (context: ExecutionContext) => T_1 | Promise<T_1>) => T_1;
+    static create: <T_1>(get: (context: PuppeteerUtilWrapper) => T_1 | Promise<T_1>) => T_1;
     private constructor();
-    get(context: ExecutionContext): Promise<T>;
+    get(context: Context): Promise<T>;
 }
 //# sourceMappingURL=LazyArg.d.ts.map

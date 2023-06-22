@@ -15,15 +15,16 @@
  */
 /// <reference types="node" />
 import { Protocol } from 'devtools-protocol';
+import { BoundingBox, BoxModel, ClickOptions, ElementHandle, Offset, Point } from '../api/ElementHandle.js';
+import { KeyPressOptions, KeyboardTypeOptions } from '../api/Input.js';
+import { ScreenshotOptions } from '../api/Page.js';
+import { CDPSession } from './Connection.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { Frame } from './Frame.js';
 import { WaitForSelectorOptions } from './IsolatedWorld.js';
-import { JSHandle } from '../api/JSHandle.js';
-import { ScreenshotOptions } from '../api/Page.js';
-import { ElementFor, EvaluateFunc, HandleFor, HandleOr, NodeFor } from './types.js';
+import { CDPJSHandle } from './JSHandle.js';
+import { NodeFor } from './types.js';
 import { KeyInput } from './USKeyboardLayout.js';
-import { BoundingBox, BoxModel, ClickOptions, ElementHandle, Offset, Point, PressOptions } from '../api/ElementHandle.js';
-import { CDPSession } from './Connection.js';
 /**
  * The CDPElementHandle extends ElementHandle now to keep compatibility
  * with `instanceof` because of that we need to have methods for
@@ -33,6 +34,7 @@ import { CDPSession } from './Connection.js';
  */
 export declare class CDPElementHandle<ElementType extends Node = Element> extends ElementHandle<ElementType> {
     #private;
+    handle: CDPJSHandle<ElementType>;
     constructor(context: ExecutionContext, remoteObject: Protocol.Runtime.RemoteObject, frame: Frame);
     /**
      * @internal
@@ -43,40 +45,12 @@ export declare class CDPElementHandle<ElementType extends Node = Element> extend
      */
     get client(): CDPSession;
     remoteObject(): Protocol.Runtime.RemoteObject;
-    evaluate<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
-        this,
-        ...Params
-    ]>>(pageFunction: string | Func, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<[this, ...Params]> = EvaluateFunc<[
-        this,
-        ...Params
-    ]>>(pageFunction: string | Func, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     get frame(): Frame;
-    get disposed(): boolean;
-    getProperty<K extends keyof ElementType>(propertyName: HandleOr<K>): Promise<HandleFor<ElementType[K]>>;
-    getProperty(propertyName: string): Promise<JSHandle<unknown>>;
-    jsonValue(): Promise<ElementType>;
-    toString(): string;
     $<Selector extends string>(selector: Selector): Promise<CDPElementHandle<NodeFor<Selector>> | null>;
     $$<Selector extends string>(selector: Selector): Promise<Array<CDPElementHandle<NodeFor<Selector>>>>;
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        CDPElementHandle<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[CDPElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        HandleFor<Array<NodeFor<Selector>>>,
-        ...Params
-    ]> = EvaluateFunc<[HandleFor<Array<NodeFor<Selector>>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    $x(expression: string): Promise<Array<CDPElementHandle<Node>>>;
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<CDPElementHandle<NodeFor<Selector>> | null>;
-    waitForXPath(xpath: string, options?: {
-        visible?: boolean;
-        hidden?: boolean;
-        timeout?: number;
-    }): Promise<CDPElementHandle<Node> | null>;
-    toElement<K extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap>(tagName: K): Promise<HandleFor<ElementFor<K>>>;
-    asElement(): CDPElementHandle<ElementType> | null;
     contentFrame(): Promise<Frame | null>;
+    scrollIntoView(this: CDPElementHandle<Element>): Promise<void>;
     clickablePoint(offset?: Offset): Promise<Point>;
     /**
      * This method scrolls element into view if needed, and then
@@ -89,7 +63,7 @@ export declare class CDPElementHandle<ElementType extends Node = Element> extend
      * uses {@link Page.mouse} to click in the center of the element.
      * If the element is detached from DOM, the method throws an error.
      */
-    click(this: CDPElementHandle<Element>, options?: ClickOptions): Promise<void>;
+    click(this: CDPElementHandle<Element>, options?: Readonly<ClickOptions>): Promise<void>;
     /**
      * This method creates and captures a dragevent from the element.
      */
@@ -100,23 +74,15 @@ export declare class CDPElementHandle<ElementType extends Node = Element> extend
     dragAndDrop(this: CDPElementHandle<Element>, target: CDPElementHandle<Node>, options?: {
         delay: number;
     }): Promise<void>;
-    select(...values: string[]): Promise<string[]>;
     uploadFile(this: CDPElementHandle<HTMLInputElement>, ...filePaths: string[]): Promise<void>;
     tap(this: CDPElementHandle<Element>): Promise<void>;
     touchStart(this: CDPElementHandle<Element>): Promise<void>;
     touchMove(this: CDPElementHandle<Element>): Promise<void>;
     touchEnd(this: CDPElementHandle<Element>): Promise<void>;
-    focus(): Promise<void>;
-    type(text: string, options?: {
-        delay: number;
-    }): Promise<void>;
-    press(key: KeyInput, options?: PressOptions): Promise<void>;
+    type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
+    press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
     boundingBox(): Promise<BoundingBox | null>;
     boxModel(): Promise<BoxModel | null>;
     screenshot(this: CDPElementHandle<Element>, options?: ScreenshotOptions): Promise<string | Buffer>;
-    isIntersectingViewport(this: CDPElementHandle<Element>, options?: {
-        threshold?: number;
-    }): Promise<boolean>;
-    dispose(): Promise<void>;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

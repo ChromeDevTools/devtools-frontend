@@ -21,7 +21,7 @@ export * from './util/util.js';
 /**
  * @deprecated Use the query handler API defined on {@link Puppeteer}
  */
-export * from './common/QueryHandler.js';
+export * from './common/CustomQueryHandler.js';
 import { PuppeteerNode } from './node/PuppeteerNode.js';
 /**
  * @public
@@ -29,6 +29,22 @@ import { PuppeteerNode } from './node/PuppeteerNode.js';
 const puppeteer = new PuppeteerNode({
     isPuppeteerCore: true,
 });
-export const { connect, createBrowserFetcher, defaultArgs, executablePath, launch, } = puppeteer;
+export const { 
+/**
+ * @public
+ */
+connect, 
+/**
+ * @public
+ */
+defaultArgs, 
+/**
+ * @public
+ */
+executablePath, 
+/**
+ * @public
+ */
+launch, } = puppeteer;
 export default puppeteer;
 //# sourceMappingURL=puppeteer-core.js.map

@@ -1,35 +1,37 @@
-import { Browser } from '../api/Browser.js';
+/**
+ * Copyright 2023 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { BrowserLaunchArgumentOptions, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
-import { ProductLauncher } from './ProductLauncher.js';
+import { ProductLauncher, ResolvedLaunchArgs } from './ProductLauncher.js';
 import { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
  */
 export declare class FirefoxLauncher extends ProductLauncher {
     constructor(puppeteer: PuppeteerNode);
-    launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
+    /**
+     * @internal
+     */
+    computeLaunchArguments(options?: PuppeteerNodeLaunchOptions): Promise<ResolvedLaunchArgs>;
+    /**
+     * @internal
+     */
+    cleanUserDataDir(userDataDir: string, opts: {
+        isTemp: boolean;
+    }): Promise<void>;
     executablePath(): string;
     defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
-    defaultPreferences(extraPrefs: {
-        [x: string]: unknown;
-    }): {
-        [x: string]: unknown;
-    };
-    /**
-     * Populates the user.js file with custom preferences as needed to allow
-     * Firefox's CDP support to properly function. These preferences will be
-     * automatically copied over to prefs.js during startup of Firefox. To be
-     * able to restore the original values of preferences a backup of prefs.js
-     * will be created.
-     *
-     * @param prefs - List of preferences to add.
-     * @param profilePath - Firefox profile to write the preferences to.
-     */
-    writePreferences(prefs: {
-        [x: string]: unknown;
-    }, profilePath: string): Promise<void>;
-    _createProfile(extraPrefs: {
-        [x: string]: unknown;
-    }): Promise<string>;
 }
 //# sourceMappingURL=FirefoxLauncher.d.ts.map

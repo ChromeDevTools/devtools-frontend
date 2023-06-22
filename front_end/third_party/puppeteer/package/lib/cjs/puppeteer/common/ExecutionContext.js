@@ -25,18 +25,22 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 };
-var _ExecutionContext_instances, _ExecutionContext_puppeteerUtil, _ExecutionContext_evaluate;
+var _ExecutionContext_instances, _ExecutionContext_bindingsInstalled, _ExecutionContext_puppeteerUtil, _ExecutionContext_installGlobalBinding, _ExecutionContext_evaluate;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExecutionContext = exports.EVALUATION_SCRIPT_URL = void 0;
-const injected_js_1 = require("../generated/injected.js");
-const JSHandle_js_1 = require("../api/JSHandle.js");
+exports.ExecutionContext = void 0;
+const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
+const Function_js_1 = require("../util/Function.js");
+const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
+const Binding_js_1 = require("./Binding.js");
+const ElementHandle_js_1 = require("./ElementHandle.js");
+const JSHandle_js_1 = require("./JSHandle.js");
 const LazyArg_js_1 = require("./LazyArg.js");
+const ScriptInjector_js_1 = require("./ScriptInjector.js");
 const util_js_1 = require("./util.js");
-/**
- * @public
- */
-exports.EVALUATION_SCRIPT_URL = 'pptr://__puppeteer_evaluation_script__';
 const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
+const getSourceUrlComment = (url) => {
+    return `//# sourceURL=${url}`;
+};
 /**
  * Represents a context for JavaScript execution.
  *
@@ -60,25 +64,41 @@ const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
  * @internal
  */
 class ExecutionContext {
-    /**
-     * @internal
-     */
     constructor(client, contextPayload, world) {
         _ExecutionContext_instances.add(this);
+        _ExecutionContext_bindingsInstalled.set(this, false);
         _ExecutionContext_puppeteerUtil.set(this, void 0);
         this._client = client;
         this._world = world;
         this._contextId = contextPayload.id;
-        this._contextName = contextPayload.name;
+        if (contextPayload.name) {
+            this._contextName = contextPayload.name;
+        }
     }
     get puppeteerUtil() {
-        if (!__classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f")) {
-            __classPrivateFieldSet(this, _ExecutionContext_puppeteerUtil, this.evaluateHandle(`(() => {
-            const module = {};
-            ${injected_js_1.source}
-            return module.exports.default;
-          })()`), "f");
+        let promise = Promise.resolve();
+        if (!__classPrivateFieldGet(this, _ExecutionContext_bindingsInstalled, "f")) {
+            promise = Promise.all([
+                __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_installGlobalBinding).call(this, new Binding_js_1.Binding('__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne)),
+                __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_installGlobalBinding).call(this, new Binding_js_1.Binding('__ariaQuerySelectorAll', (async (element, selector) => {
+                    const results = AriaQueryHandler_js_1.ARIAQueryHandler.queryAll(element, selector);
+                    return element.executionContext().evaluateHandle((...elements) => {
+                        return elements;
+                    }, ...(await AsyncIterableUtil_js_1.AsyncIterableUtil.collect(results)));
+                }))),
+            ]);
+            __classPrivateFieldSet(this, _ExecutionContext_bindingsInstalled, true, "f");
         }
+        ScriptInjector_js_1.scriptInjector.inject(script => {
+            if (__classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f")) {
+                void __classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f").then(handle => {
+                    void handle.dispose();
+                });
+            }
+            __classPrivateFieldSet(this, _ExecutionContext_puppeteerUtil, promise.then(() => {
+                return this.evaluateHandle(script);
+            }), "f");
+        }, !__classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f"));
         return __classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f");
     }
     /**
@@ -178,14 +198,27 @@ class ExecutionContext {
     }
 }
 exports.ExecutionContext = ExecutionContext;
-_ExecutionContext_puppeteerUtil = new WeakMap(), _ExecutionContext_instances = new WeakSet(), _ExecutionContext_evaluate = async function _ExecutionContext_evaluate(returnByValue, pageFunction, ...args) {
-    const suffix = `//# sourceURL=${exports.EVALUATION_SCRIPT_URL}`;
+_ExecutionContext_bindingsInstalled = new WeakMap(), _ExecutionContext_puppeteerUtil = new WeakMap(), _ExecutionContext_instances = new WeakSet(), _ExecutionContext_installGlobalBinding = async function _ExecutionContext_installGlobalBinding(binding) {
+    try {
+        if (this._world) {
+            this._world._bindings.set(binding.name, binding);
+            await this._world._addBindingToContext(this, binding.name);
+        }
+    }
+    catch {
+        // If the binding cannot be added, then either the browser doesn't support
+        // bindings (e.g. Firefox) or the context is broken. Either breakage is
+        // okay, so we ignore the error.
+    }
+}, _ExecutionContext_evaluate = async function _ExecutionContext_evaluate(returnByValue, pageFunction, ...args) {
+    const sourceUrlComment = getSourceUrlComment((0, util_js_1.getSourcePuppeteerURLIfAvailable)(pageFunction)?.toString() ??
+        util_js_1.PuppeteerURL.INTERNAL_URL);
     if ((0, util_js_1.isString)(pageFunction)) {
         const contextId = this._contextId;
         const expression = pageFunction;
         const expressionWithSourceUrl = SOURCE_URL_REGEX.test(expression)
             ? expression
-            : expression + '\n' + suffix;
+            : `${expression}\n${sourceUrlComment}\n`;
         const { exceptionDetails, result: remoteObject } = await this._client
             .send('Runtime.evaluate', {
             expression: expressionWithSourceUrl,
@@ -196,16 +229,20 @@ _ExecutionContext_puppeteerUtil = new WeakMap(), _ExecutionContext_instances = n
         })
             .catch(rewriteError);
         if (exceptionDetails) {
-            throw new Error('Evaluation failed: ' + (0, util_js_1.getExceptionMessage)(exceptionDetails));
+            throw (0, util_js_1.createEvaluationError)(exceptionDetails);
         }
         return returnByValue
             ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
             : (0, util_js_1.createJSHandle)(this, remoteObject);
     }
+    const functionDeclaration = (0, Function_js_1.stringifyFunction)(pageFunction);
+    const functionDeclarationWithSourceUrl = SOURCE_URL_REGEX.test(functionDeclaration)
+        ? functionDeclaration
+        : `${functionDeclaration}\n${sourceUrlComment}\n`;
     let callFunctionOnPromise;
     try {
         callFunctionOnPromise = this._client.send('Runtime.callFunctionOn', {
-            functionDeclaration: (0, util_js_1.stringifyFunction)(pageFunction) + '\n' + suffix + '\n',
+            functionDeclaration: functionDeclarationWithSourceUrl,
             executionContextId: this._contextId,
             arguments: await Promise.all(args.map(convertArgument.bind(this))),
             returnByValue,
@@ -222,7 +259,7 @@ _ExecutionContext_puppeteerUtil = new WeakMap(), _ExecutionContext_instances = n
     }
     const { exceptionDetails, result: remoteObject } = await callFunctionOnPromise.catch(rewriteError);
     if (exceptionDetails) {
-        throw new Error('Evaluation failed: ' + (0, util_js_1.getExceptionMessage)(exceptionDetails));
+        throw (0, util_js_1.createEvaluationError)(exceptionDetails);
     }
     return returnByValue
         ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
@@ -247,7 +284,9 @@ _ExecutionContext_puppeteerUtil = new WeakMap(), _ExecutionContext_instances = n
         if (Object.is(arg, NaN)) {
             return { unserializableValue: 'NaN' };
         }
-        const objectHandle = arg && arg instanceof JSHandle_js_1.JSHandle ? arg : null;
+        const objectHandle = arg && (arg instanceof JSHandle_js_1.CDPJSHandle || arg instanceof ElementHandle_js_1.CDPElementHandle)
+            ? arg
+            : null;
         if (objectHandle) {
             if (objectHandle.executionContext() !== this) {
                 throw new Error('JSHandles can be evaluated only in the context they were created!');

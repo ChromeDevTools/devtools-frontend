@@ -1,4 +1,19 @@
 "use strict";
+/**
+ * Copyright 2023 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -36,8 +51,9 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _CDPConnectionAdapter_cdp, _CDPConnectionAdapter_adapters, _CDPConnectionAdapter_browser, _CDPClientAdapter_closed, _CDPClientAdapter_client, _CDPClientAdapter_forwardMessage, _NoOpTransport_onMessage;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectBidiOverCDP = void 0;
-const Connection_js_1 = require("./Connection.js");
 const BidiMapper = __importStar(require("chromium-bidi/lib/cjs/bidiMapper/bidiMapper.js"));
+const Errors_js_1 = require("../Errors.js");
+const Connection_js_1 = require("./Connection.js");
 /**
  * @internal
  */
@@ -61,7 +77,7 @@ async function connectBidiOverCDP(cdp) {
         // Forwards a BiDi event sent by BidiServer to Puppeteer.
         pptrTransport.onmessage(JSON.stringify(message));
     });
-    const pptrBiDiConnection = new Connection_js_1.Connection(pptrTransport);
+    const pptrBiDiConnection = new Connection_js_1.Connection(cdp.url(), pptrTransport);
     const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, '');
     return pptrBiDiConnection;
 }
@@ -136,6 +152,9 @@ class CDPClientAdapter extends BidiMapper.EventEmitter {
         __classPrivateFieldGet(this, _CDPClientAdapter_client, "f").off('*', __classPrivateFieldGet(this, _CDPClientAdapter_forwardMessage, "f"));
         __classPrivateFieldSet(this, _CDPClientAdapter_closed, true, "f");
     }
+    isCloseError(error) {
+        return error instanceof Errors_js_1.TargetCloseError;
+    }
 }
 _CDPClientAdapter_closed = new WeakMap(), _CDPClientAdapter_client = new WeakMap(), _CDPClientAdapter_forwardMessage = new WeakMap();
 /**
@@ -151,7 +170,7 @@ class NoOpTransport extends BidiMapper.EventEmitter {
         });
     }
     emitMessage(message) {
-        __classPrivateFieldGet(this, _NoOpTransport_onMessage, "f").call(this, message);
+        void __classPrivateFieldGet(this, _NoOpTransport_onMessage, "f").call(this, message);
     }
     setOnMessage(onMessage) {
         __classPrivateFieldSet(this, _NoOpTransport_onMessage, onMessage, "f");

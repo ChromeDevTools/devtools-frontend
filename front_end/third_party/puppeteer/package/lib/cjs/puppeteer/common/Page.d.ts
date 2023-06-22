@@ -15,29 +15,30 @@
  */
 /// <reference types="node" />
 /// <reference types="node" />
-import { Protocol } from 'devtools-protocol';
 import type { Readable } from 'stream';
+import { Protocol } from 'devtools-protocol';
 import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
-import { GeolocationOptions, MediaFeature, Metrics, Page, ScreenshotOptions, WaitForOptions, WaitTimeoutOptions } from '../api/Page.js';
+import { ElementHandle } from '../api/ElementHandle.js';
+import { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions } from '../api/Frame.js';
+import { HTTPRequest } from '../api/HTTPRequest.js';
+import { HTTPResponse } from '../api/HTTPResponse.js';
+import { JSHandle } from '../api/JSHandle.js';
+import { GeolocationOptions, MediaFeature, Metrics, NewDocumentScriptEvaluation, Page, ScreenshotOptions, WaitForOptions, WaitTimeoutOptions } from '../api/Page.js';
 import { Accessibility } from './Accessibility.js';
 import { CDPSession } from './Connection.js';
 import { Coverage } from './Coverage.js';
-import { ElementHandle } from '../api/ElementHandle.js';
+import { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import { FileChooser } from './FileChooser.js';
-import { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions, FrameWaitForFunctionOptions } from './Frame.js';
-import { HTTPRequest } from './HTTPRequest.js';
-import { HTTPResponse } from './HTTPResponse.js';
-import { Keyboard, Mouse, MouseButton, Touchscreen } from './Input.js';
+import { CDPKeyboard, CDPMouse, CDPTouchscreen } from './Input.js';
 import { WaitForSelectorOptions } from './IsolatedWorld.js';
-import { JSHandle } from '../api/JSHandle.js';
 import { Credentials, NetworkConditions } from './NetworkManager.js';
 import { PDFOptions } from './PDFOptions.js';
 import { Viewport } from './PuppeteerViewport.js';
 import { Target } from './Target.js';
 import { TaskQueue } from './TaskQueue.js';
 import { Tracing } from './Tracing.js';
-import { EvaluateFunc, HandleFor, NodeFor } from './types.js';
+import { EvaluateFunc, HandleFor } from './types.js';
 import { WebWorker } from './WebWorker.js';
 /**
  * @internal
@@ -56,6 +57,7 @@ export declare class CDPPage extends Page {
      * @internal
      */
     _client(): CDPSession;
+    isServiceWorkerBypassed(): boolean;
     isDragInterceptionEnabled(): boolean;
     isJavaScriptEnabled(): boolean;
     waitForFileChooser(options?: WaitTimeoutOptions): Promise<FileChooser>;
@@ -64,33 +66,23 @@ export declare class CDPPage extends Page {
     browser(): Browser;
     browserContext(): BrowserContext;
     mainFrame(): Frame;
-    get keyboard(): Keyboard;
-    get touchscreen(): Touchscreen;
+    get keyboard(): CDPKeyboard;
+    get touchscreen(): CDPTouchscreen;
     get coverage(): Coverage;
     get tracing(): Tracing;
     get accessibility(): Accessibility;
     frames(): Frame[];
     workers(): WebWorker[];
     setRequestInterception(value: boolean): Promise<void>;
+    setBypassServiceWorker(bypass: boolean): Promise<void>;
     setDragInterception(enabled: boolean): Promise<void>;
     setOfflineMode(enabled: boolean): Promise<void>;
     emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
     setDefaultNavigationTimeout(timeout: number): void;
     setDefaultTimeout(timeout: number): void;
     getDefaultTimeout(): number;
-    $<Selector extends string>(selector: Selector): Promise<ElementHandle<NodeFor<Selector>> | null>;
-    $$<Selector extends string>(selector: Selector): Promise<Array<ElementHandle<NodeFor<Selector>>>>;
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     queryObjects<Prototype>(prototypeHandle: JSHandle<Prototype>): Promise<JSHandle<Prototype[]>>;
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        ElementHandle<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        Array<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[Array<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    $x(expression: string): Promise<Array<ElementHandle<Node>>>;
     cookies(...urls: string[]): Promise<Protocol.Network.Cookie[]>;
     deleteCookie(...cookies: Protocol.Network.DeleteCookiesRequest[]): Promise<void>;
     setCookie(...cookies: Protocol.Network.CookieParam[]): Promise<void>;
@@ -100,6 +92,7 @@ export declare class CDPPage extends Page {
     exposeFunction(name: string, pptrFunction: Function | {
         default: Function;
     }): Promise<void>;
+    removeExposedFunction(name: string): Promise<void>;
     authenticate(credentials: Credentials): Promise<void>;
     setExtraHTTPHeaders(headers: Record<string, string>): Promise<void>;
     setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata): Promise<void>;
@@ -143,7 +136,8 @@ export declare class CDPPage extends Page {
     setViewport(viewport: Viewport): Promise<void>;
     viewport(): Viewport | null;
     evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
-    evaluateOnNewDocument<Params extends unknown[], Func extends (...args: Params) => unknown = (...args: Params) => unknown>(pageFunction: Func | string, ...args: Params): Promise<void>;
+    evaluateOnNewDocument<Params extends unknown[], Func extends (...args: Params) => unknown = (...args: Params) => unknown>(pageFunction: Func | string, ...args: Params): Promise<NewDocumentScriptEvaluation>;
+    removeScriptToEvaluateOnNewDocument(identifier: string): Promise<void>;
     setCacheEnabled(enabled?: boolean): Promise<void>;
     screenshot(options: ScreenshotOptions & {
         encoding: 'base64';
@@ -158,22 +152,31 @@ export declare class CDPPage extends Page {
         runBeforeUnload?: boolean;
     }): Promise<void>;
     isClosed(): boolean;
-    get mouse(): Mouse;
-    click(selector: string, options?: {
-        delay?: number;
-        button?: MouseButton;
-        clickCount?: number;
-    }): Promise<void>;
-    focus(selector: string): Promise<void>;
-    hover(selector: string): Promise<void>;
-    select(selector: string, ...values: string[]): Promise<string[]>;
-    tap(selector: string): Promise<void>;
-    type(selector: string, text: string, options?: {
-        delay: number;
-    }): Promise<void>;
-    waitForTimeout(milliseconds: number): Promise<void>;
-    waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
+    get mouse(): CDPMouse;
     waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
-    waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, options?: FrameWaitForFunctionOptions, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    /**
+     * This method is typically coupled with an action that triggers a device
+     * request from an api such as WebBluetooth.
+     *
+     * :::caution
+     *
+     * This must be called before the device request is made. It will not return a
+     * currently active device prompt.
+     *
+     * :::
+     *
+     * @example
+     *
+     * ```ts
+     * const [devicePrompt] = Promise.all([
+     *   page.waitForDevicePrompt(),
+     *   page.click('#connect-bluetooth'),
+     * ]);
+     * await devicePrompt.select(
+     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+     * );
+     * ```
+     */
+    waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
 }
 //# sourceMappingURL=Page.d.ts.map

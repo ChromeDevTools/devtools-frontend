@@ -1,3 +1,18 @@
+/**
+ * Copyright 2023 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
@@ -10,8 +25,9 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _CDPConnectionAdapter_cdp, _CDPConnectionAdapter_adapters, _CDPConnectionAdapter_browser, _CDPClientAdapter_closed, _CDPClientAdapter_client, _CDPClientAdapter_forwardMessage, _NoOpTransport_onMessage;
-import { Connection as BidiPPtrConnection } from './Connection.js';
 import * as BidiMapper from 'chromium-bidi/lib/cjs/bidiMapper/bidiMapper.js';
+import { TargetCloseError } from '../Errors.js';
+import { Connection as BidiPPtrConnection } from './Connection.js';
 /**
  * @internal
  */
@@ -35,7 +51,7 @@ export async function connectBidiOverCDP(cdp) {
         // Forwards a BiDi event sent by BidiServer to Puppeteer.
         pptrTransport.onmessage(JSON.stringify(message));
     });
-    const pptrBiDiConnection = new BidiPPtrConnection(pptrTransport);
+    const pptrBiDiConnection = new BidiPPtrConnection(cdp.url(), pptrTransport);
     const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, '');
     return pptrBiDiConnection;
 }
@@ -109,6 +125,9 @@ class CDPClientAdapter extends BidiMapper.EventEmitter {
         __classPrivateFieldGet(this, _CDPClientAdapter_client, "f").off('*', __classPrivateFieldGet(this, _CDPClientAdapter_forwardMessage, "f"));
         __classPrivateFieldSet(this, _CDPClientAdapter_closed, true, "f");
     }
+    isCloseError(error) {
+        return error instanceof TargetCloseError;
+    }
 }
 _CDPClientAdapter_closed = new WeakMap(), _CDPClientAdapter_client = new WeakMap(), _CDPClientAdapter_forwardMessage = new WeakMap();
 /**
@@ -124,7 +143,7 @@ class NoOpTransport extends BidiMapper.EventEmitter {
         });
     }
     emitMessage(message) {
-        __classPrivateFieldGet(this, _NoOpTransport_onMessage, "f").call(this, message);
+        void __classPrivateFieldGet(this, _NoOpTransport_onMessage, "f").call(this, message);
     }
     setOnMessage(onMessage) {
         __classPrivateFieldSet(this, _NoOpTransport_onMessage, onMessage, "f");

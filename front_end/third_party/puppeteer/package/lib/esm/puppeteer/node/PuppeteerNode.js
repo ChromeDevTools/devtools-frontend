@@ -25,10 +25,9 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _PuppeteerNode_instances, _PuppeteerNode__launcher, _PuppeteerNode_lastLaunchedProduct, _PuppeteerNode_launcher_get;
-import { join } from 'path';
+import { Browser as SupportedBrowser, resolveBuildId, detectBrowserPlatform, getInstalledBrowsers, uninstall, } from '@puppeteer/browsers';
 import { Puppeteer, } from '../common/Puppeteer.js';
 import { PUPPETEER_REVISIONS } from '../revisions.js';
-import { BrowserFetcher } from './BrowserFetcher.js';
 import { ChromeLauncher } from './ChromeLauncher.js';
 import { FirefoxLauncher } from './FirefoxLauncher.js';
 /**
@@ -89,22 +88,20 @@ export class PuppeteerNode extends Puppeteer {
                 break;
             default:
                 this.configuration.defaultProduct = 'chrome';
-                this.defaultBrowserRevision = PUPPETEER_REVISIONS.chromium;
+                this.defaultBrowserRevision = PUPPETEER_REVISIONS.chrome;
                 break;
         }
         this.connect = this.connect.bind(this);
         this.launch = this.launch.bind(this);
         this.executablePath = this.executablePath.bind(this);
         this.defaultArgs = this.defaultArgs.bind(this);
-        this.createBrowserFetcher = this.createBrowserFetcher.bind(this);
+        this.trimCache = this.trimCache.bind(this);
     }
     /**
      * This method attaches Puppeteer to an existing browser instance.
      *
      * @param options - Set of configurable options to set on the browser.
      * @returns Promise which resolves to browser instance.
-     *
-     * @public
      */
     connect(options) {
         return super.connect(options);
@@ -114,11 +111,11 @@ export class PuppeteerNode extends Puppeteer {
      * specified.
      *
      * When using with `puppeteer-core`,
-     * {@link LaunchOptions.executablePath | options.executablePath} or
-     * {@link LaunchOptions.channel | options.channel} must be provided.
+     * {@link LaunchOptions | options.executablePath} or
+     * {@link LaunchOptions | options.channel} must be provided.
      *
      * @example
-     * You can use {@link LaunchOptions.ignoreDefaultArgs | options.ignoreDefaultArgs}
+     * You can use {@link LaunchOptions | options.ignoreDefaultArgs}
      * to filter out `--mute-audio` from default arguments:
      *
      * ```ts
@@ -129,9 +126,9 @@ export class PuppeteerNode extends Puppeteer {
      *
      * @remarks
      * Puppeteer can also be used to control the Chrome browser, but it works best
-     * with the version of Chromium downloaded by default by Puppeteer. There is
-     * no guarantee it will work with any other version. If Google Chrome (rather
-     * than Chromium) is preferred, a
+     * with the version of Chrome for Testing downloaded by default.
+     * There is no guarantee it will work with any other version. If Google Chrome
+     * (rather than Chrome for Testing) is preferred, a
      * {@link https://www.google.com/chrome/browser/canary.html | Chrome Canary}
      * or
      * {@link https://www.chromium.org/getting-involved/dev-channel | Dev Channel}
@@ -139,11 +136,11 @@ export class PuppeteerNode extends Puppeteer {
      * {@link https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/ | this article}
      * for a description of the differences between Chromium and Chrome.
      * {@link https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md | This article}
-     * describes some differences for Linux users.
+     * describes some differences for Linux users. See
+     * {@link https://goo.gle/chrome-for-testing | this doc} for the description
+     * of Chrome for Testing.
      *
      * @param options - Options to configure launching behavior.
-     *
-     * @public
      */
     launch(options = {}) {
         const { product = this.defaultProduct } = options;
@@ -151,9 +148,7 @@ export class PuppeteerNode extends Puppeteer {
         return __classPrivateFieldGet(this, _PuppeteerNode_instances, "a", _PuppeteerNode_launcher_get).launch(options);
     }
     /**
-     * @returns The default executable path.
-     *
-     * @public
+     * The default executable path.
      */
     executablePath(channel) {
         return __classPrivateFieldGet(this, _PuppeteerNode_instances, "a", _PuppeteerNode_launcher_get).executablePath(channel);
@@ -162,38 +157,32 @@ export class PuppeteerNode extends Puppeteer {
      * @internal
      */
     get browserRevision() {
-        var _a, _b, _c;
-        return ((_c = (_b = (_a = __classPrivateFieldGet(this, _PuppeteerNode__launcher, "f")) === null || _a === void 0 ? void 0 : _a.getActualBrowserRevision()) !== null && _b !== void 0 ? _b : this.configuration.browserRevision) !== null && _c !== void 0 ? _c : this.defaultBrowserRevision);
+        return (__classPrivateFieldGet(this, _PuppeteerNode__launcher, "f")?.getActualBrowserRevision() ??
+            this.configuration.browserRevision ??
+            this.defaultBrowserRevision);
     }
     /**
-     * @returns The default download path for puppeteer. For puppeteer-core, this
+     * The default download path for puppeteer. For puppeteer-core, this
      * code should never be called as it is never defined.
      *
      * @internal
      */
     get defaultDownloadPath() {
-        var _a;
-        return ((_a = this.configuration.downloadPath) !== null && _a !== void 0 ? _a : join(this.configuration.cacheDirectory, this.product));
+        return this.configuration.downloadPath ?? this.configuration.cacheDirectory;
     }
     /**
-     * @returns The name of the browser that was last launched.
-     *
-     * @public
+     * The name of the browser that was last launched.
      */
     get lastLaunchedProduct() {
-        var _a;
-        return (_a = __classPrivateFieldGet(this, _PuppeteerNode_lastLaunchedProduct, "f")) !== null && _a !== void 0 ? _a : this.defaultProduct;
+        return __classPrivateFieldGet(this, _PuppeteerNode_lastLaunchedProduct, "f") ?? this.defaultProduct;
     }
     /**
-     * @returns The name of the browser that will be launched by default. For
+     * The name of the browser that will be launched by default. For
      * `puppeteer`, this is influenced by your configuration. Otherwise, it's
      * `chrome`.
-     *
-     * @public
      */
     get defaultProduct() {
-        var _a;
-        return (_a = this.configuration.defaultProduct) !== null && _a !== void 0 ? _a : 'chrome';
+        return this.configuration.defaultProduct ?? 'chrome';
     }
     /**
      * @deprecated Do not use as this field as it does not take into account
@@ -202,8 +191,6 @@ export class PuppeteerNode extends Puppeteer {
      * {@link PuppeteerNode.lastLaunchedProduct | lastLaunchedProduct}.
      *
      * @returns The name of the browser that is under automation.
-     *
-     * @public
      */
     get product() {
         return __classPrivateFieldGet(this, _PuppeteerNode_instances, "a", _PuppeteerNode_launcher_get).product;
@@ -212,42 +199,74 @@ export class PuppeteerNode extends Puppeteer {
      * @param options - Set of configurable options to set on the browser.
      *
      * @returns The default flags that Chromium will be launched with.
-     *
-     * @public
      */
     defaultArgs(options = {}) {
         return __classPrivateFieldGet(this, _PuppeteerNode_instances, "a", _PuppeteerNode_launcher_get).defaultArgs(options);
     }
     /**
-     * @param options - Set of configurable options to specify the settings of the
-     * BrowserFetcher.
+     * Removes all non-current Firefox and Chrome binaries in the cache directory
+     * identified by the provided Puppeteer configuration. The current browser
+     * version is determined by resolving PUPPETEER_REVISIONS from Puppeteer
+     * unless `configuration.browserRevision` is provided.
      *
      * @remarks
-     * If you are using `puppeteer-core`, do not use this method. Just
-     * construct {@link BrowserFetcher} manually.
      *
-     * @returns A new BrowserFetcher instance.
+     * Note that the method does not check if any other Puppeteer versions
+     * installed on the host that use the same cache directory require the
+     * non-current binaries.
+     *
+     * @public
      */
-    createBrowserFetcher(options = {}) {
-        var _a;
-        const downloadPath = this.defaultDownloadPath;
-        if (!options.path && downloadPath) {
-            options.path = downloadPath;
+    async trimCache() {
+        const platform = detectBrowserPlatform();
+        if (!platform) {
+            throw new Error('The current platform is not supported.');
         }
-        if (!options.path) {
-            throw new Error('A `path` must be specified for `puppeteer-core`.');
+        const cacheDir = this.configuration.downloadPath ?? this.configuration.cacheDirectory;
+        const installedBrowsers = await getInstalledBrowsers({
+            cacheDir,
+        });
+        const product = this.configuration.defaultProduct;
+        const puppeteerBrowsers = [
+            {
+                product: 'chrome',
+                browser: SupportedBrowser.CHROME,
+                currentBuildId: '',
+            },
+            {
+                product: 'firefox',
+                browser: SupportedBrowser.FIREFOX,
+                currentBuildId: '',
+            },
+        ];
+        // Resolve current buildIds.
+        for (const item of puppeteerBrowsers) {
+            item.currentBuildId = await resolveBuildId(item.browser, platform, (product === item.product
+                ? this.configuration.browserRevision
+                : null) || PUPPETEER_REVISIONS[item.product]);
         }
-        if (!('useMacOSARMBinary' in options) &&
-            ((_a = this.configuration.experiments) === null || _a === void 0 ? void 0 : _a.macArmChromiumEnabled)) {
-            options.useMacOSARMBinary = true;
+        const currentBrowserBuilds = new Set(puppeteerBrowsers.map(browser => {
+            return `${browser.browser}_${browser.currentBuildId}`;
+        }));
+        const currentBrowsers = new Set(puppeteerBrowsers.map(browser => {
+            return browser.browser;
+        }));
+        for (const installedBrowser of installedBrowsers) {
+            // Don't uninstall browsers that are not managed by Puppeteer yet.
+            if (!currentBrowsers.has(installedBrowser.browser)) {
+                continue;
+            }
+            // Keep the browser build used by the current Puppeteer installation.
+            if (currentBrowserBuilds.has(`${installedBrowser.browser}_${installedBrowser.buildId}`)) {
+                continue;
+            }
+            await uninstall({
+                browser: SupportedBrowser.CHROME,
+                platform,
+                cacheDir,
+                buildId: installedBrowser.buildId,
+            });
         }
-        if (!('host' in options) && this.configuration.downloadHost) {
-            options.host = this.configuration.downloadHost;
-        }
-        if (!('product' in options) && this.configuration.defaultProduct) {
-            options.product = this.configuration.defaultProduct;
-        }
-        return new BrowserFetcher(options);
     }
 }
 _PuppeteerNode__launcher = new WeakMap(), _PuppeteerNode_lastLaunchedProduct = new WeakMap(), _PuppeteerNode_instances = new WeakSet(), _PuppeteerNode_launcher_get = function _PuppeteerNode_launcher_get() {
@@ -257,7 +276,7 @@ _PuppeteerNode__launcher = new WeakMap(), _PuppeteerNode_lastLaunchedProduct = n
     }
     switch (this.lastLaunchedProduct) {
         case 'chrome':
-            this.defaultBrowserRevision = PUPPETEER_REVISIONS.chromium;
+            this.defaultBrowserRevision = PUPPETEER_REVISIONS.chrome;
             __classPrivateFieldSet(this, _PuppeteerNode__launcher, new ChromeLauncher(this), "f");
             break;
         case 'firefox':

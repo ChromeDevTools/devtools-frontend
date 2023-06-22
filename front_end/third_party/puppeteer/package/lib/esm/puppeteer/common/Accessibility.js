@@ -26,7 +26,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _Accessibility_client, _AXNode_instances, _AXNode_richlyEditable, _AXNode_editable, _AXNode_focusable, _AXNode_hidden, _AXNode_name, _AXNode_role, _AXNode_ignored, _AXNode_cachedHasFocusableChild, _AXNode_isPlainTextField, _AXNode_isTextOnlyObject, _AXNode_hasFocusableChild;
 /**
- * The Accessibility class provides methods for inspecting Chromium's
+ * The Accessibility class provides methods for inspecting the browser's
  * accessibility tree. The accessibility tree is used by assistive technology
  * such as {@link https://en.wikipedia.org/wiki/Screen_reader | screen readers} or
  * {@link https://en.wikipedia.org/wiki/Switch_access | switches}.
@@ -61,7 +61,7 @@ export class Accessibility {
      *
      * @remarks
      *
-     * **NOTE** The Chromium accessibility tree contains nodes that go unused on
+     * **NOTE** The Chrome accessibility tree contains nodes that go unused on
      * most platforms and by most screen readers. Puppeteer will discard them as
      * well for an easier to process tree, unless `interestingOnly` is set to
      * `false`.
@@ -95,13 +95,12 @@ export class Accessibility {
      * @returns An AXNode object representing the snapshot.
      */
     async snapshot(options = {}) {
-        var _a, _b;
         const { interestingOnly = true, root = null } = options;
         const { nodes } = await __classPrivateFieldGet(this, _Accessibility_client, "f").send('Accessibility.getFullAXTree');
         let backendNodeId;
         if (root) {
             const { node } = await __classPrivateFieldGet(this, _Accessibility_client, "f").send('DOM.describeNode', {
-                objectId: root.remoteObject().objectId,
+                objectId: root.id,
             });
             backendNodeId = node.backendNodeId;
         }
@@ -116,14 +115,14 @@ export class Accessibility {
             }
         }
         if (!interestingOnly) {
-            return (_a = this.serializeTree(needle)[0]) !== null && _a !== void 0 ? _a : null;
+            return this.serializeTree(needle)[0] ?? null;
         }
         const interestingNodes = new Set();
         this.collectInterestingNodes(interestingNodes, defaultRoot, false);
         if (!interestingNodes.has(needle)) {
             return null;
         }
-        return (_b = this.serializeTree(needle, interestingNodes)[0]) !== null && _b !== void 0 ? _b : null;
+        return this.serializeTree(needle, interestingNodes)[0] ?? null;
     }
     serializeTree(node, interestingNodes) {
         const children = [];

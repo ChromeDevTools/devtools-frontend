@@ -15,15 +15,15 @@
  */
 /// <reference types="node" />
 import { Protocol } from 'devtools-protocol';
-import { Frame } from '../common/Frame.js';
+import { Frame } from '../api/Frame.js';
+import { CDPSession } from '../common/Connection.js';
+import { ExecutionContext } from '../common/ExecutionContext.js';
 import { WaitForSelectorOptions } from '../common/IsolatedWorld.js';
+import { ElementFor, EvaluateFuncWith, HandleFor, HandleOr, NodeFor } from '../common/types.js';
+import { KeyInput } from '../common/USKeyboardLayout.js';
+import { KeyPressOptions, MouseClickOptions, KeyboardTypeOptions } from './Input.js';
 import { JSHandle } from './JSHandle.js';
 import { ScreenshotOptions } from './Page.js';
-import { ElementFor, EvaluateFunc, HandleFor, NodeFor } from '../common/types.js';
-import { KeyInput } from '../common/USKeyboardLayout.js';
-import { MouseButton } from '../common/Input.js';
-import { ExecutionContext } from '../common/ExecutionContext.js';
-import { CDPSession } from '../common/Connection.js';
 /**
  * @public
  */
@@ -64,38 +64,11 @@ export interface Offset {
 /**
  * @public
  */
-export interface ClickOptions {
-    /**
-     * Time to wait between `mousedown` and `mouseup` in milliseconds.
-     *
-     * @defaultValue 0
-     */
-    delay?: number;
-    /**
-     * @defaultValue 'left'
-     */
-    button?: MouseButton;
-    /**
-     * @defaultValue 1
-     */
-    clickCount?: number;
+export interface ClickOptions extends MouseClickOptions {
     /**
      * Offset for the clickable point relative to the top-left corner of the border box.
      */
     offset?: Offset;
-}
-/**
- * @public
- */
-export interface PressOptions {
-    /**
-     * Time to wait between `keydown` and `keyup` in milliseconds. Defaults to 0.
-     */
-    delay?: number;
-    /**
-     * If specified, generates an input event with this text.
-     */
-    text?: string;
 }
 /**
  * @public
@@ -138,10 +111,56 @@ export interface Point {
  * @public
  */
 export declare class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
+    #private;
     /**
      * @internal
      */
-    constructor();
+    protected handle: JSHandle<ElementType>;
+    /**
+     * @internal
+     */
+    constructor(handle: JSHandle<ElementType>);
+    /**
+     * @internal
+     */
+    get id(): string | undefined;
+    /**
+     * @internal
+     */
+    get disposed(): boolean;
+    /**
+     * @internal
+     */
+    getProperty<K extends keyof ElementType>(propertyName: HandleOr<K>): Promise<HandleFor<ElementType[K]>>;
+    /**
+     * @internal
+     */
+    getProperty(propertyName: string): Promise<JSHandle<unknown>>;
+    /**
+     * @internal
+     */
+    getProperties(): Promise<Map<string, JSHandle>>;
+    /**
+     * @internal
+     */
+    evaluate<Params extends unknown[], Func extends EvaluateFuncWith<ElementType, Params> = EvaluateFuncWith<ElementType, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    /**
+     * @internal
+     */
+    evaluateHandle<Params extends unknown[], Func extends EvaluateFuncWith<ElementType, Params> = EvaluateFuncWith<ElementType, Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    /**
+     * @internal
+     */
+    jsonValue(): Promise<ElementType>;
+    /**
+     * @internal
+     */
+    toString(): string;
+    /**
+     * @internal
+     */
+    dispose(): Promise<void>;
+    asElement(): ElementHandle<ElementType>;
     /**
      * @internal
      */
@@ -193,10 +212,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        ElementHandle<NodeFor<Selector>>,
-        ...Params
-    ]> = EvaluateFunc<[ElementHandle<NodeFor<Selector>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<NodeFor<Selector>, Params> = EvaluateFuncWith<NodeFor<Selector>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * Runs the given function on an array of elements matching the given selector
      * in the current element.
@@ -230,10 +246,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @param args - Additional arguments to pass to `pageFunction`.
      * @returns A promise to the result of the function.
      */
-    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFunc<[
-        HandleFor<Array<NodeFor<Selector>>>,
-        ...Params
-    ]> = EvaluateFunc<[HandleFor<Array<NodeFor<Selector>>>, ...Params]>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * @deprecated Use {@link ElementHandle.$$} with the `xpath` prefix.
      *
@@ -286,6 +299,16 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      */
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<ElementHandle<NodeFor<Selector>> | null>;
     /**
+     * Checks if an element is visible using the same mechanism as
+     * {@link ElementHandle.waitForSelector}.
+     */
+    isVisible(): Promise<boolean>;
+    /**
+     * Checks if an element is hidden using the same mechanism as
+     * {@link ElementHandle.waitForSelector}.
+     */
+    isHidden(): Promise<boolean>;
+    /**
      * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
      * prefix.
      *
@@ -301,6 +324,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * If `xpath` starts with `//` instead of `.//`, the dot will be appended
      * automatically.
      *
+     * @example
      * This method works across navigation.
      *
      * ```ts
@@ -371,7 +395,6 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * automatically disposed.**
      */
     toElement<K extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap>(tagName: K): Promise<HandleFor<ElementFor<K>>>;
-    asElement(): ElementHandle<ElementType> | null;
     /**
      * Resolves to the content frame for element handles referencing
      * iframe nodes, or null otherwise
@@ -383,13 +406,13 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
     clickablePoint(offset?: Offset): Promise<Point>;
     /**
      * This method scrolls element into view if needed, and then
-     * uses {@link Page.mouse} to hover over the center of the element.
+     * uses {@link Page} to hover over the center of the element.
      * If the element is detached from DOM, the method throws an error.
      */
     hover(this: ElementHandle<Element>): Promise<void>;
     /**
      * This method scrolls element into view if needed, and then
-     * uses {@link Page.mouse} to click in the center of the element.
+     * uses {@link Page | Page.mouse} to click in the center of the element.
      * If the element is detached from DOM, the method throws an error.
      */
     click(this: ElementHandle<Element>, options?: ClickOptions): Promise<void>;
@@ -433,16 +456,17 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      */
     select(...values: string[]): Promise<string[]>;
     /**
-     * This method expects `elementHandle` to point to an
-     * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input | input element}.
+     * Sets the value of an
+     * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input | input element}
+     * to the given file paths.
      *
-     * @param filePaths - Sets the value of the file input to these paths.
-     * If a path is relative, then it is resolved against the
+     * @remarks This will not validate whether the file paths exists. Also, if a
+     * path is relative, then it is resolved against the
      * {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
-     * Note for locals script connecting to remote chrome environments,
-     * paths must be absolute.
+     * For locals script connecting to remote chrome environments, paths must be
+     * absolute.
      */
-    uploadFile(this: ElementHandle<HTMLInputElement>, ...filePaths: string[]): Promise<void>;
+    uploadFile(this: ElementHandle<HTMLInputElement>, ...paths: string[]): Promise<void>;
     /**
      * This method scrolls element into view if needed, and then uses
      * {@link Touchscreen.tap} to tap in the center of the element.
@@ -478,10 +502,10 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * await elementHandle.type('some text');
      * await elementHandle.press('Enter');
      * ```
+     *
+     * @param options - Delay in milliseconds. Defaults to 0.
      */
-    type(text: string, options?: {
-        delay: number;
-    }): Promise<void>;
+    type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
     /**
      * Focuses the element, and then uses {@link Keyboard.down} and {@link Keyboard.up}.
      *
@@ -496,7 +520,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @param key - Name of key to press, such as `ArrowLeft`.
      * See {@link KeyInput} for a list of all key names.
      */
-    press(key: KeyInput, options?: PressOptions): Promise<void>;
+    press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
     /**
      * This method returns the bounding box of the element (relative to the main frame),
      * or `null` if the element is not visible.
@@ -513,15 +537,37 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
     boxModel(): Promise<BoxModel | null>;
     /**
      * This method scrolls element into view if needed, and then uses
-     * {@link Page.screenshot} to take a screenshot of the element.
+     * {@link Page.(screenshot:3) } to take a screenshot of the element.
      * If the element is detached from DOM, the method throws an error.
      */
     screenshot(this: ElementHandle<Element>, options?: ScreenshotOptions): Promise<string | Buffer>;
     /**
-     * Resolves to true if the element is visible in the current viewport.
+     * @internal
+     */
+    protected assertConnectedElement(): Promise<void>;
+    /**
+     * @internal
+     */
+    protected scrollIntoViewIfNeeded(this: ElementHandle<Element>): Promise<void>;
+    /**
+     * Resolves to true if the element is visible in the current viewport. If an
+     * element is an SVG, we check if the svg owner element is in the viewport
+     * instead. See https://crbug.com/963246.
+     *
+     * @param options - Threshold for the intersection between 0 (no intersection) and 1
+     * (full intersection). Defaults to 1.
      */
     isIntersectingViewport(this: ElementHandle<Element>, options?: {
         threshold?: number;
     }): Promise<boolean>;
+    /**
+     * Scrolls the element into view using either the automation protocol client
+     * or by calling element.scrollIntoView.
+     */
+    scrollIntoView(this: ElementHandle<Element>): Promise<void>;
+    /**
+     * @internal
+     */
+    assertElementHasWorld(): asserts this;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

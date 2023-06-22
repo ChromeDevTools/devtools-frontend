@@ -47,23 +47,23 @@ export declare class ConsoleMessage {
      */
     constructor(type: ConsoleMessageType, text: string, args: JSHandle[], stackTraceLocations: ConsoleMessageLocation[]);
     /**
-     * @returns The type of the console message.
+     * The type of the console message.
      */
     type(): ConsoleMessageType;
     /**
-     * @returns The text of the console message.
+     * The text of the console message.
      */
     text(): string;
     /**
-     * @returns An array of arguments passed to the console.
+     * An array of arguments passed to the console.
      */
     args(): JSHandle[];
     /**
-     * @returns The location of the console message.
+     * The location of the console message.
      */
     location(): ConsoleMessageLocation;
     /**
-     * @returns The array of locations on the stack of the console message.
+     * The array of locations on the stack of the console message.
      */
     stackTrace(): ConsoleMessageLocation[];
 }

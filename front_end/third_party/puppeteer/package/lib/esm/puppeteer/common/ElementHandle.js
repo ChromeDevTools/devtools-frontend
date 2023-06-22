@@ -24,11 +24,11 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _CDPElementHandle_instances, _CDPElementHandle_disposed, _CDPElementHandle_frame, _CDPElementHandle_context, _CDPElementHandle_remoteObject, _CDPElementHandle_frameManager_get, _CDPElementHandle_page_get, _CDPElementHandle_scrollIntoViewIfNeeded, _CDPElementHandle_getOOPIFOffsets, _CDPElementHandle_getBoxModel, _CDPElementHandle_fromProtocolQuad, _CDPElementHandle_intersectQuadWithViewport;
-import { assert } from '../util/assert.js';
-import { getQueryHandlerAndSelector } from './QueryHandler.js';
-import { debugError, isString, releaseObject, valueFromRemoteObject, } from './util.js';
+var _CDPElementHandle_instances, _CDPElementHandle_frame, _CDPElementHandle_frameManager_get, _CDPElementHandle_page_get, _CDPElementHandle_getOOPIFOffsets, _CDPElementHandle_getBoxModel, _CDPElementHandle_fromProtocolQuad, _CDPElementHandle_intersectQuadWithViewport;
 import { ElementHandle, } from '../api/ElementHandle.js';
+import { assert } from '../util/assert.js';
+import { CDPJSHandle } from './JSHandle.js';
+import { debugError } from './util.js';
 const applyOffsetsToQuad = (quad, offsetX, offsetY) => {
     return quad.map(part => {
         return { x: part.x + offsetX, y: part.y + offsetY };
@@ -43,145 +43,65 @@ const applyOffsetsToQuad = (quad, offsetX, offsetY) => {
  */
 export class CDPElementHandle extends ElementHandle {
     constructor(context, remoteObject, frame) {
-        super();
+        super(new CDPJSHandle(context, remoteObject));
         _CDPElementHandle_instances.add(this);
-        _CDPElementHandle_disposed.set(this, false);
         _CDPElementHandle_frame.set(this, void 0);
-        _CDPElementHandle_context.set(this, void 0);
-        _CDPElementHandle_remoteObject.set(this, void 0);
-        __classPrivateFieldSet(this, _CDPElementHandle_context, context, "f");
-        __classPrivateFieldSet(this, _CDPElementHandle_remoteObject, remoteObject, "f");
         __classPrivateFieldSet(this, _CDPElementHandle_frame, frame, "f");
     }
     /**
      * @internal
      */
     executionContext() {
-        return __classPrivateFieldGet(this, _CDPElementHandle_context, "f");
+        return this.handle.executionContext();
     }
     /**
      * @internal
      */
     get client() {
-        return __classPrivateFieldGet(this, _CDPElementHandle_context, "f")._client;
+        return this.handle.client;
     }
     remoteObject() {
-        return __classPrivateFieldGet(this, _CDPElementHandle_remoteObject, "f");
-    }
-    async evaluate(pageFunction, ...args) {
-        return this.executionContext().evaluate(pageFunction, this, ...args);
-    }
-    evaluateHandle(pageFunction, ...args) {
-        return this.executionContext().evaluateHandle(pageFunction, this, ...args);
+        return this.handle.remoteObject();
     }
     get frame() {
         return __classPrivateFieldGet(this, _CDPElementHandle_frame, "f");
     }
-    get disposed() {
-        return __classPrivateFieldGet(this, _CDPElementHandle_disposed, "f");
-    }
-    async getProperty(propertyName) {
-        return this.evaluateHandle((object, propertyName) => {
-            return object[propertyName];
-        }, propertyName);
-    }
-    async jsonValue() {
-        if (!__classPrivateFieldGet(this, _CDPElementHandle_remoteObject, "f").objectId) {
-            return valueFromRemoteObject(__classPrivateFieldGet(this, _CDPElementHandle_remoteObject, "f"));
-        }
-        const value = await this.evaluate(object => {
-            return object;
-        });
-        if (value === undefined) {
-            throw new Error('Could not serialize referenced object');
-        }
-        return value;
-    }
-    toString() {
-        if (!__classPrivateFieldGet(this, _CDPElementHandle_remoteObject, "f").objectId) {
-            return 'JSHandle:' + valueFromRemoteObject(__classPrivateFieldGet(this, _CDPElementHandle_remoteObject, "f"));
-        }
-        const type = __classPrivateFieldGet(this, _CDPElementHandle_remoteObject, "f").subtype || __classPrivateFieldGet(this, _CDPElementHandle_remoteObject, "f").type;
-        return 'JSHandle@' + type;
-    }
     async $(selector) {
-        const { updatedSelector, queryHandler } = getQueryHandlerAndSelector(selector);
-        assert(queryHandler.queryOne, 'Cannot handle queries for a single element with the given selector');
-        return (await queryHandler.queryOne(this, updatedSelector));
+        return super.$(selector);
     }
     async $$(selector) {
-        const { updatedSelector, queryHandler } = getQueryHandlerAndSelector(selector);
-        assert(queryHandler.queryAll, 'Cannot handle queries for a multiple element with the given selector');
-        return (await queryHandler.queryAll(this, updatedSelector));
+        return super.$$(selector);
     }
-    async $eval(selector, pageFunction, ...args) {
-        const elementHandle = await this.$(selector);
-        if (!elementHandle) {
-            throw new Error(`Error: failed to find element matching selector "${selector}"`);
-        }
-        const result = await elementHandle.evaluate(pageFunction, ...args);
-        await elementHandle.dispose();
-        return result;
-    }
-    async $$eval(selector, pageFunction, ...args) {
-        const { updatedSelector, queryHandler } = getQueryHandlerAndSelector(selector);
-        assert(queryHandler.queryAll, 'Cannot handle queries for a multiple element with the given selector');
-        const handles = (await queryHandler.queryAll(this, updatedSelector));
-        const elements = (await this.evaluateHandle((_, ...elements) => {
-            return elements;
-        }, ...handles));
-        const [result] = await Promise.all([
-            elements.evaluate(pageFunction, ...args),
-            ...handles.map(handle => {
-                return handle.dispose();
-            }),
-        ]);
-        await elements.dispose();
-        return result;
-    }
-    async $x(expression) {
-        if (expression.startsWith('//')) {
-            expression = `.${expression}`;
-        }
-        return this.$$(`xpath/${expression}`);
-    }
-    async waitForSelector(selector, options = {}) {
-        const { updatedSelector, queryHandler } = getQueryHandlerAndSelector(selector);
-        assert(queryHandler.waitFor, 'Query handler does not support waiting');
-        return (await queryHandler.waitFor(this, updatedSelector, options));
-    }
-    async waitForXPath(xpath, options = {}) {
-        if (xpath.startsWith('//')) {
-            xpath = `.${xpath}`;
-        }
-        return this.waitForSelector(`xpath/${xpath}`, options);
-    }
-    async toElement(tagName) {
-        const isMatchingTagName = await this.evaluate((node, tagName) => {
-            return node.nodeName === tagName.toUpperCase();
-        }, tagName);
-        if (!isMatchingTagName) {
-            throw new Error(`Element is not a(n) \`${tagName}\` element`);
-        }
-        return this;
-    }
-    asElement() {
-        return this;
+    async waitForSelector(selector, options) {
+        return (await super.waitForSelector(selector, options));
     }
     async contentFrame() {
         const nodeInfo = await this.client.send('DOM.describeNode', {
-            objectId: this.remoteObject().objectId,
+            objectId: this.id,
         });
         if (typeof nodeInfo.node.frameId !== 'string') {
             return null;
         }
         return __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_frameManager_get).frame(nodeInfo.node.frameId);
     }
+    async scrollIntoView() {
+        await this.assertConnectedElement();
+        try {
+            await this.client.send('DOM.scrollIntoViewIfNeeded', {
+                objectId: this.id,
+            });
+        }
+        catch (error) {
+            debugError(error);
+            // Fallback to Element.scrollIntoView if DOM.scrollIntoViewIfNeeded is not supported
+            await super.scrollIntoView();
+        }
+    }
     async clickablePoint(offset) {
         const [result, layoutMetrics] = await Promise.all([
             this.client
                 .send('DOM.getContentQuads', {
-                objectId: this.remoteObject().objectId,
+                objectId: this.id,
             })
                 .catch(debugError),
             __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get)._client().send('Page.getLayoutMetrics'),
@@ -248,7 +168,7 @@ export class CDPElementHandle extends ElementHandle {
      * If the element is detached from DOM, the method throws an error.
      */
     async hover() {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint();
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.move(x, y);
     }
@@ -258,7 +178,7 @@ export class CDPElementHandle extends ElementHandle {
      * If the element is detached from DOM, the method throws an error.
      */
     async click(options = {}) {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint(options.offset);
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.click(x, y, options);
     }
@@ -267,69 +187,31 @@ export class CDPElementHandle extends ElementHandle {
      */
     async drag(target) {
         assert(__classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         const start = await this.clickablePoint();
         return await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.drag(start, target);
     }
     async dragEnter(data = { items: [], dragOperationsMask: 1 }) {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         const target = await this.clickablePoint();
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.dragEnter(target, data);
     }
     async dragOver(data = { items: [], dragOperationsMask: 1 }) {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         const target = await this.clickablePoint();
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.dragOver(target, data);
     }
     async drop(data = { items: [], dragOperationsMask: 1 }) {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         const destination = await this.clickablePoint();
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.drop(destination, data);
     }
     async dragAndDrop(target, options) {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        assert(__classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
+        await this.scrollIntoViewIfNeeded();
         const startPoint = await this.clickablePoint();
         const targetPoint = await target.clickablePoint();
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.dragAndDrop(startPoint, targetPoint, options);
-    }
-    async select(...values) {
-        for (const value of values) {
-            assert(isString(value), 'Values must be strings. Found value "' +
-                value +
-                '" of type "' +
-                typeof value +
-                '"');
-        }
-        return this.evaluate((element, vals) => {
-            const values = new Set(vals);
-            if (!(element instanceof HTMLSelectElement)) {
-                throw new Error('Element is not a <select> element.');
-            }
-            const selectedValues = new Set();
-            if (!element.multiple) {
-                for (const option of element.options) {
-                    option.selected = false;
-                }
-                for (const option of element.options) {
-                    if (values.has(option.value)) {
-                        option.selected = true;
-                        selectedValues.add(option.value);
-                        break;
-                    }
-                }
-            }
-            else {
-                for (const option of element.options) {
-                    option.selected = values.has(option.value);
-                    if (option.selected) {
-                        selectedValues.add(option.value);
-                    }
-                }
-            }
-            element.dispatchEvent(new Event('input', { bubbles: true }));
-            element.dispatchEvent(new Event('change', { bubbles: true }));
-            return [...selectedValues.values()];
-        }, values);
     }
     async uploadFile(...filePaths) {
         const isMultiple = await this.evaluate(element => {
@@ -355,9 +237,8 @@ export class CDPElementHandle extends ElementHandle {
                 return path.resolve(filePath);
             }
         });
-        const { objectId } = this.remoteObject();
         const { node } = await this.client.send('DOM.describeNode', {
-            objectId,
+            objectId: this.id,
         });
         const { backendNodeId } = node;
         /*  The zero-length array is a special case, it seems that
@@ -374,39 +255,31 @@ export class CDPElementHandle extends ElementHandle {
         }
         else {
             await this.client.send('DOM.setFileInputFiles', {
-                objectId,
+                objectId: this.id,
                 files,
                 backendNodeId,
             });
         }
     }
     async tap() {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint();
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchStart(x, y);
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchEnd();
     }
     async touchStart() {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint();
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchStart(x, y);
     }
     async touchMove() {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint();
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchMove(x, y);
     }
     async touchEnd() {
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchEnd();
-    }
-    async focus() {
-        await this.evaluate(element => {
-            if (!(element instanceof HTMLElement)) {
-                throw new Error('Cannot focus non-HTMLElement');
-            }
-            return element.focus();
-        });
     }
     async type(text, options) {
         await this.focus();
@@ -460,7 +333,7 @@ export class CDPElementHandle extends ElementHandle {
             await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).setViewport(Object.assign({}, viewport, newViewport));
             needsViewportReset = true;
         }
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_scrollIntoViewIfNeeded).call(this);
+        await this.scrollIntoViewIfNeeded();
         boundingBox = await this.boundingBox();
         assert(boundingBox, 'Node is either not visible or not an HTMLElement');
         assert(boundingBox.width !== 0, 'Node has 0 width.');
@@ -479,73 +352,11 @@ export class CDPElementHandle extends ElementHandle {
         }
         return imageData;
     }
-    async isIntersectingViewport(options) {
-        const { threshold = 0 } = options !== null && options !== void 0 ? options : {};
-        return await this.evaluate(async (element, threshold) => {
-            const visibleRatio = await new Promise(resolve => {
-                const observer = new IntersectionObserver(entries => {
-                    resolve(entries[0].intersectionRatio);
-                    observer.disconnect();
-                });
-                observer.observe(element);
-            });
-            return threshold === 1 ? visibleRatio === 1 : visibleRatio > threshold;
-        }, threshold);
-    }
-    async dispose() {
-        if (__classPrivateFieldGet(this, _CDPElementHandle_disposed, "f")) {
-            return;
-        }
-        __classPrivateFieldSet(this, _CDPElementHandle_disposed, true, "f");
-        await releaseObject(this.client, __classPrivateFieldGet(this, _CDPElementHandle_remoteObject, "f"));
-    }
 }
-_CDPElementHandle_disposed = new WeakMap(), _CDPElementHandle_frame = new WeakMap(), _CDPElementHandle_context = new WeakMap(), _CDPElementHandle_remoteObject = new WeakMap(), _CDPElementHandle_instances = new WeakSet(), _CDPElementHandle_frameManager_get = function _CDPElementHandle_frameManager_get() {
+_CDPElementHandle_frame = new WeakMap(), _CDPElementHandle_instances = new WeakSet(), _CDPElementHandle_frameManager_get = function _CDPElementHandle_frameManager_get() {
     return __classPrivateFieldGet(this, _CDPElementHandle_frame, "f")._frameManager;
 }, _CDPElementHandle_page_get = function _CDPElementHandle_page_get() {
     return __classPrivateFieldGet(this, _CDPElementHandle_frame, "f").page();
-}, _CDPElementHandle_scrollIntoViewIfNeeded = async function _CDPElementHandle_scrollIntoViewIfNeeded() {
-    const error = await this.evaluate(async (element) => {
-        if (!element.isConnected) {
-            return 'Node is detached from document';
-        }
-        if (element.nodeType !== Node.ELEMENT_NODE) {
-            return 'Node is not of type HTMLElement';
-        }
-        return;
-    });
-    if (error) {
-        throw new Error(error);
-    }
-    try {
-        await this.client.send('DOM.scrollIntoViewIfNeeded', {
-            objectId: this.remoteObject().objectId,
-        });
-    }
-    catch (_err) {
-        // Fallback to Element.scrollIntoView if DOM.scrollIntoViewIfNeeded is not supported
-        await this.evaluate(async (element, pageJavascriptEnabled) => {
-            const visibleRatio = async () => {
-                return await new Promise(resolve => {
-                    const observer = new IntersectionObserver(entries => {
-                        resolve(entries[0].intersectionRatio);
-                        observer.disconnect();
-                    });
-                    observer.observe(element);
-                });
-            };
-            if (!pageJavascriptEnabled || (await visibleRatio()) !== 1.0) {
-                element.scrollIntoView({
-                    block: 'center',
-                    inline: 'center',
-                    // @ts-expect-error Chrome still supports behavior: instant but
-                    // it's not in the spec so TS shouts We don't want to make this
-                    // breaking change in Puppeteer yet so we'll ignore the line.
-                    behavior: 'instant',
-                });
-            }
-        }, __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).isJavaScriptEnabled());
-    }
 }, _CDPElementHandle_getOOPIFOffsets = async function _CDPElementHandle_getOOPIFOffsets(frame) {
     let offsetX = 0;
     let offsetY = 0;
@@ -574,7 +385,7 @@ _CDPElementHandle_disposed = new WeakMap(), _CDPElementHandle_frame = new WeakMa
     return { offsetX, offsetY };
 }, _CDPElementHandle_getBoxModel = function _CDPElementHandle_getBoxModel() {
     const params = {
-        objectId: this.remoteObject().objectId,
+        objectId: this.id,
     };
     return this.client.send('DOM.getBoxModel', params).catch(error => {
         return debugError(error);

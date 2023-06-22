@@ -24,14 +24,14 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _NetworkManager_instances, _NetworkManager_client, _NetworkManager_ignoreHTTPSErrors, _NetworkManager_frameManager, _NetworkManager_networkEventManager, _NetworkManager_extraHTTPHeaders, _NetworkManager_credentials, _NetworkManager_attemptedAuthentications, _NetworkManager_userRequestInterceptionEnabled, _NetworkManager_protocolRequestInterceptionEnabled, _NetworkManager_userCacheDisabled, _NetworkManager_emulatedNetworkConditions, _NetworkManager_deferredInitPromise, _NetworkManager_updateNetworkConditions, _NetworkManager_updateProtocolRequestInterception, _NetworkManager_cacheDisabled, _NetworkManager_updateProtocolCacheDisabled, _NetworkManager_onRequestWillBeSent, _NetworkManager_onAuthRequired, _NetworkManager_onRequestPaused, _NetworkManager_patchRequestEventHeaders, _NetworkManager_onRequest, _NetworkManager_onRequestServedFromCache, _NetworkManager_handleRequestRedirect, _NetworkManager_emitResponseEvent, _NetworkManager_onResponseReceived, _NetworkManager_onResponseReceivedExtraInfo, _NetworkManager_forgetRequest, _NetworkManager_onLoadingFinished, _NetworkManager_emitLoadingFinished, _NetworkManager_onLoadingFailed, _NetworkManager_emitLoadingFailed;
+var _NetworkManager_instances, _NetworkManager_client, _NetworkManager_ignoreHTTPSErrors, _NetworkManager_frameManager, _NetworkManager_networkEventManager, _NetworkManager_extraHTTPHeaders, _NetworkManager_credentials, _NetworkManager_attemptedAuthentications, _NetworkManager_userRequestInterceptionEnabled, _NetworkManager_protocolRequestInterceptionEnabled, _NetworkManager_userCacheDisabled, _NetworkManager_emulatedNetworkConditions, _NetworkManager_deferredInit, _NetworkManager_updateNetworkConditions, _NetworkManager_updateProtocolRequestInterception, _NetworkManager_cacheDisabled, _NetworkManager_updateProtocolCacheDisabled, _NetworkManager_onRequestWillBeSent, _NetworkManager_onAuthRequired, _NetworkManager_onRequestPaused, _NetworkManager_patchRequestEventHeaders, _NetworkManager_onRequestWithoutNetworkInstrumentation, _NetworkManager_onRequest, _NetworkManager_onRequestServedFromCache, _NetworkManager_handleRequestRedirect, _NetworkManager_emitResponseEvent, _NetworkManager_onResponseReceived, _NetworkManager_onResponseReceivedExtraInfo, _NetworkManager_forgetRequest, _NetworkManager_onLoadingFinished, _NetworkManager_emitLoadingFinished, _NetworkManager_onLoadingFailed, _NetworkManager_emitLoadingFailed;
 import { assert } from '../util/assert.js';
+import { createDebuggableDeferred } from '../util/DebuggableDeferred.js';
 import { EventEmitter } from './EventEmitter.js';
 import { HTTPRequest } from './HTTPRequest.js';
 import { HTTPResponse } from './HTTPResponse.js';
 import { NetworkEventManager } from './NetworkEventManager.js';
 import { debugError, isString } from './util.js';
-import { createDebuggableDeferredPromise } from '../util/DebuggableDeferredPromise.js';
 /**
  * We use symbols to prevent any external parties listening to these events.
  * They are internal to Puppeteer.
@@ -68,7 +68,7 @@ export class NetworkManager extends EventEmitter {
             download: -1,
             latency: 0,
         });
-        _NetworkManager_deferredInitPromise.set(this, void 0);
+        _NetworkManager_deferredInit.set(this, void 0);
         __classPrivateFieldSet(this, _NetworkManager_client, client, "f");
         __classPrivateFieldSet(this, _NetworkManager_ignoreHTTPSErrors, ignoreHTTPSErrors, "f");
         __classPrivateFieldSet(this, _NetworkManager_frameManager, frameManager, "f");
@@ -86,10 +86,10 @@ export class NetworkManager extends EventEmitter {
      * might not resolve until after the target is resumed causing a deadlock.
      */
     initialize() {
-        if (__classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f")) {
-            return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
+        if (__classPrivateFieldGet(this, _NetworkManager_deferredInit, "f")) {
+            return __classPrivateFieldGet(this, _NetworkManager_deferredInit, "f").valueOrThrow();
         }
-        __classPrivateFieldSet(this, _NetworkManager_deferredInitPromise, createDebuggableDeferredPromise('NetworkManager initialization timed out'), "f");
+        __classPrivateFieldSet(this, _NetworkManager_deferredInit, createDebuggableDeferred('NetworkManager initialization timed out'), "f");
         const init = Promise.all([
             __classPrivateFieldGet(this, _NetworkManager_ignoreHTTPSErrors, "f")
                 ? __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Security.setIgnoreCertificateErrors', {
@@ -98,7 +98,7 @@ export class NetworkManager extends EventEmitter {
                 : null,
             __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Network.enable'),
         ]);
-        const deferredInitPromise = __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
+        const deferredInitPromise = __classPrivateFieldGet(this, _NetworkManager_deferredInit, "f");
         init
             .then(() => {
             deferredInitPromise.resolve();
@@ -106,7 +106,7 @@ export class NetworkManager extends EventEmitter {
             .catch(err => {
             deferredInitPromise.reject(err);
         });
-        return __classPrivateFieldGet(this, _NetworkManager_deferredInitPromise, "f");
+        return __classPrivateFieldGet(this, _NetworkManager_deferredInit, "f").valueOrThrow();
     }
     async authenticate(credentials) {
         __classPrivateFieldSet(this, _NetworkManager_credentials, credentials, "f");
@@ -126,8 +126,8 @@ export class NetworkManager extends EventEmitter {
     extraHTTPHeaders() {
         return Object.assign({}, __classPrivateFieldGet(this, _NetworkManager_extraHTTPHeaders, "f"));
     }
-    numRequestsInProgress() {
-        return __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").numRequestsInProgress();
+    inFlightRequestsCount() {
+        return __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").inFlightRequestsCount();
     }
     async setOfflineMode(value) {
         __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").offline = value;
@@ -160,7 +160,7 @@ export class NetworkManager extends EventEmitter {
         await __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_updateProtocolRequestInterception).call(this);
     }
 }
-_NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new WeakMap(), _NetworkManager_frameManager = new WeakMap(), _NetworkManager_networkEventManager = new WeakMap(), _NetworkManager_extraHTTPHeaders = new WeakMap(), _NetworkManager_credentials = new WeakMap(), _NetworkManager_attemptedAuthentications = new WeakMap(), _NetworkManager_userRequestInterceptionEnabled = new WeakMap(), _NetworkManager_protocolRequestInterceptionEnabled = new WeakMap(), _NetworkManager_userCacheDisabled = new WeakMap(), _NetworkManager_emulatedNetworkConditions = new WeakMap(), _NetworkManager_deferredInitPromise = new WeakMap(), _NetworkManager_instances = new WeakSet(), _NetworkManager_updateNetworkConditions = async function _NetworkManager_updateNetworkConditions() {
+_NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new WeakMap(), _NetworkManager_frameManager = new WeakMap(), _NetworkManager_networkEventManager = new WeakMap(), _NetworkManager_extraHTTPHeaders = new WeakMap(), _NetworkManager_credentials = new WeakMap(), _NetworkManager_attemptedAuthentications = new WeakMap(), _NetworkManager_userRequestInterceptionEnabled = new WeakMap(), _NetworkManager_protocolRequestInterceptionEnabled = new WeakMap(), _NetworkManager_userCacheDisabled = new WeakMap(), _NetworkManager_emulatedNetworkConditions = new WeakMap(), _NetworkManager_deferredInit = new WeakMap(), _NetworkManager_instances = new WeakSet(), _NetworkManager_updateNetworkConditions = async function _NetworkManager_updateNetworkConditions() {
     await __classPrivateFieldGet(this, _NetworkManager_client, "f").send('Network.emulateNetworkConditions', {
         offline: __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").offline,
         latency: __classPrivateFieldGet(this, _NetworkManager_emulatedNetworkConditions, "f").latency,
@@ -243,6 +243,7 @@ _NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new 
     }
     const { networkId: networkRequestId, requestId: fetchRequestId } = event;
     if (!networkRequestId) {
+        __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_onRequestWithoutNetworkInstrumentation).call(this, event);
         return;
     }
     const requestWillBeSentEvent = (() => {
@@ -269,6 +270,15 @@ _NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new 
         // includes extra headers, like: Accept, Origin
         ...requestPausedEvent.request.headers,
     };
+}, _NetworkManager_onRequestWithoutNetworkInstrumentation = function _NetworkManager_onRequestWithoutNetworkInstrumentation(event) {
+    // If an event has no networkId it should not have any network events. We
+    // still want to dispatch it for the interception by the user.
+    const frame = event.frameId
+        ? __classPrivateFieldGet(this, _NetworkManager_frameManager, "f").frame(event.frameId)
+        : null;
+    const request = new HTTPRequest(__classPrivateFieldGet(this, _NetworkManager_client, "f"), frame, event.requestId, __classPrivateFieldGet(this, _NetworkManager_userRequestInterceptionEnabled, "f"), event, []);
+    this.emit(NetworkManagerEmittedEvents.Request, request);
+    void request.finalizeInterceptions();
 }, _NetworkManager_onRequest = function _NetworkManager_onRequest(event, fetchRequestId) {
     let redirectChain = [];
     if (event.redirectResponse) {
@@ -306,7 +316,7 @@ _NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new 
     const request = new HTTPRequest(__classPrivateFieldGet(this, _NetworkManager_client, "f"), frame, fetchRequestId, __classPrivateFieldGet(this, _NetworkManager_userRequestInterceptionEnabled, "f"), event, redirectChain);
     __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").storeRequest(event.requestId, request);
     this.emit(NetworkManagerEmittedEvents.Request, request);
-    request.finalizeInterceptions();
+    void request.finalizeInterceptions();
 }, _NetworkManager_onRequestServedFromCache = function _NetworkManager_onRequestServedFromCache(event) {
     const request = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequest(event.requestId);
     if (request) {
@@ -331,6 +341,12 @@ _NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new 
     if (extraInfos.length) {
         debugError(new Error('Unexpected extraInfo events for request ' +
             responseReceived.requestId));
+    }
+    // Chromium sends wrong extraInfo events for responses served from cache.
+    // See https://github.com/puppeteer/puppeteer/issues/9965 and
+    // https://crbug.com/1340398.
+    if (responseReceived.response.fromDiskCache) {
+        extraInfo = null;
     }
     const response = new HTTPResponse(__classPrivateFieldGet(this, _NetworkManager_client, "f"), request, responseReceived.response, extraInfo);
     request._response = response;
@@ -397,7 +413,6 @@ _NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new 
         __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_emitLoadingFinished).call(this, event);
     }
 }, _NetworkManager_emitLoadingFinished = function _NetworkManager_emitLoadingFinished(event) {
-    var _a;
     const request = __classPrivateFieldGet(this, _NetworkManager_networkEventManager, "f").getRequest(event.requestId);
     // For certain requestIds we never receive requestWillBeSent event.
     // @see https://crbug.com/750469
@@ -407,7 +422,7 @@ _NetworkManager_client = new WeakMap(), _NetworkManager_ignoreHTTPSErrors = new 
     // Under certain conditions we never get the Network.responseReceived
     // event from protocol. @see https://crbug.com/883475
     if (request.response()) {
-        (_a = request.response()) === null || _a === void 0 ? void 0 : _a._resolveBody(null);
+        request.response()?._resolveBody(null);
     }
     __classPrivateFieldGet(this, _NetworkManager_instances, "m", _NetworkManager_forgetRequest).call(this, request, true);
     this.emit(NetworkManagerEmittedEvents.RequestFinished, request);

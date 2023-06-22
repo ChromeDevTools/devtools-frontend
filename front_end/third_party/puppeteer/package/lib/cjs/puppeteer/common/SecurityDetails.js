@@ -53,39 +53,39 @@ class SecurityDetails {
         __classPrivateFieldSet(this, _SecurityDetails_sanList, securityPayload.sanList, "f");
     }
     /**
-     * @returns The name of the issuer of the certificate.
+     * The name of the issuer of the certificate.
      */
     issuer() {
         return __classPrivateFieldGet(this, _SecurityDetails_issuer, "f");
     }
     /**
-     * @returns {@link https://en.wikipedia.org/wiki/Unix_time | Unix timestamp}
+     * {@link https://en.wikipedia.org/wiki/Unix_time | Unix timestamp}
      * marking the start of the certificate's validity.
      */
     validFrom() {
         return __classPrivateFieldGet(this, _SecurityDetails_validFrom, "f");
     }
     /**
-     * @returns {@link https://en.wikipedia.org/wiki/Unix_time | Unix timestamp}
+     * {@link https://en.wikipedia.org/wiki/Unix_time | Unix timestamp}
      * marking the end of the certificate's validity.
      */
     validTo() {
         return __classPrivateFieldGet(this, _SecurityDetails_validTo, "f");
     }
     /**
-     * @returns The security protocol being used, e.g. "TLS 1.2".
+     * The security protocol being used, e.g. "TLS 1.2".
      */
     protocol() {
         return __classPrivateFieldGet(this, _SecurityDetails_protocol, "f");
     }
     /**
-     * @returns The name of the subject to which the certificate was issued.
+     * The name of the subject to which the certificate was issued.
      */
     subjectName() {
         return __classPrivateFieldGet(this, _SecurityDetails_subjectName, "f");
     }
     /**
-     * @returns The list of {@link https://en.wikipedia.org/wiki/Subject_Alternative_Name | subject alternative names (SANs)} of the certificate.
+     * The list of {@link https://en.wikipedia.org/wiki/Subject_Alternative_Name | subject alternative names (SANs)} of the certificate.
      */
     subjectAlternativeNames() {
         return __classPrivateFieldGet(this, _SecurityDetails_sanList, "f");

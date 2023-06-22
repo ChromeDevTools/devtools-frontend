@@ -27,7 +27,7 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
 var _CDPJSHandle_disposed, _CDPJSHandle_context, _CDPJSHandle_remoteObject;
 import { JSHandle } from '../api/JSHandle.js';
 import { assert } from '../util/assert.js';
-import { createJSHandle, releaseObject, valueFromRemoteObject } from './util.js';
+import { createJSHandle, releaseObject, valueFromRemoteObject, withSourcePuppeteerURLIfNone, } from './util.js';
 /**
  * @internal
  */
@@ -53,12 +53,14 @@ export class CDPJSHandle extends JSHandle {
      * @see {@link ExecutionContext.evaluate} for more details.
      */
     async evaluate(pageFunction, ...args) {
+        pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
         return await this.executionContext().evaluate(pageFunction, this, ...args);
     }
     /**
      * @see {@link ExecutionContext.evaluateHandle} for more details.
      */
     async evaluateHandle(pageFunction, ...args) {
+        pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
         return await this.executionContext().evaluateHandle(pageFunction, this, ...args);
     }
     async getProperty(propertyName) {
@@ -96,7 +98,7 @@ export class CDPJSHandle extends JSHandle {
         return value;
     }
     /**
-     * @returns Either `null` or the handle itself if the handle is an
+     * Either `null` or the handle itself if the handle is an
      * instance of {@link ElementHandle}.
      */
     asElement() {
@@ -115,6 +117,9 @@ export class CDPJSHandle extends JSHandle {
         }
         const type = __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").subtype || __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").type;
         return 'JSHandle@' + type;
+    }
+    get id() {
+        return __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").objectId;
     }
     remoteObject() {
         return __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f");

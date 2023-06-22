@@ -99,10 +99,14 @@ export class NetworkEventManager {
     takeQueuedRedirectInfo(fetchRequestId) {
         return this.queuedRedirectInfo(fetchRequestId).shift();
     }
-    numRequestsInProgress() {
-        return [...__classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f")].filter(([, request]) => {
-            return !request.response();
-        }).length;
+    inFlightRequestsCount() {
+        let inFlightRequestCounter = 0;
+        for (const request of __classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f").values()) {
+            if (!request.response()) {
+                inFlightRequestCounter++;
+            }
+        }
+        return inFlightRequestCounter;
     }
     storeRequestWillBeSent(networkRequestId, event) {
         __classPrivateFieldGet(this, _NetworkEventManager_requestWillBeSentMap, "f").set(networkRequestId, event);

@@ -27,7 +27,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _ProtocolError_code, _ProtocolError_originalMessage;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.errors = exports.ProtocolError = exports.TimeoutError = exports.CustomError = void 0;
+exports.errors = exports.TargetCloseError = exports.ProtocolError = exports.TimeoutError = exports.CustomError = void 0;
 /**
  * @deprecated Do not use.
  *
@@ -68,25 +68,21 @@ class ProtocolError extends CustomError {
         _ProtocolError_code.set(this, void 0);
         _ProtocolError_originalMessage.set(this, '');
     }
-    /**
-     * @internal
-     */
     set code(code) {
         __classPrivateFieldSet(this, _ProtocolError_code, code, "f");
     }
     /**
+     * @readonly
      * @public
      */
     get code() {
         return __classPrivateFieldGet(this, _ProtocolError_code, "f");
     }
-    /**
-     * @internal
-     */
     set originalMessage(originalMessage) {
         __classPrivateFieldSet(this, _ProtocolError_originalMessage, originalMessage, "f");
     }
     /**
+     * @readonly
      * @public
      */
     get originalMessage() {
@@ -95,6 +91,12 @@ class ProtocolError extends CustomError {
 }
 exports.ProtocolError = ProtocolError;
 _ProtocolError_code = new WeakMap(), _ProtocolError_originalMessage = new WeakMap();
+/**
+ * @internal
+ */
+class TargetCloseError extends ProtocolError {
+}
+exports.TargetCloseError = TargetCloseError;
 /**
  * @deprecated Import error classes directly.
  *

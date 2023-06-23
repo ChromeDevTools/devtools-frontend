@@ -1044,6 +1044,7 @@ export class NetworkRequestNode extends NetworkNode {
     if (isFirstCell) {
       const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
       cell.style.setProperty('padding-left', leftPadding);
+      cell.tabIndex = -1;
       this.nameCell = cell;
       cell.addEventListener('dblclick', this.openInNewTab.bind(this), false);
       cell.addEventListener('mousedown', () => {
@@ -1052,6 +1053,7 @@ export class NetworkRequestNode extends NetworkNode {
         this.select();
         this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
       });
+      cell.addEventListener('focus', () => this.parentView().resetFocus());
       let iconElement;
       if (this.requestInternal.resourceType() === Common.ResourceType.resourceTypes.Image) {
         const previewImage = document.createElement('img');

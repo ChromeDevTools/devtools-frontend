@@ -8,6 +8,7 @@ ts_library("extensions") {
   testonly = true
   sources = [
     "ExtensionServer_test.ts",
+    "HostUrlPattern_test.ts",
     "RecorderPluginManager_test.ts",
     "helpers.ts",
   ]

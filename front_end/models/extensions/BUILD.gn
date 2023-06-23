@@ -13,6 +13,7 @@ devtools_module("extensions") {
     "ExtensionPanel.ts",
     "ExtensionServer.ts",
     "ExtensionView.ts",
+    "HostUrlPattern.ts",
     "LanguageExtensionEndpoint.ts",
     "RecorderExtensionEndpoint.ts",
     "RecorderPluginManager.ts",
@@ -48,9 +49,9 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/models/extensions:extensions",
     "../../entrypoints/main/*",
     "../../panels/elements/*",
+    "../../panels/recorder/*",
     "../../panels/sources/*",
     "../../panels/timeline/*",
-    "../../panels/recorder/*",
   ]
 
   visibility += devtools_models_visibility

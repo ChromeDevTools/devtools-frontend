@@ -321,6 +321,11 @@ export interface ExtensionDescriptor {
   startPage: string;
   name: string;
   exposeExperimentalAPIs: boolean;
+  hostsPolicy?: ExtensionHostsPolicy;
+}
+export interface ExtensionHostsPolicy {
+  runtimeAllowedHosts: string[];
+  runtimeBlockedHosts: string[];
 }
 export interface ShowSurveyResult {
   surveyShown: boolean;

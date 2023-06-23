@@ -2,17 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Extensions from '../../../../../front_end/models/extensions/extensions.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
-
 const {assert} = chai;
 
-import {describeWithDummyExtension} from './helpers.js';
+import {describeWithDevtoolsExtension} from './helpers.js';
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
-describeWithDummyExtension('Extensions', context => {
+describeWithDevtoolsExtension('Extensions', {}, context => {
   it('can register a recorder extension for export', async () => {
     class RecorderPlugin {
       async stringify(recording: object) {
@@ -194,6 +196,50 @@ describeWithDummyExtension('Extensions', context => {
     await onHiddenCalled;
 
     await context.chrome.devtools?.recorder.unregisterRecorderExtensionPlugin(extensionPlugin);
+  });
+});
+
+const hostsPolicy = {
+  runtimeAllowedHosts: ['http://example.com'],
+  runtimeBlockedHosts: ['http://example.com', 'http://web.dev'],
+};
+
+describeWithMockConnection('Extensions', () => {
+  describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => {
+    it('blocks API calls on blocked hosts', async () => {
+      const target = createTarget({type: SDK.Target.Type.Frame});
+
+      {
+        const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb));
+        assert.strictEqual('isError' in result && result.isError, true);
+      }
+
+      target.setInspectedURL('http://web.dev' as Platform.DevToolsPath.UrlString);
+      {
+        const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb));
+        assert.strictEqual('isError' in result && result.isError, true);
+      }
+    });
+
+    it('allows API calls on allowlisted hosts', async () => {
+      const target = createTarget({type: SDK.Target.Type.Frame});
+      target.setInspectedURL('http://example.com' as Platform.DevToolsPath.UrlString);
+      {
+        const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb));
+        // eslint-disable-next-line rulesdir/compare_arrays_with_assert_deepequal
+        assert.doesNotHaveAnyKeys(result, ['isError']);
+      }
+    });
+
+    it('allows API calls on non-blocked hosts', async () => {
+      const target = createTarget({type: SDK.Target.Type.Frame});
+      target.setInspectedURL('http://example.com2' as Platform.DevToolsPath.UrlString);
+      {
+        const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb));
+        // eslint-disable-next-line rulesdir/compare_arrays_with_assert_deepequal
+        assert.doesNotHaveAnyKeys(result, ['isError']);
+      }
+    });
   });
 });
 

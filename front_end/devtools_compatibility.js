@@ -6,6 +6,12 @@
 
 // DevToolsAPI ----------------------------------------------------------------
 
+/**
+ * @typedef {{runtimeAllowedHosts: !Array<string>, runtimeBlockedHosts: !Array<string>}} ExtensionHostsPolicy
+ */
+/**
+ * @typedef {{startPage: string, name: string, exposeExperimentalAPIs: boolean, hostsPolicy?: ExtensionHostsPolicy}} ExtensionDescriptor
+ */
 const DevToolsAPIImpl = class {
   constructor() {
     /**
@@ -24,7 +30,7 @@ const DevToolsAPIImpl = class {
     this._pendingExtensionDescriptors = [];
 
     /**
-     * @type {?function(!ExtensionDescriptor)}
+     * @type {?function(!ExtensionDescriptor): void}
      */
     this._addExtensionCallback = null;
 

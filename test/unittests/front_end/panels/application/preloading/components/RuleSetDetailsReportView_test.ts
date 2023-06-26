@@ -69,7 +69,6 @@ describeWithEnvironment('RuleSetDetailsReportView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['Validity', 'Valid'],
-      ['Error', ''],
       ['Location', '<script>'],
       ['Source', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
     ]);
@@ -100,7 +99,6 @@ describeWithEnvironment('RuleSetDetailsReportView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['Validity', 'Valid'],
-      ['Error', ''],
       ['Location', 'https://example.com/speculationrules.json'],
       ['Source', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
     ]);

@@ -108,8 +108,6 @@ export class RuleSetDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappa
       }
 
       const validity = PreloadingUIUtils.validity(this.#data);
-      // TODO(https://crbug.com/1425354): Support i18n.
-      const error = this.#data.errorMessage || '';
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -126,14 +124,7 @@ export class RuleSetDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappa
             </div>
           </${ReportView.ReportView.ReportValue.litTagName}>
 
-          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsError)}</${
-            ReportView.ReportView.ReportKey.litTagName}>
-          <${ReportView.ReportView.ReportValue.litTagName}>
-            <div class="text-ellipsis" title="">
-              ${error}
-            </div>
-          </${ReportView.ReportView.ReportValue.litTagName}>
-
+          ${this.#maybeError()}
           ${this.#location()}
 
           ${this.#source(this.#data.sourceText)}
@@ -141,6 +132,28 @@ export class RuleSetDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappa
       `, this.#shadow, {host: this});
       // clang-format on
     });
+  }
+
+  // TODO(https://crbug.com/1425354): Support i18n.
+  #maybeError(): LitHtml.LitTemplate {
+    assertNotNullOrUndefined(this.#data);
+
+    if (this.#data.errorMessage === undefined) {
+      return LitHtml.nothing;
+    }
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsError)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName}>
+          <div class="text-ellipsis" title="">
+            ${this.#data.errorMessage}
+          </div>
+        </${ReportView.ReportView.ReportValue.litTagName}>
+    `;
+    // clang-format on
   }
 
   #location(): LitHtml.LitTemplate {

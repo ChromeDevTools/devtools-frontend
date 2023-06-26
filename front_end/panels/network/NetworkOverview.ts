@@ -134,7 +134,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     if (!this.isShowing()) {
       return;
     }
-    void coordinator.write(this.update.bind(this));
+    void coordinator.write('NetworkOverview.render', this.update.bind(this));
   }
 
   override update(): void {

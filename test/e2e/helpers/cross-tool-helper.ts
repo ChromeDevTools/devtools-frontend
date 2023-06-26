@@ -40,6 +40,6 @@ export async function tabExistsInDrawer(tabId: string) {
 export const checkIfTabExistsInDrawer = async (tabId: string) => {
   const drawer = await waitFor(DRAWER_PANEL_SELECTOR);
   const header = await waitFor(TAB_HEADER_SELECTOR, drawer);
-  const tab = await header.$(tabId);
+  const tab = await waitFor(tabId, header);
   return Boolean(tab);
 };

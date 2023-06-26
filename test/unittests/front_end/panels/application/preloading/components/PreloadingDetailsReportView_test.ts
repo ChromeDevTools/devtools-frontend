@@ -62,6 +62,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
         },
         status: SDK.PreloadingModel.PreloadingStatus.Running,
         prerenderStatus: null,
+        disallowedMojoInterface: null,
         ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -111,6 +112,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
         },
         status: SDK.PreloadingModel.PreloadingStatus.Failure,
         prerenderStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
+        disallowedMojoInterface: 'device.mojom.GamepadMonitor',
         ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },
@@ -141,7 +143,10 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
       ['URL', url],
       ['Action', 'prerender'],
       ['Status', 'Preloading failed.'],
-      ['Failure reason', 'The prerendered page used a forbidden JavaScript API that is currently not supported.'],
+      [
+        'Failure reason',
+        'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
+      ],
       ['Rule set', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
     ]);
   });

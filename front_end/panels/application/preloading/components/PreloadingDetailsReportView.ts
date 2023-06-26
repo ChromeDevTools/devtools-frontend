@@ -92,10 +92,11 @@ const UIStrings = {
   prerenderFinalStatusMainFrameNavigation:
       'The prerendered page navigated itself to another URL, which is currently not supported.',
   /**
-   *  Description text for PrerenderFinalStatus::kMojoBinderPolicy.
+   *@description Description text for PrerenderFinalStatus::kMojoBinderPolicy.
+   *@example {device.mojom.GamepadMonitor} PH1
    */
   prerenderFinalStatusMojoBinderPolicy:
-      'The prerendered page used a forbidden JavaScript API that is currently not supported.',
+      'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: {PH1})',
   /**
    *  Description text for PrerenderFinalStatus::kRendererProcessCrashed.
    */
@@ -317,10 +318,10 @@ class PreloadingUIUtils {
   }
 
   // Detailed failure reason for PrerenderFinalStatus.
-  static failureReason({prerenderStatus}: SDK.PreloadingModel.PrerenderAttempt): string|null {
+  static failureReason(attempt: SDK.PreloadingModel.PrerenderAttempt): string|null {
     // If you face an error on rolling CDP changes, see
     // https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk
-    switch (prerenderStatus) {
+    switch (attempt.prerenderStatus) {
       case null:
       case Protocol.Preload.PrerenderFinalStatus.Activated:
         return null;
@@ -341,8 +342,8 @@ class PreloadingUIUtils {
       case Protocol.Preload.PrerenderFinalStatus.MainFrameNavigation:
         return i18nString(UIStrings.prerenderFinalStatusMainFrameNavigation);
       case Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy:
-        // TODO(https://crbug.com/1410709): Improve these messages with disallowedApiMethod.
-        return i18nString(UIStrings.prerenderFinalStatusMojoBinderPolicy);
+        assertNotNullOrUndefined(attempt.disallowedMojoInterface);
+        return i18nString(UIStrings.prerenderFinalStatusMojoBinderPolicy, {PH1: attempt.disallowedMojoInterface});
       case Protocol.Preload.PrerenderFinalStatus.RendererProcessCrashed:
         return i18nString(UIStrings.prerenderFinalStatusRendererProcessCrashed);
       case Protocol.Preload.PrerenderFinalStatus.RendererProcessKilled:
@@ -475,7 +476,8 @@ class PreloadingUIUtils {
         // forget updating these strings, but allow to handle unknown
         // PrerenderFinalStatus at runtime.
         return i18n.i18n.lockedString(`Unknown failure reason: ${
-            prerenderStatus as 'See https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk'}`);
+            attempt.prerenderStatus as
+            'See https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk'}`);
     }
   }
 

@@ -26,7 +26,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _Callback_id, _Callback_error, _Callback_deferred, _Callback_timer, _Callback_label, _CallbackRegistry_callbacks, _CallbackRegistry_idGenerator, _Connection_instances, _Connection_url, _Connection_transport, _Connection_delay, _Connection_timeout, _Connection_sessions, _Connection_closed, _Connection_manuallyAttached, _Connection_callbacks, _Connection_onClose, _CDPSessionImpl_sessionId, _CDPSessionImpl_targetType, _CDPSessionImpl_callbacks, _CDPSessionImpl_connection;
 import { assert } from '../util/assert.js';
-import { Deferred } from '../util/util.js';
+import { Deferred } from '../util/Deferred.js';
 import { debug } from './Debug.js';
 import { TargetCloseError, ProtocolError } from './Errors.js';
 import { EventEmitter } from './EventEmitter.js';

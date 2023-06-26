@@ -112,6 +112,11 @@ export class RenderCoordinator extends EventTarget {
     return new Promise(resolve => this.addEventListener('renderqueueempty', () => resolve(), {once: true}));
   }
 
+  // Schedules a 'read' job which is being executed within an animation frame
+  // before all 'write' jobs. If multiple jobs are scheduled with the same
+  // non-empty label, only the latest callback would be executed. Such
+  // invocations would return the same promise that will resolve to the value of
+  // the latest callback.
   async read<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
   async read<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
   async read<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
@@ -126,6 +131,10 @@ export class RenderCoordinator extends EventTarget {
     return this.#enqueueHandler<T>(labelOrCallback, ACTION.READ, UNNAMED_READ);
   }
 
+  // Schedules a 'write' job which is being executed within an animation frame
+  // after all 'read' and 'scroll' jobs. If multiple jobs are scheduled with
+  // the same non-empty label, only the latest callback would be executed. Such
+  // invocations would return the same promise that will resolve when the latest callback is run.
   async write<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
   async write<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
   async write<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
@@ -150,7 +159,9 @@ export class RenderCoordinator extends EventTarget {
    * We offer a convenience function for scroll-based activity, but often triggering a scroll
    * requires a layout pass, thus it is better handled as a read activity, i.e. we wait until
    * the layout-triggering work has been completed then it should be possible to scroll without
-   * first forcing layout.
+   * first forcing layout.  If multiple jobs are scheduled with the same non-empty label, only
+   * the latest callback would be executed. Such invocations would return the same promise that
+   * will resolve when the latest callback is run.
    */
   async scroll<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
   async scroll<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;

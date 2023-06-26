@@ -616,7 +616,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     // If no element is tabbable, set the pause-on-exceptions to be tabbable. This can happen
     // if the previously focused element was removed.
-    await coordinator.write('make pause-on-exceptions focusable', () => {
+    await coordinator.write('BreakpointsView make pause-on-exceptions focusable', () => {
       if (this.#shadow.querySelector('[tabindex="0"]') === null) {
         const element = this.#shadow.querySelector<HTMLElement>('[data-first-pause]');
         element?.setAttribute('tabindex', '0');
@@ -653,7 +653,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     if (!element) {
       return;
     }
-    void coordinator.write('focus on selected element', () => {
+    void coordinator.write('BreakpointsView focus on selected element', () => {
       const prevSelected = this.#shadow.querySelector('[tabindex="0"]');
       prevSelected?.setAttribute('tabindex', '-1');
       element.setAttribute('tabindex', '0');
@@ -664,11 +664,11 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   async #handleArrowKey(key: Platform.KeyboardUtilities.ArrowKey, target: HTMLElement): Promise<void> {
     const setGroupExpandedState = (detailsElement: HTMLDetailsElement, expanded: boolean): Promise<void> => {
       if (expanded) {
-        return coordinator.write('expand', () => {
+        return coordinator.write('BreakpointsView expand', () => {
           detailsElement.setAttribute('open', '');
         });
       }
-      return coordinator.write('expand', () => {
+      return coordinator.write('BreakpointsView expand', () => {
         detailsElement.removeAttribute('open');
       });
     };
@@ -1012,7 +1012,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         pauseOnCaughtCheckbox.click();
       }
 
-      void coordinator.write('update pause-on-uncaught-exception', () => {
+      void coordinator.write('BreakpointsView update pause-on-uncaught-exception', () => {
         // Disable/enable the pause on caught exception checkbox depending on whether
         // or not we are pausing on uncaught exceptions.
         if (checked) {

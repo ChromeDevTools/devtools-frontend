@@ -274,7 +274,7 @@ export class Linkifier implements SDK.TargetManager.Observer {
     }
 
     const linkDisplayOptions: LinkDisplayOptions = {
-      showColumnNumber: linkifyURLOptions.showColumnNumber,
+      showColumnNumber: linkifyURLOptions.showColumnNumber ?? false,
       revealBreakpoint: options?.revealBreakpoint,
     };
 
@@ -1007,8 +1007,8 @@ export interface LinkifyURLOptions {
   className?: string;
   lineNumber?: number;
   columnNumber?: number;
-  showColumnNumber: boolean;
-  inlineFrameIndex: number;
+  showColumnNumber?: boolean;
+  inlineFrameIndex?: number;
   preventClick?: boolean;
   maxLength?: number;
   tabStop?: boolean;

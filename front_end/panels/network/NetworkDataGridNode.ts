@@ -51,10 +51,9 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {iconDataForResourceType} from '../utils/utils.js';
 
 import {type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-
-import {iconDataForResourceType} from '../utils/utils.js';
 
 const UIStrings = {
   /**
@@ -1289,13 +1288,16 @@ export class NetworkRequestNode extends NetworkNode {
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.Parser: {
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(initiator.url);
-        cell.appendChild(
-            Components.Linkifier.Linkifier.linkifyURL(initiator.url, ({
-                                                        text: uiSourceCode ? uiSourceCode.displayName() : undefined,
-                                                        lineNumber: initiator.lineNumber,
-                                                        columnNumber: initiator.columnNumber,
-                                                        userMetric: this.#getLinkifierMetric(),
-                                                      } as Components.Linkifier.LinkifyURLOptions)));
+        const displayName = uiSourceCode?.displayName();
+        const text = displayName !== undefined && initiator.lineNumber !== undefined ?
+            `${displayName}:${initiator.lineNumber}` :
+            undefined;
+        cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url, {
+          text,
+          lineNumber: initiator.lineNumber,
+          columnNumber: initiator.columnNumber,
+          userMetric: this.#getLinkifierMetric(),
+        }));
         this.appendSubtitle(cell, i18nString(UIStrings.parser));
         break;
       }

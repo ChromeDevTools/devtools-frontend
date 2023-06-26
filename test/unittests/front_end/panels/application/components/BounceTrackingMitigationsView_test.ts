@@ -12,7 +12,7 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
-import {createTarget, describeWithLocale} from '../../../helpers/EnvironmentHelpers.js';
+import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
@@ -44,11 +44,16 @@ function getInternalDataGridShadowRoot(
   return dataGrid.shadowRoot;
 }
 
-describeWithLocale('BounceTrackingMitigationsView', () => {
+describeWithMockConnection('BounceTrackingMitigationsView', () => {
   it('shows no message or table if the force run button has not been clicked', async () => {
-    const component = await renderBounceTrackingMitigationsView();
-    assertShadowRoot(component.shadowRoot);
+    createTarget();
+    setMockConnectionResponseHandler('SystemInfo.getFeatureState', () => ({featureEnabled: true}));
+    setMockConnectionResponseHandler('Storage.runBounceTrackingMitigations', () => ({deletedSites: []}));
 
+    const component = await renderBounceTrackingMitigationsView();
+    await coordinator.done();
+
+    assertShadowRoot(component.shadowRoot);
     const nullGridElement = component.shadowRoot.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
 
@@ -61,14 +66,34 @@ describeWithLocale('BounceTrackingMitigationsView', () => {
 
     assert.deepStrictEqual(sectionsText, expected);
   });
-});
 
-describeWithMockConnection('BounceTrackingMitigationsView', () => {
+  it('shows a message explaining that Bounce Tracking Mitigations must be enabled to use the panel', async () => {
+    createTarget();
+    setMockConnectionResponseHandler('SystemInfo.getFeatureState', () => ({featureEnabled: false}));
+
+    const component = await renderBounceTrackingMitigationsView();
+    await coordinator.done();
+
+    assertShadowRoot(component.shadowRoot);
+    const nullGridElement = component.shadowRoot.querySelector('devtools-data-grid-controller');
+    assert.isNull(nullGridElement);
+
+    const sections = component.shadowRoot.querySelectorAll('devtools-report-section');
+    const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
+    const expected = [
+      'Bounce tracking mitigations are disabled. To enable them, set the flag at Bounce Tracking Mitigations Feature Flag to "Enabled With Deletion".',
+    ];
+
+    assert.deepStrictEqual(sectionsText, expected);
+  });
+
   it('hides deleted sites table and shows explanation message when there are no deleted tracking sites', async () => {
     createTarget();
+    setMockConnectionResponseHandler('SystemInfo.getFeatureState', () => ({featureEnabled: true}));
     setMockConnectionResponseHandler('Storage.runBounceTrackingMitigations', () => ({deletedSites: []}));
 
     const component = await renderBounceTrackingMitigationsView();
+    await coordinator.done();
 
     assertShadowRoot(component.shadowRoot);
     const forceRunButton = component.shadowRoot.querySelector('[aria-label="Force run"]');
@@ -84,7 +109,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
     const expected = [
       'Force run',
-      'State was not cleared for any potential bounce tracking sites. Either none were identified, bounce tracking mitigations are not enabled, or third-party cookies are not blocked.',
+      'State was not cleared for any potential bounce tracking sites. Either none were identified or third-party cookies are not blocked.',
       'Learn more: Bounce Tracking Mitigations',
     ];
 
@@ -93,10 +118,12 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
   it('renders deleted sites in a table', async () => {
     createTarget();
+    setMockConnectionResponseHandler('SystemInfo.getFeatureState', () => ({featureEnabled: true}));
     setMockConnectionResponseHandler(
         'Storage.runBounceTrackingMitigations', () => ({deletedSites: ['tracker-1.example', 'tracker-2.example']}));
 
     const component = await renderBounceTrackingMitigationsView();
+    await coordinator.done();
 
     assertShadowRoot(component.shadowRoot);
     const forceRunButton = component.shadowRoot.querySelector('[aria-label="Force run"]');

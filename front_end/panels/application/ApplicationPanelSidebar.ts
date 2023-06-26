@@ -56,6 +56,8 @@ import {
   type PreloadingAttemptView,
 } from './preloading/PreloadingView.js';
 import {PreloadingTreeElement} from './PreloadingTreeElement.js';
+import type * as PreloadingHelper from './preloading/helper/helper.js';
+
 import resourcesSidebarStyles from './resourcesSidebar.css.js';
 import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
 
@@ -859,6 +861,13 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
   private innerShowView(view: UI.Widget.Widget): void {
     this.panel.showView(view);
+  }
+
+  showPreloadingAttemptViewWithFilter(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): void {
+    if (this.preloadingAttemptTreeElement) {
+      this.preloadingAttemptTreeElement.select();
+      this.preloadingAttemptTreeElement.setFilter(filter);
+    }
   }
 
   private async updateDatabaseTables(event: Common.EventTarget.EventTargetEvent<DatabaseModelDatabase>): Promise<void> {

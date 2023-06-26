@@ -15,6 +15,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 
 import * as PreloadingComponents from './components/components.js';
+import type * as PreloadingHelper from './helper/helper.js';
 
 // eslint-disable-next-line rulesdir/es_modules_import
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
@@ -317,6 +318,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
           id,
           processLocalId: PreloadingUIUtils.processLocalId(value.id),
           preloadsStatusSummary: PreloadingUIUtils.preloadsStatusSummary(value, countsByRuleSetId),
+          ruleSetId: value.id,
           validity: PreloadingUIUtils.validity(value),
           location: PreloadingUIUtils.location(value),
         }));
@@ -413,6 +415,11 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     assertNotNullOrUndefined(model);
     this.model = model;
     this.render();
+  }
+
+  setFilter(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): void {
+    const id = filter.ruleSetId;
+    this.model.getRuleSetById(id) && this.ruleSetSelector.select(id);
   }
 
   private updatePreloadingDetails(): void {

@@ -42,7 +42,7 @@ function assertGridContents(gridComponent: HTMLElement, headerExpected: string[]
     assertNotNullOrUndefined(cell.textContent);
     return cell.textContent.trim();
   });
-  const rowsGot = getValuesOfAllBodyRows(grid.shadowRoot);
+  const rowsGot = getValuesOfAllBodyRows(grid.shadowRoot).map(row => row.map(cell => cell.trim()));
 
   assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
 }

@@ -9,6 +9,7 @@ import type * as Platform from '../../core/platform/platform.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {type ResourcesPanel} from './ResourcesPanel.js';
+import type * as PreloadingHelper from './preloading/helper/helper.js';
 
 import {PreloadingRuleSetView, PreloadingAttemptView, PreloadingResultView} from './preloading/PreloadingView.js';
 
@@ -94,5 +95,13 @@ export class PreloadingTreeElement<V extends PreloadingRuleSetView|PreloadingAtt
     // TODO(https://crbug.com/1384419): Report metrics when the panel shown.
 
     return false;
+  }
+
+  setFilter(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): void {
+    if (!this.view || !(this.view instanceof PreloadingAttemptView)) {
+      throw new Error('unreachable');
+    }
+
+    this.view.setFilter(filter);
   }
 }

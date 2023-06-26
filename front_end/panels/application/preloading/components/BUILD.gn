@@ -47,6 +47,7 @@ devtools_module("components") {
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/source_frame:bundle",
     "../../../../ui/legacy/components/utils:bundle",
+    "../helper:bundle",
   ]
 }
 

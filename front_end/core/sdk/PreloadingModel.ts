@@ -5,6 +5,7 @@
 import type * as Common from '../common/common.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
+import {assertNotNullOrUndefined} from '../platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
@@ -101,6 +102,25 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   // Returned values may or may not be updated as the time grows.
   getAllRuleSets(): WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>[] {
     return this.currentDocument()?.ruleSets.getAll() || [];
+  }
+
+  getPreloadCountsByRuleSetId(): Map<Protocol.Preload.RuleSetId, Map<PreloadingStatus, number>> {
+    const countsByRuleSetId = new Map<Protocol.Preload.RuleSetId, Map<PreloadingStatus, number>>();
+
+    for (const {value} of this.getPreloadingAttempts(null)) {
+      for (const ruleSetId of value.ruleSetIds) {
+        if (countsByRuleSetId.get(ruleSetId) === undefined) {
+          countsByRuleSetId.set(ruleSetId, new Map<PreloadingStatus, number>());
+        }
+
+        const countsByStatus = countsByRuleSetId.get(ruleSetId);
+        assertNotNullOrUndefined(countsByStatus);
+        const i = countsByStatus.get(value.status) || 0;
+        countsByStatus.set(value.status, i + 1);
+      }
+    }
+
+    return countsByRuleSetId;
   }
 
   // Returns a preloading attempt of the current page.

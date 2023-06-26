@@ -357,6 +357,20 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
   ]
 }
 `);
+    dispatchEvent(emulator.primaryTarget, 'Preload.preloadingAttemptSourcesUpdated', {
+      loaderId: 'loaderId:1',
+      preloadingAttemptSources: [
+        {
+          key: {
+            loaderId: 'loaderId:1',
+            action: Protocol.Preload.SpeculationAction.Prerender,
+            url: 'https://example.com/prerendered.html',
+          },
+          ruleSetIds: ['ruleSetId:0.2'],
+          nodeIds: [],
+        },
+      ],
+    });
 
     await coordinator.done();
 
@@ -365,9 +379,9 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['Validity', 'Location'],
+        ['#', 'Validity', 'Location', 'Preloads'],
         [
-          ['Valid', '<script>'],
+          ['2', 'Valid', '<script>', '1 Running'],
         ],
     );
   });
@@ -394,9 +408,9 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['Validity', 'Location'],
+        ['#', 'Validity', 'Location', 'Preloads'],
         [
-          ['Invalid', '<script>'],
+          ['2', 'Invalid', '<script>', ''],
         ],
     );
 
@@ -449,7 +463,7 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['Validity', 'Location'],
+        ['#', 'Validity', 'Location', 'Preloads'],
         [],
     );
   });
@@ -479,7 +493,7 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['Validity', 'Location'],
+        ['#', 'Validity', 'Location', 'Preloads'],
         [],
     );
   });
@@ -528,9 +542,9 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['Validity', 'Location'],
+        ['#', 'Validity', 'Location', 'Preloads'],
         [
-          ['Valid', '<script>'],
+          ['2', 'Valid', '<script>', ''],
         ],
     );
   });

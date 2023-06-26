@@ -21,12 +21,18 @@ const UIStrings = {
    *@description Column header for a table displaying rule sets: Where a rule set came from.
    */
   location: 'Location',
+  /**
+   *@description Column header for a table displaying rule sets: How many preloads are associated.
+   */
+  preloads: 'Preloads',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface RuleSetGridRow {
   id: string;
+  processLocalId: string;
+  preloadsStatusSummary: string;
   validity: string;
   location: string;
 }
@@ -52,6 +58,13 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
     const reportsGridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
+          id: 'processLocalId',
+          title: i18n.i18n.lockedString('#'),
+          widthWeighting: 5,
+          hideable: false,
+          visible: true,
+        },
+        {
           id: 'validity',
           title: i18nString(UIStrings.validity),
           widthWeighting: 10,
@@ -61,6 +74,13 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
         {
           id: 'location',
           title: i18nString(UIStrings.location),
+          widthWeighting: 80,
+          hideable: false,
+          visible: true,
+        },
+        {
+          id: 'preloadsStatusSummary',
+          title: i18nString(UIStrings.preloads),
           widthWeighting: 80,
           hideable: false,
           visible: true,
@@ -85,6 +105,8 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
     return this.#rows.map(row => ({
                             cells: [
                               {columnId: 'id', value: row.id},
+                              {columnId: 'processLocalId', value: row.processLocalId},
+                              {columnId: 'preloadsStatusSummary', value: row.preloadsStatusSummary},
                               {columnId: 'validity', value: row.validity},
                               {columnId: 'location', value: row.location},
                             ],

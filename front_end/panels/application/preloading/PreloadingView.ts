@@ -132,7 +132,7 @@ class PreloadingUIUtils {
     }
   }
 
-  static status({status}: SDK.PreloadingModel.PreloadingAttempt): string {
+  static status(status: SDK.PreloadingModel.PreloadingStatus): string {
     // See content/public/browser/preloading.h PreloadingAttemptOutcome.
     switch (status) {
       case SDK.PreloadingModel.PreloadingStatus.NotTriggered:
@@ -155,6 +155,29 @@ class PreloadingUIUtils {
       case SDK.PreloadingModel.PreloadingStatus.NotSupported:
         return i18n.i18n.lockedString('Internal error');
     }
+  }
+
+  static preloadsStatusSummary(
+      ruleSet: Protocol.Preload.RuleSet,
+      countsByRuleSetId: Map<Protocol.Preload.RuleSetId, Map<SDK.PreloadingModel.PreloadingStatus, number>>): string {
+    const LIST = [
+      SDK.PreloadingModel.PreloadingStatus.NotTriggered,
+      SDK.PreloadingModel.PreloadingStatus.Pending,
+      SDK.PreloadingModel.PreloadingStatus.Running,
+      SDK.PreloadingModel.PreloadingStatus.Ready,
+      SDK.PreloadingModel.PreloadingStatus.Success,
+      SDK.PreloadingModel.PreloadingStatus.Failure,
+    ];
+
+    if (ruleSet.errorType !== undefined) {
+      return '';
+    }
+
+    const counts = countsByRuleSetId.get(ruleSet.id);
+
+    return LIST.filter(status => (counts?.get(status) || 0) > 0)
+        .map(status => (counts?.get(status) || 0) + ' ' + this.status(status))
+        .join(' / ');
   }
 
   // Summary of error of rule set shown in grid.
@@ -180,6 +203,12 @@ class PreloadingUIUtils {
     }
 
     throw Error('unreachable');
+  }
+
+  static processLocalId(id: Protocol.Preload.RuleSetId): string {
+    // RuleSetId is form of '<processId>.<processLocalId>'
+    const index = id.indexOf('.');
+    return index === -1 ? id : id.slice(index + 1);
   }
 }
 
@@ -282,14 +311,15 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
 
   render(): void {
     // Update rule sets grid
-    //
-    // Currently, all rule sets that appear in DevTools are valid.
-    // TODO(https://crbug.com/1384419): Add property `validity` to the CDP.
-    const ruleSetRows = this.model.getAllRuleSets().map(({id, value}) => ({
-                                                          id,
-                                                          validity: PreloadingUIUtils.validity(value),
-                                                          location: PreloadingUIUtils.location(value),
-                                                        }));
+    const countsByRuleSetId = this.model.getPreloadCountsByRuleSetId();
+    const ruleSetRows = this.model.getAllRuleSets().map(
+        ({id, value}) => ({
+          id,
+          processLocalId: PreloadingUIUtils.processLocalId(value.id),
+          preloadsStatusSummary: PreloadingUIUtils.preloadsStatusSummary(value, countsByRuleSetId),
+          validity: PreloadingUIUtils.validity(value),
+          location: PreloadingUIUtils.location(value),
+        }));
     this.ruleSetGrid.update(ruleSetRows);
 
     this.updateRuleSetDetails();
@@ -414,7 +444,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         id,
         url,
         action: PreloadingUIUtils.action(value),
-        status: PreloadingUIUtils.status(value),
+        status: PreloadingUIUtils.status(value.status),
       };
     });
     this.preloadingGrid.update(preloadingAttemptRows);
@@ -571,9 +601,7 @@ class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
     }
 
     // RuleSetId is form of '<processId>.<processLocalId>'
-    const index = id.indexOf('.');
-    const processLocalId = index === -1 ? id : id.slice(index + 1);
-    return i18nString(UIStrings.filterRuleSet, {PH1: processLocalId});
+    return i18nString(UIStrings.filterRuleSet, {PH1: PreloadingUIUtils.processLocalId(id)});
   }
 
   subtitleFor(id: Protocol.Preload.RuleSetId|null): string {

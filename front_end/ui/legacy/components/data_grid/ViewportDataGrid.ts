@@ -98,7 +98,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
       this.stickToBottom = UI.UIUtils.isScrolledToBottom(this.scrollContainer);
     }
     this.updateIsFromUser = this.updateIsFromUser || Boolean(isFromUser);
-    void coordinator.write(this.update.bind(this));
+    void coordinator.write('ViewportDataGrid.render', this.update.bind(this));
   }
 
   // TODO(allada) This should be fixed to never be needed. It is needed right now for network because removing

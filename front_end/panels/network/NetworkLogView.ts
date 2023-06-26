@@ -1155,7 +1155,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.needsRefresh = true;
 
     if (this.isShowing()) {
-      void coordinator.write(this.refresh.bind(this));
+      void coordinator.write('NetworkLogView.render', this.refresh.bind(this));
     }
   }
 

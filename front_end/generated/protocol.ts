@@ -10626,6 +10626,7 @@ export namespace Page {
     ChUaPlatform = 'ch-ua-platform',
     ChUaModel = 'ch-ua-model',
     ChUaMobile = 'ch-ua-mobile',
+    ChUaFormFactor = 'ch-ua-form-factor',
     ChUaFullVersion = 'ch-ua-full-version',
     ChUaFullVersionList = 'ch-ua-full-version-list',
     ChUaPlatformVersion = 'ch-ua-platform-version',
@@ -11317,6 +11318,7 @@ export namespace Page {
     ErrorDocument = 'ErrorDocument',
     FencedFramesEmbedder = 'FencedFramesEmbedder',
     CookieDisabled = 'CookieDisabled',
+    HTTPAuthRequired = 'HTTPAuthRequired',
     WebSocket = 'WebSocket',
     WebTransport = 'WebTransport',
     WebRTC = 'WebRTC',
@@ -11328,14 +11330,12 @@ export namespace Page {
     DocumentLoaded = 'DocumentLoaded',
     DedicatedWorkerOrWorklet = 'DedicatedWorkerOrWorklet',
     OutstandingNetworkRequestOthers = 'OutstandingNetworkRequestOthers',
-    OutstandingIndexedDBTransaction = 'OutstandingIndexedDBTransaction',
     RequestedMIDIPermission = 'RequestedMIDIPermission',
     RequestedAudioCapturePermission = 'RequestedAudioCapturePermission',
     RequestedVideoCapturePermission = 'RequestedVideoCapturePermission',
     RequestedBackForwardCacheBlockedSensors = 'RequestedBackForwardCacheBlockedSensors',
     RequestedBackgroundWorkPermission = 'RequestedBackgroundWorkPermission',
     BroadcastChannel = 'BroadcastChannel',
-    IndexedDBConnection = 'IndexedDBConnection',
     WebXR = 'WebXR',
     SharedWorker = 'SharedWorker',
     WebLocks = 'WebLocks',
@@ -11458,6 +11458,11 @@ export namespace Page {
      * to false.
      */
     includeCommandLineAPI?: boolean;
+    /**
+     * If true, runs the script immediately on existing execution contexts or worlds.
+     * Default: false.
+     */
+    runImmediately?: boolean;
   }
 
   export interface AddScriptToEvaluateOnNewDocumentResponse extends ProtocolResponseWithError {
@@ -15832,6 +15837,8 @@ export namespace Preload {
     disabledByPreference: boolean;
     disabledByDataSaver: boolean;
     disabledByBatterySaver: boolean;
+    disabledByHoldbackPrefetchSpeculationRules: boolean;
+    disabledByHoldbackPrerenderSpeculationRules: boolean;
   }
 
   /**
@@ -15846,6 +15853,7 @@ export namespace Preload {
     prefetchUrl: string;
     status: PreloadingStatus;
     prefetchStatus: PrefetchStatus;
+    requestId: Network.RequestId;
   }
 
   /**
@@ -15855,6 +15863,11 @@ export namespace Preload {
     key: PreloadingAttemptKey;
     status: PreloadingStatus;
     prerenderStatus?: PrerenderFinalStatus;
+    /**
+     * This is used to give users more information about the name of Mojo interface
+     * that is incompatible with prerender and has caused the cancellation of the attempt.
+     */
+    disallowedMojoInterface?: string;
   }
 
   /**

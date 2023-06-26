@@ -540,6 +540,11 @@ const UIStrings = {
    * @description Description text for not restored reason WebSocketSticky.
    */
   webSocketSticky: 'Back/forward cache is disabled because WebSocket has been used.',
+  // TODO(leimy): Added in https://chromium-review.googlesource.com/c/chromium/src/+/4625807. Fill the below correctly.
+  /**
+   * @description Undefined.
+   */
+  HTTPAuthRequired: 'Undefined',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheStrings.ts', UIStrings);
@@ -686,4 +691,5 @@ export const NotRestoredReasonDescription = {
   'WebRTCSticky': {name: i18nLazyString(UIStrings.webRTCSticky)},
   'WebTransportSticky': {name: i18nLazyString(UIStrings.webTransportSticky)},
   'WebSocketSticky': {name: i18nLazyString(UIStrings.webSocketSticky)},
+  'HTTPAuthRequired': {name: i18nLazyString(UIStrings.HTTPAuthRequired)},
 };

@@ -15706,6 +15706,7 @@
                         "ch-ua-platform",
                         "ch-ua-model",
                         "ch-ua-mobile",
+                        "ch-ua-form-factor",
                         "ch-ua-full-version",
                         "ch-ua-full-version-list",
                         "ch-ua-platform-version",
@@ -16644,6 +16645,7 @@
                         "ErrorDocument",
                         "FencedFramesEmbedder",
                         "CookieDisabled",
+                        "HTTPAuthRequired",
                         "WebSocket",
                         "WebTransport",
                         "WebRTC",
@@ -16655,14 +16657,12 @@
                         "DocumentLoaded",
                         "DedicatedWorkerOrWorklet",
                         "OutstandingNetworkRequestOthers",
-                        "OutstandingIndexedDBTransaction",
                         "RequestedMIDIPermission",
                         "RequestedAudioCapturePermission",
                         "RequestedVideoCapturePermission",
                         "RequestedBackForwardCacheBlockedSensors",
                         "RequestedBackgroundWorkPermission",
                         "BroadcastChannel",
-                        "IndexedDBConnection",
                         "WebXR",
                         "SharedWorker",
                         "WebLocks",
@@ -16821,6 +16821,13 @@
                         {
                             "name": "includeCommandLineAPI",
                             "description": "Specifies whether command line API should be available to the script, defaults\nto false.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "runImmediately",
+                            "description": "If true, runs the script immediately on existing execution contexts or worlds.\nDefault: false.",
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"
@@ -23639,6 +23646,14 @@
                         {
                             "name": "disabledByBatterySaver",
                             "type": "boolean"
+                        },
+                        {
+                            "name": "disabledByHoldbackPrefetchSpeculationRules",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "disabledByHoldbackPrerenderSpeculationRules",
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -23666,6 +23681,10 @@
                         {
                             "name": "prefetchStatus",
                             "$ref": "PrefetchStatus"
+                        },
+                        {
+                            "name": "requestId",
+                            "$ref": "Network.RequestId"
                         }
                     ]
                 },
@@ -23685,6 +23704,12 @@
                             "name": "prerenderStatus",
                             "optional": true,
                             "$ref": "PrerenderFinalStatus"
+                        },
+                        {
+                            "name": "disallowedMojoInterface",
+                            "description": "This is used to give users more information about the name of Mojo interface\nthat is incompatible with prerender and has caused the cancellation of the attempt.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },

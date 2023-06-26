@@ -2047,7 +2047,7 @@ export class NetworkRequest {
 
   /**
    * Return whether this request was cached. This works around BUG(chromium:998397),
-   * which reports pushed resources, and resources serverd by a service worker as
+   * which reports pushed resources, and resources served by a service worker as
    * disk cached. Pushed resources that were not disk cached, however, have a non-zero
    * `transferSize`.
    */

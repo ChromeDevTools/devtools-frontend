@@ -89,13 +89,13 @@ describe('NetworkRequestsHandler', function() {
       // CSS Request.
       const cssRequestExpected: DataArgsMap = new Map([
         ['queueing', TraceModel.Types.Timing.MicroSeconds(0)],
-        ['stalled', TraceModel.Types.Timing.MicroSeconds(3916)],
+        ['stalled', TraceModel.Types.Timing.MicroSeconds(2175)],
         ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(0)],
         ['initialConnection', TraceModel.Types.Timing.MicroSeconds(0)],
         ['ssl', TraceModel.Types.Timing.MicroSeconds(0)],
-        ['requestSent', TraceModel.Types.Timing.MicroSeconds(461)],
-        ['waiting', TraceModel.Types.Timing.MicroSeconds(5985)],
-        ['download', TraceModel.Types.Timing.MicroSeconds(0)],
+        ['requestSent', TraceModel.Types.Timing.MicroSeconds(0)],
+        ['waiting', TraceModel.Types.Timing.MicroSeconds(0)],
+        ['download', TraceModel.Types.Timing.MicroSeconds(1294)],
         ['networkDuration', TraceModel.Types.Timing.MicroSeconds(0)],
       ]);
 
@@ -109,13 +109,13 @@ describe('NetworkRequestsHandler', function() {
       // Blocking JS Request.
       const blockingJSRequestExpected: DataArgsMap = new Map([
         ['queueing', TraceModel.Types.Timing.MicroSeconds(0)],
-        ['stalled', TraceModel.Types.Timing.MicroSeconds(14799)],
-        ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(151)],
-        ['initialConnection', TraceModel.Types.Timing.MicroSeconds(720)],
+        ['stalled', TraceModel.Types.Timing.MicroSeconds(2126)],
+        ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(0)],
+        ['initialConnection', TraceModel.Types.Timing.MicroSeconds(0)],
         ['ssl', TraceModel.Types.Timing.MicroSeconds(0)],
-        ['requestSent', TraceModel.Types.Timing.MicroSeconds(425)],
-        ['waiting', TraceModel.Types.Timing.MicroSeconds(2533)],
-        ['download', TraceModel.Types.Timing.MicroSeconds(0)],
+        ['requestSent', TraceModel.Types.Timing.MicroSeconds(0)],
+        ['waiting', TraceModel.Types.Timing.MicroSeconds(0)],
+        ['download', TraceModel.Types.Timing.MicroSeconds(1207)],
         ['networkDuration', TraceModel.Types.Timing.MicroSeconds(0)],
       ]);
 
@@ -227,14 +227,16 @@ describe('NetworkRequestsHandler', function() {
             {
               url: 'http://localhost:3000/foo',
               priority: 'VeryHigh',
-              ts: 1311223447642,
-              dur: 7845,
+              requestMethod: 'GET',
+              ts: TraceModel.Types.Timing.MicroSeconds(1311223447642),
+              dur: TraceModel.Types.Timing.MicroSeconds(7845),
             },
             {
               url: 'http://localhost:3000/bar',
               priority: 'VeryHigh',
-              ts: 1311223455487,
-              dur: 3771,
+              requestMethod: 'GET',
+              ts: TraceModel.Types.Timing.MicroSeconds(1311223455487),
+              dur: TraceModel.Types.Timing.MicroSeconds(3771),
             },
           ],
           'Incorrect number of redirects (request 1)');
@@ -258,14 +260,16 @@ describe('NetworkRequestsHandler', function() {
             {
               url: 'http://localhost:3000/foo.js',
               priority: 'Low',
-              ts: 183611568786,
-              dur: 506233,
+              requestMethod: 'GET',
+              ts: TraceModel.Types.Timing.MicroSeconds(183611568786),
+              dur: TraceModel.Types.Timing.MicroSeconds(506233),
             },
             {
               url: 'http://localhost:3000/bar.js',
               priority: 'Low',
-              ts: 183612075019,
-              dur: 802726,
+              requestMethod: 'GET',
+              ts: TraceModel.Types.Timing.MicroSeconds(183612075019),
+              dur: TraceModel.Types.Timing.MicroSeconds(802726),
             },
           ],
           'Incorrect number of redirects (request 1)');

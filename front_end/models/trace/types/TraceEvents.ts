@@ -204,6 +204,7 @@ export interface TraceEventGPUTask extends TraceEventComplete {
 export interface TraceEventSyntheticNetworkRedirect {
   url: string;
   priority: string;
+  requestMethod?: string;
   ts: MicroSeconds;
   dur: MicroSeconds;
 }
@@ -217,11 +218,13 @@ export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
       encodedDataLength: number,
       finishTime: MicroSeconds,
       frame: string,
-      fromCache: boolean,
       fromServiceWorker: boolean,
       host: string,
       initialConnection: MicroSeconds,
+      isDiskCached: boolean,
       isHttps: boolean,
+      isMemoryCached: boolean,
+      isPushedResource: boolean,
       mimeType: string,
       networkDuration: MicroSeconds,
       pathname: string,
@@ -238,7 +241,7 @@ export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
       requestId: string,
       requestingFrameUrl: string,
       requestSent: MicroSeconds,
-      requestTime: number,
+      requestTime: Seconds,
       sendEnd: MicroSeconds,
       sendStart: MicroSeconds,
       statusCode: number,
@@ -248,6 +251,7 @@ export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
       totalTime: MicroSeconds,
       url: string,
       waiting: MicroSeconds,
+      requestMethod?: string,
     },
   };
   cat: 'loading';
@@ -554,7 +558,7 @@ export interface SyntheticLayoutShift extends TraceEventLayoutShift {
   parsedData: LayoutShiftParsedData;
 }
 
-export type Priorty = 'Low'|'High'|'VeryHigh'|'Highest';
+export type Priority = 'Low'|'High'|'VeryHigh'|'Highest';
 export type RenderBlocking = 'blocking'|'non_blocking'|'in_body_parser_blocking'|'potentially_blocking';
 export interface TraceEventResourceSendRequest extends TraceEventInstant {
   name: 'ResourceSendRequest';
@@ -563,7 +567,9 @@ export interface TraceEventResourceSendRequest extends TraceEventInstant {
       frame: string,
       requestId: string,
       url: string,
-      priority: Priorty,
+      priority: Priority,
+      // TODO(crbug.com/1457985): change requestMethod to enum when confirm in the backend code.
+      requestMethod?: string,
       renderBlocking?: RenderBlocking,
     },
   };
@@ -632,6 +638,15 @@ export interface TraceEventResourceReceiveResponse extends TraceEventInstant {
         workerReady: MilliSeconds,
         workerStart: MilliSeconds,
       },
+    },
+  };
+}
+
+export interface TraceEventResourceMarkAsCached extends TraceEventInstant {
+  name: 'ResourceMarkAsCached';
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      requestId: string,
     },
   };
 }
@@ -984,6 +999,12 @@ export function isTraceEventResourceReceiveResponse(
     traceEventData: TraceEventData,
     ): traceEventData is TraceEventResourceReceiveResponse {
   return traceEventData.name === 'ResourceReceiveResponse';
+}
+
+export function isTraceEventResourceMarkAsCached(
+    traceEventData: TraceEventData,
+    ): traceEventData is TraceEventResourceMarkAsCached {
+  return traceEventData.name === 'ResourceMarkAsCached';
 }
 
 export function isTraceEventResourceFinish(

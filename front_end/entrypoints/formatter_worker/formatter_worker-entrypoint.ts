@@ -10,8 +10,13 @@ import {FormatterActions} from './FormatterActions.js';
 
 self.onmessage = function(event: MessageEvent): void {
   const method: FormatterActions = event.data.method;
-  const params: {indentString: string, content: string, mimeType: string, mapping: [string, string][]} =
-      event.data.params;
+  const params: {
+    indentString: string,
+    content: string,
+    mimeType: string,
+    mapping: [string, string][],
+    sourceType: 'module'|'script',
+  } = event.data.params;
   if (!method) {
     return;
   }
@@ -29,7 +34,7 @@ self.onmessage = function(event: MessageEvent): void {
       break;
     }
     case FormatterActions.JAVASCRIPT_SCOPE_TREE: {
-      self.postMessage(FormatterWorker.ScopeParser.parseScopes(params.content)?.export());
+      self.postMessage(FormatterWorker.ScopeParser.parseScopes(params.content, params.sourceType)?.export());
       break;
     }
     case FormatterActions.EVALUATE_JAVASCRIPT_SUBSTRING:

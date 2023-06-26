@@ -106,5 +106,19 @@ describe('ScopeParser', () => {
       assert.lengthOf(uses, 1);
       assert.strictEqual(uses[0].offset, source.indexOf('x'));
     });
+
+    it('parses ES modules', () => {
+      const source = 'import * as Foo from "./foo.js"; Foo.foo();';
+      const scopes = parseScopes(source, 'module');
+
+      assertNotNullOrUndefined(scopes);
+      assert.isEmpty(scopes.children);
+      assert.strictEqual(scopes.variables.size, 1);
+      const [[name, {uses}]] = scopes.variables;
+      assert.strictEqual(name, 'Foo');
+      assert.lengthOf(uses, 1);
+      const firstOccurence = source.indexOf('Foo');
+      assert.strictEqual(uses[0].offset, source.indexOf('Foo', firstOccurence + 1));
+    });
   });
 });

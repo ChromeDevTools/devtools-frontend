@@ -8,11 +8,12 @@ import {ECMA_VERSION} from './AcornTokenizer.js';
 
 import {DefinitionKind, type ScopeTreeNode} from './FormatterActions.js';
 
-export function parseScopes(expression: string): Scope|null {
+export function parseScopes(expression: string, sourceType: 'module'|'script' = 'script'): Scope|null {
   // Parse the expression and find variables and scopes.
   let root: Acorn.ESTree.Node|null = null;
   try {
-    root = Acorn.parse(expression, {ecmaVersion: ECMA_VERSION, allowAwaitOutsideFunction: true, ranges: false}) as
+    root = Acorn.parse(
+               expression, {ecmaVersion: ECMA_VERSION, allowAwaitOutsideFunction: true, ranges: false, sourceType}) as
         Acorn.ESTree.Node;
   } catch {
     return null;

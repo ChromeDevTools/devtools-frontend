@@ -133,8 +133,9 @@ export class FormatterWorkerPool {
         .then(result => result || '');
   }
 
-  javaScriptScopeTree(expression: string): Promise<FormatterActions.ScopeTreeNode|null> {
-    return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SCOPE_TREE, {content: expression})
+  javaScriptScopeTree(expression: string, sourceType: 'module'|'script' = 'script'):
+      Promise<FormatterActions.ScopeTreeNode|null> {
+    return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SCOPE_TREE, {content: expression, sourceType})
         .then(result => result || null);
   }
 

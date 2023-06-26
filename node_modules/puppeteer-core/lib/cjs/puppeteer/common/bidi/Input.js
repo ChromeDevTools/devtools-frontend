@@ -1,0 +1,548 @@
+"use strict";
+/**
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _Keyboard_context, _Mouse_context, _Mouse_lastMovePoint, _Touchscreen_context;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Touchscreen = exports.Mouse = exports.Keyboard = void 0;
+const Bidi = __importStar(require("chromium-bidi/lib/cjs/protocol/protocol.js"));
+const Input_js_1 = require("../../api/Input.js");
+const getBidiKeyValue = (key) => {
+    switch (key) {
+        case '\n':
+            key = 'Enter';
+            break;
+    }
+    // Measures the number of code points rather than UTF-16 code units.
+    if ([...key].length === 1) {
+        return key;
+    }
+    switch (key) {
+        case 'Unidentified':
+            return '\uE000';
+        case 'Cancel':
+            return '\uE001';
+        case 'Help':
+            return '\uE002';
+        case 'Backspace':
+            return '\uE003';
+        case 'Tab':
+            return '\uE004';
+        case 'Clear':
+            return '\uE005';
+        case 'Return':
+            return '\uE006';
+        case 'Enter':
+            return '\uE007';
+        case 'Shift':
+            return '\uE008';
+        case 'Control':
+            return '\uE009';
+        case 'Alt':
+            return '\uE00A';
+        case 'Pause':
+            return '\uE00B';
+        case 'Escape':
+            return '\uE00C';
+        case ' ':
+            return '\uE00D';
+        case 'PageUp':
+            return '\uE00E';
+        case 'PageDown':
+            return '\uE00F';
+        case 'End':
+            return '\uE010';
+        case 'Home':
+            return '\uE011';
+        case 'ArrowLeft':
+            return '\uE012';
+        case 'ArrowUp':
+            return '\uE013';
+        case 'ArrowRight':
+            return '\uE014';
+        case 'ArrowDown':
+            return '\uE015';
+        case 'Insert':
+            return '\uE016';
+        case 'Delete':
+            return '\uE017';
+        case ';':
+            return '\uE018';
+        case '=':
+            return '\uE019';
+        case '0':
+            return '\uE01A';
+        case '1':
+            return '\uE01B';
+        case '2':
+            return '\uE01C';
+        case '3':
+            return '\uE01D';
+        case '4':
+            return '\uE01E';
+        case '5':
+            return '\uE01F';
+        case '6':
+            return '\uE020';
+        case '7':
+            return '\uE021';
+        case '8':
+            return '\uE022';
+        case '9':
+            return '\uE023';
+        case '*':
+            return '\uE024';
+        case '+':
+            return '\uE025';
+        case ',':
+            return '\uE026';
+        case '-':
+            return '\uE027';
+        case '.':
+            return '\uE028';
+        case '/':
+            return '\uE029';
+        case 'F1':
+            return '\uE031';
+        case 'F2':
+            return '\uE032';
+        case 'F3':
+            return '\uE033';
+        case 'F4':
+            return '\uE034';
+        case 'F5':
+            return '\uE035';
+        case 'F6':
+            return '\uE036';
+        case 'F7':
+            return '\uE037';
+        case 'F8':
+            return '\uE038';
+        case 'F9':
+            return '\uE039';
+        case 'F10':
+            return '\uE03A';
+        case 'F11':
+            return '\uE03B';
+        case 'F12':
+            return '\uE03C';
+        case 'Meta':
+            return '\uE03D';
+        case 'ZenkakuHankaku':
+            return '\uE040';
+        default:
+            throw new Error(`Unknown key: "${key}"`);
+    }
+};
+/**
+ * @internal
+ */
+class Keyboard extends Input_js_1.Keyboard {
+    /**
+     * @internal
+     */
+    constructor(context) {
+        super();
+        _Keyboard_context.set(this, void 0);
+        __classPrivateFieldSet(this, _Keyboard_context, context, "f");
+    }
+    async down(key, options) {
+        if (options) {
+            throw new Error('KeyDownOptions are not supported');
+        }
+        await __classPrivateFieldGet(this, _Keyboard_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Keyboard_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Key,
+                    id: "__puppeteer_keyboard" /* InputId.Keyboard */,
+                    actions: [
+                        {
+                            type: Bidi.Input.ActionType.KeyDown,
+                            value: getBidiKeyValue(key),
+                        },
+                    ],
+                },
+            ],
+        });
+    }
+    async up(key) {
+        await __classPrivateFieldGet(this, _Keyboard_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Keyboard_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Key,
+                    id: "__puppeteer_keyboard" /* InputId.Keyboard */,
+                    actions: [
+                        {
+                            type: Bidi.Input.ActionType.KeyUp,
+                            value: getBidiKeyValue(key),
+                        },
+                    ],
+                },
+            ],
+        });
+    }
+    async press(key, options = {}) {
+        const { delay = 0 } = options;
+        const actions = [
+            {
+                type: Bidi.Input.ActionType.KeyDown,
+                value: getBidiKeyValue(key),
+            },
+        ];
+        if (delay > 0) {
+            actions.push({
+                type: Bidi.Input.ActionType.Pause,
+                duration: delay,
+            });
+        }
+        actions.push({
+            type: Bidi.Input.ActionType.KeyUp,
+            value: getBidiKeyValue(key),
+        });
+        await __classPrivateFieldGet(this, _Keyboard_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Keyboard_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Key,
+                    id: "__puppeteer_keyboard" /* InputId.Keyboard */,
+                    actions,
+                },
+            ],
+        });
+    }
+    async type(text, options = {}) {
+        const { delay = 0 } = options;
+        // This spread separates the characters into code points rather than UTF-16
+        // code units.
+        const values = [...text].map(getBidiKeyValue);
+        const actions = [];
+        if (delay <= 0) {
+            for (const value of values) {
+                actions.push({
+                    type: Bidi.Input.ActionType.KeyDown,
+                    value,
+                }, {
+                    type: Bidi.Input.ActionType.KeyUp,
+                    value,
+                });
+            }
+        }
+        else {
+            for (const value of values) {
+                actions.push({
+                    type: Bidi.Input.ActionType.KeyDown,
+                    value,
+                }, {
+                    type: Bidi.Input.ActionType.Pause,
+                    duration: delay,
+                }, {
+                    type: Bidi.Input.ActionType.KeyUp,
+                    value,
+                });
+            }
+        }
+        await __classPrivateFieldGet(this, _Keyboard_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Keyboard_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Key,
+                    id: "__puppeteer_keyboard" /* InputId.Keyboard */,
+                    actions,
+                },
+            ],
+        });
+    }
+}
+exports.Keyboard = Keyboard;
+_Keyboard_context = new WeakMap();
+const getBidiButton = (button) => {
+    switch (button) {
+        case Input_js_1.MouseButton.Left:
+            return 0;
+        case Input_js_1.MouseButton.Middle:
+            return 1;
+        case Input_js_1.MouseButton.Right:
+            return 2;
+        case Input_js_1.MouseButton.Back:
+            return 3;
+        case Input_js_1.MouseButton.Forward:
+            return 4;
+    }
+};
+/**
+ * @internal
+ */
+class Mouse extends Input_js_1.Mouse {
+    /**
+     * @internal
+     */
+    constructor(context) {
+        super();
+        _Mouse_context.set(this, void 0);
+        _Mouse_lastMovePoint.set(this, void 0);
+        __classPrivateFieldSet(this, _Mouse_context, context, "f");
+    }
+    async reset() {
+        __classPrivateFieldSet(this, _Mouse_lastMovePoint, undefined, "f");
+        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.releaseActions', {
+            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+        });
+    }
+    async move(x, y, options = {}) {
+        __classPrivateFieldSet(this, _Mouse_lastMovePoint, {
+            x,
+            y,
+        }, "f");
+        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Pointer,
+                    id: "__puppeteer_mouse" /* InputId.Mouse */,
+                    actions: [
+                        {
+                            type: Bidi.Input.ActionType.PointerMove,
+                            x,
+                            y,
+                            duration: (options.steps ?? 0) * 50,
+                            origin: options.origin,
+                        },
+                    ],
+                },
+            ],
+        });
+    }
+    async down(options = {}) {
+        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Pointer,
+                    id: "__puppeteer_mouse" /* InputId.Mouse */,
+                    actions: [
+                        {
+                            type: Bidi.Input.ActionType.PointerDown,
+                            button: getBidiButton(options.button ?? Input_js_1.MouseButton.Left),
+                        },
+                    ],
+                },
+            ],
+        });
+    }
+    async up(options = {}) {
+        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Pointer,
+                    id: "__puppeteer_mouse" /* InputId.Mouse */,
+                    actions: [
+                        {
+                            type: Bidi.Input.ActionType.PointerUp,
+                            button: getBidiButton(options.button ?? Input_js_1.MouseButton.Left),
+                        },
+                    ],
+                },
+            ],
+        });
+    }
+    async click(x, y, options = {}) {
+        const actions = [
+            {
+                type: Bidi.Input.ActionType.PointerMove,
+                x,
+                y,
+                origin: options.origin,
+            },
+        ];
+        const pointerDownAction = {
+            type: Bidi.Input.ActionType.PointerDown,
+            button: getBidiButton(options.button ?? Input_js_1.MouseButton.Left),
+        };
+        const pointerUpAction = {
+            type: Bidi.Input.ActionType.PointerUp,
+            button: pointerDownAction.button,
+        };
+        for (let i = 1; i < (options.count ?? 1); ++i) {
+            actions.push(pointerDownAction, pointerUpAction);
+        }
+        actions.push(pointerDownAction);
+        if (options.delay) {
+            actions.push({
+                type: Bidi.Input.ActionType.Pause,
+                duration: options.delay,
+            });
+        }
+        actions.push(pointerUpAction);
+        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Pointer,
+                    id: "__puppeteer_mouse" /* InputId.Mouse */,
+                    actions,
+                },
+            ],
+        });
+    }
+    async wheel(options = {}) {
+        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Wheel,
+                    id: "__puppeteer_wheel" /* InputId.Wheel */,
+                    actions: [
+                        {
+                            type: Bidi.Input.ActionType.Scroll,
+                            ...(__classPrivateFieldGet(this, _Mouse_lastMovePoint, "f") ?? {
+                                x: 0,
+                                y: 0,
+                            }),
+                            deltaX: options.deltaX ?? 0,
+                            deltaY: options.deltaY ?? 0,
+                        },
+                    ],
+                },
+            ],
+        });
+    }
+}
+exports.Mouse = Mouse;
+_Mouse_context = new WeakMap(), _Mouse_lastMovePoint = new WeakMap();
+/**
+ * @internal
+ */
+class Touchscreen extends Input_js_1.Touchscreen {
+    /**
+     * @internal
+     */
+    constructor(context) {
+        super();
+        _Touchscreen_context.set(this, void 0);
+        __classPrivateFieldSet(this, _Touchscreen_context, context, "f");
+    }
+    async tap(x, y, options = {}) {
+        await this.touchStart(x, y, options);
+        await this.touchEnd();
+    }
+    async touchStart(x, y, options = {}) {
+        await __classPrivateFieldGet(this, _Touchscreen_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Touchscreen_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Pointer,
+                    id: "__puppeteer_finger" /* InputId.Finger */,
+                    parameters: {
+                        pointerType: Bidi.Input.PointerType.Touch,
+                    },
+                    actions: [
+                        {
+                            type: Bidi.Input.ActionType.PointerMove,
+                            x,
+                            y,
+                            origin: options.origin,
+                        },
+                        {
+                            type: Bidi.Input.ActionType.PointerDown,
+                            button: 0,
+                        },
+                    ],
+                },
+            ],
+        });
+    }
+    async touchMove(x, y, options = {}) {
+        await __classPrivateFieldGet(this, _Touchscreen_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Touchscreen_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Pointer,
+                    id: "__puppeteer_finger" /* InputId.Finger */,
+                    parameters: {
+                        pointerType: Bidi.Input.PointerType.Touch,
+                    },
+                    actions: [
+                        {
+                            type: Bidi.Input.ActionType.PointerMove,
+                            x,
+                            y,
+                            origin: options.origin,
+                        },
+                    ],
+                },
+            ],
+        });
+    }
+    async touchEnd() {
+        await __classPrivateFieldGet(this, _Touchscreen_context, "f").connection.send('input.performActions', {
+            context: __classPrivateFieldGet(this, _Touchscreen_context, "f").id,
+            actions: [
+                {
+                    type: Bidi.Input.SourceActionsType.Pointer,
+                    id: "__puppeteer_finger" /* InputId.Finger */,
+                    parameters: {
+                        pointerType: Bidi.Input.PointerType.Touch,
+                    },
+                    actions: [
+                        {
+                            type: Bidi.Input.ActionType.PointerUp,
+                            button: 0,
+                        },
+                    ],
+                },
+            ],
+        });
+    }
+}
+exports.Touchscreen = Touchscreen;
+_Touchscreen_context = new WeakMap();
+//# sourceMappingURL=Input.js.map

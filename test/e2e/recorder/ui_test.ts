@@ -5,7 +5,7 @@
 /* eslint-disable rulesdir/es_modules_import */
 
 import {assert} from 'chai';
-import {type ElementHandle, type Page} from 'puppeteer';
+import {type ElementHandle, type Page} from 'puppeteer-core';
 
 import {type StepType} from '../../../front_end/panels/recorder/models/Schema.js';
 

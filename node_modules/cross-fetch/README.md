@@ -2,7 +2,7 @@ cross-fetch<br>
 [![NPM Version](https://img.shields.io/npm/v/cross-fetch.svg?branch=main)](https://www.npmjs.com/package/cross-fetch)
 [![Downloads Per Week](https://img.shields.io/npm/dw/cross-fetch.svg?color=blue)](https://www.npmjs.com/package/cross-fetch)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-![CI](https://github.com/lquixada/cross-fetch/workflows/CI/badge.svg)
+[![CI](https://github.com/lquixada/cross-fetch/actions/workflows/ci.yml/badge.svg)](https://github.com/lquixada/cross-fetch/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/lquixada/cross-fetch/branch/main/graph/badge.svg)](https://codecov.io/gh/lquixada/cross-fetch)
 ================
 

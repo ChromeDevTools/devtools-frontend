@@ -4,7 +4,7 @@
 
 import {assert, expect} from 'chai';
 
-import {type ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer-core';
 
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import {

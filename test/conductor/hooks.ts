@@ -6,7 +6,7 @@
 
 // use require here due to
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer');
+import puppeteer = require('puppeteer-core');
 
 import {type CoverageMapData} from 'istanbul-lib-coverage';
 
@@ -31,7 +31,7 @@ import {
 import {TargetTab} from './target_tab.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
-declare module 'puppeteer' {
+declare module 'puppeteer-core' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ConsoleMessage {
     stackTrace(): ConsoleMessageLocation[];

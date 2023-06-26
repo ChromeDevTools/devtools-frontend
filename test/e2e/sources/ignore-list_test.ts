@@ -60,7 +60,7 @@ describe('Ignore list', async function() {
   });
 
   it('shows no toggle when everything is ignore-listed', async function() {
-    await setIgnoreListPattern('multi|puppeteer');
+    await setIgnoreListPattern('multi|pptr');
     const {target, frontend} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html');

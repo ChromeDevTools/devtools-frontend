@@ -6,7 +6,7 @@
 
 // use require here due to
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer');
+import puppeteer = require('puppeteer-core');
 
 import {installPageErrorHandlers} from './events.js';
 import {getTestRunnerConfigSetting} from './test_runner_config.js';

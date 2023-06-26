@@ -50,7 +50,7 @@ export declare class NetworkEventManager {
     private queuedRedirectInfo;
     queueRedirectInfo(fetchRequestId: FetchRequestId, redirectInfo: RedirectInfo): void;
     takeQueuedRedirectInfo(fetchRequestId: FetchRequestId): RedirectInfo | undefined;
-    numRequestsInProgress(): number;
+    inFlightRequestsCount(): number;
     storeRequestWillBeSent(networkRequestId: NetworkRequestId, event: Protocol.Network.RequestWillBeSentEvent): void;
     getRequestWillBeSent(networkRequestId: NetworkRequestId): Protocol.Network.RequestWillBeSentEvent | undefined;
     forgetRequestWillBeSent(networkRequestId: NetworkRequestId): void;

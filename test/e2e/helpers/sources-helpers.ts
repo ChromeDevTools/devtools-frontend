@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 import {requireTestRunnerConfigSetting} from '../../conductor/test_runner_config.js';
 
 import {
@@ -415,7 +415,7 @@ export async function waitForSourceFiles<T>(
     }
     const handler = (event: Event) => {
       const {detail} = event as CustomEvent<string>;
-      if (!detail.includes('__puppeteer_evaluation_script__')) {
+      if (!detail.includes('pptr:')) {
         window.__sourceFileEvents.get(eventHandlerId)?.files.push(detail);
       }
     };

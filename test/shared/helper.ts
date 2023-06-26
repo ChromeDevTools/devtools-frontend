@@ -4,7 +4,7 @@
 
 import {assert, AssertionError} from 'chai';
 import * as os from 'os';
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {type DevToolsFrontendReloadOptions} from '../conductor/frontend_tab.js';
 import {getDevToolsFrontendHostname, reloadDevTools} from '../conductor/hooks.js';
@@ -822,4 +822,10 @@ export async function setCheckBox(selector: string, wantChecked: boolean): Promi
 
 export const summonSearchBox = async () => {
   await pressKey('f', {control: true});
+};
+
+export const replacePuppeteerUrl = (value: string): string => {
+  return value.replace(/pptr:.*:([0-9]+)$/, (_, match) => {
+    return `(index):${match}`;
+  });
 };

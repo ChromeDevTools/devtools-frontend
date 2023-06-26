@@ -138,7 +138,7 @@ async function runFiles(files, opts = {
             result.title = recording.title;
             const { default: puppeteer } = await import('puppeteer');
             browser = await puppeteer.launch({
-                headless: opts.headless,
+                headless: opts.headless ? 'new' : false,
             });
             const page = await browser.newPage();
             const extension = new Extension(browser, page);

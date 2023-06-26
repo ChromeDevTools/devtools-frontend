@@ -4,7 +4,7 @@
 
 // use require here due to
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer');
+import puppeteer = require('puppeteer-core');
 
 import {DevToolsFrontendTab} from './frontend_tab.js';
 import {TargetTab} from './target_tab.js';

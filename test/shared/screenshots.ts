@@ -9,7 +9,7 @@ import {assert} from 'chai';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {getTestRunnerConfigSetting} from '../conductor/test_runner_config.js';
 import {makeCustomWrappedIt} from '../shared/mocha-extensions.js';

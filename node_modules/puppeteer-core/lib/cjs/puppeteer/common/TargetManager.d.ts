@@ -50,6 +50,9 @@ export declare const enum TargetManagerEmittedEvents {
     TargetDiscovered = "targetDiscovered",
     TargetAvailable = "targetAvailable",
     TargetGone = "targetGone",
+    /**
+     * Emitted after a target has been initialized and whenever its URL changes.
+     */
     TargetChanged = "targetChanged"
 }
 //# sourceMappingURL=TargetManager.d.ts.map

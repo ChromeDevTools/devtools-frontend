@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
 
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 
 import {click, goToResource} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';

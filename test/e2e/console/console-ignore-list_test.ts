@@ -9,6 +9,7 @@ import {
   getBrowserAndPages,
   getVisibleTextContents,
   goToResource,
+  replacePuppeteerUrl,
   waitFor,
   waitForVisible,
 } from '../../shared/helper.js';
@@ -40,17 +41,26 @@ describe('Ignore list', async function() {
       'Show less',
     ];
 
-    assert.deepEqual(await getVisibleTextContents('.stack-preview-container tr'), minimized);
+    assert.deepEqual(
+        (await getVisibleTextContents('.stack-preview-container tr'))
+            .map(value => value ? replacePuppeteerUrl(value) : value),
+        minimized);
 
     await click('.show-all-link .link');
     await waitFor('.stack-preview-container.show-hidden-rows');
     await waitForVisible('.show-less-link');
 
-    assert.deepEqual(await getVisibleTextContents('.stack-preview-container tr'), full);
+    assert.deepEqual(
+        (await getVisibleTextContents('.stack-preview-container tr'))
+            .map(value => value ? replacePuppeteerUrl(value) : value),
+        full);
 
     await click('.show-less-link .link');
     await waitFor('.stack-preview-container:not(.show-hidden-rows)');
 
-    assert.deepEqual(await getVisibleTextContents('.stack-preview-container tr'), minimized);
+    assert.deepEqual(
+        (await getVisibleTextContents('.stack-preview-container tr'))
+            .map(value => value ? replacePuppeteerUrl(value) : value),
+        minimized);
   });
 });

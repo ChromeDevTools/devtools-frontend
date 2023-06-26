@@ -119,8 +119,7 @@ export class EventEmitter {
         return this;
     }
     eventListenersCount(event) {
-        var _a;
-        return ((_a = this.eventsMap.get(event)) === null || _a === void 0 ? void 0 : _a.length) || 0;
+        return this.eventsMap.get(event)?.length || 0;
     }
 }
 //# sourceMappingURL=EventEmitter.js.map

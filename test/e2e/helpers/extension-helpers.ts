@@ -9,7 +9,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 
-import type * as puppeteer from 'puppeteer';
+import type * as puppeteer from 'puppeteer-core';
 import {type CDPPage} from '../../../node_modules/puppeteer-core/lib/esm/puppeteer/common/Page.js';
 import {getBrowserAndPages, getDevToolsFrontendHostname, getResourcesPath, waitFor} from '../../shared/helper.js';
 

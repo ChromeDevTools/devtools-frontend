@@ -4,7 +4,7 @@
 
 /* eslint-disable rulesdir/es_modules_import */
 
-import {type ElementHandle} from 'puppeteer';
+import {type ElementHandle} from 'puppeteer-core';
 
 import {openPanelViaMoreTools} from '../../../test/e2e/helpers/settings-helpers.js';
 import {

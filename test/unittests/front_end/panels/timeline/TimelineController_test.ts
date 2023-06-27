@@ -8,7 +8,9 @@ import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 
 describeWithRealConnection('TimelineController', () => {
-  it('calls the callback methods on the client in the expected order', async () => {
+  it('calls the callback methods on the client in the expected order', async function() {
+    // The test needs at least 0.5s to have progress events be sent. Set a higher timeout to avoid flakiness.
+    this.timeout(5_000);
     const stubs = {
       recordingProgress: sinon.stub(),
       loadingStarted: sinon.stub(),

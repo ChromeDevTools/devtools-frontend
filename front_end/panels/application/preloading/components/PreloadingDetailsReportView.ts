@@ -2,15 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as NetworkForward from '../../../network/forward/forward.js';
 
 import type * as UI from '../../../../ui/legacy/legacy.js';
 
@@ -276,6 +279,10 @@ const UIStrings = {
    *  Description text for PrerenderFinalStatus::kResourceLoadBlockedByClient.
    */
   prerenderFinalStatusResourceLoadBlockedByClient: 'Some resource load was blocked.',
+  /**
+   *@description button: Title of button to reveal the corresponding request of rule set in Network panel
+   */
+  buttonClickToRevealInNetworkPanel: 'Click to reveal in Network panel',
 };
 const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingDetailsReportView.ts', UIStrings);
@@ -612,11 +619,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
           <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.detailsDetailedInformation)}</${
             ReportView.ReportView.ReportSectionHeader.litTagName}>
 
-          <${ReportView.ReportView.ReportKey.litTagName}>${i18n.i18n.lockedString('URL')}</${
-            ReportView.ReportView.ReportKey.litTagName}>
-          <${ReportView.ReportView.ReportValue.litTagName}>
-            <div class="text-ellipsis" title=${this.#data.preloadingAttempt.key.url}>${this.#data.preloadingAttempt.key.url}</div>
-          </${ReportView.ReportView.ReportValue.litTagName}>
+          ${this.#url()}
 
           <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsAction)}</${
             ReportView.ReportView.ReportKey.litTagName}>
@@ -640,6 +643,71 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       `, this.#shadow, {host: this});
       // clang-format on
     });
+  }
+
+  #url(): LitHtml.LitTemplate {
+    assertNotNullOrUndefined(this.#data);
+    const attempt = this.#data.preloadingAttempt;
+
+    let request;
+    if (attempt.action === Protocol.Preload.SpeculationAction.Prefetch) {
+      const requestId = attempt.requestId;
+      request = SDK.TargetManager.TargetManager.instance()
+                    .scopeTarget()
+                    ?.model(SDK.NetworkManager.NetworkManager)
+                    ?.requestForId(requestId) ||
+          null;
+    } else {
+      request = null;
+    }
+
+    let value;
+    if (request !== null) {
+      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+          request, NetworkForward.UIRequestLocation.UIRequestTabs.Preview, {clearFilter: false});
+      const reveal = async(): Promise<void> => {
+        await Common.Revealer.reveal(requestLocation);
+      };
+
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      value = LitHtml.html`
+          <div class="text-ellipsis">
+            <button class="link" role="link"
+              @click=${reveal}
+              title=${i18nString(UIStrings.buttonClickToRevealInNetworkPanel)}
+            >
+              <${IconButton.Icon.Icon.litTagName} .data=${{
+                iconName: 'arrow-up-down-circle',
+                color: 'var(--icon-link)',
+                width: '16px',
+                height: '16px',
+              } as IconButton.Icon.IconData}>
+              </${IconButton.Icon.Icon.litTagName}>
+              ${attempt.key.url}
+            </button>
+          </div>
+      `;
+      // clang-format on
+    } else {
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      value = LitHtml.html`
+          <div class="text-ellipsis" title=${attempt.key.url}>${attempt.key.url}</div>
+      `;
+      // clang-format on
+    }
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18n.i18n.lockedString('URL')}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName}>
+          ${value}
+        </${ReportView.ReportView.ReportValue.litTagName}>
+    `;
+    // clang-format on
   }
 
   #maybePrefetchFailureReason(): LitHtml.LitTemplate {

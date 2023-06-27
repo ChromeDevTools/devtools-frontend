@@ -164,6 +164,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
         },
         status: SDK.PreloadingModel.PreloadingStatus.Failure,
         prefetchStatus: Protocol.Preload.PrefetchStatus.PrefetchFailedNon2XX,
+        requestId: 'requestId:1' as Protocol.Network.RequestId,
         ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
         nodeIds: [1] as Protocol.DOM.BackendNodeId[],
       },

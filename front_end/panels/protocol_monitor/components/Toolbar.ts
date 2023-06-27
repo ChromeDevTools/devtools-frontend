@@ -38,7 +38,7 @@ export class Toolbar extends LitElement {
     return html`
         <div class="toolbar">
           <${Buttons.Button.Button.litTagName}
-          .size=${Buttons.Button.Size.MEDIUM}
+          .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${copyIconUrl}
           .variant=${Buttons.Button.Variant.TOOLBAR}
           @click=${this.#handleCopy}

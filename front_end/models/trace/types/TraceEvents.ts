@@ -209,49 +209,57 @@ export interface TraceEventSyntheticNetworkRedirect {
   dur: MicroSeconds;
 }
 
+// TraceEventProcessedArgsData is used to store the processed data of a network
+// request. Which is used to distinguish from the date we extract from the
+// trace event directly.
+interface TraceEventSyntheticArgsData {
+  dnsLookup: MicroSeconds;
+  download: MicroSeconds;
+  downloadStart: MicroSeconds;
+  finishTime: MicroSeconds;
+  initialConnection: MicroSeconds;
+  isDiskCached: boolean;
+  isHttps: boolean;
+  isMemoryCached: boolean;
+  isPushedResource: boolean;
+  networkDuration: MicroSeconds;
+  processingDuration: MicroSeconds;
+  proxyNegotiation: MicroSeconds;
+  queueing: MicroSeconds;
+  redirectionDuration: MicroSeconds;
+  requestSent: MicroSeconds;
+  sendStartTime: MicroSeconds;
+  ssl: MicroSeconds;
+  stalled: MicroSeconds;
+  totalTime: MicroSeconds;
+  waiting: MicroSeconds;
+}
+
 export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
+      syntheticData: TraceEventSyntheticArgsData,
+      // All fields below are from TraceEventsForNetworkRequest,
+      // Required fields
       decodedBodyLength: number,
-      dnsLookup: MicroSeconds,
-      download: MicroSeconds,
       encodedDataLength: number,
-      finishTime: MicroSeconds,
       frame: string,
       fromServiceWorker: boolean,
       host: string,
-      initialConnection: MicroSeconds,
-      isDiskCached: boolean,
-      isHttps: boolean,
-      isMemoryCached: boolean,
-      isPushedResource: boolean,
       mimeType: string,
-      networkDuration: MicroSeconds,
       pathname: string,
       search: string,
       priority: string,
-      processingDuration: MicroSeconds,
       protocol: string,
-      proxyNegotiation: MicroSeconds,
-      queueing: MicroSeconds,
-      receiveHeadersEnd: MicroSeconds,
       redirects: TraceEventSyntheticNetworkRedirect[],
-      redirectionDuration: MicroSeconds,
       renderBlocking: RenderBlocking,
       requestId: string,
       requestingFrameUrl: string,
-      requestSent: MicroSeconds,
-      requestTime: Seconds,
-      sendEnd: MicroSeconds,
-      sendStart: MicroSeconds,
       statusCode: number,
-      ssl: MicroSeconds,
-      sslStart: MicroSeconds,
-      stalled: MicroSeconds,
-      totalTime: MicroSeconds,
       url: string,
-      waiting: MicroSeconds,
+      // Optional fields
       requestMethod?: string,
+      timing?: TraceEventResourceReceiveResponseTimingData,
     },
   };
   cat: 'loading';
@@ -608,6 +616,25 @@ export interface TraceEventResourceReceivedData extends TraceEventInstant {
   };
 }
 
+interface TraceEventResourceReceiveResponseTimingData {
+  connectEnd: MilliSeconds;
+  connectStart: MilliSeconds;
+  dnsEnd: MilliSeconds;
+  dnsStart: MilliSeconds;
+  proxyEnd: MilliSeconds;
+  proxyStart: MilliSeconds;
+  pushEnd: MilliSeconds;
+  pushStart: MilliSeconds;
+  receiveHeadersEnd: MilliSeconds;
+  requestTime: Seconds;
+  sendEnd: MilliSeconds;
+  sendStart: MilliSeconds;
+  sslEnd: MilliSeconds;
+  sslStart: MilliSeconds;
+  workerReady: MilliSeconds;
+  workerStart: MilliSeconds;
+}
+
 export interface TraceEventResourceReceiveResponse extends TraceEventInstant {
   name: 'ResourceReceiveResponse';
   args: TraceEventArgs&{
@@ -620,24 +647,7 @@ export interface TraceEventResourceReceiveResponse extends TraceEventInstant {
       requestId: string,
       responseTime: MilliSeconds,
       statusCode: number,
-      timing: {
-        connectEnd: MilliSeconds,
-        connectStart: MilliSeconds,
-        dnsEnd: MilliSeconds,
-        dnsStart: MilliSeconds,
-        proxyEnd: MilliSeconds,
-        proxyStart: MilliSeconds,
-        pushEnd: MilliSeconds,
-        pushStart: MilliSeconds,
-        receiveHeadersEnd: MilliSeconds,
-        requestTime: number,
-        sendEnd: MilliSeconds,
-        sendStart: MilliSeconds,
-        sslEnd: MilliSeconds,
-        sslStart: MilliSeconds,
-        workerReady: MilliSeconds,
-        workerStart: MilliSeconds,
-      },
+      timing: TraceEventResourceReceiveResponseTimingData,
     },
   };
 }

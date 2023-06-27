@@ -123,4 +123,34 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
         dataProvider.getDecorationPixels(request, /* unclippedBarX= */ 10, /* timeToPixelRatio= */ 1),
         {sendStart: 30, headersEnd: 235, finish: 237, start: 10, end: 238});
   });
+
+  describe('TraceEngine', () => {
+    // TODO(crbug.com/1457485)
+    // This test is used to check we handle the event "same" as OPP. Once
+    // the migration is done, it should be removed.
+    it('returns same events as old engine', async () => {
+      const {timelineModel, traceParsedData} = await allModelsFromFile('cls-cluster-max-timeout.json.gz');
+      const networkEventsFromOldEngine = timelineModel.networkRequests();
+      // The first request of this file misses the SendRequest event, so we discarded it in Trace Engine.
+      // So remove the first request for the test.
+      networkEventsFromOldEngine.shift();
+      const networkEventsFromNewEngine = traceParsedData.NetworkRequests.byTime;
+      assert.strictEqual(networkEventsFromNewEngine.length, networkEventsFromNewEngine.length);
+
+      for (let i = 0; i < 136; i++) {
+        const {startTime, endTime, finishTime} = networkEventsFromOldEngine[i];
+        assert.strictEqual(startTime * 1000, networkEventsFromNewEngine[i].ts);
+        assert.strictEqual(endTime * 1000, networkEventsFromNewEngine[i].ts + networkEventsFromNewEngine[i].dur);
+        assert.strictEqual(
+            Math.round((finishTime || endTime) * 1000),
+            Math.round(networkEventsFromNewEngine[i].args.data.syntheticData.finishTime));
+
+        const {sendStartTime, headersEndTime} = networkEventsFromOldEngine[i].getSendReceiveTiming();
+        const sendStartTimeNew = networkEventsFromNewEngine[i].args.data.syntheticData.sendStartTime;
+        const headersEndTimeNew = networkEventsFromNewEngine[i].args.data.syntheticData.downloadStart;
+        assert.strictEqual(Math.round(sendStartTime * 1000), Math.round(sendStartTimeNew));
+        assert.strictEqual(Math.round(headersEndTime * 1000), Math.round(headersEndTimeNew));
+      }
+    });
+  });
 });

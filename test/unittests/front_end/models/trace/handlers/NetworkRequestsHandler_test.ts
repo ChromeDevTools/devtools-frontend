@@ -7,7 +7,10 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import {loadEventsFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
 type DataArgs = TraceModel.Types.TraceEvents.TraceEventSyntheticNetworkRequest['args']['data'];
+type DataArgsProcessedData =
+    TraceModel.Types.TraceEvents.TraceEventSyntheticNetworkRequest['args']['data']['syntheticData'];
 type DataArgsMap = Map<keyof DataArgs, DataArgs[keyof DataArgs]>;
+type DataArgsProcessedDataMap = Map<keyof DataArgsProcessedData, DataArgsProcessedData[keyof DataArgsProcessedData]>;
 
 async function parseAndFinalizeFile(traceFile: string) {
   const traceEvents = await loadEventsFromTraceFile(traceFile);
@@ -21,6 +24,7 @@ async function parseAndFinalizeFile(traceFile: string) {
   await TraceModel.Handlers.ModelHandlers.NetworkRequests.finalize();
   return traceEvents;
 }
+
 describe('NetworkRequestsHandler', function() {
   setTraceModelTimeout(this);
 
@@ -73,7 +77,7 @@ describe('NetworkRequestsHandler', function() {
       assert.strictEqual(topLevelRequests.all.length, 4, 'Incorrect number of requests');
 
       // Page Request.
-      const pageRequestExpected: DataArgsMap = new Map([
+      const pageRequestExpected: DataArgsProcessedDataMap = new Map([
         ['queueing', TraceModel.Types.Timing.MicroSeconds(25085)],
         ['stalled', TraceModel.Types.Timing.MicroSeconds(5670)],
         ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(105)],
@@ -84,10 +88,10 @@ describe('NetworkRequestsHandler', function() {
         ['download', TraceModel.Types.Timing.MicroSeconds(4827)],
         ['networkDuration', TraceModel.Types.Timing.MicroSeconds(38503)],
       ]);
-      assertStats(topLevelRequests.all, 'http://localhost:8080/', pageRequestExpected);
+      assertDataArgsProcessedDataStats(topLevelRequests.all, 'http://localhost:8080/', pageRequestExpected);
 
       // CSS Request.
-      const cssRequestExpected: DataArgsMap = new Map([
+      const cssRequestExpected: DataArgsProcessedDataMap = new Map([
         ['queueing', TraceModel.Types.Timing.MicroSeconds(0)],
         ['stalled', TraceModel.Types.Timing.MicroSeconds(2175)],
         ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(0)],
@@ -103,11 +107,11 @@ describe('NetworkRequestsHandler', function() {
         ['renderBlocking', 'blocking'],
       ]);
 
-      assertStats(topLevelRequests.all, 'http://localhost:8080/styles.css', cssRequestExpected);
-      assertStats(topLevelRequests.all, 'http://localhost:8080/styles.css', cssRequestBlockingStatusExpected);
+      assertDataArgsProcessedDataStats(topLevelRequests.all, 'http://localhost:8080/styles.css', cssRequestExpected);
+      assertDataArgsStats(topLevelRequests.all, 'http://localhost:8080/styles.css', cssRequestBlockingStatusExpected);
 
       // Blocking JS Request.
-      const blockingJSRequestExpected: DataArgsMap = new Map([
+      const blockingJSRequestExpected: DataArgsProcessedDataMap = new Map([
         ['queueing', TraceModel.Types.Timing.MicroSeconds(0)],
         ['stalled', TraceModel.Types.Timing.MicroSeconds(2126)],
         ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(0)],
@@ -123,11 +127,12 @@ describe('NetworkRequestsHandler', function() {
         ['renderBlocking', 'in_body_parser_blocking'],
       ]);
 
-      assertStats(topLevelRequests.all, 'http://localhost:8080/blocking.js', blockingJSRequestExpected);
-      assertStats(topLevelRequests.all, 'http://localhost:8080/blocking.js', blockingJSBlockingStatusExpected);
+      assertDataArgsProcessedDataStats(
+          topLevelRequests.all, 'http://localhost:8080/blocking.js', blockingJSRequestExpected);
+      assertDataArgsStats(topLevelRequests.all, 'http://localhost:8080/blocking.js', blockingJSBlockingStatusExpected);
 
       // Module JS Request (cached).
-      const moduleRequestExpected: DataArgsMap = new Map([
+      const moduleRequestExpected: DataArgsProcessedDataMap = new Map([
         ['queueing', TraceModel.Types.Timing.MicroSeconds(0)],
         ['stalled', TraceModel.Types.Timing.MicroSeconds(76865)],
         ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(0)],
@@ -143,14 +148,14 @@ describe('NetworkRequestsHandler', function() {
         ['renderBlocking', 'non_blocking'],
       ]);
 
-      assertStats(topLevelRequests.all, 'http://localhost:8080/module.js', moduleRequestExpected);
-      assertStats(topLevelRequests.all, 'http://localhost:8080/module.js', moduleRequestBlockingStatusExpected);
+      assertDataArgsProcessedDataStats(topLevelRequests.all, 'http://localhost:8080/module.js', moduleRequestExpected);
+      assertDataArgsStats(topLevelRequests.all, 'http://localhost:8080/module.js', moduleRequestBlockingStatusExpected);
 
       // Google Fonts CSS Request (cached).
       const fontCSSRequests = requestsByOrigin.get('fonts.googleapis.com') || {all: []};
       assert.strictEqual(fontCSSRequests.all.length, 1, 'Incorrect number of requests');
 
-      const fontCSSRequestExpected: DataArgsMap = new Map([
+      const fontCSSRequestExpected: DataArgsProcessedDataMap = new Map([
         ['queueing', TraceModel.Types.Timing.MicroSeconds(0)],
         ['stalled', TraceModel.Types.Timing.MicroSeconds(3178)],
         ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(0)],
@@ -166,10 +171,10 @@ describe('NetworkRequestsHandler', function() {
         ['renderBlocking', 'blocking'],
       ]);
 
-      assertStats(
+      assertDataArgsProcessedDataStats(
           fontCSSRequests.all, 'https://fonts.googleapis.com/css2?family=Orelega+One&display=swap',
           fontCSSRequestExpected);
-      assertStats(
+      assertDataArgsStats(
           fontCSSRequests.all, 'https://fonts.googleapis.com/css2?family=Orelega+One&display=swap',
           fontCSSBlockingStatusExpected);
 
@@ -177,7 +182,7 @@ describe('NetworkRequestsHandler', function() {
       const fontDataRequests = requestsByOrigin.get('fonts.gstatic.com') || {all: []};
       assert.strictEqual(fontDataRequests.all.length, 1, 'Incorrect number of requests');
 
-      const fontDataRequestExpected: DataArgsMap = new Map([
+      const fontDataRequestExpected: DataArgsProcessedDataMap = new Map([
         ['queueing', TraceModel.Types.Timing.MicroSeconds(0)],
         ['stalled', TraceModel.Types.Timing.MicroSeconds(1929)],
         ['dnsLookup', TraceModel.Types.Timing.MicroSeconds(0)],
@@ -193,11 +198,11 @@ describe('NetworkRequestsHandler', function() {
         ['renderBlocking', 'non_blocking'],
       ]);
 
-      assertStats(
+      assertDataArgsProcessedDataStats(
           fontDataRequests.all, 'https://fonts.gstatic.com/s/orelegaone/v1/3qTpojOggD2XtAdFb-QXZFt93kY.woff2',
           fontDataRequestExpected);
 
-      assertStats(
+      assertDataArgsStats(
           fontDataRequests.all, 'https://fonts.gstatic.com/s/orelegaone/v1/3qTpojOggD2XtAdFb-QXZFt93kY.woff2',
           fontDataRequestBlockingStatusExpected);
     });
@@ -277,7 +282,7 @@ describe('NetworkRequestsHandler', function() {
   });
 });
 
-function assertStats<D extends keyof DataArgs>(
+function assertDataArgsStats<D extends keyof DataArgs>(
     requests: TraceModel.Types.TraceEvents.TraceEventSyntheticNetworkRequest[], url: string,
     stats: Map<D, DataArgs[D]>): void {
   const request = requests.find(request => request.args.data.url === url);
@@ -293,6 +298,27 @@ function assertStats<D extends keyof DataArgs>(
       assert.strictEqual(actualValueRounded, expectedValue, url);
     } else {
       assert.strictEqual(request.args.data[name], value, url);
+    }
+  }
+}
+
+function assertDataArgsProcessedDataStats<D extends keyof DataArgsProcessedData>(
+    requests: TraceModel.Types.TraceEvents.TraceEventSyntheticNetworkRequest[], url: string,
+    stats: Map<D, DataArgsProcessedData[D]>): void {
+  const request = requests.find(request => request.args.data.url === url);
+  if (!request) {
+    assert.fail(`Unable to find request for URL ${url}`);
+    return;
+  }
+
+  for (const [name, value] of stats.entries()) {
+    if (typeof request.args.data.syntheticData[name] === 'number') {
+      const expectedValue = value as DataArgsProcessedData[D];
+      const actualValueRounded =
+          Number((request.args.data.syntheticData[name] as number).toPrecision(5)) as DataArgsProcessedData[D];
+      assert.strictEqual(actualValueRounded, expectedValue, url);
+    } else {
+      assert.strictEqual(request.args.data.syntheticData[name], value, url);
     }
   }
 }

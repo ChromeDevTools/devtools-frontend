@@ -68,7 +68,7 @@ class RawTypes(object):
         elif json_type == "binary":
             return "string"
         elif json_type == "array":
-            return "object"
+            return "array"
         elif json_type == "object":
             return "object"
         elif json_type == "integer":

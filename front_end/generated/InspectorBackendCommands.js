@@ -44,10 +44,10 @@ inspectorBackend.registerCommand("Animation.disable", [], []);
 inspectorBackend.registerCommand("Animation.enable", [], []);
 inspectorBackend.registerCommand("Animation.getCurrentTime", [{"name": "id", "type": "string", "optional": false}], ["currentTime"]);
 inspectorBackend.registerCommand("Animation.getPlaybackRate", [], ["playbackRate"]);
-inspectorBackend.registerCommand("Animation.releaseAnimations", [{"name": "animations", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Animation.releaseAnimations", [{"name": "animations", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Animation.resolveAnimation", [{"name": "animationId", "type": "string", "optional": false}], ["remoteObject"]);
-inspectorBackend.registerCommand("Animation.seekAnimations", [{"name": "animations", "type": "object", "optional": false}, {"name": "currentTime", "type": "number", "optional": false}], []);
-inspectorBackend.registerCommand("Animation.setPaused", [{"name": "animations", "type": "object", "optional": false}, {"name": "paused", "type": "boolean", "optional": false}], []);
+inspectorBackend.registerCommand("Animation.seekAnimations", [{"name": "animations", "type": "array", "optional": false}, {"name": "currentTime", "type": "number", "optional": false}], []);
+inspectorBackend.registerCommand("Animation.setPaused", [{"name": "animations", "type": "array", "optional": false}, {"name": "paused", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Animation.setPlaybackRate", [{"name": "playbackRate", "type": "number", "optional": false}], []);
 inspectorBackend.registerCommand("Animation.setTiming", [{"name": "animationId", "type": "string", "optional": false}, {"name": "duration", "type": "number", "optional": false}, {"name": "delay", "type": "number", "optional": false}], []);
 
@@ -79,7 +79,7 @@ inspectorBackend.registerCommand("Audits.checkFormsIssues", [], ["formIssues"]);
 
 // Autofill.
 inspectorBackend.registerCommand("Autofill.trigger", [{"name": "fieldId", "type": "number", "optional": false}, {"name": "frameId", "type": "string", "optional": true}, {"name": "card", "type": "object", "optional": false}], []);
-inspectorBackend.registerCommand("Autofill.setAddresses", [{"name": "addresses", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Autofill.setAddresses", [{"name": "addresses", "type": "array", "optional": false}], []);
 
 // BackgroundService.
 inspectorBackend.registerEnum("BackgroundService.ServiceName", {BackgroundFetch: "backgroundFetch", BackgroundSync: "backgroundSync", PushMessaging: "pushMessaging", Notifications: "notifications", PaymentHandler: "paymentHandler", PeriodicBackgroundSync: "periodicBackgroundSync"});
@@ -99,7 +99,7 @@ inspectorBackend.registerEvent("Browser.downloadWillBegin", ["frameId", "guid", 
 inspectorBackend.registerEnum("Browser.DownloadProgressEventState", {InProgress: "inProgress", Completed: "completed", Canceled: "canceled"});
 inspectorBackend.registerEvent("Browser.downloadProgress", ["guid", "totalBytes", "receivedBytes", "state"]);
 inspectorBackend.registerCommand("Browser.setPermission", [{"name": "permission", "type": "object", "optional": false}, {"name": "setting", "type": "string", "optional": false}, {"name": "origin", "type": "string", "optional": true}, {"name": "browserContextId", "type": "string", "optional": true}], []);
-inspectorBackend.registerCommand("Browser.grantPermissions", [{"name": "permissions", "type": "object", "optional": false}, {"name": "origin", "type": "string", "optional": true}, {"name": "browserContextId", "type": "string", "optional": true}], []);
+inspectorBackend.registerCommand("Browser.grantPermissions", [{"name": "permissions", "type": "array", "optional": false}, {"name": "origin", "type": "string", "optional": true}, {"name": "browserContextId", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("Browser.resetPermissions", [{"name": "browserContextId", "type": "string", "optional": true}], []);
 inspectorBackend.registerEnum("Browser.SetDownloadBehaviorRequestBehavior", {Deny: "deny", Allow: "allow", AllowAndName: "allowAndName", Default: "default"});
 inspectorBackend.registerCommand("Browser.setDownloadBehavior", [{"name": "behavior", "type": "string", "optional": false}, {"name": "browserContextId", "type": "string", "optional": true}, {"name": "downloadPath", "type": "string", "optional": true}, {"name": "eventsEnabled", "type": "boolean", "optional": true}], []);
@@ -131,7 +131,7 @@ inspectorBackend.registerCommand("CSS.collectClassNames", [{"name": "styleSheetI
 inspectorBackend.registerCommand("CSS.createStyleSheet", [{"name": "frameId", "type": "string", "optional": false}], ["styleSheetId"]);
 inspectorBackend.registerCommand("CSS.disable", [], []);
 inspectorBackend.registerCommand("CSS.enable", [], []);
-inspectorBackend.registerCommand("CSS.forcePseudoState", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "forcedPseudoClasses", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("CSS.forcePseudoState", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "forcedPseudoClasses", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("CSS.getBackgroundColors", [{"name": "nodeId", "type": "number", "optional": false}], ["backgroundColors", "computedFontSize", "computedFontWeight"]);
 inspectorBackend.registerCommand("CSS.getComputedStyleForNode", [{"name": "nodeId", "type": "number", "optional": false}], ["computedStyle"]);
 inspectorBackend.registerCommand("CSS.getInlineStylesForNode", [{"name": "nodeId", "type": "number", "optional": false}], ["inlineStyle", "attributesStyle"]);
@@ -140,7 +140,7 @@ inspectorBackend.registerCommand("CSS.getMediaQueries", [], ["medias"]);
 inspectorBackend.registerCommand("CSS.getPlatformFontsForNode", [{"name": "nodeId", "type": "number", "optional": false}], ["fonts"]);
 inspectorBackend.registerCommand("CSS.getStyleSheetText", [{"name": "styleSheetId", "type": "string", "optional": false}], ["text"]);
 inspectorBackend.registerCommand("CSS.getLayersForNode", [{"name": "nodeId", "type": "number", "optional": false}], ["rootLayer"]);
-inspectorBackend.registerCommand("CSS.trackComputedStyleUpdates", [{"name": "propertiesToTrack", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("CSS.trackComputedStyleUpdates", [{"name": "propertiesToTrack", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("CSS.takeComputedStyleUpdates", [], ["nodeIds"]);
 inspectorBackend.registerCommand("CSS.setEffectivePropertyValueForNode", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "propertyName", "type": "string", "optional": false}, {"name": "value", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("CSS.setKeyframeKey", [{"name": "styleSheetId", "type": "string", "optional": false}, {"name": "range", "type": "object", "optional": false}, {"name": "keyText", "type": "string", "optional": false}], ["keyText"]);
@@ -150,7 +150,7 @@ inspectorBackend.registerCommand("CSS.setSupportsText", [{"name": "styleSheetId"
 inspectorBackend.registerCommand("CSS.setScopeText", [{"name": "styleSheetId", "type": "string", "optional": false}, {"name": "range", "type": "object", "optional": false}, {"name": "text", "type": "string", "optional": false}], ["scope"]);
 inspectorBackend.registerCommand("CSS.setRuleSelector", [{"name": "styleSheetId", "type": "string", "optional": false}, {"name": "range", "type": "object", "optional": false}, {"name": "selector", "type": "string", "optional": false}], ["selectorList"]);
 inspectorBackend.registerCommand("CSS.setStyleSheetText", [{"name": "styleSheetId", "type": "string", "optional": false}, {"name": "text", "type": "string", "optional": false}], ["sourceMapURL"]);
-inspectorBackend.registerCommand("CSS.setStyleTexts", [{"name": "edits", "type": "object", "optional": false}], ["styles"]);
+inspectorBackend.registerCommand("CSS.setStyleTexts", [{"name": "edits", "type": "array", "optional": false}], ["styles"]);
 inspectorBackend.registerCommand("CSS.startRuleUsageTracking", [], []);
 inspectorBackend.registerCommand("CSS.stopRuleUsageTracking", [], ["ruleUsage"]);
 inspectorBackend.registerCommand("CSS.takeCoverageDelta", [], ["coverage", "timestamp"]);
@@ -161,7 +161,7 @@ inspectorBackend.registerEnum("CacheStorage.CachedResponseType", {Basic: "basic"
 inspectorBackend.registerCommand("CacheStorage.deleteCache", [{"name": "cacheId", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("CacheStorage.deleteEntry", [{"name": "cacheId", "type": "string", "optional": false}, {"name": "request", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("CacheStorage.requestCacheNames", [{"name": "securityOrigin", "type": "string", "optional": true}, {"name": "storageKey", "type": "string", "optional": true}, {"name": "storageBucket", "type": "object", "optional": true}], ["caches"]);
-inspectorBackend.registerCommand("CacheStorage.requestCachedResponse", [{"name": "cacheId", "type": "string", "optional": false}, {"name": "requestURL", "type": "string", "optional": false}, {"name": "requestHeaders", "type": "object", "optional": false}], ["response"]);
+inspectorBackend.registerCommand("CacheStorage.requestCachedResponse", [{"name": "cacheId", "type": "string", "optional": false}, {"name": "requestURL", "type": "string", "optional": false}, {"name": "requestHeaders", "type": "array", "optional": false}], ["response"]);
 inspectorBackend.registerCommand("CacheStorage.requestEntries", [{"name": "cacheId", "type": "string", "optional": false}, {"name": "skipCount", "type": "number", "optional": true}, {"name": "pageSize", "type": "number", "optional": true}, {"name": "pathFilter", "type": "string", "optional": true}], ["cacheDataEntries", "returnCount"]);
 
 // Cast.
@@ -209,7 +209,7 @@ inspectorBackend.registerCommand("DOM.getBoxModel", [{"name": "nodeId", "type": 
 inspectorBackend.registerCommand("DOM.getContentQuads", [{"name": "nodeId", "type": "number", "optional": true}, {"name": "backendNodeId", "type": "number", "optional": true}, {"name": "objectId", "type": "string", "optional": true}], ["quads"]);
 inspectorBackend.registerCommand("DOM.getDocument", [{"name": "depth", "type": "number", "optional": true}, {"name": "pierce", "type": "boolean", "optional": true}], ["root"]);
 inspectorBackend.registerCommand("DOM.getFlattenedDocument", [{"name": "depth", "type": "number", "optional": true}, {"name": "pierce", "type": "boolean", "optional": true}], ["nodes"]);
-inspectorBackend.registerCommand("DOM.getNodesForSubtreeByStyle", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "computedStyles", "type": "object", "optional": false}, {"name": "pierce", "type": "boolean", "optional": true}], ["nodeIds"]);
+inspectorBackend.registerCommand("DOM.getNodesForSubtreeByStyle", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "computedStyles", "type": "array", "optional": false}, {"name": "pierce", "type": "boolean", "optional": true}], ["nodeIds"]);
 inspectorBackend.registerCommand("DOM.getNodeForLocation", [{"name": "x", "type": "number", "optional": false}, {"name": "y", "type": "number", "optional": false}, {"name": "includeUserAgentShadowDOM", "type": "boolean", "optional": true}, {"name": "ignorePointerEventsNone", "type": "boolean", "optional": true}], ["backendNodeId", "frameId", "nodeId"]);
 inspectorBackend.registerCommand("DOM.getOuterHTML", [{"name": "nodeId", "type": "number", "optional": true}, {"name": "backendNodeId", "type": "number", "optional": true}, {"name": "objectId", "type": "string", "optional": true}], ["outerHTML"]);
 inspectorBackend.registerCommand("DOM.getRelayoutBoundary", [{"name": "nodeId", "type": "number", "optional": false}], ["nodeId"]);
@@ -221,7 +221,7 @@ inspectorBackend.registerCommand("DOM.markUndoableState", [], []);
 inspectorBackend.registerCommand("DOM.moveTo", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "targetNodeId", "type": "number", "optional": false}, {"name": "insertBeforeNodeId", "type": "number", "optional": true}], ["nodeId"]);
 inspectorBackend.registerCommand("DOM.performSearch", [{"name": "query", "type": "string", "optional": false}, {"name": "includeUserAgentShadowDOM", "type": "boolean", "optional": true}], ["searchId", "resultCount"]);
 inspectorBackend.registerCommand("DOM.pushNodeByPathToFrontend", [{"name": "path", "type": "string", "optional": false}], ["nodeId"]);
-inspectorBackend.registerCommand("DOM.pushNodesByBackendIdsToFrontend", [{"name": "backendNodeIds", "type": "object", "optional": false}], ["nodeIds"]);
+inspectorBackend.registerCommand("DOM.pushNodesByBackendIdsToFrontend", [{"name": "backendNodeIds", "type": "array", "optional": false}], ["nodeIds"]);
 inspectorBackend.registerCommand("DOM.querySelector", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "selector", "type": "string", "optional": false}], ["nodeId"]);
 inspectorBackend.registerCommand("DOM.querySelectorAll", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "selector", "type": "string", "optional": false}], ["nodeIds"]);
 inspectorBackend.registerCommand("DOM.getTopLayerElements", [], ["nodeIds"]);
@@ -233,7 +233,7 @@ inspectorBackend.registerCommand("DOM.requestNode", [{"name": "objectId", "type"
 inspectorBackend.registerCommand("DOM.resolveNode", [{"name": "nodeId", "type": "number", "optional": true}, {"name": "backendNodeId", "type": "number", "optional": true}, {"name": "objectGroup", "type": "string", "optional": true}, {"name": "executionContextId", "type": "number", "optional": true}], ["object"]);
 inspectorBackend.registerCommand("DOM.setAttributeValue", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "name", "type": "string", "optional": false}, {"name": "value", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("DOM.setAttributesAsText", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "text", "type": "string", "optional": false}, {"name": "name", "type": "string", "optional": true}], []);
-inspectorBackend.registerCommand("DOM.setFileInputFiles", [{"name": "files", "type": "object", "optional": false}, {"name": "nodeId", "type": "number", "optional": true}, {"name": "backendNodeId", "type": "number", "optional": true}, {"name": "objectId", "type": "string", "optional": true}], []);
+inspectorBackend.registerCommand("DOM.setFileInputFiles", [{"name": "files", "type": "array", "optional": false}, {"name": "nodeId", "type": "number", "optional": true}, {"name": "backendNodeId", "type": "number", "optional": true}, {"name": "objectId", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("DOM.setNodeStackTracesEnabled", [{"name": "enable", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("DOM.getNodeStackTraces", [{"name": "nodeId", "type": "number", "optional": false}], ["creation"]);
 inspectorBackend.registerCommand("DOM.getFileInfo", [{"name": "objectId", "type": "string", "optional": false}], ["path"]);
@@ -254,7 +254,7 @@ inspectorBackend.registerCommand("DOMDebugger.removeDOMBreakpoint", [{"name": "n
 inspectorBackend.registerCommand("DOMDebugger.removeEventListenerBreakpoint", [{"name": "eventName", "type": "string", "optional": false}, {"name": "targetName", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("DOMDebugger.removeInstrumentationBreakpoint", [{"name": "eventName", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("DOMDebugger.removeXHRBreakpoint", [{"name": "url", "type": "string", "optional": false}], []);
-inspectorBackend.registerCommand("DOMDebugger.setBreakOnCSPViolation", [{"name": "violationTypes", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("DOMDebugger.setBreakOnCSPViolation", [{"name": "violationTypes", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("DOMDebugger.setDOMBreakpoint", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "type", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("DOMDebugger.setEventListenerBreakpoint", [{"name": "eventName", "type": "string", "optional": false}, {"name": "targetName", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("DOMDebugger.setInstrumentationBreakpoint", [{"name": "eventName", "type": "string", "optional": false}], []);
@@ -267,8 +267,8 @@ inspectorBackend.registerCommand("EventBreakpoints.removeInstrumentationBreakpoi
 // DOMSnapshot.
 inspectorBackend.registerCommand("DOMSnapshot.disable", [], []);
 inspectorBackend.registerCommand("DOMSnapshot.enable", [], []);
-inspectorBackend.registerCommand("DOMSnapshot.getSnapshot", [{"name": "computedStyleWhitelist", "type": "object", "optional": false}, {"name": "includeEventListeners", "type": "boolean", "optional": true}, {"name": "includePaintOrder", "type": "boolean", "optional": true}, {"name": "includeUserAgentShadowTree", "type": "boolean", "optional": true}], ["domNodes", "layoutTreeNodes", "computedStyles"]);
-inspectorBackend.registerCommand("DOMSnapshot.captureSnapshot", [{"name": "computedStyles", "type": "object", "optional": false}, {"name": "includePaintOrder", "type": "boolean", "optional": true}, {"name": "includeDOMRects", "type": "boolean", "optional": true}, {"name": "includeBlendedBackgroundColors", "type": "boolean", "optional": true}, {"name": "includeTextColorOpacities", "type": "boolean", "optional": true}], ["documents", "strings"]);
+inspectorBackend.registerCommand("DOMSnapshot.getSnapshot", [{"name": "computedStyleWhitelist", "type": "array", "optional": false}, {"name": "includeEventListeners", "type": "boolean", "optional": true}, {"name": "includePaintOrder", "type": "boolean", "optional": true}, {"name": "includeUserAgentShadowTree", "type": "boolean", "optional": true}], ["domNodes", "layoutTreeNodes", "computedStyles"]);
+inspectorBackend.registerCommand("DOMSnapshot.captureSnapshot", [{"name": "computedStyles", "type": "array", "optional": false}, {"name": "includePaintOrder", "type": "boolean", "optional": true}, {"name": "includeDOMRects", "type": "boolean", "optional": true}, {"name": "includeBlendedBackgroundColors", "type": "boolean", "optional": true}, {"name": "includeTextColorOpacities", "type": "boolean", "optional": true}], ["documents", "strings"]);
 
 // DOMStorage.
 inspectorBackend.registerEvent("DOMStorage.domStorageItemAdded", ["storageId", "key", "newValue"]);
@@ -312,7 +312,7 @@ inspectorBackend.registerCommand("Emulation.setScrollbarsHidden", [{"name": "hid
 inspectorBackend.registerCommand("Emulation.setDocumentCookieDisabled", [{"name": "disabled", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerEnum("Emulation.SetEmitTouchEventsForMouseRequestConfiguration", {Mobile: "mobile", Desktop: "desktop"});
 inspectorBackend.registerCommand("Emulation.setEmitTouchEventsForMouse", [{"name": "enabled", "type": "boolean", "optional": false}, {"name": "configuration", "type": "string", "optional": true}], []);
-inspectorBackend.registerCommand("Emulation.setEmulatedMedia", [{"name": "media", "type": "string", "optional": true}, {"name": "features", "type": "object", "optional": true}], []);
+inspectorBackend.registerCommand("Emulation.setEmulatedMedia", [{"name": "media", "type": "string", "optional": true}, {"name": "features", "type": "array", "optional": true}], []);
 inspectorBackend.registerEnum("Emulation.SetEmulatedVisionDeficiencyRequestType", {None: "none", BlurredVision: "blurredVision", ReducedContrast: "reducedContrast", Achromatopsia: "achromatopsia", Deuteranopia: "deuteranopia", Protanopia: "protanopia", Tritanopia: "tritanopia"});
 inspectorBackend.registerCommand("Emulation.setEmulatedVisionDeficiency", [{"name": "type", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Emulation.setGeolocationOverride", [{"name": "latitude", "type": "number", "optional": true}, {"name": "longitude", "type": "number", "optional": true}, {"name": "accuracy", "type": "number", "optional": true}], []);
@@ -326,7 +326,7 @@ inspectorBackend.registerCommand("Emulation.setVirtualTimePolicy", [{"name": "po
 inspectorBackend.registerCommand("Emulation.setLocaleOverride", [{"name": "locale", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("Emulation.setTimezoneOverride", [{"name": "timezoneId", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Emulation.setVisibleSize", [{"name": "width", "type": "number", "optional": false}, {"name": "height", "type": "number", "optional": false}], []);
-inspectorBackend.registerCommand("Emulation.setDisabledImageTypes", [{"name": "imageTypes", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Emulation.setDisabledImageTypes", [{"name": "imageTypes", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Emulation.setHardwareConcurrencyOverride", [{"name": "hardwareConcurrency", "type": "number", "optional": false}], []);
 inspectorBackend.registerCommand("Emulation.setUserAgentOverride", [{"name": "userAgent", "type": "string", "optional": false}, {"name": "acceptLanguage", "type": "string", "optional": true}, {"name": "platform", "type": "string", "optional": true}, {"name": "userAgentMetadata", "type": "object", "optional": true}], []);
 inspectorBackend.registerCommand("Emulation.setAutomationOverride", [{"name": "enabled", "type": "boolean", "optional": false}], []);
@@ -362,14 +362,14 @@ inspectorBackend.registerEvent("Input.dragIntercepted", ["data"]);
 inspectorBackend.registerEnum("Input.DispatchDragEventRequestType", {DragEnter: "dragEnter", DragOver: "dragOver", Drop: "drop", DragCancel: "dragCancel"});
 inspectorBackend.registerCommand("Input.dispatchDragEvent", [{"name": "type", "type": "string", "optional": false}, {"name": "x", "type": "number", "optional": false}, {"name": "y", "type": "number", "optional": false}, {"name": "data", "type": "object", "optional": false}, {"name": "modifiers", "type": "number", "optional": true}], []);
 inspectorBackend.registerEnum("Input.DispatchKeyEventRequestType", {KeyDown: "keyDown", KeyUp: "keyUp", RawKeyDown: "rawKeyDown", Char: "char"});
-inspectorBackend.registerCommand("Input.dispatchKeyEvent", [{"name": "type", "type": "string", "optional": false}, {"name": "modifiers", "type": "number", "optional": true}, {"name": "timestamp", "type": "number", "optional": true}, {"name": "text", "type": "string", "optional": true}, {"name": "unmodifiedText", "type": "string", "optional": true}, {"name": "keyIdentifier", "type": "string", "optional": true}, {"name": "code", "type": "string", "optional": true}, {"name": "key", "type": "string", "optional": true}, {"name": "windowsVirtualKeyCode", "type": "number", "optional": true}, {"name": "nativeVirtualKeyCode", "type": "number", "optional": true}, {"name": "autoRepeat", "type": "boolean", "optional": true}, {"name": "isKeypad", "type": "boolean", "optional": true}, {"name": "isSystemKey", "type": "boolean", "optional": true}, {"name": "location", "type": "number", "optional": true}, {"name": "commands", "type": "object", "optional": true}], []);
+inspectorBackend.registerCommand("Input.dispatchKeyEvent", [{"name": "type", "type": "string", "optional": false}, {"name": "modifiers", "type": "number", "optional": true}, {"name": "timestamp", "type": "number", "optional": true}, {"name": "text", "type": "string", "optional": true}, {"name": "unmodifiedText", "type": "string", "optional": true}, {"name": "keyIdentifier", "type": "string", "optional": true}, {"name": "code", "type": "string", "optional": true}, {"name": "key", "type": "string", "optional": true}, {"name": "windowsVirtualKeyCode", "type": "number", "optional": true}, {"name": "nativeVirtualKeyCode", "type": "number", "optional": true}, {"name": "autoRepeat", "type": "boolean", "optional": true}, {"name": "isKeypad", "type": "boolean", "optional": true}, {"name": "isSystemKey", "type": "boolean", "optional": true}, {"name": "location", "type": "number", "optional": true}, {"name": "commands", "type": "array", "optional": true}], []);
 inspectorBackend.registerCommand("Input.insertText", [{"name": "text", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Input.imeSetComposition", [{"name": "text", "type": "string", "optional": false}, {"name": "selectionStart", "type": "number", "optional": false}, {"name": "selectionEnd", "type": "number", "optional": false}, {"name": "replacementStart", "type": "number", "optional": true}, {"name": "replacementEnd", "type": "number", "optional": true}], []);
 inspectorBackend.registerEnum("Input.DispatchMouseEventRequestType", {MousePressed: "mousePressed", MouseReleased: "mouseReleased", MouseMoved: "mouseMoved", MouseWheel: "mouseWheel"});
 inspectorBackend.registerEnum("Input.DispatchMouseEventRequestPointerType", {Mouse: "mouse", Pen: "pen"});
 inspectorBackend.registerCommand("Input.dispatchMouseEvent", [{"name": "type", "type": "string", "optional": false}, {"name": "x", "type": "number", "optional": false}, {"name": "y", "type": "number", "optional": false}, {"name": "modifiers", "type": "number", "optional": true}, {"name": "timestamp", "type": "number", "optional": true}, {"name": "button", "type": "string", "optional": true}, {"name": "buttons", "type": "number", "optional": true}, {"name": "clickCount", "type": "number", "optional": true}, {"name": "force", "type": "number", "optional": true}, {"name": "tangentialPressure", "type": "number", "optional": true}, {"name": "tiltX", "type": "number", "optional": true}, {"name": "tiltY", "type": "number", "optional": true}, {"name": "twist", "type": "number", "optional": true}, {"name": "deltaX", "type": "number", "optional": true}, {"name": "deltaY", "type": "number", "optional": true}, {"name": "pointerType", "type": "string", "optional": true}], []);
 inspectorBackend.registerEnum("Input.DispatchTouchEventRequestType", {TouchStart: "touchStart", TouchEnd: "touchEnd", TouchMove: "touchMove", TouchCancel: "touchCancel"});
-inspectorBackend.registerCommand("Input.dispatchTouchEvent", [{"name": "type", "type": "string", "optional": false}, {"name": "touchPoints", "type": "object", "optional": false}, {"name": "modifiers", "type": "number", "optional": true}, {"name": "timestamp", "type": "number", "optional": true}], []);
+inspectorBackend.registerCommand("Input.dispatchTouchEvent", [{"name": "type", "type": "string", "optional": false}, {"name": "touchPoints", "type": "array", "optional": false}, {"name": "modifiers", "type": "number", "optional": true}, {"name": "timestamp", "type": "number", "optional": true}], []);
 inspectorBackend.registerEnum("Input.EmulateTouchFromMouseEventRequestType", {MousePressed: "mousePressed", MouseReleased: "mouseReleased", MouseMoved: "mouseMoved", MouseWheel: "mouseWheel"});
 inspectorBackend.registerCommand("Input.emulateTouchFromMouseEvent", [{"name": "type", "type": "string", "optional": false}, {"name": "x", "type": "number", "optional": false}, {"name": "y", "type": "number", "optional": false}, {"name": "button", "type": "string", "optional": false}, {"name": "timestamp", "type": "number", "optional": true}, {"name": "deltaX", "type": "number", "optional": true}, {"name": "deltaY", "type": "number", "optional": true}, {"name": "modifiers", "type": "number", "optional": true}, {"name": "clickCount", "type": "number", "optional": true}], []);
 inspectorBackend.registerCommand("Input.setIgnoreInputEvents", [{"name": "ignore", "type": "boolean", "optional": false}], []);
@@ -392,7 +392,7 @@ inspectorBackend.registerEvent("LayerTree.layerTreeDidChange", ["layers"]);
 inspectorBackend.registerCommand("LayerTree.compositingReasons", [{"name": "layerId", "type": "string", "optional": false}], ["compositingReasons", "compositingReasonIds"]);
 inspectorBackend.registerCommand("LayerTree.disable", [], []);
 inspectorBackend.registerCommand("LayerTree.enable", [], []);
-inspectorBackend.registerCommand("LayerTree.loadSnapshot", [{"name": "tiles", "type": "object", "optional": false}], ["snapshotId"]);
+inspectorBackend.registerCommand("LayerTree.loadSnapshot", [{"name": "tiles", "type": "array", "optional": false}], ["snapshotId"]);
 inspectorBackend.registerCommand("LayerTree.makeSnapshot", [{"name": "layerId", "type": "string", "optional": false}], ["snapshotId"]);
 inspectorBackend.registerCommand("LayerTree.profileSnapshot", [{"name": "snapshotId", "type": "string", "optional": false}, {"name": "minRepeatCount", "type": "number", "optional": true}, {"name": "minDuration", "type": "number", "optional": true}, {"name": "clipRect", "type": "object", "optional": true}], ["timings"]);
 inspectorBackend.registerCommand("LayerTree.releaseSnapshot", [{"name": "snapshotId", "type": "string", "optional": false}], []);
@@ -408,7 +408,7 @@ inspectorBackend.registerEvent("Log.entryAdded", ["entry"]);
 inspectorBackend.registerCommand("Log.clear", [], []);
 inspectorBackend.registerCommand("Log.disable", [], []);
 inspectorBackend.registerCommand("Log.enable", [], []);
-inspectorBackend.registerCommand("Log.startViolationsReport", [{"name": "config", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Log.startViolationsReport", [{"name": "config", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Log.stopViolationsReport", [], []);
 
 // Memory.
@@ -485,7 +485,7 @@ inspectorBackend.registerEvent("Network.subresourceWebBundleInnerResponseError",
 inspectorBackend.registerEvent("Network.reportingApiReportAdded", ["report"]);
 inspectorBackend.registerEvent("Network.reportingApiReportUpdated", ["report"]);
 inspectorBackend.registerEvent("Network.reportingApiEndpointsChangedForOrigin", ["origin", "endpoints"]);
-inspectorBackend.registerCommand("Network.setAcceptedEncodings", [{"name": "encodings", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Network.setAcceptedEncodings", [{"name": "encodings", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Network.clearAcceptedEncodingsOverride", [], []);
 inspectorBackend.registerCommand("Network.canClearBrowserCache", [], ["result"]);
 inspectorBackend.registerCommand("Network.canClearBrowserCookies", [], ["result"]);
@@ -499,21 +499,21 @@ inspectorBackend.registerCommand("Network.emulateNetworkConditions", [{"name": "
 inspectorBackend.registerCommand("Network.enable", [{"name": "maxTotalBufferSize", "type": "number", "optional": true}, {"name": "maxResourceBufferSize", "type": "number", "optional": true}, {"name": "maxPostDataSize", "type": "number", "optional": true}], []);
 inspectorBackend.registerCommand("Network.getAllCookies", [], ["cookies"]);
 inspectorBackend.registerCommand("Network.getCertificate", [{"name": "origin", "type": "string", "optional": false}], ["tableNames"]);
-inspectorBackend.registerCommand("Network.getCookies", [{"name": "urls", "type": "object", "optional": true}], ["cookies"]);
+inspectorBackend.registerCommand("Network.getCookies", [{"name": "urls", "type": "array", "optional": true}], ["cookies"]);
 inspectorBackend.registerCommand("Network.getResponseBody", [{"name": "requestId", "type": "string", "optional": false}], ["body", "base64Encoded"]);
 inspectorBackend.registerCommand("Network.getRequestPostData", [{"name": "requestId", "type": "string", "optional": false}], ["postData"]);
 inspectorBackend.registerCommand("Network.getResponseBodyForInterception", [{"name": "interceptionId", "type": "string", "optional": false}], ["body", "base64Encoded"]);
 inspectorBackend.registerCommand("Network.takeResponseBodyForInterceptionAsStream", [{"name": "interceptionId", "type": "string", "optional": false}], ["stream"]);
 inspectorBackend.registerCommand("Network.replayXHR", [{"name": "requestId", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Network.searchInResponseBody", [{"name": "requestId", "type": "string", "optional": false}, {"name": "query", "type": "string", "optional": false}, {"name": "caseSensitive", "type": "boolean", "optional": true}, {"name": "isRegex", "type": "boolean", "optional": true}], ["result"]);
-inspectorBackend.registerCommand("Network.setBlockedURLs", [{"name": "urls", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Network.setBlockedURLs", [{"name": "urls", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Network.setBypassServiceWorker", [{"name": "bypass", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Network.setCacheDisabled", [{"name": "cacheDisabled", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Network.setCookie", [{"name": "name", "type": "string", "optional": false}, {"name": "value", "type": "string", "optional": false}, {"name": "url", "type": "string", "optional": true}, {"name": "domain", "type": "string", "optional": true}, {"name": "path", "type": "string", "optional": true}, {"name": "secure", "type": "boolean", "optional": true}, {"name": "httpOnly", "type": "boolean", "optional": true}, {"name": "sameSite", "type": "string", "optional": true}, {"name": "expires", "type": "number", "optional": true}, {"name": "priority", "type": "string", "optional": true}, {"name": "sameParty", "type": "boolean", "optional": true}, {"name": "sourceScheme", "type": "string", "optional": true}, {"name": "sourcePort", "type": "number", "optional": true}, {"name": "partitionKey", "type": "string", "optional": true}], ["success"]);
-inspectorBackend.registerCommand("Network.setCookies", [{"name": "cookies", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Network.setCookies", [{"name": "cookies", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Network.setExtraHTTPHeaders", [{"name": "headers", "type": "object", "optional": false}], []);
 inspectorBackend.registerCommand("Network.setAttachDebugStack", [{"name": "enabled", "type": "boolean", "optional": false}], []);
-inspectorBackend.registerCommand("Network.setRequestInterception", [{"name": "patterns", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Network.setRequestInterception", [{"name": "patterns", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Network.setUserAgentOverride", [{"name": "userAgent", "type": "string", "optional": false}, {"name": "acceptLanguage", "type": "string", "optional": true}, {"name": "platform", "type": "string", "optional": true}, {"name": "userAgentMetadata", "type": "object", "optional": true}], []);
 inspectorBackend.registerCommand("Network.getSecurityIsolationStatus", [{"name": "frameId", "type": "string", "optional": true}], ["status"]);
 inspectorBackend.registerCommand("Network.enableReportingApi", [{"name": "enable", "type": "boolean", "optional": false}], []);
@@ -531,12 +531,12 @@ inspectorBackend.registerEvent("Overlay.inspectModeCanceled", []);
 inspectorBackend.registerCommand("Overlay.disable", [], []);
 inspectorBackend.registerCommand("Overlay.enable", [], []);
 inspectorBackend.registerCommand("Overlay.getHighlightObjectForTest", [{"name": "nodeId", "type": "number", "optional": false}, {"name": "includeDistance", "type": "boolean", "optional": true}, {"name": "includeStyle", "type": "boolean", "optional": true}, {"name": "colorFormat", "type": "string", "optional": true}, {"name": "showAccessibilityInfo", "type": "boolean", "optional": true}], ["highlight"]);
-inspectorBackend.registerCommand("Overlay.getGridHighlightObjectsForTest", [{"name": "nodeIds", "type": "object", "optional": false}], ["highlights"]);
+inspectorBackend.registerCommand("Overlay.getGridHighlightObjectsForTest", [{"name": "nodeIds", "type": "array", "optional": false}], ["highlights"]);
 inspectorBackend.registerCommand("Overlay.getSourceOrderHighlightObjectForTest", [{"name": "nodeId", "type": "number", "optional": false}], ["highlight"]);
 inspectorBackend.registerCommand("Overlay.hideHighlight", [], []);
 inspectorBackend.registerCommand("Overlay.highlightFrame", [{"name": "frameId", "type": "string", "optional": false}, {"name": "contentColor", "type": "object", "optional": true}, {"name": "contentOutlineColor", "type": "object", "optional": true}], []);
 inspectorBackend.registerCommand("Overlay.highlightNode", [{"name": "highlightConfig", "type": "object", "optional": false}, {"name": "nodeId", "type": "number", "optional": true}, {"name": "backendNodeId", "type": "number", "optional": true}, {"name": "objectId", "type": "string", "optional": true}, {"name": "selector", "type": "string", "optional": true}], []);
-inspectorBackend.registerCommand("Overlay.highlightQuad", [{"name": "quad", "type": "object", "optional": false}, {"name": "color", "type": "object", "optional": true}, {"name": "outlineColor", "type": "object", "optional": true}], []);
+inspectorBackend.registerCommand("Overlay.highlightQuad", [{"name": "quad", "type": "array", "optional": false}, {"name": "color", "type": "object", "optional": true}, {"name": "outlineColor", "type": "object", "optional": true}], []);
 inspectorBackend.registerCommand("Overlay.highlightRect", [{"name": "x", "type": "number", "optional": false}, {"name": "y", "type": "number", "optional": false}, {"name": "width", "type": "number", "optional": false}, {"name": "height", "type": "number", "optional": false}, {"name": "color", "type": "object", "optional": true}, {"name": "outlineColor", "type": "object", "optional": true}], []);
 inspectorBackend.registerCommand("Overlay.highlightSourceOrder", [{"name": "sourceOrderConfig", "type": "object", "optional": false}, {"name": "nodeId", "type": "number", "optional": true}, {"name": "backendNodeId", "type": "number", "optional": true}, {"name": "objectId", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("Overlay.setInspectMode", [{"name": "mode", "type": "string", "optional": false}, {"name": "highlightConfig", "type": "object", "optional": true}], []);
@@ -544,10 +544,10 @@ inspectorBackend.registerCommand("Overlay.setShowAdHighlights", [{"name": "show"
 inspectorBackend.registerCommand("Overlay.setPausedInDebuggerMessage", [{"name": "message", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("Overlay.setShowDebugBorders", [{"name": "show", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Overlay.setShowFPSCounter", [{"name": "show", "type": "boolean", "optional": false}], []);
-inspectorBackend.registerCommand("Overlay.setShowGridOverlays", [{"name": "gridNodeHighlightConfigs", "type": "object", "optional": false}], []);
-inspectorBackend.registerCommand("Overlay.setShowFlexOverlays", [{"name": "flexNodeHighlightConfigs", "type": "object", "optional": false}], []);
-inspectorBackend.registerCommand("Overlay.setShowScrollSnapOverlays", [{"name": "scrollSnapHighlightConfigs", "type": "object", "optional": false}], []);
-inspectorBackend.registerCommand("Overlay.setShowContainerQueryOverlays", [{"name": "containerQueryHighlightConfigs", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Overlay.setShowGridOverlays", [{"name": "gridNodeHighlightConfigs", "type": "array", "optional": false}], []);
+inspectorBackend.registerCommand("Overlay.setShowFlexOverlays", [{"name": "flexNodeHighlightConfigs", "type": "array", "optional": false}], []);
+inspectorBackend.registerCommand("Overlay.setShowScrollSnapOverlays", [{"name": "scrollSnapHighlightConfigs", "type": "array", "optional": false}], []);
+inspectorBackend.registerCommand("Overlay.setShowContainerQueryOverlays", [{"name": "containerQueryHighlightConfigs", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Overlay.setShowPaintRects", [{"name": "result", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Overlay.setShowLayoutShiftRegions", [{"name": "result", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Overlay.setShowScrollBottleneckRects", [{"name": "show", "type": "boolean", "optional": false}], []);
@@ -555,7 +555,7 @@ inspectorBackend.registerCommand("Overlay.setShowHitTestBorders", [{"name": "sho
 inspectorBackend.registerCommand("Overlay.setShowWebVitals", [{"name": "show", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Overlay.setShowViewportSizeOnResize", [{"name": "show", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Overlay.setShowHinge", [{"name": "hingeConfig", "type": "object", "optional": true}], []);
-inspectorBackend.registerCommand("Overlay.setShowIsolatedElements", [{"name": "isolatedElementHighlightConfigs", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Overlay.setShowIsolatedElements", [{"name": "isolatedElementHighlightConfigs", "type": "array", "optional": false}], []);
 
 // Page.
 inspectorBackend.registerEnum("Page.AdFrameType", {None: "none", Child: "child", Root: "root"});
@@ -648,7 +648,7 @@ inspectorBackend.registerCommand("Page.getPermissionsPolicyState", [{"name": "fr
 inspectorBackend.registerCommand("Page.getOriginTrials", [{"name": "frameId", "type": "string", "optional": false}], ["originTrials"]);
 inspectorBackend.registerCommand("Page.setDeviceMetricsOverride", [{"name": "width", "type": "number", "optional": false}, {"name": "height", "type": "number", "optional": false}, {"name": "deviceScaleFactor", "type": "number", "optional": false}, {"name": "mobile", "type": "boolean", "optional": false}, {"name": "scale", "type": "number", "optional": true}, {"name": "screenWidth", "type": "number", "optional": true}, {"name": "screenHeight", "type": "number", "optional": true}, {"name": "positionX", "type": "number", "optional": true}, {"name": "positionY", "type": "number", "optional": true}, {"name": "dontSetVisibleSize", "type": "boolean", "optional": true}, {"name": "screenOrientation", "type": "object", "optional": true}, {"name": "viewport", "type": "object", "optional": true}], []);
 inspectorBackend.registerCommand("Page.setDeviceOrientationOverride", [{"name": "alpha", "type": "number", "optional": false}, {"name": "beta", "type": "number", "optional": false}, {"name": "gamma", "type": "number", "optional": false}], []);
-inspectorBackend.registerCommand("Page.setFontFamilies", [{"name": "fontFamilies", "type": "object", "optional": false}, {"name": "forScripts", "type": "object", "optional": true}], []);
+inspectorBackend.registerCommand("Page.setFontFamilies", [{"name": "fontFamilies", "type": "object", "optional": false}, {"name": "forScripts", "type": "array", "optional": true}], []);
 inspectorBackend.registerCommand("Page.setFontSizes", [{"name": "fontSizes", "type": "object", "optional": false}], []);
 inspectorBackend.registerCommand("Page.setDocumentContent", [{"name": "frameId", "type": "string", "optional": false}, {"name": "html", "type": "string", "optional": false}], []);
 inspectorBackend.registerEnum("Page.SetDownloadBehaviorRequestBehavior", {Deny: "deny", Allow: "allow", Default: "default"});
@@ -665,7 +665,7 @@ inspectorBackend.registerCommand("Page.close", [], []);
 inspectorBackend.registerEnum("Page.SetWebLifecycleStateRequestState", {Frozen: "frozen", Active: "active"});
 inspectorBackend.registerCommand("Page.setWebLifecycleState", [{"name": "state", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Page.stopScreencast", [], []);
-inspectorBackend.registerCommand("Page.produceCompilationCache", [{"name": "scripts", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Page.produceCompilationCache", [{"name": "scripts", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Page.addCompilationCache", [{"name": "url", "type": "string", "optional": false}, {"name": "data", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Page.clearCompilationCache", [], []);
 inspectorBackend.registerCommand("Page.setSPCTransactionMode", [{"name": "mode", "type": "string", "optional": false}], []);
@@ -686,7 +686,7 @@ inspectorBackend.registerCommand("Performance.getMetrics", [], ["metrics"]);
 
 // PerformanceTimeline.
 inspectorBackend.registerEvent("PerformanceTimeline.timelineEventAdded", ["event"]);
-inspectorBackend.registerCommand("PerformanceTimeline.enable", [{"name": "eventTypes", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("PerformanceTimeline.enable", [{"name": "eventTypes", "type": "array", "optional": false}], []);
 
 // Security.
 inspectorBackend.registerEnum("Security.MixedContentType", {Blockable: "blockable", OptionallyBlockable: "optionally-blockable", None: "none"});
@@ -739,7 +739,7 @@ inspectorBackend.registerCommand("Storage.getStorageKeyForFrame", [{"name": "fra
 inspectorBackend.registerCommand("Storage.clearDataForOrigin", [{"name": "origin", "type": "string", "optional": false}, {"name": "storageTypes", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Storage.clearDataForStorageKey", [{"name": "storageKey", "type": "string", "optional": false}, {"name": "storageTypes", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Storage.getCookies", [{"name": "browserContextId", "type": "string", "optional": true}], ["cookies"]);
-inspectorBackend.registerCommand("Storage.setCookies", [{"name": "cookies", "type": "object", "optional": false}, {"name": "browserContextId", "type": "string", "optional": true}], []);
+inspectorBackend.registerCommand("Storage.setCookies", [{"name": "cookies", "type": "array", "optional": false}, {"name": "browserContextId", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("Storage.clearCookies", [{"name": "browserContextId", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("Storage.getUsageAndQuota", [{"name": "origin", "type": "string", "optional": false}], ["usage", "quota", "overrideActive", "usageBreakdown"]);
 inspectorBackend.registerCommand("Storage.overrideQuotaForOrigin", [{"name": "origin", "type": "string", "optional": false}, {"name": "quotaSize", "type": "number", "optional": true}], []);
@@ -786,18 +786,18 @@ inspectorBackend.registerCommand("Target.attachToTarget", [{"name": "targetId", 
 inspectorBackend.registerCommand("Target.attachToBrowserTarget", [], ["sessionId"]);
 inspectorBackend.registerCommand("Target.closeTarget", [{"name": "targetId", "type": "string", "optional": false}], ["success"]);
 inspectorBackend.registerCommand("Target.exposeDevToolsProtocol", [{"name": "targetId", "type": "string", "optional": false}, {"name": "bindingName", "type": "string", "optional": true}], []);
-inspectorBackend.registerCommand("Target.createBrowserContext", [{"name": "disposeOnDetach", "type": "boolean", "optional": true}, {"name": "proxyServer", "type": "string", "optional": true}, {"name": "proxyBypassList", "type": "string", "optional": true}, {"name": "originsWithUniversalNetworkAccess", "type": "object", "optional": true}], ["browserContextId"]);
+inspectorBackend.registerCommand("Target.createBrowserContext", [{"name": "disposeOnDetach", "type": "boolean", "optional": true}, {"name": "proxyServer", "type": "string", "optional": true}, {"name": "proxyBypassList", "type": "string", "optional": true}, {"name": "originsWithUniversalNetworkAccess", "type": "array", "optional": true}], ["browserContextId"]);
 inspectorBackend.registerCommand("Target.getBrowserContexts", [], ["browserContextIds"]);
 inspectorBackend.registerCommand("Target.createTarget", [{"name": "url", "type": "string", "optional": false}, {"name": "width", "type": "number", "optional": true}, {"name": "height", "type": "number", "optional": true}, {"name": "browserContextId", "type": "string", "optional": true}, {"name": "enableBeginFrameControl", "type": "boolean", "optional": true}, {"name": "newWindow", "type": "boolean", "optional": true}, {"name": "background", "type": "boolean", "optional": true}, {"name": "forTab", "type": "boolean", "optional": true}], ["targetId"]);
 inspectorBackend.registerCommand("Target.detachFromTarget", [{"name": "sessionId", "type": "string", "optional": true}, {"name": "targetId", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("Target.disposeBrowserContext", [{"name": "browserContextId", "type": "string", "optional": false}], []);
 inspectorBackend.registerCommand("Target.getTargetInfo", [{"name": "targetId", "type": "string", "optional": true}], ["targetInfo"]);
-inspectorBackend.registerCommand("Target.getTargets", [{"name": "filter", "type": "object", "optional": true}], ["targetInfos"]);
+inspectorBackend.registerCommand("Target.getTargets", [{"name": "filter", "type": "array", "optional": true}], ["targetInfos"]);
 inspectorBackend.registerCommand("Target.sendMessageToTarget", [{"name": "message", "type": "string", "optional": false}, {"name": "sessionId", "type": "string", "optional": true}, {"name": "targetId", "type": "string", "optional": true}], []);
-inspectorBackend.registerCommand("Target.setAutoAttach", [{"name": "autoAttach", "type": "boolean", "optional": false}, {"name": "waitForDebuggerOnStart", "type": "boolean", "optional": false}, {"name": "flatten", "type": "boolean", "optional": true}, {"name": "filter", "type": "object", "optional": true}], []);
-inspectorBackend.registerCommand("Target.autoAttachRelated", [{"name": "targetId", "type": "string", "optional": false}, {"name": "waitForDebuggerOnStart", "type": "boolean", "optional": false}, {"name": "filter", "type": "object", "optional": true}], []);
-inspectorBackend.registerCommand("Target.setDiscoverTargets", [{"name": "discover", "type": "boolean", "optional": false}, {"name": "filter", "type": "object", "optional": true}], []);
-inspectorBackend.registerCommand("Target.setRemoteLocations", [{"name": "locations", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Target.setAutoAttach", [{"name": "autoAttach", "type": "boolean", "optional": false}, {"name": "waitForDebuggerOnStart", "type": "boolean", "optional": false}, {"name": "flatten", "type": "boolean", "optional": true}, {"name": "filter", "type": "array", "optional": true}], []);
+inspectorBackend.registerCommand("Target.autoAttachRelated", [{"name": "targetId", "type": "string", "optional": false}, {"name": "waitForDebuggerOnStart", "type": "boolean", "optional": false}, {"name": "filter", "type": "array", "optional": true}], []);
+inspectorBackend.registerCommand("Target.setDiscoverTargets", [{"name": "discover", "type": "boolean", "optional": false}, {"name": "filter", "type": "array", "optional": true}], []);
+inspectorBackend.registerCommand("Target.setRemoteLocations", [{"name": "locations", "type": "array", "optional": false}], []);
 
 // Tethering.
 inspectorBackend.registerEvent("Tethering.accepted", ["port", "connectionId"]);
@@ -827,12 +827,12 @@ inspectorBackend.registerEnum("Fetch.AuthChallengeResponseResponse", {Default: "
 inspectorBackend.registerEvent("Fetch.requestPaused", ["requestId", "request", "frameId", "resourceType", "responseErrorReason", "responseStatusCode", "responseStatusText", "responseHeaders", "networkId", "redirectedRequestId"]);
 inspectorBackend.registerEvent("Fetch.authRequired", ["requestId", "request", "frameId", "resourceType", "authChallenge"]);
 inspectorBackend.registerCommand("Fetch.disable", [], []);
-inspectorBackend.registerCommand("Fetch.enable", [{"name": "patterns", "type": "object", "optional": true}, {"name": "handleAuthRequests", "type": "boolean", "optional": true}], []);
+inspectorBackend.registerCommand("Fetch.enable", [{"name": "patterns", "type": "array", "optional": true}, {"name": "handleAuthRequests", "type": "boolean", "optional": true}], []);
 inspectorBackend.registerCommand("Fetch.failRequest", [{"name": "requestId", "type": "string", "optional": false}, {"name": "errorReason", "type": "string", "optional": false}], []);
-inspectorBackend.registerCommand("Fetch.fulfillRequest", [{"name": "requestId", "type": "string", "optional": false}, {"name": "responseCode", "type": "number", "optional": false}, {"name": "responseHeaders", "type": "object", "optional": true}, {"name": "binaryResponseHeaders", "type": "string", "optional": true}, {"name": "body", "type": "string", "optional": true}, {"name": "responsePhrase", "type": "string", "optional": true}], []);
-inspectorBackend.registerCommand("Fetch.continueRequest", [{"name": "requestId", "type": "string", "optional": false}, {"name": "url", "type": "string", "optional": true}, {"name": "method", "type": "string", "optional": true}, {"name": "postData", "type": "string", "optional": true}, {"name": "headers", "type": "object", "optional": true}, {"name": "interceptResponse", "type": "boolean", "optional": true}], []);
+inspectorBackend.registerCommand("Fetch.fulfillRequest", [{"name": "requestId", "type": "string", "optional": false}, {"name": "responseCode", "type": "number", "optional": false}, {"name": "responseHeaders", "type": "array", "optional": true}, {"name": "binaryResponseHeaders", "type": "string", "optional": true}, {"name": "body", "type": "string", "optional": true}, {"name": "responsePhrase", "type": "string", "optional": true}], []);
+inspectorBackend.registerCommand("Fetch.continueRequest", [{"name": "requestId", "type": "string", "optional": false}, {"name": "url", "type": "string", "optional": true}, {"name": "method", "type": "string", "optional": true}, {"name": "postData", "type": "string", "optional": true}, {"name": "headers", "type": "array", "optional": true}, {"name": "interceptResponse", "type": "boolean", "optional": true}], []);
 inspectorBackend.registerCommand("Fetch.continueWithAuth", [{"name": "requestId", "type": "string", "optional": false}, {"name": "authChallengeResponse", "type": "object", "optional": false}], []);
-inspectorBackend.registerCommand("Fetch.continueResponse", [{"name": "requestId", "type": "string", "optional": false}, {"name": "responseCode", "type": "number", "optional": true}, {"name": "responsePhrase", "type": "string", "optional": true}, {"name": "responseHeaders", "type": "object", "optional": true}, {"name": "binaryResponseHeaders", "type": "string", "optional": true}], []);
+inspectorBackend.registerCommand("Fetch.continueResponse", [{"name": "requestId", "type": "string", "optional": false}, {"name": "responseCode", "type": "number", "optional": true}, {"name": "responsePhrase", "type": "string", "optional": true}, {"name": "responseHeaders", "type": "array", "optional": true}, {"name": "binaryResponseHeaders", "type": "string", "optional": true}], []);
 inspectorBackend.registerCommand("Fetch.getResponseBody", [{"name": "requestId", "type": "string", "optional": false}], ["body", "base64Encoded"]);
 inspectorBackend.registerCommand("Fetch.takeResponseBodyAsStream", [{"name": "requestId", "type": "string", "optional": false}], ["stream"]);
 
@@ -952,8 +952,8 @@ inspectorBackend.registerCommand("Debugger.restartFrame", [{"name": "callFrameId
 inspectorBackend.registerCommand("Debugger.resume", [{"name": "terminateOnResume", "type": "boolean", "optional": true}], []);
 inspectorBackend.registerCommand("Debugger.searchInContent", [{"name": "scriptId", "type": "string", "optional": false}, {"name": "query", "type": "string", "optional": false}, {"name": "caseSensitive", "type": "boolean", "optional": true}, {"name": "isRegex", "type": "boolean", "optional": true}], ["result"]);
 inspectorBackend.registerCommand("Debugger.setAsyncCallStackDepth", [{"name": "maxDepth", "type": "number", "optional": false}], []);
-inspectorBackend.registerCommand("Debugger.setBlackboxPatterns", [{"name": "patterns", "type": "object", "optional": false}], []);
-inspectorBackend.registerCommand("Debugger.setBlackboxedRanges", [{"name": "scriptId", "type": "string", "optional": false}, {"name": "positions", "type": "object", "optional": false}], []);
+inspectorBackend.registerCommand("Debugger.setBlackboxPatterns", [{"name": "patterns", "type": "array", "optional": false}], []);
+inspectorBackend.registerCommand("Debugger.setBlackboxedRanges", [{"name": "scriptId", "type": "string", "optional": false}, {"name": "positions", "type": "array", "optional": false}], []);
 inspectorBackend.registerCommand("Debugger.setBreakpoint", [{"name": "location", "type": "object", "optional": false}, {"name": "condition", "type": "string", "optional": true}], ["breakpointId", "actualLocation"]);
 inspectorBackend.registerEnum("Debugger.SetInstrumentationBreakpointRequestInstrumentation", {BeforeScriptExecution: "beforeScriptExecution", BeforeScriptWithSourceMapExecution: "beforeScriptWithSourceMapExecution"});
 inspectorBackend.registerCommand("Debugger.setInstrumentationBreakpoint", [{"name": "instrumentation", "type": "string", "optional": false}], ["breakpointId"]);
@@ -966,9 +966,9 @@ inspectorBackend.registerCommand("Debugger.setReturnValue", [{"name": "newValue"
 inspectorBackend.registerCommand("Debugger.setScriptSource", [{"name": "scriptId", "type": "string", "optional": false}, {"name": "scriptSource", "type": "string", "optional": false}, {"name": "dryRun", "type": "boolean", "optional": true}, {"name": "allowTopFrameEditing", "type": "boolean", "optional": true}], ["callFrames", "stackChanged", "asyncStackTrace", "asyncStackTraceId", "status", "exceptionDetails"]);
 inspectorBackend.registerCommand("Debugger.setSkipAllPauses", [{"name": "skip", "type": "boolean", "optional": false}], []);
 inspectorBackend.registerCommand("Debugger.setVariableValue", [{"name": "scopeNumber", "type": "number", "optional": false}, {"name": "variableName", "type": "string", "optional": false}, {"name": "newValue", "type": "object", "optional": false}, {"name": "callFrameId", "type": "string", "optional": false}], []);
-inspectorBackend.registerCommand("Debugger.stepInto", [{"name": "breakOnAsyncCall", "type": "boolean", "optional": true}, {"name": "skipList", "type": "object", "optional": true}], []);
+inspectorBackend.registerCommand("Debugger.stepInto", [{"name": "breakOnAsyncCall", "type": "boolean", "optional": true}, {"name": "skipList", "type": "array", "optional": true}], []);
 inspectorBackend.registerCommand("Debugger.stepOut", [], []);
-inspectorBackend.registerCommand("Debugger.stepOver", [{"name": "skipList", "type": "object", "optional": true}], []);
+inspectorBackend.registerCommand("Debugger.stepOver", [{"name": "skipList", "type": "array", "optional": true}], []);
 
 // HeapProfiler.
 inspectorBackend.registerEvent("HeapProfiler.addHeapSnapshotChunk", ["chunk"]);
@@ -1022,7 +1022,7 @@ inspectorBackend.registerEvent("Runtime.executionContextDestroyed", ["executionC
 inspectorBackend.registerEvent("Runtime.executionContextsCleared", []);
 inspectorBackend.registerEvent("Runtime.inspectRequested", ["object", "hints", "executionContextId"]);
 inspectorBackend.registerCommand("Runtime.awaitPromise", [{"name": "promiseObjectId", "type": "string", "optional": false}, {"name": "returnByValue", "type": "boolean", "optional": true}, {"name": "generatePreview", "type": "boolean", "optional": true}], ["result", "exceptionDetails"]);
-inspectorBackend.registerCommand("Runtime.callFunctionOn", [{"name": "functionDeclaration", "type": "string", "optional": false}, {"name": "objectId", "type": "string", "optional": true}, {"name": "arguments", "type": "object", "optional": true}, {"name": "silent", "type": "boolean", "optional": true}, {"name": "returnByValue", "type": "boolean", "optional": true}, {"name": "generatePreview", "type": "boolean", "optional": true}, {"name": "userGesture", "type": "boolean", "optional": true}, {"name": "awaitPromise", "type": "boolean", "optional": true}, {"name": "executionContextId", "type": "number", "optional": true}, {"name": "objectGroup", "type": "string", "optional": true}, {"name": "throwOnSideEffect", "type": "boolean", "optional": true}, {"name": "uniqueContextId", "type": "string", "optional": true}, {"name": "generateWebDriverValue", "type": "boolean", "optional": true}, {"name": "serializationOptions", "type": "object", "optional": true}], ["result", "exceptionDetails"]);
+inspectorBackend.registerCommand("Runtime.callFunctionOn", [{"name": "functionDeclaration", "type": "string", "optional": false}, {"name": "objectId", "type": "string", "optional": true}, {"name": "arguments", "type": "array", "optional": true}, {"name": "silent", "type": "boolean", "optional": true}, {"name": "returnByValue", "type": "boolean", "optional": true}, {"name": "generatePreview", "type": "boolean", "optional": true}, {"name": "userGesture", "type": "boolean", "optional": true}, {"name": "awaitPromise", "type": "boolean", "optional": true}, {"name": "executionContextId", "type": "number", "optional": true}, {"name": "objectGroup", "type": "string", "optional": true}, {"name": "throwOnSideEffect", "type": "boolean", "optional": true}, {"name": "uniqueContextId", "type": "string", "optional": true}, {"name": "generateWebDriverValue", "type": "boolean", "optional": true}, {"name": "serializationOptions", "type": "object", "optional": true}], ["result", "exceptionDetails"]);
 inspectorBackend.registerCommand("Runtime.compileScript", [{"name": "expression", "type": "string", "optional": false}, {"name": "sourceURL", "type": "string", "optional": false}, {"name": "persistScript", "type": "boolean", "optional": false}, {"name": "executionContextId", "type": "number", "optional": true}], ["scriptId", "exceptionDetails"]);
 inspectorBackend.registerCommand("Runtime.disable", [], []);
 inspectorBackend.registerCommand("Runtime.discardConsoleEntries", [], []);

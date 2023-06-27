@@ -30,6 +30,16 @@
   margin-top: 3px;
 }
 
+.column {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-syntax-1);
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size);
+  line-height: 18px;
+  margin-top: 3px;
+}
+
 .separator {
   margin-right: 0.5em;
   color: var(--color-text-primary);
@@ -41,6 +51,10 @@
 
 .padded.double {
   margin-left: 4em;
+}
+
+.padded.triple {
+  margin-left: 6em;
 }
 
 .colorBlue {

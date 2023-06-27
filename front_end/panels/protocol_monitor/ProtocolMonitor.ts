@@ -137,26 +137,6 @@ export const buildProtocolCommandsParametersMap =
 const protocolMethodWithParametersMap = buildProtocolCommandsParametersMap(
     ProtocolClient.InspectorBackend.inspectorBackend.agentPrototypes.values() as Iterable<ProtocolDomain>);
 
-export const formatParameters =
-    (parameters: {[x: string]: unknown}, command: string): {[x: string]: Components.JSONEditor.Parameter} => {
-      {
-        const formattedParameters: {[x: string]: Components.JSONEditor.Parameter} = {};
-        const parametersPerCommand = protocolMethodWithParametersMap.get(command);
-        if (parametersPerCommand) {
-          for (const parameter of parametersPerCommand) {
-            if (Object.keys(parameters).includes(parameter.name)) {
-              formattedParameters[parameter.name] = {
-                optional: parameter.optional,
-                type: parameter.type,
-                value: String(parameters[parameter.name]),
-                name: parameter.name,
-              };
-            }
-          }
-        }
-        return formattedParameters;
-      }
-    };
 export interface Message {
   id?: number;
   method: string;
@@ -750,7 +730,7 @@ export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   }
 }
 
-export function parseCommandInput(input: string): {command: string, parameters: {[x: string]: unknown}} {
+export function parseCommandInput(input: string): {command: string, parameters: object} {
   // If input cannot be parsed as json, we assume it's the command name
   // for a command without parameters. Otherwise, we expect an object
   // with "command"/"method"/"cmd" and "parameters"/"params"/"args"/"arguments" attributes.

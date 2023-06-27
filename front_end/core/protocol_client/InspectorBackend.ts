@@ -973,8 +973,8 @@ class _AgentPrototype {
       if (optionalFlag && typeof value === 'undefined') {
         continue;
       }
-
-      if (typeof value !== typeName) {
+      const expectedJSType = typeName === 'array' ? 'object' : typeName;
+      if (typeof value !== expectedJSType) {
         errorCallback(
             `Protocol Error: Invalid type of argument '${paramName}' for method '${method}' call. ` +
             `It must be '${typeName}' but it is '${typeof value}'.`);

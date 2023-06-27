@@ -237,17 +237,19 @@ export async function typeIntoConsole(frontend: puppeteer.Page, message: string)
   await consoleElement.press('Enter');
 }
 
-export async function typeIntoConsoleAndWaitForResult(frontend: puppeteer.Page, message: string) {
+export async function typeIntoConsoleAndWaitForResult(
+    frontend: puppeteer.Page, message: string, leastExpectedMessages = 1, selector = Level.All) {
   // Get the current number of console results so we can check we increased it.
-  const originalLength = await frontend.evaluate(() => {
-    return document.querySelectorAll('.console-user-command-result').length;
-  });
+  const originalLength = await frontend.evaluate(selector => {
+    return document.querySelectorAll(selector).length;
+  }, selector);
 
   await typeIntoConsole(frontend, message);
 
-  await new AsyncScope().exec(() => frontend.waitForFunction((originalLength: number) => {
-    return document.querySelectorAll('.console-user-command-result').length === originalLength + 1;
-  }, {timeout: 0}, originalLength));
+  await new AsyncScope().exec(
+      () => frontend.waitForFunction((originalLength: number, leastExpectedMessages: number, selector: string) => {
+        return document.querySelectorAll(selector).length >= originalLength + leastExpectedMessages;
+      }, {timeout: 0}, originalLength, leastExpectedMessages, selector));
 }
 
 export async function unifyLogVM(actualLog: string, expectedLog: string) {
@@ -353,7 +355,8 @@ export async function getLastConsoleStacktrace(offset: number = 0) {
   return (await getStructuredConsoleMessages()).at(-1 - offset)?.stackPreview as string;
 }
 
-export async function checkCommandStacktrace(command: string, expected: string, offset: number = 0) {
-  await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, command);
+export async function checkCommandStacktrace(
+    command: string, expected: string, leastMessages: number = 1, offset: number = 0) {
+  await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, command, leastMessages);
   await unifyLogVM(await getLastConsoleStacktrace(offset), expected);
 }

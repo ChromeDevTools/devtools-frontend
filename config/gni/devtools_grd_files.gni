@@ -715,6 +715,7 @@ grd_files_debug_sources = [
   "front_end/core/platform/keyboard-utilities.js",
   "front_end/core/platform/map-utilities.js",
   "front_end/core/platform/number-utilities.js",
+  "front_end/core/platform/promise-utilities.js",
   "front_end/core/platform/set-utilities.js",
   "front_end/core/platform/string-utilities.js",
   "front_end/core/platform/typescript-utilities.js",

@@ -48,6 +48,7 @@ devtools_module("platform") {
     "keyboard-utilities.ts",
     "map-utilities.ts",
     "number-utilities.ts",
+    "promise-utilities.ts",
     "set-utilities.ts",
     "string-utilities.ts",
     "typescript-utilities.ts",

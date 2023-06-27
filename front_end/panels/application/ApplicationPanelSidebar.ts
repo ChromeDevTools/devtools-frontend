@@ -449,8 +449,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         {scoped: true});
     SDK.TargetManager.TargetManager.instance().observeModels(
         IndexedDBModel, {
-          modelAdded: (model: IndexedDBModel): void => model.enable(),
-          modelRemoved: (model: IndexedDBModel): void => this.indexedDBListTreeElement.removeIndexedDBForModel(model),
+          modelAdded: (model: IndexedDBModel): void => this.indexedDBModelAdded(model),
+          modelRemoved: (model: IndexedDBModel): void => this.indexedDBModelRemoved(model),
         },
         {scoped: true});
     SDK.TargetManager.TargetManager.instance().observeModels(
@@ -595,6 +595,15 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     model.storages().forEach(this.removeDOMStorage.bind(this));
     model.removeEventListener(DOMStorageModelEvents.DOMStorageAdded, this.domStorageAdded, this);
     model.removeEventListener(DOMStorageModelEvents.DOMStorageRemoved, this.domStorageRemoved, this);
+  }
+
+  private indexedDBModelAdded(model: IndexedDBModel): void {
+    model.enable();
+    this.indexedDBListTreeElement.addIndexedDBForModel(model);
+  }
+
+  private indexedDBModelRemoved(model: IndexedDBModel): void {
+    this.indexedDBListTreeElement.removeIndexedDBForModel(model);
   }
 
   private interestGroupModelAdded(model: InterestGroupStorageModel): void {
@@ -1263,6 +1272,12 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
       for (let j = 0; j < databases.length; ++j) {
         this.addIndexedDB(indexedDBModel, databases[j]);
       }
+    }
+  }
+
+  addIndexedDBForModel(model: IndexedDBModel): void {
+    for (const databaseId of model.databases()) {
+      this.addIndexedDB(model, databaseId);
     }
   }
 

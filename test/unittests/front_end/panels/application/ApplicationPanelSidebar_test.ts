@@ -108,6 +108,8 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       target = targetFactory();
       Root.Runtime.experiments.register(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, '', false);
       sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();  // Silence console error
+      setMockConnectionResponseHandler('Storage.getSharedStorageEntries', () => ({}));
+      setMockConnectionResponseHandler('Storage.setSharedStorageTracking', () => ({}));
     });
 
     it('shows cookies for all frames', async () => {
@@ -183,8 +185,9 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       assert.deepEqual(sidebar.sharedStorageListTreeElement.view.getEventsForTesting(), EVENTS);
     });
 
-    function parseExpectedCall(
-        expectedCall: string, sidebar: Application.ApplicationPanelSidebar.ApplicationPanelSidebar): sinon.SinonSpy {
+    async function getExpectedCall(expectedCall: string): Promise<sinon.SinonSpy> {
+      Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+      const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
       const components = expectedCall.split('.');
       assert.strictEqual(components.length, 2);
       // @ts-ignore
@@ -193,19 +196,20 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       return sinon.spy(object, components[1]);
     }
 
+    const MOCK_ITEM = {
+      addEventListener: () => {},
+      securityOrigin: 'https://example.com',
+      databaseId: new Application.IndexedDBModel.DatabaseId({storageKey: ''}, ''),
+    };
+
     const testUiUpdate = <Events, T extends keyof Events>(
         event: T, modelClass: new (arg1: SDK.Target.Target) => SDK.SDKModel.SDKModel<Events>,
         expectedCallString: string, inScope: boolean) => async () => {
-      setMockConnectionResponseHandler('Storage.getSharedStorageEntries', () => ({}));
-      setMockConnectionResponseHandler('Storage.setSharedStorageTracking', () => ({}));
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-      Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
-      const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
-      const expectedCall = parseExpectedCall(expectedCallString, sidebar);
+      const expectedCall = await getExpectedCall(expectedCallString);
       const model = target.model(modelClass);
       assertNotNullOrUndefined(model);
-      const data = [{addEventListener: () => {}, securityOrigin: 'https://example.com'}] as
-          Common.EventTarget.EventPayloadToRestParameters<Events, T>;
+      const data = [{...MOCK_ITEM, model}] as Common.EventTarget.EventPayloadToRestParameters<Events, T>;
       model.dispatchEventToListeners(event as Platform.TypeScriptUtilities.NoUnion<T>, ...data);
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(expectedCall.called, inScope);
@@ -237,14 +241,48 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
            Application.DOMStorageModel.Events.DOMStorageAdded, Application.DOMStorageModel.DOMStorageModel,
            'sessionStorageListTreeElement.appendChild', false));
 
+    it('adds indexed DB on in scope event',
+       testUiUpdate(
+           Application.IndexedDBModel.Events.DatabaseAdded, Application.IndexedDBModel.IndexedDBModel,
+           'indexedDBListTreeElement.appendChild', true));
+    it('does not add indexed DB on out of scope event',
+       testUiUpdate(
+           Application.IndexedDBModel.Events.DatabaseAdded, Application.IndexedDBModel.IndexedDBModel,
+           'indexedDBListTreeElement.appendChild', false));
+
     it('adds shared storage on in scope event',
        testUiUpdate(
            Application.SharedStorageModel.Events.SharedStorageAdded, Application.SharedStorageModel.SharedStorageModel,
            'sharedStorageListTreeElement.appendChild', true));
-    it('does not add shared storage on in scope event',
+    it('does not add shared storage on out of scope event',
        testUiUpdate(
            Application.SharedStorageModel.Events.SharedStorageAdded, Application.SharedStorageModel.SharedStorageModel,
            'sharedStorageListTreeElement.appendChild', false));
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const testUiUpdateOnScopeChange = <T extends SDK.SDKModel.SDKModel<any>>(
+        modelClass: new (arg1: SDK.Target.Target) => T, getter: keyof T, expectedCallString: string) => async () => {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
+      const expectedCall = await getExpectedCall(expectedCallString);
+      const model = target.model(modelClass);
+      assertNotNullOrUndefined(model);
+      sinon.stub(model, getter).returns([MOCK_ITEM]);
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.strictEqual(expectedCall.called, true);
+    };
+
+    it('adds DOM storage element after scope change',
+       testUiUpdateOnScopeChange(
+           Application.DOMStorageModel.DOMStorageModel, 'storages', 'sessionStorageListTreeElement.appendChild'));
+
+    it('adds shared storage after scope change',
+       testUiUpdateOnScopeChange(
+           Application.SharedStorageModel.SharedStorageModel, 'storages', 'sharedStorageListTreeElement.appendChild'));
+
+    it('adds indexed db after scope change',
+       testUiUpdateOnScopeChange(
+           Application.IndexedDBModel.IndexedDBModel, 'databases', 'indexedDBListTreeElement.appendChild'));
 
   };
   describe('without tab target', () => tests(() => createTarget()));
@@ -253,30 +291,6 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
                                 createTarget({parentTarget: tabTarget, subtype: 'prerender'});
                                 return createTarget({parentTarget: tabTarget});
                               }));
-});
-
-describeWithMockConnection('IndexedDBTreeElement', () => {
-  beforeEach(() => {
-    stubNoopSettings();
-    Root.Runtime.experiments.register(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, '', false);
-  });
-
-  const addsElement = (inScope: boolean) => () => {
-    const target = createTarget();
-    const model = target.model(Application.IndexedDBModel.IndexedDBModel);
-    assertNotNullOrUndefined(model);
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-    const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
-    const treeElement = new Application.ApplicationPanelSidebar.IndexedDBTreeElement(panel);
-
-    assert.strictEqual(treeElement.childCount(), 0);
-    model.dispatchEventToListeners(
-        Application.IndexedDBModel.Events.DatabaseAdded,
-        {databaseId: new Application.IndexedDBModel.DatabaseId({storageKey: ''}, ''), model});
-    assert.strictEqual(treeElement.childCount(), inScope ? 1 : 0);
-  };
-  it('adds element on in scope event', addsElement(true));
-  it('does not add element on out of scope event', addsElement(false));
 });
 
 describeWithMockConnection('IDBDatabaseTreeElement', () => {

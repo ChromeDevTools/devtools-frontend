@@ -6,11 +6,15 @@ import("../../../../../third_party/typescript/typescript.gni")
 
 ts_library("source_map_scopes") {
   testonly = true
-  sources = [ "NamesResolver_test.ts" ]
+  sources = [
+    "NamesResolver_test.ts",
+    "ScopeTreeCache_test.ts",
+  ]
 
   deps = [
     "../../../../../front_end/core/platform:bundle",
     "../../../../../front_end/core/sdk:bundle",
+    "../../../../../front_end/models/formatter:bundle",
     "../../../../../front_end/models/source_map_scopes:bundle",
     "../../helpers",
   ]

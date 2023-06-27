@@ -7,7 +7,10 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../visibility.gni")
 
 devtools_module("source_map_scopes") {
-  sources = [ "NamesResolver.ts" ]
+  sources = [
+    "NamesResolver.ts",
+    "ScopeTreeCache.ts",
+  ]
 
   deps = [
     "../../core/common:bundle",

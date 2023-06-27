@@ -6,7 +6,6 @@ import '../../recorder/components/components.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import editorWidgetStyles from './JSONEditor.css.js';
 import toolbarStyles from './toolbar.css.js';
 
 const {html, Decorators, LitElement} = LitHtml;
@@ -23,7 +22,7 @@ const sendIconUrl = new URL('../../../Images/send.svg', import.meta.url).toStrin
 
 @customElement('devtools-pm-toolbar')
 export class Toolbar extends LitElement {
-  static override styles = [toolbarStyles, editorWidgetStyles];
+  static override styles = [toolbarStyles];
 
   #handleCopy = (): void => {
     this.dispatchEvent(new CustomEvent('copycommand', {bubbles: true}));

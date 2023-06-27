@@ -19,6 +19,15 @@ export class ScopeTreeCache {
   #scopeTrees = new WeakMap<SDK.Script.Script, ScopeTreeNode|null>();
   #pendingScopeTrees = new Map<SDK.Script.Script, Promise<ScopeTreeNode|null>>();
 
+  static #instance?: ScopeTreeCache;
+
+  static instance(): ScopeTreeCache {
+    if (!ScopeTreeCache.#instance) {
+      ScopeTreeCache.#instance = new ScopeTreeCache();
+    }
+    return ScopeTreeCache.#instance;
+  }
+
   async scopeTreeForScript(script: SDK.Script.Script): Promise<ScopeTreeNode|null> {
     const maybeCachedTree = this.#scopeTrees.get(script);
     if (maybeCachedTree !== undefined) {

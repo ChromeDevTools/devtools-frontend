@@ -10,6 +10,8 @@ import type * as Workspace from '../workspace/workspace.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Platform from '../../core/platform/platform.js';
 
+import {ScopeTreeCache} from './ScopeTreeCache.js';
+
 interface CachedScopeMap {
   sourceMap: SDK.SourceMap.SourceMap|undefined;
   mappingPromise: Promise<{variableMapping: Map<string, string>, thisMapping: string|null}>;
@@ -49,31 +51,8 @@ export class IdentifierPositions {
   }
 }
 
-const tryParseScope = async function(scopeText: string): Promise<{
-  prefixLength: number, scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode,
-}|null> {
-  const prefixSuffixToTry = [
-    // We wrap the scope in a class constructor. This handles the case where the
-    // scope is a (non-arrow) function and the case where it is a constructor
-    // (so that parsing 'super' calls succeeds).
-    {prefix: 'class DummyClass extends DummyBase { constructor', suffix: '}'},
-    // Next, we try async generator, this handles functions with yield or await keywords.
-    {prefix: 'async function* __DEVTOOLS_DUMMY__', suffix: ''},
-    // Finally, try parse as an async arrow function.
-    {prefix: 'async ', suffix: ''},
-  ];
-  for (const {prefix, suffix} of prefixSuffixToTry) {
-    const scopeTree =
-        await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(prefix + scopeText + suffix);
-    if (scopeTree) {
-      return {prefixLength: prefix.length, scopeTree};
-    }
-  }
-  return null;
-};
-
 const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeChainEntry): Promise<{
-  scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode, text: TextUtils.Text.Text, slide: number,
+  scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode, text: TextUtils.Text.Text,
 }|null> {
   const functionStartLocation = functionScope.startLocation();
   const functionEndLocation = functionScope.endLocation();
@@ -88,17 +67,12 @@ const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeCh
   if (!text) {
     return null;
   }
-  const scopeRange = new TextUtils.TextRange.TextRange(
-      functionStartLocation.lineNumber, functionStartLocation.columnNumber, functionEndLocation.lineNumber,
-      functionEndLocation.columnNumber);
-  const scopeText = text.extract(scopeRange);
-  const scopeStart = text.toSourceRange(scopeRange).offset;
-  const prefixLengthAndscopeTree = await tryParseScope(scopeText);
-  if (!prefixLengthAndscopeTree) {
+
+  const scopeTree = await ScopeTreeCache.instance().scopeTreeForScript(script);
+  if (!scopeTree) {
     return null;
   }
-  const {prefixLength, scopeTree} = prefixLengthAndscopeTree;
-  return {scopeTree, text, slide: scopeStart - prefixLength};
+  return {scopeTree, text};
 };
 
 export const scopeIdentifiers = async function(
@@ -120,12 +94,12 @@ export const scopeIdentifiers = async function(
   if (!scopeTreeAndStart) {
     return null;
   }
-  const {scopeTree, text, slide} = scopeTreeAndStart;
+  const {scopeTree, text} = scopeTreeAndStart;
 
   // Compute the offset within the scope tree coordinate space.
   const scopeOffsets = {
-    start: text.offsetFromPosition(startLocation.lineNumber, startLocation.columnNumber) - slide,
-    end: text.offsetFromPosition(endLocation.lineNumber, endLocation.columnNumber) - slide,
+    start: text.offsetFromPosition(startLocation.lineNumber, startLocation.columnNumber),
+    end: text.offsetFromPosition(endLocation.lineNumber, endLocation.columnNumber),
   };
 
   if (!contains(scopeTree, scopeOffsets)) {
@@ -171,8 +145,7 @@ export const scopeIdentifiers = async function(
 
     const identifier = new IdentifierPositions(variable.name);
     for (const offset of variable.offsets) {
-      const start = offset + slide;
-      cursor.resetTo(start);
+      cursor.resetTo(offset);
       identifier.addPosition(cursor.lineNumber(), cursor.columnNumber());
     }
     boundVariables.push(identifier);
@@ -188,8 +161,7 @@ export const scopeIdentifiers = async function(
           if (!identifier) {
             identifier = new IdentifierPositions(ancestorVariable.name);
           }
-          const start = offset + slide;
-          cursor.resetTo(start);
+          cursor.resetTo(offset);
           identifier.addPosition(cursor.lineNumber(), cursor.columnNumber());
         }
       }

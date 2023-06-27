@@ -177,7 +177,7 @@ export class Dialog {
     this.fragment = UI.Fragment.Fragment.build`
       <x-widget flex=none margin=12px>
         <x-hbox overflow=auto border='1px solid #ddd'>
-          <img $='image' style="max-height: 80vh; max-width: 80vw;"></img>
+          <img $='image' data-film-strip-dialog-img style="max-height: 80vh; max-width: 80vw;"></img>
         </x-hbox>
         <x-hbox x-center justify-content=center margin-top=10px>
           ${prevButton}
@@ -198,15 +198,17 @@ export class Dialog {
     void this.render();
   }
 
+  hide(): void {
+    if (this.dialog) {
+      this.dialog.hide();
+    }
+  }
+
   private resize(): void {
     if (!this.dialog) {
       this.dialog = new UI.Dialog.Dialog();
       this.dialog.contentElement.appendChild(this.widget);
       this.dialog.setDefaultFocusedElement(this.widget);
-      // Dialog can take an undefined `where` param for show(), however its superclass (GlassPane)
-      // requires a Document. TypeScript is unhappy that show() is not given a parameter here,
-      // however, so marking it as an ignore.
-      // @ts-ignore See above.
       this.dialog.show();
     }
     this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
@@ -271,6 +273,7 @@ export class Dialog {
     return frame.imageDataPromise()
         .then(imageData => {
           const image = (this.fragment.$('image') as HTMLImageElement);
+          image.setAttribute('data-frame-index', this.index.toString());
           return FilmStripView.setImageData(image, imageData);
         })
         .then(this.resize.bind(this));

@@ -192,6 +192,18 @@ describeWithEnvironment('RequestLinkIcon', () => {
       assert.strictEqual(label, 'gamma');
     });
 
+    it('renders alternative text for URL', async () => {
+      const {shadowRoot} = await renderRequestLinkIcon({
+        affectedRequest: {requestId: requestId1, url: 'https://alpha.beta/gamma'},
+        requestResolver: failingRequestResolver as unknown as Logs.RequestResolver.RequestResolver,
+        displayURL: true,
+        urlToDisplay: 'https://alpha.beta/gamma',
+      });
+
+      const {label} = extractData(shadowRoot);
+      assert.strictEqual(label, 'https://alpha.beta/gamma');
+    });
+
     it('the style reacts to the presence of a request', async () => {
       const {shadowRoot} = await renderRequestLinkIcon({
         request: mockRequest as unknown as SDK.NetworkRequest.NetworkRequest,

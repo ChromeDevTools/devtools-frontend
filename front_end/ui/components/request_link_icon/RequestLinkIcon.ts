@@ -42,6 +42,9 @@ export interface RequestLinkIconData {
   networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
   requestResolver?: Logs.RequestResolver.RequestResolver;
   displayURL?: boolean;
+  // If displayURL && urlToDisplay !== undefined, uses urlToDisplay for the text of the link.
+  // If displayURL only, uses filename of the URL.
+  urlToDisplay?: string;
   additionalOnClickAction?: () => void;
   revealOverride?: (revealable: Object|null, omitFocus?: boolean|undefined) => Promise<void>;
 }
@@ -64,6 +67,7 @@ export class RequestLinkIcon extends HTMLElement {
   #highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
   #requestResolver?: Logs.RequestResolver.RequestResolver;
   #displayURL: boolean = false;
+  #urlToDisplay?: string;
   #networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
   #affectedRequest?: {requestId: Protocol.Network.RequestId, url?: string};
   #additionalOnClickAction?: () => void;
@@ -80,6 +84,7 @@ export class RequestLinkIcon extends HTMLElement {
     this.#networkTab = data.networkTab;
     this.#requestResolver = data.requestResolver;
     this.#displayURL = data.displayURL ?? false;
+    this.#urlToDisplay = data.urlToDisplay;
     this.#additionalOnClickAction = data.additionalOnClickAction;
     if (data.revealOverride) {
       this.#reveal = data.revealOverride;
@@ -116,6 +121,7 @@ export class RequestLinkIcon extends HTMLElement {
       networkTab: this.#networkTab,
       requestResolver: this.#requestResolver,
       displayURL: this.#displayURL,
+      urlToDisplay: this.#urlToDisplay,
       additionalOnClickAction: this.#additionalOnClickAction,
       revealOverride: this.#reveal !== Common.Revealer.reveal ? this.#reveal : undefined,
     };
@@ -178,10 +184,16 @@ export class RequestLinkIcon extends HTMLElement {
     if (!this.#displayURL) {
       return LitHtml.nothing;
     }
+
     const url = this.#getUrlForDisplaying();
     if (!url) {
       return LitHtml.nothing;
     }
+
+    if (this.#urlToDisplay) {
+      return LitHtml.html`<span title=${url}>${this.#urlToDisplay}</span>`;
+    }
+
     const filename = extractShortPath(url);
     return LitHtml.html`<span aria-label=${i18nString(UIStrings.shortenedURL)} title=${url}>${filename}</span>`;
   }

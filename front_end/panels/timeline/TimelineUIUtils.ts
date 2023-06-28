@@ -1169,7 +1169,9 @@ let eventDispatchDesciptors: EventDispatchTypeDescriptor[];
 
 let colorGenerator: Common.Color.Generator;
 
-const requestPreviewElements = new WeakMap<TimelineModel.TimelineModel.NetworkRequest, HTMLImageElement>();
+const requestPreviewElements = new WeakMap<
+    TimelineModel.TimelineModel.NetworkRequest|TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest,
+    HTMLImageElement>();
 
 interface EventStylesMap {
   [x: string]: TimelineRecordStyle;
@@ -1478,9 +1480,39 @@ export class TimelineUIUtils {
     return frame.scriptId !== '0' && !(frame.url && frame.url.startsWith('native '));
   }
 
+  // TODO(crbug.com/1431174): Temperary keep both networkRequestCategory functions,
+  // will remove this one after the migration.
   static networkRequestCategory(request: TimelineModel.TimelineModel.NetworkRequest): NetworkCategory {
     const categories = NetworkCategory;
     switch (request.mimeType) {
+      case 'text/html':
+        return categories.HTML;
+      case 'application/javascript':
+      case 'application/x-javascript':
+      case 'text/javascript':
+        return categories.Script;
+      case 'text/css':
+        return categories.Style;
+      case 'audio/ogg':
+      case 'image/gif':
+      case 'image/jpeg':
+      case 'image/png':
+      case 'image/svg+xml':
+      case 'image/webp':
+      case 'image/x-icon':
+      case 'font/opentype':
+      case 'font/woff2':
+      case 'application/font-woff':
+        return categories.Media;
+      default:
+        return categories.Other;
+    }
+  }
+
+  static syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest):
+      NetworkCategory {
+    const categories = NetworkCategory;
+    switch (request.args.data.mimeType) {
       case 'text/html':
         return categories.HTML;
       case 'application/javascript':
@@ -2638,6 +2670,121 @@ export class TimelineUIUtils {
     }
 
     const requestPreviewElement = requestPreviewElements.get(request);
+    if (requestPreviewElement) {
+      contentHelper.appendElementRow(i18nString(UIStrings.preview), requestPreviewElement);
+    }
+    return contentHelper.fragment;
+  }
+
+  static async buildSyntheticNetworkRequestDetails(
+      event: TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest,
+      model: TimelineModel.TimelineModel.TimelineModelImpl,
+      linkifier: Components.Linkifier.Linkifier): Promise<DocumentFragment> {
+    const maybeTarget = model.targetByEvent(event);
+    const contentHelper = new TimelineDetailsContentHelper(maybeTarget, linkifier);
+
+    const category = TimelineUIUtils.syntheticNetworkRequestCategory(event);
+    const color = TimelineUIUtils.networkCategoryColor(category);
+    contentHelper.addSection(i18nString(UIStrings.networkRequest), color);
+
+    const options = {
+      tabStop: true,
+      showColumnNumber: false,
+      inlineFrameIndex: 0,
+    };
+    contentHelper.appendElementRow(
+        i18n.i18n.lockedString('URL'),
+        Components.Linkifier.Linkifier.linkifyURL(event.args.data.url as Platform.DevToolsPath.UrlString, options));
+
+    // The time from queueing the request until resource processing is finished.
+    const fullDuration = event.dur;
+    if (isFinite(fullDuration)) {
+      let textRow = TraceEngine.Helpers.Timing.formatMicrosecondsTime(fullDuration);
+      // The time from queueing the request until the download is finished. This
+      // corresponds to the total time reported for the request in the network tab.
+      const networkDuration = event.args.data.syntheticData.finishTime - event.ts;
+      // The time it takes to make the resource available to the renderer process.
+      const processingDuration = event.ts + event.dur - event.args.data.syntheticData.finishTime;
+      if (isFinite(networkDuration) && isFinite(processingDuration)) {
+        const networkDurationStr =
+            TraceEngine.Helpers.Timing.formatMicrosecondsTime(networkDuration as TraceEngine.Types.Timing.MicroSeconds);
+        const processingDurationStr = TraceEngine.Helpers.Timing.formatMicrosecondsTime(
+            processingDuration as TraceEngine.Types.Timing.MicroSeconds);
+        const cached = event.args.data.syntheticData.isMemoryCached || event.args.data.syntheticData.isDiskCached;
+        const cacheOrNetworkLabel =
+            cached ? i18nString(UIStrings.loadFromCache) : i18nString(UIStrings.networkTransfer);
+        textRow += i18nString(
+            UIStrings.SSSResourceLoading,
+            {PH1: networkDurationStr, PH2: cacheOrNetworkLabel, PH3: processingDurationStr});
+      }
+      contentHelper.appendTextRow(i18nString(UIStrings.duration), textRow);
+    }
+
+    if (event.args.data.requestMethod) {
+      contentHelper.appendTextRow(i18nString(UIStrings.requestMethod), event.args.data.requestMethod);
+    }
+    const priority = PerfUI.NetworkPriorities.uiLabelForNetworkPriority(
+        event.args.data.priority as Protocol.Network.ResourcePriority);
+    contentHelper.appendTextRow(i18nString(UIStrings.priority), priority);
+    if (event.args.data.mimeType) {
+      contentHelper.appendTextRow(i18nString(UIStrings.mimeType), event.args.data.mimeType);
+    }
+    let lengthText = '';
+    if (event.args.data.syntheticData.isMemoryCached) {
+      lengthText += i18nString(UIStrings.FromMemoryCache);
+    } else if (event.args.data.syntheticData.isDiskCached) {
+      lengthText += i18nString(UIStrings.FromCache);
+    } else if (event.args.data.timing?.pushStart) {
+      lengthText += i18nString(UIStrings.FromPush);
+    }
+    if (event.args.data.fromServiceWorker) {
+      lengthText += i18nString(UIStrings.FromServiceWorker);
+    }
+    if (event.args.data.encodedDataLength || !lengthText) {
+      lengthText = `${Platform.NumberUtilities.bytesToString(event.args.data.encodedDataLength)}${lengthText}`;
+    }
+    contentHelper.appendTextRow(i18nString(UIStrings.encodedData), lengthText);
+    if (event.args.data.decodedBodyLength) {
+      contentHelper.appendTextRow(
+          i18nString(UIStrings.decodedBody), Platform.NumberUtilities.bytesToString(event.args.data.decodedBodyLength));
+    }
+    const title = i18nString(UIStrings.initiator);
+
+    // const sendRequest = event.args.data.children[0];
+    const topFrame = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).topFrame();
+    if (topFrame) {
+      const link = linkifier.maybeLinkifyConsoleCallFrame(
+          maybeTarget, topFrame, {tabStop: true, inlineFrameIndex: 0, showColumnNumber: true});
+      if (link) {
+        contentHelper.appendElementRow(title, link);
+      }
+    } else {
+      const initiator = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).initiator();
+      if (initiator) {
+        const initiatorURL = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(initiator).url;
+        if (initiatorURL) {
+          const link = linkifier.maybeLinkifyScriptLocation(
+              maybeTarget, null, initiatorURL, 0, {tabStop: true, inlineFrameIndex: 0});
+          if (link) {
+            contentHelper.appendElementRow(title, link);
+          }
+        }
+      }
+    }
+
+    if (!requestPreviewElements.get(event) && event.args.data.url && maybeTarget) {
+      const previewElement =
+          (await Components.ImagePreview.ImagePreview.build(
+               maybeTarget, event.args.data.url as Platform.DevToolsPath.UrlString, false, {
+                 imageAltText: Components.ImagePreview.ImagePreview.defaultAltTextForImageURL(
+                     event.args.data.url as Platform.DevToolsPath.UrlString),
+                 precomputedFeatures: undefined,
+               }) as HTMLImageElement);
+
+      requestPreviewElements.set(event, previewElement);
+    }
+
+    const requestPreviewElement = requestPreviewElements.get(event);
     if (requestPreviewElement) {
       contentHelper.appendElementRow(i18nString(UIStrings.preview), requestPreviewElement);
     }

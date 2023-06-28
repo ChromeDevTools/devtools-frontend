@@ -598,8 +598,9 @@ export class ElementsTreeOutline extends
         this.appendChild(treeElement);
       }
     }
-
-    void this.createTopLayerContainer(this.rootElement(), this.rootDOMNode.domModel());
+    if (this.rootDOMNode instanceof SDK.DOMModel.DOMDocument) {
+      void this.createTopLayerContainer(this.rootElement(), this.rootDOMNode);
+    }
 
     if (selectedNode) {
       this.revealAndSelectNode(selectedNode, true);
@@ -1324,11 +1325,11 @@ export class ElementsTreeOutline extends
     });
   }
 
-  async createTopLayerContainer(parent: UI.TreeOutline.TreeElement, domModel: SDK.DOMModel.DOMModel): Promise<void> {
+  async createTopLayerContainer(parent: UI.TreeOutline.TreeElement, document: SDK.DOMModel.DOMDocument): Promise<void> {
     if (!parent.treeOutline || !(parent.treeOutline instanceof ElementsTreeOutline)) {
       return;
     }
-    const container = new TopLayerContainer(parent.treeOutline, domModel);
+    const container = new TopLayerContainer(parent.treeOutline, document);
     await container.throttledUpdateTopLayerElements();
     if (container.currentTopLayerDOMNodes.size > 0) {
       parent.appendChild(container);
@@ -1490,8 +1491,8 @@ export class ElementsTreeOutline extends
       isClosingTag?: boolean): ElementsTreeElement {
     const newElement = this.createElementTreeElement(child, isClosingTag);
     treeElement.insertChild(newElement, index);
-    if (child.nodeType() === Node.DOCUMENT_NODE) {
-      void this.createTopLayerContainer(newElement, child.domModel());
+    if (child instanceof SDK.DOMModel.DOMDocument) {
+      void this.createTopLayerContainer(newElement, child);
     }
     return newElement;
   }

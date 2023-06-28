@@ -881,6 +881,219 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         ],
     );
   });
+
+  it('shows prerender details with Investigate and Activate (disabled) buttons for Running', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    await coordinator.done();
+
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            '/prerendered.html',
+            'prerender',
+            'Running',
+          ],
+        ],
+    );
+
+    const cells = [
+      {columnId: 'id', value: 'loaderId:1:Prerender:https://example.com/prerendered.html:undefined'},
+      // Omit other columns.
+    ];
+    preloadingGridComponent.dispatchEvent(
+        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'URL', value: '/prerendered.html'}, {cells}));
+
+    await coordinator.done();
+
+    const report =
+        getElementWithinComponent(preloadingDetailsComponent, 'devtools-report', ReportView.ReportView.Report);
+
+    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
+    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
+    assert.deepEqual(zip2(keys, values), [
+      ['URL', 'https://example.com/prerendered.html'],
+      ['Action', 'prerenderInspectActivate'],
+      ['Status', 'Preloading is running.'],
+    ]);
+
+    const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
+    assert.strictEqual(buttons[0].textContent?.trim(), 'Inspect');
+    assert.strictEqual(buttons[0].getAttribute('disabled'), null);
+    assert.strictEqual(buttons[1].textContent?.trim(), 'Activate');
+    assert.strictEqual(buttons[1].getAttribute('disabled'), '');
+  });
+
+  it('shows prerender details with Investigate and Activate buttons for Ready', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    dispatchEvent(emulator.primaryTarget, 'Preload.prerenderStatusUpdated', {
+      key: {
+        loaderId: 'loaderId:1',
+        action: Protocol.Preload.SpeculationAction.Prerender,
+        url: 'https://example.com/prerendered.html',
+      },
+      status: Protocol.Preload.PreloadingStatus.Ready,
+    });
+
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
+
+    await coordinator.done();
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            '/prerendered.html',
+            'prerender',
+            'Ready',
+          ],
+        ],
+    );
+
+    const cells = [
+      {columnId: 'id', value: 'loaderId:1:Prerender:https://example.com/prerendered.html:undefined'},
+      // Omit other columns.
+    ];
+    preloadingGridComponent.dispatchEvent(
+        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'URL', value: '/prerendered.html'}, {cells}));
+
+    await coordinator.done();
+
+    const report =
+        getElementWithinComponent(preloadingDetailsComponent, 'devtools-report', ReportView.ReportView.Report);
+
+    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
+    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
+    assert.deepEqual(zip2(keys, values), [
+      ['URL', 'https://example.com/prerendered.html'],
+      ['Action', 'prerenderInspectActivate'],
+      ['Status', 'Preloading finished and the result is ready for the next navigation.'],
+    ]);
+
+    const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
+    assert.strictEqual(buttons[0].textContent?.trim(), 'Inspect');
+    assert.strictEqual(buttons[0].getAttribute('disabled'), null);
+    assert.strictEqual(buttons[1].textContent?.trim(), 'Activate');
+    assert.strictEqual(buttons[1].getAttribute('disabled'), null);
+  });
+
+  it('shows prerender details with Investigate (disabled) and Activate (disabled) buttons for Failure', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+
+    await emulator.navigateAndDispatchEvents('');
+    await emulator.addSpecRules(`
+{
+  "prerender":[
+    {
+      "source": "list",
+      "urls": ["/prerendered.html"]
+    }
+  ]
+}
+`);
+
+    dispatchEvent(emulator.primaryTarget, 'Preload.prerenderStatusUpdated', {
+      key: {
+        loaderId: 'loaderId:1',
+        action: Protocol.Preload.SpeculationAction.Prerender,
+        url: 'https://example.com/prerendered.html',
+      },
+      status: Protocol.Preload.PreloadingStatus.Failure,
+    });
+    // Note that `TargetManager.removeTarget` is not called on `Target.targetDestroyed`.
+    // Here, we manually remove the target for prerendered page from `TargetManager`.
+    const prerenderTarget = SDK.TargetManager.TargetManager.instance().targets().find(
+        child => child.targetInfo()?.subtype === 'prerender' &&
+            child.inspectedURL() === 'https://example.com/prerendered.html');
+    prerenderTarget?.dispose('test');
+
+    const preloadingGridComponent = view.getPreloadingGridForTest();
+    assertShadowRoot(preloadingGridComponent.shadowRoot);
+    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
+    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
+
+    await coordinator.done();
+
+    assertGridContents(
+        preloadingGridComponent,
+        ['URL', 'Action', 'Status'],
+        [
+          [
+            '/prerendered.html',
+            'prerender',
+            'Failure',
+          ],
+        ],
+    );
+
+    const cells = [
+      {columnId: 'id', value: 'loaderId:1:Prerender:https://example.com/prerendered.html:undefined'},
+      // Omit other columns.
+    ];
+    preloadingGridComponent.dispatchEvent(
+        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'URL', value: '/prerendered.html'}, {cells}));
+
+    await coordinator.done();
+
+    const report =
+        getElementWithinComponent(preloadingDetailsComponent, 'devtools-report', ReportView.ReportView.Report);
+
+    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
+    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
+    assert.deepEqual(zip2(keys, values), [
+      ['URL', 'https://example.com/prerendered.html'],
+      ['Action', 'prerenderInspectActivate'],
+      ['Status', 'Preloading failed.'],
+    ]);
+
+    const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
+    assert.strictEqual(buttons[0].textContent?.trim(), 'Inspect');
+    assert.strictEqual(buttons[0].getAttribute('disabled'), '');
+    assert.strictEqual(buttons[1].textContent?.trim(), 'Activate');
+    assert.strictEqual(buttons[1].getAttribute('disabled'), '');
+  });
 });
 
 describeWithMockConnection('PreloadingResultView', async () => {

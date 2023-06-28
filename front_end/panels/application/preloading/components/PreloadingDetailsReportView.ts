@@ -7,15 +7,15 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
+import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as NetworkForward from '../../../network/forward/forward.js';
-
-import type * as UI from '../../../../ui/legacy/legacy.js';
 
 import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css.js';
 import {PrefetchReasonDescription} from './PreloadingString.js';
@@ -283,6 +283,22 @@ const UIStrings = {
    *@description button: Title of button to reveal the corresponding request of rule set in Network panel
    */
   buttonClickToRevealInNetworkPanel: 'Click to reveal in Network panel',
+  /**
+   *@description button: Contents of button to inspect prerendered page
+   */
+  buttonInspect: 'Inspect',
+  /**
+   *@description button: Title of button to inspect prerendered page
+   */
+  buttonClickToInspect: 'Click to inspect prerendered page',
+  /**
+   *@description button: Contents of button to activate prerendered page
+   */
+  buttonActivate: 'Activate',
+  /**
+   *@description button: Title of button to activate prerendered page
+   */
+  buttonClickToActivate: 'Click to activate prerendered page',
 };
 const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingDetailsReportView.ts', UIStrings);
@@ -609,7 +625,6 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
         return;
       }
 
-      const action = PreloadingUIUtils.action(this.#data.preloadingAttempt);
       const detailedStatus = PreloadingUIUtils.detailedStatus(this.#data.preloadingAttempt);
 
       // Disabled until https://crbug.com/1079231 is fixed.
@@ -620,14 +635,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
             ReportView.ReportView.ReportSectionHeader.litTagName}>
 
           ${this.#url()}
-
-          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsAction)}</${
-            ReportView.ReportView.ReportKey.litTagName}>
-          <${ReportView.ReportView.ReportValue.litTagName}>
-            <div class="text-ellipsis" title="">
-              ${action}
-            </div>
-          </${ReportView.ReportView.ReportValue.litTagName}>
+          ${this.#action()}
 
           <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsStatus)}</${
             ReportView.ReportView.ReportKey.litTagName}>
@@ -705,6 +713,101 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
           ${value}
+        </${ReportView.ReportView.ReportValue.litTagName}>
+    `;
+    // clang-format on
+  }
+
+  #action(): LitHtml.LitTemplate {
+    assertNotNullOrUndefined(this.#data);
+    const attempt = this.#data.preloadingAttempt;
+
+    const action = PreloadingUIUtils.action(this.#data.preloadingAttempt);
+
+    let maybeInspectButton: LitHtml.LitTemplate = LitHtml.nothing;
+    ((): void => {
+      if (attempt.action !== Protocol.Preload.SpeculationAction.Prerender) {
+        return;
+      }
+
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      if (target === null) {
+        return;
+      }
+
+      const prerenderTarget = SDK.TargetManager.TargetManager.instance().targets().find(
+          child => child.targetInfo()?.subtype === 'prerender' && child.inspectedURL() === attempt.key.url);
+
+      const disabled = (prerenderTarget === undefined);
+      const inspect = (): void => {
+        if (prerenderTarget === undefined) {
+          return;
+        }
+        UI.Context.Context.instance().setFlavor(SDK.Target.Target, prerenderTarget);
+      };
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      maybeInspectButton = LitHtml.html`
+          <${Buttons.Button.Button.litTagName}
+            @click=${inspect}
+            .title=${i18nString(UIStrings.buttonClickToInspect)}
+            .size=${Buttons.Button.Size.SMALL}
+            .variant=${Buttons.Button.Variant.SECONDARY}
+            .disabled=${disabled}
+          >
+            ${i18nString(UIStrings.buttonInspect)}
+          </${Buttons.Button.Button.litTagName}>
+      `;
+      // clang-format on
+    })();
+
+    let maybeActivateButton: LitHtml.LitTemplate = LitHtml.nothing;
+    ((): void => {
+      if (attempt.action !== Protocol.Preload.SpeculationAction.Prerender) {
+        return;
+      }
+
+      const target = SDK.TargetManager.TargetManager.instance().scopeTarget();
+      if (target === null) {
+        return;
+      }
+
+      // Prevents prerender activation for non primary targets.
+      if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+        return;
+      }
+
+      const disabled = (attempt.status !== SDK.PreloadingModel.PreloadingStatus.Ready);
+      const activate = (): void => {
+        void target.pageAgent().invoke_navigate({url: attempt.key.url});
+      };
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      maybeActivateButton = LitHtml.html`
+          <${Buttons.Button.Button.litTagName}
+            @click=${activate}
+            .title=${i18nString(UIStrings.buttonClickToActivate)}
+            .size=${Buttons.Button.Size.SMALL}
+            .variant=${Buttons.Button.Variant.SECONDARY}
+            .disabled=${disabled}
+          >
+            ${i18nString(UIStrings.buttonActivate)}
+          </${Buttons.Button.Button.litTagName}>
+      `;
+      // clang-format on
+    })();
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+        <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsAction)}</${
+          ReportView.ReportView.ReportKey.litTagName}>
+        <${ReportView.ReportView.ReportValue.litTagName}>
+          <div class="text-ellipsis" title="">
+            ${action}
+            ${maybeInspectButton}
+            ${maybeActivateButton}
+          </div>
         </${ReportView.ReportView.ReportValue.litTagName}>
     `;
     // clang-format on

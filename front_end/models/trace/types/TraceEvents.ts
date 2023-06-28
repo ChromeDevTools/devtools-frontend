@@ -135,6 +135,7 @@ export interface TraceEventProfileChunk extends TraceEventSample {
     data?: TraceEventArgsData & {
       cpuProfile?: TraceEventPartialProfile,
       timeDeltas?: MicroSeconds[],
+      lines?: MicroSeconds[],
     },
   };
 }

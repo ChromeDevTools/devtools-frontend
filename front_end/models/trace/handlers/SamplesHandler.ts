@@ -5,8 +5,23 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
+import type * as Protocol from '../../../generated/protocol.js';
 
 import {HandlerState, EventCategory, KNOWN_EVENTS, type KnownEventName} from './types.js';
+
+/*
+ * This handler takes CPU profile data available in trace events under
+ * the name "Profile", which comes in the shape of samples, and parses
+ * it to estimate the JS calls durations and hierarchies in the recorder
+ * profile. At the, moment the SamplesHandler has its own implementation
+ * of CPU Profile parsing. However the short term plan is change this to
+ * make the handler call a library under SDK::CPUProfileDataModel
+ * instead. This library parses CDP profiles in the standard shape used
+ * in the CDP.Profiler.Profile type. For this reason this handler builds
+ * redundant data structures, because this is an temporary interim state
+ * as we finish the migration to using the library only.
+ * See crbug.com/1457230
+ */
 
 /**
  * Sorts samples in place, in order, by their start time.
@@ -39,8 +54,15 @@ const SAMPLING_INTERVAL = Types.Timing.MicroSeconds(200);
 
 const events =
     new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventComplete[]>>();
+
+// having both `profiles` and `profilesInProcess` is an interim state as we implement
+// crbug.com/1457230
+// Once that's finished, only the `profilesInProcess` created in the bottom will be preserved.
 const profiles = new Map<Types.TraceEvents.ProfileID, Partial<SamplesProfile>>();
 const processes = new Map<Types.TraceEvents.ProcessID, SamplesProcess>();
+
+const profilesInProcess =
+    new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ProfileID, Protocol.Profiler.Profile>>();
 
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -81,13 +103,6 @@ const makeProfileCall = (nodeId: Types.TraceEvents.CallFrameID, sample: ProfileS
   children: [],
 });
 
-const makeEmptyProfileFunction = (nodeId: Types.TraceEvents.CallFrameID): ProfileFunction => ({
-  stackFrame: {nodeId},
-  calls: [],
-  durPercent: 0,
-  selfDurPercent: 0,
-});
-
 const getOrCreateSamplesProcess =
     (processes: Map<Types.TraceEvents.ProcessID, SamplesProcess>, pid: Types.TraceEvents.ProcessID): SamplesProcess => {
       return Platform.MapUtilities.getWithDefault(processes, pid, makeSamplesProcess);
@@ -102,7 +117,7 @@ export function reset(): void {
   events.clear();
   profiles.clear();
   processes.clear();
-
+  profilesInProcess.clear();
   handlerState = HandlerState.UNINITIALIZED;
 }
 
@@ -120,14 +135,61 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   }
 
   if (Types.TraceEvents.isTraceEventProfile(event)) {
+    // Creating two profiles is an interim state as we implement crbug.com/1457230
+    // Once that's finished, only the profile created in the bottom will be preserved.
     const profile = Platform.MapUtilities.getWithDefault(profiles, event.id, (): Partial<SamplesProfile> => ({}));
     profile.head = event;
+
+    // Do not use event.args.data.startTime as it is in CLOCK_MONOTONIC domain,
+    // but use profileEvent.ts which has been translated to Perfetto's clock
+    // domain. Also convert from ms to us.
+    // Note: events are collected on a different thread than what's sampled.
+    // The correct process and thread ids are specified by the profile.
+    const profileById = Platform.MapUtilities.getWithDefault(profilesInProcess, event.pid, () => new Map());
+    const cdpProfile = Platform.MapUtilities.getWithDefault(profileById, event.id, () => ({
+                                                                                     startTime: 0,
+                                                                                     endTime: 0,
+                                                                                     nodes: [],
+                                                                                     samples: [],
+                                                                                     timeDeltas: [],
+                                                                                     lines: [],
+                                                                                   }));
+    cdpProfile.startTime = event.ts;
     return;
   }
   if (Types.TraceEvents.isTraceEventProfileChunk(event)) {
+    // Creating two profiles is an interim state as we implement crbug.com/1457230
+    // Once that's finished, only the profile created in the bottom will be preserved.
     const profile = Platform.MapUtilities.getWithDefault(profiles, event.id, (): Partial<SamplesProfile> => ({}));
     profile.chunks = profile.chunks ?? [];
     profile.chunks.push(event);
+
+    const cdpProfileById = Platform.MapUtilities.getWithDefault(profilesInProcess, event.pid, () => new Map());
+    const cdpProfile = Platform.MapUtilities.getWithDefault(cdpProfileById, event.id, () => ({
+                                                                                        startTime: 0,
+                                                                                        endTime: 0,
+                                                                                        nodes: [],
+                                                                                        samples: [],
+                                                                                        timeDeltas: [],
+                                                                                        lines: [],
+                                                                                      }));
+    const nodesAndSamples: Types.TraceEvents.TraceEventPartialProfile|undefined =
+        event.args?.data?.cpuProfile || {samples: []};
+    const samples = nodesAndSamples?.samples || [];
+    const nodes = nodesAndSamples?.nodes || [];
+    const timeDeltas = event.args.data?.timeDeltas || [];
+    cdpProfile.nodes.push(...nodes);
+    cdpProfile.samples?.push(...samples);
+    cdpProfile.timeDeltas?.push(...timeDeltas);
+
+    if (cdpProfile.samples && cdpProfile.timeDeltas && cdpProfile.samples.length !== cdpProfile.timeDeltas.length) {
+      console.error('Failed to parse CPU profile.');
+      return;
+    }
+    if (!cdpProfile.endTime && cdpProfile.timeDeltas) {
+      const timeDeltas: number[] = cdpProfile.timeDeltas;
+      cdpProfile.endTime = timeDeltas.reduce((x, y) => x + y, cdpProfile.startTime);
+    }
     return;
   }
   if (Types.TraceEvents.isTraceEventComplete(event)) {
@@ -156,6 +218,7 @@ export function data(): SamplesHandlerData {
   return {
     profiles: new Map(profiles),
     processes: new Map(processes),
+    profilesInProcess: new Map(profilesInProcess),
   };
 }
 
@@ -634,49 +697,13 @@ export function buildProfileCallFromSample(tree: ProfileTree, sample: ProfileSam
   return calls[0];
 }
 
-/**
- * Gets all functions that have been called between the given timestamps, each
- * with additional information:
- * - the call frame id, which points to a node containing the function name etc.
- * - all individual calls for that function
- * - percentage of time taken, relative to the given timestamps
- * - percentage of self time taken relative to the given timestamps
- */
-export function getAllFunctionsBetweenTimestamps(
-    calls: ProfileCall[], begin: Types.Timing.MicroSeconds, end: Types.Timing.MicroSeconds,
-    out: Map<Types.TraceEvents.CallFrameID, ProfileFunction> = new Map()): IterableIterator<ProfileFunction> {
-  for (const call of calls) {
-    if (call.ts < begin || call.ts + call.dur > end) {
-      continue;
-    }
-    const func = Platform.MapUtilities.getWithDefault(
-        out, call.stackFrame.nodeId, () => makeEmptyProfileFunction(call.stackFrame.nodeId));
-    func.calls.push(call);
-    func.durPercent += (call.dur / (end - begin)) * 100;
-    func.selfDurPercent += (call.selfDur / (end - begin)) * 100;
-    getAllFunctionsBetweenTimestamps(call.children, begin, end, out);
-  }
-
-  return out.values();
-}
-
-/**
- * Gets all the hot functions between timestamps, each with information about
- * the relevant call frame, time, self time, and percentages.
- *
- * The hot functions are sorted by self time.
- */
-export function getAllHotFunctionsBetweenTimestamps(
-    calls: ProfileCall[], begin: Types.Timing.MicroSeconds, end: Types.Timing.MicroSeconds,
-    minSelfPercent: number): ProfileFunction[] {
-  const functions = getAllFunctionsBetweenTimestamps(calls, begin, end);
-  const hot = [...functions].filter(info => info.selfDurPercent >= minSelfPercent);
-  return hot.sort((a, b) => a.selfDurPercent > b.selfDurPercent ? -1 : 1);
-}
-
 export interface SamplesHandlerData {
+  // These two maps are redundant and will be removed in the future once
+  // crbug.com/1457230 is complete.
   profiles: Map<Types.TraceEvents.ProfileID, Partial<SamplesProfile>>;
   processes: Map<Types.TraceEvents.ProcessID, SamplesProcess>;
+
+  profilesInProcess: Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ProfileID, Protocol.Profiler.Profile>>;
 }
 
 export interface SamplesProfile {

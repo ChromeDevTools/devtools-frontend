@@ -5,6 +5,8 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
+import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
+
 import {loadEventsFromTraceFile, defaultTraceEvent, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 
 /**
@@ -1736,154 +1738,18 @@ describe('SamplesHandler', function() {
     });
   });
 
-  describe('insights helpers', () => {
-    const A = 0;
-    const B = 1;
-    const C = 2;
-    const D = 3;
-    const E = 4;
-    const X = 9;
-
-    /**
-     *   A   E X
-     *  / \
-     * B   D
-     * |
-     * C
-     */
-    const mockChunks = [
-      makeProfileChunkEvent([{id: A}, {id: B, parent: A}, {id: C, parent: B}], [], [], 0),
-      makeProfileChunkEvent([{id: D, parent: A}], [], [], 0),
-      makeProfileChunkEvent([{id: E}], [], [], 0),
-      makeProfileChunkEvent([{id: X}], [], [], 0),
-    ];
-
-    /**
-     * +------------> (sample at time)
-     * |
-     * |A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A|A| |E|E|E|E|E|E|
-     * | |B|B|B|B|B|B| |D|D|D|D|D|D| | | | | | | | | | |
-     * | | |C|C|C|C| | | | | | | | | | | | | | | | | | |
-     * |
-     * V (stack trace depth)
-     */
-    const mockSamples1 = [
-      makeProfileSample(0, A),  makeProfileSample(1, B),  makeProfileSample(2, C),  makeProfileSample(3, C),
-      makeProfileSample(4, C),  makeProfileSample(5, C),  makeProfileSample(6, B),  makeProfileSample(7, A),
-      makeProfileSample(8, D),  makeProfileSample(9, D),  makeProfileSample(10, D), makeProfileSample(11, D),
-      makeProfileSample(12, D), makeProfileSample(13, D), makeProfileSample(14, A), makeProfileSample(15, A),
-      makeProfileSample(16, A), makeProfileSample(18, E), makeProfileSample(19, E), makeProfileSample(20, E),
-      makeProfileSample(21, E), makeProfileSample(22, E), makeProfileSample(23, E),
-    ];
-
-    /**
-     * +------------> (sample at time)
-     * |
-     * |A|A|A|X|A|A|A|X|A|A|A|X|A|A|A|A|A|X|E|E|E|E|E|E|
-     * |B|B|B| |B|B|B| |D|D|D| |D|D| | | | | | | | | | |
-     * |C|C|C| |C|C|B| |D|D|D| |D|D| | | | | | | | | | |
-     * |
-     * V (stack trace depth)
-     */
-    const mockSamples2 = [
-      makeProfileSample(0, C),  makeProfileSample(1, C),  makeProfileSample(2, C),  makeProfileSample(3, X),
-      makeProfileSample(4, C),  makeProfileSample(5, C),  makeProfileSample(6, B),  makeProfileSample(7, X),
-      makeProfileSample(8, D),  makeProfileSample(9, D),  makeProfileSample(10, D), makeProfileSample(11, X),
-      makeProfileSample(12, D), makeProfileSample(13, D), makeProfileSample(14, A), makeProfileSample(15, A),
-      makeProfileSample(16, A), makeProfileSample(17, X), makeProfileSample(18, E), makeProfileSample(19, E),
-      makeProfileSample(20, E), makeProfileSample(21, E), makeProfileSample(22, E), makeProfileSample(23, E),
-    ];
-
-    it('can get all functions between timestamps (1)', async () => {
-      const tree = TraceModel.Handlers.ModelHandlers.Samples.collectStackTraces(mockChunks);
-      const calls = mockSamples1.map(
-          sample => TraceModel.Handlers.ModelHandlers.Samples.buildProfileCallFromSample(tree, sample));
-      const {calls: merged} = TraceModel.Handlers.ModelHandlers.Samples.mergeCalls(calls, []);
-      const begin = TraceModel.Types.Timing.MicroSeconds(0);
-      const end = TraceModel.Types.Timing.MicroSeconds(23);
-      const infos = TraceModel.Handlers.ModelHandlers.Samples.getAllFunctionsBetweenTimestamps(merged, begin, end);
-
-      const simplified = [...infos].map(
-          fun => [fun.stackFrame.nodeId, {calls: fun.calls.length, total: fun.durPercent, self: fun.selfDurPercent}]);
-
-      const expected = [
-        [0, {'calls': 1, 'total': 69.56521739130434, 'self': 26.08695652173913}],
-        [1, {'calls': 1, 'total': 21.73913043478261, 'self': 8.695652173913043}],
-        [2, {'calls': 1, 'total': 13.043478260869565, 'self': 13.043478260869565}],
-        [3, {'calls': 1, 'total': 21.73913043478261, 'self': 21.73913043478261}],
-        [4, {'calls': 1, 'total': 21.73913043478261, 'self': 21.73913043478261}],
-      ];
-
-      assert.strictEqual(JSON.stringify(simplified), JSON.stringify(expected));
-    });
-
-    it('can get all functions between timestamps (2)', async () => {
-      const tree = TraceModel.Handlers.ModelHandlers.Samples.collectStackTraces(mockChunks);
-      const calls = mockSamples2.map(
-          sample => TraceModel.Handlers.ModelHandlers.Samples.buildProfileCallFromSample(tree, sample));
-      const {calls: merged} = TraceModel.Handlers.ModelHandlers.Samples.mergeCalls(calls, []);
-      const begin = TraceModel.Types.Timing.MicroSeconds(0);
-      const end = TraceModel.Types.Timing.MicroSeconds(23);
-      const infos = TraceModel.Handlers.ModelHandlers.Samples.getAllFunctionsBetweenTimestamps(merged, begin, end);
-
-      const simplified = [...infos].map(
-          fun => [fun.stackFrame.nodeId, {calls: fun.calls.length, total: fun.durPercent, self: fun.selfDurPercent}]);
-
-      const expected = [
-        [0, {'calls': 4, 'total': 43.47826086956522, 'self': 13.043478260869565}],
-        [1, {'calls': 2, 'total': 17.391304347826086, 'self': 4.3478260869565215}],
-        [2, {'calls': 2, 'total': 13.043478260869565, 'self': 13.043478260869565}],
-        [9, {'calls': 4, 'total': 0, 'self': 0}],
-        [3, {'calls': 2, 'total': 13.043478260869565, 'self': 13.043478260869565}],
-        [4, {'calls': 1, 'total': 21.73913043478261, 'self': 21.73913043478261}],
-      ];
-
-      assert.strictEqual(JSON.stringify(simplified), JSON.stringify(expected));
-    });
-
-    it('can get all hot functions between timestamps (1)', async () => {
-      const tree = TraceModel.Handlers.ModelHandlers.Samples.collectStackTraces(mockChunks);
-      const calls = mockSamples1.map(
-          sample => TraceModel.Handlers.ModelHandlers.Samples.buildProfileCallFromSample(tree, sample));
-      const {calls: merged} = TraceModel.Handlers.ModelHandlers.Samples.mergeCalls(calls, []);
-      const begin = TraceModel.Types.Timing.MicroSeconds(0);
-      const end = TraceModel.Types.Timing.MicroSeconds(23);
-      const infos =
-          TraceModel.Handlers.ModelHandlers.Samples.getAllHotFunctionsBetweenTimestamps(merged, begin, end, 20);
-
-      const simplified = [...infos].map(
-          fun => [fun.stackFrame.nodeId, {calls: fun.calls.length, total: fun.durPercent, self: fun.selfDurPercent}]);
-
-      const expected = [
-        [0, {'calls': 1, 'total': 69.56521739130434, 'self': 26.08695652173913}],
-        [3, {'calls': 1, 'total': 21.73913043478261, 'self': 21.73913043478261}],
-        [4, {'calls': 1, 'total': 21.73913043478261, 'self': 21.73913043478261}],
-      ];
-
-      assert.strictEqual(JSON.stringify(simplified), JSON.stringify(expected));
-    });
-
-    it('can get all hot functions between timestamps (2)', async () => {
-      const tree = TraceModel.Handlers.ModelHandlers.Samples.collectStackTraces(mockChunks);
-      const calls = mockSamples2.map(
-          sample => TraceModel.Handlers.ModelHandlers.Samples.buildProfileCallFromSample(tree, sample));
-      const {calls: merged} = TraceModel.Handlers.ModelHandlers.Samples.mergeCalls(calls, []);
-      const begin = TraceModel.Types.Timing.MicroSeconds(0);
-      const end = TraceModel.Types.Timing.MicroSeconds(23);
-      const infos =
-          TraceModel.Handlers.ModelHandlers.Samples.getAllHotFunctionsBetweenTimestamps(merged, begin, end, 10);
-
-      const simplified = [...infos].map(
-          fun => [fun.stackFrame.nodeId, {calls: fun.calls.length, total: fun.durPercent, self: fun.selfDurPercent}]);
-
-      const expected = [
-        [4, {'calls': 1, 'total': 21.73913043478261, 'self': 21.73913043478261}],
-        [0, {'calls': 4, 'total': 43.47826086956522, 'self': 13.043478260869565}],
-        [2, {'calls': 2, 'total': 13.043478260869565, 'self': 13.043478260869565}],
-        [3, {'calls': 2, 'total': 13.043478260869565, 'self': 13.043478260869565}],
-      ];
-
-      assert.strictEqual(JSON.stringify(simplified), JSON.stringify(expected));
+  describe('CPU Profile building', () => {
+    it('generates a CPU profile from a trace file', async () => {
+      const data = await handleEventsFromTraceFile('recursive-blocking-js.json.gz');
+      assert.strictEqual(data.profilesInProcess.size, 1);
+      const profileById = data.profilesInProcess.values().next().value;
+      assert.strictEqual(profileById.size, 1);
+      const cpuProfile = profileById.values().next().value as Protocol.Profiler.Profile;
+      assert.deepEqual(Object.keys(cpuProfile), ['startTime', 'endTime', 'nodes', 'samples', 'timeDeltas', 'lines']);
+      assert.strictEqual(cpuProfile.nodes.length, 153);
+      assert.strictEqual(cpuProfile.startTime, 287510826176);
+      assert.strictEqual(cpuProfile.endTime, 287510847633);
+      assert.strictEqual(cpuProfile.samples?.length, cpuProfile.timeDeltas?.length);
     });
   });
 });

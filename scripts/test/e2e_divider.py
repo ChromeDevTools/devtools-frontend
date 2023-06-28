@@ -8,6 +8,7 @@ import argparse
 from glob import glob
 import math
 import os
+import random
 import sys
 from pathlib import Path
 
@@ -41,10 +42,18 @@ def parse_options(cli_args):
                         dest='iterations',
                         default=1,
                         help='Number of test iterations.')
+    parser.add_argument('--shuffle',
+                        dest='shuffle',
+                        action='store_true',
+                        help='Shuffles the order of the test files.')
     return parser.parse_args(cli_args)
 
 
-def divide_run(chunks, test_suite_source_dir, pattern=None, iterations=1):
+def divide_run(chunks,
+               test_suite_source_dir,
+               pattern=None,
+               iterations=1,
+               shuffle=False):
     commands = []
     test_files = []
 
@@ -57,6 +66,9 @@ def divide_run(chunks, test_suite_source_dir, pattern=None, iterations=1):
             os.path.relpath(p, start=test_suite_path)
             for p in glob(f'{test_suite_path}/**/*_test.ts', recursive=True)
         ]
+
+    if shuffle:
+        random.shuffle(test_files)
 
     if iterations > 1:
         for i in range(chunks):
@@ -105,7 +117,8 @@ if __name__ == '__main__':
     commands = divide_run(chunks=int(args.jobs),
                           test_suite_source_dir=args.test_suite_source_dir,
                           pattern=args.test_file_pattern,
-                          iterations=int(args.iterations))
+                          iterations=int(args.iterations),
+                          shuffle=args.shuffle)
     for command in commands:
         print(' '.join([f'{k}={v}' for k, v in command['env'].items()] +
                        command['command']))

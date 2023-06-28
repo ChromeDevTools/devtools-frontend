@@ -236,16 +236,21 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return !this.#hasSeenPrimaryPageChanged;
   }
 
-  #onPrimaryPageChanged(event: Common.EventTarget.EventTargetEvent<{frame: SDK.ResourceTreeModel.ResourceTreeFrame}>):
-      void {
-    const {frame} = event.data;
+  #onPrimaryPageChanged(
+      event: Common.EventTarget.EventTargetEvent<
+          {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}>): void {
+    const {frame, type} = event.data;
     const keptIssues = new Map<string, Issue>();
     for (const [key, issue] of this.#allIssues.entries()) {
       if (issue.isAssociatedWithRequestId(frame.loaderId)) {
         keptIssues.set(key, issue);
-      }
-      // Keep BounceTrackingIssues alive for non-user-initiated navigations.
-      if (issue.code() === Protocol.Audits.InspectorIssueCode.BounceTrackingIssue) {
+        // Keep issues for prerendered target alive in case of prerender-activation.
+      } else if (
+          (type === SDK.ResourceTreeModel.PrimaryPageChangeType.Activation) &&
+          (frame.resourceTreeModel().target() === issue.model()?.target())) {
+        keptIssues.set(key, issue);
+        // Keep BounceTrackingIssues alive for non-user-initiated navigations.
+      } else if (issue.code() === Protocol.Audits.InspectorIssueCode.BounceTrackingIssue) {
         const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
         if (networkManager?.requestForLoaderId(frame.loaderId as Protocol.Network.LoaderId)?.hasUserGesture() ===
             false) {

@@ -48,7 +48,8 @@ describeWithMockConnection('IssuesManager', () => {
     return cspIssue.details().blockedURL;
   }
 
-  it('filter out-of-scope issues', () => {
+  function assertOutOfScopeIssuesAreFiltered():
+      {issuesManager: IssuesManager.IssuesManager.IssuesManager, prerenderTarget: SDK.Target.Target} {
     const issuesManager = new IssuesManager.IssuesManager.IssuesManager();
 
     const dispatchedIssues: IssuesManager.Issue.Issue[] = [];
@@ -57,18 +58,38 @@ describeWithMockConnection('IssuesManager', () => {
 
     model.dispatchEventToListeners(
         SDK.IssuesModel.Events.IssueAdded, {issuesModel: model, inspectorIssue: mkInspectorCspIssue('url1')});
-    const anotherTarget = createTarget();
-    const anotherModel = anotherTarget.model(SDK.IssuesModel.IssuesModel);
-    assertNotNullOrUndefined(anotherModel);
-    anotherModel.dispatchEventToListeners(
-        SDK.IssuesModel.Events.IssueAdded, {issuesModel: anotherModel, inspectorIssue: mkInspectorCspIssue('url2')});
+    const prerenderTarget = createTarget({subtype: 'prerender'});
+    const prerenderModel = prerenderTarget.model(SDK.IssuesModel.IssuesModel);
+    assertNotNullOrUndefined(prerenderModel);
+    prerenderModel.dispatchEventToListeners(
+        SDK.IssuesModel.Events.IssueAdded, {issuesModel: prerenderModel, inspectorIssue: mkInspectorCspIssue('url2')});
 
     const expected = ['url1'];
     assert.deepStrictEqual(dispatchedIssues.map(getBlockedUrl), expected);
 
     assert.deepStrictEqual(Array.from(issuesManager.issues()).map(getBlockedUrl), expected);
+    return {issuesManager, prerenderTarget};
+  }
 
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
+  it('updates filtered issues when switching scope', () => {
+    const {issuesManager, prerenderTarget} = assertOutOfScopeIssuesAreFiltered();
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(prerenderTarget);
+    assert.deepStrictEqual(Array.from(issuesManager.issues()).map(getBlockedUrl), ['url2']);
+  });
+
+  it('keeps issues of prerendered page upon activation', () => {
+    const {issuesManager, prerenderTarget} = assertOutOfScopeIssuesAreFiltered();
+
+    const resourceTreeModel = prerenderTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assertNotNullOrUndefined(resourceTreeModel);
+    const frame = {url: 'http://example.com/', resourceTreeModel: () => resourceTreeModel} as
+        SDK.ResourceTreeModel.ResourceTreeFrame;
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(prerenderTarget);
+    resourceTreeModel.dispatchEventToListeners(
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});
     assert.deepStrictEqual(Array.from(issuesManager.issues()).map(getBlockedUrl), ['url2']);
   });
 

@@ -19,23 +19,22 @@ const {assert} = chai;
 
 describeWithEnvironment('FilmStripView', function() {
   setTraceModelTimeout(this);
-  async function renderView(filmStripModel: SDK.FilmStripModel.FilmStripModel):
+  async function renderView(filmStripData: TraceEngine.Extras.FilmStrip.FilmStripData):
       Promise<PerfUI.FilmStripView.FilmStripView> {
-    const filmStrip = new PerfUI.FilmStripView.FilmStripView();
-    filmStrip.setModel(filmStripModel, filmStripModel.zeroTime());
+    const filmStripView = new PerfUI.FilmStripView.FilmStripView();
+    filmStripView.setModel(filmStripData);
     const container = document.createElement('div');
     renderElementIntoDOM(container);
-    filmStrip.markAsRoot();
-    filmStrip.show(container);
+    filmStripView.markAsRoot();
+    filmStripView.show(container);
     // Give the film strip time to render.
     await raf();
-    return filmStrip;
+    return filmStripView;
   }
 
   it('generates frames and timestamps', async () => {
-    const {tracingModel, traceParsedData} = await allModelsFromFile('web-dev.json.gz');
-    const filmStripModel = new SDK.FilmStripModel.FilmStripModel(tracingModel);
-    const filmStrip = await renderView(filmStripModel);
+    const {traceParsedData} = await allModelsFromFile('web-dev.json.gz');
+    const filmStrip = await renderView(TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceParsedData));
     const renderedFrames = Array.from(filmStrip.contentElement.querySelectorAll<HTMLElement>('div.frame'));
     assert.lengthOf(renderedFrames, 5);
     const expectedTimeLabelsForFrames = [

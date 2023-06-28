@@ -30,6 +30,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/unittests/front_end/*",
     "../../core/sdk/*",
+    "../../panels/network/*",
     "../../panels/timeline/*",
   ]
 

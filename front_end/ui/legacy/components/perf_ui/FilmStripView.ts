@@ -5,7 +5,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Platform from '../../../../core/platform/platform.js';
+
 import type * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
@@ -39,8 +39,8 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FilmStrip
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(UI.Widget.HBox) {
   private statusLabel: HTMLElement;
-  private zeroTime!: number;
-  private model!: SDK.FilmStripModel.FilmStripModel;
+  private zeroTime: TraceEngine.Types.Timing.MilliSeconds = TraceEngine.Types.Timing.MilliSeconds(0);
+  #filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null = null;
 
   constructor() {
     super(true);
@@ -56,19 +56,19 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
   }
 
-  setModel(filmStripModel: SDK.FilmStripModel.FilmStripModel, zeroTime: number): void {
-    this.model = filmStripModel;
-    this.zeroTime = zeroTime;
-    const frames = filmStripModel.frames();
-    if (!frames.length) {
+  setModel(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData): void {
+    this.#filmStrip = filmStrip;
+    this.zeroTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(filmStrip.zeroTime);
+
+    if (!this.#filmStrip.frames.length) {
       this.reset();
       return;
     }
     this.update();
   }
 
-  createFrameElement(frame: SDK.FilmStripModel.Frame): Promise<Element> {
-    const time = frame.timestamp;
+  createFrameElement(frame: TraceEngine.Extras.FilmStrip.FilmStripFrame): HTMLDivElement {
+    const time = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.screenshotEvent.ts);
     const frameTime = i18n.TimeUtilities.millisToString(time - this.zeroTime);
     const element = document.createElement('div');
     element.classList.add('frame');
@@ -91,39 +91,21 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     });
 
-    return frame.imageDataPromise().then(FilmStripView.setImageData.bind(null, imageElement)).then(returnElement);
-    function returnElement(): Element {
-      return element;
-    }
-  }
-
-  frameByTime(time: number): SDK.FilmStripModel.Frame {
-    function comparator(time: number, frame: SDK.FilmStripModel.Frame): number {
-      return time - frame.timestamp;
-    }
-    // Using the first frame to fill the interval between recording start
-    // and a moment the frame is taken.
-    const frames = this.model.frames();
-    const index = Math.max(Platform.ArrayUtilities.upperBound(frames, time, comparator) - 1, 0);
-    return frames[index];
+    FilmStripView.setImageData(imageElement, frame.screenshotAsString);
+    return element;
   }
 
   update(): void {
-    if (!this.model) {
-      return;
-    }
-    const frames = this.model.frames();
-    if (!frames.length) {
+    const frames = this.#filmStrip?.frames;
+    if (!frames || frames.length < 1) {
       return;
     }
 
-    function appendElements(this: FilmStripView, elements: Element[]): void {
-      this.contentElement.removeChildren();
-      for (let i = 0; i < elements.length; ++i) {
-        this.contentElement.appendChild(elements[i]);
-      }
+    const frameElements = frames.map(frame => this.createFrameElement(frame));
+    this.contentElement.removeChildren();
+    for (const element of frameElements) {
+      this.contentElement.appendChild(element);
     }
-    void Promise.all(frames.map(this.createFrameElement.bind(this))).then(appendElements.bind(this));
   }
 
   private onMouseEvent(eventName: string|symbol, timestamp: number): void {
@@ -132,12 +114,15 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.dispatchEventToListeners<any>(eventName, timestamp);
   }
 
-  private onDoubleClick(filmStripFrame: SDK.FilmStripModel.Frame): void {
-    Dialog.fromSDKFrame(filmStripFrame, TraceEngine.Types.Timing.MilliSeconds(this.zeroTime));
+  private onDoubleClick(filmStripFrame: TraceEngine.Extras.FilmStrip.FilmStripFrame): void {
+    if (!this.#filmStrip) {
+      return;
+    }
+    Dialog.fromFilmStrip(this.#filmStrip, filmStripFrame.index);
   }
 
   reset(): void {
-    this.zeroTime = 0;
+    this.zeroTime = TraceEngine.Types.Timing.MilliSeconds(0);
     this.contentElement.removeChildren();
     this.contentElement.appendChild(this.statusLabel);
   }

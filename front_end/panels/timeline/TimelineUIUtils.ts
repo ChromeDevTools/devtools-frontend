@@ -3056,7 +3056,7 @@ export class TimelineUIUtils {
     }
 
     function frameClicked(filmStripFrame: SDK.FilmStripModel.Frame): void {
-      new PerfUI.FilmStripView.Dialog(filmStripFrame, 0);
+      PerfUI.FilmStripView.Dialog.fromSDKFrame(filmStripFrame);
     }
 
     return contentHelper.fragment;

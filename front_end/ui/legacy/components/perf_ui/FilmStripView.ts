@@ -8,6 +8,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
 import * as UI from '../../legacy.js';
+import * as TraceEngine from '../../../../models/trace/trace.js';
 
 import filmStripViewStyles from './filmStripView.css.legacy.js';
 
@@ -132,7 +133,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private onDoubleClick(filmStripFrame: SDK.FilmStripModel.Frame): void {
-    new Dialog(filmStripFrame, this.zeroTime);
+    Dialog.fromSDKFrame(filmStripFrame, TraceEngine.Types.Timing.MilliSeconds(this.zeroTime));
   }
 
   reset(): void {
@@ -160,20 +161,56 @@ export type EventTypes = {
   [Events.FrameExit]: number,
 };
 
+interface DialogSDKData {
+  source: 'SDK';
+  frames: readonly SDK.FilmStripModel.Frame[];
+  index: number;
+  zeroTime: TraceEngine.Types.Timing.MilliSeconds;
+}
+
+interface DialogTraceEngineData {
+  source: 'TraceEngine';
+  index: number;
+  zeroTime: TraceEngine.Types.Timing.MilliSeconds;
+  frames: readonly TraceEngine.Extras.FilmStrip.FilmStripFrame[];
+}
+
 export class Dialog {
   private fragment: UI.Fragment.Fragment;
   private readonly widget: UI.XWidget.XWidget;
-  private frames: SDK.FilmStripModel.Frame[];
   private index: number;
-  private zeroTime: number;
-  private dialog: UI.Dialog.Dialog|null;
+  private dialog: UI.Dialog.Dialog|null = null;
 
-  constructor(filmStripFrame: SDK.FilmStripModel.Frame, zeroTime?: number) {
+  #data: DialogSDKData|DialogTraceEngineData;
+
+  static fromSDKFrame(frame: SDK.FilmStripModel.Frame, zeroTime?: TraceEngine.Types.Timing.MilliSeconds): Dialog {
+    const data: DialogSDKData = {
+      source: 'SDK',
+      frames: frame.model().frames(),
+      index: frame.index,
+      zeroTime: zeroTime || TraceEngine.Types.Timing.MilliSeconds(frame.model().zeroTime()),
+    };
+
+    return new Dialog(data);
+  }
+
+  static fromFilmStrip(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData, selectedFrameIndex: number): Dialog {
+    const data: DialogTraceEngineData = {
+      source: 'TraceEngine',
+      frames: filmStrip.frames,
+      index: selectedFrameIndex,
+      zeroTime: TraceEngine.Helpers.Timing.microSecondsToMilliseconds(filmStrip.zeroTime),
+    };
+    return new Dialog(data);
+  }
+
+  private constructor(data: DialogSDKData|DialogTraceEngineData) {
+    this.#data = data;
+    this.index = data.index;
     const prevButton = UI.UIUtils.createTextButton('\u25C0', this.onPrevFrame.bind(this));
     UI.Tooltip.Tooltip.install(prevButton, i18nString(UIStrings.previousFrame));
     const nextButton = UI.UIUtils.createTextButton('\u25B6', this.onNextFrame.bind(this));
     UI.Tooltip.Tooltip.install(nextButton, i18nString(UIStrings.nextFrame));
-
     this.fragment = UI.Fragment.Fragment.build`
       <x-widget flex=none margin=12px>
         <x-hbox overflow=auto border='1px solid #ddd'>
@@ -186,15 +223,11 @@ export class Dialog {
         </x-hbox>
       </x-widget>
     `;
-
     this.widget = (this.fragment.element() as UI.XWidget.XWidget);
     (this.widget as HTMLElement).tabIndex = 0;
     this.widget.addEventListener('keydown', this.keyDown.bind(this), false);
-
-    this.frames = filmStripFrame.model().frames();
-    this.index = filmStripFrame.index;
-    this.zeroTime = zeroTime || filmStripFrame.model().zeroTime();
     this.dialog = null;
+
     void this.render();
   }
 
@@ -202,6 +235,14 @@ export class Dialog {
     if (this.dialog) {
       this.dialog.hide();
     }
+  }
+
+  #framesCount(): number {
+    return this.#data.frames.length;
+  }
+
+  #zeroTime(): TraceEngine.Types.Timing.MilliSeconds {
+    return this.#data.zeroTime;
   }
 
   private resize(): void {
@@ -251,7 +292,7 @@ export class Dialog {
   }
 
   private onNextFrame(): void {
-    if (this.index < this.frames.length - 1) {
+    if (this.index < this.#framesCount() - 1) {
       ++this.index;
     }
     void this.render();
@@ -263,19 +304,33 @@ export class Dialog {
   }
 
   private onLastFrame(): void {
-    this.index = this.frames.length - 1;
+    this.index = this.#framesCount() - 1;
     void this.render();
   }
 
-  private render(): Promise<void> {
-    const frame = this.frames[this.index];
-    this.fragment.$('time').textContent = i18n.TimeUtilities.millisToString(frame.timestamp - this.zeroTime);
-    return frame.imageDataPromise()
-        .then(imageData => {
-          const image = (this.fragment.$('image') as HTMLImageElement);
-          image.setAttribute('data-frame-index', this.index.toString());
-          return FilmStripView.setImageData(image, imageData);
-        })
-        .then(this.resize.bind(this));
+  async #currentFrameData(): Promise<{snapshot: string, timestamp: TraceEngine.Types.Timing.MilliSeconds}> {
+    if (this.#data.source === 'SDK') {
+      const frame = this.#data.frames[this.index];
+      const snapshot = await frame.imageDataPromise();
+      return {
+        timestamp: TraceEngine.Types.Timing.MilliSeconds(frame.timestamp),
+        snapshot: snapshot || '',
+      };
+    }
+    const frame = this.#data.frames[this.index];
+    return {
+      snapshot: frame.screenshotAsString,
+      timestamp: TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.screenshotEvent.ts),
+    };
+  }
+
+  private async render(): Promise<void> {
+    const currentFrameData = await this.#currentFrameData();
+    this.fragment.$('time').textContent =
+        i18n.TimeUtilities.millisToString(currentFrameData.timestamp - this.#zeroTime());
+    const image = (this.fragment.$('image') as HTMLImageElement);
+    image.setAttribute('data-frame-index', this.index.toString());
+    FilmStripView.setImageData(image, currentFrameData.snapshot);
+    this.resize();
   }
 }

@@ -7,6 +7,7 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Platform from '../../../core/platform/platform.js';
 
 export interface FilmStripData {
+  zeroTime: Types.Timing.MicroSeconds;
   frames: readonly FilmStripFrame[];
 }
 
@@ -43,7 +44,8 @@ export function filmStripFromTraceEngine(
     frames.push(frame);
   }
 
-  const result = {
+  const result: FilmStripData = {
+    zeroTime,
     frames: Array.from(frames),
   };
 

@@ -13,11 +13,12 @@ import {
   renderElementIntoDOM,
 } from '../../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
-import {allModelsFromFile} from '../../../../helpers/TraceHelpers.js';
+import {allModelsFromFile, setTraceModelTimeout} from '../../../../helpers/TraceHelpers.js';
 
 const {assert} = chai;
 
-describeWithEnvironment('FilmStripView', () => {
+describeWithEnvironment('FilmStripView', function() {
+  setTraceModelTimeout(this);
   async function renderView(filmStripModel: SDK.FilmStripModel.FilmStripModel):
       Promise<PerfUI.FilmStripView.FilmStripView> {
     const filmStrip = new PerfUI.FilmStripView.FilmStripView();

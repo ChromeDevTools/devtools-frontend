@@ -122,11 +122,9 @@ PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) 
   const tracingModel = new SDK.TracingModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();
-  const filmStripModel = new SDK.FilmStripModel(tracingModel);
   const performanceModel = new Timeline.PerformanceModel();
   await performanceModel.setTracingModel(tracingModel);
   UI.panels.timeline.performanceModel = performanceModel;
-  UI.panels.timeline.filmStripModel = filmStripModel;
   UI.panels.timeline.applyFilters(performanceModel);
   return performanceModel;
 };

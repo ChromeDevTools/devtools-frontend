@@ -520,7 +520,7 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
 
 export class SamplingHeapProfileNode extends SDK.ProfileTreeModel.ProfileNode {
   override self: number;
-  constructor(node: Protocol.HeapProfiler.SamplingHeapProfileNode, target: SDK.Target.Target|null) {
+  constructor(node: Protocol.HeapProfiler.SamplingHeapProfileNode) {
     const callFrame = node.callFrame || ({
                         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
                         // @ts-expect-error
@@ -538,7 +538,7 @@ export class SamplingHeapProfileNode extends SDK.ProfileTreeModel.ProfileNode {
                         // @ts-expect-error
                         columnNumber: node['columnNumber'] - 1,
                       } as Protocol.Runtime.CallFrame);
-    super(callFrame, target);
+    super(callFrame);
     this.self = node.selfSize;
   }
 }
@@ -568,18 +568,17 @@ export class SamplingHeapProfileModel extends SDK.ProfileTreeModel.ProfileTreeMo
       }
     }
 
-    this.initialize(translateProfileTree(profile.head, this.target()));
+    this.initialize(translateProfileTree(profile.head));
 
-    function translateProfileTree(
-        root: Protocol.HeapProfiler.SamplingHeapProfileNode, target: SDK.Target.Target|null): SamplingHeapProfileNode {
-      const resultRoot = new SamplingHeapProfileNode(root, target);
+    function translateProfileTree(root: Protocol.HeapProfiler.SamplingHeapProfileNode): SamplingHeapProfileNode {
+      const resultRoot = new SamplingHeapProfileNode(root);
       const sourceNodeStack = [root];
       const targetNodeStack = [resultRoot];
       while (sourceNodeStack.length) {
         const sourceNode = (sourceNodeStack.pop() as Protocol.HeapProfiler.SamplingHeapProfileNode);
         const targetNode = (targetNodeStack.pop() as SamplingHeapProfileNode);
         targetNode.children = sourceNode.children.map(child => {
-          const targetChild = new SamplingHeapProfileNode(child, target);
+          const targetChild = new SamplingHeapProfileNode(child);
           if (nodeIdToSizeMap) {
             targetChild.self = nodeIdToSizeMap.get(child.id) || 0;
           }

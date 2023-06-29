@@ -1111,7 +1111,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.overviewPane.setBounds(model.timelineModel().minimumRecordTime(), model.timelineModel().maximumRecordTime());
       PerfUI.LineLevelProfile.Performance.instance().reset();
       for (const profile of model.timelineModel().cpuProfiles()) {
-        PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile);
+        PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile.cpuProfileData, profile.target);
       }
       this.setMarkers(model.timelineModel());
       this.flameChart.setSelection(null);

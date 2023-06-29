@@ -83,22 +83,20 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.autoWindowTimes();
   }
 
-  #cpuProfileNodes(): SDK.CPUProfileDataModel.CPUProfileNode[] {
-    return this.timelineModel().cpuProfiles().flatMap(p => p.nodes() || []);
-  }
-
   async addSourceMapListeners(): Promise<void> {
     const debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
-    for (const node of this.#cpuProfileNodes()) {
-      if (!node) {
-        continue;
-      }
-      const debuggerModelToListen = this.#maybeGetDebuggerModelForNode(node);
-      if (!debuggerModelToListen) {
-        continue;
-      }
+    for (const profile of this.timelineModel().cpuProfiles()) {
+      for (const node of profile.cpuProfileData.nodes() || []) {
+        if (!node) {
+          continue;
+        }
+        const debuggerModelToListen = this.#maybeGetDebuggerModelForNode(node, profile.target);
+        if (!debuggerModelToListen) {
+          continue;
+        }
 
-      debuggerModelsToListen.add(debuggerModelToListen);
+        debuggerModelsToListen.add(debuggerModelToListen);
+      }
     }
     for (const debuggerModel of debuggerModelsToListen) {
       debuggerModel.sourceMapManager().addEventListener(
@@ -110,8 +108,8 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   // If a node corresponds to a script that has not been parsed or a script
   // that has a source map, we should listen to SourceMapAttached events to
   // attempt a function name resolving.
-  #maybeGetDebuggerModelForNode(node: SDK.CPUProfileDataModel.CPUProfileNode): SDK.DebuggerModel.DebuggerModel|null {
-    const target = node.target();
+  #maybeGetDebuggerModelForNode(node: SDK.CPUProfileDataModel.CPUProfileNode, target: SDK.Target.Target|null):
+      SDK.DebuggerModel.DebuggerModel|null {
     const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return null;
@@ -125,10 +123,13 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   }
 
   async #resolveNamesFromCPUProfile(): Promise<void> {
-    for (const node of this.#cpuProfileNodes()) {
-      const resolvedFunctionName =
-          await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(node.callFrame, node.target());
-      node.setFunctionName(resolvedFunctionName);
+    for (const profile of this.timelineModel().cpuProfiles()) {
+      const target = profile.target;
+      for (const node of profile.cpuProfileData.nodes() || []) {
+        const resolvedFunctionName =
+            await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(node.callFrame, target);
+        node.setFunctionName(resolvedFunctionName);
+      }
     }
   }
 

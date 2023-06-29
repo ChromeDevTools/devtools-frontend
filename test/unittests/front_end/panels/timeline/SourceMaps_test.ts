@@ -135,7 +135,7 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
        const cpuProfiles = performanceModel.timelineModel().cpuProfiles();
        assert.strictEqual(cpuProfiles.length, 1);
 
-       const nodes = cpuProfiles[0].nodes();
+       const nodes = cpuProfiles[0].cpuProfileData.nodes();
        assert.strictEqual(nodes?.length, profile.nodes.length);
 
        const sourceMapAttachedPromise = new Promise<void>(
@@ -185,7 +185,7 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
     }
 
     const cpuProfiles = performanceModel.timelineModel().cpuProfiles();
-    const nodes = cpuProfiles[0].nodes();
+    const nodes = cpuProfiles[0].cpuProfileData.nodes();
 
     Root.Runtime.experiments.setEnabled('wasmDWARFDebugging', true);
     const pluginManager =

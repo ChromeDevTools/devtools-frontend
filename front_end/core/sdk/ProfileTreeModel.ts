@@ -5,8 +5,6 @@
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Platform from '../platform/platform.js';
 
-import {type Target} from './Target.js';
-
 export class ProfileNode {
   callFrame: Protocol.Runtime.CallFrame;
   callUID: string;
@@ -18,11 +16,7 @@ export class ProfileNode {
   functionName: string;
   depth!: number;
   deoptReason!: string|null;
-  /**
-   * The target a node's call frame belongs to.
-   */
-  #target: Target|null;
-  constructor(callFrame: Protocol.Runtime.CallFrame, target: Target|null) {
+  constructor(callFrame: Protocol.Runtime.CallFrame) {
     this.callFrame = callFrame;
     this.callUID = `${callFrame.functionName}@${callFrame.scriptId}:${callFrame.lineNumber}:${callFrame.columnNumber}`;
     this.self = 0;
@@ -31,7 +25,6 @@ export class ProfileNode {
     this.functionName = callFrame.functionName;
     this.parent = null;
     this.children = [];
-    this.#target = target;
   }
 
   get scriptId(): Protocol.Runtime.ScriptId {
@@ -56,19 +49,13 @@ export class ProfileNode {
     }
     this.functionName = name;
   }
-
-  target(): Target|null {
-    return this.#target;
-  }
 }
 
 export class ProfileTreeModel {
-  readonly #targetInternal: Target|null;
   root!: ProfileNode;
   total!: number;
   maxDepth!: number;
-  constructor(target?: Target|null) {
-    this.#targetInternal = target || null;
+  constructor() {
   }
 
   initialize(root: ProfileNode): void {
@@ -116,9 +103,5 @@ export class ProfileTreeModel {
       }
     }
     return root.total;
-  }
-
-  target(): Target|null {
-    return this.#targetInternal;
   }
 }

@@ -125,7 +125,8 @@ export class CPUProfileView extends ProfileView implements UI.SearchableView.Sea
   override wasShown(): void {
     super.wasShown();
     PerfUI.LineLevelProfile.Performance.instance().reset();
-    PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(this.profileHeader.profileModel());
+    PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(
+        this.profileHeader.profileModel(), this.profileHeader.target);
   }
 
   override columnHeader(columnId: string): Common.UIString.LocalizedString {
@@ -253,10 +254,12 @@ export class CPUProfileType extends ProfileType {
 export class CPUProfileHeader extends WritableProfileHeader {
   cpuProfilerModel: SDK.CPUProfilerModel.CPUProfilerModel|null;
   profileModelInternal?: SDK.CPUProfileDataModel.CPUProfileDataModel;
+  target: SDK.Target.Target|null;
 
   constructor(cpuProfilerModel: SDK.CPUProfilerModel.CPUProfilerModel|null, type: CPUProfileType, title?: string) {
     super(cpuProfilerModel && cpuProfilerModel.debuggerModel(), type, title);
     this.cpuProfilerModel = cpuProfilerModel;
+    this.target = this.cpuProfilerModel && this.cpuProfilerModel.target() || null;
   }
 
   override createView(): ProfileView {
@@ -278,8 +281,7 @@ export class CPUProfileHeader extends WritableProfileHeader {
   }
 
   override setProfile(profile: Protocol.Profiler.Profile): void {
-    const target = this.cpuProfilerModel && this.cpuProfilerModel.target() || null;
-    this.profileModelInternal = new SDK.CPUProfileDataModel.CPUProfileDataModel(profile, target);
+    this.profileModelInternal = new SDK.CPUProfileDataModel.CPUProfileDataModel(profile);
   }
 }
 

@@ -7,7 +7,6 @@ import * as Platform from '../platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
-import {type Target} from './Target.js';
 
 export class CPUProfileNode extends ProfileNode {
   override id: number;
@@ -15,7 +14,7 @@ export class CPUProfileNode extends ProfileNode {
   positionTicks: Protocol.Profiler.PositionTickInfo[]|undefined;
   override deoptReason: string|null;
 
-  constructor(node: Protocol.Profiler.ProfileNode, sampleTime: number, target: Target|null) {
+  constructor(node: Protocol.Profiler.ProfileNode, sampleTime: number) {
     const callFrame = node.callFrame || ({
                         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
                         // @ts-expect-error
@@ -33,7 +32,7 @@ export class CPUProfileNode extends ProfileNode {
                         // @ts-expect-error
                         columnNumber: node['columnNumber'] - 1,
                       } as Protocol.Runtime.CallFrame);
-    super(callFrame, target);
+    super(callFrame);
     this.id = node.id;
     this.self = (node.hitCount || 0) * sampleTime;
     this.positionTicks = node.positionTicks;
@@ -63,8 +62,8 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   idleNode?: ProfileNode;
   #stackStartTimes?: Float64Array;
   #stackChildrenDuration?: Float64Array;
-  constructor(profile: Protocol.Profiler.Profile, target: Target|null) {
-    super(target);
+  constructor(profile: Protocol.Profiler.Profile) {
+    super();
     // @ts-ignore Legacy types
     const isLegacyFormat = Boolean(profile['head']);
     if (isLegacyFormat) {
@@ -208,7 +207,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     const idToUseForRemovedNode = new Map<number, number>([[root.id, root.id]]);
     this.#idToParsedNode = new Map();
 
-    const resultRoot = new CPUProfileNode(root, sampleTime, this.target());
+    const resultRoot = new CPUProfileNode(root, sampleTime);
     this.#idToParsedNode.set(root.id, resultRoot);
     if (!root.children) {
       throw new Error('Missing children for root');
@@ -224,7 +223,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       if (!sourceNode.children) {
         sourceNode.children = [];
       }
-      const targetNode = new CPUProfileNode(sourceNode, sampleTime, this.target());
+      const targetNode = new CPUProfileNode(sourceNode, sampleTime);
       if (keepNatives || !isNativeNode(sourceNode)) {
         parentNode.children.push(targetNode);
         parentNode = targetNode;

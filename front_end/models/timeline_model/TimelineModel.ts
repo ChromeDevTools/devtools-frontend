@@ -120,7 +120,8 @@ export class TimelineModelImpl {
   private mainFrameNodeId!: number|null;
   private pageFrames!: Map<Protocol.Page.FrameId, PageFrame>;
   private auctionWorklets!: Map<string, AuctionWorklet>;
-  private cpuProfilesInternal!: SDK.CPUProfileDataModel.CPUProfileDataModel[];
+  private cpuProfilesInternal!:
+      {cpuProfileData: SDK.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null}[];
   private workerIdByThread!: WeakMap<SDK.TracingModel.Thread, string>;
   private requestsFromBrowser!: Map<string, SDK.TracingModel.Event>;
   private mainFrame!: PageFrame;
@@ -315,7 +316,7 @@ export class TimelineModelImpl {
     return data && data['frame'] || null;
   }
 
-  cpuProfiles(): SDK.CPUProfileDataModel.CPUProfileDataModel[] {
+  cpuProfiles(): {cpuProfileData: SDK.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null}[] {
     return this.cpuProfilesInternal;
   }
 
@@ -769,8 +770,8 @@ export class TimelineModelImpl {
 
     try {
       const profile = (cpuProfile as Protocol.Profiler.Profile);
-      const jsProfileModel = new SDK.CPUProfileDataModel.CPUProfileDataModel(profile, target);
-      this.cpuProfilesInternal.push(jsProfileModel);
+      const jsProfileModel = new SDK.CPUProfileDataModel.CPUProfileDataModel(profile);
+      this.cpuProfilesInternal.push({cpuProfileData: jsProfileModel, target});
       return jsProfileModel;
     } catch (e) {
       Common.Console.Console.instance().error('Failed to parse CPU profile.');

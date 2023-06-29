@@ -33,9 +33,8 @@ export class Performance {
     this.helper.reset();
   }
 
-  private appendLegacyCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel): void {
-    const target = profile.target();
-
+  private appendLegacyCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null):
+      void {
     const nodesToGo: SDK.CPUProfileDataModel.CPUProfileNode[] = [profile.profileHead];
     const sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
     while (nodesToGo.length) {
@@ -59,13 +58,12 @@ export class Performance {
     }
   }
 
-  appendCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel): void {
+  appendCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null): void {
     if (!profile.lines) {
-      this.appendLegacyCPUProfile(profile);
+      this.appendLegacyCPUProfile(profile, target);
       this.helper.scheduleUpdate();
       return;
     }
-    const target = profile.target();
     if (!profile.samples) {
       return;
     }

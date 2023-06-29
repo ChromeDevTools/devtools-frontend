@@ -101,6 +101,7 @@ export class InspectorBackend {
   readonly agentPrototypes: Map<ProtocolDomainName, _AgentPrototype> = new Map();
   #initialized: boolean = false;
   #eventParameterNamesForDomain = new Map<ProtocolDomainName, EventParameterNames>();
+  readonly typeMap = new Map<QualifiedName, CommandParameter[]>();
 
   private getOrCreateEventParameterNamesForDomain(domain: ProtocolDomainName): EventParameterNames {
     let map = this.#eventParameterNamesForDomain.get(domain);
@@ -156,6 +157,11 @@ export class InspectorBackend {
 
     // @ts-ignore globalThis global namespace pollution
     globalThis.Protocol[domain][name] = values;
+    this.#initialized = true;
+  }
+
+  registerType(method: QualifiedName, parameters: CommandParameter[]): void {
+    this.typeMap.set(method, parameters);
     this.#initialized = true;
   }
 

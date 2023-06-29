@@ -8,6 +8,7 @@ import * as Platform from '../../../core/platform/platform.js';
 
 export interface FilmStripData {
   zeroTime: Types.Timing.MicroSeconds;
+  spanTime: Types.Timing.MicroSeconds;
   frames: readonly FilmStripFrame[];
 }
 
@@ -37,6 +38,7 @@ export function filmStripFromTraceEngine(
   const frames: FilmStripFrame[] = [];
 
   const zeroTime = typeof customZeroTime !== 'undefined' ? customZeroTime : traceData.Meta.traceBounds.min;
+  const spanTime = traceData.Meta.traceBounds.range;
   const fromCache = filmStripCache.get(traceData)?.get(zeroTime);
   if (fromCache) {
     return fromCache;
@@ -56,6 +58,7 @@ export function filmStripFromTraceEngine(
 
   const result: FilmStripData = {
     zeroTime,
+    spanTime,
     frames: Array.from(frames),
   };
 

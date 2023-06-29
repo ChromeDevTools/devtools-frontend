@@ -33,6 +33,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -306,18 +307,17 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
 }
 
 export class TimelineFilmStripOverview extends TimelineEventOverview {
-  private frameToImagePromise: Map<SDK.FilmStripModel.Frame, Promise<HTMLImageElement>>;
-  private lastFrame: SDK.FilmStripModel.Frame|null;
+  private frameToImagePromise: Map<TraceEngine.Extras.FilmStrip.FilmStripFrame, Promise<HTMLImageElement>>;
+  private lastFrame: TraceEngine.Extras.FilmStrip.FilmStripFrame|null = null;
   private lastElement: Element|null;
   private drawGeneration?: symbol;
   private emptyImage?: HTMLImageElement;
-  private imageWidth?: number;
-  #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
+  #filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null = null;
 
-  constructor(filmStripModel: SDK.FilmStripModel.FilmStripModel) {
+  constructor(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData) {
     super('filmstrip', null);
     this.frameToImagePromise = new Map();
-    this.#filmStripModel = filmStripModel;
+    this.#filmStrip = filmStrip;
     this.lastFrame = null;
     this.lastElement = null;
     this.reset();
@@ -325,7 +325,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
 
   override update(): void {
     super.update();
-    const frames = this.#filmStripModel ? this.#filmStripModel.frames() : [];
+    const frames = this.#filmStrip ? this.#filmStrip.frames : [];
     if (!frames.length) {
       return;
     }
@@ -347,10 +347,10 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     });
   }
 
-  private async imageByFrame(frame: SDK.FilmStripModel.Frame): Promise<HTMLImageElement|null> {
+  private async imageByFrame(frame: TraceEngine.Extras.FilmStrip.FilmStripFrame): Promise<HTMLImageElement|null> {
     let imagePromise: Promise<HTMLImageElement|null>|undefined = this.frameToImagePromise.get(frame);
     if (!imagePromise) {
-      const data = await frame.imageDataPromise();
+      const data = frame.screenshotAsString;
       imagePromise = UI.UIUtils.loadImageFromData(data);
       this.frameToImagePromise.set(frame, (imagePromise as Promise<HTMLImageElement>));
     }
@@ -361,21 +361,22 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     if (!imageWidth || !this.model) {
       return;
     }
-    if (!this.#filmStripModel || this.#filmStripModel.frames().length < 1) {
+    if (!this.#filmStrip || this.#filmStrip.frames.length < 1) {
       return;
     }
     const padding = TimelineFilmStripOverview.Padding;
     const width = this.width();
-    const zeroTime = this.#filmStripModel.zeroTime();
-    const spanTime = this.#filmStripModel.spanTime();
+    const zeroTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(this.#filmStrip.zeroTime);
+    const spanTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(this.#filmStrip.spanTime);
     const scale = spanTime / width;
     const context = this.context();
     const drawGeneration = this.drawGeneration;
 
     context.beginPath();
     for (let x = padding; x < width; x += imageWidth + 2 * padding) {
-      const time = zeroTime + (x + imageWidth / 2) * scale;
-      const frame = this.#filmStripModel.frameByTimestamp(time);
+      const time = TraceEngine.Types.Timing.MilliSeconds(zeroTime + (x + imageWidth / 2) * scale);
+      const timeMicroSeconds = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(time);
+      const frame = TraceEngine.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, timeMicroSeconds);
       if (!frame) {
         continue;
       }
@@ -395,7 +396,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
   }
 
   override async overviewInfoPromise(x: number): Promise<Element|null> {
-    if (!this.#filmStripModel || this.#filmStripModel.frames().length === 0) {
+    if (!this.#filmStrip || this.#filmStrip.frames.length === 0) {
       return null;
     }
 
@@ -403,8 +404,9 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     if (!calculator) {
       return null;
     }
-    const time = calculator.positionToTime(x);
-    const frame = this.#filmStripModel.frameByTimestamp(time);
+    const timeMilliSeconds = TraceEngine.Types.Timing.MilliSeconds(calculator.positionToTime(x));
+    const timeMicroSeconds = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(timeMilliSeconds);
+    const frame = TraceEngine.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, timeMicroSeconds);
     if (frame === this.lastFrame) {
       return this.lastElement;
     }
@@ -424,7 +426,6 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     this.lastFrame = null;
     this.lastElement = null;
     this.frameToImagePromise = new Map();
-    this.imageWidth = 0;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

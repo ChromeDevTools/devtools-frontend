@@ -2,20 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
+import * as Logs from '../../../../models/logs/logs.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
+import * as RequestLinkIcon from '../../../../ui/components/request_link_icon/request_link_icon.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
-import * as NetworkForward from '../../../network/forward/forward.js';
 
 import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css.js';
 import {prefetchFailureReason, prerenderFailureReason} from './PreloadingString.js';
@@ -69,10 +68,6 @@ const UIStrings = {
    *@description Description: status
    */
   detailedStatusFailure: 'Preloading failed.',
-  /**
-   *@description button: Title of button to reveal the corresponding request of rule set in Network panel
-   */
-  buttonClickToRevealInNetworkPanel: 'Click to reveal in Network panel',
   /**
    *@description button: Contents of button to inspect prerendered page
    */
@@ -137,6 +132,7 @@ export type PreloadingDetailsReportViewData = PreloadingDetailsReportViewDataInt
 interface PreloadingDetailsReportViewDataInternal {
   preloadingAttempt: SDK.PreloadingModel.PreloadingAttempt;
   ruleSets: Protocol.Preload.RuleSet[];
+  requestResolver?: Logs.RequestResolver.RequestResolver;
 }
 
 export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
@@ -202,46 +198,26 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
     assertNotNullOrUndefined(this.#data);
     const attempt = this.#data.preloadingAttempt;
 
-    let request;
-    if (attempt.action === Protocol.Preload.SpeculationAction.Prefetch) {
-      const requestId = attempt.requestId;
-      request = SDK.TargetManager.TargetManager.instance()
-                    .scopeTarget()
-                    ?.model(SDK.NetworkManager.NetworkManager)
-                    ?.requestForId(requestId) ||
-          null;
-    } else {
-      request = null;
-    }
-
     let value;
-    if (request !== null) {
-      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-          request, NetworkForward.UIRequestLocation.UIRequestTabs.Preview, {clearFilter: false});
-      const reveal = async(): Promise<void> => {
-        await Common.Revealer.reveal(requestLocation);
-      };
-
+    if (attempt.action === Protocol.Preload.SpeculationAction.Prefetch && attempt.requestId !== undefined) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       value = LitHtml.html`
-          <div class="text-ellipsis">
-            <button class="link" role="link"
-              @click=${reveal}
-              title=${i18nString(UIStrings.buttonClickToRevealInNetworkPanel)}
-            >
-              <${IconButton.Icon.Icon.litTagName} .data=${{
-                iconName: 'arrow-up-down-circle',
-                color: 'var(--icon-link)',
-                width: '16px',
-                height: '16px',
-              } as IconButton.Icon.IconData}>
-              </${IconButton.Icon.Icon.litTagName}>
-              ${attempt.key.url}
-            </button>
-          </div>
+          <${RequestLinkIcon.RequestLinkIcon.RequestLinkIcon.litTagName}
+            .data=${
+              {
+                affectedRequest: {
+                  requestId: attempt.requestId,
+                  url: attempt.key.url,
+                },
+                requestResolver: this.#data.requestResolver || new Logs.RequestResolver.RequestResolver(),
+                displayURL: true,
+                urlToDisplay: attempt.key.url,
+              } as RequestLinkIcon.RequestLinkIcon.RequestLinkIconData
+            }
+          >
+          </${RequestLinkIcon.RequestLinkIcon.RequestLinkIcon.litTagName}>
       `;
-      // clang-format on
     } else {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off

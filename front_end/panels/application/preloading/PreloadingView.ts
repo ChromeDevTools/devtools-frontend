@@ -74,20 +74,20 @@ const UIStrings = {
   /**
    *@description Title in infobar
    */
-  warningTitlePreloadingDisabledByFeatureFlag: 'Preloading was disabled, but is force-enabled now',
+  warningTitlePrefetchDisabledByHoldback: 'Prefetch was disabled, but is force-enabled now',
   /**
    *@description Detail in infobar
    */
-  warningDetailPreloadingDisabledByFeatureFlag:
-      'Preloading is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons.',
+  warningDetailPrefetchDisabledByHoldback:
+      'Prefetch is forced-enabled because DevTools is open. When DevTools is closed, prefetch will be disabled because this browser session is part of a holdback group used for performance comparisons.',
   /**
    *@description Title in infobar
    */
-  warningTitlePrerenderingDisabledByFeatureFlag: 'Prerendering was disabled, but is force-enabled now',
+  warningTitlePrerenderingDisabledByHoldback: 'Prerendering was disabled, but is force-enabled now',
   /**
    *@description Detail in infobar
    */
-  warningDetailPrerenderingDisabledByFeatureFlag:
+  warningDetailPrerenderingDisabledByHoldback:
       'Prerendering is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons.',
   /**
    *@description Title of preloading state disabled warning in infobar
@@ -663,15 +663,15 @@ export class PreloadingWarningsView extends UI.Widget.VBox {
     super(/* isWebComponent */ false, /* delegatesFocus */ false);
   }
 
-  onWarningsUpdated(event: Common.EventTarget.EventTargetEvent<SDK.PreloadingModel.PreloadWarnings>): void {
+  onWarningsUpdated(args: Common.EventTarget.EventTargetEvent<Protocol.Preload.PreloadEnabledStateUpdatedEvent>): void {
     // TODO(crbug.com/1384419): Add more information in PreloadEnabledState from
     // backend to distinguish the details of the reasons why preloading is
     // disabled.
-    function createDisabledMessages(warnings: SDK.PreloadingModel.PreloadWarnings): HTMLDivElement|null {
+    function createDisabledMessages(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): HTMLDivElement|null {
       const detailsMessage = document.createElement('div');
       let shouldShowWarning = false;
 
-      if (warnings.disabledByPreference) {
+      if (event.disabledByPreference) {
         const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
         preloadingSettingLink.href = 'chrome://settings/cookies';
         preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPageSettings);
@@ -684,14 +684,14 @@ export class PreloadingWarningsView extends UI.Widget.VBox {
         shouldShowWarning = true;
       }
 
-      if (warnings.disabledByDataSaver) {
+      if (event.disabledByDataSaver) {
         const element = document.createElement('div');
         element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByDatasaver));
         detailsMessage.appendChild(element);
         shouldShowWarning = true;
       }
 
-      if (warnings.disabledByBatterySaver) {
+      if (event.disabledByBatterySaver) {
         const element = document.createElement('div');
         element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByBatterysaver));
         detailsMessage.appendChild(element);
@@ -701,21 +701,21 @@ export class PreloadingWarningsView extends UI.Widget.VBox {
       return shouldShowWarning ? detailsMessage : null;
     }
 
-    const warnings = event.data;
-    const detailsMessage = createDisabledMessages(warnings);
+    const event = args.data;
+    const detailsMessage = createDisabledMessages(event);
     if (detailsMessage !== null) {
       this.showInfobar(i18nString(UIStrings.warningTitlePreloadingStateDisabled), detailsMessage);
     } else {
-      if (warnings.featureFlagPreloadingHoldback) {
+      if (event.disabledByHoldbackPrefetchSpeculationRules) {
         this.showInfobar(
-            i18nString(UIStrings.warningTitlePreloadingDisabledByFeatureFlag),
-            i18nString(UIStrings.warningDetailPreloadingDisabledByFeatureFlag));
+            i18nString(UIStrings.warningTitlePrefetchDisabledByHoldback),
+            i18nString(UIStrings.warningDetailPrefetchDisabledByHoldback));
       }
 
-      if (warnings.featureFlagPrerender2Holdback) {
+      if (event.disabledByHoldbackPrerenderSpeculationRules) {
         this.showInfobar(
-            i18nString(UIStrings.warningTitlePrerenderingDisabledByFeatureFlag),
-            i18nString(UIStrings.warningDetailPrerenderingDisabledByFeatureFlag));
+            i18nString(UIStrings.warningTitlePrerenderingDisabledByHoldback),
+            i18nString(UIStrings.warningDetailPrerenderingDisabledByHoldback));
       }
     }
   }

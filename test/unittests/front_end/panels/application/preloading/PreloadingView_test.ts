@@ -47,23 +47,8 @@ function assertGridContents(gridComponent: HTMLElement, headerExpected: string[]
   assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
 }
 
-async function testWarnings(warnings: SDK.PreloadingModel.PreloadWarnings, infoTextsExpected: string[]) {
+async function testWarnings(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent, infoTextsExpected: string[]) {
   const target = createTarget();
-
-  sinon.stub(target.systemInfo(), 'invoke_getFeatureState').callsFake(async x => {
-    let featureEnabled;
-    switch (x.featureState) {
-      case 'PreloadingHoldback':
-        featureEnabled = warnings.featureFlagPreloadingHoldback;
-        break;
-      case 'PrerenderHoldback':
-        featureEnabled = warnings.featureFlagPrerender2Holdback;
-        break;
-      default:
-        throw new Error('unreachable');
-    }
-    return {featureEnabled} as Protocol.SystemInfo.GetFeatureStateResponse;
-  });
 
   const warningsUpdatedPromise: Promise<void> = new Promise(resolve => {
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
@@ -73,11 +58,7 @@ async function testWarnings(warnings: SDK.PreloadingModel.PreloadWarnings, infoT
 
   const view = createRuleSetView(target);
 
-  dispatchEvent(target, 'Preload.preloadEnabledStateUpdated', {
-    disabledByPreference: warnings.disabledByPreference,
-    disabledByDataSaver: warnings.disabledByDataSaver,
-    disabledByBatterySaver: warnings.disabledByBatterySaver,
-  });
+  dispatchEvent(target, 'Preload.preloadEnabledStateUpdated', event);
 
   await warningsUpdatedPromise;
   await coordinator.done();
@@ -549,74 +530,74 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
     );
   });
 
-  it('shows no warnings if holdback flags are disabled', async () => {
+  it('shows no warnings if nothing disabled', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: false,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: false,
           disabledByDataSaver: false,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: false,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
         []);
   });
 
-  it('shows an warning if PreloadingHoldback enabled', async () => {
+  it('shows an warning if prefetch is disabled by holdback', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: true,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: false,
           disabledByDataSaver: false,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: true,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
-        ['Preloading was disabled, but is force-enabled now']);
+        ['Prefetch was disabled, but is force-enabled now']);
   });
 
-  it('shows two warnings if PreloadingHoldback and Prerender2Holdback enabled', async () => {
+  it('shows two warnings if prefetch and prerender are disabled by holdback', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: true,
-          featureFlagPrerender2Holdback: true,
           disabledByPreference: false,
           disabledByDataSaver: false,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: true,
+          disabledByHoldbackPrerenderSpeculationRules: true,
         },
-        ['Preloading was disabled, but is force-enabled now', 'Prerendering was disabled, but is force-enabled now']);
+        ['Prefetch was disabled, but is force-enabled now', 'Prerendering was disabled, but is force-enabled now']);
   });
 
-  it('shows an warning if PreloadEnabledState DisabledByPreference', async () => {
+  it('shows an warning if preloading is disabled by preference', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: false,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: true,
           disabledByDataSaver: false,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: false,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
         ['Preloading is disabled']);
   });
 
-  it('shows an warning if Preloading is disabled by DataSaver', async () => {
+  it('shows an warning if preloading is disabled by DataSaver', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: false,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: false,
           disabledByDataSaver: true,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: false,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
         ['Preloading is disabled']);
   });
 
-  it('shows an warning if Preloading is disabled by BatterySaver', async () => {
+  it('shows an warning if preloading is disabled by BatterySaver', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: false,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: false,
           disabledByDataSaver: false,
           disabledByBatterySaver: true,
+          disabledByHoldbackPrefetchSpeculationRules: false,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
         ['Preloading is disabled']);
   });
@@ -1128,11 +1109,11 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
   it('shows no warnings if holdback flags are disabled', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: false,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: false,
           disabledByDataSaver: false,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: false,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
         []);
   });
@@ -1140,35 +1121,35 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
   it('shows an warning if PreloadingHoldback enabled', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: true,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: false,
           disabledByDataSaver: false,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: true,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
-        ['Preloading was disabled, but is force-enabled now']);
+        ['Prefetch was disabled, but is force-enabled now']);
   });
 
   it('shows two warnings if PreloadingHoldback and Prerender2Holdback enabled', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: true,
-          featureFlagPrerender2Holdback: true,
           disabledByPreference: false,
           disabledByDataSaver: false,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: true,
+          disabledByHoldbackPrerenderSpeculationRules: true,
         },
-        ['Preloading was disabled, but is force-enabled now', 'Prerendering was disabled, but is force-enabled now']);
+        ['Prefetch was disabled, but is force-enabled now', 'Prerendering was disabled, but is force-enabled now']);
   });
 
   it('shows an warning if PreloadEnabledState DisabledByPreference', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: false,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: true,
           disabledByDataSaver: false,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: false,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
         ['Preloading is disabled']);
   });
@@ -1176,11 +1157,11 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
   it('shows an warning if Preloading is disabled by DataSaver', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: false,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: false,
           disabledByDataSaver: true,
           disabledByBatterySaver: false,
+          disabledByHoldbackPrefetchSpeculationRules: false,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
         ['Preloading is disabled']);
   });
@@ -1188,11 +1169,11 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
   it('shows an warning if Preloading is disabled by BatterySaver', async () => {
     await testWarnings(
         {
-          featureFlagPreloadingHoldback: false,
-          featureFlagPrerender2Holdback: false,
           disabledByPreference: false,
           disabledByDataSaver: false,
           disabledByBatterySaver: true,
+          disabledByHoldbackPrefetchSpeculationRules: false,
+          disabledByHoldbackPrerenderSpeculationRules: false,
         },
         ['Preloading is disabled']);
   });

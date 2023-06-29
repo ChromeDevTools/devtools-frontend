@@ -34,7 +34,6 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   private lastPrimaryPageModel: PreloadingModel|null = null;
   private documents: Map<Protocol.Network.LoaderId, DocumentPreloadingData> =
       new Map<Protocol.Network.LoaderId, DocumentPreloadingData>();
-  private getFeatureFlagsPromise: Promise<FeatureFlags>;
 
   constructor(target: Target) {
     super(target);
@@ -43,8 +42,6 @@ export class PreloadingModel extends SDKModel<EventTypes> {
 
     this.agent = target.preloadAgent();
     void this.agent.invoke_enable();
-
-    this.getFeatureFlagsPromise = this.getFeatureFlags();
 
     const targetInfo = target.targetInfo();
     if (targetInfo !== undefined && targetInfo.subtype === 'prerender') {
@@ -276,27 +273,8 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     this.dispatchEventToListeners(Events.ModelUpdated);
   }
 
-  private async getFeatureFlags(): Promise<FeatureFlags> {
-    const preloadingHoldbackPromise = this.target().systemInfo().invoke_getFeatureState({
-      featureState: 'PreloadingHoldback',
-    });
-    const prerender2HoldbackPromise = this.target().systemInfo().invoke_getFeatureState({
-      featureState: 'PrerenderHoldback',
-    });
-    return {
-      preloadingHoldback: (await preloadingHoldbackPromise).featureEnabled,
-      prerender2Holdback: (await prerender2HoldbackPromise).featureEnabled,
-    };
-  }
-
-  async onPreloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): Promise<void> {
-    const featureFlags = await this.getFeatureFlagsPromise;
-    const warnings = {
-      featureFlagPreloadingHoldback: featureFlags.preloadingHoldback,
-      featureFlagPrerender2Holdback: featureFlags.prerender2Holdback,
-      ...event,
-    };
-    this.dispatchEventToListeners(Events.WarningsUpdated, warnings);
+  onPreloadEnabledStateUpdated(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
+    this.dispatchEventToListeners(Events.WarningsUpdated, event);
   }
 }
 
@@ -311,7 +289,7 @@ export enum Events {
 
 export type EventTypes = {
   [Events.ModelUpdated]: void,
-  [Events.WarningsUpdated]: PreloadWarnings,
+  [Events.WarningsUpdated]: Protocol.Preload.PreloadEnabledStateUpdatedEvent,
 };
 
 class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
@@ -619,17 +597,4 @@ class SourceRegistry {
   update(sources: Protocol.Preload.PreloadingAttemptSource[]): void {
     this.map = new Map(sources.map(s => [makePreloadingAttemptId(s.key), s]));
   }
-}
-
-interface FeatureFlags {
-  preloadingHoldback: boolean;
-  prerender2Holdback: boolean;
-}
-
-export interface PreloadWarnings {
-  featureFlagPreloadingHoldback: boolean;
-  featureFlagPrerender2Holdback: boolean;
-  disabledByPreference: boolean;
-  disabledByDataSaver: boolean;
-  disabledByBatterySaver: boolean;
 }

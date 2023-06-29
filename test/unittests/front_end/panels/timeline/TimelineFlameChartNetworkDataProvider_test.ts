@@ -44,8 +44,12 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
 
     // The network track is default to collapsed.
     assert.isFalse(dataProvider.isExpanded());
+    // The height of collapsed network track style is 17.
+    assert.strictEqual(dataProvider.preferredHeight(), 17);
     networkTrackGroup.expanded = true;
     assert.isTrue(dataProvider.isExpanded());
+    // The max level here is 3, so `clamp(this.#maxLevel + 1, 4, 8.5)` = 4
+    assert.strictEqual(dataProvider.preferredHeight(), 17 * 4);
   });
 
   it('does not render the network track if there is no network requests', async () => {

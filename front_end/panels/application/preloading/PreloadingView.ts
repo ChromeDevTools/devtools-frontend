@@ -528,7 +528,11 @@ export class PreloadingResultView extends UI.Widget.VBox {
   }
 
   render(): void {
-    this.usedPreloading.data = this.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value);
+    this.usedPreloading.data = {
+      pageURL: SDK.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() ||
+          ('' as Platform.DevToolsPath.UrlString),
+      attempts: this.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value),
+    };
   }
 
   getUsedPreloadingForTest(): PreloadingComponents.UsedPreloadingView.UsedPreloadingView {

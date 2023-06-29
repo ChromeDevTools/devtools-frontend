@@ -1105,10 +1105,23 @@ export class TabbedPaneTab {
 
     const iconContainer = document.createElement('span');
     iconContainer.classList.add('tabbed-pane-header-tab-icon');
-    const iconNode = measuring ? this.icon.cloneNode(true) : this.icon;
+    const iconNode = measuring ? this.createMeasureClone(this.icon) : this.icon;
     iconContainer.appendChild(iconNode);
     tabElement.insertBefore(iconContainer, titleElement);
     tabIcons.set(tabElement, iconContainer);
+  }
+
+  private createMeasureClone(original: Icon|IconButton.Icon.Icon): Node {
+    if ('data' in original && original.data.width && original.data.height) {
+      // Cloning doesn't work for the icon component because the shadow
+      // root isn't copied, but it is sufficient to create a div styled
+      // to be the same size.
+      const fakeClone = document.createElement('div');
+      fakeClone.style.width = original.data.width;
+      fakeClone.style.height = original.data.height;
+      return fakeClone;
+    }
+    return original.cloneNode(true);
   }
 
   createTabElement(measuring: boolean): HTMLElement {

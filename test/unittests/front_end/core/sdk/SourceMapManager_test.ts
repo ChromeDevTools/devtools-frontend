@@ -217,6 +217,23 @@ describe('SourceMapManager', () => {
       assert.strictEqual(loadResource.callCount, 1, 'loadResource calls');
       await sourceMapManager.sourceMapForClientPromise(client);
     });
+
+    it('does not attempt to load when attach is cancelled', async () => {
+      const target = createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+      const client = new MockClient(target);
+      sourceMapManager.addEventListener(
+          SDK.SourceMapManager.Events.SourceMapWillAttach,
+          ({data: {client}}) => sourceMapManager.cancelAttachSourceMap(client));
+      const sourceMapFailedToAttach = sinon.spy();
+      sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapFailedToAttach, sourceMapFailedToAttach);
+      const loadResource = sinon.spy(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource');
+      sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL);
+      assert.strictEqual(loadResource.callCount, 0, 'loadResource calls');
+      await sourceMapManager.sourceMapForClientPromise(client);
+      assert.strictEqual(sourceMapFailedToAttach.callCount, 1, 'SourceMapFailedToAttach events');
+      assert.isTrue(sourceMapFailedToAttach.calledWith(sinon.match.hasNested('data.client', client)));
+    });
   });
 
   describe('detachSourceMap', () => {

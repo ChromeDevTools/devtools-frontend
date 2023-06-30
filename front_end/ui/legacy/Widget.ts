@@ -255,6 +255,9 @@ export class Widget {
   onLayout(): void {
   }
 
+  onDetach(): void {
+  }
+
   async ownerViewDisposed(): Promise<void> {
   }
 
@@ -366,6 +369,7 @@ export class Widget {
       // Force legal removal
       Widget.decrementWidgetCounter(parentElement, this.element);
       DOMExtension.DOMExtension.originalRemoveChild.call(parentElement, this.element);
+      this.onDetach();
     } else {
       this.element.classList.add('hidden');
     }

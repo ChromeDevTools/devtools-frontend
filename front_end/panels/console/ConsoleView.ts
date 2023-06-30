@@ -328,6 +328,8 @@ export class ConsoleView extends UI.Widget.VBox implements
   private issueToolbarThrottle: Common.Throttler.Throttler;
   private requestResolver = new Logs.RequestResolver.RequestResolver();
   private issueResolver = new IssuesManager.IssueResolver.IssueResolver();
+  #isDetached: boolean = false;
+  #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
 
   constructor(viewportThrottlerTimeout: number) {
     super();
@@ -586,8 +588,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.issueToolbarThrottle = new Common.Throttler.Throttler(100);
     issuesManager.addEventListener(
-        IssuesManager.IssuesManager.Events.IssuesCountUpdated,
-        () => this.issueToolbarThrottle.schedule(async () => this.updateIssuesToolbarItem()), this);
+        IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.#onIssuesCountUpdateBound);
   }
   static appendSettingsCheckboxToToolbar(
       toolbar: UI.Toolbar.Toolbar, settingOrSetingName: Common.Settings.Setting<boolean>|string, title: string,
@@ -613,6 +614,10 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   static clearConsole(): void {
     SDK.ConsoleModel.ConsoleModel.requestClearMessages();
+  }
+
+  #onIssuesCountUpdate(): void {
+    void this.issueToolbarThrottle.schedule(async () => this.updateIssuesToolbarItem());
   }
 
   modelAdded(model: SDK.ConsoleModel.ConsoleModel): void {
@@ -776,7 +781,17 @@ export class ConsoleView extends UI.Widget.VBox implements
     return;
   }
 
+  override onDetach(): void {
+    this.#isDetached = true;
+    const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
+    issuesManager.removeEventListener(
+        IssuesManager.IssuesManager.Events.IssuesCountUpdated, this.#onIssuesCountUpdateBound);
+  }
+
   private updateIssuesToolbarItem(): void {
+    if (this.#isDetached) {
+      return;
+    }
     const manager = IssuesManager.IssuesManager.IssuesManager.instance();
     const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(manager);
     const issuesTitleGotoIssues = manager.numberOfIssues() === 0 ?

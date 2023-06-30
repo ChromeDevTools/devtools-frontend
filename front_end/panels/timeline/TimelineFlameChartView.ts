@@ -221,7 +221,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   private updateTrack(): void {
     this.countersView.setModel(this.model, this.#selectedEvents);
-    this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
+    // TODO(crbug.com/1459265):  Change to await after migration work.
+    void this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
   }
 
   private refresh(): void {
@@ -314,7 +315,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     index = this.networkDataProvider.entryIndexForSelection(selection);
     this.networkFlameChart.setSelectedEntry(index);
     if (this.detailsView) {
-      this.detailsView.setSelection(selection);
+      // TODO(crbug.com/1459265):  Change to await after migration work.
+      void this.detailsView.setSelection(selection);
     }
   }
 

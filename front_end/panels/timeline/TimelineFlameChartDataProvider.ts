@@ -1229,7 +1229,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   entryIndexForSelection(selection: TimelineSelection|null): number {
     if (!selection || TimelineSelection.isRangeSelection(selection.object) ||
-        TimelineSelection.isNetworkRequestSelection(selection.object)) {
+        TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object)) {
       return -1;
     }
 

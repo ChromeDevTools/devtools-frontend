@@ -246,7 +246,12 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       return;
     }
     const selectionObject = this.selection.object;
-    if (TimelineSelection.isTraceEventSelection(selectionObject)) {
+    if (TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selectionObject)) {
+      const event = selectionObject;
+      const networkDetails = await TimelineUIUtils.buildSyntheticNetworkRequestDetails(
+          event, this.model.timelineModel(), this.detailsLinkifier);
+      this.setContent(networkDetails);
+    } else if (TimelineSelection.isTraceEventSelection(selectionObject)) {
       const event = selectionObject;
       const traceEventDetails = await TimelineUIUtils.buildTraceEventDetails(
           event, this.model.timelineModel(), this.detailsLinkifier, true, this.#traceEngineData);
@@ -262,11 +267,6 @@ export class TimelineDetailsView extends UI.Widget.VBox {
           this.appendTab(Tab.LayerViewer, i18nString(UIStrings.layers), layersView);
         }
       }
-    } else if (TimelineSelection.isNetworkRequestSelection(selectionObject)) {
-      const request = selectionObject;
-      const networkDetails =
-          await TimelineUIUtils.buildNetworkRequestDetails(request, this.model.timelineModel(), this.detailsLinkifier);
-      this.setContent(networkDetails);
     } else if (TimelineSelection.isRangeSelection(selectionObject)) {
       this.updateSelectedRangeStats(this.selection.startTime, this.selection.endTime);
     }

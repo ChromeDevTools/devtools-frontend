@@ -4,6 +4,7 @@
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {allModelsFromFile, getAllTracingModelPayloadEvents} from '../../helpers/TraceHelpers.js';
@@ -22,19 +23,16 @@ describeWithEnvironment('TimelineSelection', () => {
 
   it('can be created with a network request', async () => {
     const data = await allModelsFromFile('web-dev.json.gz');
-    // Does not matter which network request, just grab the first send request.
-    const firstNetworkEvent = getAllTracingModelPayloadEvents(data.tracingModel).find(event => {
-      return event.name === TimelineModel.TimelineModel.RecordType.ResourceSendRequest;
-    });
-    if (!firstNetworkEvent) {
-      throw new Error('Could not find network event');
-    }
-    const request = new TimelineModel.TimelineModel.NetworkRequest(firstNetworkEvent);
-    const selection = Timeline.TimelineSelection.TimelineSelection.fromNetworkRequest(request);
+    const request = data.traceParsedData.NetworkRequests.byTime[0];
+    const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(request);
     assert.strictEqual(selection.object, request);
-    assert.strictEqual(selection.startTime, request.startTime);
-    assert.strictEqual(selection.endTime, request.endTime);
-    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isNetworkRequestSelection(selection.object));
+    assert.strictEqual(selection.startTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(request.ts));
+    assert.strictEqual(
+        selection.endTime,
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
+            (request.ts + request.dur) as TraceEngine.Types.Timing.MicroSeconds));
+    assert.isTrue(
+        Timeline.TimelineSelection.TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object));
   });
 
   it('can be created with an SDK trace event', async () => {

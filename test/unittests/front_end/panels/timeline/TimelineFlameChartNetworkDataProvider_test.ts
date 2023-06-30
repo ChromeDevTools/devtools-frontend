@@ -10,12 +10,12 @@ import {allModelsFromFile} from '../../helpers/TraceHelpers.js';
 describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
   it('renders the network track correctly', async () => {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {timelineModel, traceParsedData, performanceModel} = await allModelsFromFile('load-simple.json.gz');
+    const {timelineModel, traceParsedData} = await allModelsFromFile('load-simple.json.gz');
 
     const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
     const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
 
-    dataProvider.setModel(performanceModel, traceParsedData);
+    dataProvider.setModel(traceParsedData);
     dataProvider.setWindowTimes(minTime, maxTime);
 
     // TimelineFlameChartNetworkDataProvider only has network track, so should always be one track group.
@@ -30,10 +30,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
     const networkEventsTotalTimes = networkEvents.map(request => request.endTime - request.beginTime());
     assert.deepEqual(dataProvider.timelineData().entryLevels.length, 6);
     assert.deepEqual(dataProvider.timelineData().entryLevels, [0, 1, 1, 1, 1, 2]);
-    assert.deepEqual(dataProvider.timelineData().entryStartTimes.length, 6);
-    assert.deepEqual(dataProvider.timelineData().entryStartTimes, networkEventsStartTimes);
-    assert.deepEqual(dataProvider.timelineData().entryTotalTimes.length, 6);
-    assert.deepEqual(dataProvider.timelineData().entryTotalTimes, networkEventsTotalTimes);
+    assertTimestampsEqual(dataProvider.timelineData().entryStartTimes, networkEventsStartTimes);
+    assertTimestampsEqual(dataProvider.timelineData().entryTotalTimes, networkEventsTotalTimes);
 
     assert.deepEqual(dataProvider.maxStackDepth(), 3);
 
@@ -54,12 +52,12 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
 
   it('does not render the network track if there is no network requests', async () => {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {traceParsedData, performanceModel} = await allModelsFromFile('basic.json.gz');
+    const {traceParsedData} = await allModelsFromFile('basic.json.gz');
 
     const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
     const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
 
-    dataProvider.setModel(performanceModel, traceParsedData);
+    dataProvider.setModel(traceParsedData);
     dataProvider.setWindowTimes(minTime, maxTime);
 
     // TimelineFlameChartNetworkDataProvider only has network track, so should always be one track group.
@@ -83,12 +81,11 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
 
   it('decorate a event correctly', async () => {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {timelineModel} = await allModelsFromFile('cls-cluster-max-timeout.json.gz');
-    const networkEvents = timelineModel.networkRequests();
+    const {traceParsedData} = await allModelsFromFile('cls-cluster-max-timeout.json.gz');
     // The field that is important of this test:
     // {
-    // "startTime": 183752441.977,
-    // "endTime": 183752670.454,
+    // "ts": 183752441.977,
+    // "dur": 183752670.454,
     // "finishTime": 183752669.23299998,
     // ...
     // "timing": {
@@ -103,7 +100,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
     //   "responseTime": 1634222299.776
     // ...
     // }
-    const request = networkEvents[2];
+    const event = traceParsedData.NetworkRequests.byTime[1];
     // So for this request:
     // The earliest event belonging to this request starts at 183752441.977.
     // This is used in flamechart to calculate unclippedBarX.
@@ -124,7 +121,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
     // So the pixel of start is 10.
     // So the pixel of end is 238.
     assert.deepEqual(
-        dataProvider.getDecorationPixels(request, /* unclippedBarX= */ 10, /* timeToPixelRatio= */ 1),
+        dataProvider.getDecorationPixels(event, /* unclippedBarX= */ 10, /* timeToPixelRatio= */ 1),
         {sendStart: 30, headersEnd: 235, finish: 237, start: 10, end: 238});
   });
 
@@ -145,16 +142,27 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
         const {startTime, endTime, finishTime} = networkEventsFromOldEngine[i];
         assert.strictEqual(startTime * 1000, networkEventsFromNewEngine[i].ts);
         assert.strictEqual(endTime * 1000, networkEventsFromNewEngine[i].ts + networkEventsFromNewEngine[i].dur);
-        assert.strictEqual(
-            Math.round((finishTime || endTime) * 1000),
-            Math.round(networkEventsFromNewEngine[i].args.data.syntheticData.finishTime));
+        assertTimestampEqual(
+            (finishTime || endTime) * 1000, networkEventsFromNewEngine[i].args.data.syntheticData.finishTime);
 
         const {sendStartTime, headersEndTime} = networkEventsFromOldEngine[i].getSendReceiveTiming();
         const sendStartTimeNew = networkEventsFromNewEngine[i].args.data.syntheticData.sendStartTime;
         const headersEndTimeNew = networkEventsFromNewEngine[i].args.data.syntheticData.downloadStart;
-        assert.strictEqual(Math.round(sendStartTime * 1000), Math.round(sendStartTimeNew));
-        assert.strictEqual(Math.round(headersEndTime * 1000), Math.round(headersEndTimeNew));
+        assertTimestampEqual(sendStartTime * 1000, sendStartTimeNew);
+        assertTimestampEqual(headersEndTime * 1000, headersEndTimeNew);
       }
     });
   });
 });
+
+function assertTimestampEqual(actual: number, expected: number): void {
+  assert.strictEqual(actual.toFixed(2), expected.toFixed(2));
+}
+
+function assertTimestampsEqual(actual: number[]|Float32Array|Float64Array, expected: number[]): void {
+  assert.strictEqual(actual.length, expected.length);
+
+  for (let i = 0; i < actual.length; i++) {
+    assertTimestampEqual(actual[i], expected[i]);
+  }
+}

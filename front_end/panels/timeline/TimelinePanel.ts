@@ -1420,7 +1420,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return selection.object;
     }
     if (TimelineSelection.isRangeSelection(selection.object) ||
-        TimelineSelection.isNetworkRequestSelection(selection.object)) {
+        TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object)) {
       return null;
     }
     if (TimelineSelection.isTraceEventSelection(selection.object)) {

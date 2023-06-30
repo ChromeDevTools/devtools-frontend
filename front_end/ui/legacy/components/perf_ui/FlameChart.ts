@@ -31,7 +31,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import type * as SDK from '../../../../core/sdk/sdk.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as UI from '../../legacy.js';
@@ -1014,14 +1014,23 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       // Track when the time crosses the boundary to the next nav start record,
       // and when it does, move the nav start array index accordingly.
       const hasNextNavStartTime = navStartTimes.length > navStartTimeIndex + 1;
-      if (hasNextNavStartTime && time > navStartTimes[navStartTimeIndex + 1].startTime) {
-        navStartTimeIndex++;
+      if (hasNextNavStartTime) {
+        const nextNavStartTime = navStartTimes[navStartTimeIndex + 1];
+        const nextNavStartTimeStartTimestamp = SDK.TracingModel.eventIsFromNewEngine(nextNavStartTime) ?
+            TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nextNavStartTime.ts) :
+            nextNavStartTime.startTime;
+        if (time > nextNavStartTimeStartTimestamp) {
+          navStartTimeIndex++;
+        }
       }
 
       // Adjust the time by the nearest nav start marker's value.
       const nearestMarker = navStartTimes[navStartTimeIndex];
       if (nearestMarker) {
-        time -= nearestMarker.startTime - this.zeroTime();
+        const nearestMarkerStartTime = SDK.TracingModel.eventIsFromNewEngine(nearestMarker) ?
+            TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nearestMarker.ts) :
+            nearestMarker.startTime;
+        time -= nearestMarkerStartTime - this.zeroTime();
       }
 
       return this.formatValue(time, dividersData.precision);
@@ -2184,7 +2193,7 @@ export interface FlameChartDataProvider {
 
   textColor(entryIndex: number): string;
 
-  navStartTimes(): Map<string, SDK.TracingModel.Event>;
+  navStartTimes(): Map<string, SDK.TracingModel.CompatibleTraceEvent>;
 }
 
 export interface FlameChartMarker {

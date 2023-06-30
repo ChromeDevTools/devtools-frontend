@@ -203,7 +203,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.model = model;
     this.#selectedEvents = null;
     this.mainDataProvider.setModel(this.model, newTraceEngineData);
-    this.networkDataProvider.setModel(this.model, newTraceEngineData);
+    this.networkDataProvider.setModel(newTraceEngineData);
     if (this.model) {
       this.eventListeners = [
         this.model.addEventListener(PerformanceModelEvents.WindowChanged, this.onWindowChanged, this),

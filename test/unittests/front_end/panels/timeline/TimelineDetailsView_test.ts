@@ -32,14 +32,14 @@ describeWithEnvironment('TimelineDetailsView', function() {
     const data = await allModelsFromFile('lcp-web-font.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
 
-    const networkRequests = data.timelineModel.networkRequests();
+    const networkRequests = data.traceParsedData.NetworkRequests.byTime;
     const cssRequest = networkRequests.find(request => {
-      return request.url === 'http://localhost:3000/app.css';
+      return request.args.data.url === 'http://localhost:3000/app.css';
     });
     if (!cssRequest) {
       throw new Error('Could not find expected network request.');
     }
-    const selection = Timeline.TimelineSelection.TimelineSelection.fromNetworkRequest(cssRequest);
+    const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(cssRequest);
 
     await detailsView.setModel(data.performanceModel, data.traceParsedData, null);
     await detailsView.setSelection(selection);
@@ -52,7 +52,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
         rowData,
         [
           {title: 'URL', value: 'localhost:3000/app.css'},
-          {title: 'Duration', value: '4.07 ms (3.08 ms network transfer + 1.00 ms resource loading)'},
+          {title: 'Duration', value: '4.075ms (3.08ms network transfer + 995μs resource loading)'},
           {title: 'Request Method', value: 'GET'},
           {title: 'Priority', value: 'Highest'},
           {title: 'Mime Type', value: 'text/css'},

@@ -45,18 +45,14 @@
   color: var(--color-text-primary);
 }
 
-.padded {
-  margin-left: 2em;
-}
-
-.padded.double {
-  margin-left: 4em;
-}
-
-.padded.triple {
-  margin-left: 6em;
+ul {
+  padding-left: 2em;
 }
 
 .colorBlue {
   color: var(--color-syntax-3);
+}
+
+.wrapper {
+  padding-left: 2em;
 }

@@ -167,26 +167,17 @@ describe('ProtocolMonitor', () => {
     };
 
     it('outputs correctly the CDP command and parameters inside the Sidebar Panel', async () => {
-      const command = 'Network.continueInterceptedRequest';
+      const command = 'Network.deleteCookies';
       const parameters = {
-        'interceptionId': 'test',
-        'errorReason': 'Failed',
-        'rawResponse': 'response',
-        'url': 'www.google.com',
-        'method': 'method',
-        'postData': 'data',
-        'headers': {
-          'Content-Type': 'application/json',
-          'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-          'X-Custom-Header': 'some value',
-          'X-Another-Custom-Header': 'another value',
-        },
-        'authChallengeResponse': 'test',
+        'name': 'test',
+        'url': 'https://test.com',
+        'domain': '/',
+        'path': '/',
       };
+
       const editorWidget = renderEditorWidget();
       editorWidget.jsonEditor.command = command;
-      editorWidget.jsonEditor.populateParametersForCommand(command);
+      editorWidget.jsonEditor.populateParametersForCommand();
       editorWidget.setCommand(command, editorWidget.jsonEditor.parameters);
       await editorWidget.jsonEditor.updateComplete;
 
@@ -201,7 +192,7 @@ describe('ProtocolMonitor', () => {
 
       const {command, parameters} = ProtocolMonitor.ProtocolMonitor.parseCommandInput(input);
       const editorWidget = renderEditorWidget();
-      editorWidget.jsonEditor.populateParametersForCommand(command);
+      editorWidget.jsonEditor.populateParametersForCommand();
       editorWidget.setCommand(command, editorWidget.jsonEditor.parameters);
       await editorWidget.jsonEditor.updateComplete;
 
@@ -216,7 +207,7 @@ describe('ProtocolMonitor', () => {
 
       const {command, parameters} = ProtocolMonitor.ProtocolMonitor.parseCommandInput(input);
       const editorWidget = renderEditorWidget();
-      editorWidget.jsonEditor.populateParametersForCommand(command);
+      editorWidget.jsonEditor.populateParametersForCommand();
       editorWidget.setCommand(command, editorWidget.jsonEditor.parameters);
       await editorWidget.jsonEditor.updateComplete;
       const shadowRoot = editorWidget.jsonEditor.renderRoot;
@@ -228,32 +219,33 @@ describe('ProtocolMonitor', () => {
     it('should return the parameters in a format understandable by the ProtocolMonitor', async () => {
       const editorWidget = renderEditorWidget();
 
-      const inputParameters = {
-        'test0': {
+      const inputParameters = [
+
+        {
           'optional': true,
           'type': 'string',
           'value': 'test0',
           'name': 'test0',
         },
-        'test1': {
+        {
           'optional': true,
           'type': 'string',
           'value': 'test1',
           'name': 'test1',
         },
-        'test2': {
+        {
           'optional': false,
           'type': 'string',
           'value': 'test2',
           'name': 'test2',
         },
-        'test3': {
+        {
           'optional': true,
           'type': 'string',
           'value': 'test3',
           'name': 'test3',
         },
-      };
+      ];
 
       const expectedParameters = {
         'test0': 'test0',
@@ -262,7 +254,7 @@ describe('ProtocolMonitor', () => {
         'test3': 'test3',
       };
 
-      editorWidget.jsonEditor.parameters = inputParameters as Record<string, ProtocolComponents.JSONEditor.Parameter>;
+      editorWidget.jsonEditor.parameters = inputParameters as ProtocolComponents.JSONEditor.Parameter[];
       const responsePromise =
           getEventPromise(editorWidget.jsonEditor, ProtocolComponents.JSONEditor.SubmitEditorEvent.eventName);
 
@@ -291,7 +283,7 @@ describe('ProtocolMonitor', () => {
       const input = '{"parameters": {"urls" : ["chrome-extension://*"]}}';
       const {command} = ProtocolMonitor.ProtocolMonitor.parseCommandInput(input);
       const editorWidget = renderEditorWidget();
-      editorWidget.jsonEditor.populateParametersForCommand(command);
+      editorWidget.jsonEditor.populateParametersForCommand();
       editorWidget.setCommand(command, editorWidget.jsonEditor.parameters);
       await editorWidget.jsonEditor.updateComplete;
 
@@ -303,7 +295,7 @@ describe('ProtocolMonitor', () => {
       const input = '{"parameters": {"urls" : ["chrome-extension://*"]}}';
       const {command} = ProtocolMonitor.ProtocolMonitor.parseCommandInput(input);
       const editorWidget = renderEditorWidget();
-      editorWidget.jsonEditor.populateParametersForCommand(command);
+      editorWidget.jsonEditor.populateParametersForCommand();
       editorWidget.setCommand(command, editorWidget.jsonEditor.parameters);
       await editorWidget.jsonEditor.updateComplete;
 

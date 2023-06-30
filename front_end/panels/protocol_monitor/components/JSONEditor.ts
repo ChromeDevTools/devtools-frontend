@@ -32,11 +32,19 @@ interface ArrayParameter {
 interface NonArrayParameter {
   type: 'string'|'number'|'boolean';
   optional: boolean;
-  value: string|undefined;
+  value: string|boolean|number|undefined;
   name: string;
 }
 
-export type Parameter = ArrayParameter|NonArrayParameter;
+interface ObjectParameter {
+  type: 'object';
+  optional: boolean;
+  value: Parameter[];
+  name: string;
+  typeRef?: string;
+}
+
+export type Parameter = ArrayParameter|NonArrayParameter|ObjectParameter;
 
 export interface Command {
   command: string;
@@ -44,6 +52,11 @@ export interface Command {
   targetId?: string;
 }
 
+interface Type {
+  name: string;
+  type: string;
+  optional: boolean;
+}
 /**
  * Parents should listen for this event and register the listeners provided by
  * this event"
@@ -62,13 +75,15 @@ export class SubmitEditorEvent extends Event {
 export class JSONEditor extends LitElement {
   static override styles = [editorWidgetStyles];
   @property() declare protocolMethodWithParametersMap: Map<string, Parameter[]>;
+  @property() declare protocolTypesMap: Map<string, Type[]>;
   @property() declare targetManager;
-  @state() declare parameters: Record<string, Parameter>;
+  @state() declare parameters: Parameter[];
   @state() command: string = '';
   @state() targetId?: string;
+
   constructor() {
     super();
-    this.parameters = {};
+    this.parameters = [];
     this.targetManager = SDK.TargetManager.TargetManager.instance();
     this.targetId = this.targetManager.targets().length !== 0 ? this.targetManager.targets()[0].id() : undefined;
     this.addEventListener('keydown', (event: Event) => {
@@ -96,45 +111,69 @@ export class JSONEditor extends LitElement {
     }));
   }
 
-  getParameters(): {[x: string]: unknown} {
-    const formattedParameters: {[x: string]: unknown} = {};
-    for (const [key, param] of Object.entries(this.parameters)) {
-      if (param.value !== undefined) {
-        if (param.type === 'number') {
-          formattedParameters[key] = Number(param.value);
-        } else if (param.type === 'boolean') {
-          formattedParameters[key] = Boolean(param.value);
-        } else {
-          formattedParameters[key] = param.value;
-        }
+  getParameters = (): {[key: string]: unknown} => {
+    const formatParameterValue = (parameter: Parameter): unknown => {
+      if (parameter.type === 'number') {
+        return Number(parameter.value);
       }
+      if (parameter.type === 'boolean') {
+        return Boolean(parameter.value);
+      }
+      if (parameter.type === 'object') {
+        const nestedParameters: {[key: string]: unknown} = {};
+        for (const subParameter of parameter.value) {
+          nestedParameters[subParameter.name] = formatParameterValue(subParameter);
+        }
+        return nestedParameters;
+      }
+      return parameter.value;
+    };
+
+    const formattedParameters: {[key: string]: unknown} = {};
+    for (const parameter of this.parameters) {
+      formattedParameters[parameter.name] = formatParameterValue(parameter);
     }
     return formattedParameters;
-  }
+  };
 
-  populateParametersForCommand(command: string): void {
-    const parameters = this.protocolMethodWithParametersMap.get(command);
-    const newParameters: Record<string, Parameter> = {};
-    if (parameters && parameters.length !== 0) {
-      const parametersPerCommand = this.protocolMethodWithParametersMap.get(this.command);
-      if (parametersPerCommand) {
-        for (const parameter of parametersPerCommand) {
-          newParameters[parameter.name] = {
-            optional: parameter.optional,
-            type: parameter.type,
-            value: parameter.value || undefined,
-            name: parameter.name,
-          } as Parameter;
-        }
-        this.parameters = newParameters;
-      }
+  populateParametersForCommand(): void {
+    const commandParameters = this.protocolMethodWithParametersMap.get(this.command);
+    if (!commandParameters) {
+      return;
     }
+    this.parameters = commandParameters.map(parameter => {
+      if (parameter.type === 'object') {
+        const typeInfos = this.protocolTypesMap.get(parameter.typeRef as string) ?? [];
+        return {
+          optional: parameter.optional,
+          type: parameter.type,
+          value: typeInfos.map(type => {
+            return {
+              optional: type.optional,
+              type: type.type,
+              name: type.name,
+              value: undefined,
+            } as Parameter;
+          }),
+          name: parameter.name,
+        } as Parameter;
+      }
+      return {
+        optional: parameter.optional,
+        type: parameter.type,
+        value: parameter.value || undefined,
+        name: parameter.name,
+      } as Parameter;
+    });
   }
 
   #handleArrayParameterInputBlur = (event: Event, parameterName: string, index: number): void => {
     if (event.target instanceof RecorderComponents.RecorderInput.RecorderInput) {
       const value = event.target.value;
-      const parameter = this.parameters[parameterName];
+      const parameter = this.parameters.find(param => param.name === parameterName);
+      if (!parameter) {
+        return;
+      }
       if (parameter.value === undefined) {
         parameter.value = [value];
       } else if (Array.isArray(parameter.value)) {
@@ -143,19 +182,47 @@ export class JSONEditor extends LitElement {
     }
   };
 
+  #handleObjectParameterInputBlur = (event: Event, parameterName: string, key: string): void => {
+    if (event.target instanceof RecorderComponents.RecorderInput.RecorderInput) {
+      const value = event.target.value;
+      const parameter = this.parameters.find(param => param.name === parameterName);
+      if (!parameter) {
+        return;
+      }
+      if (parameter.type === 'object') {
+        if (!parameter.value) {
+          parameter.value = [];
+        }
+        const subParameter = parameter.value.find(subParam => subParam.name === key);
+        if (subParameter) {
+          if (subParameter.type === 'number') {
+            subParameter.value = Number(value);
+          } else if (subParameter.type === 'boolean') {
+            subParameter.value = Boolean(value);
+          } else {
+            subParameter.value = value;
+          }
+        }
+      }
+    }
+  };
+
   #handleParameterInputBlur = (event: Event, parameterName: string): void => {
     if (event.target instanceof RecorderComponents.RecorderInput.RecorderInput) {
       const value = event.target.value;
-      this.parameters[parameterName].value = value;
+      const parameter = this.parameters.find(param => param.name === parameterName);
+      if (!parameter) {
+        return;
+      }
+      parameter.value = value;
     }
   };
 
   #handleCommandInputBlur = async(event: Event): Promise<void> => {
-    this.parameters = {};
     if (event.target instanceof RecorderComponents.RecorderInput.RecorderInput) {
       this.command = event.target.value;
     }
-    this.populateParametersForCommand(this.command);
+    this.populateParametersForCommand();
   };
 
   #computeTargetLabel(target: SDK.Target.Target): string {
@@ -163,19 +230,25 @@ export class JSONEditor extends LitElement {
   }
 
   #handleAddArrayParameter(parameterName: string): void {
-    const parameter = this.parameters[parameterName];
-    if (parameter.value === undefined) {
-      this.parameters[parameterName].value = [];
+    const parameter = this.parameters.find(param => param.name === parameterName);
+    if (!parameter) {
+      return;
     }
-    if (Array.isArray(parameter.value)) {
+    if (parameter.type === 'array') {
       // At the moment it only support arrays parameters containing string (Object and boolean will be considered as string)
+      if (!parameter.value) {
+        parameter.value = [];
+      }
       parameter.value.push('');
     }
     this.requestUpdate();
   }
 
   #handleDeleteArrayParameter(index: number, parameterName: string): void {
-    const parameter = this.parameters[parameterName];
+    const parameter = this.parameters.find(param => param.name === parameterName);
+    if (!parameter) {
+      return;
+    }
     if (parameter.value !== undefined && Array.isArray(parameter.value)) {
       parameter.value.splice(index, 1);
     }
@@ -187,7 +260,7 @@ export class JSONEditor extends LitElement {
     const targetLabel = target ? this.#computeTargetLabel(target) : '';
     // clang-format off
     return html`
-    <div class="row attribute padded" data-attribute="type">
+    <div class="row attribute padded">
       <div>target<span class="separator">:</span></div>
       <${Menus.SelectMenu.SelectMenu.litTagName}
             class="target-select-menu"
@@ -223,7 +296,7 @@ export class JSONEditor extends LitElement {
 
   #renderCommandRow(): LitHtml.TemplateResult|undefined {
     // clang-format off
-    return html`<div class="row attribute padded" data-attribute="type">
+    return html`<div class="row attribute padded">
       <div>command<span class="separator">:</span></div>
       <devtools-recorder-input
         .disabled=${false}
@@ -255,7 +328,7 @@ export class JSONEditor extends LitElement {
    */
   #renderParameterRow(): LitHtml.TemplateResult|undefined {
     // clang-format off
-    return html`<div class="row attribute padded" data-attribute="type">
+    return html`<div class="row attribute padded">
       <div>parameters<span class="separator">:</span></div>
     </div>`;
     // clang-format on
@@ -264,7 +337,8 @@ export class JSONEditor extends LitElement {
   #renderParametersHelper(options: {
     value: Parameter['value'],
     optional: boolean,
-    handleDelete?: () => void, handleBlur: (event: Event) => void,
+    handleDelete?: () => void,
+    handleInputOnBlur?: (event: Event) => void,
     handleAdd?: () => void, key: string,
   }): LitHtml.TemplateResult|undefined {
     const classes = {colorBlue: options.optional};
@@ -279,13 +353,15 @@ export class JSONEditor extends LitElement {
             iconName: 'plus',
             onClick: handleAdd,
           })}
-        `: html`
+        `: nothing}
+          ${!handleAdd && options.handleInputOnBlur ? html`
           <devtools-recorder-input
             .disabled=${false}
             .value=${live(options.value ?? '')}
             .placeholder=${'Enter your parameter...'}
-            @blur=${options.handleBlur}
-          ></devtools-recorder-input>`}
+            @blur=${options.handleInputOnBlur}
+          ></devtools-recorder-input>` : nothing}
+
           ${options.handleDelete ? html`
             ${this.#renderInlineButton({
                   title: 'Delete',
@@ -300,65 +376,60 @@ export class JSONEditor extends LitElement {
   /**
    * Renders the parameters list corresponding to a specific CDP command.
    */
-  #renderParameters(parameters: {[x: string]: Parameter}): LitHtml.TemplateResult|undefined {
-    parameters = Object.fromEntries(
-        Object.entries(parameters).sort(([, a], [, b]) => Number(a.optional) - Number(b.optional)),
-    );
+  #renderParameters(parameters: Parameter[], parentParameter?: Parameter): LitHtml.TemplateResult|undefined {
+    parameters.sort((a, b) => Number(a.optional) - Number(b.optional));
 
     // clang-format off
     return html`
       <ul>
-        ${LitHtml.Directives.repeat(Object.entries(parameters), ([key, parameter]) => {
-          const value = JSON.stringify(parameter.value);
-          const name = parameter.name;
+        ${LitHtml.Directives.repeat(parameters, (parameter, index) => {
+          let subparameters: Parameter[] = [];
+          let handleInputOnBlur = (event: Event): void => {
+            this.#handleParameterInputBlur(event, parameter.name);
+          };
+           switch (parameter.type) {
+            case 'array':
+              subparameters = (parameter.value || []).map((value, idx) => {
+                return {
+                  type: 'string',
+                  optional: true,
+                  value,
+                  name: String(idx),
+                };
+              });
+              break;
+            case 'object':
+              subparameters = parameter.value ?? [];
+              break;
+          }
+           switch (parentParameter?.type) {
+            case 'array':
+              handleInputOnBlur = (event: Event) : void => {
+                this.#handleArrayParameterInputBlur(event, parentParameter.name, index);
+              };
+              break;
+            case 'object':
+              handleInputOnBlur = (event: Event) : void => {
+                this.#handleObjectParameterInputBlur(event, parentParameter.name, parameter.name);
+              };
+              break;
+          }
           return html`
-            <div>
-              <div class="row attribute padded double" data-attribute="type">
-                ${parameter.type === 'array' ? html`
-                ${this.#renderParametersHelper({
-                    value: value,
-                    optional: false,
-                    handleBlur: (event: Event) => {
-                      this.#handleParameterInputBlur(event, key);
-                    },
-                    handleAdd: () => {
-                      this.#handleAddArrayParameter(name);
-                    },
-                    key: key,
-                  })}
-                ` : html`
-                      ${this.#renderParametersHelper({
-                        value: value,
-                        optional: parameter.optional,
-                        handleBlur: (event: Event) => {
-                          this.#handleParameterInputBlur(event, key);
-                        },
-                        key: key,
-                    })}
-              `}
-              </div>
-              <div class="column padded triple">
-                ${parameter.type === 'array'
-                  ? html`
-                      ${LitHtml.Directives.repeat(parameter.value || [], (value: string, index: number) => {
-                        return LitHtml.html`
-                          ${this.#renderParametersHelper({
-                            value: value,
-                            optional: true,
-                            handleDelete: () => {
-                              this.#handleDeleteArrayParameter(index, name);
-                            },
-                            handleBlur: (event: Event) => {
-                              this.#handleArrayParameterInputBlur(event, name, index);
-                            },
-                            key: String(index),
-                          })}
-                        `;
-                      })}
-                    `
-                  : nothing}
-              </div>
-            </div>
+            <li class="row">
+              ${this.#renderParametersHelper({
+                  value: parameter.value,
+                  optional: parameter.optional,
+                  handleAdd: parameter.type === 'array' ? () : void => {
+                    this.#handleAddArrayParameter(parameter.name);
+                  }: undefined,
+                  handleDelete: parameter.optional ? () : void => {
+                    this.#handleDeleteArrayParameter(index, parentParameter?.name ?? '');
+                  }: undefined,
+                  handleInputOnBlur: parameter.type !== 'object' ? handleInputOnBlur: undefined,
+                  key: parameter.name,
+                })}
+            </li>
+            ${this.#renderParameters(subparameters, parameter)}
           `;
         })}
       </ul>
@@ -372,12 +443,12 @@ export class JSONEditor extends LitElement {
     <div class="wrapper">
       ${this.#renderTargetSelectorRow()}
       ${this.#renderCommandRow()}
-      ${this.parameters && Object.keys((this.parameters)).length !== 0 ? html`
-          ${this.#renderParameterRow()}
-          ${this.#renderParameters(this.parameters)}
-        ` : nothing}
-      <devtools-pm-toolbar @copycommand=${this.#copyToClipboard} @commandsent=${this.#handleCommandSend}></devtools-pm-toolbar>
-    </div>`;
+      ${this.parameters.length ? html`
+        ${this.#renderParameterRow()}
+        ${this.#renderParameters(this.parameters)}
+      ` : nothing}
+    </div>
+    <devtools-pm-toolbar @copycommand=${this.#copyToClipboard} @commandsent=${this.#handleCommandSend}></devtools-pm-toolbar>`;
     // clang-format on
   }
 }

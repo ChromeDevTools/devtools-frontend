@@ -5,12 +5,13 @@
 const {assert} = chai;
 
 import * as Components from '../../../../../../front_end/panels/recorder/components/components.js';
-import * as Helpers from '../../../../../../test/unittests/front_end/helpers/DOMHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
+
+import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 describe('SplitView', () => {
   it('should resize split view', async () => {
     const view = new Components.SplitView.SplitView();
-    Helpers.renderElementIntoDOM(view);
+    renderElementIntoDOM(view);
     view.style.width = '800px';
     view.style.height = '600px';
 
@@ -50,7 +51,7 @@ describe('SplitView', () => {
 
   it('should change layout to vertical on resize to narrow view', () => {
     const view = new Components.SplitView.SplitView();
-    Helpers.renderElementIntoDOM(view);
+    renderElementIntoDOM(view);
     view.style.width = '800px';
     view.style.height = '600px';
 
@@ -69,7 +70,7 @@ describe('SplitView', () => {
 
   it('should keep horizontal layout on short viewports', () => {
     const view = new Components.SplitView.SplitView();
-    Helpers.renderElementIntoDOM(view);
+    renderElementIntoDOM(view);
     view.style.width = '800px';
     view.style.height = '600px';
 

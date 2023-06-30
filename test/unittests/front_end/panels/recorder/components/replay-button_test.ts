@@ -12,6 +12,8 @@ import {
 } from '../../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
+import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('ReplayButton', () => {
@@ -22,7 +24,7 @@ describeWithEnvironment('ReplayButton', () => {
     settings = new Models.RecorderSettings.RecorderSettings();
     const component = new RecorderComponents.ReplayButton.ReplayButton();
     component.data = {settings, replayExtensions: []};
-    component.connectedCallback();
+    renderElementIntoDOM(component);
     await coordinator.done();
 
     return component;

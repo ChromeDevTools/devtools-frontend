@@ -9,6 +9,8 @@ import * as Menus from '../../../../../../front_end/ui/components/menus/menus.js
 
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
+import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describe('SelectButton', () => {
@@ -19,7 +21,7 @@ describe('SelectButton', () => {
       {value: 'item1', label: (): string => 'item1-label'},
       {value: 'item2', label: (): string => 'item2-label'},
     ];
-    component.connectedCallback();
+    renderElementIntoDOM(component);
     await coordinator.done();
     const onceClicked = new Promise<RecorderComponents.SelectButton.SelectButtonClickEvent>(
         resolve => {

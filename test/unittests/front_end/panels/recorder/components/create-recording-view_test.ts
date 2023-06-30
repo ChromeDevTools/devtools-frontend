@@ -10,6 +10,7 @@ import {
   describeWithEnvironment,
   setupActionRegistry,
 } from '../../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
+import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 describeWithEnvironment('CreateRecordingView', () => {
   setupActionRegistry();
@@ -19,7 +20,9 @@ describeWithEnvironment('CreateRecordingView', () => {
     view.data = {
       recorderSettings: new Models.RecorderSettings.RecorderSettings(),
     };
-    view.connectedCallback();
+    renderElementIntoDOM(view, {
+      allowMultipleChildren: true,
+    });
     return view;
   }
 

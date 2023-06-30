@@ -15,6 +15,7 @@ import {
   dispatchKeyDownEvent,
 } from '../../../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -23,7 +24,7 @@ describeWithEnvironment('RecordingListView', () => {
 
   it('should open a recording on Enter', async () => {
     const view = new Components.RecordingListView.RecordingListView();
-    view.connectedCallback();
+    renderElementIntoDOM(view);
     view.recordings = [{storageName: 'storage-test', name: 'test'}];
     await coordinator.done();
     const recording = view.shadowRoot?.querySelector('.row') as HTMLDivElement;
@@ -40,7 +41,7 @@ describeWithEnvironment('RecordingListView', () => {
 
   it('should delete a recording', async () => {
     const view = new Components.RecordingListView.RecordingListView();
-    view.connectedCallback();
+    renderElementIntoDOM(view);
     view.recordings = [{storageName: 'storage-test', name: 'test'}];
     await coordinator.done();
     const deleteButton = view.shadowRoot?.querySelector(
@@ -59,7 +60,7 @@ describeWithEnvironment('RecordingListView', () => {
 
   it('should not open a recording on Enter on the delete button', async () => {
     const view = new Components.RecordingListView.RecordingListView();
-    view.connectedCallback();
+    renderElementIntoDOM(view);
     view.recordings = [{storageName: 'storage-test', name: 'test'}];
     await coordinator.done();
     const deleteButton = view.shadowRoot?.querySelector(

@@ -22,6 +22,8 @@ import {
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as Menus from '../../../../../../front_end/ui/components/menus/menus.js';
 
+import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('RecordingView', () => {
@@ -37,7 +39,7 @@ describeWithEnvironment('RecordingView', () => {
   async function renderView(): Promise<Components.RecordingView.RecordingView> {
     const view = new Components.RecordingView.RecordingView();
     recorderSettingsMock.preferredCopyFormat = Models.ConverterIds.ConverterIds.JSON;
-    view.connectedCallback();
+    renderElementIntoDOM(view);
     view.data = {
       replayState: {isPlaying: false, isPausedOnBreakpoint: false},
       isRecording: false,

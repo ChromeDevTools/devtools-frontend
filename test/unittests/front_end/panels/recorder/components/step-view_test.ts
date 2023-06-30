@@ -14,6 +14,7 @@ import * as Coordinator from '../../../../../../front_end/ui/components/render_c
 import {
   dispatchClickEvent,
   getEventPromise,
+  renderElementIntoDOM,
 } from '../../../../../../test/unittests/front_end/helpers/DOMHelpers.js';
 import {
   describeWithEnvironment,
@@ -51,7 +52,7 @@ describeWithEnvironment('StepView', () => {
       isSelected: opts.isSelected ?? false,
       recorderSettings: new Models.RecorderSettings.RecorderSettings(),
     };
-    view.connectedCallback();
+    renderElementIntoDOM(view);
     await coordinator.done();
     return view;
   }

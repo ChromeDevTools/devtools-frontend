@@ -5,22 +5,26 @@
 const {assert} = chai;
 
 // eslint-disable-next-line rulesdir/es_modules_import
-import * as DOMHelpers from '../../../../../../test/unittests/front_end/helpers/DOMHelpers.js';
-// eslint-disable-next-line rulesdir/es_modules_import
 import * as EnvironmentHelpers from '../../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import type * as Components from '../../../../../../front_end/panels/recorder/components/components.js';
 import * as Models from '../../../../../../front_end/panels/recorder/models/models.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import * as RecorderHelpers from '../helpers/RecorderHelpers.js';
 
+import {
+  renderElementIntoDOM,
+  getEventPromise,
+  assertElement,
+  dispatchKeyDownEvent,
+} from '../../../helpers/DOMHelpers.js';
+
 const {describeWithLocale} = EnvironmentHelpers;
 
 function getStepEditedPromise(editor: Components.StepEditor.StepEditor) {
-  return DOMHelpers
-      .getEventPromise<Components.StepEditor.StepEditedEvent>(
-          editor,
-          'stepedited',
-          )
+  return getEventPromise<Components.StepEditor.StepEditedEvent>(
+             editor,
+             'stepedited',
+             )
       .then(({data}) => data);
 }
 
@@ -37,7 +41,7 @@ describeWithLocale('StepEditor', () => {
       ): Promise<Components.StepEditor.StepEditor> {
     const editor = document.createElement('devtools-recorder-step-editor');
     editor.step = structuredClone(step) as typeof editor.step;
-    DOMHelpers.renderElementIntoDOM(editor, {});
+    renderElementIntoDOM(editor, {});
     await editor.updateComplete;
     return editor;
   }
@@ -75,7 +79,7 @@ describeWithLocale('StepEditor', () => {
     const button = editor.renderRoot.querySelector(
         `devtools-button.add-row[data-attribute="${attribute}"]`,
     );
-    DOMHelpers.assertElement(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await triggerMicroTaskQueue();
     await editor.updateComplete;
@@ -88,7 +92,7 @@ describeWithLocale('StepEditor', () => {
     const button = editor.renderRoot.querySelector(
         `devtools-button.delete-row[data-attribute="${attribute}"]`,
     );
-    DOMHelpers.assertElement(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await triggerMicroTaskQueue();
     await editor.updateComplete;
@@ -101,7 +105,7 @@ describeWithLocale('StepEditor', () => {
     const button = editor.renderRoot.querySelector(
         `.attribute[data-attribute="frame"] devtools-button${className}`,
     );
-    DOMHelpers.assertElement(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await editor.updateComplete;
   }
@@ -114,7 +118,7 @@ describeWithLocale('StepEditor', () => {
     const button = editor.renderRoot.querySelector(
         `[data-selector-path="${path.join('.')}"] devtools-button${className}`,
     );
-    DOMHelpers.assertElement(button, HTMLElement);
+    assertElement(button, HTMLElement);
     button.click();
     await editor.updateComplete;
   }
@@ -126,7 +130,7 @@ describeWithLocale('StepEditor', () => {
   function createFocusOutsideButton() {
     const button = document.createElement('button');
     button.innerText = 'click';
-    DOMHelpers.renderElementIntoDOM(button, {allowMultipleChildren: true});
+    renderElementIntoDOM(button, {allowMultipleChildren: true});
 
     return {
       focus() {
@@ -558,7 +562,7 @@ describeWithLocale('StepEditor', () => {
     assert.strictEqual(window.getSelection()?.toString(), 'scroll');
 
     // Navigating away should remove the selection.
-    DOMHelpers.dispatchKeyDownEvent(input, {
+    dispatchKeyDownEvent(input, {
       key: 'Enter',
       bubbles: true,
       composed: true,

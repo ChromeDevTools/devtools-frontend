@@ -32,7 +32,7 @@ export const renderElementIntoDOM = (element: HTMLElement, renderOptions: Render
   const allowMultipleChildren = Boolean(renderOptions.allowMultipleChildren);
 
   if (container.childNodes.length !== 0 && !allowMultipleChildren) {
-    assert.fail('renderIntoDOM expects the container to be empty');
+    assert.fail('renderIntoDOM expects the container to be empty ' + container.innerHTML);
     return;
   }
 

@@ -3178,22 +3178,21 @@ export class TimelineUIUtils {
   }
 
   static generateDetailsContentForFrame(
-      frame: TimelineModel.TimelineFrameModel.TimelineFrame,
-      filmStripFrame: SDK.FilmStripModel.Frame|null): DocumentFragment {
+      frame: TimelineModel.TimelineFrameModel.TimelineFrame, filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null,
+      filmStripFrame: TraceEngine.Extras.FilmStrip.FilmStripFrame|null): DocumentFragment {
     const contentHelper = new TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(i18nString(UIStrings.frame));
 
     const duration = TimelineUIUtils.frameDuration(frame);
     contentHelper.appendElementRow(i18nString(UIStrings.duration), duration, frame.hasWarnings());
     contentHelper.appendTextRow(i18nString(UIStrings.cpuTime), i18n.TimeUtilities.millisToString(frame.cpuTime, true));
-    if (filmStripFrame) {
+    if (filmStrip && filmStripFrame) {
       const filmStripPreview = document.createElement('div');
       filmStripPreview.classList.add('timeline-filmstrip-preview');
-      void filmStripFrame.imageDataPromise()
-          .then(data => UI.UIUtils.loadImageFromData(data))
+      void UI.UIUtils.loadImageFromData(filmStripFrame.screenshotAsString)
           .then(image => image && filmStripPreview.appendChild(image));
       contentHelper.appendElementRow('', filmStripPreview);
-      filmStripPreview.addEventListener('click', frameClicked.bind(null, filmStripFrame), false);
+      filmStripPreview.addEventListener('click', frameClicked.bind(null, filmStrip, filmStripFrame), false);
     }
 
     if (frame.layerTree) {
@@ -3202,8 +3201,10 @@ export class TimelineUIUtils {
           Components.Linkifier.Linkifier.linkifyRevealable(frame.layerTree, i18nString(UIStrings.show)));
     }
 
-    function frameClicked(filmStripFrame: SDK.FilmStripModel.Frame): void {
-      PerfUI.FilmStripView.Dialog.fromSDKFrame(filmStripFrame);
+    function frameClicked(
+        filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData,
+        filmStripFrame: TraceEngine.Extras.FilmStrip.FilmStripFrame): void {
+      PerfUI.FilmStripView.Dialog.fromFilmStrip(filmStrip, filmStripFrame.index);
     }
 
     return contentHelper.fragment;
@@ -3722,6 +3723,7 @@ export class TimelineDetailsContentHelper {
 
   appendElementRow(title: string, content: string|Node, isWarning?: boolean, isStacked?: boolean): void {
     const rowElement = this.tableElement.createChild('div', 'timeline-details-view-row');
+    rowElement.setAttribute('data-row-title', title);
     if (isWarning) {
       rowElement.classList.add('timeline-details-warning');
     }

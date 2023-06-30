@@ -23,7 +23,7 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
 
 describeWithEnvironment('TimelineFlameChartView', () => {
   it('Can search for events by name in the timeline', async () => {
-    const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile('lcp-images.json.gz');
+    const {traceParsedData, performanceModel} = await allModelsFromFile('lcp-images.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
@@ -31,7 +31,7 @@ describeWithEnvironment('TimelineFlameChartView', () => {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
     const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
     flameChartView.setSearchableView(searchableView);
-    flameChartView.setModel(performanceModel, traceParsedData, filmStripModel);
+    flameChartView.setModel(performanceModel, traceParsedData);
 
     const searchQuery = 'Paint';
     const searchConfig =
@@ -61,25 +61,25 @@ describeWithEnvironment('TimelineFlameChartView', () => {
   });
 
   it('Shows the network track correctly', async () => {
-    const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile('load-simple.json.gz');
+    const {traceParsedData, performanceModel} = await allModelsFromFile('load-simple.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-    flameChartView.setModel(performanceModel, traceParsedData, filmStripModel);
+    flameChartView.setModel(performanceModel, traceParsedData);
 
     assert.isTrue(flameChartView.isNetworkTrackShownForTests());
   });
 
   it('Does not show the network track when there is no network request', async () => {
-    const {traceParsedData, performanceModel, filmStripModel} = await allModelsFromFile('basic.json.gz');
+    const {traceParsedData, performanceModel} = await allModelsFromFile('basic.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-    flameChartView.setModel(performanceModel, traceParsedData, filmStripModel);
+    flameChartView.setModel(performanceModel, traceParsedData);
 
     assert.isFalse(flameChartView.isNetworkTrackShownForTests());
   });

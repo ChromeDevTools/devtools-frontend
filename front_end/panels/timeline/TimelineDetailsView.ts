@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
 
@@ -85,7 +85,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private preferredTabId?: string;
   private selection?: TimelineSelection|null;
   #traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null = null;
-  #filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
+  #filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -125,7 +125,6 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
   setModel(
       model: PerformanceModel|null, traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null,
-      filmStripModel: SDK.FilmStripModel.FilmStripModel|null,
       selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null): void {
     if (this.model !== model) {
       if (this.model) {
@@ -137,8 +136,10 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       }
     }
     this.#traceEngineData = traceEngineData;
+    if (traceEngineData) {
+      this.#filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceEngineData);
+    }
     this.#selectedEvents = selectedEvents;
-    this.#filmStripModel = filmStripModel;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
       view.setModelWithEvents(model, selectedEvents, traceEngineData);
@@ -215,14 +216,22 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.updateContents();
   }
 
-  #getFilmStripFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): SDK.FilmStripModel.Frame|null {
-    if (!this.#filmStripModel) {
+  #getFilmStripFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): TraceEngine.Extras.FilmStrip.FilmStripFrame
+      |null {
+    if (!this.#filmStrip) {
       return null;
     }
-    // For idle frames, look at the state at the beginning of the frame.
-    const screenshotTime = frame.idle ? frame.startTime : frame.endTime;
-    const filmStripFrame = this.#filmStripModel.frameByTimestamp(screenshotTime);
-    return filmStripFrame && filmStripFrame.timestamp - frame.endTime < 10 ? filmStripFrame : null;
+    const screenshotTime = TraceEngine.Types.Timing.MilliSeconds(frame.idle ? frame.startTime : frame.endTime);
+    const screenshotTimeMicroSeconds = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(screenshotTime);
+
+    const filmStripFrame =
+        TraceEngine.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, screenshotTimeMicroSeconds);
+    if (!filmStripFrame) {
+      return null;
+    }
+    const frameTimeMilliSeconds =
+        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(filmStripFrame.screenshotEvent.ts);
+    return frameTimeMilliSeconds - frame.endTime < 10 ? filmStripFrame : null;
   }
 
   setSelection(selection: TimelineSelection|null): void {
@@ -240,8 +249,8 @@ export class TimelineDetailsView extends UI.Widget.VBox {
           .then(fragment => this.appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
     } else if (TimelineSelection.isFrameObject(selectionObject)) {
       const frame = selectionObject;
-      const filmStripFrame = this.#getFilmStripFrame(frame);
-      this.setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
+      const matchedFilmStripFrame = this.#getFilmStripFrame(frame);
+      this.setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, this.#filmStrip, matchedFilmStripFrame));
       if (frame.layerTree) {
         const layersView = this.layersView();
         layersView.showLayerTree(frame.layerTree);

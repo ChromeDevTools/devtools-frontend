@@ -144,12 +144,21 @@ class MockRevealer extends Common.Revealer.Revealer {
   async reveal(_object: Object, _omitFocus?: boolean|undefined): Promise<void> {
   }
 }
+
+async function createAndInitializeBreakpointsView(): Promise<SourcesComponents.BreakpointsView.BreakpointsView> {
+  // Force creation of a new BreakpointsView singleton so that it gets correctly re-wired with
+  // the current controller singleton (to pick up the latest breakpoint state).
+  const component = SourcesComponents.BreakpointsView.BreakpointsView.instance({forceNew: true});
+  await coordinator.done();  // Wait until the initial rendering finishes.
+  renderElementIntoDOM(component);
+  return component;
+}
+
 async function renderNoBreakpoints(
     {pauseOnUncaughtExceptions, pauseOnCaughtExceptions, independentPauseToggles}:
         {pauseOnUncaughtExceptions: boolean, pauseOnCaughtExceptions: boolean, independentPauseToggles: boolean}):
     Promise<SourcesComponents.BreakpointsView.BreakpointsView> {
-  const component = new SourcesComponents.BreakpointsView.BreakpointsView();
-  renderElementIntoDOM(component);
+  const component = await createAndInitializeBreakpointsView();
 
   component.data = {
     breakpointsActive: true,
@@ -170,8 +179,7 @@ async function renderSingleBreakpoint(
 }> {
   // Only provide a hover text if it's not a regular breakpoint.
   assert.isTrue(!hoverText || type !== SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT);
-  const component = new SourcesComponents.BreakpointsView.BreakpointsView();
-  renderElementIntoDOM(component);
+  const component = await createAndInitializeBreakpointsView();
 
   const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
     breakpointsActive: true,
@@ -208,8 +216,7 @@ async function renderMultipleBreakpoints(): Promise<{
   component: SourcesComponents.BreakpointsView.BreakpointsView,
   data: SourcesComponents.BreakpointsView.BreakpointsViewData,
 }> {
-  const component = new SourcesComponents.BreakpointsView.BreakpointsView();
-  renderElementIntoDOM(component);
+  const component = await createAndInitializeBreakpointsView();
 
   const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
     breakpointsActive: true,
@@ -993,8 +1000,7 @@ describeWithMockConnection('BreakpointsView', () => {
   });
 
   it('renders breakpoint groups with a differentiator if the file names are not unique', async () => {
-    const component = new SourcesComponents.BreakpointsView.BreakpointsView();
-    renderElementIntoDOM(component);
+    const component = await createAndInitializeBreakpointsView();
 
     const groupTemplate = {
       name: 'index.js',
@@ -1303,8 +1309,7 @@ describeWithMockConnection('BreakpointsView', () => {
   });
 
   it('only renders edit button for breakpoints in editable groups', async () => {
-    const component = new SourcesComponents.BreakpointsView.BreakpointsView();
-    renderElementIntoDOM(component);
+    const component = await createAndInitializeBreakpointsView();
 
     const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
       breakpointsActive: true,
@@ -1339,6 +1344,13 @@ describeWithMockConnection('BreakpointsView', () => {
 
     const editBreakpointButton = component.shadowRoot.querySelector(EDIT_SINGLE_BREAKPOINT_SELECTOR);
     assert.isNull(editBreakpointButton);
+  });
+
+  it('initializes data from the controller on construction', async () => {
+    await setUpTestWithOneBreakpointLocation();
+    const component = await createAndInitializeBreakpointsView();
+    const renderedGroupName = component.shadowRoot?.querySelector(GROUP_NAME_SELECTOR);
+    assert.strictEqual(renderedGroupName?.textContent, HELLO_JS_FILE);
   });
 
   describe('conditional breakpoints', () => {
@@ -1616,8 +1628,7 @@ describeWithMockConnection('BreakpointsView', () => {
       component: SourcesComponents.BreakpointsView.BreakpointsView,
       data: SourcesComponents.BreakpointsView.BreakpointsViewData,
     }> {
-      const component = new SourcesComponents.BreakpointsView.BreakpointsView();
-      renderElementIntoDOM(component);
+      const component = await createAndInitializeBreakpointsView();
 
       const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
         breakpointsActive: true,

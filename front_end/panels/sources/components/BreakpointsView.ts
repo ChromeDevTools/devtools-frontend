@@ -526,8 +526,8 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #controller: BreakpointsSidebarController;
 
-  static instance(): BreakpointsView {
-    if (!breakpointsViewInstance) {
+  static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): BreakpointsView {
+    if (!breakpointsViewInstance || forceNew) {
       breakpointsViewInstance = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new BreakpointsView());
     }
     return breakpointsViewInstance.getComponent();
@@ -536,6 +536,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   constructor() {
     super();
     this.#controller = BreakpointsSidebarController.instance();
+    void this.#controller.update();
   }
 
   static readonly litTagName = LitHtml.literal`devtools-breakpoint-view`;

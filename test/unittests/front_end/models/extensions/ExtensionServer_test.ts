@@ -11,10 +11,15 @@ const {assert} = chai;
 
 import {describeWithDevtoolsExtension} from './helpers.js';
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
-import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {createTarget, expectConsoleLogs} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 describeWithDevtoolsExtension('Extensions', {}, context => {
+  expectConsoleLogs({
+    warn: ['evaluate: the main frame is not yet available'],
+    error: ['Extension server error: Object not found: <top>'],
+  });
+
   it('can register a recorder extension for export', async () => {
     class RecorderPlugin {
       async stringify(recording: object) {
@@ -206,6 +211,8 @@ const hostsPolicy = {
 
 describeWithMockConnection('Extensions', () => {
   describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => {
+    expectConsoleLogs({error: ['Extension server error: Operation failed: Permission denied']});
+
     it('blocks API calls on blocked hosts', async () => {
       const target = createTarget({type: SDK.Target.Type.Frame});
 

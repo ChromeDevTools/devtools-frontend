@@ -9,11 +9,10 @@ import * as Root from '../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../front_end/models/bindings/bindings.js';
+import * as IssuesManager from '../../../../front_end/models/issues_manager/issues_manager.js';
 import * as Logs from '../../../../front_end/models/logs/logs.js';
 import * as Persistence from '../../../../front_end/models/persistence/persistence.js';
 import * as Workspace from '../../../../front_end/models/workspace/workspace.js';
-import * as IssuesManager from '../../../../front_end/models/issues_manager/issues_manager.js';
-
 import type * as UIModule from '../../../../front_end/ui/legacy/legacy.js';
 
 // Don't import UI at this stage because it will fail without
@@ -393,6 +392,46 @@ export function setupActionRegistry() {
     if (UI) {
       UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
       UI.ActionRegistry.ActionRegistry.removeInstance();
+    }
+  });
+}
+
+export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[], error?: string[]}) {
+  const {error, warn, log} = console;
+  before(() => {
+    if (expectedLogs.log) {
+      // eslint-disable-next-line no-console
+      console.log = (...data: unknown[]) => {
+        if (!expectedLogs.log?.includes(data.join(' '))) {
+          log(...data);
+        }
+      };
+    }
+    if (expectedLogs.warn) {
+      console.warn = (...data: unknown[]) => {
+        if (!expectedLogs.warn?.includes(data.join(' '))) {
+          warn(...data);
+        }
+      };
+    }
+    if (expectedLogs.error) {
+      console.error = (...data: unknown[]) => {
+        if (!expectedLogs.error?.includes(data.join(' '))) {
+          error(...data);
+        }
+      };
+    }
+  });
+  after(() => {
+    if (expectedLogs.log) {
+      // eslint-disable-next-line no-console
+      console.log = log;
+    }
+    if (expectedLogs.warn) {
+      console.warn = warn;
+    }
+    if (expectedLogs.error) {
+      console.error = error;
     }
   });
 }

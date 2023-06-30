@@ -1563,7 +1563,7 @@ Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.codeFolding),
   settingName: 'textEditorCodeFolding',
   settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
+  defaultValue: true,
   options: [
     {
       value: true,

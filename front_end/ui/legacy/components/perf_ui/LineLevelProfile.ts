@@ -8,6 +8,7 @@ import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as SourceFrame from '../source_frame/source_frame.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import type * as CPUProfile from '../../../../models/cpu_profile/cpu_profile.js';
 
 let performanceInstance: Performance;
 
@@ -33,12 +34,12 @@ export class Performance {
     this.helper.reset();
   }
 
-  private appendLegacyCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null):
-      void {
-    const nodesToGo: SDK.CPUProfileDataModel.CPUProfileNode[] = [profile.profileHead];
+  private appendLegacyCPUProfile(
+      profile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null): void {
+    const nodesToGo: CPUProfile.CPUProfileDataModel.CPUProfileNode[] = [profile.profileHead];
     const sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
     while (nodesToGo.length) {
-      const nodes: SDK.CPUProfileDataModel.CPUProfileNode[] =
+      const nodes: CPUProfile.CPUProfileDataModel.CPUProfileNode[] =
           // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (nodesToGo.pop() as any).children;  // Cast to any because runtime checks assert the props.
@@ -58,7 +59,7 @@ export class Performance {
     }
   }
 
-  appendCPUProfile(profile: SDK.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null): void {
+  appendCPUProfile(profile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null): void {
     if (!profile.lines) {
       this.appendLegacyCPUProfile(profile, target);
       this.helper.scheduleUpdate();

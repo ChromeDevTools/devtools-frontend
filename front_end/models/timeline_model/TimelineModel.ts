@@ -38,6 +38,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TraceEngine from '../trace/trace.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as CPUProfile from '../cpu_profile/cpu_profile.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 
@@ -121,7 +122,7 @@ export class TimelineModelImpl {
   private pageFrames!: Map<Protocol.Page.FrameId, PageFrame>;
   private auctionWorklets!: Map<string, AuctionWorklet>;
   private cpuProfilesInternal!:
-      {cpuProfileData: SDK.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null}[];
+      {cpuProfileData: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null}[];
   private workerIdByThread!: WeakMap<SDK.TracingModel.Thread, string>;
   private requestsFromBrowser!: Map<string, SDK.TracingModel.Event>;
   private mainFrame!: PageFrame;
@@ -315,7 +316,8 @@ export class TimelineModelImpl {
     return data && data['frame'] || null;
   }
 
-  cpuProfiles(): {cpuProfileData: SDK.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null}[] {
+  cpuProfiles():
+      {cpuProfileData: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null}[] {
     return this.cpuProfilesInternal;
   }
 
@@ -684,7 +686,7 @@ export class TimelineModelImpl {
   }
 
   private extractCpuProfileDataModel(tracingModel: SDK.TracingModel.TracingModel, thread: SDK.TracingModel.Thread):
-      SDK.CPUProfileDataModel.CPUProfileDataModel|null {
+      CPUProfile.CPUProfileDataModel.CPUProfileDataModel|null {
     const events = thread.events();
     let cpuProfile;
     let target: (SDK.Target.Target|null)|null = null;
@@ -769,7 +771,7 @@ export class TimelineModelImpl {
 
     try {
       const profile = (cpuProfile as Protocol.Profiler.Profile);
-      const jsProfileModel = new SDK.CPUProfileDataModel.CPUProfileDataModel(profile);
+      const jsProfileModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(profile);
       this.cpuProfilesInternal.push({cpuProfileData: jsProfileModel, target});
       return jsProfileModel;
     } catch (e) {

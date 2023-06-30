@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../trace/trace.js';
+import type * as CPUProfile from '../cpu_profile/cpu_profile.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
@@ -29,18 +30,18 @@ export class TimelineJSProfileProcessor {
    * which contains the call hierarchy.
    */
   static generateConstructedEventsFromCpuProfileDataModel(
-      jsProfileModel: SDK.CPUProfileDataModel.CPUProfileDataModel,
+      jsProfileModel: CPUProfile.CPUProfileDataModel.CPUProfileDataModel,
       thread: SDK.TracingModel.Thread): SDK.TracingModel.Event[] {
     const samples = jsProfileModel.samples || [];
     const timestamps = jsProfileModel.timestamps;
     const jsEvents = [];
-    const nodeToStackMap = new Map<SDK.ProfileTreeModel.ProfileNode|null, Protocol.Runtime.CallFrame[]>();
+    const nodeToStackMap = new Map<CPUProfile.ProfileTreeModel.ProfileNode|null, Protocol.Runtime.CallFrame[]>();
 
-    let prevNode: SDK.ProfileTreeModel.ProfileNode = jsProfileModel.root;
+    let prevNode: CPUProfile.ProfileTreeModel.ProfileNode = jsProfileModel.root;
     let prevCallFrames: Protocol.Runtime.CallFrame[] = [];
     // Adds call stacks to fake trace events using the tree in CPUProfileDataModel
     for (let i = 0; i < samples.length; ++i) {
-      const node: SDK.ProfileTreeModel.ProfileNode|null = jsProfileModel.nodeByIndex(i);
+      const node: CPUProfile.ProfileTreeModel.ProfileNode|null = jsProfileModel.nodeByIndex(i);
       if (!node) {
         console.error(`Node with unknown id ${samples[i]} at index ${i}`);
         continue;

@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
@@ -108,7 +109,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   // If a node corresponds to a script that has not been parsed or a script
   // that has a source map, we should listen to SourceMapAttached events to
   // attempt a function name resolving.
-  #maybeGetDebuggerModelForNode(node: SDK.CPUProfileDataModel.CPUProfileNode, target: SDK.Target.Target|null):
+  #maybeGetDebuggerModelForNode(node: CPUProfile.CPUProfileDataModel.CPUProfileNode, target: SDK.Target.Target|null):
       SDK.DebuggerModel.DebuggerModel|null {
     const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {

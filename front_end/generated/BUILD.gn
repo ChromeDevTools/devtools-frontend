@@ -21,6 +21,7 @@ devtools_module("generated") {
     "../../test/unittests/front_end/models/trace/*",
     "../core/protocol_client:*",
     "../core/sdk:*",
+    "../models/cpu_profile:*",
     "../models/trace:*",
     "../models/trace/*",
     "../panels/accessibility:*",

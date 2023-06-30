@@ -50,6 +50,7 @@ devtools_module("profiler") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
+    "../../models/cpu_profile:bundle",
     "../../models/heap_snapshot_model:bundle",
     "../../models/workspace:bundle",
     "../../panels/settings:bundle",

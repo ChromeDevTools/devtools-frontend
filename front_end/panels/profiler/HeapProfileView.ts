@@ -12,6 +12,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 
 import {ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
 
@@ -518,7 +519,7 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
   }
 }
 
-export class SamplingHeapProfileNode extends SDK.ProfileTreeModel.ProfileNode {
+export class SamplingHeapProfileNode extends CPUProfile.ProfileTreeModel.ProfileNode {
   override self: number;
   constructor(node: Protocol.HeapProfiler.SamplingHeapProfileNode) {
     const callFrame = node.callFrame || ({
@@ -543,7 +544,7 @@ export class SamplingHeapProfileNode extends SDK.ProfileTreeModel.ProfileNode {
   }
 }
 
-export class SamplingHeapProfileModel extends SDK.ProfileTreeModel.ProfileTreeModel {
+export class SamplingHeapProfileModel extends CPUProfile.ProfileTreeModel.ProfileTreeModel {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modules: any;
@@ -591,7 +592,7 @@ export class SamplingHeapProfileModel extends SDK.ProfileTreeModel.ProfileTreeMo
       return resultRoot;
     }
 
-    function pruneEmptyBranches(node: SDK.ProfileTreeModel.ProfileNode): boolean {
+    function pruneEmptyBranches(node: CPUProfile.ProfileTreeModel.ProfileNode): boolean {
       node.children = node.children.filter(pruneEmptyBranches);
       return Boolean(node.children.length || node.self);
     }
@@ -628,12 +629,13 @@ export class NodeFormatter implements Formatter {
 }
 
 export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
-  readonly profile: SDK.ProfileTreeModel.ProfileTreeModel;
+  readonly profile: CPUProfile.ProfileTreeModel.ProfileTreeModel;
   readonly heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null;
   timelineDataInternal?: PerfUI.FlameChart.FlameChartTimelineData;
 
   constructor(
-      profile: SDK.ProfileTreeModel.ProfileTreeModel, heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null) {
+      profile: CPUProfile.ProfileTreeModel.ProfileTreeModel,
+      heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null) {
     super();
     this.profile = profile;
     this.heapProfilerModel = heapProfilerModel;
@@ -656,11 +658,11 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
   }
 
   override calculateTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {
-    function nodesCount(node: SDK.ProfileTreeModel.ProfileNode): number {
+    function nodesCount(node: CPUProfile.ProfileTreeModel.ProfileNode): number {
       return node.children.reduce((count, node) => count + nodesCount(node), 1);
     }
     const count = nodesCount(this.profile.root);
-    const entryNodes: SDK.ProfileTreeModel.ProfileNode[] = new Array(count);
+    const entryNodes: CPUProfile.ProfileTreeModel.ProfileNode[] = new Array(count);
     const entryLevels = new Uint16Array(count);
     const entryTotalTimes = new Float32Array(count);
     const entryStartTimes = new Float64Array(count);
@@ -669,7 +671,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     let position = 0;
     let index = 0;
 
-    function addNode(node: SDK.ProfileTreeModel.ProfileNode): void {
+    function addNode(node: CPUProfile.ProfileTreeModel.ProfileNode): void {
       const start = position;
       entryNodes[index] = node;
       entryLevels[index] = depth;

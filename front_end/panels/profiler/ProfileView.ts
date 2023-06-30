@@ -11,6 +11,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -108,7 +109,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileView extends UI.View.SimpleView implements UI.SearchableView.Searchable {
-  profileInternal: SDK.ProfileTreeModel.ProfileTreeModel|null;
+  profileInternal: CPUProfile.ProfileTreeModel.ProfileTreeModel|null;
   searchableViewInternal: UI.SearchableView.SearchableView;
   dataGrid: DataGrid.DataGrid.DataGridImpl<unknown>;
   viewSelectComboBox: UI.Toolbar.ToolbarComboBox;
@@ -236,7 +237,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     return table;
   }
 
-  setProfile(profile: SDK.ProfileTreeModel.ProfileTreeModel): void {
+  setProfile(profile: CPUProfile.ProfileTreeModel.ProfileTreeModel): void {
     this.profileInternal = profile;
     this.bottomUpProfileDataGridTree = null;
     this.topDownProfileDataGridTree = null;
@@ -244,7 +245,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.refresh();
   }
 
-  profile(): SDK.ProfileTreeModel.ProfileTreeModel|null {
+  profile(): CPUProfile.ProfileTreeModel.ProfileTreeModel|null {
     return this.profileInternal;
   }
 
@@ -299,7 +300,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     if (!this.bottomUpProfileDataGridTree) {
       this.bottomUpProfileDataGridTree = new BottomUpProfileDataGridTree(
           this.nodeFormatter, this.searchableViewInternal,
-          (this.profileInternal as SDK.ProfileTreeModel.ProfileTreeModel).root, this.adjustedTotal);
+          (this.profileInternal as CPUProfile.ProfileTreeModel.ProfileTreeModel).root, this.adjustedTotal);
     }
     return this.bottomUpProfileDataGridTree;
   }
@@ -308,7 +309,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     if (!this.topDownProfileDataGridTree) {
       this.topDownProfileDataGridTree = new TopDownProfileDataGridTree(
           this.nodeFormatter, this.searchableViewInternal,
-          (this.profileInternal as SDK.ProfileTreeModel.ProfileTreeModel).root, this.adjustedTotal);
+          (this.profileInternal as CPUProfile.ProfileTreeModel.ProfileTreeModel).root, this.adjustedTotal);
     }
     return this.topDownProfileDataGridTree;
   }

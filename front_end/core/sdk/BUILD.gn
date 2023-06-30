@@ -92,6 +92,7 @@ devtools_module("sdk") {
     "../../core/root:bundle",
     "../../generated",
     "../../generated:protocol",
+    "../../models/cpu_profile:bundle",
     "../../models/text_utils:bundle",
     "../../models/trace:bundle",
   ]

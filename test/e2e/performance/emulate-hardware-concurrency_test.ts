@@ -3,11 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
 import type * as puppeteer from 'puppeteer-core';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
-
 import {assertNotNullOrUndefined, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToPerformanceTab, openCaptureSettings} from '../helpers/performance-helpers.js';
@@ -48,7 +46,7 @@ describe('The Performance panel', () => {
       assert.deepEqual(tooltipText, 'Hardware concurrency override is enabled');
     }
 
-    // Check that the warning is shonw on the settings gear:
+    // Check that the warning is shown on the settings gear:
     const gear =
         await waitForAria('- Hardware concurrency override is enabled') as puppeteer.ElementHandle<HTMLElement>;
     const gearColor = await gear.evaluate(
@@ -56,7 +54,8 @@ describe('The Performance panel', () => {
     assert.deepEqual(gearColor, 'rgb(220, 54, 46)');
 
     // Check that the concurrency input shows the correct value:
-    const input = await waitForAria('Value of navigator.hardwareConcurrency');
+    const input =
+        await waitFor('input[aria-label="Override the value reported by navigator.hardwareConcurrency on the page"]');
     const initialValue = Number(await input.evaluate(input => {
       return (input as HTMLInputElement).value;
     }));

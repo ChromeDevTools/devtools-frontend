@@ -11,13 +11,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
-
 import {
-  ThrottlingPresets,
   type Conditions,
   type ConditionsList,
   type MobileThrottlingConditionsGroup,
   type NetworkThrottlingConditionsGroup,
+  ThrottlingPresets,
 } from './ThrottlingPresets.js';
 
 const UIStrings = {
@@ -74,13 +73,13 @@ const UIStrings = {
    */
   resetConcurrency: 'Reset to the default value',
   /**
-   *@description Screen reader label for an check box that neables overriding navigator.hardwareConcurrency
+   *@description Label for an check box that neables overriding navigator.hardwareConcurrency
    */
   hardwareConcurrency: 'Hardware concurrency',
   /**
-   *@description Screen reader label for an input box that overrides navigator.hardwareConcurrency
+   *@description Tooltip text for an input box that overrides navigator.hardwareConcurrency on the page
    */
-  hardwareConcurrencyValue: 'Value of navigator.hardwareConcurrency',
+  hardwareConcurrencySettingTooltip: 'Override the value reported by navigator.hardwareConcurrency on the page',
   /**
    *@description Icon title in Throttling Manager of the Performance panel
    */
@@ -319,12 +318,13 @@ export class ThrottlingManager {
     toggle: UI.Toolbar.ToolbarItem,
   } {
     const input = new UI.Toolbar.ToolbarItem(UI.UIUtils.createInput('devtools-text-input', 'number'));
-    input.setTitle(i18nString(UIStrings.hardwareConcurrencyValue));
+    input.setTitle(i18nString(UIStrings.hardwareConcurrencySettingTooltip));
     const inputElement = input.element as HTMLInputElement;
     inputElement.min = '1';
     input.setEnabled(false);
 
-    const toggle = new UI.Toolbar.ToolbarCheckbox(i18nString(UIStrings.hardwareConcurrency));
+    const toggle = new UI.Toolbar.ToolbarCheckbox(
+        i18nString(UIStrings.hardwareConcurrency), i18nString(UIStrings.hardwareConcurrencySettingTooltip));
     const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo');
     reset.setTitle(i18nString(UIStrings.resetConcurrency));
     const icon = new IconButton.Icon.Icon();

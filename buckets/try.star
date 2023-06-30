@@ -151,6 +151,15 @@ builder_coverage(
 )
 
 builder_coverage(
+    covered_oss = ["linux", "win64", "mac"],
+    builder_factory = try_builder,
+    builder_name_pattern = "devtools_frontend_shuffled_parallel_%s_rel",
+    recipe_name = "devtools/devtools-frontend",
+    execution_timeout = default_timeout + 15 * time.minute,
+    priority = 50,
+)
+
+builder_coverage(
     covered_oss = ["win64"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_parallel_%s_rel",
@@ -225,6 +234,9 @@ cq_main = struct(
         "devtools_screenshot_linux_rel",
         "devtools_screenshot_mac_rel",
         "devtools_screenshot_win64_rel",
+        "devtools_frontend_shuffled_parallel_linux_rel",
+        "devtools_frontend_shuffled_parallel_mac_rel",
+        "devtools_frontend_shuffled_parallel_win64_rel",
     ],
 )
 

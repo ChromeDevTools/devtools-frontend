@@ -60,8 +60,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
     dataProvider.setModel(traceParsedData);
     dataProvider.setWindowTimes(minTime, maxTime);
 
-    // TimelineFlameChartNetworkDataProvider only has network track, so should always be one track group.
-    assert.strictEqual(dataProvider.timelineData().groups.length, 1);
+    // Network track appender won't append the network track if there is no network requests.
+    assert.strictEqual(dataProvider.timelineData().groups.length, 0);
 
     assert.deepEqual(dataProvider.minimumBoundary(), minTime);
     assert.deepEqual(dataProvider.totalTime(), maxTime - minTime);
@@ -77,6 +77,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', () => {
 
     // The network track won't show if it is empty.
     assert.isTrue(dataProvider.isEmpty());
+
+    assert.strictEqual(dataProvider.preferredHeight(), 0);
   });
 
   it('decorate a event correctly', async () => {

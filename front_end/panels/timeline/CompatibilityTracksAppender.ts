@@ -78,7 +78,9 @@ export interface TrackAppender {
 }
 
 export const TrackNames = ['Timings', 'Interactions', 'GPU', 'LayoutShifts'] as const;
-export type TrackAppenderName = typeof TrackNames[number];
+// Network track will use TrackAppender interface, but it won't be shown in Main flamechart.
+// So manually add it to TrackAppenderName.
+export type TrackAppenderName = typeof TrackNames[number]|'Network';
 
 export class CompatibilityTracksAppender {
   #trackForLevel = new Map<number, TrackAppender>();

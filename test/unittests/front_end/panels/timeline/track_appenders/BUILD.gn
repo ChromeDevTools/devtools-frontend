@@ -12,6 +12,7 @@ ts_library("track_appenders") {
     "GPUTrackAppender_test.ts",
     "InteractionsTrackAppender_test.ts",
     "LayoutShiftsTrackAppender_test.ts",
+    "NetworkTrackAppender_test.ts",
     "TimingsTrackAppender_test.ts",
   ]
 

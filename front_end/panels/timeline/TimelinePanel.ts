@@ -285,7 +285,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private readonly millisecondsToRecordAfterLoadEvent: number;
   private readonly toggleRecordAction: UI.ActionRegistration.Action;
   private readonly recordReloadAction: UI.ActionRegistration.Action;
-  private readonly historyManager: TimelineHistoryManager;
+  readonly #historyManager: TimelineHistoryManager;
   private performanceModel: PerformanceModel|null;
   // Cannot be made into an actual private field because the layout tests
   // currently rely on accessing and setting this value.
@@ -354,7 +354,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.recordReloadAction =
         (UI.ActionRegistry.ActionRegistry.instance().action('timeline.record-reload') as UI.ActionRegistration.Action);
 
-    this.historyManager = new TimelineHistoryManager();
+    this.#historyManager = new TimelineHistoryManager();
 
     this.performanceModel = null;
 
@@ -476,7 +476,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   override willHide(): void {
     UI.Context.Context.instance().setFlavor(TimelinePanel, null);
-    this.historyManager.cancelIfShowing();
+    this.#historyManager.cancelIfShowing();
   }
 
   loadFromEvents(events: SDK.TracingManager.EventPayload[]): void {
@@ -548,7 +548,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // History
     this.panelToolbar.appendSeparator();
-    this.panelToolbar.appendToolbarItem(this.historyManager.button());
+    this.panelToolbar.appendToolbarItem(this.#historyManager.button());
     this.panelToolbar.registerCSSFiles([historyToolbarButtonStyles]);
     this.panelToolbar.appendSeparator();
 
@@ -730,16 +730,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async showHistory(): Promise<void> {
-    const recordingData = await this.historyManager.showHistoryDropDown();
+    const recordingData = await this.#historyManager.showHistoryDropDown();
     if (recordingData && recordingData.legacyModel !== this.performanceModel) {
-      this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseData);
+      this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseDataIndex);
     }
   }
 
   navigateHistory(direction: number): boolean {
-    const recordingData = this.historyManager.navigate(direction);
+    const recordingData = this.#historyManager.navigate(direction);
     if (recordingData && recordingData.legacyModel !== this.performanceModel) {
-      this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseData);
+      this.setModel(recordingData.legacyModel, /* exclusiveFilter= */ null, recordingData.traceParseDataIndex);
     }
     return true;
   }
@@ -1038,7 +1038,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.toggleRecordAction.setToggled(this.state === state.Recording);
     this.toggleRecordAction.setEnabled(this.state === state.Recording || this.state === state.Idle);
     this.recordReloadAction.setEnabled(isNode ? false : this.state === state.Idle);
-    this.historyManager.setEnabled(this.state === state.Idle);
+    this.#historyManager.setEnabled(this.state === state.Idle);
     this.clearButton.setEnabled(this.state === state.Idle);
     this.panelToolbar.setEnabled(this.state !== state.Loading);
     this.panelRightToolbar.setEnabled(this.state !== state.Loading);
@@ -1067,7 +1067,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private onClearButton(): void {
-    this.historyManager.clear();
+    this.#historyManager.clear();
     this.clear();
   }
 
@@ -1093,9 +1093,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     model.setFilters(exclusiveFilter ? [exclusiveFilter] : [TimelineUIUtils.visibleEventsFilter()]);
   }
 
-  private setModel(
+  setModel(
       model: PerformanceModel|null, exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
-      newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null = null): void {
+      traceEngineIndex: number = -1): void {
     if (this.performanceModel) {
       this.performanceModel.removeEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
     }
@@ -1106,7 +1106,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     } else {
       this.searchableViewInternal.hideWidget();
     }
-    this.flameChart.setModel(model, newTraceEngineData);
+    this.#traceEngineActiveTraceIndex = traceEngineIndex;
+    const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
+    this.flameChart.setModel(model, traceParsedData);
 
     this.updateOverviewControls();
     this.overviewPane.reset();
@@ -1303,11 +1305,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // This code path is only executed when a new trace is recorded/imported,
       // so we know that the active index will be the size of the model because
       // the newest trace will be automatically set to active.
-      const traceParsedData = this.#traceEngineModel.traceParsedData();
       this.#traceEngineActiveTraceIndex = this.#traceEngineModel.size() - 1;
 
       this.filmStripModel = new SDK.FilmStripModel.FilmStripModel(tracingModel);
-      this.setModel(this.performanceModel, exclusiveFilter, traceParsedData);
+      this.setModel(this.performanceModel, exclusiveFilter, this.#traceEngineActiveTraceIndex);
 
       if (this.statusPane) {
         this.statusPane.remove();
@@ -1318,7 +1319,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.performanceModel.addEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
       }
 
-      this.historyManager.addRecording(this.performanceModel, traceParsedData, this.filmStripModel);
+      this.#historyManager.addRecording(this.performanceModel, this.#traceEngineActiveTraceIndex, this.filmStripModel);
     } catch (error) {
       this.recordingFailed(error.message);
       console.error(error);

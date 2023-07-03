@@ -50,24 +50,24 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     const firstFileModels = await allModelsFromFile('slow-interaction-button-click.json.gz');
     historyManager.addRecording(
         firstFileModels.performanceModel,
-        firstFileModels.traceParsedData,
+        // For the new trace engine we store the index, not the data itself
+        1,
         firstFileModels.filmStripModel,
     );
 
     const secondFileModels = await allModelsFromFile('slow-interaction-keydown.json.gz');
-    historyManager.addRecording(
-        secondFileModels.performanceModel, secondFileModels.traceParsedData, secondFileModels.filmStripModel);
+    historyManager.addRecording(secondFileModels.performanceModel, 2, secondFileModels.filmStripModel);
 
     // Make sure the correct model tuples (legacy and new engine) are returned when
     // using the history manager to navigate between trace files..
     const previousRecording = historyManager.navigate(1);
     assert.strictEqual(previousRecording?.legacyModel, firstFileModels.performanceModel);
-    assert.strictEqual(previousRecording?.traceParseData, firstFileModels.traceParsedData);
+    assert.strictEqual(previousRecording?.traceParseDataIndex, 1);
     assert.strictEqual(previousRecording?.filmStripModel, firstFileModels.filmStripModel);
 
     const nextRecording = historyManager.navigate(-1);
     assert.strictEqual(nextRecording?.legacyModel, secondFileModels.performanceModel);
-    assert.strictEqual(nextRecording?.traceParseData, secondFileModels.traceParsedData);
+    assert.strictEqual(nextRecording?.traceParseDataIndex, 2);
     assert.strictEqual(nextRecording?.filmStripModel, secondFileModels.filmStripModel);
   });
 });

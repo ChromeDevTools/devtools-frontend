@@ -10,7 +10,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 
-import type * as TraceEngine from '../../models/trace/trace.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {
   TimelineEventOverviewCPUActivity,
@@ -66,7 +65,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type RecordingData = {
   legacyModel: PerformanceModel,
-  traceParseData: TraceEngine.Handlers.Migration.PartialTraceData|null,
+  traceParseDataIndex: number,
   filmStripModel: SDK.FilmStripModel.FilmStripModel,
 };
 
@@ -103,10 +102,10 @@ export class TimelineHistoryManager {
   }
 
   addRecording(
-      performanceModel: PerformanceModel, traceParseData: TraceEngine.Handlers.Migration.PartialTraceData|null,
+      performanceModel: PerformanceModel, traceParseDataIndex: number,
       filmStripModel: SDK.FilmStripModel.FilmStripModel): void {
     this.lastActiveModel = performanceModel;
-    this.recordings.unshift({legacyModel: performanceModel, traceParseData, filmStripModel});
+    this.recordings.unshift({legacyModel: performanceModel, traceParseDataIndex, filmStripModel});
     this.buildPreview(performanceModel, filmStripModel);
     const modelTitle = this.title(performanceModel);
     this.buttonInternal.setText(modelTitle);

@@ -772,7 +772,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
     if (this.showScreenshotsSetting.get() && traceParsedData) {
-      const filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceParsedData);
+      const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
       if (filmStrip.frames.length) {
         this.overviewControls.push(new TimelineFilmStripOverview(filmStrip));
       }
@@ -1324,7 +1324,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           legacyModel: this.performanceModel,
           traceParseDataIndex: this.#traceEngineActiveTraceIndex,
         },
-        filmStripForPreview: traceData ? TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceData) : null,
+        filmStripForPreview: traceData ? TraceEngine.Extras.FilmStrip.fromTraceData(traceData) : null,
       });
     } catch (error) {
       this.recordingFailed(error.message);

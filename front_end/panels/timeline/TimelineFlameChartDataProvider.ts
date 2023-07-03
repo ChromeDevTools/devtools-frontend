@@ -821,7 +821,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // data model in place without creating a new TrackAppender. When we can
     // migrate the frames track to the new appender system, we can migrate the
     // screnshots then as well.
-    const filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(this.traceEngineData);
+    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(this.traceEngineData);
     const hasScreenshots = filmStrip.frames.length > 0;
 
     this.framesHeader.collapsible = hasScreenshots;
@@ -841,7 +841,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.#appendScreenshots(filmStrip);
   }
 
-  #appendScreenshots(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData): void {
+  #appendScreenshots(filmStrip: TraceEngine.Extras.FilmStrip.Data): void {
     if (!this.timelineDataInternal || !this.legacyTimelineModel) {
       return;
     }

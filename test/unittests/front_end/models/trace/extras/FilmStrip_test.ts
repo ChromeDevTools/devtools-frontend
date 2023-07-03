@@ -12,28 +12,28 @@ describe('FilmStrip', function() {
 
   it('identifies the frames from a trace', async () => {
     const traceParsedData = await loadModelDataFromTraceFile('web-dev.json.gz');
-    const filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceParsedData);
+    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     assert.lengthOf(filmStrip.frames, 5);
   });
 
   it('caches the film strip based on the trace data and the zero time', async () => {
     const traceParsedData = await loadModelDataFromTraceFile('web-dev.json.gz');
-    const filmStrip1 = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceParsedData);
-    const filmStrip2 = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceParsedData);
+    const filmStrip1 = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
+    const filmStrip2 = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     // It is from cache so you get back the exact same object.
     assert.strictEqual(filmStrip1, filmStrip2);
 
-    const filmStrip3 = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(
-        traceParsedData, TraceEngine.Types.Timing.MicroSeconds(0));
-    const filmStrip4 = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(
-        traceParsedData, TraceEngine.Types.Timing.MicroSeconds(5));
+    const filmStrip3 =
+        TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData, TraceEngine.Types.Timing.MicroSeconds(0));
+    const filmStrip4 =
+        TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData, TraceEngine.Types.Timing.MicroSeconds(5));
     // Not equal as the calls had different start times.
     assert.notStrictEqual(filmStrip3, filmStrip4);
   });
 
   it('exposes the snapshot string for each frame', async () => {
     const traceParsedData = await loadModelDataFromTraceFile('web-dev.json.gz');
-    const filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceParsedData);
+    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     assert.isTrue(filmStrip.frames.every(frame => {
       return typeof frame.screenshotAsString === 'string' && frame.screenshotAsString.length > 0;
     }));
@@ -41,10 +41,10 @@ describe('FilmStrip', function() {
 
   it('can use a custom zero time to filter out screenshots', async () => {
     const traceParsedData = await loadModelDataFromTraceFile('web-dev.json.gz');
-    const filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceParsedData);
+    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     // Set a custom zero time after the first screenshot and ensure that we now only have four events.
     const newCustomZeroTime = TraceEngine.Types.Timing.MicroSeconds(filmStrip.frames[0].screenshotEvent.ts + 1000);
-    const newFilmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceParsedData, newCustomZeroTime);
+    const newFilmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData, newCustomZeroTime);
     // Check that the new film strip is all the frames other than the first, now we have set a custom time.
     assert.deepEqual(newFilmStrip.frames.map(f => f.screenshotAsString), [
       filmStrip.frames[1].screenshotAsString,
@@ -56,7 +56,7 @@ describe('FilmStrip', function() {
 
   it('can return the frame closest to a given timestamp', async () => {
     const traceParsedData = await loadModelDataFromTraceFile('web-dev.json.gz');
-    const filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceParsedData);
+    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     const frameTimestamps = filmStrip.frames.map(frame => frame.screenshotEvent.ts);
     assert.deepEqual(frameTimestamps, [1020034823345, 1020034961883, 1020035045298, 1020035061981, 1020035112030]);
 

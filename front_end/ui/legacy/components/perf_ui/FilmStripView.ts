@@ -38,7 +38,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(UI.Widget.HBox) {
   private statusLabel: HTMLElement;
   private zeroTime: TraceEngine.Types.Timing.MilliSeconds = TraceEngine.Types.Timing.MilliSeconds(0);
-  #filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null = null;
+  #filmStrip: TraceEngine.Extras.FilmStrip.Data|null = null;
 
   constructor() {
     super(true);
@@ -54,7 +54,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
   }
 
-  setModel(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData): void {
+  setModel(filmStrip: TraceEngine.Extras.FilmStrip.Data): void {
     this.#filmStrip = filmStrip;
     this.zeroTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(filmStrip.zeroTime);
 
@@ -65,7 +65,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.update();
   }
 
-  createFrameElement(frame: TraceEngine.Extras.FilmStrip.FilmStripFrame): HTMLDivElement {
+  createFrameElement(frame: TraceEngine.Extras.FilmStrip.Frame): HTMLDivElement {
     const time = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.screenshotEvent.ts);
     const frameTime = i18n.TimeUtilities.millisToString(time - this.zeroTime);
     const element = document.createElement('div');
@@ -112,7 +112,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.dispatchEventToListeners<any>(eventName, timestamp);
   }
 
-  private onDoubleClick(filmStripFrame: TraceEngine.Extras.FilmStrip.FilmStripFrame): void {
+  private onDoubleClick(filmStripFrame: TraceEngine.Extras.FilmStrip.Frame): void {
     if (!this.#filmStrip) {
       return;
     }
@@ -148,7 +148,7 @@ interface DialogTraceEngineData {
   source: 'TraceEngine';
   index: number;
   zeroTime: TraceEngine.Types.Timing.MilliSeconds;
-  frames: readonly TraceEngine.Extras.FilmStrip.FilmStripFrame[];
+  frames: readonly TraceEngine.Extras.FilmStrip.Frame[];
 }
 
 export class Dialog {
@@ -159,7 +159,7 @@ export class Dialog {
 
   #data: DialogTraceEngineData;
 
-  static fromFilmStrip(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData, selectedFrameIndex: number): Dialog {
+  static fromFilmStrip(filmStrip: TraceEngine.Extras.FilmStrip.Data, selectedFrameIndex: number): Dialog {
     const data: DialogTraceEngineData = {
       source: 'TraceEngine',
       frames: filmStrip.frames,

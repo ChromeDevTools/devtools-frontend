@@ -85,7 +85,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private preferredTabId?: string;
   private selection?: TimelineSelection|null;
   #traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null = null;
-  #filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null = null;
+  #filmStrip: TraceEngine.Extras.FilmStrip.Data|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -141,7 +141,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
     this.#traceEngineData = traceEngineData;
     if (traceEngineData) {
-      this.#filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceEngineData);
+      this.#filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceEngineData);
     }
     this.#selectedEvents = selectedEvents;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
@@ -220,8 +220,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.updateContents();
   }
 
-  #getFilmStripFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): TraceEngine.Extras.FilmStrip.FilmStripFrame
-      |null {
+  #getFilmStripFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): TraceEngine.Extras.FilmStrip.Frame|null {
     if (!this.#filmStrip) {
       return null;
     }

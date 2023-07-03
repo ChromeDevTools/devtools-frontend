@@ -3040,8 +3040,8 @@ export class TimelineUIUtils {
   }
 
   static generateDetailsContentForFrame(
-      frame: TimelineModel.TimelineFrameModel.TimelineFrame, filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null,
-      filmStripFrame: TraceEngine.Extras.FilmStrip.FilmStripFrame|null): DocumentFragment {
+      frame: TimelineModel.TimelineFrameModel.TimelineFrame, filmStrip: TraceEngine.Extras.FilmStrip.Data|null,
+      filmStripFrame: TraceEngine.Extras.FilmStrip.Frame|null): DocumentFragment {
     const contentHelper = new TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(i18nString(UIStrings.frame));
 
@@ -3064,8 +3064,7 @@ export class TimelineUIUtils {
     }
 
     function frameClicked(
-        filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData,
-        filmStripFrame: TraceEngine.Extras.FilmStrip.FilmStripFrame): void {
+        filmStrip: TraceEngine.Extras.FilmStrip.Data, filmStripFrame: TraceEngine.Extras.FilmStrip.Frame): void {
       PerfUI.FilmStripView.Dialog.fromFilmStrip(filmStrip, filmStripFrame.index);
     }
 

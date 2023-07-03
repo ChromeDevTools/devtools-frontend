@@ -497,7 +497,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  private filmStripAvailable(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData): void {
+  private filmStripAvailable(filmStrip: TraceEngine.Extras.FilmStrip.Data): void {
     if (this.filmStripView) {
       this.filmStripView.setModel(filmStrip);
     }
@@ -882,7 +882,7 @@ export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClien
   private readonly timeCalculator: NetworkTimeCalculator;
   private readonly filmStripView: PerfUI.FilmStripView.FilmStripView;
   private tracingModel: SDK.TracingModel.TracingModel|null;
-  private callback: ((filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData) => void)|null;
+  private callback: ((filmStrip: TraceEngine.Extras.FilmStrip.Data) => void)|null;
   // Used to fetch screenshots of the page load and show them in the panel.
   #traceEngine: TraceEngine.TraceModel.Model<TraceEngine.Extras.FilmStrip.HandlersWithFilmStrip>;
 
@@ -922,7 +922,7 @@ export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClien
       return;
     }
     const zeroTimeInSeconds = TraceEngine.Types.Timing.Seconds(this.timeCalculator.minimumBoundary());
-    const filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(
+    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(
         data, TraceEngine.Helpers.Timing.secondsToMicroseconds(zeroTimeInSeconds));
 
     if (this.callback) {
@@ -962,7 +962,7 @@ export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClien
     return Boolean(this.tracingManager);
   }
 
-  stopRecording(callback: (filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData) => void): void {
+  stopRecording(callback: (filmStrip: TraceEngine.Extras.FilmStrip.Data) => void): void {
     if (!this.tracingManager) {
       return;
     }

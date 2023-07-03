@@ -307,14 +307,14 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
 }
 
 export class TimelineFilmStripOverview extends TimelineEventOverview {
-  private frameToImagePromise: Map<TraceEngine.Extras.FilmStrip.FilmStripFrame, Promise<HTMLImageElement>>;
-  private lastFrame: TraceEngine.Extras.FilmStrip.FilmStripFrame|null = null;
+  private frameToImagePromise: Map<TraceEngine.Extras.FilmStrip.Frame, Promise<HTMLImageElement>>;
+  private lastFrame: TraceEngine.Extras.FilmStrip.Frame|null = null;
   private lastElement: Element|null;
   private drawGeneration?: symbol;
   private emptyImage?: HTMLImageElement;
-  #filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null = null;
+  #filmStrip: TraceEngine.Extras.FilmStrip.Data|null = null;
 
-  constructor(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData) {
+  constructor(filmStrip: TraceEngine.Extras.FilmStrip.Data) {
     super('filmstrip', null);
     this.frameToImagePromise = new Map();
     this.#filmStrip = filmStrip;
@@ -347,7 +347,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     });
   }
 
-  private async imageByFrame(frame: TraceEngine.Extras.FilmStrip.FilmStripFrame): Promise<HTMLImageElement|null> {
+  private async imageByFrame(frame: TraceEngine.Extras.FilmStrip.Frame): Promise<HTMLImageElement|null> {
     let imagePromise: Promise<HTMLImageElement|null>|undefined = this.frameToImagePromise.get(frame);
     if (!imagePromise) {
       const data = frame.screenshotAsString;

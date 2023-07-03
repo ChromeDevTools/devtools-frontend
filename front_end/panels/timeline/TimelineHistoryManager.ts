@@ -72,7 +72,7 @@ export interface NewHistoryRecordingData {
   // The data we will save to restore later.
   data: RecordingData;
   // We do not store this, but need it to build the thumbnail preview.
-  filmStripForPreview: TraceEngine.Extras.FilmStrip.FilmStripData|null;
+  filmStripForPreview: TraceEngine.Extras.FilmStrip.Data|null;
 }
 
 export class TimelineHistoryManager {
@@ -242,7 +242,7 @@ export class TimelineHistoryManager {
     return data.title;
   }
 
-  private buildPreview(performanceModel: PerformanceModel, filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null):
+  private buildPreview(performanceModel: PerformanceModel, filmStrip: TraceEngine.Extras.FilmStrip.Data|null):
       HTMLDivElement {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
     const domain = parsedURL ? parsedURL.host : '';
@@ -282,7 +282,7 @@ export class TimelineHistoryManager {
     return container;
   }
 
-  private buildScreenshotThumbnail(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null): Element {
+  private buildScreenshotThumbnail(filmStrip: TraceEngine.Extras.FilmStrip.Data|null): Element {
     const container = document.createElement('div');
     container.classList.add('screenshot-thumb');
     const thumbnailAspectRatio = 3 / 2;

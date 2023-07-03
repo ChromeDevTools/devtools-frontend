@@ -345,7 +345,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
   it('can generate details for a frame', async () => {
     const data = await allModelsFromFile('web-dev.json.gz');
     const frame = data.performanceModel.frames()[0];
-    const filmStrip = TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(data.traceParsedData);
+    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(data.traceParsedData);
     const details =
         Timeline.TimelineUIUtils.TimelineUIUtils.generateDetailsContentForFrame(frame, filmStrip, filmStrip.frames[0]);
     const container = document.createElement('div');

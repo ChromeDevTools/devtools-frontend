@@ -33,7 +33,7 @@ const CSS_PROPS_TO_CHECK_FOR_COLOR_USAGE = new Set([
   'outline'
 ]);
 
-const borderCombinedDeclarations = new Set(['border-top', 'border-bottom', 'border-left', 'border-right']);
+const borderCombinedDeclarations = new Set(['border', 'border-top', 'border-bottom', 'border-left', 'border-right']);
 
 const COLOR_INDICATOR_REGEXES = new Set([
   // We don't have to check for named colors ("blue") as we lint to ban those separately.

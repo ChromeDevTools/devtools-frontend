@@ -239,6 +239,12 @@ describe('use_theme_colors', () => {
     ]);
   });
 
+  it('does not error when there is a var for the border width', async () => {
+    const warnings = await lint('p { border: var(--button-border-size) solid var(--color-primary); }');
+
+    assert.lengthOf(warnings, 0);
+  });
+
   it('is silent when linting code that has an empty var()', async () => {
     /**
      * This is a weird test case but if you've got Stylelint in your editor and

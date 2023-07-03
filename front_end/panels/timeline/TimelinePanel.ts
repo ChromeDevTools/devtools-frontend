@@ -287,9 +287,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private readonly recordReloadAction: UI.ActionRegistration.Action;
   readonly #historyManager: TimelineHistoryManager;
   private performanceModel: PerformanceModel|null;
-  // Cannot be made into an actual private field because the layout tests
-  // currently rely on accessing and setting this value.
-  private filmStripModel: SDK.FilmStripModel.FilmStripModel|null = null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private disableCaptureJSProfileSetting: Common.Settings.Setting<any>;
@@ -1307,7 +1304,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // the newest trace will be automatically set to active.
       this.#traceEngineActiveTraceIndex = this.#traceEngineModel.size() - 1;
 
-      this.filmStripModel = new SDK.FilmStripModel.FilmStripModel(tracingModel);
       this.setModel(this.performanceModel, exclusiveFilter, this.#traceEngineActiveTraceIndex);
 
       if (this.statusPane) {
@@ -1319,7 +1315,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.performanceModel.addEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
       }
 
-      this.#historyManager.addRecording(this.performanceModel, this.#traceEngineActiveTraceIndex, this.filmStripModel);
+      const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
+      // We store the Performance Model and the index of the active trace.
+      // However we also pass in the full trace data because we use it to build
+      // the preview overview thumbnail of the trace that gets shown in the UI.
+      this.#historyManager.addRecording({
+        data: {
+          legacyModel: this.performanceModel,
+          traceParseDataIndex: this.#traceEngineActiveTraceIndex,
+        },
+        filmStripForPreview: traceData ? TraceEngine.Extras.FilmStrip.filmStripFromTraceEngine(traceData) : null,
+      });
     } catch (error) {
       this.recordingFailed(error.message);
       console.error(error);

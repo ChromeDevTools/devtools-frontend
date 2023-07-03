@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
@@ -66,8 +66,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export type RecordingData = {
   legacyModel: PerformanceModel,
   traceParseDataIndex: number,
-  filmStripModel: SDK.FilmStripModel.FilmStripModel,
 };
+
+export interface NewHistoryRecordingData {
+  // The data we will save to restore later.
+  data: RecordingData;
+  // We do not store this, but need it to build the thumbnail preview.
+  filmStripForPreview: TraceEngine.Extras.FilmStrip.FilmStripData|null;
+}
 
 export class TimelineHistoryManager {
   private recordings: RecordingData[];
@@ -101,13 +107,14 @@ export class TimelineHistoryManager {
     this.lastActiveModel = null;
   }
 
-  addRecording(
-      performanceModel: PerformanceModel, traceParseDataIndex: number,
-      filmStripModel: SDK.FilmStripModel.FilmStripModel): void {
-    this.lastActiveModel = performanceModel;
-    this.recordings.unshift({legacyModel: performanceModel, traceParseDataIndex, filmStripModel});
-    this.buildPreview(performanceModel, filmStripModel);
-    const modelTitle = this.title(performanceModel);
+  addRecording(newInput: NewHistoryRecordingData): void {
+    const {legacyModel, traceParseDataIndex} = newInput.data;
+    const filmStrip = newInput.filmStripForPreview;
+    this.lastActiveModel = legacyModel;
+    this.recordings.unshift({legacyModel: legacyModel, traceParseDataIndex});
+
+    this.buildPreview(legacyModel, filmStrip);
+    const modelTitle = this.title(legacyModel);
     this.buttonInternal.setText(modelTitle);
     const buttonTitle = this.action.title();
     UI.ARIAUtils.setLabel(
@@ -235,7 +242,7 @@ export class TimelineHistoryManager {
     return data.title;
   }
 
-  private buildPreview(performanceModel: PerformanceModel, filmStripModel: SDK.FilmStripModel.FilmStripModel):
+  private buildPreview(performanceModel: PerformanceModel, filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null):
       HTMLDivElement {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
     const domain = parsedURL ? parsedURL.host : '';
@@ -254,7 +261,7 @@ export class TimelineHistoryManager {
 
     preview.appendChild(this.buildTextDetails(performanceModel, title, timeElement));
     const screenshotAndOverview = preview.createChild('div', 'hbox');
-    screenshotAndOverview.appendChild(this.buildScreenshotThumbnail(filmStripModel));
+    screenshotAndOverview.appendChild(this.buildScreenshotThumbnail(filmStrip));
     screenshotAndOverview.appendChild(this.buildOverview(performanceModel));
     return data.preview;
   }
@@ -275,22 +282,24 @@ export class TimelineHistoryManager {
     return container;
   }
 
-  private buildScreenshotThumbnail(filmStripModel: SDK.FilmStripModel.FilmStripModel): Element {
+  private buildScreenshotThumbnail(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData|null): Element {
     const container = document.createElement('div');
     container.classList.add('screenshot-thumb');
     const thumbnailAspectRatio = 3 / 2;
     container.style.width = this.totalHeight * thumbnailAspectRatio + 'px';
     container.style.height = this.totalHeight + 'px';
-    const frames = filmStripModel.frames();
-    const lastFrame = frames[frames.length - 1];
+    if (!filmStrip) {
+      return container;
+    }
+    const lastFrame = filmStrip.frames.at(-1);
     if (!lastFrame) {
       return container;
     }
-    void lastFrame.imageDataPromise()
-        .then(data => UI.UIUtils.loadImageFromData(data))
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then(image => image && container.appendChild((image as any)));
+    void UI.UIUtils.loadImageFromData(lastFrame.screenshotAsString).then(img => {
+      if (img) {
+        container.appendChild(img);
+      }
+    });
     return container;
   }
 

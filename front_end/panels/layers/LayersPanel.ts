@@ -67,7 +67,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     super('layers', 225);
     this.model = null;
 
-    SDK.TargetManager.TargetManager.instance().observeTargets(this);
+    SDK.TargetManager.TargetManager.instance().observeTargets(this, {scoped: true});
     this.layerViewHost = new LayerViewer.LayerViewHost.LayerViewHost();
     this.layerTreeOutline = new LayerViewer.LayerTreeOutline.LayerTreeOutline(this.layerViewHost);
     this.layerTreeOutline.addEventListener(
@@ -124,7 +124,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
   }
 
   targetAdded(target: SDK.Target.Target): void {
-    if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (target !== target.outermostTarget()) {
       return;
     }
     this.model = target.model(LayerTreeModel);
@@ -135,6 +135,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     this.model.addEventListener(Events.LayerPainted, this.onLayerPainted, this);
     if (this.isShowing()) {
       this.model.enable();
+      void this.update();
     }
   }
 

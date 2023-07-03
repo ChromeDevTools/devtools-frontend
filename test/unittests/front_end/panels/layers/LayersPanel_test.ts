@@ -12,14 +12,17 @@ import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.j
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 describeWithMockConnection('LayersPanel', async () => {
+  beforeEach(async () => {
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    stubNoopSettings();
+  });
+
   const tests = (targetFactory: () => SDK.Target.Target) => {
     let target: SDK.Target.Target;
 
     beforeEach(async () => {
       target = targetFactory();
-      const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-      UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-      stubNoopSettings();
     });
 
     it('udpates 3d view when layer painted', async () => {
@@ -39,4 +42,29 @@ describeWithMockConnection('LayersPanel', async () => {
                                createTarget({parentTarget: tabTarget, subtype: 'prerender'});
                                return createTarget({parentTarget: tabTarget});
                              }));
+
+  it('can handle scope switches', async () => {
+    const tabTarget = createTarget({type: SDK.Target.Type.Tab});
+    const prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    const primaryTarget = createTarget({parentTarget: tabTarget});
+
+    const panel = Layers.LayersPanel.LayersPanel.instance({forceNew: true});
+    const primaryLayerTreeModel = primaryTarget.model(Layers.LayerTreeModel.LayerTreeModel);
+    assertNotNullOrUndefined(primaryLayerTreeModel);
+    const prerenderLayerTreeModel = prerenderTarget.model(Layers.LayerTreeModel.LayerTreeModel);
+    assertNotNullOrUndefined(prerenderLayerTreeModel);
+    const updateLayerSnapshot = sinon.stub(panel.layers3DView, 'updateLayerSnapshot');
+
+    const LAYER_1 = {id: () => 'TEST_LAYER_1'} as Layers.LayerTreeModel.AgentLayer;
+    const LAYER_2 = {id: () => 'TEST_LAYER_2'} as Layers.LayerTreeModel.AgentLayer;
+    primaryLayerTreeModel.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerPainted, LAYER_1);
+    prerenderLayerTreeModel.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerPainted, LAYER_2);
+    assert.isTrue(updateLayerSnapshot.calledOnceWith(LAYER_1));
+
+    updateLayerSnapshot.reset();
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(prerenderTarget);
+    primaryLayerTreeModel.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerPainted, LAYER_1);
+    prerenderLayerTreeModel.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerPainted, LAYER_2);
+    assert.isTrue(updateLayerSnapshot.calledOnceWith(LAYER_2));
+  });
 });

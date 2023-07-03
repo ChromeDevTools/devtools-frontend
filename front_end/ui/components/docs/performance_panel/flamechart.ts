@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as EnvironmentHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
-import * as TimelineHelpers from '../../../../../test/unittests/front_end/helpers/TimelineHelpers.js';
 import * as TraceHelpers from '../../../../../test/unittests/front_end/helpers/TraceHelpers.js';
 import * as PerfUI from '../../../legacy/components/perf_ui/perf_ui.js';
 import * as ComponentSetup from '../../helpers/helpers.js';
@@ -18,7 +17,7 @@ await ComponentSetup.ComponentServerSetup.setup();
  * Render a basic flame chart with 3 events on the same level
  **/
 function renderExample1() {
-  class FakeProviderWithBasicEvents extends TimelineHelpers.FakeFlameChartProvider {
+  class FakeProviderWithBasicEvents extends TraceHelpers.FakeFlameChartProvider {
     override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
       return PerfUI.FlameChart.FlameChartTimelineData.create({
         entryLevels: [1, 1, 1],
@@ -59,7 +58,7 @@ function renderExample1() {
  * Render a flame chart with main thread long events to stripe and a warning triangle.
  **/
 function renderExample2() {
-  class FakeProviderWithLongTasksForStriping extends TimelineHelpers.FakeFlameChartProvider {
+  class FakeProviderWithLongTasksForStriping extends TraceHelpers.FakeFlameChartProvider {
     override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
       return PerfUI.FlameChart.FlameChartTimelineData.create({
         entryLevels: [1, 1, 2],

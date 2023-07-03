@@ -12,12 +12,12 @@ import * as TimelineModel from '../../../../../front_end/models/timeline_model/t
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {
+  allModelsFromFile,
   DevToolsTimelineCategory,
   makeFakeSDKEventFromPayload,
   traceModelFromTraceFile,
-} from '../../helpers/TimelineHelpers.js';
-import {allModelsFromFile} from '../../helpers/TraceHelpers.js';
-import {StubbedThread} from '../../helpers/TimelineHelpers.js';
+  StubbedThread,
+} from '../../helpers/TraceHelpers.js';
 
 // Various events listing processes and threads used by all the tests.
 const preamble = [

@@ -4,13 +4,12 @@
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
-
 import {
+  defaultTraceEvent,
   makeFakeSDKEventFromPayload,
   type FakeEventPayload,
   makeFakeEventPayload,
-} from '../../helpers/TimelineHelpers.js';
-import {defaultTraceEvent} from '../../helpers/TraceHelpers.js';
+} from '../../helpers/TraceHelpers.js';
 
 describe('EventTypeHelpers', () => {
   describe('timesForEventInMilliseconds', () => {

@@ -5,8 +5,7 @@
 import * as TraceEngine from '../../../../../../../front_end/models/trace/trace.js';
 import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
 import type * as Common from '../../../../../../../front_end/core/common/common.js';
-import {FakeFlameChartProvider} from '../../../../helpers/TimelineHelpers.js';
-import {MockFlameChartDelegate} from '../../../../helpers/TraceHelpers.js';
+import {MockFlameChartDelegate, FakeFlameChartProvider} from '../../../../helpers/TraceHelpers.js';
 import {renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 import * as PerfUI from '../../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';

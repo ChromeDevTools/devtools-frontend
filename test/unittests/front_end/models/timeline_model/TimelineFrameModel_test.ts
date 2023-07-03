@@ -9,7 +9,7 @@ import * as TimelineModel from '../../../../../front_end/models/timeline_model/t
 import {
   makeFakeEventPayload,
   makeFakeSDKEventFromPayload,
-} from '../../helpers/TimelineHelpers.js';
+} from '../../helpers/TraceHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 

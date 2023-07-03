@@ -7,8 +7,12 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {loadTraceEventsLegacyEventPayload, allModelsFromFile} from '../../helpers/TraceHelpers.js';
-import {StubbedThread, makeFakeEventPayload} from '../../helpers/TimelineHelpers.js';
+import {
+  loadTraceEventsLegacyEventPayload,
+  allModelsFromFile,
+  StubbedThread,
+  makeFakeEventPayload,
+} from '../../helpers/TraceHelpers.js';
 
 describeWithEnvironment('TracingModel', () => {
   it('can create events from an EventPayload[] and finds the correct number of processes', async () => {

@@ -6,8 +6,11 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import {traceModelFromTraceFile} from '../../../helpers/TimelineHelpers.js';
-import {loadModelDataFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
+import {
+  loadModelDataFromTraceFile,
+  setTraceModelTimeout,
+  traceModelFromTraceFile,
+} from '../../../helpers/TraceHelpers.js';
 
 import type * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
 

@@ -10,7 +10,7 @@ import * as TimelineModel from '../../../../../front_end/models/timeline_model/t
 import {
   DevToolsTimelineCategory,
   makeFakeSDKEventFromPayload,
-} from '../../helpers/TimelineHelpers.js';
+} from '../../helpers/TraceHelpers.js';
 
 const consoleEvent = makeFakeSDKEventFromPayload({
   categories: [DevToolsTimelineCategory, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console],

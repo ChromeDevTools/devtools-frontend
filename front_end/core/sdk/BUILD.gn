@@ -40,7 +40,6 @@ devtools_module("sdk") {
     "DebuggerModel.ts",
     "EmulationModel.ts",
     "EventBreakpointsModel.ts",
-    "FilmStripModel.ts",
     "FrameAssociated.ts",
     "FrameManager.ts",
     "HeapProfilerModel.ts",

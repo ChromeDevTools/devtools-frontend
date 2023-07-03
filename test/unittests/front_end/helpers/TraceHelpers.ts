@@ -282,7 +282,6 @@ type LoadedModels = {
   timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
   performanceModel: Timeline.PerformanceModel.PerformanceModel,
   traceParsedData: TraceModel.Handlers.Types.TraceParseData,
-  filmStripModel: SDK.FilmStripModel.FilmStripModel,
 };
 const traceModelsCache = new Map<string, LoadedModels>();
 
@@ -301,11 +300,9 @@ export async function allModelsFromFile(file: string): Promise<LoadedModels> {
   tracingModel.tracingComplete();
   await performanceModel.setTracingModel(tracingModel);
   const timelineModel = performanceModel.timelineModel();
-  const filmStripModel = new SDK.FilmStripModel.FilmStripModel(tracingModel);
   const result: LoadedModels = {
     tracingModel,
     timelineModel,
-    filmStripModel,
     performanceModel,
     traceParsedData,
   };

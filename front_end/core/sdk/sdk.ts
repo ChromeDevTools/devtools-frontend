@@ -42,7 +42,6 @@ import * as DOMDebuggerModel from './DOMDebuggerModel.js';
 import * as DOMModel from './DOMModel.js';
 import * as EmulationModel from './EmulationModel.js';
 import * as EventBreakpointsModel from './EventBreakpointsModel.js';
-import * as FilmStripModel from './FilmStripModel.js';
 import * as FrameAssociated from './FrameAssociated.js';
 import * as FrameManager from './FrameManager.js';
 import * as HeapProfilerModel from './HeapProfilerModel.js';
@@ -117,7 +116,6 @@ export {
   DOMModel,
   EmulationModel,
   EventBreakpointsModel,
-  FilmStripModel,
   FrameAssociated,
   FrameManager,
   HeapProfilerModel,

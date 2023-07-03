@@ -134,9 +134,8 @@ const LONG_MAIN_THREAD_TASK_THRESHOLD = TraceEngine.Types.Timing.MilliSeconds(50
 // and the new system proposed in go/rpp-flamechart-arch. In the future, once all
 // tracks have been migrated to the new system, all entries will be of the
 // TraceEventData type.
-export type TimelineFlameChartEntry =
-    (SDK.FilmStripModel.Frame|SDK.TracingModel.Event|TimelineModel.TimelineFrameModel.TimelineFrame|
-     TraceEngine.Types.TraceEvents.TraceEventData);
+export type TimelineFlameChartEntry = (SDK.TracingModel.Event|TimelineModel.TimelineFrameModel.TimelineFrame|
+                                       TraceEngine.Types.TraceEvents.TraceEventData);
 export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.FlameChart.FlameChartDataProvider {
   private droppedFramePatternCanvas: HTMLCanvasElement;

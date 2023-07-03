@@ -5,10 +5,8 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-
-import type * as SDK from '../../../../core/sdk/sdk.js';
-import * as UI from '../../legacy.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
+import * as UI from '../../legacy.js';
 
 import filmStripViewStyles from './filmStripView.css.legacy.js';
 
@@ -146,13 +144,6 @@ export type EventTypes = {
   [Events.FrameExit]: number,
 };
 
-interface DialogSDKData {
-  source: 'SDK';
-  frames: readonly SDK.FilmStripModel.Frame[];
-  index: number;
-  zeroTime: TraceEngine.Types.Timing.MilliSeconds;
-}
-
 interface DialogTraceEngineData {
   source: 'TraceEngine';
   index: number;
@@ -166,18 +157,7 @@ export class Dialog {
   private index: number;
   private dialog: UI.Dialog.Dialog|null = null;
 
-  #data: DialogSDKData|DialogTraceEngineData;
-
-  static fromSDKFrame(frame: SDK.FilmStripModel.Frame, zeroTime?: TraceEngine.Types.Timing.MilliSeconds): Dialog {
-    const data: DialogSDKData = {
-      source: 'SDK',
-      frames: frame.model().frames(),
-      index: frame.index,
-      zeroTime: zeroTime || TraceEngine.Types.Timing.MilliSeconds(frame.model().zeroTime()),
-    };
-
-    return new Dialog(data);
-  }
+  #data: DialogTraceEngineData;
 
   static fromFilmStrip(filmStrip: TraceEngine.Extras.FilmStrip.FilmStripData, selectedFrameIndex: number): Dialog {
     const data: DialogTraceEngineData = {
@@ -189,7 +169,7 @@ export class Dialog {
     return new Dialog(data);
   }
 
-  private constructor(data: DialogSDKData|DialogTraceEngineData) {
+  private constructor(data: DialogTraceEngineData) {
     this.#data = data;
     this.index = data.index;
     const prevButton = UI.UIUtils.createTextButton('\u25C0', this.onPrevFrame.bind(this));
@@ -294,14 +274,6 @@ export class Dialog {
   }
 
   async #currentFrameData(): Promise<{snapshot: string, timestamp: TraceEngine.Types.Timing.MilliSeconds}> {
-    if (this.#data.source === 'SDK') {
-      const frame = this.#data.frames[this.index];
-      const snapshot = await frame.imageDataPromise();
-      return {
-        timestamp: TraceEngine.Types.Timing.MilliSeconds(frame.timestamp),
-        snapshot: snapshot || '',
-      };
-    }
     const frame = this.#data.frames[this.index];
     return {
       snapshot: frame.screenshotAsString,

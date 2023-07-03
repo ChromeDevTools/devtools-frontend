@@ -41,6 +41,46 @@ describe('Timing helpers', () => {
       assert.strictEqual(TraceModel.Helpers.Timing.microSecondsToMilliseconds(input), expected);
     });
   });
+
+  it('eventTimingsMicroSeconds returns the right numbers', async () => {
+    const event = {
+      ts: 10,
+      dur: 5,
+    } as unknown as TraceModel.Types.TraceEvents.TraceEventData;
+    assert.deepEqual(TraceModel.Helpers.Timing.eventTimingsMicroSeconds(event), {
+      startTime: TraceModel.Types.Timing.MicroSeconds(10),
+      endTime: TraceModel.Types.Timing.MicroSeconds(15),
+      duration: TraceModel.Types.Timing.MicroSeconds(5),
+      selfTime: TraceModel.Types.Timing.MicroSeconds(5),
+    });
+  });
+
+  it('eventTimingsMilliSeconds returns the right numbers', async () => {
+    const event = {
+      ts: 10_000,
+      dur: 5_000,
+    } as unknown as TraceModel.Types.TraceEvents.TraceEventData;
+    assert.deepEqual(TraceModel.Helpers.Timing.eventTimingsMilliSeconds(event), {
+      startTime: TraceModel.Types.Timing.MilliSeconds(10),
+      endTime: TraceModel.Types.Timing.MilliSeconds(15),
+      duration: TraceModel.Types.Timing.MilliSeconds(5),
+      selfTime: TraceModel.Types.Timing.MilliSeconds(5),
+    });
+  });
+
+  it('eventTimingsSeconds returns the right numbers', async () => {
+    const event = {
+      ts: 100_000,  // 100k microseconds = 100ms = 0.1second
+      dur: 50_000,  // 50k microseconds = 50ms = 0.05second
+    } as unknown as TraceModel.Types.TraceEvents.TraceEventData;
+    assert.deepEqual(TraceModel.Helpers.Timing.eventTimingsSeconds(event), {
+      startTime: TraceModel.Types.Timing.Seconds(0.1),
+      endTime: TraceModel.Types.Timing.Seconds(0.15),
+      duration: TraceModel.Types.Timing.Seconds(0.05),
+      selfTime: TraceModel.Types.Timing.Seconds(0.05),
+    });
+  });
+
   describe('detectBestTimeUnit', () => {
     it('detects microseconds', () => {
       const time = TraceModel.Types.Timing.MicroSeconds(890);

@@ -845,18 +845,7 @@ export function timesForEventInMilliseconds(event: Event|
       selfTime: TraceEngine.Types.Timing.MilliSeconds(event.selfTime),
     };
   }
-  const duration = event.dur ? TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.dur) :
-                               TraceEngine.Types.Timing.MilliSeconds(0);
-  return {
-    startTime: TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts),
-    endTime: TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
-        TraceEngine.Types.Timing.MicroSeconds(event.ts + (event.dur || 0))),
-    duration: event.dur ? TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.dur) :
-                          TraceEngine.Types.Timing.MilliSeconds(0),
-    // TODO(crbug.com/1434599): Implement selfTime calculation for events
-    // from the new engine.
-    selfTime: duration,
-  };
+  return TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
 }
 // Parsed categories are cached to prevent calling cat.split() multiple
 // times on the same categories string.

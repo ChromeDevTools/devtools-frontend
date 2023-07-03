@@ -139,3 +139,43 @@ export function timeStampForEventAdjustedByClosestNavigation(
   }
   return Types.Timing.MicroSeconds(eventTimeStamp);
 }
+
+export interface EventTimingsData<
+  ValueType extends Types.Timing.MicroSeconds|Types.Timing.MilliSeconds|Types.Timing.Seconds,
+> {
+  startTime: ValueType;
+  endTime: ValueType;
+  duration: ValueType;
+  selfTime: ValueType;
+}
+
+export function eventTimingsMicroSeconds(event: Types.TraceEvents.TraceEventData):
+    EventTimingsData<Types.Timing.MicroSeconds> {
+  return {
+    startTime: event.ts,
+    endTime: Types.Timing.MicroSeconds(event.ts + (event.dur || Types.Timing.MicroSeconds(0))),
+    duration: Types.Timing.MicroSeconds(event.dur || 0),
+    // TODO(crbug.com/1434599): Implement selfTime calculation for events
+    // from the new engine.
+    selfTime: Types.Timing.MicroSeconds(event.dur || 0),
+  };
+}
+export function eventTimingsMilliSeconds(event: Types.TraceEvents.TraceEventData):
+    EventTimingsData<Types.Timing.MilliSeconds> {
+  const microTimes = eventTimingsMicroSeconds(event);
+  return {
+    startTime: microSecondsToMilliseconds(microTimes.startTime),
+    endTime: microSecondsToMilliseconds(microTimes.endTime),
+    duration: microSecondsToMilliseconds(microTimes.duration),
+    selfTime: microSecondsToMilliseconds(microTimes.selfTime),
+  };
+}
+export function eventTimingsSeconds(event: Types.TraceEvents.TraceEventData): EventTimingsData<Types.Timing.Seconds> {
+  const microTimes = eventTimingsMicroSeconds(event);
+  return {
+    startTime: microSecondsToSeconds(microTimes.startTime),
+    endTime: microSecondsToSeconds(microTimes.endTime),
+    duration: microSecondsToSeconds(microTimes.duration),
+    selfTime: microSecondsToSeconds(microTimes.selfTime),
+  };
+}

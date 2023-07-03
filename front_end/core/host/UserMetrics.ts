@@ -600,7 +600,8 @@ export enum PanelCodes {
   'performance_insights' = 63,
   'preloading' = 64,
   'bounce_tracking_mitigations' = 65,
-  MaxValue = 66,
+  'resource-loading-pane' = 66,
+  MaxValue = 67,
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */

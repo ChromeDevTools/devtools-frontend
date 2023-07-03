@@ -273,7 +273,7 @@ export class Dialog {
     void this.render();
   }
 
-  async #currentFrameData(): Promise<{snapshot: string, timestamp: TraceEngine.Types.Timing.MilliSeconds}> {
+  #currentFrameData(): {snapshot: string, timestamp: TraceEngine.Types.Timing.MilliSeconds} {
     const frame = this.#data.frames[this.index];
     return {
       snapshot: frame.screenshotAsString,
@@ -281,8 +281,8 @@ export class Dialog {
     };
   }
 
-  private async render(): Promise<void> {
-    const currentFrameData = await this.#currentFrameData();
+  private render(): void {
+    const currentFrameData = this.#currentFrameData();
     this.fragment.$('time').textContent =
         i18n.TimeUtilities.millisToString(currentFrameData.timestamp - this.#zeroTime());
     const image = (this.fragment.$('image') as HTMLImageElement);

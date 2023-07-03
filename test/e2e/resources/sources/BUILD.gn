@@ -77,6 +77,8 @@ copy_to_gen("sources") {
     "restart-frame.html",
     "script-with-sourcemap-without-mappings.html",
     "script-with-sourcemap-without-mappings.js",
+    "scroll-into-view.html",
+    "scroll-into-view.js",
     "sourcemap-breakpoint.html",
     "sourcemap-codesplit.html",
     "sourcemap-codesplit1.js",

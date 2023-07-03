@@ -13,7 +13,15 @@ const {
   EVENT_TEST_PENDING,
 } = Mocha.Runner.constants;
 
-function getErrorMessage(error: Error|unknown) {
+function sanitize(message: string): string {
+  return message.replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll('\'', '&#39;');
+}
+
+function getErrorMessage(error: Error|unknown): string {
   if (error instanceof Error) {
     if (error.cause) {
       // TypeScript types error.cause as {}, which doesn't allow us to access
@@ -21,11 +29,11 @@ function getErrorMessage(error: Error|unknown) {
       // to read the `message` property.
       const cause = error.cause as {message?: string};
       const causeMessage = cause.message || '';
-      return `${error.message}\n${causeMessage}`;
+      return sanitize(`${error.message}\n${causeMessage}`);
     }
-    return error.stack;
+    return sanitize(error.stack ?? error.message);
   }
-  return `${error}`;
+  return sanitize(`${error}`);
 }
 
 class ResultsDbReporter extends Mocha.reporters.Spec {

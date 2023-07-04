@@ -6,8 +6,8 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 import type * as Protocol from '../../../generated/protocol.js';
-
 import {HandlerState, EventCategory, KNOWN_EVENTS, type KnownEventName} from './types.js';
+import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 
 /*
  * This handler takes CPU profile data available in trace events under
@@ -61,8 +61,8 @@ const events =
 const profiles = new Map<Types.TraceEvents.ProfileID, Partial<SamplesProfile>>();
 const processes = new Map<Types.TraceEvents.ProcessID, SamplesProcess>();
 
-const profilesInProcess =
-    new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ProfileID, Protocol.Profiler.Profile>>();
+const profilesInProcess = new Map<
+    Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ProfileID, CPUProfile.CPUProfileDataModel.ExtendedProfile>>();
 
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -146,14 +146,15 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     // Note: events are collected on a different thread than what's sampled.
     // The correct process and thread ids are specified by the profile.
     const profileById = Platform.MapUtilities.getWithDefault(profilesInProcess, event.pid, () => new Map());
-    const cdpProfile = Platform.MapUtilities.getWithDefault(profileById, event.id, () => ({
-                                                                                     startTime: 0,
-                                                                                     endTime: 0,
-                                                                                     nodes: [],
-                                                                                     samples: [],
-                                                                                     timeDeltas: [],
-                                                                                     lines: [],
-                                                                                   }));
+    const cdpProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile =
+        Platform.MapUtilities.getWithDefault(profileById, event.id, () => ({
+                                                                      startTime: 0,
+                                                                      endTime: 0,
+                                                                      nodes: [],
+                                                                      samples: [],
+                                                                      timeDeltas: [],
+                                                                      lines: [],
+                                                                    }));
     cdpProfile.startTime = event.ts;
     return;
   }
@@ -165,22 +166,43 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     profile.chunks.push(event);
 
     const cdpProfileById = Platform.MapUtilities.getWithDefault(profilesInProcess, event.pid, () => new Map());
-    const cdpProfile = Platform.MapUtilities.getWithDefault(cdpProfileById, event.id, () => ({
-                                                                                        startTime: 0,
-                                                                                        endTime: 0,
-                                                                                        nodes: [],
-                                                                                        samples: [],
-                                                                                        timeDeltas: [],
-                                                                                        lines: [],
-                                                                                      }));
+    const cdpProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile =
+        Platform.MapUtilities.getWithDefault(cdpProfileById, event.id, () => ({
+                                                                         startTime: 0,
+                                                                         endTime: 0,
+                                                                         nodes: [],
+                                                                         samples: [],
+                                                                         timeDeltas: [],
+                                                                         lines: [],
+                                                                       }));
     const nodesAndSamples: Types.TraceEvents.TraceEventPartialProfile|undefined =
         event.args?.data?.cpuProfile || {samples: []};
     const samples = nodesAndSamples?.samples || [];
-    const nodes = nodesAndSamples?.nodes || [];
+    const nodes: CPUProfile.CPUProfileDataModel.ExtendedProfileNode[] = [];
+    for (const n of nodesAndSamples?.nodes || []) {
+      const lineNumber = n.callFrame.lineNumber || -1;
+      const columnNumber = n.callFrame.columnNumber || -1;
+      const scriptId = String(n.callFrame.scriptId) as Protocol.Runtime.ScriptId;
+      const url = n.callFrame.url || '';
+      const node = {
+        ...n,
+        callFrame: {
+          ...n.callFrame,
+          url,
+          lineNumber,
+          columnNumber,
+          scriptId,
+        },
+      };
+      nodes.push(node);
+    }
+
     const timeDeltas = event.args.data?.timeDeltas || [];
+    const lines = event.args.data?.lines || Array(samples.length).fill(0);
     cdpProfile.nodes.push(...nodes);
     cdpProfile.samples?.push(...samples);
     cdpProfile.timeDeltas?.push(...timeDeltas);
+    cdpProfile.lines?.push(...lines);
 
     if (cdpProfile.samples && cdpProfile.timeDeltas && cdpProfile.samples.length !== cdpProfile.timeDeltas.length) {
       console.error('Failed to parse CPU profile.');

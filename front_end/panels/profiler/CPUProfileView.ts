@@ -356,7 +356,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
       entries.push(null);
     }
     function onCloseFrame(
-        depth: number, node: CPUProfile.CPUProfileDataModel.CPUProfileNode, startTime: number, totalTime: number,
+        depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, startTime: number, totalTime: number,
         selfTime: number): void {
       const index = (stack.pop() as number);
       entries[index] = new CPUFlameChartDataProvider.ChartEntry(depth, totalTime, startTime, selfTime, node);
@@ -364,7 +364,7 @@ export class CPUFlameChartDataProvider extends ProfileFlameChartDataProvider {
     }
     this.cpuProfile.forEachFrame(onOpenFrame, onCloseFrame);
 
-    const entryNodes: CPUProfile.CPUProfileDataModel.CPUProfileNode[] = new Array(entries.length);
+    const entryNodes: CPUProfile.ProfileTreeModel.ProfileNode[] = new Array(entries.length);
     const entryLevels = new Uint16Array(entries.length);
     const entryTotalTimes = new Float32Array(entries.length);
     const entrySelfTimes = new Float32Array(entries.length);
@@ -448,11 +448,11 @@ export namespace CPUFlameChartDataProvider {
     duration: number;
     startTime: number;
     selfTime: number;
-    node: CPUProfile.CPUProfileDataModel.CPUProfileNode;
+    node: CPUProfile.ProfileTreeModel.ProfileNode;
 
     constructor(
         depth: number, duration: number, startTime: number, selfTime: number,
-        node: CPUProfile.CPUProfileDataModel.CPUProfileNode) {
+        node: CPUProfile.ProfileTreeModel.ProfileNode) {
       this.depth = depth;
       this.duration = duration;
       this.startTime = startTime;

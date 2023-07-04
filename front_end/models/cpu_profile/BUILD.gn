@@ -31,5 +31,6 @@ devtools_entrypoint("bundle") {
     "../../panels/timeline/*",
     "../../ui/legacy/components/perf_ui/*",
     "../timeline_model/*",
+    "../trace/*",
   ]
 }

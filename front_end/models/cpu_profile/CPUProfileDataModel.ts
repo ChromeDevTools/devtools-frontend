@@ -11,10 +11,15 @@ import {ProfileNode, ProfileTreeModel} from './ProfileTreeModel.js';
 export class CPUProfileNode extends ProfileNode {
   override id: number;
   override self: number;
+  // Position ticks are available in profile nodes coming from CDP
+  // profiles and not in those coming from tracing. They are used to
+  // calculate the line level execution time shown in the Sources panel
+  // after recording a profile. For trace CPU profiles we use the
+  // `lines` array instead.
   positionTicks: Protocol.Profiler.PositionTickInfo[]|undefined;
   override deoptReason: string|null;
 
-  constructor(node: Protocol.Profiler.ProfileNode, sampleTime: number) {
+  constructor(node: Protocol.Profiler.ProfileNode, samplingInterval: number /* milliseconds */) {
     const callFrame = node.callFrame || ({
                         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
                         // @ts-expect-error
@@ -34,7 +39,7 @@ export class CPUProfileNode extends ProfileNode {
                       } as Protocol.Runtime.CallFrame);
     super(callFrame);
     this.id = node.id;
-    this.self = (node.hitCount || 0) * sampleTime;
+    this.self = (node.hitCount || 0) * samplingInterval;
     this.positionTicks = node.positionTicks;
     // Compatibility: legacy backends could provide "no reason" for optimized functions.
     this.deoptReason = node.deoptReason && node.deoptReason !== 'no reason' ? node.deoptReason : null;
@@ -42,13 +47,11 @@ export class CPUProfileNode extends ProfileNode {
 }
 
 export class CPUProfileDataModel extends ProfileTreeModel {
-  profileStartTime: number;
-  profileEndTime: number;
+  profileStartTime: number /* milliseconds */;
+  profileEndTime: number /* milliseconds */;
   timestamps: number[];
   samples: number[]|undefined;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  lines: any;
+  lines?: number[];
   totalHitCount: number;
   profileHead: CPUProfileNode;
   /**
@@ -56,13 +59,13 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * Note: "Parsed" nodes are different from the "Protocol" nodes, the
    * latter being the raw data we receive from the backend.
    */
-  #idToParsedNode!: Map<number, CPUProfileNode>;
+  #idToParsedNode!: Map<number, ProfileNode>;
   gcNode!: CPUProfileNode;
   programNode?: ProfileNode;
   idleNode?: ProfileNode;
   #stackStartTimes?: Float64Array;
   #stackChildrenDuration?: Float64Array;
-  constructor(profile: Protocol.Profiler.Profile) {
+  constructor(profile: ExtendedProfile) {
     super();
     // @ts-ignore Legacy types
     const isLegacyFormat = Boolean(profile['head']);
@@ -80,7 +83,14 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       this.timestamps = this.convertTimeDeltas(profile);
     }
     this.samples = profile.samples;
-    // @ts-ignore Legacy types
+
+    // Lines are available only in profiles coming from tracing.
+    // Elements in the lines array have a 1 to 1 correspondance with
+    // samples, by array position. They can be 1 or 0 and indicate if
+    // there is line data for a given sample, i.e. if a given sample
+    // needs to be included to calculate the line level execution time
+    // data, which we show in the sources panel after recording a
+    // profile.
     this.lines = profile.lines;
     this.totalHitCount = 0;
     this.profileHead = this.translateProfileTree(profile.nodes);
@@ -368,9 +378,13 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     }
   }
 
+  /**
+   * Traverses the call tree derived from the samples calling back when a call is opened
+   * and when its closed
+   */
   forEachFrame(
-      openFrameCallback: (arg0: number, arg1: CPUProfileNode, arg2: number) => void,
-      closeFrameCallback: (arg0: number, arg1: CPUProfileNode, arg2: number, arg3: number, arg4: number) => void,
+      openFrameCallback: (depth: number, node: ProfileNode, timestamp: number) => void,
+      closeFrameCallback: (depth: number, node: ProfileNode, timestamp: number, dur: number, selfDur: number) => void,
       startTime?: number, stopTime?: number): void {
     if (!this.profileHead || !this.samples) {
       return;
@@ -386,10 +400,10 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     const startIndex =
         Platform.ArrayUtilities.lowerBound(timestamps, startTime, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
     let stackTop = 0;
-    const stackNodes = [];
+    const stackNodes: ProfileNode[] = [];
     let prevId: number = this.profileHead.id;
     let sampleTime;
-    let gcParentNode: CPUProfileNode|null = null;
+    let gcParentNode: ProfileNode|null = null;
 
     // Extra slots for gc being put on top,
     // and one at the bottom to allow safe stackTop-1 access.
@@ -415,7 +429,11 @@ export class CPUProfileDataModel extends ProfileTreeModel {
         continue;
       }
       node = idToNode.get(id);
-      let prevNode: CPUProfileNode = (idToNode.get(prevId) as CPUProfileNode);
+      let prevNode: ProfileNode|null = idToNode.get(prevId) || null;
+      if (!prevNode) {
+        continue;
+      }
+
       if (node === gcNode) {
         // GC samples have no stack, so we just put GC node on top of the last recorded sample.
         gcParentNode = prevNode;
@@ -437,29 +455,53 @@ export class CPUProfileDataModel extends ProfileTreeModel {
         gcParentNode = null;
       }
 
+      // If the depth of this is greater than the depth of previous one,
+      // new calls happened in between and we need to open them, so
+      // track all of them in stackNodes.
       while (node && node.depth > prevNode.depth) {
         stackNodes.push(node);
         node = node.parent;
       }
 
-      // Go down to the LCA and close current intervals.
-      while (prevNode !== node) {
+      // If `prevNode` differs from `node`, the current sample was taken
+      // after a change in the call stack, meaning that frames in the
+      // path of `prevNode` that differ from those in the path of `node`
+      // can be closed. So go down to the lowest common ancestor and
+      // close current intervals.
+      //
+      // For example:
+      //
+      // prevNode  node
+      //    |       |
+      //    v       v
+      // [---D--]
+      // [---C--][--E--]
+      // [------B------] <- LCA
+      // [------A------]
+      //
+      // Because a sample was taken with A, B and E in the stack, it
+      // means C and D finished and we can close them.
+      while (prevNode && prevNode !== node) {
         const start = stackStartTimes[stackTop];
         const duration = sampleTime - start;
         stackChildrenDuration[stackTop - 1] += duration;
-        closeFrameCallback(
-            prevNode.depth, (prevNode as CPUProfileNode), start, duration, duration - stackChildrenDuration[stackTop]);
+        closeFrameCallback(prevNode.depth, prevNode, start, duration, duration - stackChildrenDuration[stackTop]);
         --stackTop;
+        // Track calls to open after previous calls were closed
+        // In the example above, this would add E to the tracking stack.
         if (node && node.depth === prevNode.depth) {
           stackNodes.push(node);
           node = node.parent;
         }
-        prevNode = (prevNode.parent as CPUProfileNode);
+        prevNode = prevNode.parent;
       }
 
       // Go up the nodes stack and open new intervals.
       while (stackNodes.length) {
-        const currentNode = (stackNodes.pop() as CPUProfileNode);
+        const currentNode = stackNodes.pop();
+        if (!currentNode) {
+          break;
+        }
         node = currentNode;
         openFrameCallback(currentNode.depth, currentNode, sampleTime);
         stackStartTimes[++stackTop] = sampleTime;
@@ -469,38 +511,40 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       prevId = id;
     }
 
+    // Close remaining intervals.
     sampleTime = timestamps[sampleIndex] || this.profileEndTime;
-    if (gcParentNode && idToNode.get(prevId) === gcNode) {
+    if (node && gcParentNode && idToNode.get(prevId) === gcNode) {
       const start = stackStartTimes[stackTop];
       const duration = sampleTime - start;
       stackChildrenDuration[stackTop - 1] += duration;
-      closeFrameCallback(
-          gcParentNode.depth + 1, (node as CPUProfileNode), start, duration,
-          duration - stackChildrenDuration[stackTop]);
+      closeFrameCallback(gcParentNode.depth + 1, node, start, duration, duration - stackChildrenDuration[stackTop]);
       --stackTop;
       prevId = gcParentNode.id;
     }
-    for (let node = idToNode.get(prevId); node && node.parent; node = (node.parent as CPUProfileNode)) {
+    for (let node = idToNode.get(prevId); node && node.parent; node = node.parent) {
       const start = stackStartTimes[stackTop];
       const duration = sampleTime - start;
       stackChildrenDuration[stackTop - 1] += duration;
-      closeFrameCallback(
-          node.depth, (node as CPUProfileNode), start, duration, duration - stackChildrenDuration[stackTop]);
+      closeFrameCallback(node.depth, node, start, duration, duration - stackChildrenDuration[stackTop]);
       --stackTop;
     }
   }
-
   /**
    * Returns the node that corresponds to a given index of a sample.
    */
-  nodeByIndex(index: number): CPUProfileNode|null {
+  nodeByIndex(index: number): ProfileNode|null {
     return this.samples && this.#idToParsedNode.get(this.samples[index]) || null;
   }
 
-  nodes(): CPUProfileNode[]|null {
+  nodes(): ProfileNode[]|null {
     if (!this.#idToParsedNode) {
       return null;
     }
     return [...this.#idToParsedNode.values()];
   }
 }
+
+// Format used by profiles coming from traces.
+export type ExtendedProfileNode = Protocol.Profiler.ProfileNode&{parent?: number};
+export type ExtendedProfile =
+    Protocol.Profiler.Profile&{nodes: Protocol.Profiler.ProfileNode[] | ExtendedProfileNode[], lines?: number[]};

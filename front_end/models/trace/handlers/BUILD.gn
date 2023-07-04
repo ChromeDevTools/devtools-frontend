@@ -29,6 +29,7 @@ devtools_module("handlers") {
   deps = [
     "../../../core/platform:bundle",
     "../../../generated",
+    "../../cpu_profile:bundle",
     "../helpers:bundle",
     "../types:bundle",
   ]

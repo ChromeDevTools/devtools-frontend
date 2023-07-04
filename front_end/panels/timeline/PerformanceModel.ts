@@ -109,7 +109,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   // If a node corresponds to a script that has not been parsed or a script
   // that has a source map, we should listen to SourceMapAttached events to
   // attempt a function name resolving.
-  #maybeGetDebuggerModelForNode(node: CPUProfile.CPUProfileDataModel.CPUProfileNode, target: SDK.Target.Target|null):
+  #maybeGetDebuggerModelForNode(node: CPUProfile.ProfileTreeModel.ProfileNode, target: SDK.Target.Target|null):
       SDK.DebuggerModel.DebuggerModel|null {
     const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {

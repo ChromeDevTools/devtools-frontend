@@ -712,13 +712,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     if (!url.match(SCHEME_REGEX)) {
       url = 'http://' + url;
     }
-
-    // Perform decodeURI in case the user enters an encoded string
-    // decodeURI has no effect on strings that are already decoded
-    // encodeURI ensures an encoded URL is always passed to the backend
-    // This allows the input field to support both encoded and decoded URLs
     if (this.resourceTreeModel) {
-      void this.resourceTreeModel.navigate(encodeURI(decodeURI(url)) as Platform.DevToolsPath.UrlString);
+      void this.resourceTreeModel.navigate(url as Platform.DevToolsPath.UrlString);
     }
     this.canvasElement.focus();
   }

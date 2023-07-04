@@ -322,7 +322,6 @@ export class Editor<T> {
     const input = (createInput('', type) as HTMLInputElement);
     input.placeholder = title;
     input.addEventListener('input', this.validateControls.bind(this, false), false);
-    input.addEventListener('blur', this.validateControls.bind(this, false), false);
     ARIAUtils.setLabel(input, title);
     this.controlByName.set(name, input);
     this.controls.push(input);

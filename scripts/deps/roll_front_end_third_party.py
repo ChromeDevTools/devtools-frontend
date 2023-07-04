@@ -8,16 +8,14 @@ import urllib.request
 import tarfile
 import os
 import re
-import sys
 import subprocess
 import json
 import shutil
 from pkg_resources import parse_version
 import argparse
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-import devtools_paths
+DEVTOOLS_PATH = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 THIRD_PARTY_NPM_PACKAGE_NAMES = [{
     "package_name": "puppeteer-core",
@@ -44,7 +42,7 @@ parser.add_argument("-u",
 args = parser.parse_args()
 
 
-def getStartAndEndIndexForGNVariable(content, variable):
+def get_start_and_end_endex_for_gn_var(content, variable):
     startIndex = None
     endIndex = None
     startPattern = re.compile(r'\s*' + variable + '\s*=\s*\[\s*')
@@ -65,26 +63,47 @@ def getStartAndEndIndexForGNVariable(content, variable):
     return startIndex, endIndex
 
 
-def readGNVariable(filename, variable):
+def read_gn_var(filename, variable):
     with open(filename) as f:
         content = f.readlines()
-        startIndex, endIndex = getStartAndEndIndexForGNVariable(
+        startIndex, endIndex = get_start_and_end_endex_for_gn_var(
             content, variable)
         return [x.strip(' \t",\'\n') for x in content[startIndex:endIndex]]
 
 
-def updateGNVariable(file, variable, files):
+def update_gn_var(file, variable, files):
     content = None
     with open(file) as f:
         content = f.readlines()
 
     files.sort()
-    startIndex, endIndex = getStartAndEndIndexForGNVariable(content, variable)
-    newContent = content[:startIndex] + ['    "' + x + '",\n'
-                                         for x in files] + content[endIndex:]
+    startIndex, endIndex = get_start_and_end_endex_for_gn_var(
+        content, variable)
+    newContent = content[:startIndex] + [
+        '    "' + x + '",\n' if not x.startswith('#') else '    ' + x + '\n'
+        for x in files
+    ] + content[endIndex:]
 
     with open(file, 'w') as f:
         f.write(''.join(newContent))
+
+
+def update_readme_version(file, ver):
+    content = None
+    with open(file) as f:
+        content = f.readlines()
+
+    # Find the `Version` line.
+    for i, line in enumerate(content):
+        if line.startswith("Version:"):
+            lineIndex = i
+            break
+    if lineIndex is None:
+        return
+
+    with open(file, 'w') as f:
+        f.write(''.join(content[:lineIndex] + [f"Version: {ver}\n"] +
+                        content[lineIndex + 1:]))
 
 
 for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
@@ -92,7 +111,7 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
     folder_name = package_info["folder_name"]
     package_root = package_info["package_root"]
 
-    path = devtools_paths.root_path() + f'/front_end/third_party/{folder_name}'
+    path = DEVTOOLS_PATH + f'/front_end/third_party/{folder_name}'
     package_path = f'{path}/package'
 
     old_package_json = json.load(open(f'{package_path}/package.json'))
@@ -106,11 +125,10 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
         continue
 
     if args.create_branch:
-        subprocess.check_call(['git', 'checkout', 'main'],
-                              cwd=devtools_paths.root_path())
+        subprocess.check_call(['git', 'checkout', 'main'], cwd=DEVTOOLS_PATH)
         subprocess.check_call(
             ['git', 'checkout', '-b', f'update-{folder_name}-{version}'],
-            cwd=devtools_paths.root_path())
+            cwd=DEVTOOLS_PATH)
 
     # Remove the old package
     shutil.rmtree(package_path)
@@ -125,44 +143,55 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
     # Get the names of all files
     members = [m.name for m in members]
 
+    try:
+        excluded_sources = set(
+            read_gn_var(f'./front_end/third_party/{folder_name}/BUILD.gn',
+                        'EXCLUDED_SOURCES'))
+    except BaseException:
+        excluded_sources = set()
+
     # Update BUILD.gn
-    updateGNVariable(
-        f'./front_end/third_party/{folder_name}/BUILD.gn', 'sources', [
+    update_gn_var(
+        f'./front_end/third_party/{folder_name}/BUILD.gn', 'SOURCES', [
             f'{folder_name}-tsconfig.json',
         ] + [
-            name for name in members
-            if name.startswith(f'package/{package_root}') and
+            name
+            for name in members if name.startswith(f'package/{package_root}')
+            and name not in excluded_sources and
             (name.endswith('.js') or name.endswith('.js.map')
              or name.endswith('.d.ts') or name.endswith('.d.ts.map'))
         ])
 
     # Update devtools_grd_files.gni
-    updateGNVariable(
-        './config/gni/devtools_grd_files.gni', 'grd_files_debug_sources', [
+    update_gn_var(
+        './config/gni/devtools_grd_files.gni',
+        'grd_files_debug_sources', [
             f'front_end/third_party/{folder_name}/' + name
             for name in members if name.startswith(f'package/{package_root}')
-            and name.endswith('.js')
+            and name not in excluded_sources and name.endswith('.js')
         ] + [
-            name
-            for name in readGNVariable('./config/gni/devtools_grd_files.gni',
-                                       'grd_files_debug_sources')
+            name for name in read_gn_var('./config/gni/devtools_grd_files.gni',
+                                         'grd_files_debug_sources')
             if not name.startswith(f'front_end/third_party/{folder_name}')
         ])
+
+    # Update README.chromium
+    update_readme_version(
+        f'./front_end/third_party/{folder_name}/README.chromium', version)
 
     tar.close()
 
     if args.upload_cl:
-        subprocess.check_call(['git', 'cl', 'format'],
-                              cwd=devtools_paths.root_path())
-        subprocess.check_call(['git', 'add', '-A'],
-                              cwd=devtools_paths.root_path())
+        subprocess.check_call(['git', 'cl', 'format'], cwd=DEVTOOLS_PATH)
+        subprocess.check_call(['git', 'add', '-A'], cwd=DEVTOOLS_PATH)
         subprocess.check_call(
             ['git', 'commit', '-m', f'Update {package_name} to {version}'],
-            cwd=devtools_paths.root_path())
-        subprocess.check_call(
-            ['git', 'cl', 'upload', '-b', 'none', '-f', '-d', '-s'],
-            cwd=devtools_paths.root_path())
+            cwd=DEVTOOLS_PATH)
+        subprocess.check_call([
+            'git', 'cl', 'upload', '-b', 'none', '-f', '-d', '--r-owners',
+            '-s', '-a'
+        ],
+                              cwd=DEVTOOLS_PATH)
 
 if args.create_branch:
-    subprocess.check_call(['git', 'checkout', 'main'],
-                          cwd=devtools_paths.root_path())
+    subprocess.check_call(['git', 'checkout', 'main'], cwd=DEVTOOLS_PATH)

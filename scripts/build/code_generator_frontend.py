@@ -171,7 +171,7 @@ class Templates:
  *  registerCommand: function(string&any, !Array.<!{name: string, type: string, optional: boolean, typeRef?: string}>, !Array.<string>):void,
  *  registerEnum: function(string&any, !Object<string, string>):void,
  *  registerEvent: function(string&any, !Array<string>):void,
- *  registerType: function(string&any, !Array.<!{name: string, type: string, optional: boolean}>):void,
+ *  registerType: function(string&any, !Array.<!{name: string, type: string, optional: boolean, typeRef?: string}>):void,
  * }}
  */
 // @ts-ignore typedef
@@ -276,19 +276,46 @@ class Generator:
                                                             (domain_name, event_name, ", ".join(backend_js_event_param_list)))
 
     @staticmethod
-    def process_type(json_type, domain_name, type_id):
-        js_param_list = []
-        for json_parameter in json_type:
-            json_param_name = json_parameter["name"]
-            js_bind_type = resolve_param_raw_type_js(json_parameter,
-                                                     domain_name)
+    def convert_json_parameter(json_parameter, domain_name):
+        json_param_name = json_parameter["name"]
+        type_ref = json_parameter.get("$ref", None)
+        json_ref = ""
+        js_bind_type = resolve_param_raw_type_js(json_parameter, domain_name)
+        # checking the type of the parameters inside array parameters
+        if js_bind_type == "array" and 'items' in json_parameter:
+            if '$ref' in json_parameter['items']:
+                json_ref = json_parameter['items']['$ref']
+                type_ref = json_ref if '.' in json_ref else "%s.%s" % (
+                    domain_name, json_ref)
+            elif 'type' in json_parameter['items']:
+                json_ref = json_parameter['items']['type']
+                if json_ref != "string":
+                    type_ref = json_ref
 
-            optional = "true" if ("optional" in json_parameter
-                                  and json_parameter["optional"]) else "false"
+        if js_bind_type == "object" and "$ref" in json_parameter:
+            json_ref = json_parameter["$ref"]
+            # Checking if the ref has a prefix domain
+            # Domain for types must always be included
+            type_ref = json_ref if '.' in json_ref else "%s.%s" % (domain_name,
+                                                                   json_ref)
 
+        optional = "true" if ("optional" in json_parameter
+                              and json_parameter["optional"]) else "false"
+        if type_ref:
+            js_param_text = "{\"name\": \"%s\", \"type\": \"%s\", \"optional\": %s, \"typeRef\": \"%s\"}" % (
+                json_param_name, js_bind_type, optional, type_ref)
+        else:
             js_param_text = "{\"name\": \"%s\", \"type\": \"%s\", \"optional\": %s}" % (
                 json_param_name, js_bind_type, optional)
 
+        return js_param_text
+
+    @staticmethod
+    def process_type(json_type, domain_name, type_id):
+        js_param_list = []
+        for json_parameter in json_type:
+            js_param_text = Generator.convert_json_parameter(
+                json_parameter, domain_name)
             js_param_list.append(js_param_text)
 
         js_parameters_text = ", ".join(js_param_list)
@@ -309,26 +336,8 @@ class Generator:
             js_param_list = []
 
             for json_parameter in json_params:
-                json_param_name = json_parameter["name"]
-                type_ref = json_parameter.get("$ref", None)
-                js_bind_type = resolve_param_raw_type_js(json_parameter, domain_name)
-                if js_bind_type == "object" and "$ref" in json_parameter:
-                    json_ref = json_parameter["$ref"]
-
-                    # Checking if the ref has a prefix domain
-                    # Domain for types must always be included
-                    type_ref = json_ref if '.' in json_ref else "%s.%s" % (
-                        domain_name, json_ref)
-
-                optional = "true" if ("optional" in json_parameter and
-                                      json_parameter["optional"]) else "false"
-                js_param_text = ""
-                if type_ref:
-                    js_param_text = "{\"name\": \"%s\", \"type\": \"%s\", \"optional\": %s, \"typeRef\": \"%s\"}" % (
-                        json_param_name, js_bind_type, optional, type_ref)
-                else:
-                    js_param_text = "{\"name\": \"%s\", \"type\": \"%s\", \"optional\": %s}" % (
-                        json_param_name, js_bind_type, optional)
+                js_param_text = Generator.convert_json_parameter(
+                    json_parameter, domain_name)
                 js_param_list.append(js_param_text)
 
             js_parameters_text = ", ".join(js_param_list)

@@ -20,6 +20,7 @@ group("front_end") {
     "entrypoints/missing_entrypoints",
     "models/bindings",
     "models/breakpoints",
+    "models/cpu_profile",
     "models/css",
     "models/emulation",
     "models/extensions",

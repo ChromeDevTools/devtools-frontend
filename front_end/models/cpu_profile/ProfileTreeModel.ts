@@ -66,6 +66,8 @@ export class ProfileTreeModel {
 
   private assignDepthsAndParents(): void {
     const root = this.root;
+    // TODO(crbug.com/1354548): start depth from 0 once profiler
+    // panel dependencies are gone.
     root.depth = -1;
     root.parent = null;
     this.maxDepth = 0;
@@ -80,9 +82,7 @@ export class ProfileTreeModel {
       for (const child of children) {
         child.depth = depth;
         child.parent = parent;
-        if (child.children.length) {
-          nodesToTraverse.push(child);
-        }
+        nodesToTraverse.push(child);
       }
     }
   }

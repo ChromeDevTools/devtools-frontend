@@ -112,6 +112,11 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     }
   }
 
+  /**
+   * Calculate timestamps using timeDeltas. Some CPU profile formats,
+   * like the ones contained in traces have timeDeltas instead of
+   * timestamps.
+   */
   private convertTimeDeltas(profile: Protocol.Profiler.Profile): number[] {
     if (!profile.timeDeltas) {
       return [];
@@ -132,7 +137,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * node being filtered.
    *
    * This function supports legacy and new definitions of the CDP Profiler.Profile
-   * type as well as the type of a CPU profile contained in trace events.
+   * type.
    */
   private translateProfileTree(nodes: Protocol.Profiler.ProfileNode[]): CPUProfileNode {
     function isNativeNode(node: Protocol.Profiler.ProfileNode): boolean {
@@ -276,13 +281,12 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     }
     let timestamps: number[] = this.timestamps;
     if (!timestamps) {
-      // Support loading old CPU profiles that are missing timestamps.
-      // Derive timestamps from profile start and stop times.
+      // Support loading CPU profiles that are missing timestamps and
+      // timedeltas
       const profileStartTime = this.profileStartTime;
       const interval = (this.profileEndTime - profileStartTime) / this.samples.length;
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      timestamps = (new Float64Array(this.samples.length + 1) as any);
+      // Add an extra timestamp used to calculate the last sample duration.
+      timestamps = new Array(this.samples.length + 1);
       for (let i = 0; i < timestamps.length; ++i) {
         timestamps[i] = profileStartTime + i * interval;
       }
@@ -295,7 +299,6 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       timestamps[i] /= 1000;
     }
     if (this.samples.length === timestamps.length) {
-      // Support for a legacy format where there are no timeDeltas.
       // Add an extra timestamp used to calculate the last sample duration.
       const lastTimestamp = timestamps.at(-1) || 0;
       const averageIntervalTime = (lastTimestamp - timestamps[0]) / (timestamps.length - 1);
@@ -305,6 +308,10 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     this.profileEndTime = timestamps.at(-1) || this.profileEndTime;
   }
 
+  /**
+   * Some nodes do not refer to JS samples but to V8 system tasks, AKA
+   * "meta" nodes. This function extracts those nodes from the profile.
+   */
   private extractMetaNodes(): void {
     const topLevelNodes = this.profileHead.children;
     for (let i = 0; i < topLevelNodes.length && !(this.gcNode && this.programNode && this.idleNode); i++) {
@@ -409,7 +416,6 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       }
       node = idToNode.get(id);
       let prevNode: CPUProfileNode = (idToNode.get(prevId) as CPUProfileNode);
-
       if (node === gcNode) {
         // GC samples have no stack, so we just put GC node on top of the last recorded sample.
         gcParentNode = prevNode;

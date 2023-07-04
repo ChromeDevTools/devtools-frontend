@@ -97,21 +97,21 @@ const UIStrings = {
   /**
    *@description Label for a filter in the Network panel
    */
-  hasBlockedCookies: 'Has blocked cookies',
+  hasBlockedCookies: 'Blocked cookies',
   /**
    *@description Tooltip for a checkbox in the Network panel. The response to a network request may include a
    *             cookie (https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies). Such response cookies can
    *             be malformed or otherwise invalid and the browser may choose to ignore or not accept invalid cookies.
    */
-  onlyShowRequestsWithBlocked: 'Only show requests with blocked response cookies',
+  onlyShowRequestsWithBlocked: 'Show only the requests with blocked response cookies',
   /**
    *@description Label for a filter in the Network panel
    */
-  blockedRequests: 'Blocked Requests',
+  blockedRequests: 'Blocked requests',
   /**
    *@description Tooltip for a filter in the Network panel
    */
-  onlyShowBlockedRequests: 'Only show blocked requests',
+  onlyShowBlockedRequests: 'Show only blocked requests',
   /**
    *@description Label for a filter in the Network panel
    */
@@ -119,7 +119,7 @@ const UIStrings = {
   /**
    *@description Tooltip for a filter in the Network panel
    */
-  onlyShowThirdPartyRequests: 'Shows only requests with origin different from page origin',
+  onlyShowThirdPartyRequests: 'Show only requests with origin different from page origin',
   /**
    *@description Text that appears when user drag and drop something (for example, a file) in Network Log View of the Network panel
    */

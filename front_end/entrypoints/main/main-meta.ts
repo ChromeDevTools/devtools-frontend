@@ -17,7 +17,7 @@ const UIStrings = {
   /**
    *@description Text in Main
    */
-  focusDebuggee: 'Focus debuggee',
+  focusDebuggee: 'Focus page',
   /**
    *@description Text in the Shortcuts page in settings to explain a keyboard shortcut
    */

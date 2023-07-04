@@ -89,7 +89,7 @@ const UIStrings = {
   /**
    *@description Text in Main
    */
-  focusDebuggee: 'Focus debuggee',
+  focusDebuggee: 'Focus page',
   /**
    *@description Text in Main
    */

@@ -95,7 +95,7 @@ const UIStrings = {
   /**
    *@description Text in Network Panel of the Network panel
    */
-  useLargeRequestRows: 'Use large request rows',
+  useLargeRequestRows: 'Big request rows',
   /**
    *@description Tooltip text for network request overview setting
    */
@@ -103,7 +103,7 @@ const UIStrings = {
   /**
    *@description Text in Network Panel of the Network panel
    */
-  showOverview: 'Show overview',
+  showOverview: 'Overview',
   /**
    *@description Tooltip for group by frame network setting
    */
@@ -119,7 +119,7 @@ const UIStrings = {
   /**
    *@description Text to take screenshots
    */
-  captureScreenshots: 'Capture screenshots',
+  captureScreenshots: 'Screenshots',
   /**
    * @description Tooltip text that appears when hovering over the largeicon load button in the
    * Network Panel. This action prompts the user to select a HAR file to upload to DevTools.

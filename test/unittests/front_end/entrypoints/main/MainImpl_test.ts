@@ -42,7 +42,7 @@ describeWithMockConnection('MainMenuItem', () => {
 
       assert.isTrue(contextMenuShow.calledOnce);
       assert.exists(contextMenuShow.thisValues[0].defaultSection().items.find(
-          (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Focus debuggee'));
+          (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Focus page'));
     });
 
     it('does not include focus debuggee item when docked', async () => {
@@ -62,7 +62,7 @@ describeWithMockConnection('MainMenuItem', () => {
 
       assert.isTrue(contextMenuShow.calledOnce);
       assert.notExists(contextMenuShow.thisValues[0].defaultSection().items.find(
-          (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Focus debuggee'));
+          (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Focus page'));
     });
   };
   describe('without tab target', () => focusDebuggee(() => createTarget()));

@@ -44,7 +44,7 @@ import {type Icon} from './Icon.js';
 import {Infobar, Type as InfobarType} from './Infobar.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import {type Panel} from './Panel.js';
-import {SplitWidget} from './SplitWidget.js';
+import {SplitWidget, ShowMode} from './SplitWidget.js';
 import {Events as TabbedPaneEvents, type EventData, type TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
 
 import {ToolbarButton} from './Toolbar.js';
@@ -169,6 +169,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     const closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'cross');
     closeDrawerButton.addEventListener(ToolbarButton.Events.Click, this.closeDrawer, this);
     this.drawerTabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.tabSelected, this);
+    const selectedDrawerTab = this.drawerTabbedPane.selectedTabId;
+    if (this.drawerSplitWidget.showMode() !== ShowMode.OnlyMain && selectedDrawerTab) {
+      Host.userMetrics.panelShown(selectedDrawerTab, true);
+    }
     this.drawerTabbedPane.setTabDelegate(this.tabDelegate);
 
     const drawerElement = this.drawerTabbedPane.element;
@@ -195,6 +199,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.tabbedPane.leftToolbar().element.style.minWidth = allocatedSpace;
     this.tabbedPane.registerRequiredCSS(inspectorViewTabbedPaneStyles);
     this.tabbedPane.addEventListener(TabbedPaneEvents.TabSelected, this.tabSelected, this);
+    const selectedTab = this.tabbedPane.selectedTabId;
+    if (selectedTab) {
+      Host.userMetrics.panelShown(selectedTab, true);
+    }
     this.tabbedPane.setAccessibleName(i18nString(UIStrings.panels));
     this.tabbedPane.setTabDelegate(this.tabDelegate);
 

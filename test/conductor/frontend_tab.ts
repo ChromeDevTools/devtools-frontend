@@ -27,6 +27,7 @@ export interface DevToolsFrontendReloadOptions {
   selectedPanel?: {name: string, selector?: string};
   canDock?: boolean;
   queryParams?: {panel?: string};
+  drawerShown?: boolean;
 }
 
 /**
@@ -82,12 +83,19 @@ export class DevToolsFrontendTab {
 
   async reload(options: DevToolsFrontendReloadOptions = {}): Promise<void> {
     // For the unspecified case wait for loading, then wait for the elements panel.
-    const {selectedPanel = DevToolsFrontendTab.DEFAULT_TAB, canDock = false, queryParams = {}} = options;
+    const {selectedPanel = DevToolsFrontendTab.DEFAULT_TAB, canDock = false, queryParams = {}, drawerShown = false} =
+        options;
 
     if (selectedPanel.name !== DevToolsFrontendTab.DEFAULT_TAB.name) {
       await this.page.evaluate(name => {
         globalThis.localStorage.setItem('panel-selectedTab', `"${name}"`);
       }, selectedPanel.name);
+    }
+
+    if (drawerShown) {
+      await this.page.evaluate(() => {
+        globalThis.localStorage.setItem('Inspector.drawerSplitViewState', '{"horizontal" : {"showMode": "Both"}}');
+      });
     }
 
     // Reload the DevTools frontend and await the elements panel.

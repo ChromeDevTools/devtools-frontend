@@ -149,9 +149,33 @@ describe('User Metrics', () => {
     await click('#tab-timeline');
     await frontend.waitForSelector('.timeline');
 
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.PanelShown',
+        actionCode: 1,  // Elements (at launch).
+      },
+      {
+        actionName: 'DevTools.PanelShown',
+        actionCode: 5,  // Timeline.
+      },
+    ]);
+  });
+
+  it('dispatches events for view shown at launch', async () => {
+    await reloadDevTools({selectedPanel: {name: 'timeline'}});
+
     await assertHistogramEventsInclude([{
       actionName: 'DevTools.PanelShown',
       actionCode: 5,  // Timeline.
+    }]);
+  });
+
+  it('dispatches events for drawer shown at launch', async () => {
+    await reloadDevTools({drawerShown: true});
+
+    await assertHistogramEventsInclude([{
+      actionName: 'DevTools.PanelShown',
+      actionCode: 10,  // drawer-console-view.
     }]);
   });
 

@@ -3077,6 +3077,11 @@ declare namespace ProtocolProxyApi {
      */
     invoke_runBounceTrackingMitigations(): Promise<Protocol.Storage.RunBounceTrackingMitigationsResponse>;
 
+    /**
+     * https://wicg.github.io/attribution-reporting-api/
+     */
+    invoke_setAttributionReportingLocalTestingMode(params: Protocol.Storage.SetAttributionReportingLocalTestingModeRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface StorageDispatcher {
     /**

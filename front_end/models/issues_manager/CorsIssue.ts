@@ -56,6 +56,8 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
     case Protocol.Network.CorsError.MissingAllowOriginHeader:
     case Protocol.Network.CorsError.MultipleAllowOriginValues:
     case Protocol.Network.CorsError.InvalidAllowOriginValue:
+    case Protocol.Network.CorsError.PreflightMissingPrivateNetworkAccessId:
+    case Protocol.Network.CorsError.PreflightMissingPrivateNetworkAccessName:
       return IssueCode.InvalidHeaderValues;
     case Protocol.Network.CorsError.PreflightWildcardOriginNotAllowed:
     case Protocol.Network.CorsError.WildcardOriginNotAllowed:
@@ -89,6 +91,8 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
     case Protocol.Network.CorsError.NoCorsRedirectModeNotFollow:
       return IssueCode.NoCorsRedirectModeNotFollow;
     case Protocol.Network.CorsError.InvalidPrivateNetworkAccess:
+    case Protocol.Network.CorsError.PrivateNetworkAccessPermissionUnavailable:
+    case Protocol.Network.CorsError.PrivateNetworkAccessPermissionDenied:
       return IssueCode.InvalidPrivateNetworkAccess;
     case Protocol.Network.CorsError.UnexpectedPrivateNetworkAccess:
       return IssueCode.UnexpectedPrivateNetworkAccess;

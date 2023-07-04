@@ -1000,6 +1000,7 @@ export namespace Audits {
     FormLabelHasNeitherForNorNestedInput = 'FormLabelHasNeitherForNorNestedInput',
     FormLabelForMatchesNonExistingIdError = 'FormLabelForMatchesNonExistingIdError',
     FormInputHasWrongButWellIntendedAutocompleteValueError = 'FormInputHasWrongButWellIntendedAutocompleteValueError',
+    ResponseWasBlockedByORB = 'ResponseWasBlockedByORB',
   }
 
   /**
@@ -1013,6 +1014,7 @@ export namespace Audits {
     frameId?: Page.FrameId;
     violatingNodeId?: DOM.BackendNodeId;
     violatingNodeAttribute?: string;
+    request?: AffectedRequest;
   }
 
   /**
@@ -2130,6 +2132,22 @@ export namespace CSS {
      * The array enumerates @scope at-rules starting with the innermost one, going outwards.
      */
     scopes?: CSSScope[];
+    /**
+     * The array keeps the types of ancestor CSSRules from the innermost going outwards.
+     */
+    ruleTypes?: CSSRuleType[];
+  }
+
+  /**
+   * Enum indicating the type of a CSS rule, used to represent the order of a style rule's ancestors.
+   * This list only contains rule types that are collected during the ancestor rule collection.
+   */
+  export const enum CSSRuleType {
+    MediaRule = 'MediaRule',
+    SupportsRule = 'SupportsRule',
+    ContainerRule = 'ContainerRule',
+    LayerRule = 'LayerRule',
+    ScopeRule = 'ScopeRule',
   }
 
   /**
@@ -7794,6 +7812,10 @@ export namespace Network {
     InvalidPrivateNetworkAccess = 'InvalidPrivateNetworkAccess',
     UnexpectedPrivateNetworkAccess = 'UnexpectedPrivateNetworkAccess',
     NoCorsRedirectModeNotFollow = 'NoCorsRedirectModeNotFollow',
+    PreflightMissingPrivateNetworkAccessId = 'PreflightMissingPrivateNetworkAccessId',
+    PreflightMissingPrivateNetworkAccessName = 'PreflightMissingPrivateNetworkAccessName',
+    PrivateNetworkAccessPermissionUnavailable = 'PrivateNetworkAccessPermissionUnavailable',
+    PrivateNetworkAccessPermissionDenied = 'PrivateNetworkAccessPermissionDenied',
   }
 
   export interface CorsErrorStatus {
@@ -13594,6 +13616,13 @@ export namespace Storage {
 
   export interface RunBounceTrackingMitigationsResponse extends ProtocolResponseWithError {
     deletedSites: string[];
+  }
+
+  export interface SetAttributionReportingLocalTestingModeRequest {
+    /**
+     * If enabled, noise is suppressed and reports are sent immediately.
+     */
+    enabled: boolean;
   }
 
   /**

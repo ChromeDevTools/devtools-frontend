@@ -3714,6 +3714,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.Storage.RunBounceTrackingMitigationsResponse;
     };
     /**
+     * https://wicg.github.io/attribution-reporting-api/
+     */
+    'Storage.setAttributionReportingLocalTestingMode': {
+      paramsType: [Protocol.Storage.SetAttributionReportingLocalTestingModeRequest];
+      returnType: void;
+    };
+    /**
      * Returns information about the system.
      */
     'SystemInfo.getInfo': {

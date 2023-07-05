@@ -190,7 +190,7 @@ class SuggestionBox extends LitElement {
     if (changedProperties.has('expression')) {
       this.cursor = 0;
       this.#suggestions = this.options.filter(
-          option => option.startsWith(this.expression),
+          option => option.toLowerCase().startsWith(this.expression.toLowerCase()),
       );
     }
   }

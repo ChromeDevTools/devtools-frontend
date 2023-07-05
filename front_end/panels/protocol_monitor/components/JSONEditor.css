@@ -56,3 +56,16 @@ ul {
 .wrapper {
   padding-left: 2em;
 }
+
+.deleteButton {
+  opacity: 0%;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.deleteButton:hover {
+  opacity: 100%;
+}
+
+.deleteButton:focus {
+  opacity: 100%;
+}

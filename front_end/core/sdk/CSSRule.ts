@@ -111,6 +111,7 @@ export class CSSStyleRule extends CSSRule {
   supports: CSSSupports[];
   scopes: CSSScope[];
   layers: CSSLayer[];
+  ruleTypes: Protocol.CSS.CSSRuleType[];
   wasUsed: boolean;
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSRule, wasUsed?: boolean) {
     super(cssModel, {origin: payload.origin, style: payload.style, styleSheetId: payload.styleSheetId});
@@ -123,6 +124,7 @@ export class CSSStyleRule extends CSSRule {
     this.scopes = payload.scopes ? CSSScope.parseScopesPayload(cssModel, payload.scopes) : [];
     this.supports = payload.supports ? CSSSupports.parseSupportsPayload(cssModel, payload.supports) : [];
     this.layers = payload.layers ? CSSLayer.parseLayerPayload(cssModel, payload.layers) : [];
+    this.ruleTypes = payload.ruleTypes || [];
     this.wasUsed = wasUsed || false;
   }
 

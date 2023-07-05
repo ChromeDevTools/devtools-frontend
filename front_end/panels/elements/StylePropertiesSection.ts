@@ -37,10 +37,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+
 import type * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -726,121 +726,128 @@ export class StylePropertiesSection {
   }
 
   protected createAtRuleLists(rule: SDK.CSSRule.CSSStyleRule): void {
-    this.createMediaList(rule.media);
-    this.createContainerQueryList(rule.containerQueries);
-    this.createScopesList(rule.scopes);
-    this.createSupportsList(rule.supports);
-  }
-
-  protected createMediaList(mediaRules: SDK.CSSMedia.CSSMedia[]): void {
-    for (let i = mediaRules.length - 1; i >= 0; --i) {
-      const media = mediaRules[i];
-      // Don't display trivial non-print media types.
-      const isMedia = !media.text || !media.text.includes('(') && media.text !== 'print';
-      if (isMedia) {
-        continue;
-      }
-
-      let queryPrefix = '';
-      let queryText = '';
-      let onQueryTextClick;
-      switch (media.source) {
-        case SDK.CSSMedia.Source.LINKED_SHEET:
-        case SDK.CSSMedia.Source.INLINE_SHEET: {
-          queryText = `media="${media.text}"`;
+    let mediaIndex = 0;
+    let containerIndex = 0;
+    let scopeIndex = 0;
+    let supportsIndex = 0;
+    for (const ruleType of rule.ruleTypes) {
+      let queryElement;
+      switch (ruleType) {
+        case Protocol.CSS.CSSRuleType.MediaRule:
+          queryElement = this.createMediaElement(rule.media[mediaIndex++]);
           break;
-        }
-        case SDK.CSSMedia.Source.MEDIA_RULE: {
-          queryPrefix = '@media';
-          queryText = media.text;
-          if (media.styleSheetId) {
-            onQueryTextClick = this.handleQueryRuleClick.bind(this, media);
-          }
+        case Protocol.CSS.CSSRuleType.ContainerRule:
+          queryElement = this.createContainerQueryElement(rule.containerQueries[containerIndex++]);
           break;
-        }
-        case SDK.CSSMedia.Source.IMPORT_RULE: {
-          queryText = `@import ${media.text}`;
+        case Protocol.CSS.CSSRuleType.ScopeRule:
+          queryElement = this.createScopeElement(rule.scopes[scopeIndex++]);
           break;
+        case Protocol.CSS.CSSRuleType.SupportsRule:
+          queryElement = this.createSupportsElement(rule.supports[supportsIndex++]);
+          break;
+      }
+      queryElement && this.queryListElement.prepend(queryElement);
+    }
+  }
+
+  protected createMediaElement(media: SDK.CSSMedia.CSSMedia): ElementsComponents.CSSQuery.CSSQuery|undefined {
+    // Don't display trivial non-print media types.
+    const isMedia = !media.text || !media.text.includes('(') && media.text !== 'print';
+    if (isMedia) {
+      return;
+    }
+
+    let queryPrefix = '';
+    let queryText = '';
+    let onQueryTextClick;
+    switch (media.source) {
+      case SDK.CSSMedia.Source.LINKED_SHEET:
+      case SDK.CSSMedia.Source.INLINE_SHEET: {
+        queryText = `media="${media.text}"`;
+        break;
+      }
+      case SDK.CSSMedia.Source.MEDIA_RULE: {
+        queryPrefix = '@media';
+        queryText = media.text;
+        if (media.styleSheetId) {
+          onQueryTextClick = this.handleQueryRuleClick.bind(this, media);
         }
+        break;
       }
-
-      const mediaQueryElement = new ElementsComponents.CSSQuery.CSSQuery();
-      mediaQueryElement.data = {
-        queryPrefix,
-        queryText,
-        onQueryTextClick,
-      };
-      this.queryListElement.append(mediaQueryElement);
+      case SDK.CSSMedia.Source.IMPORT_RULE: {
+        queryText = `@import ${media.text}`;
+        break;
+      }
     }
+
+    const mediaQueryElement = new ElementsComponents.CSSQuery.CSSQuery();
+    mediaQueryElement.data = {
+      queryPrefix,
+      queryText,
+      onQueryTextClick,
+    };
+    return mediaQueryElement;
   }
 
-  protected createContainerQueryList(containerQueries: SDK.CSSContainerQuery.CSSContainerQuery[]): void {
-    for (let i = containerQueries.length - 1; i >= 0; --i) {
-      const containerQuery = containerQueries[i];
-      if (!containerQuery.text) {
-        continue;
-      }
-
-      let onQueryTextClick;
-      if (containerQuery.styleSheetId) {
-        onQueryTextClick = this.handleQueryRuleClick.bind(this, containerQuery);
-      }
-
-      const containerQueryElement = new ElementsComponents.CSSQuery.CSSQuery();
-      containerQueryElement.data = {
-        queryPrefix: '@container',
-        queryName: containerQuery.name,
-        queryText: containerQuery.text,
-        onQueryTextClick,
-      };
-      this.queryListElement.append(containerQueryElement);
-
-      void this.addContainerForContainerQuery(containerQuery);
+  protected createContainerQueryElement(containerQuery: SDK.CSSContainerQuery.CSSContainerQuery):
+      ElementsComponents.CSSQuery.CSSQuery|undefined {
+    if (!containerQuery.text) {
+      return;
     }
+
+    let onQueryTextClick;
+    if (containerQuery.styleSheetId) {
+      onQueryTextClick = this.handleQueryRuleClick.bind(this, containerQuery);
+    }
+
+    const containerQueryElement = new ElementsComponents.CSSQuery.CSSQuery();
+    containerQueryElement.data = {
+      queryPrefix: '@container',
+      queryName: containerQuery.name,
+      queryText: containerQuery.text,
+      onQueryTextClick,
+    };
+    void this.addContainerForContainerQuery(containerQuery);
+    return containerQueryElement;
   }
 
-  protected createScopesList(scopesList: SDK.CSSScope.CSSScope[]): void {
-    for (let i = scopesList.length - 1; i >= 0; --i) {
-      const scope = scopesList[i];
-      if (!scope.text) {
-        continue;
-      }
-
-      let onQueryTextClick;
-      if (scope.styleSheetId) {
-        onQueryTextClick = this.handleQueryRuleClick.bind(this, scope);
-      }
-
-      const scopeElement = new ElementsComponents.CSSQuery.CSSQuery();
-      scopeElement.data = {
-        queryPrefix: '@scope',
-        queryText: scope.text,
-        onQueryTextClick,
-      };
-      this.queryListElement.append(scopeElement);
+  protected createScopeElement(scope: SDK.CSSScope.CSSScope): ElementsComponents.CSSQuery.CSSQuery|undefined {
+    if (!scope.text) {
+      return;
     }
+
+    let onQueryTextClick;
+    if (scope.styleSheetId) {
+      onQueryTextClick = this.handleQueryRuleClick.bind(this, scope);
+    }
+
+    const scopeElement = new ElementsComponents.CSSQuery.CSSQuery();
+    scopeElement.data = {
+      queryPrefix: '@scope',
+      queryText: scope.text,
+      onQueryTextClick,
+    };
+    return scopeElement;
   }
 
-  protected createSupportsList(supportsList: SDK.CSSSupports.CSSSupports[]): void {
-    for (let i = supportsList.length - 1; i >= 0; --i) {
-      const supports = supportsList[i];
-      if (!supports.text) {
-        continue;
-      }
-
-      let onQueryTextClick;
-      if (supports.styleSheetId) {
-        onQueryTextClick = this.handleQueryRuleClick.bind(this, supports);
-      }
-
-      const supportsElement = new ElementsComponents.CSSQuery.CSSQuery();
-      supportsElement.data = {
-        queryPrefix: '@supports',
-        queryText: supports.text,
-        onQueryTextClick,
-      };
-      this.queryListElement.append(supportsElement);
+  protected createSupportsElement(supports: SDK.CSSSupports.CSSSupports): ElementsComponents.CSSQuery.CSSQuery
+      |undefined {
+    if (!supports.text) {
+      return;
     }
+
+    let onQueryTextClick;
+    if (supports.styleSheetId) {
+      onQueryTextClick = this.handleQueryRuleClick.bind(this, supports);
+    }
+
+    const supportsElement = new ElementsComponents.CSSQuery.CSSQuery();
+    supportsElement.data = {
+      queryPrefix: '@supports',
+      queryText: supports.text,
+      onQueryTextClick,
+    };
+    return supportsElement;
   }
 
   private async addContainerForContainerQuery(containerQuery: SDK.CSSContainerQuery.CSSContainerQuery): Promise<void> {

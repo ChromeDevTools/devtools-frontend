@@ -54,10 +54,10 @@ required):
 
 - **ecmaVersion**: Indicates the ECMAScript version to parse. Must be
   either 3, 5, 6 (or 2015), 7 (2016), 8 (2017), 9 (2018), 10 (2019),
-  11 (2020), 12 (2021), 13 (2022, partial support)
-  or `"latest"` (the latest the library supports). This influences
-  support for strict mode, the set of reserved words, and support
-  for new syntax features.
+  11 (2020), 12 (2021), 13 (2022), 14 (2023), or `"latest"` (the
+  latest the library supports). This influences support for strict
+  mode, the set of reserved words, and support for new syntax
+  features.
 
   **NOTE**: Only 'stage 4' (finalized) ECMAScript features are being
   implemented by Acorn. Other proposed new features must be
@@ -96,17 +96,22 @@ required):
   (when `sourceType` is not `"module"`).
 
 - **allowAwaitOutsideFunction**: If `false`, `await` expressions can
-  only appear inside `async` functions. Defaults to `true` for
-  `ecmaVersion` 2022 and later, `false` for lower versions. Setting this option to
-  `true` allows to have top-level `await` expressions. They are
-  still not allowed in non-`async` functions, though.
+  only appear inside `async` functions. Defaults to `true` in modules
+  for `ecmaVersion` 2022 and later, `false` for lower versions.
+  Setting this option to `true` allows to have top-level `await`
+  expressions. They are still not allowed in non-`async` functions,
+  though.
 
 - **allowSuperOutsideMethod**: By default, `super` outside a method
   raises an error. Set this to `true` to accept such code.
 
-- **allowHashBang**: When this is enabled (off by default), if the
-  code starts with the characters `#!` (as in a shellscript), the
-  first line will be treated as a comment.
+- **allowHashBang**: When this is enabled, if the code starts with the
+  characters `#!` (as in a shellscript), the first line will be
+  treated as a comment. Defaults to true when `ecmaVersion` >= 2023.
+
+- **checkPrivateFields**: By default, the parser will verify that
+  private properties are only used in places where they are valid and
+  have been declared. Set this to false to turn such checks off.
 
 - **locations**: When `true`, each node has a `loc` object attached
   with `start` and `end` subobjects, each of which contains the
@@ -271,10 +276,3 @@ The utility spits out the syntax tree as JSON data.
 ## Existing plugins
 
  - [`acorn-jsx`](https://github.com/RReverser/acorn-jsx): Parse [Facebook JSX syntax extensions](https://github.com/facebook/jsx)
- 
-Plugins for ECMAScript proposals:
- 
- - [`acorn-stage3`](https://github.com/acornjs/acorn-stage3): Parse most stage 3 proposals, bundling:
-   - [`acorn-class-fields`](https://github.com/acornjs/acorn-class-fields): Parse [class fields proposal](https://github.com/tc39/proposal-class-fields)
-   - [`acorn-import-meta`](https://github.com/acornjs/acorn-import-meta): Parse [import.meta proposal](https://github.com/tc39/proposal-import-meta)
-   - [`acorn-private-methods`](https://github.com/acornjs/acorn-private-methods): parse [private methods, getters and setters proposal](https://github.com/tc39/proposal-private-methods)n

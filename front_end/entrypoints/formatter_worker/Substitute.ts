@@ -26,8 +26,11 @@ interface Replacement {
 // if the substitution target is 'this' within a function, it would become bound there).
 function computeSubstitution(expression: string, nameMap: Map<string, string>): Replacement[] {
   // Parse the expression and find variables and scopes.
-  const root = Acorn.parse(expression, {ecmaVersion: ECMA_VERSION, allowAwaitOutsideFunction: true, ranges: false}) as
-      Acorn.ESTree.Node;
+  const root =
+      Acorn.parse(
+          expression,
+          {ecmaVersion: ECMA_VERSION, allowAwaitOutsideFunction: true, ranges: false, checkPrivateFields: false} as
+              acorn.Options) as Acorn.ESTree.Node;
   const scopeVariables = new ScopeVariableAnalysis(root);
   scopeVariables.run();
   const freeVariables = scopeVariables.getFreeVariables();

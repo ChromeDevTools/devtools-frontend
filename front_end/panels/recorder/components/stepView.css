@@ -210,8 +210,6 @@ devtools-recorder-step-editor:hover {
 .step-actions {
   border: none;
   border-radius: 0;
-  width: 24px;
-  height: 24px;
 
   --override-select-menu-show-button-border-radius: 0;
   --override-select-menu-show-button-outline: none;

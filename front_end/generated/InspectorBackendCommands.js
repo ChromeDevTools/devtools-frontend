@@ -164,7 +164,7 @@ inspectorBackend.registerType("Browser.Histogram", [{"name": "name", "type": "st
 
 // CSS.
 inspectorBackend.registerEnum("CSS.StyleSheetOrigin", {Injected: "injected", UserAgent: "user-agent", Inspector: "inspector", Regular: "regular"});
-inspectorBackend.registerEnum("CSS.CSSRuleType", {MediaRule: "MediaRule", SupportsRule: "SupportsRule", ContainerRule: "ContainerRule", LayerRule: "LayerRule", ScopeRule: "ScopeRule"});
+inspectorBackend.registerEnum("CSS.CSSRuleType", {MediaRule: "MediaRule", SupportsRule: "SupportsRule", ContainerRule: "ContainerRule", LayerRule: "LayerRule", ScopeRule: "ScopeRule", StyleRule: "StyleRule"});
 inspectorBackend.registerEnum("CSS.CSSMediaSource", {MediaRule: "mediaRule", ImportRule: "importRule", LinkedSheet: "linkedSheet", InlineSheet: "inlineSheet"});
 inspectorBackend.registerEvent("CSS.fontsUpdated", ["font"]);
 inspectorBackend.registerEvent("CSS.mediaQueryResultChanged", []);

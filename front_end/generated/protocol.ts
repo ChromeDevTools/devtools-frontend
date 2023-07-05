@@ -2148,6 +2148,7 @@ export namespace CSS {
     ContainerRule = 'ContainerRule',
     LayerRule = 'LayerRule',
     ScopeRule = 'ScopeRule',
+    StyleRule = 'StyleRule',
   }
 
   /**

@@ -3233,7 +3233,8 @@
                         "SupportsRule",
                         "ContainerRule",
                         "LayerRule",
-                        "ScopeRule"
+                        "ScopeRule",
+                        "StyleRule"
                     ]
                 },
                 {

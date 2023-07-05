@@ -992,18 +992,15 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
-  addExtensionForTest(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor, origin: string): boolean
-      |undefined {
-    const name = extensionInfo.name || `Extension ${origin}`;
-    const hostsPolicy = HostsPolicy.create(extensionInfo.hostsPolicy);
-    if (!hostsPolicy) {
-      return false;
-    }
-    this.registeredExtensions.set(origin, {name, hostsPolicy});
-    return true;
+  addExtensionFrame({startPage, name}: Host.InspectorFrontendHostAPI.ExtensionDescriptor): void {
+    const iframe = document.createElement('iframe');
+    iframe.src = startPage;
+    iframe.dataset.devtoolsExtension = name;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);  // Only for main window.
   }
 
-  private addExtension(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): boolean|undefined {
+  addExtension(extensionInfo: Host.InspectorFrontendHostAPI.ExtensionDescriptor): boolean|undefined {
     const startPage = extensionInfo.startPage;
 
     const inspectedURL = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL() ?? '';
@@ -1031,12 +1028,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         const name = extensionInfo.name || `Extension ${extensionOrigin}`;
         this.registeredExtensions.set(extensionOrigin, {name, hostsPolicy});
       }
-
-      const iframe = document.createElement('iframe');
-      iframe.src = startPage;
-      iframe.dataset.devtoolsExtension = extensionInfo.name;
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);  // Only for main window.
+      this.addExtensionFrame(extensionInfo);
     } catch (e) {
       console.error('Failed to initialize extension ' + startPage + ':' + e);
       return false;

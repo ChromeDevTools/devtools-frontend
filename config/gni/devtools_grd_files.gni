@@ -2060,6 +2060,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/textPrompt.css.legacy.js",
   "front_end/ui/legacy/themeColors.css.legacy.js",
   "front_end/ui/legacy/theme_support/theme_support_impl.js",
+  "front_end/ui/legacy/tokens.css.legacy.js",
   "front_end/ui/legacy/toolbar.css.legacy.js",
   "front_end/ui/legacy/treeoutline.css.legacy.js",
   "front_end/ui/legacy/utils/create-shadow-root-with-core-styles.js",

@@ -50,6 +50,7 @@ generate_css("legacy_css_files") {
     "textButton.css",
     "textPrompt.css",
     "themeColors.css",
+    "tokens.css",
     "toolbar.css",
     "treeoutline.css",
     "viewContainers.css",
@@ -63,6 +64,7 @@ copy_to_gen("copy_stylesheets_for_server") {
     "applicationColorTokens.css",
     "inspectorCommon.css",
     "themeColors.css",
+    "tokens.css",
   ]
 }
 

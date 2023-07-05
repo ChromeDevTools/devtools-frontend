@@ -1,0 +1,15 @@
+Name: LLVM Compiler Infrastructure
+Short Name: llvm-project
+URL: https://github.com/llvm/llvm-project
+Version: 0
+Date: 2023-06-21
+Revision: c08d3b08f6d71e974537de226c68d4c94c396a46
+License: Apache 2.0 with LLVM Exceptions
+License File: src/LICENSE.TXT
+Shipped: no
+Security Critical: yes
+Description: The llvm project is a toolkit for the construction of compilers and assorted tools. Contained within is lldb, a debugger for the C language family.
+
+In the DevTools C++ debugging extension, lldb is used as a library to ingest DWARF debug symbols and resolve queries against these symbols, like source line resolution or listing of variables. The library is shipped with the extension, it is not shipped with chrome.
+
+The library is used in a Webassembly sandbox. Make sure to consult the latest security guidelines if you intend to use the library outside of the Webassembly sandbox.

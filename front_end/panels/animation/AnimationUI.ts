@@ -385,7 +385,15 @@ export class AnimationUI {
     this.#keyframeMoved = keyframeIndex;
     this.#downMouseX = mouseEvent.clientX;
     event.consume(true);
-    if (this.#node) {
+
+    const viewManagerInstance = UI.ViewManager.ViewManager.instance();
+
+    const animationLocation = viewManagerInstance.locationNameForViewId('animations');
+    const elementsLocation = viewManagerInstance.locationNameForViewId('elements');
+
+    // Prevents revealing the node if the animations and elements view share the same view location.
+    // If they share the same view location, the animations view will change to the elements view when editing an animation
+    if (this.#node && animationLocation !== elementsLocation) {
       void Common.Revealer.reveal(this.#node);
     }
     return true;

@@ -329,6 +329,23 @@ export class IssuesPane extends UI.Widget.VBox {
       console.error('The issues tree should only contain IssueView objects as direct children');
       return 0;
     });
+    if (parent instanceof UI.TreeOutline.TreeElement) {
+      // This is an aggregated view, so we need to update the label for position and size of the treeItem.
+      this.#updateItemPositionAndSize(parent);
+    }
+  }
+
+  #updateItemPositionAndSize(parent: UI.TreeOutline.TreeElement): void {
+    const childNodes = parent.childrenListNode.children;
+    let treeItemCount = 0;
+
+    for (let i = 0; i < childNodes.length; i++) {
+      const node = childNodes[i];
+      if (node.classList.contains('issue')) {
+        UI.ARIAUtils.setPositionInSet(node, treeItemCount++);
+        UI.ARIAUtils.setSetSize(node, childNodes.length / 2);  // Each issue has 2 nodes (issue + description).
+      }
+    }
   }
 
   #getIssueViewParent(issue: AggregatedIssue): UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement {

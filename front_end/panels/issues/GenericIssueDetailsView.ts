@@ -40,11 +40,18 @@ export class GenericIssueDetailsView extends AffectedResourcesView {
       this.appendColumnTitle(header, i18nString(UIStrings.frameId));
     }
 
+    // Only some `GenericIssueDetails` have information for the 'affected
+    // resources' view. We'll count them and only call `#appendDetail` for
+    // those. `updateAffectedResourceCount` will hide the section if the
+    // count is zero.
     this.affectedResources.appendChild(header);
     let count = 0;
     for (const genericIssue of genericIssues) {
-      count++;
-      void this.#appendDetail(genericIssue);
+      const hasAffectedResource = genericIssue.details().frameId || genericIssue.details().violatingNodeId;
+      if (hasAffectedResource) {
+        count++;
+        void this.#appendDetail(genericIssue);
+      }
     }
     this.updateAffectedResourceCount(count);
   }

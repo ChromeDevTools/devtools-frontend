@@ -111,6 +111,7 @@ devtools_issue_description_files = [
   "genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError.md",
   "genericFormLabelHasNeitherForNorNestedInput.md",
   "genericFormLabelForMatchesNonExistingIdError.md",
+  "genericResponseWasBlockedByORB.md",
   "federatedAuthRequestApprovalDeclined.md",
   "federatedAuthRequestTooManyRequests.md",
   "federatedAuthRequestManifestHttpNotFound.md",

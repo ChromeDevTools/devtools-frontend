@@ -28,6 +28,8 @@ front_end/third_party/lit/src/*.ts
 // @puppeteer/replay is auto-generated.
 front_end/third_party/puppeteer-replay/**/*.ts
 
+extensions/cxx_debugging/third_party/
+
 node_modules
 scripts/migration/**/*.js
 scripts/protocol_typescript/*.js

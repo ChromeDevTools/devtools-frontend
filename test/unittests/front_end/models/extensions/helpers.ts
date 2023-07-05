@@ -3,42 +3,49 @@
 // found in the LICENSE file.
 
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
-import type * as Host from '../../../../../front_end/core/host/host.js';
+import * as Host from '../../../../../front_end/core/host/host.js';
 import * as Extensions from '../../../../../front_end/models/extensions/extensions.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment, setupActionRegistry} from '../../helpers/EnvironmentHelpers.js';
 
 interface ExtensionContext {
   chrome: Partial<Chrome.DevTools.Chrome>;
+  extensionDescriptor: Extensions.ExtensionAPI.ExtensionDescriptor;
 }
 
 export function describeWithDevtoolsExtension(
     title: string, extension: Partial<Host.InspectorFrontendHostAPI.ExtensionDescriptor>,
     fn: (this: Mocha.Suite, context: ExtensionContext) => void) {
+  const extensionDescriptor = {
+    startPage: `${window.location.origin}/blank.html`,
+    name: 'TestExtension',
+    exposeExperimentalAPIs: true,
+    ...extension,
+  };
   const context: ExtensionContext = {
+    extensionDescriptor,
     chrome: {},
   };
 
   function setup() {
     const server = Extensions.ExtensionServer.ExtensionServer.instance({forceNew: true});
-    const extensionDescriptor = {
-      startPage: 'blank.html',
-      name: 'TestExtension',
-      exposeExperimentalAPIs: true,
-      ...extension,
-    };
-    server.addExtensionForTest(extensionDescriptor, window.location.origin);
-    const chrome: Partial<Chrome.DevTools.Chrome> = {};
-    (window as {chrome?: Partial<Chrome.DevTools.Chrome>}).chrome = chrome;
-    self.injectedExtensionAPI(extensionDescriptor, 'main', 'dark', [], () => {}, 1, window);
-    context.chrome = chrome;
+    sinon.stub(server, 'addExtensionFrame');
+
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'setInjectedScriptForOrigin')
+        .callsFake((origin, _script) => {
+          if (origin === window.location.origin) {
+            const chrome: Partial<Chrome.DevTools.Chrome> = {};
+            (window as {chrome?: Partial<Chrome.DevTools.Chrome>}).chrome = chrome;
+            self.injectedExtensionAPI(extensionDescriptor, 'main', 'dark', [], () => {}, 1, window);
+            context.chrome = chrome;
+          }
+        });
+    server.addExtension(extensionDescriptor);
   }
 
   function cleanup() {
-    try {
-      delete (window as {chrome?: Chrome.DevTools.Chrome}).chrome;
-    } catch {
-      // Eat errors in headful mode
-    }
+    const chrome: Partial<Chrome.DevTools.Chrome> = {};
+    (window as {chrome?: Partial<Chrome.DevTools.Chrome>}).chrome = chrome;
+    context.chrome = chrome;
   }
 
   return describe(`with-extension-${title}`, function() {
@@ -46,7 +53,10 @@ export function describeWithDevtoolsExtension(
     beforeEach(setup);
     afterEach(cleanup);
 
-    describeWithEnvironment(title, fn.bind(this, context));
+    describeWithEnvironment(title, function() {
+      setupActionRegistry();
+      fn.call(this, context);
+    });
   });
 }
 

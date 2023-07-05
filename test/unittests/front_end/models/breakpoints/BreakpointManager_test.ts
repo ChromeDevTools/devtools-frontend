@@ -718,6 +718,71 @@ describeWithMockConnection('BreakpointManager', () => {
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
   });
 
+  it('restores latest breakpoints from storage', async () => {
+    // Remove the default target so that we can simulate starting the debugger afresh.
+    targetManager.removeTarget(target);
+
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
+
+    const expectedBreakpointLines = [1, 2];
+
+    const breakpointRequestLines = new Promise<number[]>((resolve, reject) => {
+      const breakpoints: Breakpoints.BreakpointManager.BreakpointStorageState[] = [];
+
+      // Accumulator for breakpoint lines from setBreakpointByUrl requests.
+      const breakpointRequestLinesReceived = new Set<number>();
+
+      // Create three breakpoints in the storage and register the corresponding
+      // request handler in the mock backend. The handler will resolve the promise
+      // (and thus finish up the test) once it receives two breakpoint requests.
+      // The idea is to check that the front-end requested the two latest breakpoints
+      // from the backend.
+      for (let i = 0; i < 3; i++) {
+        const lineNumber = i;
+        // Push the breakpoint to our mock storage. The storage will be then used
+        // to initialize the breakpoint manager.
+        breakpoints.push({
+          url: URL,
+          resourceTypeName: 'script',
+          lineNumber,
+          condition: '' as Breakpoints.BreakpointManager.UserCondition,
+          enabled: true,
+          isLogpoint: false,
+        });
+
+        // When the mock backend receives a request for this breakpoint, it will
+        // respond and record the request. Also, once we receive the
+        void backend
+            .responderToBreakpointByUrlRequest(
+                URL, lineNumber)({breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId, locations: []})
+            .then(() => {
+              breakpointRequestLinesReceived.add(lineNumber);
+              if (breakpointRequestLinesReceived.size === expectedBreakpointLines.length) {
+                resolve(Array.from(breakpointRequestLinesReceived).sort((l, r) => l - r));
+              }
+            }, reject);
+      }
+
+      // Re-create the breakpoint manager and the target.
+      const setting = Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints);
+      setting.set(breakpoints);
+      // Create the breakpoint manager, request placing on the two latest breakpoints in the backend.
+      Breakpoints.BreakpointManager.BreakpointManager.instance({
+        forceNew: true,
+        targetManager,
+        workspace,
+        debuggerWorkspaceBinding,
+        restoreInitialBreakpointCount: expectedBreakpointLines.length,
+      });
+      target = createTarget();
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    });
+
+    assert.deepEqual(Array.from(await breakpointRequestLines), expectedBreakpointLines);
+
+    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.SET_ALL_BREAKPOINTS_EAGERLY);
+  });
+
   describe('with instrumentation breakpoints turned on', () => {
     beforeEach(() => {
       const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -1529,7 +1594,7 @@ describeWithMockConnection('BreakpointManager', () => {
     await breakpoint.refreshInDebugger();
 
     // Simulate live editing. We do this from the UISourceCode instead of the `Script`
-    // so the the `ResourceScriptFile` updates the LiveLocation of the `ModelBreakpoint`
+    // so the `ResourceScriptFile` updates the LiveLocation of the `ModelBreakpoint`
     // (which in turn updates the UILocation on the breakpoint).
     uiSourceCode.setWorkingCopy('\n\nconsole.log(\'hello\');');
     uiSourceCode.commitWorkingCopy();

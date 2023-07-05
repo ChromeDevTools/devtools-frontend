@@ -10,7 +10,7 @@ import * as Network from '../../../../../front_end/panels/network/network.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {assertElement, assertShadowRoot} from '../../helpers/DOMHelpers.js';
-import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {createTarget, registerNoopActions} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -20,14 +20,7 @@ describeWithMockConnection('NetworkPanel', () => {
   let networkPanel: Network.NetworkPanel.NetworkPanel;
 
   beforeEach(async () => {
-    UI.ActionRegistration.maybeRemoveActionExtension('network.toggle-recording');
-    UI.ActionRegistration.maybeRemoveActionExtension('network.clear');
-    UI.ActionRegistration.registerActionExtension(
-        {actionId: 'network.toggle-recording', category: UI.ActionRegistration.ActionCategory.NETWORK});
-    UI.ActionRegistration.registerActionExtension(
-        {actionId: 'network.clear', category: UI.ActionRegistration.ActionCategory.NETWORK});
-    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    registerNoopActions(['network.toggle-recording', 'network.clear']);
 
     target = createTarget();
     const dummyStorage = new Common.Settings.SettingsStorage({});

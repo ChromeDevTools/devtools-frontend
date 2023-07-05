@@ -4,10 +4,8 @@
 
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithEnvironment, registerNoopActions} from '../../helpers/EnvironmentHelpers.js';
 import {allModelsFromFile, setTraceModelTimeout} from '../../helpers/TraceHelpers.js';
-
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 
@@ -16,28 +14,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
   let historyManager: Timeline.TimelineHistoryManager.TimelineHistoryManager;
   beforeEach(() => {
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'timeline.show-history',
-      async loadActionDelegate() {
-        return Timeline.TimelinePanel.ActionDelegate.instance();
-      },
-      category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-      title: () => '' as Platform.UIString.LocalizedString,
-      contextTypes() {
-        return [Timeline.TimelinePanel.TimelinePanel];
-      },
-      bindings: [
-        {
-          platform: UI.ActionRegistration.Platforms.WindowsLinux,
-          shortcut: 'Ctrl+H',
-        },
-        {
-          platform: UI.ActionRegistration.Platforms.Mac,
-          shortcut: 'Meta+Y',
-        },
-      ],
-    });
-    UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    registerNoopActions(['timeline.show-history']);
     historyManager = new Timeline.TimelineHistoryManager.TimelineHistoryManager();
   });
 

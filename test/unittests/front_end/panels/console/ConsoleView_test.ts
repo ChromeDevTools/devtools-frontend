@@ -9,7 +9,7 @@ import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Console from '../../../../../front_end/panels/console/console.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {createTarget, registerNoopActions} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
@@ -20,34 +20,12 @@ describeWithMockConnection('ConsoleView', () => {
   let consoleView: Console.ConsoleView.ConsoleView;
 
   beforeEach(() => {
-    UI.ActionRegistration.maybeRemoveActionExtension('console.clear');
-    UI.ActionRegistration.maybeRemoveActionExtension('console.clear.history');
-    UI.ActionRegistration.maybeRemoveActionExtension('console.create-pin');
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'console.clear',
-      category: UI.ActionRegistration.ActionCategory.CONSOLE,
-      title: (): Platform.UIString.LocalizedString => 'mock' as Platform.UIString.LocalizedString,
-    });
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'console.clear.history',
-      category: UI.ActionRegistration.ActionCategory.CONSOLE,
-      title: (): Platform.UIString.LocalizedString => 'mock' as Platform.UIString.LocalizedString,
-    });
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'console.create-pin',
-      category: UI.ActionRegistration.ActionCategory.CONSOLE,
-      title: (): Platform.UIString.LocalizedString => 'mock' as Platform.UIString.LocalizedString,
-    });
-    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    registerNoopActions(['console.clear', 'console.clear.history', 'console.create-pin']);
     consoleView = Console.ConsoleView.ConsoleView.instance({forceNew: true, viewportThrottlerTimeout: 0});
   });
 
   afterEach(() => {
     consoleView.detach();
-    UI.ActionRegistration.maybeRemoveActionExtension('console.clear');
-    UI.ActionRegistration.maybeRemoveActionExtension('console.clear.history');
-    UI.ActionRegistration.maybeRemoveActionExtension('console.create-pin');
   });
 
   it('adds a title to every checkbox label in the settings view', async () => {

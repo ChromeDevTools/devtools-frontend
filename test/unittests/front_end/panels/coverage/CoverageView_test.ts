@@ -5,8 +5,7 @@
 const {assert} = chai;
 
 import * as Coverage from '../../../../../front_end/panels/coverage/coverage.js';
-import {createTarget} from '../../helpers/EnvironmentHelpers.js';
-import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import {createTarget, registerNoopActions} from '../../helpers/EnvironmentHelpers.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
@@ -75,26 +74,7 @@ const setupTargetAndModels = () => {
 
 describeWithMockConnection('CoverageView', () => {
   beforeEach(() => {
-    UI.ActionRegistration.maybeRemoveActionExtension('coverage.toggle-recording');
-    UI.ActionRegistration.maybeRemoveActionExtension('coverage.reload');
-    UI.ActionRegistration.maybeRemoveActionExtension('coverage.start-with-reload');
-
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'coverage.toggle-recording',
-      toggleable: true,
-      category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-    });
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'coverage.reload',
-      category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-      toggleable: false,
-    });
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'coverage.start-with-reload',
-      category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
-      toggleable: false,
-    });
-    UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    registerNoopActions(['coverage.toggle-recording', 'coverage.reload', 'coverage.start-with-reload']);
   });
 
   it('can handle back/forward cache navigations', async () => {

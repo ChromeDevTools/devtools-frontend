@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../front_end/core/platform/platform.js';
 import * as Common from '../../../../front_end/core/common/common.js';
 import * as Host from '../../../../front_end/core/host/host.js';
 import * as i18n from '../../../../front_end/core/i18n/i18n.js';
@@ -86,6 +87,19 @@ export function stubNoopSettings() {
       getAsArray: () => [],
     }),
   } as unknown as Common.Settings.Settings);
+}
+
+export function registerNoopActions(actionIds: string[]): void {
+  for (const actionId of actionIds) {
+    UI.ActionRegistration.maybeRemoveActionExtension(actionId);
+    UI.ActionRegistration.registerActionExtension({
+      actionId,
+      category: UI.ActionRegistration.ActionCategory.NONE,
+      title: (): Platform.UIString.LocalizedString => 'mock' as Platform.UIString.LocalizedString,
+    });
+  }
+  const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+  UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
 }
 
 const REGISTERED_EXPERIMENTS = [

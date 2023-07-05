@@ -49,6 +49,7 @@ export interface AccessibilityTreeNodeData {
   name: string;
   role: string;
   properties: Protocol.Accessibility.AXProperty[];
+  id: string;
 }
 
 export class AccessibilityTreeNode extends HTMLElement {
@@ -59,12 +60,14 @@ export class AccessibilityTreeNode extends HTMLElement {
   #name = '';
   #role = '';
   #properties: Protocol.Accessibility.AXProperty[] = [];
+  #id = '';
 
   set data(data: AccessibilityTreeNodeData) {
     this.#ignored = data.ignored;
     this.#name = data.name;
     this.#role = data.role;
     this.#properties = data.properties;
+    this.#id = data.id;
     void this.#render();
   }
 
@@ -82,14 +85,15 @@ export class AccessibilityTreeNode extends HTMLElement {
             LitHtml.nothing);
     const content = this.#ignored ? LitHtml.html`<span>${i18nString(UIStrings.ignored)}</span>` :
                                     LitHtml.html`${role}&nbsp;${name}${properties}`;
-    await Coordinator.RenderCoordinator.RenderCoordinator.instance().write('Accessibility node render', () => {
-      // clang-format off
+    await Coordinator.RenderCoordinator.RenderCoordinator.instance().write(
+        `Accessibility node ${this.#id} render`, () => {
+          // clang-format off
       LitHtml.render(
         LitHtml.html`<div class='container'>${content}</div>`,
         this.#shadow,
         {host: this});
-      // clang-format on
-    });
+          // clang-format on
+        });
   }
 }
 

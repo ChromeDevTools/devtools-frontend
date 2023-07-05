@@ -330,7 +330,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   }
 
   scheduleDraw(): void {
-    void coordinator.write(() => this.update());
+    void coordinator.write('NetworkWaterfallColumn.render', () => this.update());
   }
 
   update(scrollTop?: number, eventDividers?: Map<string, number[]>, nodes?: NetworkNode[]): void {

@@ -118,7 +118,8 @@ export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateRes
   const role = sdkNode.role()?.value || '';
   const properties = sdkNode.properties() || [];
   const ignored = sdkNode.ignored();
-  return LitHtml.html`<${tag} .data=${{name, role, ignored, properties} as Data}></${tag}>`;
+  const id = getNodeId(sdkNode);
+  return LitHtml.html`<${tag} .data=${{name, role, ignored, properties, id} as Data}></${tag}>`;
 }
 
 export function getNodeId(node: SDK.AccessibilityModel.AccessibilityNode): string {

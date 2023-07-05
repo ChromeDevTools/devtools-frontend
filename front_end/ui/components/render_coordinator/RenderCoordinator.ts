@@ -20,9 +20,17 @@ interface CoordinatorCallback {
   (): unknown;
 }
 
+interface WorkItem {
+  trigger: () => void;
+  cancel: (_: Error) => void;
+  promise: Promise<unknown>;
+  handler: CoordinatorCallback;
+  label: string;
+}
+
 interface CoordinatorFrame {
-  readers: CoordinatorCallback[];
-  writers: CoordinatorCallback[];
+  readers: WorkItem[];
+  writers: WorkItem[];
 }
 
 interface CoordinatorLogEntry {
@@ -48,9 +56,6 @@ export class RenderCoordinatorNewFrameEvent extends Event {
     super(RenderCoordinatorNewFrameEvent.eventName);
   }
 }
-
-type RenderCoordinatorResolverCallback = (value: unknown) => void;
-type RenderCoordinatorRejectorCallback = (error: Error) => void;
 
 let renderCoordinatorInstance: RenderCoordinator;
 
@@ -93,9 +98,6 @@ export class RenderCoordinator extends EventTarget {
   readonly #logInternal: CoordinatorLogEntry[] = [];
 
   readonly #pendingWorkFrames: CoordinatorFrame[] = [];
-  readonly #resolvers = new WeakMap<CoordinatorCallback, RenderCoordinatorResolverCallback>();
-  readonly #rejectors = new WeakMap<CoordinatorCallback, RenderCoordinatorRejectorCallback>();
-  readonly #labels = new WeakMap<CoordinatorCallback, string>();
   #scheduledWorkId = 0;
 
   pendingFramesCount(): number {
@@ -110,6 +112,11 @@ export class RenderCoordinator extends EventTarget {
     return new Promise(resolve => this.addEventListener('renderqueueempty', () => resolve(), {once: true}));
   }
 
+  // Schedules a 'read' job which is being executed within an animation frame
+  // before all 'write' jobs. If multiple jobs are scheduled with the same
+  // non-empty label, only the latest callback would be executed. Such
+  // invocations would return the same promise that will resolve to the value of
+  // the latest callback.
   async read<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
   async read<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
   async read<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
@@ -124,6 +131,10 @@ export class RenderCoordinator extends EventTarget {
     return this.#enqueueHandler<T>(labelOrCallback, ACTION.READ, UNNAMED_READ);
   }
 
+  // Schedules a 'write' job which is being executed within an animation frame
+  // after all 'read' and 'scroll' jobs. If multiple jobs are scheduled with
+  // the same non-empty label, only the latest callback would be executed. Such
+  // invocations would return the same promise that will resolve when the latest callback is run.
   async write<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
   async write<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
   async write<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
@@ -148,7 +159,9 @@ export class RenderCoordinator extends EventTarget {
    * We offer a convenience function for scroll-based activity, but often triggering a scroll
    * requires a layout pass, thus it is better handled as a read activity, i.e. we wait until
    * the layout-triggering work has been completed then it should be possible to scroll without
-   * first forcing layout.
+   * first forcing layout.  If multiple jobs are scheduled with the same non-empty label, only
+   * the latest callback would be executed. Such invocations would return the same promise that
+   * will resolve when the latest callback is run.
    */
   async scroll<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
   async scroll<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
@@ -164,9 +177,9 @@ export class RenderCoordinator extends EventTarget {
     return this.#enqueueHandler<T>(labelOrCallback, ACTION.READ, UNNAMED_SCROLL);
   }
 
-  #enqueueHandler<T = unknown>(callback: CoordinatorCallback, action: ACTION, label = ''): Promise<T> {
-    this.#labels.set(callback, `${action === ACTION.READ ? '[Read]' : '[Write]'}: ${label}`);
-
+  #enqueueHandler<T = unknown>(callback: CoordinatorCallback, action: ACTION, label: string): Promise<T> {
+    const hasName = ![UNNAMED_READ, UNNAMED_WRITE, UNNAMED_SCROLL].includes(label);
+    label = `${action === ACTION.READ ? '[Read]' : '[Write]'}: ${label}`;
     if (this.#pendingWorkFrames.length === 0) {
       this.#pendingWorkFrames.push({
         readers: [],
@@ -179,44 +192,37 @@ export class RenderCoordinator extends EventTarget {
       throw new Error('No frame available');
     }
 
+    let workItems = null;
     switch (action) {
       case ACTION.READ:
-        frame.readers.push(callback);
+        workItems = frame.readers;
         break;
 
       case ACTION.WRITE:
-        frame.writers.push(callback);
+        workItems = frame.writers;
         break;
 
       default:
         throw new Error(`Unknown action: ${action}`);
     }
 
-    const resolverPromise = new Promise((resolve, reject) => {
-      this.#resolvers.set(callback, resolve);
-      this.#rejectors.set(callback, reject);
-    });
+    let workItem = hasName ? workItems.find(w => w.label === label) : null;
+    if (!workItem) {
+      const newWorkItem = {label} as WorkItem;
+      newWorkItem.promise = (new Promise<void>((resolve, reject) => {
+                              newWorkItem.trigger = resolve;
+                              newWorkItem.cancel = reject;
+                            })).then(() => newWorkItem.handler());
+      workItem = newWorkItem;
+      workItems.push(workItem);
+    }
+    // We are always using the latest handler, so that we don't end up with a
+    // stale results. We are reusing the promise to avoid blocking the first invocation, when
+    // it is being "overridden" by another one.
+    workItem.handler = callback;
 
     this.#scheduleWork();
-    return resolverPromise as Promise<T>;
-  }
-
-  async #handleWork(handler: CoordinatorCallback): Promise<void> {
-    const resolver = this.#resolvers.get(handler);
-    const rejector = this.#rejectors.get(handler);
-    this.#resolvers.delete(handler);
-    this.#rejectors.delete(handler);
-    if (!resolver || !rejector) {
-      throw new Error('Unable to locate resolver or rejector');
-    }
-    let data;
-    try {
-      data = await handler.call(undefined);
-    } catch (error) {
-      rejector.call(undefined, error);
-    }
-
-    resolver.call(undefined, data);
+    return workItem.promise as Promise<T>;
   }
 
   #scheduleWork(): void {
@@ -251,16 +257,15 @@ export class RenderCoordinator extends EventTarget {
 
       // Start with all the readers and allow them
       // to proceed together.
-      const readers: Promise<unknown>[] = [];
       for (const reader of frame.readers) {
-        this.#logIfEnabled(this.#labels.get(reader));
-        readers.push(this.#handleWork(reader));
+        this.#logIfEnabled(reader.label);
+        reader.trigger();
       }
 
       // Wait for them all to be done.
       try {
         await Promise.race([
-          Promise.all(readers),
+          Promise.all(frame.readers.map(r => r.promise)),
           new Promise((_, reject) => {
             window.setTimeout(
                 () => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
@@ -268,20 +273,19 @@ export class RenderCoordinator extends EventTarget {
           }),
         ]);
       } catch (err) {
-        this.rejectAll(frame.readers, err);
+        this.#rejectAll(frame.readers, err);
       }
 
       // Next do all the writers as a block.
-      const writers: Promise<unknown>[] = [];
       for (const writer of frame.writers) {
-        this.#logIfEnabled(this.#labels.get(writer));
-        writers.push(this.#handleWork(writer));
+        this.#logIfEnabled(writer.label);
+        writer.trigger();
       }
 
       // And wait for them to be done, too.
       try {
         await Promise.race([
-          Promise.all(writers),
+          Promise.all(frame.writers.map(w => w.promise)),
           new Promise((_, reject) => {
             window.setTimeout(
                 () => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
@@ -289,7 +293,7 @@ export class RenderCoordinator extends EventTarget {
           }),
         ]);
       } catch (err) {
-        this.rejectAll(frame.writers, err);
+        this.#rejectAll(frame.writers, err);
       }
 
       // Since there may have been more work requested in
@@ -300,16 +304,17 @@ export class RenderCoordinator extends EventTarget {
     });
   }
 
-  rejectAll(handlers: CoordinatorCallback[], error: Error): void {
+  #rejectAll(handlers: WorkItem[], error: Error): void {
     for (const handler of handlers) {
-      const rejector = this.#rejectors.get(handler);
-      if (!rejector) {
-        continue;
-      }
+      handler.cancel(error);
+    }
+  }
 
-      rejector.call(undefined, error);
-      this.#resolvers.delete(handler);
-      this.#rejectors.delete(handler);
+  cancelPending(): void {
+    const error = new Error();
+    for (const frame of this.#pendingWorkFrames) {
+      this.#rejectAll(frame.readers, error);
+      this.#rejectAll(frame.writers, error);
     }
   }
 

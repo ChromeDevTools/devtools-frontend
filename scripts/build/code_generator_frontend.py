@@ -248,6 +248,9 @@ class Generator:
                             "type"] == "object" and "properties" in json_type:
                         Generator.process_type(json_type["properties"],
                                                domain_name, json_type["id"])
+                    elif json_type["type"] == "array":
+                        Generator.process_type([json_type], domain_name,
+                                               json_type["id"])
 
             Generator.backend_js_domain_initializer_list.append("\n")
 
@@ -277,7 +280,8 @@ class Generator:
 
     @staticmethod
     def convert_json_parameter(json_parameter, domain_name):
-        json_param_name = json_parameter["name"]
+        json_param_name = json_parameter[
+            "name"] if "name" in json_parameter else json_parameter["id"]
         type_ref = json_parameter.get("$ref", None)
         json_ref = ""
         js_bind_type = resolve_param_raw_type_js(json_parameter, domain_name)
@@ -288,9 +292,7 @@ class Generator:
                 type_ref = json_ref if '.' in json_ref else "%s.%s" % (
                     domain_name, json_ref)
             elif 'type' in json_parameter['items']:
-                json_ref = json_parameter['items']['type']
-                if json_ref != "string":
-                    type_ref = json_ref
+                type_ref = json_parameter['items']['type']
 
         if js_bind_type == "object" and "$ref" in json_parameter:
             json_ref = json_parameter["$ref"]

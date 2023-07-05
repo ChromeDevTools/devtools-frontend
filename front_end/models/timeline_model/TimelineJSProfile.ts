@@ -131,7 +131,7 @@ export class TimelineJSProfileProcessor {
 
     const jsFrameEvents: SDK.TracingModel.Event[] = [];
     const jsFramesStack: SDK.TracingModel.Event[] = [];
-    const lockedJsStackDepth: number[] = [];
+    let lockedJsStackDepth: number[] = [];
     let ordinal = 0;
     /**
      * `isJSInvocationEvent()` relies on an allowlist of invocation events that will parent JSFrames.
@@ -151,13 +151,40 @@ export class TimelineJSProfileProcessor {
         // TODO(crbug.com/1431175) support CPU profiles in new engine.
         return;
       }
+
+      // Top level events cannot be nested into JS frames so we reset
+      // the stack when we find one.
+      if (e.name === TraceEngine.Handlers.Types.KnownEventName.RunMicrotasks ||
+          e.name === TraceEngine.Handlers.Types.KnownEventName.RunTask) {
+        lockedJsStackDepth = [];
+        truncateJSStack(0, e.startTime);
+        fakeJSInvocation = false;
+      }
+
       if (fakeJSInvocation) {
-        truncateJSStack((lockedJsStackDepth.pop() as number), e.startTime);
+        truncateJSStack(lockedJsStackDepth.pop() || 0, e.startTime);
         fakeJSInvocation = false;
       }
       e.ordinal = ++ordinal;
       extractStackTrace(e);
-      // For the duration of the event we cannot go beyond the stack associated with it.
+      // Keep track of the call frames in the stack before the event
+      // happened. For the duration of this event, these frames cannot
+      // change (none can be terminated before this event finishes).
+      //
+      // Also, every frame that is opened after this event, is consider
+      // to be a descendat of the event. So once the event finishes, the
+      // frames that were opened after it, need to be closed (see
+      // onEndEvent).
+      //
+      // TODO(crbug.com/1417439):
+      // The assumption that the stack on top of the event cannot change
+      // is incorrect. For example, the JS call that parents the trace
+      // event might have been sampled after the event was dispatched.
+      // In this case the JS call would be discarded if this event isn't
+      // an invocation event, otherwise the call will be considered a
+      // child of the event. In both cases, the result would be
+      // incorrect.
+
       lockedJsStackDepth.push(jsFramesStack.length);
     }
 
@@ -188,7 +215,10 @@ export class TimelineJSProfileProcessor {
         // TODO(crbug.com/1431175) support CPU profiles in new engine.
         return;
       }
-      truncateJSStack((lockedJsStackDepth.pop() as number), (e.endTime as number));
+      // Because the event has ended, any frames that happened after
+      // this event are terminated. Frames that are ancestors to this
+      // event are extended to cover its ending.
+      truncateJSStack(lockedJsStackDepth.pop() || 0, e.endTime || e.startTime);
     }
 
     /**
@@ -215,7 +245,7 @@ export class TimelineJSProfileProcessor {
         depth = jsFramesStack.length;
       }
       for (let k = 0; k < jsFramesStack.length; ++k) {
-        jsFramesStack[k].setEndTime(time);
+        jsFramesStack[k].setEndTime(Math.max((jsFramesStack[k].endTime as number), time));
       }
       jsFramesStack.length = depth;
     }
@@ -263,7 +293,6 @@ export class TimelineJSProfileProcessor {
       const endTime = e.endTime || e.startTime;
       const minFrames = Math.min(callFrames.length, jsFramesStack.length);
       let i;
-
       // Merge a sample's stack frames with the stack frames we have
       // so far if we detect they are equivalent.
       // Graphically

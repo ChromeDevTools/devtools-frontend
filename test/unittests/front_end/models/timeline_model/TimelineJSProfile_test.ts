@@ -134,4 +134,82 @@ describe('TimelineJSProfile', () => {
     assert.strictEqual(returnedEvents[0].startTime, 12);
     assert.strictEqual(returnedEvents[0].endTime, 20);
   });
+  it('generateJSFrameEvents restarts the call frame stack when a new top level event is encountered', () => {
+    function createEvent(
+        name: string, tsMs: number, durMs: number,
+        ph: TraceEngine.Types.TraceEvents.Phase = TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+        cat = 'devtools.timeline'): SDK.TracingModel.PayloadEvent {
+      // timestamps are assumed to come in microseconds in raw
+      // event payloads, but after the event is created the rest of the
+      // processing is done in milliseconds.
+      const ts = tsMs * 1000;
+      const dur = durMs * 1000;
+      return SDK.TracingModel.PayloadEvent.fromPayload(
+          {cat, name, ph, ts, dur} as unknown as SDK.TracingManager.EventPayload, thread);
+    }
+    function createSample(ts: number): SDK.TracingModel.ConstructedEvent {
+      return new SDK.TracingModel.ConstructedEvent(
+          'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, ts, thread);
+    }
+    const runTask = createEvent(TraceEngine.Handlers.Types.KnownEventName.RunTask, 0, 100);
+    const evaluateScript = createEvent(TraceEngine.Handlers.Types.KnownEventName.EvaluateScript, 0, 100);
+    const runMicroTasks = createEvent(TraceEngine.Handlers.Types.KnownEventName.RunMicrotasks, 50, 100);
+
+    const sampleEvent1 = createSample(20);
+    sampleEvent1.addArgs({data: {stackTrace: [{'functionName': 'A', 'callUID': 'A', 'scriptId': 1}]}});
+
+    const sampleEvent2 = createSample(40);
+    sampleEvent2.addArgs({data: {stackTrace: [{'functionName': 'A', 'callUID': 'A', 'scriptId': 1}]}});
+
+    // The following two samples start after the RunMicrotasks event, so
+    // they cannot be merged with the samples above.
+    const sampleEvent3 = createSample(60);
+    sampleEvent3.addArgs({
+      data: {
+        stackTrace: [
+          {'functionName': 'A', 'callUID': 'A', 'scriptId': 1},
+          {'functionName': 'B', 'callUID': 'B', 'scriptId': 1},
+        ],
+      },
+    });
+
+    const sampleEvent4 = createSample(80);
+    sampleEvent4.addArgs({
+      data: {
+        stackTrace: [
+          {'functionName': 'A', 'callUID': 'A', 'scriptId': 1},
+          {'functionName': 'B', 'callUID': 'B', 'scriptId': 1},
+        ],
+      },
+    });
+
+    const events = [
+      runTask,
+      evaluateScript,
+      runMicroTasks,
+      sampleEvent1,
+      sampleEvent2,
+      sampleEvent3,
+      sampleEvent4,
+    ].sort((a, b) => a.startTime - b.startTime);
+
+    const returnedEvents =
+        TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.generateJSFrameEvents(events, config);
+
+    assert.strictEqual(returnedEvents.length, 3);
+    const framesForFunctionA = returnedEvents.filter(e => e.args.data.functionName === 'A');
+    assert.strictEqual(framesForFunctionA.length, 2);
+    assert.strictEqual(framesForFunctionA[0].startTime, sampleEvent1.startTime);
+    // First frame for function A should be finished when the
+    // RunMicrotasks event started.
+    assert.strictEqual(framesForFunctionA[0].duration, runMicroTasks.startTime - sampleEvent1.startTime);
+
+    assert.strictEqual(framesForFunctionA[1].startTime, sampleEvent3.startTime);
+    assert.strictEqual(framesForFunctionA[1].duration, (runMicroTasks.endTime || 0) - sampleEvent3.startTime);
+
+    const framesForFunctionB = returnedEvents.filter(e => e.args.data.functionName === 'B');
+    assert.strictEqual(framesForFunctionB.length, 1);
+    assert.strictEqual(framesForFunctionB[0].startTime, sampleEvent3.startTime);
+    assert.strictEqual(framesForFunctionB[0].duration, (runMicroTasks.endTime || 0) - sampleEvent3.startTime);
+  });
 });

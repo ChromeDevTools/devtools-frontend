@@ -45,7 +45,8 @@ export function addEventToProcessThread<T extends Types.TraceEvents.TraceEventDa
  * Sorts all the events in place, in order, by their start time. If they have
  * the same start time, orders them by longest first.
  */
-export function sortTraceEventsInPlace(events: Types.TraceEvents.TraceEventData[]): void {
+export function sortTraceEventsInPlace(events: {ts: Types.Timing.MicroSeconds, dur?: Types.Timing.MicroSeconds}[]):
+    void {
   events.sort((a, b) => {
     const aBeginTime = a.ts;
     const bBeginTime = b.ts;

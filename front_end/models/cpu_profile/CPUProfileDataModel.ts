@@ -60,11 +60,11 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * latter being the raw data we receive from the backend.
    */
   #idToParsedNode!: Map<number, ProfileNode>;
-  gcNode!: CPUProfileNode;
+  gcNode?: ProfileNode;
   programNode?: ProfileNode;
   idleNode?: ProfileNode;
-  #stackStartTimes?: Float64Array;
-  #stackChildrenDuration?: Float64Array;
+  #stackStartTimes?: number[];
+  #stackChildrenDuration?: number[];
   constructor(profile: ExtendedProfile) {
     super();
     // @ts-ignore Legacy types
@@ -214,8 +214,9 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     buildChildrenFromParents(nodes);
     this.totalHitCount = nodes.reduce((acc, node) => acc + (node.hitCount || 0), 0);
     const sampleTime = (this.profileEndTime - this.profileStartTime) / this.totalHitCount;
-    const keepNatives =
-        Boolean(Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get());
+    const keepNatives = Boolean(
+        Common.Settings.Settings.hasInstance() &&
+        Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get());
     const root = nodes[0];
     // If a node is filtered out, its samples are replaced with its parent,
     // so we keep track of the which id to use in the samples data.
@@ -327,7 +328,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     for (let i = 0; i < topLevelNodes.length && !(this.gcNode && this.programNode && this.idleNode); i++) {
       const node = topLevelNodes[i];
       if (node.functionName === '(garbage collector)') {
-        this.gcNode = (node as CPUProfileNode);
+        this.gcNode = node;
       } else if (node.functionName === '(program)') {
         this.programNode = node;
       } else if (node.functionName === '(idle)') {
@@ -380,7 +381,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
 
   /**
    * Traverses the call tree derived from the samples calling back when a call is opened
-   * and when its closed
+   * and when it's closed
    */
   forEachFrame(
       openFrameCallback: (depth: number, node: ProfileNode, timestamp: number) => void,
@@ -409,11 +410,11 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     // and one at the bottom to allow safe stackTop-1 access.
     const stackDepth = this.maxDepth + 3;
     if (!this.#stackStartTimes) {
-      this.#stackStartTimes = new Float64Array(stackDepth);
+      this.#stackStartTimes = new Array(stackDepth);
     }
     const stackStartTimes = this.#stackStartTimes;
     if (!this.#stackChildrenDuration) {
-      this.#stackChildrenDuration = new Float64Array(stackDepth);
+      this.#stackChildrenDuration = new Array(stackDepth);
     }
     const stackChildrenDuration = this.#stackChildrenDuration;
 
@@ -434,7 +435,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
         continue;
       }
 
-      if (node === gcNode) {
+      if (gcNode && node === gcNode) {
         // GC samples have no stack, so we just put GC node on top of the last recorded sample.
         gcParentNode = prevNode;
         openFrameCallback(gcParentNode.depth + 1, gcNode, sampleTime);
@@ -443,7 +444,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
         prevId = id;
         continue;
       }
-      if (prevNode === gcNode && gcParentNode) {
+      if (gcNode && prevNode === gcNode && gcParentNode) {
         // end of GC frame
         const start = stackStartTimes[stackTop];
         const duration = sampleTime - start;
@@ -455,9 +456,9 @@ export class CPUProfileDataModel extends ProfileTreeModel {
         gcParentNode = null;
       }
 
-      // If the depth of this is greater than the depth of previous one,
-      // new calls happened in between and we need to open them, so
-      // track all of them in stackNodes.
+      // If the depth of this node is greater than the depth of the
+      // previous one, new calls happened in between and we need to open
+      // them, so track all of them in stackNodes.
       while (node && node.depth > prevNode.depth) {
         stackNodes.push(node);
         node = node.parent;

@@ -342,7 +342,7 @@ export class IssuesPane extends UI.Widget.VBox {
     for (let i = 0; i < childNodes.length; i++) {
       const node = childNodes[i];
       if (node.classList.contains('issue')) {
-        UI.ARIAUtils.setPositionInSet(node, treeItemCount++);
+        UI.ARIAUtils.setPositionInSet(node, ++treeItemCount);
         UI.ARIAUtils.setSetSize(node, childNodes.length / 2);  // Each issue has 2 nodes (issue + description).
       }
     }

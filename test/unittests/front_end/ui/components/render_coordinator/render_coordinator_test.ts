@@ -164,11 +164,11 @@ describe('Render Coordinator', () => {
     coordinator.cancelPending();
   });
 
-  it('exposes the count of pending work', async () => {
+  it('exposes the presence of pending work', async () => {
     const readDonePromise = coordinator.read('Named Read', () => {});
-    assert.strictEqual(coordinator.pendingFramesCount(), 1);
+    assert.isTrue(coordinator.hasPendingWork());
     await readDonePromise;
-    assert.strictEqual(coordinator.pendingFramesCount(), 0);
+    assert.isFalse(coordinator.hasPendingWork());
   });
 
   it('exposes the pending work count globally for interaction/e2e tests', async () => {

@@ -43,11 +43,6 @@ class WorkItem<T> {
   }
 }
 
-interface CoordinatorFrame {
-  readers: WorkItem<unknown>[];
-  writers: WorkItem<unknown>[];
-}
-
 interface CoordinatorLogEntry {
   time: number;
   value: string;
@@ -98,7 +93,7 @@ export class RenderCoordinator extends EventTarget {
       throw new Error('No render coordinator instance found.');
     }
 
-    return renderCoordinatorInstance.pendingFramesCount();
+    return renderCoordinatorInstance.hasPendingWork() ? 1 : 0;
   }
 
   // Toggle on to start tracking. You must call takeRecords() to
@@ -112,15 +107,16 @@ export class RenderCoordinator extends EventTarget {
 
   readonly #logInternal: CoordinatorLogEntry[] = [];
 
-  readonly #pendingWorkFrames: CoordinatorFrame[] = [];
+  #pendingReaders: WorkItem<unknown>[] = [];
+  #pendingWriters: WorkItem<unknown>[] = [];
   #scheduledWorkId = 0;
 
-  pendingFramesCount(): number {
-    return this.#pendingWorkFrames.length;
+  hasPendingWork(): boolean {
+    return this.#pendingReaders.length !== 0 || this.#pendingWriters.length !== 0;
   }
 
   done(options?: {waitForWork: boolean}): Promise<void> {
-    if (this.#pendingWorkFrames.length === 0 && !options?.waitForWork) {
+    if (!this.hasPendingWork() && !options?.waitForWork) {
       this.#logIfEnabled('[Queue empty]');
       return Promise.resolve();
     }
@@ -192,26 +188,15 @@ export class RenderCoordinator extends EventTarget {
   #enqueueHandler<T>(callback: CoordinatorCallback<T>, action: ACTION, label: string): Promise<T> {
     const hasName = ![UNNAMED_READ, UNNAMED_WRITE, UNNAMED_SCROLL].includes(label);
     label = `${action === ACTION.READ ? '[Read]' : '[Write]'}: ${label}`;
-    if (this.#pendingWorkFrames.length === 0) {
-      this.#pendingWorkFrames.push({
-        readers: [],
-        writers: [],
-      });
-    }
-
-    const frame = this.#pendingWorkFrames[0];
-    if (!frame) {
-      throw new Error('No frame available');
-    }
 
     let workItems = null;
     switch (action) {
       case ACTION.READ:
-        workItems = frame.readers;
+        workItems = this.#pendingReaders;
         break;
 
       case ACTION.WRITE:
-        workItems = frame.writers;
+        workItems = this.#pendingWriters;
         break;
 
       default:
@@ -240,9 +225,8 @@ export class RenderCoordinator extends EventTarget {
     }
 
     this.#scheduledWorkId = requestAnimationFrame(async () => {
-      const hasPendingFrames = this.#pendingWorkFrames.length > 0;
-      if (!hasPendingFrames) {
-        // No pending frames means all pending work has completed.
+      if (!this.hasPendingWork()) {
+        // All pending work has completed.
         // The events dispatched below are mostly for testing contexts.
         // The first is for cases where we have a direct reference to
         // the render coordinator. The second is for other test contexts
@@ -258,14 +242,14 @@ export class RenderCoordinator extends EventTarget {
       this.dispatchEvent(new RenderCoordinatorNewFrameEvent());
       this.#logIfEnabled('[New frame]');
 
-      const frame = this.#pendingWorkFrames.shift();
-      if (!frame) {
-        return;
-      }
+      const readers = this.#pendingReaders;
+      this.#pendingReaders = [];
+      const writers = this.#pendingWriters;
+      this.#pendingWriters = [];
 
       // Start with all the readers and allow them
       // to proceed together.
-      for (const reader of frame.readers) {
+      for (const reader of readers) {
         this.#logIfEnabled(reader.label);
         reader.trigger();
       }
@@ -273,7 +257,7 @@ export class RenderCoordinator extends EventTarget {
       // Wait for them all to be done.
       try {
         await Promise.race([
-          Promise.all(frame.readers.map(r => r.promise)),
+          Promise.all(readers.map(r => r.promise)),
           new Promise((_, reject) => {
             window.setTimeout(
                 () => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
@@ -281,11 +265,11 @@ export class RenderCoordinator extends EventTarget {
           }),
         ]);
       } catch (err) {
-        this.#rejectAll(frame.readers, err);
+        this.#rejectAll(readers, err);
       }
 
       // Next do all the writers as a block.
-      for (const writer of frame.writers) {
+      for (const writer of writers) {
         this.#logIfEnabled(writer.label);
         writer.trigger();
       }
@@ -293,7 +277,7 @@ export class RenderCoordinator extends EventTarget {
       // And wait for them to be done, too.
       try {
         await Promise.race([
-          Promise.all(frame.writers.map(w => w.promise)),
+          Promise.all(writers.map(w => w.promise)),
           new Promise((_, reject) => {
             window.setTimeout(
                 () => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
@@ -301,7 +285,7 @@ export class RenderCoordinator extends EventTarget {
           }),
         ]);
       } catch (err) {
-        this.#rejectAll(frame.writers, err);
+        this.#rejectAll(writers, err);
       }
 
       // Since there may have been more work requested in
@@ -320,10 +304,8 @@ export class RenderCoordinator extends EventTarget {
 
   cancelPending(): void {
     const error = new Error();
-    for (const frame of this.#pendingWorkFrames) {
-      this.#rejectAll(frame.readers, error);
-      this.#rejectAll(frame.writers, error);
-    }
+    this.#rejectAll(this.#pendingReaders, error);
+    this.#rejectAll(this.#pendingWriters, error);
   }
 
   #logIfEnabled(value: string|undefined): void {

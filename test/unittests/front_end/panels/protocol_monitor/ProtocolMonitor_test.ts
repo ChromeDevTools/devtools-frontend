@@ -354,5 +354,39 @@ describe('ProtocolMonitor', () => {
       const commandReceived = editorWidget.jsonEditor.command;
       assert.deepStrictEqual(commandReceived, '');
     });
+    it('should delete the specified array parameter by clicking the "Delete" button', async () => {
+      const inputParameters = [
+        {
+          type: 'array',
+          optional: false,
+          value: [
+            {name: '0', value: 'value0', optional: true, type: 'string'},
+            {name: '1', value: 'value1', optional: true, type: 'string'},
+            {name: '2', value: 'value2', optional: true, type: 'string'},
+          ],
+          name: 'arrayParam',
+          typeRef: 'string',
+        },
+      ];
+
+      const expectedParams = {
+        arrayParam: ['value1', 'value2'],
+      };
+
+      const editorWidget = renderEditorWidget();
+      editorWidget.jsonEditor.parameters = inputParameters as ProtocolComponents.JSONEditor.Parameter[];
+      await editorWidget.jsonEditor.updateComplete;
+
+      const shadowRoot = editorWidget.jsonEditor.renderRoot;
+
+      const parameterIndex = 0;
+      const deleteButtons = shadowRoot.querySelectorAll('devtools-button[title="Delete"]');
+      if (deleteButtons.length > parameterIndex) {
+        deleteButtons[parameterIndex].dispatchEvent(new Event('click'));
+      }
+
+      const resultedParams = editorWidget.jsonEditor.getParameters();
+      assert.deepStrictEqual(expectedParams, resultedParams);
+    });
   });
 });

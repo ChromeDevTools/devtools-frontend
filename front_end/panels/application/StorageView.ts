@@ -83,10 +83,6 @@ const UIStrings = {
    */
   cookies: 'Cookies',
   /**
-   * @description Category description in the Clear Storage section of the Storage View of the Application panel
-   */
-  cache: 'Cache',
-  /**
    * @description Checkbox label in the Clear Storage section of the Storage View of the Application panel
    */
   cacheStorage: 'Cache storage',
@@ -262,11 +258,8 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.appendItem(storage, i18nString(UIStrings.indexDB), Protocol.Storage.StorageType.Indexeddb);
     this.appendItem(storage, i18nString(UIStrings.webSql), Protocol.Storage.StorageType.Websql);
     this.appendItem(storage, i18nString(UIStrings.cookies), Protocol.Storage.StorageType.Cookies);
+    this.appendItem(storage, i18nString(UIStrings.cacheStorage), Protocol.Storage.StorageType.Cache_storage);
     storage.markFieldListAsGroup();
-
-    const caches = this.reportView.appendSection(i18nString(UIStrings.cache));
-    this.appendItem(caches, i18nString(UIStrings.cacheStorage), Protocol.Storage.StorageType.Cache_storage);
-    caches.markFieldListAsGroup();
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }

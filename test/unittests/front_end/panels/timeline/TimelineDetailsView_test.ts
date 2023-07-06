@@ -29,7 +29,7 @@ function getRowDataForDetailsElement(details: HTMLElement) {
 describeWithEnvironment('TimelineDetailsView', function() {
   const mockViewDelegate = new MockViewDelegate();
   it('displays the details of a network request event correctly', async function() {
-    const data = await allModelsFromFile('lcp-web-font.json.gz');
+    const data = await allModelsFromFile(this, 'lcp-web-font.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
 
     const networkRequests = data.traceParsedData.NetworkRequests.byTime;

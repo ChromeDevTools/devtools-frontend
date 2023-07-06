@@ -128,8 +128,8 @@ describe('Timing helpers', () => {
   });
 
   describe('timeStampForEventAdjustedByClosestNavigation', () => {
-    it('can use the navigation ID to adjust the time correctly', async () => {
-      const traceParsedData = await loadModelDataFromTraceFile('web-dev.json.gz');
+    it('can use the navigation ID to adjust the time correctly', async function() {
+      const traceParsedData = await loadModelDataFromTraceFile(this, 'web-dev.json.gz');
       const lcpEvent = traceParsedData.PageLoadMetrics.allMarkerEvents.find(event => {
         // Just one LCP Event so we do not need to worry about ordering and finding the right one.
         return event.name === 'largestContentfulPaint::Candidate';
@@ -156,8 +156,8 @@ describe('Timing helpers', () => {
       assert.strictEqual(timeAsMS.toFixed(2), String(118.44));
     });
 
-    it('can use the frame ID to adjust the time correctly', async () => {
-      const traceParsedData = await loadModelDataFromTraceFile('web-dev.json.gz');
+    it('can use the frame ID to adjust the time correctly', async function() {
+      const traceParsedData = await loadModelDataFromTraceFile(this, 'web-dev.json.gz');
       const dclEvent = traceParsedData.PageLoadMetrics.allMarkerEvents.find(event => {
         return event.name === 'MarkDOMContent' && event.args.data?.frame === traceParsedData.Meta.mainFrameId;
       });

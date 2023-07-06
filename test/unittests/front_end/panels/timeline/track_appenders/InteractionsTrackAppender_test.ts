@@ -8,7 +8,6 @@ import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_u
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {
   loadModelDataFromTraceFile,
-  setTraceModelTimeout,
   traceModelFromTraceFile,
 } from '../../../helpers/TraceHelpers.js';
 
@@ -29,9 +28,7 @@ function initTrackAppender(
 }
 
 describeWithEnvironment('InteractionsTrackAppender', function() {
-  setTraceModelTimeout(this);
-
-  async function renderTrackAppender(trace: string): Promise<{
+  async function renderTrackAppender(context: Mocha.Suite|Mocha.Context, trace: string): Promise<{
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     interactionsTrackAppender: Timeline.InteractionsTrackAppender.InteractionsTrackAppender,
@@ -41,8 +38,8 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
     const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-    const traceParsedData = await loadModelDataFromTraceFile(trace);
-    const timelineModel = (await traceModelFromTraceFile(trace)).timelineModel;
+    const traceParsedData = await loadModelDataFromTraceFile(context, trace);
+    const timelineModel = (await traceModelFromTraceFile(context, trace)).timelineModel;
     const interactionsTrackAppender =
         initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
     interactionsTrackAppender.appendTrackAtLevel(0);
@@ -56,9 +53,9 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     };
   }
 
-  describe('appendTrackAtLevel', () => {
-    it('marks all levels used by the track with the `TrackAppender` type', async () => {
-      const {entryTypeByLevel} = await renderTrackAppender('slow-interaction-button-click.json.gz');
+  describe('appendTrackAtLevel', function() {
+    it('marks all levels used by the track with the `TrackAppender` type', async function() {
+      const {entryTypeByLevel} = await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
       // All events fit on the top level
       assert.strictEqual(entryTypeByLevel.length, 1);
       assert.deepEqual(entryTypeByLevel, [
@@ -66,26 +63,26 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
       ]);
     });
 
-    it('takes over no levels if there are no interactions', async () => {
+    it('takes over no levels if there are no interactions', async function() {
       // animation trace has no interactions in it.
-      const {entryTypeByLevel} = await renderTrackAppender('animation.json.gz');
+      const {entryTypeByLevel} = await renderTrackAppender(this, 'animation.json.gz');
       assert.strictEqual(entryTypeByLevel.length, 0);
     });
 
-    it('only shows the top level interactions', async () => {
-      const {entryData, traceParsedData} = await renderTrackAppender('nested-interactions.json.gz');
+    it('only shows the top level interactions', async function() {
+      const {entryData, traceParsedData} = await renderTrackAppender(this, 'nested-interactions.json.gz');
       assert.strictEqual(entryData.length, traceParsedData.UserInteractions.interactionEventsWithNoNesting.length);
     });
 
-    it('creates a flamechart group', async () => {
-      const {flameChartData} = await renderTrackAppender('slow-interaction-button-click.json.gz');
+    it('creates a flamechart group', async function() {
+      const {flameChartData} = await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
       assert.strictEqual(flameChartData.groups.length, 1);
       assert.strictEqual(flameChartData.groups[0].name, 'Interactions');
     });
 
-    it('adds all interactions with the correct start times', async () => {
+    it('adds all interactions with the correct start times', async function() {
       const {flameChartData, traceParsedData, entryData} =
-          await renderTrackAppender('slow-interaction-button-click.json.gz');
+          await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
       const events = traceParsedData.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
         const markerIndex = entryData.indexOf(event);
@@ -96,9 +93,9 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
       }
     });
 
-    it('adds total times correctly', async () => {
+    it('adds total times correctly', async function() {
       const {flameChartData, traceParsedData, entryData} =
-          await renderTrackAppender('slow-interaction-button-click.json.gz');
+          await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
       const events = traceParsedData.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
         const markerIndex = entryData.indexOf(event);
@@ -110,8 +107,9 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     });
   });
 
-  it('candy-stripes long interactions', async () => {
-    const {traceParsedData, flameChartData, entryData} = await renderTrackAppender('one-second-interaction.json.gz');
+  it('candy-stripes long interactions', async function() {
+    const {traceParsedData, flameChartData, entryData} =
+        await renderTrackAppender(this, 'one-second-interaction.json.gz');
     const longInteraction = traceParsedData.UserInteractions.longestInteractionEvent;
     if (!longInteraction) {
       throw new Error('Could not find longest interaction');
@@ -122,22 +120,23 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
         decorationsForEntry, [{type: 'CANDY', startAtTime: TraceEngine.Types.Timing.MicroSeconds(200_000)}]);
   });
 
-  it('does not candy-stripe interactions less than 200ms', async () => {
-    const {flameChartData} = await renderTrackAppender('slow-interaction-button-click.json.gz');
+  it('does not candy-stripe interactions less than 200ms', async function() {
+    const {flameChartData} = await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
     // None of the interactions are over 200ms, so we do not expect to see any decorations
     assert.lengthOf(flameChartData.entryDecorations, 0);
   });
 
-  it('returns the correct title for a pointer interaction, using its category', async () => {
+  it('returns the correct title for a pointer interaction, using its category', async function() {
     const {interactionsTrackAppender, traceParsedData} =
-        await renderTrackAppender('slow-interaction-button-click.json.gz');
+        await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
     const firstInteraction = traceParsedData.UserInteractions.interactionEvents[0];
     const title = interactionsTrackAppender.titleForEvent(firstInteraction);
     assert.strictEqual(title, 'Pointer');
   });
 
-  it('returns the correct title for a keyboard interaction, using its category', async () => {
-    const {interactionsTrackAppender, traceParsedData} = await renderTrackAppender('slow-interaction-keydown.json.gz');
+  it('returns the correct title for a keyboard interaction, using its category', async function() {
+    const {interactionsTrackAppender, traceParsedData} =
+        await renderTrackAppender(this, 'slow-interaction-keydown.json.gz');
     const keydownInteraction = traceParsedData.UserInteractions.interactionEvents.find(e => e.type === 'keydown');
     if (!keydownInteraction) {
       throw new Error('Could not find keydown interaction');
@@ -146,9 +145,9 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     assert.strictEqual(title, 'Keyboard');
   });
 
-  it('returns "Other" as the title for unknown event types', async () => {
+  it('returns "Other" as the title for unknown event types', async function() {
     const {interactionsTrackAppender, traceParsedData} =
-        await renderTrackAppender('slow-interaction-button-click.json.gz');
+        await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
 
     // Copy the event so we do not modify the actual trace data, and fake its
     // interaction type to be unexpected.
@@ -159,9 +158,9 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     assert.strictEqual(title, 'Other');
   });
 
-  it('highlightedEntryInfo returns the correct information', async () => {
+  it('highlightedEntryInfo returns the correct information', async function() {
     const {interactionsTrackAppender, traceParsedData} =
-        await renderTrackAppender('slow-interaction-button-click.json.gz');
+        await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
     const firstInteraction = traceParsedData.UserInteractions.interactionEvents[0];
     const highlightedEntryInfo = interactionsTrackAppender.highlightedEntryInfo(firstInteraction);
     // The i18n encodes spaces using the u00A0 unicode character.

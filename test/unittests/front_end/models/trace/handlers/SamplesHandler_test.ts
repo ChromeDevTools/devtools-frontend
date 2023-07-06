@@ -9,9 +9,9 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import {loadEventsFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 
-async function handleEventsFromTraceFile(name: string):
+async function handleEventsFromTraceFile(context: Mocha.Context|Mocha.Suite|null, name: string):
     Promise<TraceModel.Handlers.ModelHandlers.Samples.SamplesHandlerData> {
-  const traceEvents = await loadEventsFromTraceFile(name);
+  const traceEvents = await loadEventsFromTraceFile(context, name);
   TraceModel.Handlers.ModelHandlers.Meta.reset();
   TraceModel.Handlers.ModelHandlers.Samples.reset();
 
@@ -33,7 +33,7 @@ describeWithEnvironment('SamplesHandler', function() {
   setTraceModelTimeout(this);
 
   it('finds all the profiles in a real world recording', async () => {
-    const data = await handleEventsFromTraceFile('multiple-navigations-with-iframes.json.gz');
+    const data = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     // The same process id is shared across profiles in the profiled
     // processes.
     const profileId = TraceModel.Types.TraceEvents.ProfileID('0x1');
@@ -169,7 +169,7 @@ describeWithEnvironment('SamplesHandler', function() {
       assert.deepEqual(callsTestData, expectedResult);
     });
     it('can build profile calls from a CPU profile coming from a real world trace', async () => {
-      const data = await handleEventsFromTraceFile('multiple-navigations-with-iframes.json.gz');
+      const data = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
 
       const profileId = TraceModel.Types.TraceEvents.ProfileID('0x1');
       const firstProcessId = TraceModel.Types.TraceEvents.ProcessID(2236123);
@@ -194,7 +194,7 @@ describeWithEnvironment('SamplesHandler', function() {
   });
   describe('CPU Profile building', () => {
     it('generates a CPU profile from a trace file', async () => {
-      const data = await handleEventsFromTraceFile('recursive-blocking-js.json.gz');
+      const data = await handleEventsFromTraceFile(this, 'recursive-blocking-js.json.gz');
       assert.strictEqual(data.profilesInProcess.size, 1);
       const profileById = data.profilesInProcess.values().next().value;
       assert.strictEqual(profileById.size, 1);

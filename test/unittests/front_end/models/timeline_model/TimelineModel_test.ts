@@ -186,7 +186,7 @@ function summarizeArray(tracks: TimelineModel.TimelineModel.Track[]): TrackSumma
   return tracks.map(summarize);
 }
 
-describeWithEnvironment('TimelineModel', () => {
+describeWithEnvironment('TimelineModel', function() {
   function traceWithEvents(events: readonly SDK.TracingManager.EventPayload[]): {
     tracingModel: SDK.TracingModel.TracingModel,
     timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
@@ -201,10 +201,10 @@ describeWithEnvironment('TimelineModel', () => {
       timelineModel,
     };
   }
-  describe('isMarkerEvent', () => {
-    it('is true for a timestamp event', async () => {
+  describe('isMarkerEvent', function() {
+    it('is true for a timestamp event', async function() {
       // Note: exact trace does not matter here, but we need a real one so all the metadata is set correctly on the TimelineModel
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
 
       const timestampEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
@@ -214,8 +214,8 @@ describeWithEnvironment('TimelineModel', () => {
       });
       assert.isTrue(timelineModel.isMarkerEvent(timestampEvent));
     });
-    it('is true for a Mark First Paint event that is on the main frame', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is true for a Mark First Paint event that is on the main frame', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markFirstPaintEventOnMainFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFirstPaint,
@@ -229,8 +229,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isTrue(timelineModel.isMarkerEvent(markFirstPaintEventOnMainFrame));
     });
 
-    it('is true for a Mark FCP event that is on the main frame', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is true for a Mark FCP event that is on the main frame', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markFCPEventOnMainFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFCP,
@@ -244,8 +244,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isTrue(timelineModel.isMarkerEvent(markFCPEventOnMainFrame));
     });
 
-    it('is false for a Mark FCP event that is not on the main frame', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is false for a Mark FCP event that is not on the main frame', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markFCPEventOnOtherFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFCP,
@@ -259,8 +259,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isFalse(timelineModel.isMarkerEvent(markFCPEventOnOtherFrame));
     });
 
-    it('is false for a Mark First Paint event that is not on the main frame', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is false for a Mark First Paint event that is not on the main frame', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markFirstPaintEventOnOtherFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFirstPaint,
@@ -274,8 +274,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isFalse(timelineModel.isMarkerEvent(markFirstPaintEventOnOtherFrame));
     });
 
-    it('is true for a MarkDOMContent event is set to isMainFrame', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is true for a MarkDOMContent event is set to isMainFrame', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markDOMContentEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
@@ -290,8 +290,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isTrue(timelineModel.isMarkerEvent(markDOMContentEvent));
     });
 
-    it('is true for a MarkDOMContent event that set to isOutermostMainFrame', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is true for a MarkDOMContent event that set to isOutermostMainFrame', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markDOMContentEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
@@ -306,8 +306,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isTrue(timelineModel.isMarkerEvent(markDOMContentEvent));
     });
 
-    it('is false for a MarkDOMContent event that set to isOutermostMainFrame=false', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is false for a MarkDOMContent event that set to isOutermostMainFrame=false', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markDOMContentEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
@@ -322,8 +322,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isFalse(timelineModel.isMarkerEvent(markDOMContentEvent));
     });
 
-    it('is false for a MarkDOMContent event that set to isMainFrame=false', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is false for a MarkDOMContent event that set to isMainFrame=false', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markDOMContentEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkDOMContent,
@@ -338,8 +338,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isFalse(timelineModel.isMarkerEvent(markDOMContentEvent));
     });
 
-    it('is true for a MarkLoad event that set to isMainFrame=true', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is true for a MarkLoad event that set to isMainFrame=true', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markLoadEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkLoad,
@@ -354,8 +354,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isTrue(timelineModel.isMarkerEvent(markLoadEvent));
     });
 
-    it('is true for a MarkLCPCandidate event that set to isOutermostMainFrame=true', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is true for a MarkLCPCandidate event that set to isOutermostMainFrame=true', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markLCPCandidateEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkLCPCandidate,
@@ -370,8 +370,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isTrue(timelineModel.isMarkerEvent(markLCPCandidateEvent));
     });
 
-    it('is true for a MarkLCPInvalidate event that set to isOutermostMainFrame=true', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is true for a MarkLCPInvalidate event that set to isOutermostMainFrame=true', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const markLCPInvalidateEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkLCPInvalidate,
@@ -386,8 +386,8 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isTrue(timelineModel.isMarkerEvent(markLCPInvalidateEvent));
     });
 
-    it('is false for some unrelated event that is never a marker such as an animation', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('slow-interaction-button-click.json.gz');
+    it('is false for some unrelated event that is never a marker such as an animation', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'slow-interaction-button-click.json.gz');
       const animationEvent = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.Animation,
@@ -398,7 +398,7 @@ describeWithEnvironment('TimelineModel', () => {
       assert.isFalse(timelineModel.isMarkerEvent(animationEvent));
     });
   });
-  describe('Track.syncLikeEvents', () => {
+  describe('Track.syncLikeEvents', function() {
     let nestableAsyncEvents: SDK.TracingModel.AsyncEvent[];
     let nonNestableAsyncEvents: SDK.TracingModel.AsyncEvent[];
     let syncEvents: SDK.TracingModel.PayloadEvent[];
@@ -535,7 +535,7 @@ describeWithEnvironment('TimelineModel', () => {
       nonNestableAsyncEvents = buildAsyncEvents(nonNestableAsyncEventPayloads);
       syncEvents = syncEventPayloads.map(payload => SDK.TracingModel.PayloadEvent.fromPayload(payload, thread));
     });
-    it('returns sync and async events if async events can be organized in a tree structure', () => {
+    it('returns sync and async events if async events can be organized in a tree structure', function() {
       const track = new TimelineModel.TimelineModel.Track();
       track.asyncEvents = nestableAsyncEvents;
       track.events = syncEvents;
@@ -546,7 +546,7 @@ describeWithEnvironment('TimelineModel', () => {
         assert.isTrue(syncLikeEventIds.includes(event.id));
       }
     });
-    it('returns sync events only if the async event cannot be organized in a tree structure', () => {
+    it('returns sync events only if the async event cannot be organized in a tree structure', function() {
       const track = new TimelineModel.TimelineModel.Track();
       track.asyncEvents = nonNestableAsyncEvents;
       track.events = syncEvents;
@@ -559,7 +559,7 @@ describeWithEnvironment('TimelineModel', () => {
     });
   });
 
-  it('creates tracks for auction worklets', () => {
+  it('creates tracks for auction worklets', function() {
     const {timelineModel} = traceWithEvents([
       {
         'args': {
@@ -661,7 +661,7 @@ describeWithEnvironment('TimelineModel', () => {
     ]);
   });
 
-  it('handles auction worklets running in renderer', () => {
+  it('handles auction worklets running in renderer', function() {
     // Also shows it merging the different types, and not
     // throwing away another thread there.
     const {timelineModel} = traceWithEvents([
@@ -777,7 +777,7 @@ describeWithEnvironment('TimelineModel', () => {
     ]);
   });
 
-  it('handles different URLs in same auction worklet thread', () => {
+  it('handles different URLs in same auction worklet thread', function() {
     const {timelineModel} = traceWithEvents([
       {
         'args': {
@@ -891,7 +891,7 @@ describeWithEnvironment('TimelineModel', () => {
     ]);
   });
 
-  it('includes utility process main thread, too', () => {
+  it('includes utility process main thread, too', function() {
     const {timelineModel} = traceWithEvents([
       {
         'args': {
@@ -1008,7 +1008,7 @@ describeWithEnvironment('TimelineModel', () => {
     ]);
   });
 
-  it('includes utility process main thread w/M11+ name, too', () => {
+  it('includes utility process main thread w/M11+ name, too', function() {
     const {timelineModel} = traceWithEvents([
       {
         'args': {
@@ -1092,7 +1092,7 @@ describeWithEnvironment('TimelineModel', () => {
     ]);
   });
 
-  it('handles auction worklet exit events', () => {
+  it('handles auction worklet exit events', function() {
     const {timelineModel} = traceWithEvents([
       {
         'args': {
@@ -1231,7 +1231,7 @@ describeWithEnvironment('TimelineModel', () => {
     }
   });
 
-  it('creates tracks for prerender targets', () => {
+  it('creates tracks for prerender targets', function() {
     const {timelineModel} = traceWithEvents([
       {
         'args': {'name': 'CrRendererMain'},
@@ -1296,7 +1296,7 @@ describeWithEnvironment('TimelineModel', () => {
     ]);
   });
 
-  describe('style invalidations', () => {
+  describe('style invalidations', function() {
     /**
      * This helper function is very confusing without context. It is designed
      * to work on a trace generated from
@@ -1338,8 +1338,8 @@ describeWithEnvironment('TimelineModel', () => {
       };
     }
 
-    it('detects the correct invalidations for a class name being changed', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('invalidate-style-class-name-change.json.gz');
+    it('detects the correct invalidations for a class name being changed', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'invalidate-style-class-name-change.json.gz');
       const invalidations = await invalidationsFromTestFunction(timelineModel, 'testFuncs.changeClassNameAndDisplay');
       // In this trace there are three nodes impacted by the class name change:
       // the two test divs, and the button, which gains the :active pseudo
@@ -1360,8 +1360,8 @@ describeWithEnvironment('TimelineModel', () => {
       ]);
     });
 
-    it('detects the correct invalidations for an attribute being changed', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('style-invalidation-change-attribute.json.gz');
+    it('detects the correct invalidations for an attribute being changed', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'style-invalidation-change-attribute.json.gz');
       const invalidations = await invalidationsFromTestFunction(timelineModel, 'testFuncs.changeAttributeAndDisplay');
       // In this trace there are three nodes impacted by the attribute change:
       // the two test divs, and the button, which gains the :active pseudo
@@ -1390,8 +1390,8 @@ describeWithEnvironment('TimelineModel', () => {
         },
       ]);
     });
-    it('detects the correct invalidations for an ID being changed', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('style-invalidation-change-id.json.gz');
+    it('detects the correct invalidations for an ID being changed', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'style-invalidation-change-id.json.gz');
       const invalidations = await invalidationsFromTestFunction(timelineModel, 'testFuncs.changeIdAndDisplay');
       // In this trace there are three nodes impacted by the ID change:
       // the two test divs, and the button, which gains the :active pseudo
@@ -1413,9 +1413,9 @@ describeWithEnvironment('TimelineModel', () => {
     });
   });
 
-  describe('network events on the track', () => {
-    it('provides the expected set of events', async () => {
-      const {timelineModel} = await traceModelFromTraceFile('lcp-images.json.gz');
+  describe('network events on the track', function() {
+    it('provides the expected set of events', async function() {
+      const {timelineModel} = await traceModelFromTraceFile(this, 'lcp-images.json.gz');
       const requests = timelineModel.networkRequests();
       const urls = requests.map(request => request.url);
       assert.deepEqual(urls, [
@@ -1429,7 +1429,7 @@ describeWithEnvironment('TimelineModel', () => {
   });
 });
 
-describeWithEnvironment('TimelineData', () => {
+describeWithEnvironment('TimelineData', function() {
   function getAllTracingModelPayloadEvents(tracingModel: SDK.TracingModel.TracingModel):
       SDK.TracingModel.PayloadEvent[] {
     const allSDKEvents = tracingModel.sortedProcesses().flatMap(process => {
@@ -1447,8 +1447,8 @@ describeWithEnvironment('TimelineData', () => {
     return allSDKEvents;
   }
 
-  it('stores data for an SDK.TracingModel.PayloadEvent using the raw payload as the key', async () => {
-    const data = await allModelsFromFile('web-dev.json.gz');
+  it('stores data for an SDK.TracingModel.PayloadEvent using the raw payload as the key', async function() {
+    const data = await allModelsFromFile(this, 'web-dev.json.gz');
     const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
     // The exact event we use is not important, so let's use the first LCP event.
     const lcpSDKEvent =
@@ -1475,7 +1475,7 @@ describeWithEnvironment('TimelineData', () => {
     );
   });
 
-  it('stores data for a constructed event using the event as the key', async () => {
+  it('stores data for a constructed event using the event as the key', async function() {
     const thread = StubbedThread.make(1);
     // None of the details here matter, we just need some constructed event.
     const fakeConstructedEvent = new SDK.TracingModel.ConstructedEvent(
@@ -1490,8 +1490,8 @@ describeWithEnvironment('TimelineData', () => {
     assert.strictEqual(dataForEvent, TimelineModel.TimelineModel.EventOnTimelineData.forEvent(fakeConstructedEvent));
   });
 
-  it('extracts backend node ids and image url for a Decode Image event', async () => {
-    const data = await allModelsFromFile('web-dev.json.gz');
+  it('extracts backend node ids and image url for a Decode Image event', async function() {
+    const data = await allModelsFromFile(this, 'web-dev.json.gz');
     const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
 
     const decodeImageEvent =

@@ -20,11 +20,11 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   }
 }
 
-describeWithEnvironment('TimelineTreeView', () => {
+describeWithEnvironment('TimelineTreeView', function() {
   const mockViewDelegate = new MockViewDelegate();
-  describe('EventsTimelineTreeView', () => {
-    it('Creates a tree from nestable async events', async () => {
-      const data = await allModelsFromFile('sync-like-timings.json.gz');
+  describe('EventsTimelineTreeView', function() {
+    it('Creates a tree from nestable async events', async function() {
+      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       eventTreeView.setModelWithEvents(data.performanceModel, consoleTimings, data.traceParsedData);
@@ -39,8 +39,8 @@ describeWithEnvironment('TimelineTreeView', () => {
       const bottomNode = firstNode.children().values().next().value as TimelineModel.TimelineProfileTree.Node;
       assert.strictEqual(bottomNode.event?.name, 'second console time');
     });
-    it('shows instant events as nodes', async () => {
-      const data = await allModelsFromFile('user-timings.json.gz');
+    it('shows instant events as nodes', async function() {
+      const data = await allModelsFromFile(this, 'user-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
       const consoleTimings = [...data.traceParsedData.UserTimings.performanceMarks];
       eventTreeView.setModelWithEvents(data.performanceModel, consoleTimings, data.traceParsedData);
@@ -53,9 +53,9 @@ describeWithEnvironment('TimelineTreeView', () => {
       assert.strictEqual(secondNode.event?.name, 'mark3');
     });
   });
-  describe('BottomUpTimelineTreeView', () => {
-    it('Creates a bottom up tree from nestable events', async () => {
-      const data = await allModelsFromFile('sync-like-timings.json.gz');
+  describe('BottomUpTimelineTreeView', function() {
+    it('Creates a bottom up tree from nestable events', async function() {
+      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
       const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       const startTime =
@@ -79,9 +79,9 @@ describeWithEnvironment('TimelineTreeView', () => {
       assert.strictEqual(childNode.event?.name, 'first console time');
     });
   });
-  describe('CallTreeTimelineTreeView', () => {
-    it('Creates a call tree from nestable events', async () => {
-      const data = await allModelsFromFile('sync-like-timings.json.gz');
+  describe('CallTreeTimelineTreeView', function() {
+    it('Creates a call tree from nestable events', async function() {
+      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       const startTime =
@@ -102,9 +102,9 @@ describeWithEnvironment('TimelineTreeView', () => {
       assert.strictEqual(childNode.event?.name, 'second console time');
     });
   });
-  describe('event groupping', () => {
-    it('groups events by category in the Call Tree view', async () => {
-      const data = await allModelsFromFile('sync-like-timings.json.gz');
+  describe('event groupping', function() {
+    it('groups events by category in the Call Tree view', async function() {
+      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       const startTime =
@@ -122,8 +122,8 @@ describeWithEnvironment('TimelineTreeView', () => {
       assert.strictEqual(children.next().value.event.name, 'first console time');
       assert.strictEqual(children.next().value.event.name, 'third console time');
     });
-    it('groups events by category in the Call Tree view', async () => {
-      const data = await allModelsFromFile('sync-like-timings.json.gz');
+    it('groups events by category in the Call Tree view', async function() {
+      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       const startTime =

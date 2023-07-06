@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
+import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
 
-async function processTrace(url: string): Promise<void> {
+async function processTrace(context: Mocha.Suite|Mocha.Context|null, url: string): Promise<void> {
   TraceModel.Handlers.ModelHandlers.Meta.reset();
   TraceModel.Handlers.ModelHandlers.Meta.initialize();
 
@@ -13,7 +13,7 @@ async function processTrace(url: string): Promise<void> {
   TraceModel.Handlers.ModelHandlers.LayoutShifts.initialize();
 
   try {
-    const events = await loadEventsFromTraceFile(url);
+    const events = await loadEventsFromTraceFile(context, url);
     for (const event of events) {
       TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
       TraceModel.Handlers.ModelHandlers.Screenshots.handleEvent(event);
@@ -28,7 +28,6 @@ async function processTrace(url: string): Promise<void> {
 }
 
 describe('LayoutShiftsHandler', function() {
-  setTraceModelTimeout(this);
   beforeEach(async () => {
     // The layout shifts handler stores by process, so to make life easier we
     // run the meta handler here, too, so that later on we can get the IDs of
@@ -39,16 +38,16 @@ describe('LayoutShiftsHandler', function() {
     TraceModel.Handlers.ModelHandlers.LayoutShifts.reset();
   });
 
-  it('clusters a single frame correctly', async () => {
-    await processTrace('cls-single-frame.json.gz');
+  it('clusters a single frame correctly', async function() {
+    await processTrace(this, 'cls-single-frame.json.gz');
 
     const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 1);
     assert.strictEqual(layoutShifts.clusters[0].clusterCumulativeScore, 0.29522728495836237);
   });
 
-  it('creates a cluster after the maximum time gap between shifts', async () => {
-    await processTrace('cls-cluster-max-timeout.json.gz');
+  it('creates a cluster after the maximum time gap between shifts', async function() {
+    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
 
     const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 3);
@@ -70,8 +69,8 @@ describe('LayoutShiftsHandler', function() {
     assert.strictEqual(layoutShifts.clusters[2].events.length, 1);
   });
 
-  it('creates a cluster after a navigation', async () => {
-    await processTrace('cls-cluster-navigation.json.gz');
+  it('creates a cluster after a navigation', async function() {
+    await processTrace(this, 'cls-cluster-navigation.json.gz');
 
     const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
     const {navigationsByFrameId, mainFrameId} = TraceModel.Handlers.ModelHandlers.Meta.data();
@@ -92,8 +91,8 @@ describe('LayoutShiftsHandler', function() {
     assert.strictEqual(secondCluster.clusterWindow.min, secondCluster.events[0].ts);
   });
 
-  it('creates a cluster after exceeding the continuous shift limit', async () => {
-    await processTrace('cls-cluster-max-duration.json.gz');
+  it('creates a cluster after exceeding the continuous shift limit', async function() {
+    await processTrace(this, 'cls-cluster-max-duration.json.gz');
 
     const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 2);
@@ -104,16 +103,16 @@ describe('LayoutShiftsHandler', function() {
         layoutShifts.clusters[0].clusterWindow.max - layoutShifts.clusters[0].clusterWindow.min,
         TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
   });
-  it('sets the end of the last session window to the trace end time correctly', async () => {
-    await processTrace('cls-cluster-max-duration.json.gz');
+  it('sets the end of the last session window to the trace end time correctly', async function() {
+    await processTrace(this, 'cls-cluster-max-duration.json.gz');
 
     const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(
         layoutShifts.clusters.at(-1)?.clusterWindow.max, TraceModel.Handlers.ModelHandlers.Meta.data().traceBounds.max);
   });
 
-  it('sets the end of the last session window to the max gap between duration correctly', async () => {
-    await processTrace('cls-cluster-max-timeout.json.gz');
+  it('sets the end of the last session window to the max gap between duration correctly', async function() {
+    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
 
     const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
     const lastWindow = layoutShifts.clusters.at(-1)?.clusterWindow;
@@ -129,8 +128,8 @@ describe('LayoutShiftsHandler', function() {
         lastWindow.max, lastShiftInWindow.ts + TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA);
     assert.isBelow(lastWindow.range, TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
   });
-  it('sets the end of the last session window to the max session duration correctly', async () => {
-    await processTrace('cls-last-cluster-max-duration.json.gz');
+  it('sets the end of the last session window to the max session duration correctly', async function() {
+    await processTrace(this, 'cls-last-cluster-max-duration.json.gz');
     const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
     const lastWindow = layoutShifts.clusters.at(-1)?.clusterWindow;
     const lastShiftInWindow = layoutShifts.clusters.at(-1)?.events.at(-1);
@@ -144,8 +143,8 @@ describe('LayoutShiftsHandler', function() {
     assert.strictEqual(lastWindow.range, TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
   });
 
-  it('demarcates cluster score windows correctly', async () => {
-    await processTrace('cls-multiple-frames.json.gz');
+  it('demarcates cluster score windows correctly', async function() {
+    await processTrace(this, 'cls-multiple-frames.json.gz');
 
     const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 5);
@@ -188,8 +187,8 @@ describe('LayoutShiftsHandler', function() {
     }
   });
 
-  it('calculates Cumulative Layout Shift correctly for multiple session windows', async () => {
-    await processTrace('cls-cluster-max-timeout.json.gz');
+  it('calculates Cumulative Layout Shift correctly for multiple session windows', async function() {
+    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
 
     const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 3);
@@ -222,8 +221,8 @@ describe('LayoutShiftsHandler', function() {
   });
 
   describe('findNextScreenshotEvent', () => {
-    it('gets the first screenshot after a trace', async () => {
-      await processTrace('cls-cluster-navigation.json.gz');
+    it('gets the first screenshot after a trace', async function() {
+      await processTrace(this, 'cls-cluster-navigation.json.gz');
       const screenshots = TraceModel.Handlers.ModelHandlers.Screenshots.data();
       const {clusters} = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
       const shifts = clusters.flatMap(cluster => cluster.events);

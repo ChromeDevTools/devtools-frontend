@@ -3,26 +3,25 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadModelDataFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
+import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
 const {assert} = chai;
 
 describe('TraceModel helpers', function() {
-  setTraceModelTimeout(this);
   describe('extractOriginFromTrace', () => {
     it('extracts the origin of a parsed trace correctly', async () => {
-      const model = await loadModelDataFromTraceFile('web-dev.json.gz');
+      const model = await loadModelDataFromTraceFile(this, 'web-dev.json.gz');
       const origin = TraceModel.Helpers.Trace.extractOriginFromTrace(model.Meta.mainFrameURL);
       assert.strictEqual(origin, 'web.dev');
     });
 
     it('will remove the `www` if it is present', async () => {
-      const traceEvents = await loadModelDataFromTraceFile('multiple-navigations.json.gz');
+      const traceEvents = await loadModelDataFromTraceFile(this, 'multiple-navigations.json.gz');
       const origin = TraceModel.Helpers.Trace.extractOriginFromTrace(traceEvents.Meta.mainFrameURL);
       assert.strictEqual(origin, 'google.com');
     });
 
     it('returns null when no origin is found', async () => {
-      const traceEvents = await loadModelDataFromTraceFile('basic.json.gz');
+      const traceEvents = await loadModelDataFromTraceFile(this, 'basic.json.gz');
       const origin = TraceModel.Helpers.Trace.extractOriginFromTrace(traceEvents.Meta.mainFrameURL);
       assert.isNull(origin);
     });
@@ -102,7 +101,7 @@ describe('TraceModel helpers', function() {
 
   describe('getNavigationForTraceEvent', () => {
     it('returns the correct navigation for a request', async () => {
-      const {NetworkRequests, Meta} = await loadModelDataFromTraceFile('multiple-navigations.json.gz');
+      const {NetworkRequests, Meta} = await loadModelDataFromTraceFile(this, 'multiple-navigations.json.gz');
       const request1 = NetworkRequests.byTime[0];
       const navigationForFirstRequest = TraceModel.Helpers.Trace.getNavigationForTraceEvent(
           request1, request1.args.data.frame, Meta.navigationsByFrameId);
@@ -115,7 +114,7 @@ describe('TraceModel helpers', function() {
     });
 
     it('returns the correct navigation for a page load event', async () => {
-      const {PageLoadMetrics, Meta} = await loadModelDataFromTraceFile('multiple-navigations.json.gz');
+      const {PageLoadMetrics, Meta} = await loadModelDataFromTraceFile(this, 'multiple-navigations.json.gz');
       const firstNavigationId = Meta.navigationsByNavigationId.keys().next().value;
 
       const fcp = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId)

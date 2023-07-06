@@ -8,12 +8,12 @@ const {assert} = chai;
 
 import {loadEventsFromTraceFile, defaultTraceEvent} from '../../../helpers/TraceHelpers.js';
 
-describe('MetaHandler', () => {
+describe('MetaHandler', function() {
   let baseEvents: TraceModel.Types.TraceEvents.TraceEventData[];
   beforeEach(async () => {
     let defaultTraceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
-      defaultTraceEvents = await loadEventsFromTraceFile('basic.json.gz');
+      defaultTraceEvents = await loadEventsFromTraceFile(this, 'basic.json.gz');
     } catch (error) {
       assert.fail(error);
       return;
@@ -74,8 +74,8 @@ describe('MetaHandler', () => {
     TraceModel.Handlers.ModelHandlers.Meta.initialize();
   });
 
-  describe('error handling', () => {
-    it('throws if data is called before finalize', () => {
+  describe('error handling', function() {
+    it('throws if data is called before finalize', function() {
       for (const event of baseEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
       }
@@ -85,7 +85,7 @@ describe('MetaHandler', () => {
       }, 'Handler is not finalized');
     });
 
-    it('throws if initialize is called without a reset', () => {
+    it('throws if initialize is called without a reset', function() {
       // Due to the beforeEach the handler is already initialized, so calling
       // it a second time should throw an error.
       assert.throws(() => {
@@ -94,7 +94,7 @@ describe('MetaHandler', () => {
     });
   });
 
-  describe('browser process ID', () => {
+  describe('browser process ID', function() {
     it('obtains the PID if present', async () => {
       for (const event of baseEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
@@ -104,10 +104,9 @@ describe('MetaHandler', () => {
       const data = TraceModel.Handlers.ModelHandlers.Meta.data();
       assert.strictEqual(data.browserProcessId, TraceModel.Types.TraceEvents.ProcessID(8017));
     });
-
   });
 
-  describe('browser thread ID', () => {
+  describe('browser thread ID', function() {
     it('obtains the TID if present', async () => {
       for (const event of baseEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
@@ -119,7 +118,7 @@ describe('MetaHandler', () => {
     });
   });
 
-  describe('renderer process ID', () => {
+  describe('renderer process ID', function() {
     it('obtains the PID if present', async () => {
       for (const event of baseEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
@@ -132,7 +131,7 @@ describe('MetaHandler', () => {
     });
   });
 
-  describe('navigations', () => {
+  describe('navigations', function() {
     it('obtains them if present', async () => {
       for (const event of baseEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
@@ -155,7 +154,7 @@ describe('MetaHandler', () => {
     });
   });
 
-  describe('frames', () => {
+  describe('frames', function() {
     it('finds the main frame ID', async () => {
       for (const event of baseEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
@@ -167,7 +166,7 @@ describe('MetaHandler', () => {
     });
 
     it('finds the main frame ID for a trace that started with a page reload', async () => {
-      const events = await loadEventsFromTraceFile('reload-and-trace-page.json.gz');
+      const events = await loadEventsFromTraceFile(this, 'reload-and-trace-page.json.gz');
       TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
       for (const event of events) {
@@ -180,9 +179,9 @@ describe('MetaHandler', () => {
     });
   });
 
-  describe('finding GPU thread and main frame', () => {
+  describe('finding GPU thread and main frame', function() {
     it('finds the GPU process and GPU Thread', async () => {
-      const events = await loadEventsFromTraceFile('threejs-gpu.json.gz');
+      const events = await loadEventsFromTraceFile(this, 'threejs-gpu.json.gz');
       TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
       for (const event of events) {
@@ -195,7 +194,7 @@ describe('MetaHandler', () => {
     });
 
     it('handles traces that do not have a GPU thread and returns undefined for the thread ID', async () => {
-      const traceEventsWithNoGPUThread = await loadEventsFromTraceFile('forced-layouts-and-no-gpu.json.gz');
+      const traceEventsWithNoGPUThread = await loadEventsFromTraceFile(this, 'forced-layouts-and-no-gpu.json.gz');
       for (const event of traceEventsWithNoGPUThread) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
       }
@@ -212,7 +211,7 @@ describe('MetaHandler', () => {
   it('obtains renderer process IDs when there are no navigations', async () => {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
-      traceEvents = await loadEventsFromTraceFile('threejs-gpu.json.gz');
+      traceEvents = await loadEventsFromTraceFile(this, 'threejs-gpu.json.gz');
     } catch (error) {
       assert.fail(error);
       return;
@@ -250,7 +249,7 @@ describe('MetaHandler', () => {
   it('handles multiple renderers from navigations', async () => {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
-      traceEvents = await loadEventsFromTraceFile('multiple-top-level-renderers.json.gz');
+      traceEvents = await loadEventsFromTraceFile(this, 'multiple-top-level-renderers.json.gz');
     } catch (error) {
       assert.fail(error);
       return;
@@ -308,7 +307,7 @@ describe('MetaHandler', () => {
   it('calculates trace bounds correctly', async () => {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
-      traceEvents = await loadEventsFromTraceFile('basic.json.gz');
+      traceEvents = await loadEventsFromTraceFile(this, 'basic.json.gz');
     } catch (error) {
       assert.fail(error);
       return;
@@ -338,7 +337,7 @@ describe('MetaHandler', () => {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       // This file contains UMA events which need to be ignored.
-      traceEvents = await loadEventsFromTraceFile('web-dev.json.gz');
+      traceEvents = await loadEventsFromTraceFile(this, 'web-dev.json.gz');
     } catch (error) {
       assert.fail(error);
       return;

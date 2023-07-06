@@ -11,8 +11,8 @@ import {allModelsFromFile, getAllTracingModelPayloadEvents} from '../../helpers/
 
 const {assert} = chai;
 
-describeWithEnvironment('TimelineSelection', () => {
-  it('can be created with a frame', () => {
+describeWithEnvironment('TimelineSelection', function() {
+  it('can be created with a frame', function() {
     const frame = new TimelineModel.TimelineFrameModel.TimelineFrame(1, 0);
     const selection = Timeline.TimelineSelection.TimelineSelection.fromFrame(frame);
     assert.strictEqual(selection.object, frame);
@@ -21,8 +21,8 @@ describeWithEnvironment('TimelineSelection', () => {
     assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isFrameObject(selection.object));
   });
 
-  it('can be created with a network request', async () => {
-    const data = await allModelsFromFile('web-dev.json.gz');
+  it('can be created with a network request', async function() {
+    const data = await allModelsFromFile(this, 'web-dev.json.gz');
     const request = data.traceParsedData.NetworkRequests.byTime[0];
     const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(request);
     assert.strictEqual(selection.object, request);
@@ -35,8 +35,8 @@ describeWithEnvironment('TimelineSelection', () => {
         Timeline.TimelineSelection.TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object));
   });
 
-  it('can be created with an SDK trace event', async () => {
-    const data = await allModelsFromFile('web-dev.json.gz');
+  it('can be created with an SDK trace event', async function() {
+    const data = await allModelsFromFile(this, 'web-dev.json.gz');
     const firstLCPEvent = getAllTracingModelPayloadEvents(data.tracingModel).find(event => {
       return event.name === TimelineModel.TimelineModel.RecordType.MarkLCPCandidate;
     });
@@ -51,8 +51,8 @@ describeWithEnvironment('TimelineSelection', () => {
     assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isTraceEventSelection(selection.object));
   });
 
-  it('can be created with a TraceEngine event', async () => {
-    const data = await allModelsFromFile('web-dev.json.gz');
+  it('can be created with a TraceEngine event', async function() {
+    const data = await allModelsFromFile(this, 'web-dev.json.gz');
     const firstLCPEvent = data.traceParsedData.PageLoadMetrics.allMarkerEvents.find(event => {
       return event.name === 'largestContentfulPaint::Candidate';
     });
@@ -66,7 +66,7 @@ describeWithEnvironment('TimelineSelection', () => {
     assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isTraceEventSelection(selection.object));
   });
 
-  it('can be created with a range', async () => {
+  it('can be created with a range', async function() {
     const selection = Timeline.TimelineSelection.TimelineSelection.fromRange(0, 10);
     assert.strictEqual(selection.startTime, 0);
     assert.strictEqual(selection.endTime, 10);

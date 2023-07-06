@@ -15,15 +15,13 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../helpers/MockConnection.js';
-import {loadModelDataFromTraceFile, setTraceModelTimeout} from '../../helpers/TraceHelpers.js';
+import {loadModelDataFromTraceFile} from '../../helpers/TraceHelpers.js';
 
 function nodeId<T extends Protocol.DOM.BackendNodeId|Protocol.DOM.NodeId>(x: number): T {
   return x as T;
 }
 
 describeWithMockConnection('TraceSDKServices', function() {
-  setTraceModelTimeout(this);
-
   beforeEach(async () => {
     clearAllMockConnectionResponseHandlers();
     SDK.TraceSDKServices._TEST_clearCache();
@@ -47,7 +45,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       await domModel.requestDocument();
       domModel.registerNode(domNode);
 
-      const modelData = await loadModelDataFromTraceFile('cls-single-frame.json.gz');
+      const modelData = await loadModelDataFromTraceFile(this, 'cls-single-frame.json.gz');
       const result = await SDK.TraceSDKServices.domNodeForBackendNodeID(modelData, nodeId(2));
       assert.strictEqual(result, domNode);
 

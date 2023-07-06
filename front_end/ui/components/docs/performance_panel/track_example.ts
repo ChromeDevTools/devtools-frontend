@@ -27,6 +27,7 @@ type FlameChartData = {
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider|
               Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider,
 };
+
 async function renderContent(expanded: boolean) {
   if (darkMode) {
     document.documentElement.classList.add('-theme-with-dark-background');

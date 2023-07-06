@@ -39,23 +39,28 @@ function decodeGzipBuffer(buffer: ArrayBuffer): Promise<ArrayBuffer> {
   return codec(buffer, new DecompressionStream('gzip'));
 }
 
-export async function loadTraceEventsLegacyEventPayload(name: string):
-    Promise<readonly SDK.TracingManager.EventPayload[]> {
-  const events = await loadEventsFromTraceFile(name);
-  // Convince TypeScript that these are really EventPayload events, so they can
-  // be used when testing OPP code that expects EventPayload events.
-  return events as unknown as Array<SDK.TracingManager.EventPayload>;
+/**
+ * Parsing some trace files easily takes up more than our default Mocha timeout
+ * which is 2seconds. So for most tests that include parsing a trace, we have to
+ * increase the timeout. We use this function to ensure we set a consistent
+ * timeout across all trace model tests.
+ * The context might be null when we only render a component example.
+ **/
+export function setTraceModelTimeout(context: Mocha.Context|Mocha.Suite|null): void {
+  context?.timeout(10_000);
 }
 
 // The contents of the trace files do not get modified at all, so in tests we
 // are safe to cache their contents once we've loaded them once.
 const traceFileCache = new Map<string, TraceModel.Types.File.Contents>();
 
-export async function loadTraceFileFromURL(url: URL): Promise<TraceModel.Types.File.Contents> {
+export async function loadTraceFileFromURL(
+    context: Mocha.Context|Mocha.Suite|null, url: URL): Promise<TraceModel.Types.File.Contents> {
   const cachedFile = traceFileCache.get(url.toString());
   if (cachedFile) {
     return cachedFile;
   }
+  setTraceModelTimeout(context);
   const response = await fetch(url);
   if (response.status !== 200) {
     throw new Error(`Unable to load ${url}`);
@@ -72,22 +77,24 @@ export async function loadTraceFileFromURL(url: URL): Promise<TraceModel.Types.F
   traceFileCache.set(url.toString(), contents);
   return contents;
 }
-export async function loadTraceFileFromFixtures(name: string): Promise<TraceModel.Types.File.Contents> {
+
+export async function loadTraceFileFromFixtures(
+    context: Mocha.Context|Mocha.Suite|null, name: string): Promise<TraceModel.Types.File.Contents> {
   const urlForTest = new URL(`/fixtures/traces/${name}`, window.location.origin);
   const urlForComponentExample = new URL(`/test/unittests/fixtures/traces/${name}`, window.location.origin);
   try {
     // Attempt to fetch file from unit test server.
-    return await loadTraceFileFromURL(urlForTest);
+    return await loadTraceFileFromURL(context, urlForTest);
   } catch (e) {
     // If file wasn't found on test server, attempt a fetch from
     // component server.
-    return await loadTraceFileFromURL(urlForComponentExample);
+    return await loadTraceFileFromURL(context, urlForComponentExample);
   }
 }
 
-export async function loadEventsFromTraceFile(name: string):
+export async function loadEventsFromTraceFile(context: Mocha.Context|Mocha.Suite|null, name: string):
     Promise<readonly TraceModel.Types.TraceEvents.TraceEventData[]> {
-  const trace = await loadTraceFileFromFixtures(name);
+  const trace = await loadTraceFileFromFixtures(context, name);
   if ('traceEvents' in trace) {
     return trace.traceEvents;
   }
@@ -99,12 +106,13 @@ interface ModelDataResult {
   traceParsedData: TraceModel.Handlers.Types.TraceParseData;
 }
 const modelDataCache = new Map<string, ModelDataResult>();
-async function generateModelDataForTraceFile(name: string, emulateFreshRecording = false): Promise<ModelDataResult> {
+async function generateModelDataForTraceFile(
+    context: Mocha.Context|Mocha.Suite|null, name: string, emulateFreshRecording = false): Promise<ModelDataResult> {
   const cachedData = modelDataCache.get(name);
   if (cachedData) {
     return cachedData;
   }
-  const traceEvents = await loadEventsFromTraceFile(name);
+  const traceEvents = await loadEventsFromTraceFile(context, name);
 
   return new Promise((resolve, reject) => {
     const model = TraceModel.TraceModel.Model.createWithAllHandlers();
@@ -133,20 +141,30 @@ async function generateModelDataForTraceFile(name: string, emulateFreshRecording
   });
 }
 
-/**
- * Parsing some trace files easily takes up more than our default Mocha timeout
- * which is 2seconds. So for most tests that include parsing a trace, we have to
- * increase the timeout. We use this function to ensure we set a consistent
- * timeout across all trace model tests.
- **/
-export function setTraceModelTimeout(context: Mocha.Context|Mocha.Suite): void {
-  context.timeout(10_000);
+export async function loadTraceEventsLegacyEventPayload(
+    context: Mocha.Context|Mocha.Suite|null, name: string): Promise<readonly SDK.TracingManager.EventPayload[]> {
+  const events = await loadEventsFromTraceFile(context, name);
+  // Convince TypeScript that these are really EventPayload events, so they can
+  // be used when testing OPP code that expects EventPayload events.
+  return events as unknown as Array<SDK.TracingManager.EventPayload>;
 }
 
-export async function loadModelDataFromTraceFile(name: string): Promise<TraceModel.Handlers.Types.TraceParseData> {
+/**
+ * Load the new trace engine data from a trace file.
+ *
+ * @param context The Mocha test context. |allModelsFromFile| function easily
+ * takes up more than our default Mocha timeout, which is 2s. So we have to
+ * increase this test's timeout. It might be null when we only render a
+ * component example.
+ * @param name The name of the trace file to be loaded into the flame chart.
+ * The trace file should be in /test/unittests/fixtures/traces folder.
+ * @returns Trace Engine data
+ */
+export async function loadModelDataFromTraceFile(
+    context: Mocha.Context|Mocha.Suite|null, name: string): Promise<TraceModel.Handlers.Types.TraceParseData> {
   let trace: TraceModel.Handlers.Types.TraceParseData;
   try {
-    trace = (await generateModelDataForTraceFile(name)).traceParsedData;
+    trace = (await generateModelDataForTraceFile(context, name)).traceParsedData;
   } catch (error) {
     throw new Error(`Failed to load trace file: ${name}. Is it in test/unittests/fixtures/traces?`);
   }
@@ -186,7 +204,8 @@ export async function getMainFlameChartWithTracks(
 }> {
   await initializeGlobalVars();
 
-  const {traceParsedData, performanceModel} = await allModelsFromFile(traceFileName);
+  // This function is used to load a component example.
+  const {traceParsedData, performanceModel} = await allModelsFromFile(/* context= */ null, traceFileName);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   // The data provider still needs a reference to the legacy model to
@@ -224,7 +243,9 @@ export async function getMainFlameChartWithLegacyTrack(
 }> {
   await initializeGlobalVars();
 
-  const {traceParsedData, performanceModel, timelineModel} = await allModelsFromFile(traceFileName);
+  // This function is used to load a component example.
+  const {traceParsedData, performanceModel, timelineModel} =
+      await allModelsFromFile(/* context= */ null, traceFileName);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   // The data provider still needs a reference to the legacy model to
@@ -259,7 +280,8 @@ export async function getNetworkFlameChartWithLegacyTrack(traceFileName: string,
 }> {
   await initializeGlobalVars();
 
-  const {traceParsedData} = await allModelsFromFile(traceFileName);
+  // This function is used to load a component example.
+  const {traceParsedData} = await allModelsFromFile(/* context= */ null, traceFileName);
   const minTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
   const maxTime = TraceModel.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
@@ -285,15 +307,28 @@ type LoadedModels = {
 };
 const traceModelsCache = new Map<string, LoadedModels>();
 
-export async function allModelsFromFile(file: string): Promise<LoadedModels> {
+/**
+ * Returns tracingModel, timelineModel, performanceModel, traceParsedData
+ * from the given trace file.
+ *
+ * @param context The Mocha test context. |allModelsFromFile| function easily
+ * takes up more than our default Mocha timeout, which is 2s. So we have to
+ * increase this test's timeout. It might be null when we only render a
+ * component example.
+ * @param file The name of the trace file to be loaded into the flame chart.
+ * The trace file should be in /test/unittests/fixtures/traces folder.
+ * @returns tracingModel, timelineModel, performanceModel, traceParsedData
+ * from this trace file
+ */
+export async function allModelsFromFile(context: Mocha.Context|Mocha.Suite|null, file: string): Promise<LoadedModels> {
   const fromCache = traceModelsCache.get(file);
   if (fromCache) {
     return fromCache;
   }
 
-  const traceParsedData = await loadModelDataFromTraceFile(file);
+  const traceParsedData = await loadModelDataFromTraceFile(context, file);
   TimelineModel.TimelineModel.EventOnTimelineData.reset();
-  const events = await loadTraceEventsLegacyEventPayload(file);
+  const events = await loadTraceEventsLegacyEventPayload(context, file);
   const tracingModel = new SDK.TracingModel.TracingModel();
   const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
   tracingModel.addEvents(events);
@@ -563,12 +598,12 @@ export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): S
   return event;
 }
 
-export async function traceModelFromTraceFile(file: string): Promise<{
+export async function traceModelFromTraceFile(context: Mocha.Context|Mocha.Suite|null, file: string): Promise<{
   tracingModel: SDK.TracingModel.TracingModel,
   timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
   performanceModel: Timeline.PerformanceModel.PerformanceModel,
 }> {
-  const events = await loadTraceEventsLegacyEventPayload(file);
+  const events = await loadTraceEventsLegacyEventPayload(context, file);
   const tracingModel = new SDK.TracingModel.TracingModel();
   const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
   tracingModel.addEvents(events);

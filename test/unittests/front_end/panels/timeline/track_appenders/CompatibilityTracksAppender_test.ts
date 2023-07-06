@@ -8,7 +8,6 @@ import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_u
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {
   loadModelDataFromTraceFile,
-  setTraceModelTimeout,
   traceModelFromTraceFile,
 } from '../../../helpers/TraceHelpers.js';
 
@@ -17,8 +16,6 @@ import type * as TimelineModel from '../../../../../../front_end/models/timeline
 const {assert} = chai;
 
 describeWithEnvironment('TimingTrackAppender', function() {
-  setTraceModelTimeout(this);
-
   let traceParsedData: TraceModel.Handlers.Types.TraceParseData;
   let timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   let tracksAppender: Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender;
@@ -26,12 +23,13 @@ describeWithEnvironment('TimingTrackAppender', function() {
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
-  async function initTrackAppender(fixture = 'timings-track.json.gz'): Promise<void> {
+  async function initTrackAppender(
+      context: Mocha.Suite|Mocha.Context, fixture = 'timings-track.json.gz'): Promise<void> {
     entryData = [];
     flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     entryTypeByLevel = [];
-    traceParsedData = await loadModelDataFromTraceFile(fixture);
-    timelineModel = (await traceModelFromTraceFile(fixture)).timelineModel;
+    traceParsedData = await loadModelDataFromTraceFile(context, fixture);
+    timelineModel = (await traceModelFromTraceFile(context, fixture)).timelineModel;
     tracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
         flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
     const timingsTrack = tracksAppender.timingsTrackAppender();
@@ -41,7 +39,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
   }
 
   beforeEach(async () => {
-    await initTrackAppender();
+    await initTrackAppender(this);
   });
 
   describe('CompatibilityTracksAppender', () => {
@@ -73,7 +71,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
       });
       it('returns both sync and async events if a tree can be built with them', async () => {
         // This file contains events in the timings track that can be assembled as a tree
-        await initTrackAppender('sync-like-timings.json.gz');
+        await initTrackAppender(this, 'sync-like-timings.json.gz');
         const timingsEvents = tracksAppender.eventsInTrack('Timings');
         assert.isTrue(tracksAppender.canBuildTreesFromEvents(timingsEvents));
         const treeEvents = tracksAppender.eventsForTreeView('Timings');
@@ -83,7 +81,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
     describe('groupEventsForTreeView', () => {
       it('returns all the events of a flame chart group with multiple levels', async () => {
         // This file contains events in the timings track that can be assembled as a tree
-        await initTrackAppender('sync-like-timings.json.gz');
+        await initTrackAppender(this, 'sync-like-timings.json.gz');
         const timingsGroupEvents = tracksAppender.groupEventsForTreeView(flameChartData.groups[0]);
         if (!timingsGroupEvents) {
           assert.fail('Could not find events for group');

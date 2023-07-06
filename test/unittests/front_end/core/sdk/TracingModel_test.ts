@@ -14,15 +14,15 @@ import {
   makeFakeEventPayload,
 } from '../../helpers/TraceHelpers.js';
 
-describeWithEnvironment('TracingModel', () => {
-  it('can create events from an EventPayload[] and finds the correct number of processes', async () => {
-    const events = await loadTraceEventsLegacyEventPayload('basic.json.gz');
+describeWithEnvironment('TracingModel', function() {
+  it('can create events from an EventPayload[] and finds the correct number of processes', async function() {
+    const events = await loadTraceEventsLegacyEventPayload(this, 'basic.json.gz');
     const model = new SDK.TracingModel.TracingModel();
     model.addEvents(events);
     assert.strictEqual(model.sortedProcesses().length, 4);
   });
 
-  describe('parsing trace events with unusual characters and large snapshots', () => {
+  describe('parsing trace events with unusual characters and large snapshots', function() {
     function setupAndReturnMainThread(): SDK.TracingModel.Thread {
       const testEvents = [
         makeFakeEventPayload({
@@ -65,7 +65,7 @@ describeWithEnvironment('TracingModel', () => {
       return thread;
     }
 
-    it('can parse trace events with non ascii characters', async () => {
+    it('can parse trace events with non ascii characters', async function() {
       const mainThread = setupAndReturnMainThread();
       const nonAsciiEvent = mainThread.events().find(event => event.name === 'NonAscii');
       if (!nonAsciiEvent) {
@@ -76,7 +76,7 @@ describeWithEnvironment('TracingModel', () => {
           '\u043b\u0435\u0442 \u043c\u0438 \u0441\u043f\u0438\u043a \u0444\u0440\u043e\u043c \u043c\u0430\u0439 \u0445\u0430\u0440\u0442');
     });
 
-    it('can parse an event with a non ascii snapshot', async () => {
+    it('can parse an event with a non ascii snapshot', async function() {
       const mainThread = setupAndReturnMainThread();
       const nonAsciiEvent =
           mainThread.events().find(event => event.name === 'NonAsciiSnapshot') as SDK.TracingModel.ObjectSnapshot;
@@ -91,7 +91,7 @@ describeWithEnvironment('TracingModel', () => {
       assert.strictEqual(data, '\u0442\u0435\u0441\u0442');
     });
 
-    it('can parse an event with a short snapshot', async () => {
+    it('can parse an event with a short snapshot', async function() {
       const mainThread = setupAndReturnMainThread();
       const snapshotEvent =
           mainThread.events().find(event => event.name === 'ShortSnapshot') as SDK.TracingModel.ObjectSnapshot;
@@ -105,7 +105,7 @@ describeWithEnvironment('TracingModel', () => {
       }
       assert.strictEqual(data, 'short snapshot data');
     });
-    it('can parse an event with a long snapshot', async () => {
+    it('can parse an event with a long snapshot', async function() {
       const mainThread = setupAndReturnMainThread();
       const snapshotEvent =
           mainThread.events().find(event => event.name === 'LongSnapshot') as SDK.TracingModel.ObjectSnapshot;
@@ -121,9 +121,9 @@ describeWithEnvironment('TracingModel', () => {
     });
   });
 
-  describe('fromPayload', () => {
-    it('can create an event from a payload for an LCP candidate event', async () => {
-      const rawEvents = await loadTraceEventsLegacyEventPayload('lcp-images.json.gz');
+  describe('fromPayload', function() {
+    it('can create an event from a payload for an LCP candidate event', async function() {
+      const rawEvents = await loadTraceEventsLegacyEventPayload(this, 'lcp-images.json.gz');
       // Find an event to test with; pick the first LCP event so it is an event
       // we understand and we get the same event each time.
       const firstLCPEventPayload = rawEvents.find(event => {
@@ -139,8 +139,8 @@ describeWithEnvironment('TracingModel', () => {
       assert.strictEqual(event.startTime, firstLCPEventPayload.ts / 1000);
     });
 
-    it('stores the event ID if it has one', async () => {
-      const rawEvents = await loadTraceEventsLegacyEventPayload('lcp-images.json.gz');
+    it('stores the event ID if it has one', async function() {
+      const rawEvents = await loadTraceEventsLegacyEventPayload(this, 'lcp-images.json.gz');
       // Find an event to test with; pick the first LCP event so it is an event
       // we understand and we get the same event each time.
       const firstLCPEventPayload = rawEvents.find(event => {
@@ -157,8 +157,8 @@ describeWithEnvironment('TracingModel', () => {
       assert.deepEqual(event.id, firstLCPEventPayload.id);
     });
 
-    it('stores the raw payload and you can retrieve it', async () => {
-      const rawEvents = await loadTraceEventsLegacyEventPayload('lcp-images.json.gz');
+    it('stores the raw payload and you can retrieve it', async function() {
+      const rawEvents = await loadTraceEventsLegacyEventPayload(this, 'lcp-images.json.gz');
       // Find an event to test with; pick the first LCP event so it is an event
       // we understand and we get the same event each time.
       const firstLCPEventPayload = rawEvents.find(event => {
@@ -172,8 +172,8 @@ describeWithEnvironment('TracingModel', () => {
       assert.strictEqual(event.rawLegacyPayload(), firstLCPEventPayload);
     });
 
-    it('sets the begin and end time correctly for an event with a duration', async () => {
-      const rawEvents = await loadTraceEventsLegacyEventPayload('animation.json.gz');
+    it('sets the begin and end time correctly for an event with a duration', async function() {
+      const rawEvents = await loadTraceEventsLegacyEventPayload(this, 'animation.json.gz');
       // Use a RunTask which will always have a ts (start) and dur.
       const firstRunTask = rawEvents.find(event => {
         return event.name === 'RunTask';
@@ -188,15 +188,15 @@ describeWithEnvironment('TracingModel', () => {
     });
   });
 
-  describe('extractID', () => {
-    it('can extract the ID from the id field if it exists', async () => {
+  describe('extractID', function() {
+    it('can extract the ID from the id field if it exists', async function() {
       const fakePayload = {
         id: '123',
       } as unknown as SDK.TracingManager.EventPayload;
       assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), '123');
     });
 
-    it('prepends the scope to the id if it is present', async () => {
+    it('prepends the scope to the id if it is present', async function() {
       const fakePayload = {
         id: '123',
         scope: 'test-scope',
@@ -204,7 +204,7 @@ describeWithEnvironment('TracingModel', () => {
       assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), 'test-scope@123');
     });
 
-    it('prioritises the id2 global field over id if they are both present', async () => {
+    it('prioritises the id2 global field over id if they are both present', async function() {
       const fakePayload = {
         id: '123',
         id2: {
@@ -228,7 +228,7 @@ describeWithEnvironment('TracingModel', () => {
          assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), ':test-scope:test-pid:local-id');
        });
 
-    it('logs an error and returns undefined if the id2 object has both global and local keys', async () => {
+    it('logs an error and returns undefined if the id2 object has both global and local keys', async function() {
       const fakePayload = {
         id: '123',
         id2: {
@@ -247,8 +247,8 @@ describeWithEnvironment('TracingModel', () => {
     });
   });
 
-  it('finds the browser main thread from the tracing model', async () => {
-    const {tracingModel} = await allModelsFromFile('web-dev.json.gz');
+  it('finds the browser main thread from the tracing model', async function() {
+    const {tracingModel} = await allModelsFromFile(this, 'web-dev.json.gz');
     const mainThread = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
     assert.strictEqual(mainThread?.id(), 775);
     assert.strictEqual(mainThread?.name(), 'CrBrowserMain');

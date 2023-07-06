@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
+import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
 
 type DataArgs = TraceModel.Types.TraceEvents.TraceEventSyntheticNetworkRequest['args']['data'];
 type DataArgsProcessedData =
@@ -12,8 +12,8 @@ type DataArgsProcessedData =
 type DataArgsMap = Map<keyof DataArgs, DataArgs[keyof DataArgs]>;
 type DataArgsProcessedDataMap = Map<keyof DataArgsProcessedData, DataArgsProcessedData[keyof DataArgsProcessedData]>;
 
-async function parseAndFinalizeFile(traceFile: string) {
-  const traceEvents = await loadEventsFromTraceFile(traceFile);
+async function parseAndFinalizeFile(context: Mocha.Suite|Mocha.Context|null, traceFile: string) {
+  const traceEvents = await loadEventsFromTraceFile(context, traceFile);
   TraceModel.Handlers.ModelHandlers.Meta.initialize();
   TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
   for (const event of traceEvents) {
@@ -26,8 +26,6 @@ async function parseAndFinalizeFile(traceFile: string) {
 }
 
 describe('NetworkRequestsHandler', function() {
-  setTraceModelTimeout(this);
-
   describe('error handling', () => {
     it('throws if handleEvent is called before it is initialized', () => {
       assert.throws(() => {
@@ -48,7 +46,7 @@ describe('NetworkRequestsHandler', function() {
   });
 
   it('parses search param strings for network requests', async () => {
-    await parseAndFinalizeFile('request-with-query-param.json.gz');
+    await parseAndFinalizeFile(this, 'request-with-query-param.json.gz');
     const {byTime} = TraceModel.Handlers.ModelHandlers.NetworkRequests.data();
     // Filter to the requests that have search params.
     const withSearchParams = byTime.filter(request => Boolean(request.args.data.search));
@@ -62,7 +60,7 @@ describe('NetworkRequestsHandler', function() {
     });
 
     it('calculates network requests correctly', async () => {
-      const traceEvents = await loadEventsFromTraceFile('load-simple.json.gz');
+      const traceEvents = await loadEventsFromTraceFile(this, 'load-simple.json.gz');
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
         TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
@@ -215,7 +213,7 @@ describe('NetworkRequestsHandler', function() {
     });
 
     it('calculates redirects correctly (navigations)', async () => {
-      const traceEvents = await loadEventsFromTraceFile('redirects.json.gz');
+      const traceEvents = await loadEventsFromTraceFile(this, 'redirects.json.gz');
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
         TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
@@ -248,7 +246,7 @@ describe('NetworkRequestsHandler', function() {
     });
 
     it('calculates redirects correctly (subresources)', async () => {
-      const traceEvents = await loadEventsFromTraceFile('redirects-subresource-multiple.json.gz');
+      const traceEvents = await loadEventsFromTraceFile(this, 'redirects-subresource-multiple.json.gz');
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
         TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);

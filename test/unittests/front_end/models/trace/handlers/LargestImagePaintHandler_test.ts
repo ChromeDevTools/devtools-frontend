@@ -8,13 +8,13 @@ import type * as Protocol from '../../../../../../front_end/generated/protocol.j
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
 
-describe('LargestImagePaintHandler', async () => {
+describe('LargestImagePaintHandler', async function() {
   beforeEach(async () => {
     TraceModel.Handlers.ModelHandlers.LargestImagePaint.reset();
   });
 
-  it('creates a map of DOM Node IDs to image candidates', async () => {
-    const events = await loadEventsFromTraceFile('lcp-images.json.gz');
+  it('creates a map of DOM Node IDs to image candidates', async function() {
+    const events = await loadEventsFromTraceFile(this, 'lcp-images.json.gz');
     for (const event of events) {
       TraceModel.Handlers.ModelHandlers.LargestImagePaint.handleEvent(event);
     }

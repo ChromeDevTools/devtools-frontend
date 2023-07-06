@@ -8,7 +8,6 @@ import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_u
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {
   loadModelDataFromTraceFile,
-  setTraceModelTimeout,
   traceModelFromTraceFile,
 } from '../../../helpers/TraceHelpers.js';
 
@@ -33,10 +32,9 @@ describeWithEnvironment('TimingTrackAppender', function() {
   let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
-  setTraceModelTimeout(this);
   beforeEach(async () => {
-    traceParsedData = await loadModelDataFromTraceFile('timings-track.json.gz');
-    timelineModel = (await traceModelFromTraceFile('timings-track.json.gz')).timelineModel;
+    traceParsedData = await loadModelDataFromTraceFile(this, 'timings-track.json.gz');
+    timelineModel = (await traceModelFromTraceFile(this, 'timings-track.json.gz')).timelineModel;
     timingsTrackAppender =
         initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
     timingsTrackAppender.appendTrackAtLevel(0);

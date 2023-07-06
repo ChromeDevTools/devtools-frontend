@@ -8,13 +8,13 @@ import type * as Protocol from '../../../../../../front_end/generated/protocol.j
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
 
-describe('LargestTextPaintHandler', async () => {
+describe('LargestTextPaintHandler', async function() {
   beforeEach(() => {
     TraceModel.Handlers.ModelHandlers.LargestTextPaint.reset();
   });
 
-  it('creates a map of DOM Node IDs to Text candidates', async () => {
-    const events = await loadEventsFromTraceFile('lcp-web-font.json.gz');
+  it('creates a map of DOM Node IDs to Text candidates', async function() {
+    const events = await loadEventsFromTraceFile(this, 'lcp-web-font.json.gz');
 
     for (const event of events) {
       TraceModel.Handlers.ModelHandlers.LargestTextPaint.handleEvent(event);

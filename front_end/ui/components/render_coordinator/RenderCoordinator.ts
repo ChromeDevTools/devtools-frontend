@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../core/platform/platform.js';
+
 /**
  * Components don't orchestrate their DOM updates in a wider context
  * (i.e. the host frame's document), which leads to interleaved reading
@@ -16,21 +18,34 @@
  * for the next available frame.
  */
 
-interface CoordinatorCallback {
-  (): unknown;
+interface CoordinatorCallback<T> {
+  (): T|PromiseLike<T>;
 }
 
-interface WorkItem {
-  trigger: () => void;
-  cancel: (_: Error) => void;
-  promise: Promise<unknown>;
-  handler: CoordinatorCallback;
-  label: string;
+class WorkItem<T> {
+  readonly promise: Promise<T>;
+  readonly trigger: () => void;
+  readonly cancel: (e: Error) => void;
+  readonly label: string;
+  #handler: CoordinatorCallback<T>;
+
+  constructor(label: string, initialHandler: CoordinatorCallback<T>) {
+    const {promise, resolve, reject} = Platform.PromiseUtilities.promiseWithResolvers<void>();
+    this.promise = promise.then(() => this.#handler());
+    this.trigger = resolve;
+    this.cancel = reject;
+    this.label = label;
+    this.#handler = initialHandler;
+  }
+
+  set handler(newHandler: CoordinatorCallback<T>) {
+    this.#handler = newHandler;
+  }
 }
 
 interface CoordinatorFrame {
-  readers: WorkItem[];
-  writers: WorkItem[];
+  readers: WorkItem<unknown>[];
+  writers: WorkItem<unknown>[];
 }
 
 interface CoordinatorLogEntry {
@@ -117,36 +132,34 @@ export class RenderCoordinator extends EventTarget {
   // non-empty label, only the latest callback would be executed. Such
   // invocations would return the same promise that will resolve to the value of
   // the latest callback.
-  async read<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
-  async read<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
-  async read<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
-      Promise<T> {
+  async read<T>(callback: CoordinatorCallback<T>): Promise<T>;
+  async read<T>(label: string, callback: CoordinatorCallback<T>): Promise<T>;
+  async read<T>(labelOrCallback: CoordinatorCallback<T>|string, callback?: CoordinatorCallback<T>): Promise<T> {
     if (typeof labelOrCallback === 'string') {
       if (!callback) {
         throw new Error('Read called with label but no callback');
       }
-      return this.#enqueueHandler<T>(callback, ACTION.READ, labelOrCallback);
+      return this.#enqueueHandler(callback, ACTION.READ, labelOrCallback);
     }
 
-    return this.#enqueueHandler<T>(labelOrCallback, ACTION.READ, UNNAMED_READ);
+    return this.#enqueueHandler(labelOrCallback, ACTION.READ, UNNAMED_READ);
   }
 
   // Schedules a 'write' job which is being executed within an animation frame
   // after all 'read' and 'scroll' jobs. If multiple jobs are scheduled with
   // the same non-empty label, only the latest callback would be executed. Such
   // invocations would return the same promise that will resolve when the latest callback is run.
-  async write<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
-  async write<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
-  async write<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
-      Promise<T> {
+  async write<T>(callback: CoordinatorCallback<T>): Promise<T>;
+  async write<T>(label: string, callback: CoordinatorCallback<T>): Promise<T>;
+  async write<T>(labelOrCallback: CoordinatorCallback<T>|string, callback?: CoordinatorCallback<T>): Promise<T> {
     if (typeof labelOrCallback === 'string') {
       if (!callback) {
         throw new Error('Write called with label but no callback');
       }
-      return this.#enqueueHandler<T>(callback, ACTION.WRITE, labelOrCallback);
+      return this.#enqueueHandler(callback, ACTION.WRITE, labelOrCallback);
     }
 
-    return this.#enqueueHandler<T>(labelOrCallback, ACTION.WRITE, UNNAMED_WRITE);
+    return this.#enqueueHandler(labelOrCallback, ACTION.WRITE, UNNAMED_WRITE);
   }
 
   takeRecords(): CoordinatorLogEntry[] {
@@ -163,21 +176,20 @@ export class RenderCoordinator extends EventTarget {
    * the latest callback would be executed. Such invocations would return the same promise that
    * will resolve when the latest callback is run.
    */
-  async scroll<T extends unknown>(callback: CoordinatorCallback): Promise<T>;
-  async scroll<T extends unknown>(label: string, callback: CoordinatorCallback): Promise<T>;
-  async scroll<T extends unknown>(labelOrCallback: CoordinatorCallback|string, callback?: CoordinatorCallback):
-      Promise<T> {
+  async scroll<T>(callback: CoordinatorCallback<T>): Promise<T>;
+  async scroll<T>(label: string, callback: CoordinatorCallback<T>): Promise<T>;
+  async scroll<T>(labelOrCallback: CoordinatorCallback<T>|string, callback?: CoordinatorCallback<T>): Promise<T> {
     if (typeof labelOrCallback === 'string') {
       if (!callback) {
         throw new Error('Scroll called with label but no callback');
       }
-      return this.#enqueueHandler<T>(callback, ACTION.READ, labelOrCallback);
+      return this.#enqueueHandler(callback, ACTION.READ, labelOrCallback);
     }
 
-    return this.#enqueueHandler<T>(labelOrCallback, ACTION.READ, UNNAMED_SCROLL);
+    return this.#enqueueHandler(labelOrCallback, ACTION.READ, UNNAMED_SCROLL);
   }
 
-  #enqueueHandler<T = unknown>(callback: CoordinatorCallback, action: ACTION, label: string): Promise<T> {
+  #enqueueHandler<T>(callback: CoordinatorCallback<T>, action: ACTION, label: string): Promise<T> {
     const hasName = ![UNNAMED_READ, UNNAMED_WRITE, UNNAMED_SCROLL].includes(label);
     label = `${action === ACTION.READ ? '[Read]' : '[Write]'}: ${label}`;
     if (this.#pendingWorkFrames.length === 0) {
@@ -206,23 +218,19 @@ export class RenderCoordinator extends EventTarget {
         throw new Error(`Unknown action: ${action}`);
     }
 
-    let workItem = hasName ? workItems.find(w => w.label === label) : null;
+    let workItem = hasName ? workItems.find(w => w.label === label) as WorkItem<T>| undefined : undefined;
     if (!workItem) {
-      const newWorkItem = {label} as WorkItem;
-      newWorkItem.promise = (new Promise<void>((resolve, reject) => {
-                              newWorkItem.trigger = resolve;
-                              newWorkItem.cancel = reject;
-                            })).then(() => newWorkItem.handler());
-      workItem = newWorkItem;
+      workItem = new WorkItem<T>(label, callback);
       workItems.push(workItem);
+    } else {
+      // We are always using the latest handler, so that we don't end up with a
+      // stale results. We are reusing the promise to avoid blocking the first invocation, when
+      // it is being "overridden" by another one.
+      workItem.handler = callback;
     }
-    // We are always using the latest handler, so that we don't end up with a
-    // stale results. We are reusing the promise to avoid blocking the first invocation, when
-    // it is being "overridden" by another one.
-    workItem.handler = callback;
 
     this.#scheduleWork();
-    return workItem.promise as Promise<T>;
+    return workItem.promise;
   }
 
   #scheduleWork(): void {
@@ -304,7 +312,7 @@ export class RenderCoordinator extends EventTarget {
     });
   }
 
-  #rejectAll(handlers: WorkItem[], error: Error): void {
+  #rejectAll(handlers: WorkItem<unknown>[], error: Error): void {
     for (const handler of handlers) {
       handler.cancel(error);
     }

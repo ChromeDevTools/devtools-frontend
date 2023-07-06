@@ -92,6 +92,19 @@ export class HostsPolicy {
   }
   private constructor(readonly runtimeAllowedHosts: HostUrlPattern[], readonly runtimeBlockedHosts: HostUrlPattern[]) {
   }
+
+  isAllowedOnCurrentTarget(): boolean {
+    const inspectedURL = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
+    if (!inspectedURL) {
+      // If there aren't any blocked hosts retain the old behavior and don't worry about the inspectedURL
+      return this.runtimeBlockedHosts.length === 0;
+    }
+    if (this.runtimeBlockedHosts.some(pattern => pattern.matchesUrl(inspectedURL)) &&
+        !this.runtimeAllowedHosts.some(pattern => pattern.matchesUrl(inspectedURL))) {
+      return false;
+    }
+    return true;
+  }
 }
 
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -1001,7 +1014,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return;
     }
     const hostsPolicy = HostsPolicy.create(extensionInfo.hostsPolicy);
-    if (!hostsPolicy) {
+    if (!hostsPolicy || !hostsPolicy.isAllowedOnCurrentTarget()) {
       return;
     }
     try {
@@ -1061,18 +1074,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!extension) {
       return false;
     }
-
-    const inspectedURL = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
-    if (!inspectedURL) {
-      // If there aren't any blocked hosts retain the old behavior and don't worry about the inspectedURL
-      return extension.hostsPolicy.runtimeBlockedHosts.length === 0;
-    }
-    if (extension.hostsPolicy.runtimeBlockedHosts.some(pattern => pattern.matchesUrl(inspectedURL)) &&
-        !extension.hostsPolicy.runtimeAllowedHosts.some(pattern => pattern.matchesUrl(inspectedURL))) {
-      return false;
-    }
-
-    return true;
+    return extension.hostsPolicy.isAllowedOnCurrentTarget();
   }
 
   private async onmessage(event: MessageEvent): Promise<void> {

@@ -32,10 +32,12 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
+import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -671,9 +673,19 @@ export class DebuggerPlugin extends Plugin {
     return {
       box,
       show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
-        const resolvedText = await SourceMapScopes.NamesResolver.resolveExpression(
-            selectedCallFrame, evaluationText, this.uiSourceCode, highlightLine.number - 1,
-            highlightRange.from - highlightLine.from, highlightRange.to - highlightLine.from);
+        let resolvedText: string = '';
+        if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps')) {
+          const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(selectedCallFrame);
+          try {
+            resolvedText =
+                await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(evaluationText, nameMap);
+          } catch {
+          }
+        } else {
+          resolvedText = await SourceMapScopes.NamesResolver.resolveExpression(
+              selectedCallFrame, evaluationText, this.uiSourceCode, highlightLine.number - 1,
+              highlightRange.from - highlightLine.from, highlightRange.to - highlightLine.from);
+        }
         const result = await selectedCallFrame.evaluate({
           expression: resolvedText || evaluationText,
           objectGroup: 'popover',

@@ -607,9 +607,13 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
   #split: UI.SplitWidget.SplitWidget;
   #editorWidget = new EditorWidget();
   #protocolMonitorDataGrid: ProtocolMonitorDataGrid;
+  // This width corresponds to the optimal width to use the editor properly
+  // It is randomly chosen
+  #sideBarMinWidth = 400;
   constructor() {
     super(true);
-    this.#split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 250);
+    this.#split =
+        new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', this.#sideBarMinWidth);
     this.#split.show(this.contentElement);
     this.#protocolMonitorDataGrid = new ProtocolMonitorDataGrid(this.#split);
     this.#split.setMainWidget(this.#protocolMonitorDataGrid);
@@ -618,6 +622,19 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this.#editorWidget.addEventListener(Events.CommandSent, event => {
       this.#protocolMonitorDataGrid.onCommandSend(event.data.command, event.data.parameters, event.data.targetId);
     });
+
+    this.#split.addEventListener(UI.SplitWidget.Events.SidebarSizeChanged, this.handleSidebarSizeChange.bind(this));
+  }
+
+  // This function will fire when the sidebar is resized
+  // It will allow the apparation of horizontal scrollbar in the editor
+  // when the side bar width is under 400px
+  private handleSidebarSizeChange(): void {
+    const width = this.#editorWidget.element.offsetWidth;
+    if (width <= this.#sideBarMinWidth) {
+      this.#editorWidget.element.style.overflowX = 'auto';
+      this.#editorWidget.element.style.overflowY = 'hidden';
+    }
   }
 
   static instance(opts: {forceNew: null|boolean} = {forceNew: null}): ProtocolMonitorImpl {

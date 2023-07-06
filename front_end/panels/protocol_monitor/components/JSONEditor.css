@@ -13,6 +13,7 @@
 
 :host {
   display: block;
+  height: 100%;
 }
 
 .target-select-menu {
@@ -55,6 +56,10 @@ ul {
 
 .wrapper {
   padding-left: 2em;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+  padding-bottom: 50px;
 }
 
 .deleteButton {
@@ -62,10 +67,7 @@ ul {
   transition: opacity 0.3s ease-in-out;
 }
 
-.deleteButton:hover {
-  opacity: 100%;
-}
-
+.deleteButton:hover,
 .deleteButton:focus {
   opacity: 100%;
 }

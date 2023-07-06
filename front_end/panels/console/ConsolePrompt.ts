@@ -269,7 +269,13 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (forceEvaluate || selection.main.head < doc.length) {
       return true;
     }
-    return await TextEditor.JavaScript.isExpressionComplete(doc.toString());
+    const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+    const isExpressionComplete = await TextEditor.JavaScript.isExpressionComplete(doc.toString());
+    if (currentExecutionContext !== UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext)) {
+      // We should not evaluate if the current context has changed since user action
+      return false;
+    }
+    return isExpressionComplete;
   }
 
   private async handleEnter(forceEvaluate?: boolean): Promise<void> {

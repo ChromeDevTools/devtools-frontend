@@ -9,6 +9,7 @@ ts_library("console") {
   sources = [
     "ConsoleContextSelector_test.ts",
     "ConsoleFormat_test.ts",
+    "ConsolePrompt_test.ts",
     "ConsoleViewMessage_test.ts",
     "ConsoleView_test.ts",
     "ErrorStackParser_test.ts",

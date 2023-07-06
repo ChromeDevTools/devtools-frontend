@@ -15,7 +15,7 @@ import {TraceProcessor, TraceParseProgressEvent} from './Processor.js';
 // references to "processors" plural because it can easily be extended in the future.
 
 export interface ParseConfig {
-  metadata?: TraceFileMetaData;
+  metadata?: Types.File.MetaData;
   isFreshRecording?: boolean;
 }
 
@@ -149,7 +149,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     return this.#traces[index].traceParsedData;
   }
 
-  metadata(index: number): TraceFileMetaData|null {
+  metadata(index: number): Types.File.MetaData|null {
     if (!this.#traces[index]) {
       return null;
     }
@@ -188,7 +188,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
  * of these so that the user can swap between them. The key is that it is
  * essentially the TraceFile plus whatever the model has parsed from it.
  */
-export type ParsedTraceFile<Handlers extends {[key: string]: Handlers.Types.TraceEventHandler}> = TraceFile&{
+export type ParsedTraceFile<Handlers extends {[key: string]: Handlers.Types.TraceEventHandler}> = Types.File.TraceFile&{
   traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<Handlers>| null,
 };
 
@@ -233,23 +233,3 @@ export function isModelUpdateDataComplete(eventData: ModelUpdateEventData): even
 export function isModelUpdateDataProgress(eventData: ModelUpdateEventData): eventData is ModelUpdateEventProgress {
   return eventData.type === ModelUpdateType.PROGRESS_UPDATE;
 }
-
-export type TraceFile = {
-  traceEvents: readonly Types.TraceEvents.TraceEventData[],
-  metadata: TraceFileMetaData,
-};
-
-/**
- * Trace metadata that we persist to the file. This will allow us to
- * store specifics for the trace, e.g., which tracks should be visible
- * on load.
- */
-export interface TraceFileMetaData {
-  source?: 'DevTools';
-  startTime?: string;
-  networkThrottling?: string;
-  cpuThrottling?: number;
-  hardwareConcurrency?: number;
-}
-
-export type TraceFileContents = TraceFile|Types.TraceEvents.TraceEventData[];

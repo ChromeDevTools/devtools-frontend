@@ -49,9 +49,9 @@ export async function loadTraceEventsLegacyEventPayload(name: string):
 
 // The contents of the trace files do not get modified at all, so in tests we
 // are safe to cache their contents once we've loaded them once.
-const traceFileCache = new Map<string, TraceModel.TraceModel.TraceFileContents>();
+const traceFileCache = new Map<string, TraceModel.Types.File.Contents>();
 
-export async function loadTraceFileFromURL(url: URL): Promise<TraceModel.TraceModel.TraceFileContents> {
+export async function loadTraceFileFromURL(url: URL): Promise<TraceModel.Types.File.Contents> {
   const cachedFile = traceFileCache.get(url.toString());
   if (cachedFile) {
     return cachedFile;
@@ -68,11 +68,11 @@ export async function loadTraceFileFromURL(url: URL): Promise<TraceModel.TraceMo
     buffer = await decodeGzipBuffer(buffer);
   }
   const decoder = new TextDecoder('utf-8');
-  const contents = JSON.parse(decoder.decode(buffer)) as TraceModel.TraceModel.TraceFileContents;
+  const contents = JSON.parse(decoder.decode(buffer)) as TraceModel.Types.File.Contents;
   traceFileCache.set(url.toString(), contents);
   return contents;
 }
-export async function loadTraceFileFromFixtures(name: string): Promise<TraceModel.TraceModel.TraceFileContents> {
+export async function loadTraceFileFromFixtures(name: string): Promise<TraceModel.Types.File.Contents> {
   const urlForTest = new URL(`/fixtures/traces/${name}`, window.location.origin);
   const urlForComponentExample = new URL(`/test/unittests/fixtures/traces/${name}`, window.location.origin);
   try {
@@ -95,7 +95,7 @@ export async function loadEventsFromTraceFile(name: string):
 }
 
 interface ModelDataResult {
-  metadata: TraceModel.TraceModel.TraceFileMetaData;
+  metadata: TraceModel.Types.File.MetaData;
   traceParsedData: TraceModel.Handlers.Types.TraceParseData;
 }
 const modelDataCache = new Map<string, ModelDataResult>();

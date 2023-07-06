@@ -8,6 +8,7 @@ import("../../visibility.gni")
 
 devtools_module("types") {
   sources = [
+    "File.ts",
     "Timing.ts",
     "TraceEvents.ts",
   ]

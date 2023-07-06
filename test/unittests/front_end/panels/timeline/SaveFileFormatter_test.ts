@@ -34,7 +34,7 @@ describe('SaveFileFormatter', () => {
       const eventOne = {...defaultTraceEvent, name: 'event_one'};
       const eventTwo = {...defaultTraceEvent, name: 'event_two'};
       const events = [eventOne, eventTwo];
-      const metadata: TraceEngine.TraceModel.TraceFileMetaData = {
+      const metadata: TraceEngine.Types.File.MetaData = {
         source: 'DevTools',
         startTime: '1234',
         networkThrottling: '4',

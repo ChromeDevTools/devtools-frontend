@@ -194,7 +194,7 @@ export async function normalizedImpactedNodesForLayoutShift(
 }
 
 export async function getMetadataForFreshRecording(recordStartTime?: number):
-    Promise<TraceEngine.TraceModel.TraceFileMetaData|undefined> {
+    Promise<TraceEngine.Types.File.MetaData|undefined> {
   try {
     const cpuThrottlingManager = CPUThrottlingManager.instance();
 

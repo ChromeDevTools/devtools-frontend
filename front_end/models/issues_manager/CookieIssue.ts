@@ -273,26 +273,6 @@ function isSubdomainOf(subdomain: string, superdomain: string): boolean {
   return subdomainWithoutSuperdomian.endsWith('.');
 }
 
-const sameSiteUnspecifiedErrorRead: LazyMarkdownIssueDescription = {
-  file: 'SameSiteUnspecifiedTreatedAsLaxRead.md',
-  links: [
-    {
-      link: 'https://web.dev/samesite-cookies-explained/',
-      linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained),
-    },
-  ],
-};
-
-const sameSiteUnspecifiedErrorSet: LazyMarkdownIssueDescription = {
-  file: 'SameSiteUnspecifiedTreatedAsLaxSet.md',
-  links: [
-    {
-      link: 'https://web.dev/samesite-cookies-explained/',
-      linkTitle: i18nLazyString(UIStrings.samesiteCookiesExplained),
-    },
-  ],
-};
-
 const sameSiteUnspecifiedWarnRead: LazyMarkdownIssueDescription = {
   file: 'SameSiteUnspecifiedLaxAllowUnsafeRead.md',
   links: [
@@ -451,8 +431,6 @@ const excludeBlockedWithinFirstPartySet: LazyMarkdownIssueDescription = {
 };
 
 const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
-  ['CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie', sameSiteUnspecifiedErrorRead],
-  ['CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie', sameSiteUnspecifiedErrorSet],
   // These two don't have a deprecation date yet, but they need to be fixed eventually.
   ['CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead],
   ['CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::SetCookie', sameSiteUnspecifiedWarnSet],

@@ -343,8 +343,6 @@ grd_files_release_sources = [
   "front_end/models/issues_manager/descriptions/SameSiteNoneInsecureWarnSet.md",
   "front_end/models/issues_manager/descriptions/SameSiteUnspecifiedLaxAllowUnsafeRead.md",
   "front_end/models/issues_manager/descriptions/SameSiteUnspecifiedLaxAllowUnsafeSet.md",
-  "front_end/models/issues_manager/descriptions/SameSiteUnspecifiedTreatedAsLaxRead.md",
-  "front_end/models/issues_manager/descriptions/SameSiteUnspecifiedTreatedAsLaxSet.md",
   "front_end/models/issues_manager/descriptions/SameSiteWarnCrossDowngradeRead.md",
   "front_end/models/issues_manager/descriptions/SameSiteWarnCrossDowngradeSet.md",
   "front_end/models/issues_manager/descriptions/SameSiteWarnStrictLaxDowngradeStrict.md",

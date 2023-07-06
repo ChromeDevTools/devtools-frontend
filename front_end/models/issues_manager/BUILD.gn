@@ -153,8 +153,6 @@ devtools_issue_description_files = [
   "SameSiteNoneInsecureWarnSet.md",
   "SameSiteUnspecifiedLaxAllowUnsafeRead.md",
   "SameSiteUnspecifiedLaxAllowUnsafeSet.md",
-  "SameSiteUnspecifiedTreatedAsLaxRead.md",
-  "SameSiteUnspecifiedTreatedAsLaxSet.md",
   "SameSiteWarnCrossDowngradeRead.md",
   "SameSiteWarnCrossDowngradeSet.md",
   "SameSiteWarnStrictLaxDowngradeStrict.md",

@@ -44,6 +44,10 @@ export enum IssueCode {
   InvalidPrivateNetworkAccess = 'CorsIssue::InvalidPrivateNetworkAccess',
   UnexpectedPrivateNetworkAccess = 'CorsIssue::UnexpectedPrivateNetworkAccess',
   PreflightAllowPrivateNetworkError = 'CorsIssue::PreflightAllowPrivateNetworkError',
+  PreflightMissingPrivateNetworkAccessId = 'CorsIssue::PreflightMissingPrivateNetworkAccessId',
+  PreflightMissingPrivateNetworkAccessName = 'CorsIssue::PreflightMissingPrivateNetworkAccessName',
+  PrivateNetworkAccessPermissionUnavailable = 'CorsIssue::PrivateNetworkAccessPermissionUnavailable',
+  PrivateNetworkAccessPermissionDenied = 'CorsIssue::PrivateNetworkAccessPermissionDenied',
 }
 
 function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
@@ -56,8 +60,6 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
     case Protocol.Network.CorsError.MissingAllowOriginHeader:
     case Protocol.Network.CorsError.MultipleAllowOriginValues:
     case Protocol.Network.CorsError.InvalidAllowOriginValue:
-    case Protocol.Network.CorsError.PreflightMissingPrivateNetworkAccessId:
-    case Protocol.Network.CorsError.PreflightMissingPrivateNetworkAccessName:
       return IssueCode.InvalidHeaderValues;
     case Protocol.Network.CorsError.PreflightWildcardOriginNotAllowed:
     case Protocol.Network.CorsError.WildcardOriginNotAllowed:
@@ -91,14 +93,20 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
     case Protocol.Network.CorsError.NoCorsRedirectModeNotFollow:
       return IssueCode.NoCorsRedirectModeNotFollow;
     case Protocol.Network.CorsError.InvalidPrivateNetworkAccess:
-    case Protocol.Network.CorsError.PrivateNetworkAccessPermissionUnavailable:
-    case Protocol.Network.CorsError.PrivateNetworkAccessPermissionDenied:
       return IssueCode.InvalidPrivateNetworkAccess;
     case Protocol.Network.CorsError.UnexpectedPrivateNetworkAccess:
       return IssueCode.UnexpectedPrivateNetworkAccess;
     case Protocol.Network.CorsError.PreflightMissingAllowPrivateNetwork:
     case Protocol.Network.CorsError.PreflightInvalidAllowPrivateNetwork:
       return IssueCode.PreflightAllowPrivateNetworkError;
+    case Protocol.Network.CorsError.PreflightMissingPrivateNetworkAccessId:
+      return IssueCode.PreflightMissingPrivateNetworkAccessId;
+    case Protocol.Network.CorsError.PreflightMissingPrivateNetworkAccessName:
+      return IssueCode.PreflightMissingPrivateNetworkAccessName;
+    case Protocol.Network.CorsError.PrivateNetworkAccessPermissionUnavailable:
+      return IssueCode.PrivateNetworkAccessPermissionUnavailable;
+    case Protocol.Network.CorsError.PrivateNetworkAccessPermissionDenied:
+      return IssueCode.PrivateNetworkAccessPermissionDenied;
   }
 }
 
@@ -226,10 +234,23 @@ export class CorsIssue extends Issue<IssueCode> {
             linkTitle: i18nString(UIStrings.CORS),
           }],
         };
+      // TODO(1462857): Change the link after we have a blog post for PNA
+      // permission prompt.
+      case IssueCode.PreflightMissingPrivateNetworkAccessId:
+      case IssueCode.PreflightMissingPrivateNetworkAccessName:
+        return {
+          file: 'corsPrivateNetworkPermissionDenied.md',
+          links: [{
+            link: 'https://developer.chrome.com/blog/private-network-access-update',
+            linkTitle: i18nString(UIStrings.corsPrivateNetworkAccess),
+          }],
+        };
       case IssueCode.PreflightMissingAllowExternal:
       case IssueCode.PreflightInvalidAllowExternal:
       case IssueCode.InvalidPrivateNetworkAccess:
       case IssueCode.UnexpectedPrivateNetworkAccess:
+      case IssueCode.PrivateNetworkAccessPermissionUnavailable:
+      case IssueCode.PrivateNetworkAccessPermissionDenied:
         return null;
     }
   }

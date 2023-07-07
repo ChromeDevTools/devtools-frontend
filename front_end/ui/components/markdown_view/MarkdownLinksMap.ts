@@ -49,6 +49,7 @@ export const markdownLinks = new Map<string, string>([
     'https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled',
     'https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled',
   ],
+  ['PNASecureContextRestrictionFeatureStatus', 'https://chromestatus.com/feature/5954091755241472'],
 ]);
 
 export const getMarkdownLink = (key: string): string => {

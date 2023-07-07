@@ -1042,7 +1042,11 @@ export enum IssueCreated {
   'GenericIssue::FormInputHasWrongButWellIntendedAutocompleteValueError' = 75,
   'StylesheetLoadingIssue::LateImportRule' = 76,
   'StylesheetLoadingIssue::RequestFailed' = 77,
-  MaxValue = 78,
+  'CorsIssue::PreflightMissingPrivateNetworkAccessId' = 78,
+  'CorsIssue::PreflightMissingPrivateNetworkAccessName' = 79,
+  'CorsIssue::PrivateNetworkAccessPermissionUnavailable' = 80,
+  'CorsIssue::PrivateNetworkAccessPermissionDenied' = 81,
+  MaxValue = 82,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

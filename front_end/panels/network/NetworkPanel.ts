@@ -876,12 +876,12 @@ export class NetworkLogWithFilterRevealer implements Common.Revealer.Revealer {
   }
 }
 
-export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClient {
-  private tracingManager: SDK.TracingManager.TracingManager|null;
+export class FilmStripRecorder implements TraceEngine.TracingManager.TracingManagerClient {
+  private tracingManager: TraceEngine.TracingManager.TracingManager|null;
   private resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
   private readonly timeCalculator: NetworkTimeCalculator;
   private readonly filmStripView: PerfUI.FilmStripView.FilmStripView;
-  private tracingModel: SDK.TracingModel.TracingModel|null;
+  private tracingModel: TraceEngine.Legacy.TracingModel|null;
   private callback: ((filmStrip: TraceEngine.Extras.FilmStrip.Data) => void)|null;
   // Used to fetch screenshots of the page load and show them in the panel.
   #traceEngine: TraceEngine.TraceModel.Model<TraceEngine.Extras.FilmStrip.HandlersWithFilmStrip>;
@@ -899,7 +899,7 @@ export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClien
     this.callback = null;
   }
 
-  traceEventsCollected(events: SDK.TracingManager.EventPayload[]): void {
+  traceEventsCollected(events: TraceEngine.TracingManager.EventPayload[]): void {
     if (this.tracingModel) {
       this.tracingModel.addEvents(events);
     }
@@ -945,14 +945,14 @@ export class FilmStripRecorder implements SDK.TracingManager.TracingManagerClien
     this.filmStripView.reset();
     this.filmStripView.setStatusText(i18nString(UIStrings.recordingFrames));
     const tracingManager =
-        SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.TracingManager.TracingManager);
+        SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(TraceEngine.TracingManager.TracingManager);
     if (this.tracingManager || !tracingManager) {
       return;
     }
 
     this.tracingManager = tracingManager;
     this.resourceTreeModel = this.tracingManager.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
-    this.tracingModel = new SDK.TracingModel.TracingModel();
+    this.tracingModel = new TraceEngine.Legacy.TracingModel();
     void this.tracingManager.start(this, '-*,disabled-by-default-devtools.screenshot', '');
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FilmStripStartedRecording);

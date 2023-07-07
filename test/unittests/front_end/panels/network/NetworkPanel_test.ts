@@ -6,6 +6,7 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Logs from '../../../../../front_end/models/logs/logs.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Network from '../../../../../front_end/panels/network/network.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
@@ -55,7 +56,7 @@ describeWithMockConnection('NetworkPanel', () => {
       Common.Settings.Settings.instance().moduleSetting('networkRecordFilmStripSetting').set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel);
-      const tracingManager = target.model(SDK.TracingManager.TracingManager);
+      const tracingManager = target.model(TraceEngine.TracingManager.TracingManager);
       assertNotNullOrUndefined(tracingManager);
       const tracingStart = sinon.spy(tracingManager, 'start');
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.WillReloadPage);
@@ -67,7 +68,7 @@ describeWithMockConnection('NetworkPanel', () => {
       Common.Settings.Settings.instance().moduleSetting('networkRecordFilmStripSetting').set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assertNotNullOrUndefined(resourceTreeModel);
-      const tracingManager = target.model(SDK.TracingManager.TracingManager);
+      const tracingManager = target.model(TraceEngine.TracingManager.TracingManager);
       assertNotNullOrUndefined(tracingManager);
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.WillReloadPage);
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);

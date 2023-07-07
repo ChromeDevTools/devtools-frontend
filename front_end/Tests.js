@@ -38,7 +38,6 @@
  */
 
 (function createTestSuite(window) {
-
   const TestSuite = class {
     /**
      * Test suite for interactive UI tests.
@@ -149,6 +148,7 @@
         self.runtime.loadLegacyModule('core/host/host-legacy.js'),
         self.runtime.loadLegacyModule('ui/legacy/legacy-legacy.js'),
         self.runtime.loadLegacyModule('models/workspace/workspace-legacy.js'),
+        self.runtime.loadLegacyModule('models/trace/trace-legacy.js'),
       ]);
       this.reportOk_();
     } catch (e) {
@@ -429,8 +429,8 @@
       test.assertTrue(
           request.timing.receiveHeadersEnd - request.timing.connectStart >= 70,
           'Time between receiveHeadersEnd and connectStart should be >=70ms, but was ' +
-              'receiveHeadersEnd=' + request.timing.receiveHeadersEnd + ', connectStart=' +
-              request.timing.connectStart + '.');
+              'receiveHeadersEnd=' + request.timing.receiveHeadersEnd +
+              ', connectStart=' + request.timing.connectStart + '.');
       test.assertTrue(
           request.responseReceivedTime - request.startTime >= 0.07,
           'Time between responseReceivedTime and startTime should be >=0.07s, but was ' +
@@ -484,7 +484,6 @@
   };
 
   TestSuite.prototype.testConsoleOnNavigateBack = function() {
-
     function filteredMessages() {
       return SDK.ConsoleModel.allMessagesUnordered().filter(a => a.source !== Protocol.Log.LogEntrySource.Violation);
     }
@@ -1075,11 +1074,13 @@
     self.SDK.targetManager.addModelListener(
         SDK.NetworkManager, SDK.NetworkManager.Events.ResponseReceived, onResponseReceived);
 
-    this.evaluateInConsole_(`
+    this.evaluateInConsole_(
+        `
       let img = document.createElement('img');
       img.src = "${url}";
       document.body.appendChild(img);
-    `, () => {});
+    `,
+        () => {});
 
     let count = 0;
     function onResponseReceived(event) {
@@ -1390,7 +1391,7 @@
     this.assertEquals(childFrameOutput, await takeLogs(self.SDK.targetManager.targets()[1]));
 
     await inputAgent.invoke_dispatchKeyEvent({type: 'keyDown', key: 'a'});
-    await runtimeAgent.invoke_evaluate({expression: "document.querySelector('iframe').focus()"});
+    await runtimeAgent.invoke_evaluate({expression: 'document.querySelector(\'iframe\').focus()'});
     await inputAgent.invoke_dispatchKeyEvent({type: 'keyDown', key: 'a'});
     parentFrameOutput = 'Event type: keydown';
     this.assertEquals(parentFrameOutput, await takeLogs(self.SDK.targetManager.targets()[0]));

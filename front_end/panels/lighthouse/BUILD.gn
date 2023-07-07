@@ -37,6 +37,7 @@ devtools_module("lighthouse") {
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../panels/emulation:bundle",
     "../../panels/timeline:bundle",

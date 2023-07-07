@@ -5,6 +5,7 @@
 import timelinePaintProfilerStyles from './timelinePaintProfiler.css.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -17,7 +18,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   private readonly logTreeView: LayerViewer.PaintProfilerView.PaintProfilerCommandLogView;
   private needsUpdateWhenVisible: boolean;
   private pendingSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
-  private event: SDK.TracingModel.Event|null;
+  private event: TraceEngine.Legacy.Event|null;
   private paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
   private lastLoadedSnapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null;
   constructor(frameModel: TimelineModel.TimelineFrameModel.TimelineFrameModel) {
@@ -64,7 +65,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     this.updateWhenVisible();
   }
 
-  setEvent(paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel, event: SDK.TracingModel.Event): boolean {
+  setEvent(paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel, event: TraceEngine.Legacy.Event): boolean {
     this.releaseSnapshot();
     this.paintProfilerModel = paintProfilerModel;
     this.pendingSnapshot = null;
@@ -107,7 +108,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       // it.
       const picture =
           (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(this.event).picture as
-           SDK.TracingModel.ObjectSnapshot);
+           TraceEngine.Legacy.ObjectSnapshot);
       const snapshotData = picture.getSnapshot() as unknown as {skp64: string};
       snapshotPromise = this.paintProfilerModel.loadSnapshot(snapshotData['skp64']).then(snapshot => {
         return snapshot && {rect: null, snapshot: snapshot};

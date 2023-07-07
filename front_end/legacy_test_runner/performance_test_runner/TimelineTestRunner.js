@@ -73,7 +73,7 @@ TestRunner.formatters.formatAsInvalidationCause = function(cause) {
 };
 
 PerformanceTestRunner.createTracingModel = function(events) {
-  const model = new SDK.TracingModel();
+  const model = new Trace.TracingModel();
   model.addEvents(events);
   model.tracingComplete();
   return model;
@@ -85,7 +85,7 @@ PerformanceTestRunner.tracingModel = function() {
 
 PerformanceTestRunner.invokeWithTracing = function(functionName, callback, additionalCategories, enableJSSampling) {
   let categories = '-*,disabled-by-default-devtools.timeline*,devtools.timeline,blink.user_timing,' +
-      SDK.TracingModel.LegacyTopLevelEventCategory;
+      Trace.TracingModel.LegacyTopLevelEventCategory;
 
   if (additionalCategories) {
     categories += ',' + additionalCategories;
@@ -119,7 +119,7 @@ PerformanceTestRunner.timelineFrameModel = function() {
 };
 
 PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) {
-  const tracingModel = new SDK.TracingModel();
+  const tracingModel = new Trace.TracingModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();
   const performanceModel = new Timeline.PerformanceModel();

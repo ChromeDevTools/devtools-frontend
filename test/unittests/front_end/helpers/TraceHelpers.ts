@@ -1,11 +1,10 @@
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceModel from '../../../../front_end/models/trace/trace.js';
+import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
-import type * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as PerfUI from '../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 
 import {initializeGlobalVars} from './EnvironmentHelpers.js';
@@ -141,12 +140,12 @@ async function generateModelDataForTraceFile(
   });
 }
 
-export async function loadTraceEventsLegacyEventPayload(
-    context: Mocha.Context|Mocha.Suite|null, name: string): Promise<readonly SDK.TracingManager.EventPayload[]> {
+export async function loadTraceEventsLegacyEventPayload(context: Mocha.Context|Mocha.Suite|null, name: string):
+    Promise<readonly TraceEngine.TracingManager.EventPayload[]> {
   const events = await loadEventsFromTraceFile(context, name);
   // Convince TypeScript that these are really EventPayload events, so they can
   // be used when testing OPP code that expects EventPayload events.
-  return events as unknown as Array<SDK.TracingManager.EventPayload>;
+  return events as unknown as Array<TraceEngine.TracingManager.EventPayload>;
 }
 
 /**
@@ -300,7 +299,7 @@ export async function getNetworkFlameChartWithLegacyTrack(traceFileName: string,
 }
 
 type LoadedModels = {
-  tracingModel: SDK.TracingModel.TracingModel,
+  tracingModel: TraceEngine.Legacy.TracingModel,
   timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
   performanceModel: Timeline.PerformanceModel.PerformanceModel,
   traceParsedData: TraceModel.Handlers.Types.TraceParseData,
@@ -329,7 +328,7 @@ export async function allModelsFromFile(context: Mocha.Context|Mocha.Suite|null,
   const traceParsedData = await loadModelDataFromTraceFile(context, file);
   TimelineModel.TimelineModel.EventOnTimelineData.reset();
   const events = await loadTraceEventsLegacyEventPayload(context, file);
-  const tracingModel = new SDK.TracingModel.TracingModel();
+  const tracingModel = new TraceEngine.Legacy.TracingModel();
   const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();
@@ -349,10 +348,10 @@ export async function allModelsFromFile(context: Mocha.Context|Mocha.Suite|null,
  * Takes a TracingModel and returns a set of all events that have a payload, sorted by timestamp.
  * Useful in tests to locate a legacy SDK Event to use for tests.
  **/
-export function getAllTracingModelPayloadEvents(tracingModel: SDK.TracingModel.TracingModel):
-    SDK.TracingModel.PayloadEvent[] {
+export function getAllTracingModelPayloadEvents(tracingModel: TraceEngine.Legacy.TracingModel):
+    TraceEngine.Legacy.PayloadEvent[] {
   const allSDKEvents = tracingModel.sortedProcesses().flatMap(process => {
-    return process.sortedThreads().flatMap(thread => thread.events().filter(SDK.TracingModel.eventHasPayload));
+    return process.sortedThreads().flatMap(thread => thread.events().filter(TraceEngine.Legacy.eventHasPayload));
   });
   allSDKEvents.sort((eventA, eventB) => {
     if (eventA.startTime > eventB.startTime) {
@@ -513,30 +512,30 @@ export function makeInstantEvent(
 }
 
 /**
- * Provides a stubbed SDK.TracingModel.Thread instance.
+ * Provides a stubbed TraceEngine.Legacy.Thread instance.
  * IMPORTANT: this is not designed to be a fully stubbed Thread, but one that is
- * stubbed enough to be able to use it to instantiate an SDK.TracingModel.Event.
+ * stubbed enough to be able to use it to instantiate an TraceEngine.Legacy.Event.
  * If you pass this fake thread around into places that expect actual threads,
  * you will get errors. Use this only for simple cases where you need a one off
  * event to test something. For anything more, you should use the helpers in
  * TraceHelpers.ts to load and parse a real trace to get real data.
  **/
 export class StubbedThread {
-  static make(id: number): SDK.TracingModel.Thread {
+  static make(id: number): TraceEngine.Legacy.Thread {
     const instance = new StubbedThread(id);
-    return instance as unknown as SDK.TracingModel.Thread;
+    return instance as unknown as TraceEngine.Legacy.Thread;
   }
 
   constructor(public id: number) {
   }
 
-  getModel(): SDK.TracingModel.TracingModel {
+  getModel(): TraceEngine.Legacy.TracingModel {
     return {
       parsedCategoriesForString(input: string): Set<string> {
         return new Set(input.split(','));
       },
 
-    } as unknown as SDK.TracingModel.TracingModel;
+    } as unknown as TraceEngine.Legacy.TracingModel;
   }
 }
 
@@ -568,8 +567,8 @@ export interface FakeEventPayload {
  * should use an actual trace file if you need that), but to allow the
  * construction of single events to make testing utility methods easier.
  **/
-export function makeFakeEventPayload(payload: FakeEventPayload): SDK.TracingManager.EventPayload {
-  const event: SDK.TracingManager.EventPayload = {
+export function makeFakeEventPayload(payload: FakeEventPayload): TraceEngine.TracingManager.EventPayload {
+  const event: TraceEngine.TracingManager.EventPayload = {
     // Set defaults for these values, all of which can be overriden by passing
     // them into the payload object.
     args: {},
@@ -591,20 +590,20 @@ export function makeFakeEventPayload(payload: FakeEventPayload): SDK.TracingMana
  * mimic the real thing. It is not designed to be used to emulate entire traces,
  * but more to create single events that can be used in unit tests.
  **/
-export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): SDK.TracingModel.PayloadEvent {
+export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): TraceEngine.Legacy.PayloadEvent {
   const payload = makeFakeEventPayload(payloadOptions);
   const thread = StubbedThread.make(payload.tid);
-  const event = SDK.TracingModel.PayloadEvent.fromPayload(payload, thread);
+  const event = TraceEngine.Legacy.PayloadEvent.fromPayload(payload, thread);
   return event;
 }
 
 export async function traceModelFromTraceFile(context: Mocha.Context|Mocha.Suite|null, file: string): Promise<{
-  tracingModel: SDK.TracingModel.TracingModel,
+  tracingModel: TraceEngine.Legacy.TracingModel,
   timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
   performanceModel: Timeline.PerformanceModel.PerformanceModel,
 }> {
   const events = await loadTraceEventsLegacyEventPayload(context, file);
-  const tracingModel = new SDK.TracingModel.TracingModel();
+  const tracingModel = new TraceEngine.Legacy.TracingModel();
   const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();
@@ -666,7 +665,7 @@ export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataP
     return 'black';
   }
 
-  navStartTimes(): Map<string, SDK.TracingModel.Event> {
+  navStartTimes(): Map<string, TraceEngine.Legacy.Event> {
     return new Map();
   }
 

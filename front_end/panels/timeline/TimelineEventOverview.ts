@@ -30,7 +30,6 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
@@ -183,7 +182,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     }
     applyPattern(backgroundContext);
 
-    function drawThreadEvents(ctx: CanvasRenderingContext2D, events: SDK.TracingModel.Event[]): void {
+    function drawThreadEvents(ctx: CanvasRenderingContext2D, events: TraceEngine.Legacy.Event[]): void {
       const quantizer = new Quantizer(timeOffset, quantTime, drawSample);
       let x = 0;
       const categoryIndexStack: number[] = [];
@@ -206,8 +205,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         x += quantSizePx;
       }
 
-      function onEventStart(e: SDK.TracingModel.CompatibleTraceEvent): void {
-        const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
+      function onEventStart(e: TraceEngine.Legacy.CompatibleTraceEvent): void {
+        const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
         const index = categoryIndexStack.length ? categoryIndexStack[categoryIndexStack.length - 1] : idleIndex;
         quantizer.appendInterval(startTime, (index as number));
         const categoryIndex = categoryToIndex.get(TimelineUIUtils.eventStyle(e).category);
@@ -218,8 +217,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         categoryIndexStack.push(categoryIndex !== undefined ? categoryIndex : otherIndex);
       }
 
-      function onEventEnd(e: SDK.TracingModel.CompatibleTraceEvent): void {
-        const {endTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
+      function onEventEnd(e: TraceEngine.Legacy.CompatibleTraceEvent): void {
+        const {endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
         const lastCategoryIndex = categoryIndexStack.pop();
         if (endTime !== undefined && lastCategoryIndex) {
           quantizer.appendInterval(endTime, lastCategoryIndex);
@@ -463,14 +462,14 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     const minTime = this.model.timelineModel().minimumRecordTime();
     const maxTime = this.model.timelineModel().maximumRecordTime();
 
-    function isUpdateCountersEvent(event: SDK.TracingModel.Event): boolean {
+    function isUpdateCountersEvent(event: TraceEngine.Legacy.Event): boolean {
       return event.name === TimelineModel.TimelineModel.RecordType.UpdateCounters;
     }
     for (let i = 0; i < trackEvents.length; i++) {
       trackEvents[i] = trackEvents[i].filter(isUpdateCountersEvent);
     }
 
-    function calculateMinMaxSizes(event: SDK.TracingModel.Event): void {
+    function calculateMinMaxSizes(event: TraceEngine.Legacy.Event): void {
       const counters = event.args.data;
       if (!counters || !counters.jsHeapSizeUsed) {
         return;
@@ -491,7 +490,7 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
 
     const histogram = new Array(width);
 
-    function buildHistogram(event: SDK.TracingModel.Event): void {
+    function buildHistogram(event: TraceEngine.Legacy.Event): void {
       const counters = event.args.data;
       if (!counters || !counters.jsHeapSizeUsed) {
         return;

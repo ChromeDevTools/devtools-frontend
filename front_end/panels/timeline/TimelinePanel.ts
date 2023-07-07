@@ -472,7 +472,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#historyManager.cancelIfShowing();
   }
 
-  loadFromEvents(events: SDK.TracingManager.EventPayload[]): void {
+  loadFromEvents(events: TraceEngine.TracingManager.EventPayload[]): void {
     if (this.state !== State.Idle) {
       return;
     }
@@ -1260,7 +1260,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async loadingComplete(
-      tracingModel: SDK.TracingModel.TracingModel|null,
+      tracingModel: TraceEngine.Legacy.TracingModel|null,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null): Promise<void> {
     this.#traceEngineModel.reset();
     delete this.loader;
@@ -1332,10 +1332,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * parsing to complete.
    **/
   async #executeNewTraceEngine(
-      tracingModel: SDK.TracingModel.TracingModel, isFreshRecording: boolean, recordStartTime?: number): Promise<void> {
+      tracingModel: TraceEngine.Legacy.TracingModel, isFreshRecording: boolean,
+      recordStartTime?: number): Promise<void> {
     const shouldGatherMetadata = isFreshRecording && !isNode;
     const metadata =
-        shouldGatherMetadata ? await SDK.TraceSDKServices.getMetadataForFreshRecording(recordStartTime) : undefined;
+        shouldGatherMetadata ? await TraceEngine.SDKServices.getMetadataForFreshRecording(recordStartTime) : undefined;
 
     return this.#traceEngineModel.parse(
         // OPP's data layer uses `EventPayload` as the type to represent raw JSON from the trace.
@@ -1449,7 +1450,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.setSelection(selection);
   }
 
-  selectEntryAtTime(events: SDK.TracingModel.Event[]|null, time: number): void {
+  selectEntryAtTime(events: TraceEngine.Legacy.Event[]|null, time: number): void {
     if (!events) {
       return;
     }
@@ -1458,7 +1459,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
          index >= 0; --index) {
       const event = events[index];
       const endTime = event.endTime || event.startTime;
-      if (SDK.TracingModel.TracingModel.isTopLevelEvent(event) && endTime < time) {
+      if (TraceEngine.Legacy.TracingModel.isTopLevelEvent(event) && endTime < time) {
         break;
       }
       if (this.performanceModel && this.performanceModel.isVisible(event) && endTime >= time) {
@@ -1469,7 +1470,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.select(null);
   }
 
-  highlightEvent(event: SDK.TracingModel.Event|null): void {
+  highlightEvent(event: TraceEngine.Legacy.Event|null): void {
     this.flameChart.highlightEvent(event);
   }
 
@@ -1526,8 +1527,8 @@ export const rowHeight = 18;
 export const headerHeight = 20;
 export interface TimelineModeViewDelegate {
   select(selection: TimelineSelection|null): void;
-  selectEntryAtTime(events: SDK.TracingModel.CompatibleTraceEvent[]|null, time: number): void;
-  highlightEvent(event: SDK.TracingModel.CompatibleTraceEvent|null): void;
+  selectEntryAtTime(events: TraceEngine.Legacy.CompatibleTraceEvent[]|null, time: number): void;
+  highlightEvent(event: TraceEngine.Legacy.CompatibleTraceEvent|null): void;
 }
 
 export class StatusPane extends UI.Widget.VBox {

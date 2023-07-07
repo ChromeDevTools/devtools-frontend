@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
@@ -14,7 +15,7 @@ const resolveNamesTimeout = 500;
 
 export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private mainTargetInternal: SDK.Target.Target|null;
-  private tracingModelInternal: SDK.TracingModel.TracingModel|null;
+  private tracingModelInternal: TraceEngine.Legacy.TracingModel|null;
   private filtersInternal: TimelineModel.TimelineModelFilter.TimelineModelFilter[];
   private readonly timelineModelInternal: TimelineModel.TimelineModel.TimelineModelImpl;
   private readonly frameModelInternal: TimelineModel.TimelineFrameModel.TimelineFrameModel;
@@ -61,11 +62,11 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.filtersInternal;
   }
 
-  isVisible(event: SDK.TracingModel.Event): boolean {
+  isVisible(event: TraceEngine.Legacy.Event): boolean {
     return this.filtersInternal.every(f => f.accept(event));
   }
 
-  async setTracingModel(model: SDK.TracingModel.TracingModel, isFreshRecording = false): Promise<void> {
+  async setTracingModel(model: TraceEngine.Legacy.TracingModel, isFreshRecording = false): Promise<void> {
     this.tracingModelInternal = model;
     this.timelineModelInternal.setEvents(model, isFreshRecording);
     await this.addSourceMapListeners();
@@ -152,7 +153,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     this.dispatchEventToListeners(Events.NamesResolved);
   }
 
-  tracingModel(): SDK.TracingModel.TracingModel {
+  tracingModel(): TraceEngine.Legacy.TracingModel {
     if (!this.tracingModelInternal) {
       throw 'call setTracingModel before accessing PerformanceModel';
     }
@@ -182,7 +183,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   private autoWindowTimes(): void {
     const timelineModel = this.timelineModelInternal;
-    let tasks: SDK.TracingModel.Event[] = [];
+    let tasks: TraceEngine.Legacy.Event[] = [];
     for (const track of timelineModel.tracks()) {
       // Deliberately pick up last main frame's track.
       if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame) {

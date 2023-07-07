@@ -9,6 +9,7 @@ import * as TimelineModel from '../../../../../front_end/models/timeline_model/t
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
@@ -86,14 +87,14 @@ const SOURCE_MAP_URL = 'file://gen.js.map';
 
 describeWithMockConnection('Name resolving in the Performance panel', () => {
   let performanceModel: Timeline.PerformanceModel.PerformanceModel;
-  let tracingModel: SDK.TracingModel.TracingModel;
+  let tracingModel: TraceEngine.Legacy.TracingModel;
   let target: SDK.Target.Target;
   beforeEach(async function() {
     target = createTarget();
     performanceModel = new Timeline.PerformanceModel.PerformanceModel();
     const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
         profile, 1, false, 'mock-name');
-    tracingModel = new SDK.TracingModel.TracingModel();
+    tracingModel = new TraceEngine.Legacy.TracingModel();
     tracingModel.addEvents(traceEvents);
     await performanceModel.setTracingModel(tracingModel);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();

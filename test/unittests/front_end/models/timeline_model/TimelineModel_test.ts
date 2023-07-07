@@ -7,7 +7,6 @@ const {assert} = chai;
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
@@ -187,13 +186,13 @@ function summarizeArray(tracks: TimelineModel.TimelineModel.Track[]): TrackSumma
 }
 
 describeWithEnvironment('TimelineModel', function() {
-  function traceWithEvents(events: readonly SDK.TracingManager.EventPayload[]): {
-    tracingModel: SDK.TracingModel.TracingModel,
+  function traceWithEvents(events: readonly TraceEngine.TracingManager.EventPayload[]): {
+    tracingModel: TraceEngine.Legacy.TracingModel,
     timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
   } {
-    const tracingModel = new SDK.TracingModel.TracingModel();
+    const tracingModel = new TraceEngine.Legacy.TracingModel();
     const timelineModel = new TimelineModel.TimelineModel.TimelineModelImpl();
-    tracingModel.addEvents((preamble as unknown as SDK.TracingManager.EventPayload[]).concat(events));
+    tracingModel.addEvents((preamble as unknown as TraceEngine.TracingManager.EventPayload[]).concat(events));
     tracingModel.tracingComplete();
     timelineModel.setEvents(tracingModel);
     return {
@@ -399,12 +398,12 @@ describeWithEnvironment('TimelineModel', function() {
     });
   });
   describe('Track.syncLikeEvents', function() {
-    let nestableAsyncEvents: SDK.TracingModel.AsyncEvent[];
-    let nonNestableAsyncEvents: SDK.TracingModel.AsyncEvent[];
-    let syncEvents: SDK.TracingModel.PayloadEvent[];
-    const tracingModel = new SDK.TracingModel.TracingModel();
-    const process = new SDK.TracingModel.Process(tracingModel, 1);
-    const thread = new SDK.TracingModel.Thread(process, 1);
+    let nestableAsyncEvents: TraceEngine.Legacy.AsyncEvent[];
+    let nonNestableAsyncEvents: TraceEngine.Legacy.AsyncEvent[];
+    let syncEvents: TraceEngine.Legacy.PayloadEvent[];
+    const tracingModel = new TraceEngine.Legacy.TracingModel();
+    const process = new TraceEngine.Legacy.Process(tracingModel, 1);
+    const thread = new TraceEngine.Legacy.Thread(process, 1);
     const nestableAsyncEventPayloads = [
       {
         'cat': 'blink.console',
@@ -448,7 +447,7 @@ describeWithEnvironment('TimelineModel', function() {
         'ph': 'e',
         'ts': 59626783430,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[];
+    ] as unknown as TraceEngine.TracingManager.EventPayload[];
 
     const nonNestableAsyncEventPayloads = [
       {
@@ -493,7 +492,7 @@ describeWithEnvironment('TimelineModel', function() {
         'ph': 'e',
         'ts': 62264414198,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[];
+    ] as unknown as TraceEngine.TracingManager.EventPayload[];
 
     const syncEventPayloads = [
       {
@@ -514,15 +513,16 @@ describeWithEnvironment('TimelineModel', function() {
         'ph': 'R',
         'ts': 62263714292,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[];
+    ] as unknown as TraceEngine.TracingManager.EventPayload[];
 
-    function buildAsyncEvents(asyncPayloads: SDK.TracingManager.EventPayload[]): SDK.TracingModel.AsyncEvent[] {
-      const builtEvents = new Map<string, SDK.TracingModel.AsyncEvent>();
+    function buildAsyncEvents(asyncPayloads: TraceEngine.TracingManager.EventPayload[]):
+        TraceEngine.Legacy.AsyncEvent[] {
+      const builtEvents = new Map<string, TraceEngine.Legacy.AsyncEvent>();
       for (const payload of asyncPayloads) {
         let beginEvent = builtEvents.get(payload.id);
-        const event = new SDK.TracingModel.AsyncEvent(SDK.TracingModel.PayloadEvent.fromPayload(payload, thread));
+        const event = new TraceEngine.Legacy.AsyncEvent(TraceEngine.Legacy.PayloadEvent.fromPayload(payload, thread));
         if (!beginEvent) {
-          beginEvent = new SDK.TracingModel.AsyncEvent(event);
+          beginEvent = new TraceEngine.Legacy.AsyncEvent(event);
           builtEvents.set(payload.id, beginEvent);
         } else {
           beginEvent.addStep(event);
@@ -533,7 +533,7 @@ describeWithEnvironment('TimelineModel', function() {
     beforeEach(() => {
       nestableAsyncEvents = buildAsyncEvents(nestableAsyncEventPayloads);
       nonNestableAsyncEvents = buildAsyncEvents(nonNestableAsyncEventPayloads);
-      syncEvents = syncEventPayloads.map(payload => SDK.TracingModel.PayloadEvent.fromPayload(payload, thread));
+      syncEvents = syncEventPayloads.map(payload => TraceEngine.Legacy.PayloadEvent.fromPayload(payload, thread));
     });
     it('returns sync and async events if async events can be organized in a tree structure', function() {
       const track = new TimelineModel.TimelineModel.Track();
@@ -615,7 +615,7 @@ describeWithEnvironment('TimelineModel', function() {
         'ts': 962633189667,
         'tts': 23962912,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[]);
+    ] as unknown as TraceEngine.TracingManager.EventPayload[]);
     const trackInfo = summarizeArray(timelineModel.tracks());
     assert.deepEqual(trackInfo, [
       {
@@ -731,7 +731,7 @@ describeWithEnvironment('TimelineModel', function() {
         'ts': 962632415206,
         'tts': 165467,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[]);
+    ] as unknown as TraceEngine.TracingManager.EventPayload[]);
     const trackInfo = summarizeArray(timelineModel.tracks());
     assert.deepEqual(trackInfo, [
       {
@@ -845,7 +845,7 @@ describeWithEnvironment('TimelineModel', function() {
         'ts': 962632415206,
         'tts': 165467,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[]);
+    ] as unknown as TraceEngine.TracingManager.EventPayload[]);
     const trackInfo = summarizeArray(timelineModel.tracks());
     assert.deepEqual(trackInfo, [
       {
@@ -962,7 +962,7 @@ describeWithEnvironment('TimelineModel', function() {
         'ts': 962632415206,
         'tts': 165467,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[]);
+    ] as unknown as TraceEngine.TracingManager.EventPayload[]);
     const trackInfo = summarizeArray(timelineModel.tracks());
     assert.deepEqual(trackInfo, [
       {
@@ -1046,7 +1046,7 @@ describeWithEnvironment('TimelineModel', function() {
         'tid': 1,
         'ts': 0,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[]);
+    ] as unknown as TraceEngine.TracingManager.EventPayload[]);
     const trackInfo = summarizeArray(timelineModel.tracks());
     assert.deepEqual(trackInfo, [
       {
@@ -1182,7 +1182,7 @@ describeWithEnvironment('TimelineModel', function() {
         'tid': 1537480,
         'ts': 962633199669,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[]);
+    ] as unknown as TraceEngine.TracingManager.EventPayload[]);
     const trackInfo = summarizeArray(timelineModel.tracks());
     assert.deepEqual(trackInfo, [
       {
@@ -1260,7 +1260,7 @@ describeWithEnvironment('TimelineModel', function() {
         'ts': 962632244598,
         'tts': 23622650,
       },
-    ] as unknown as SDK.TracingManager.EventPayload[]);
+    ] as unknown as TraceEngine.TracingManager.EventPayload[]);
     const trackInfo = summarizeArray(timelineModel.tracks());
     assert.deepEqual(trackInfo, [
       {
@@ -1430,10 +1430,10 @@ describeWithEnvironment('TimelineModel', function() {
 });
 
 describeWithEnvironment('TimelineData', function() {
-  function getAllTracingModelPayloadEvents(tracingModel: SDK.TracingModel.TracingModel):
-      SDK.TracingModel.PayloadEvent[] {
+  function getAllTracingModelPayloadEvents(tracingModel: TraceEngine.Legacy.TracingModel):
+      TraceEngine.Legacy.PayloadEvent[] {
     const allSDKEvents = tracingModel.sortedProcesses().flatMap(process => {
-      return process.sortedThreads().flatMap(thread => thread.events().filter(SDK.TracingModel.eventHasPayload));
+      return process.sortedThreads().flatMap(thread => thread.events().filter(TraceEngine.Legacy.eventHasPayload));
     });
     allSDKEvents.sort((eventA, eventB) => {
       if (eventA.startTime > eventB.startTime) {
@@ -1478,7 +1478,7 @@ describeWithEnvironment('TimelineData', function() {
   it('stores data for a constructed event using the event as the key', async function() {
     const thread = StubbedThread.make(1);
     // None of the details here matter, we just need some constructed event.
-    const fakeConstructedEvent = new SDK.TracingModel.ConstructedEvent(
+    const fakeConstructedEvent = new TraceEngine.Legacy.ConstructedEvent(
         'blink.user_timing',
         'some-test-event',
         TraceEngine.Types.TraceEvents.Phase.INSTANT,

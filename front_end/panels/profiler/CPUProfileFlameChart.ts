@@ -29,12 +29,13 @@
  */
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as i18n from '../../core/i18n/i18n.js';
+
 import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 let colorGeneratorInstance: Common.Color.Generator|null = null;
 
@@ -135,7 +136,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
     return '#333';
   }
 
-  navStartTimes(): Map<string, SDK.TracingModel.Event> {
+  navStartTimes(): Map<string, TraceEngine.Legacy.Event> {
     return new Map();
   }
 

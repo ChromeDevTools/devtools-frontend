@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -86,7 +85,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private findNodeWithEvent(event: SDK.TracingModel.CompatibleTraceEvent): TimelineModel.TimelineProfileTree.Node|null {
+  private findNodeWithEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): TimelineModel.TimelineProfileTree.Node
+      |null {
     if (event.name === TraceEngine.Handlers.Types.KnownEventName.RunTask) {
       // No node is ever created for the top level RunTask event, so
       // bail out preemptively
@@ -107,7 +107,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return null;
   }
 
-  private selectEvent(event: SDK.TracingModel.CompatibleTraceEvent, expand?: boolean): void {
+  private selectEvent(event: TraceEngine.Legacy.CompatibleTraceEvent, expand?: boolean): void {
     const node = this.findNodeWithEvent(event);
     if (!node) {
       return;

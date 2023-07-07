@@ -8,7 +8,10 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("tracing") {
   sources = [ "PerformanceTracing.ts" ]
 
-  deps = [ "../../../front_end/core/sdk:bundle" ]
+  deps = [
+    "../../../front_end/core/sdk:bundle",
+    "../../models/trace:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {

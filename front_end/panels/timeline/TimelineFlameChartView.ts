@@ -68,7 +68,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly onMainEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly onNetworkEntrySelected: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   private readonly boundRefresh: () => void;
-  #selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null;
+  #selectedEvents: TraceEngine.Legacy.CompatibleTraceEvent[]|null;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly groupBySetting: Common.Settings.Setting<any>;
@@ -258,7 +258,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     // Events for tracks that are migrated to the new engine won't use
     // TimelineModel.TimelineData.
-    if (event instanceof SDK.TracingModel.Event) {
+    if (event instanceof TraceEngine.Legacy.Event) {
       const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
       backendNodeIds = timelineData.backendNodeIds;
     } else if (TraceEngine.Types.TraceEvents.isTraceEventLayoutShift(event)) {
@@ -274,7 +274,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
-  highlightEvent(event: SDK.TracingModel.Event|null): void {
+  highlightEvent(event: TraceEngine.Legacy.Event|null): void {
     const entryIndex =
         event ? this.mainDataProvider.entryIndexForSelection(TimelineSelection.fromTraceEvent(event)) : -1;
     if (entryIndex >= 0) {

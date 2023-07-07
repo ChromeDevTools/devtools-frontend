@@ -40,7 +40,7 @@ import {RecordType, EventOnTimelineData} from './TimelineModel.js';
 import {TracingLayerTree, type TracingLayerPayload, type TracingLayerTile} from './TracingLayerTree.js';
 
 export class TimelineFrameModel {
-  private readonly categoryMapper: (arg0: SDK.TracingModel.Event) => string;
+  private readonly categoryMapper: (arg0: TraceEngine.Legacy.Event) => string;
   private frames!: TimelineFrame[];
   private frameById!: {
     [x: number]: TimelineFrame,
@@ -62,9 +62,9 @@ export class TimelineFrameModel {
   private lastNeedsBeginFrame?: number|null;
   private lastTaskBeginTime?: number|null;
   private layerTreeId?: number|null;
-  private currentProcessMainThread?: SDK.TracingModel.Thread|null;
+  private currentProcessMainThread?: TraceEngine.Legacy.Thread|null;
 
-  constructor(categoryMapper: (arg0: SDK.TracingModel.Event) => string) {
+  constructor(categoryMapper: (arg0: TraceEngine.Legacy.Event) => string) {
     this.categoryMapper = categoryMapper;
 
     this.reset();
@@ -82,7 +82,7 @@ export class TimelineFrameModel {
     return this.frames.slice(firstFrame, lastFrame);
   }
 
-  hasRasterTile(rasterTask: SDK.TracingModel.Event): boolean {
+  hasRasterTile(rasterTask: TraceEngine.Legacy.Event): boolean {
     const data = rasterTask.args['tileData'];
     if (!data) {
       return false;
@@ -95,7 +95,7 @@ export class TimelineFrameModel {
     return true;
   }
 
-  rasterTilePromise(rasterTask: SDK.TracingModel.Event): Promise<{
+  rasterTilePromise(rasterTask: TraceEngine.Legacy.Event): Promise<{
     rect: Protocol.DOM.Rect,
     snapshot: SDK.PaintProfiler.PaintProfilerSnapshot,
   }|null> {
@@ -268,8 +268,8 @@ export class TimelineFrameModel {
     this.framePendingActivation = null;
   }
 
-  addTraceEvents(target: SDK.Target.Target|null, events: SDK.TracingModel.Event[], threadData: {
-    thread: SDK.TracingModel.Thread,
+  addTraceEvents(target: SDK.Target.Target|null, events: TraceEngine.Legacy.Event[], threadData: {
+    thread: TraceEngine.Legacy.Thread,
     time: number,
   }[]): void {
     this.target = target;
@@ -284,7 +284,7 @@ export class TimelineFrameModel {
     this.currentProcessMainThread = null;
   }
 
-  private addTraceEvent(event: SDK.TracingModel.Event): void {
+  private addTraceEvent(event: TraceEngine.Legacy.Event): void {
     if (event.startTime && event.startTime < this.minimumRecordTime) {
       this.minimumRecordTime = event.startTime;
     }
@@ -294,19 +294,19 @@ export class TimelineFrameModel {
     } else if (
         event.id && event.phase === TraceEngine.Types.TraceEvents.Phase.OBJECT_SNAPSHOT &&
         event.name === RecordType.LayerTreeHostImplSnapshot && Number(event.id) === this.layerTreeId && this.target) {
-      const snapshot = (event as SDK.TracingModel.ObjectSnapshot);
+      const snapshot = (event as TraceEngine.Legacy.ObjectSnapshot);
       this.handleLayerTreeSnapshot(new TracingFrameLayerTree(this.target, snapshot));
     } else {
       this.processCompositorEvents(event);
       if (event.thread === this.currentProcessMainThread) {
         this.addMainThreadTraceEvent(event);
-      } else if (this.lastFrame && event.selfTime && !SDK.TracingModel.TracingModel.isTopLevelEvent(event)) {
+      } else if (this.lastFrame && event.selfTime && !TraceEngine.Legacy.TracingModel.isTopLevelEvent(event)) {
         this.lastFrame.addTimeForCategory(this.categoryMapper(event), event.selfTime);
       }
     }
   }
 
-  private processCompositorEvents(event: SDK.TracingModel.Event): void {
+  private processCompositorEvents(event: TraceEngine.Legacy.Event): void {
     if (event.args['layerTreeId'] !== this.layerTreeId) {
       return;
     }
@@ -327,8 +327,8 @@ export class TimelineFrameModel {
     }
   }
 
-  private addMainThreadTraceEvent(event: SDK.TracingModel.Event): void {
-    if (SDK.TracingModel.TracingModel.isTopLevelEvent(event)) {
+  private addMainThreadTraceEvent(event: TraceEngine.Legacy.Event): void {
+    if (TraceEngine.Legacy.TracingModel.isTopLevelEvent(event)) {
       this.currentTaskTimeByCategory = {};
       this.lastTaskBeginTime = event.startTime;
     }
@@ -361,7 +361,7 @@ export class TimelineFrameModel {
       timeByCategory: {
         [x: string]: number,
       },
-      event: SDK.TracingModel.Event): void {
+      event: TraceEngine.Legacy.Event): void {
     if (!event.selfTime) {
       return;
     }
@@ -379,10 +379,10 @@ export class TimelineFrameModel {
 
 export class TracingFrameLayerTree {
   private readonly target: SDK.Target.Target;
-  private readonly snapshot: SDK.TracingModel.ObjectSnapshot;
+  private readonly snapshot: TraceEngine.Legacy.ObjectSnapshot;
   private paintsInternal!: LayerPaintEvent[]|undefined;
 
-  constructor(target: SDK.Target.Target, snapshot: SDK.TracingModel.ObjectSnapshot) {
+  constructor(target: SDK.Target.Target, snapshot: TraceEngine.Legacy.ObjectSnapshot) {
     this.target = target;
     this.snapshot = snapshot;
   }
@@ -482,10 +482,10 @@ export class TimelineFrame {
 }
 
 export class LayerPaintEvent {
-  private readonly eventInternal: SDK.TracingModel.Event;
+  private readonly eventInternal: TraceEngine.Legacy.Event;
   private readonly target: SDK.Target.Target|null;
 
-  constructor(event: SDK.TracingModel.Event, target: SDK.Target.Target|null) {
+  constructor(event: TraceEngine.Legacy.Event, target: SDK.Target.Target|null) {
     this.eventInternal = event;
     this.target = target;
   }
@@ -494,7 +494,7 @@ export class LayerPaintEvent {
     return this.eventInternal.args['data']['layerId'];
   }
 
-  event(): SDK.TracingModel.Event {
+  event(): TraceEngine.Legacy.Event {
     return this.eventInternal;
   }
 

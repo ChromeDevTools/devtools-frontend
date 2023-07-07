@@ -2,19 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../models/trace/trace.js';
 import type * as Protocol from '../../generated/protocol.js';
-
-import {DOMModel, type DOMNode} from './DOMModel.js';
-import {TargetManager} from './TargetManager.js';
-import {CPUThrottlingManager} from './CPUThrottlingManager.js';
-import {MultitargetNetworkManager} from './NetworkManager.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Handlers from './handlers/handlers.js';
+import type * as Types from './types/types.js';
 
 const domLookUpSingleNodeCache =
-    new Map<TraceEngine.Handlers.Types.TraceParseData, Map<Protocol.DOM.BackendNodeId, DOMNode|null>>();
+    new Map<Handlers.Types.TraceParseData, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
 const domLookUpBatchNodesCache = new Map<
-    TraceEngine.Handlers.Types.TraceParseData,
-    Map<Set<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, DOMNode|null>>>();
+    Handlers.Types.TraceParseData,
+    Map<Set<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>>();
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function _TEST_clearCache(): void {
@@ -30,14 +27,14 @@ export function _TEST_clearCache(): void {
  * first lookup.
  */
 export async function domNodeForBackendNodeID(
-    modelData: TraceEngine.Handlers.Types.TraceParseData, nodeId: Protocol.DOM.BackendNodeId): Promise<DOMNode|null> {
+    modelData: Handlers.Types.TraceParseData, nodeId: Protocol.DOM.BackendNodeId): Promise<SDK.DOMModel.DOMNode|null> {
   const fromCache = domLookUpSingleNodeCache.get(modelData)?.get(nodeId);
   if (fromCache !== undefined) {
     return fromCache;
   }
 
-  const target = TargetManager.instance().primaryPageTarget();
-  const domModel = target?.model(DOMModel);
+  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  const domModel = target?.model(SDK.DOMModel.DOMModel);
   if (!domModel) {
     return null;
   }
@@ -45,7 +42,8 @@ export async function domNodeForBackendNodeID(
   const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(new Set([nodeId]));
   const result = domNodesMap?.get(nodeId) || null;
 
-  const cacheForModel = domLookUpSingleNodeCache.get(modelData) || new Map<Protocol.DOM.BackendNodeId, DOMNode|null>();
+  const cacheForModel =
+      domLookUpSingleNodeCache.get(modelData) || new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>();
   cacheForModel.set(nodeId, result);
   domLookUpSingleNodeCache.set(modelData, cacheForModel);
 
@@ -57,14 +55,14 @@ export async function domNodeForBackendNodeID(
  * Results are cached based on 1) the provided TraceParseData and 2) the provided set of IDs.
  */
 export async function domNodesForMultipleBackendNodeIds(
-    modelData: TraceEngine.Handlers.Types.TraceParseData,
-    nodeIds: Set<Protocol.DOM.BackendNodeId>): Promise<Map<Protocol.DOM.BackendNodeId, DOMNode|null>> {
+    modelData: Handlers.Types.TraceParseData,
+    nodeIds: Set<Protocol.DOM.BackendNodeId>): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>> {
   const fromCache = domLookUpBatchNodesCache.get(modelData)?.get(nodeIds);
   if (fromCache) {
     return fromCache;
   }
-  const target = TargetManager.instance().primaryPageTarget();
-  const domModel = target?.model(DOMModel);
+  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  const domModel = target?.model(SDK.DOMModel.DOMModel);
   if (!domModel) {
     return new Map();
   }
@@ -72,7 +70,7 @@ export async function domNodesForMultipleBackendNodeIds(
   const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(nodeIds) || new Map();
 
   const cacheForModel = domLookUpBatchNodesCache.get(modelData) ||
-      new Map<Set<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, DOMNode|null>>();
+      new Map<Set<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
   cacheForModel.set(nodeIds, domNodesMap);
   domLookUpBatchNodesCache.set(modelData, cacheForModel);
 
@@ -80,18 +78,16 @@ export async function domNodesForMultipleBackendNodeIds(
 }
 
 const layoutShiftSourcesCache = new Map<
-    TraceEngine.Handlers.Types.TraceParseData,
-    Map<TraceEngine.Types.TraceEvents.TraceEventLayoutShift, readonly LayoutShiftSource[]>>();
+    Handlers.Types.TraceParseData, Map<Types.TraceEvents.TraceEventLayoutShift, readonly LayoutShiftSource[]>>();
 
 const normalizedLayoutShiftNodesCache = new Map<
-    TraceEngine.Handlers.Types.TraceParseData,
-    Map<TraceEngine.Types.TraceEvents.TraceEventLayoutShift,
-        readonly TraceEngine.Types.TraceEvents.TraceImpactedNode[]>>();
+    Handlers.Types.TraceParseData,
+    Map<Types.TraceEvents.TraceEventLayoutShift, readonly Types.TraceEvents.TraceImpactedNode[]>>();
 
 export interface LayoutShiftSource {
   previousRect: DOMRect;
   currentRect: DOMRect;
-  node: DOMNode;
+  node: SDK.DOMModel.DOMNode;
 }
 
 /**
@@ -106,8 +102,8 @@ export interface LayoutShiftSource {
  * shift, so it is is safe to call multiple times with the same input.
  */
 export async function sourcesForLayoutShift(
-    modelData: TraceEngine.Handlers.Types.TraceParseData,
-    event: TraceEngine.Types.TraceEvents.TraceEventLayoutShift): Promise<readonly LayoutShiftSource[]> {
+    modelData: Handlers.Types.TraceParseData,
+    event: Types.TraceEvents.TraceEventLayoutShift): Promise<readonly LayoutShiftSource[]> {
   const fromCache = layoutShiftSourcesCache.get(modelData)?.get(event);
   if (fromCache) {
     return fromCache;
@@ -127,8 +123,8 @@ export async function sourcesForLayoutShift(
       });
     }
   }));
-  const cacheForModel = layoutShiftSourcesCache.get(modelData) ||
-      new Map<TraceEngine.Types.TraceEvents.TraceEventLayoutShift, LayoutShiftSource[]>();
+  const cacheForModel =
+      layoutShiftSourcesCache.get(modelData) || new Map<Types.TraceEvents.TraceEventLayoutShift, LayoutShiftSource[]>();
   cacheForModel.set(event, sources);
   layoutShiftSourcesCache.set(modelData, cacheForModel);
   return sources;
@@ -147,8 +143,8 @@ export async function sourcesForLayoutShift(
  * See https://crbug.com/1300309 for details.
  */
 export async function normalizedImpactedNodesForLayoutShift(
-    modelData: TraceEngine.Handlers.Types.TraceParseData, event: TraceEngine.Types.TraceEvents.TraceEventLayoutShift):
-    Promise<readonly TraceEngine.Types.TraceEvents.TraceImpactedNode[]> {
+    modelData: Handlers.Types.TraceParseData,
+    event: Types.TraceEvents.TraceEventLayoutShift): Promise<readonly Types.TraceEvents.TraceImpactedNode[]> {
   const fromCache = normalizedLayoutShiftNodesCache.get(modelData)?.get(event);
   if (fromCache) {
     return fromCache;
@@ -159,7 +155,7 @@ export async function normalizedImpactedNodesForLayoutShift(
   }
 
   let viewportScale: number|null = null;
-  const target = TargetManager.instance().primaryPageTarget();
+  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
   // Get the CSS-to-physical pixel ratio of the device the inspected
   // target is running at.
   const evaluateResult = await target?.runtimeAgent().invoke_evaluate({expression: 'window.devicePixelRatio'});
@@ -172,7 +168,7 @@ export async function normalizedImpactedNodesForLayoutShift(
     return impactedNodes;
   }
 
-  const normalizedNodes: TraceEngine.Types.TraceEvents.TraceImpactedNode[] = [];
+  const normalizedNodes: Types.TraceEvents.TraceImpactedNode[] = [];
   for (const impactedNode of impactedNodes) {
     const newNode = {...impactedNode};
     for (let i = 0; i < impactedNode.old_rect.length; i++) {
@@ -185,18 +181,16 @@ export async function normalizedImpactedNodesForLayoutShift(
   }
 
   const cacheForModel = normalizedLayoutShiftNodesCache.get(modelData) ||
-      new Map<TraceEngine.Types.TraceEvents.TraceEventLayoutShift,
-              readonly TraceEngine.Types.TraceEvents.TraceImpactedNode[]>();
+      new Map<Types.TraceEvents.TraceEventLayoutShift, readonly Types.TraceEvents.TraceImpactedNode[]>();
   cacheForModel.set(event, normalizedNodes);
   normalizedLayoutShiftNodesCache.set(modelData, cacheForModel);
 
   return normalizedNodes;
 }
 
-export async function getMetadataForFreshRecording(recordStartTime?: number):
-    Promise<TraceEngine.Types.File.MetaData|undefined> {
+export async function getMetadataForFreshRecording(recordStartTime?: number): Promise<Types.File.MetaData|undefined> {
   try {
-    const cpuThrottlingManager = CPUThrottlingManager.instance();
+    const cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
 
     // If the CPU Throttling manager has yet to have its primary page target
     // set, it will block on the call to get the current hardware concurrency
@@ -209,7 +203,7 @@ export async function getMetadataForFreshRecording(recordStartTime?: number):
     // too long as a result.
     function getConcurrencyOrTimeout(): Promise<number|undefined> {
       return Promise.race([
-        CPUThrottlingManager.instance().getHardwareConcurrency(),
+        SDK.CPUThrottlingManager.CPUThrottlingManager.instance().getHardwareConcurrency(),
         new Promise<undefined>(resolve => {
           setTimeout(() => resolve(undefined), 1_000);
         }),
@@ -218,8 +212,8 @@ export async function getMetadataForFreshRecording(recordStartTime?: number):
 
     const hardwareConcurrency =
         cpuThrottlingManager.hasPrimaryPageTargetSet() ? await getConcurrencyOrTimeout() : undefined;
-    const cpuThrottling = CPUThrottlingManager.instance().cpuThrottlingRate();
-    const networkConditions = MultitargetNetworkManager.instance().networkConditions();
+    const cpuThrottling = SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate();
+    const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
     const networkTitle =
         typeof networkConditions.title === 'function' ? networkConditions.title() : networkConditions.title;
 

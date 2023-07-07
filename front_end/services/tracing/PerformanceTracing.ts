@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../core/sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 
-export class PerformanceTracing implements SDK.TracingManager.TracingManagerClient {
+export class PerformanceTracing implements TraceEngine.TracingManager.TracingManagerClient {
   readonly #traceEvents: Object[] = [];
-  #tracingManager: SDK.TracingManager.TracingManager|null = null;
+  #tracingManager: TraceEngine.TracingManager.TracingManager|null = null;
   #delegate: Delegate;
 
   constructor(target: SDK.Target.Target, delegate: Delegate) {
-    this.#tracingManager = target.model(SDK.TracingManager.TracingManager);
+    this.#tracingManager = target.model(TraceEngine.TracingManager.TracingManager);
     this.#delegate = delegate;
   }
 

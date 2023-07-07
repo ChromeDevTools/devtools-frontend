@@ -1361,7 +1361,7 @@ export class TimelineUIUtils {
     return frame.functionName;
   }
 
-  static testContentMatching(traceEvent: SDK.TracingModel.CompatibleTraceEvent, regExp: RegExp): boolean {
+  static testContentMatching(traceEvent: TraceEngine.Legacy.CompatibleTraceEvent, regExp: RegExp): boolean {
     const title = TimelineUIUtils.eventStyle(traceEvent).title;
     const tokens = [title];
     const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(traceEvent).url;
@@ -1391,7 +1391,7 @@ export class TimelineUIUtils {
     }
   }
 
-  static eventURL(event: SDK.TracingModel.Event): Platform.DevToolsPath.UrlString|null {
+  static eventURL(event: TraceEngine.Legacy.Event): Platform.DevToolsPath.UrlString|null {
     const data = event.args['data'] || event.args['beginData'];
     const url = data && data.url;
     if (url) {
@@ -1403,10 +1403,10 @@ export class TimelineUIUtils {
     return frame && frame.url as Platform.DevToolsPath.UrlString || null;
   }
 
-  static eventStyle(event: SDK.TracingModel.CompatibleTraceEvent): TimelineRecordStyle {
+  static eventStyle(event: TraceEngine.Legacy.CompatibleTraceEvent): TimelineRecordStyle {
     const eventStyles = TimelineUIUtils.initEventStyles();
-    if (SDK.TracingModel.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
-        SDK.TracingModel.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
+    if (TraceEngine.Legacy.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
+        TraceEngine.Legacy.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming)) {
       return new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['scripting']);
     }
 
@@ -1419,7 +1419,7 @@ export class TimelineUIUtils {
     return result;
   }
 
-  static eventColor(event: SDK.TracingModel.Event): string {
+  static eventColor(event: TraceEngine.Legacy.Event): string {
     if (TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
       const frame = event.args['data'];
       if (TimelineUIUtils.isUserFrame(frame)) {
@@ -1441,7 +1441,7 @@ export class TimelineUIUtils {
     return color;
   }
 
-  static eventTitle(event: SDK.TracingModel.CompatibleTraceEvent): string {
+  static eventTitle(event: TraceEngine.Legacy.CompatibleTraceEvent): string {
     const recordType = TimelineModel.TimelineModel.RecordType;
     const eventData = event.args['data'];
     if (TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
@@ -1450,9 +1450,9 @@ export class TimelineUIUtils {
 
     if (event.name === 'EventTiming') {
       let payload: TraceEngine.Types.TraceEvents.TraceEventData|null = null;
-      if (event instanceof SDK.TracingModel.PayloadEvent) {
+      if (event instanceof TraceEngine.Legacy.PayloadEvent) {
         payload = event.rawPayload();
-      } else if (SDK.TracingModel.eventIsFromNewEngine(event)) {
+      } else if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
         payload = event;
       }
 
@@ -1461,7 +1461,7 @@ export class TimelineUIUtils {
       }
     }
     const title = TimelineUIUtils.eventStyle(event).title;
-    if (SDK.TracingModel.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
+    if (TraceEngine.Legacy.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
       return title;
     }
     if (event.name === recordType.TimeStamp) {
@@ -1524,7 +1524,7 @@ export class TimelineUIUtils {
     }
   }
 
-  static async buildDetailsTextForTraceEvent(event: SDK.TracingModel.Event|
+  static async buildDetailsTextForTraceEvent(event: TraceEngine.Legacy.Event|
                                              TraceEngine.Types.TraceEvents.TraceEventData): Promise<string|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let detailsText;
@@ -1640,7 +1640,8 @@ export class TimelineUIUtils {
         break;
 
       default:
-        if (SDK.TracingModel.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
+        if (TraceEngine.Legacy.eventHasCategory(
+                event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
           detailsText = null;
         } else {
           detailsText = await linkifyTopCallFrameAsText();
@@ -1661,7 +1662,7 @@ export class TimelineUIUtils {
   }
 
   static async buildDetailsNodeForTraceEvent(
-      event: SDK.TracingModel.CompatibleTraceEvent, target: SDK.Target.Target|null,
+      event: TraceEngine.Legacy.CompatibleTraceEvent, target: SDK.Target.Target|null,
       linkifier: Components.Linkifier.Linkifier, isFreshRecording = false): Promise<Node|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let details: HTMLElement|HTMLSpanElement|(Element | null)|Text|null = null;
@@ -1778,7 +1779,8 @@ export class TimelineUIUtils {
       }
 
       default: {
-        if (SDK.TracingModel.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
+        if (TraceEngine.Legacy.eventHasCategory(
+                event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
           detailsText = null;
         } else {
           details = this.linkifyTopCallFrame(event, target, linkifier, isFreshRecording);
@@ -1811,7 +1813,7 @@ export class TimelineUIUtils {
   }
 
   static linkifyTopCallFrame(
-      event: SDK.TracingModel.CompatibleTraceEvent, target: SDK.Target.Target|null,
+      event: TraceEngine.Legacy.CompatibleTraceEvent, target: SDK.Target.Target|null,
       linkifier: Components.Linkifier.Linkifier, isFreshRecording = false): Element|null {
     const frame = TimelineModel.TimelineProfileTree.eventStackFrame(event);
     if (!frame) {
@@ -1831,7 +1833,7 @@ export class TimelineUIUtils {
     return Components.Linkifier.Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, options);
   }
 
-  static buildDetailsNodeForPerformanceEvent(event: SDK.TracingModel.Event|
+  static buildDetailsNodeForPerformanceEvent(event: TraceEngine.Legacy.Event|
                                              TraceEngine.Types.TraceEvents.TraceEventData): Element {
     let link = 'https://web.dev/user-centric-performance-metrics/';
     let name = 'page performance metrics';
@@ -1880,7 +1882,7 @@ export class TimelineUIUtils {
   }
 
   static async buildTraceEventDetails(
-      event: SDK.TracingModel.CompatibleTraceEvent,
+      event: TraceEngine.Legacy.CompatibleTraceEvent,
       model: TimelineModel.TimelineModel.TimelineModelImpl,
       linkifier: Components.Linkifier.Linkifier,
       detailed: boolean,
@@ -1891,7 +1893,7 @@ export class TimelineUIUtils {
       traceParseData: TraceEngine.Handlers.Migration.PartialTraceData|null = null,
       ): Promise<DocumentFragment> {
     const maybeTarget = model.targetByEvent(event);
-    const {duration, selfTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
+    const {duration, selfTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
     let relatedNodesMap: (Map<number, SDK.DOMModel.DOMNode|null>|null)|null = null;
     if (maybeTarget) {
       const target = (maybeTarget as SDK.Target.Target);
@@ -1905,7 +1907,7 @@ export class TimelineUIUtils {
             precomputedFeatures: undefined,
           });
         } else if (
-            event instanceof SDK.TracingModel.Event &&
+            event instanceof TraceEngine.Legacy.Event &&
             TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).picture) {
           previewElement = await TimelineUIUtils.buildPicturePreviewContent(event, target);
         }
@@ -1920,7 +1922,7 @@ export class TimelineUIUtils {
           nodeIdsToResolve.add(timelineData.backendNodeIds[i]);
         }
       }
-      const invalidationTrackingEvents = event instanceof SDK.TracingModel.Event ?
+      const invalidationTrackingEvents = event instanceof TraceEngine.Legacy.Event ?
           TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event) :
           null;
       if (invalidationTrackingEvents) {
@@ -1966,9 +1968,10 @@ export class TimelineUIUtils {
     // this information in the handlers, and read it here.
     if (event.name === recordTypes.EventTiming && duration > TraceEngine.Types.Timing.MilliSeconds(200)) {
       // This ensures we do not have a ConstructedEvent which are not ever going to be Interaction events.
-      const eventHasPayload = SDK.TracingModel.eventIsFromNewEngine(event) || SDK.TracingModel.eventHasPayload(event);
+      const eventHasPayload =
+          TraceEngine.Legacy.eventIsFromNewEngine(event) || TraceEngine.Legacy.eventHasPayload(event);
       if (eventHasPayload) {
-        const payload = SDK.TracingModel.eventIsFromNewEngine(event) ? event : event.rawPayload();
+        const payload = TraceEngine.Legacy.eventIsFromNewEngine(event) ? event : event.rawPayload();
         if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(payload)) {
           contentHelper.appendWarningRow(
               event, TimelineModel.TimelineModel.TimelineModelImpl.WarningType.LongInteraction);
@@ -2238,7 +2241,7 @@ export class TimelineUIUtils {
       }
 
       case recordTypes.Animation: {
-        if (SDK.TracingModel.phaseForEvent(event) === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_INSTANT) {
+        if (TraceEngine.Legacy.phaseForEvent(event) === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_INSTANT) {
           contentHelper.appendTextRow(i18nString(UIStrings.state), eventData['state']);
         }
         break;
@@ -2303,9 +2306,9 @@ export class TimelineUIUtils {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
         let payload: TraceEngine.Types.TraceEvents.TraceEventData|null = null;
-        if (SDK.TracingModel.eventIsFromNewEngine(event)) {
+        if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
           payload = event;
-        } else if (SDK.TracingModel.eventHasPayload(event)) {
+        } else if (TraceEngine.Legacy.eventHasPayload(event)) {
           payload = event.rawPayload();
         }
 
@@ -2316,7 +2319,7 @@ export class TimelineUIUtils {
       }
 
       case recordTypes.LayoutShift: {
-        if (!SDK.TracingModel.eventIsFromNewEngine(event) ||
+        if (!TraceEngine.Legacy.eventIsFromNewEngine(event) ||
             !TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(event)) {
           console.error('Unexpected type for LayoutShift event');
           break;
@@ -2403,7 +2406,7 @@ export class TimelineUIUtils {
     return contentHelper.fragment;
   }
 
-  static statsForTimeRange(events: SDK.TracingModel.CompatibleTraceEvent[], startTime: number, endTime: number): {
+  static statsForTimeRange(events: TraceEngine.Legacy.CompatibleTraceEvent[], startTime: number, endTime: number): {
     [x: string]: number,
   } {
     if (!events.length) {
@@ -2461,7 +2464,7 @@ export class TimelineUIUtils {
       return result;
     }
 
-    function buildRangeStatsCacheIfNeeded(events: SDK.TracingModel.CompatibleTraceEvent[]): void {
+    function buildRangeStatsCacheIfNeeded(events: TraceEngine.Legacy.CompatibleTraceEvent[]): void {
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (events[categoryBreakdownCacheSymbol]) {
         return;
@@ -2480,10 +2483,10 @@ export class TimelineUIUtils {
       TimelineModel.TimelineModel.TimelineModelImpl.forEachEvent(
           events, onStartEvent, onEndEvent, undefined, undefined, undefined, filterForStats());
 
-      function filterForStats(): (arg0: SDK.TracingModel.CompatibleTraceEvent) => boolean {
+      function filterForStats(): (arg0: TraceEngine.Legacy.CompatibleTraceEvent) => boolean {
         const visibleEventsFilter = TimelineUIUtils.visibleEventsFilter();
-        return (event: SDK.TracingModel.CompatibleTraceEvent): boolean =>
-                   visibleEventsFilter.accept(event) || SDK.TracingModel.TracingModel.isTopLevelEvent(event);
+        return (event: TraceEngine.Legacy.CompatibleTraceEvent): boolean =>
+                   visibleEventsFilter.accept(event) || TraceEngine.Legacy.TracingModel.isTopLevelEvent(event);
       }
 
       function updateCategory(category: string, time: number): void {
@@ -2513,8 +2516,8 @@ export class TimelineUIUtils {
         }
       }
 
-      function onStartEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
-        const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
+      function onStartEvent(e: TraceEngine.Legacy.CompatibleTraceEvent): void {
+        const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
         const category = TimelineUIUtils.eventStyle(e).category.name;
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
@@ -2523,8 +2526,8 @@ export class TimelineUIUtils {
         categoryStack.push(category);
       }
 
-      function onEndEvent(e: SDK.TracingModel.CompatibleTraceEvent): void {
-        const {endTime} = SDK.TracingModel.timesForEventInMilliseconds(e);
+      function onEndEvent(e: TraceEngine.Legacy.CompatibleTraceEvent): void {
+        const {endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
         const category = categoryStack.pop();
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
@@ -2658,10 +2661,10 @@ export class TimelineUIUtils {
   }
 
   private static generateCauses(
-      event: SDK.TracingModel.CompatibleTraceEvent, target: SDK.Target.Target|null,
+      event: TraceEngine.Legacy.CompatibleTraceEvent, target: SDK.Target.Target|null,
       relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
-    const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
+    const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
     let callSiteStackLabel;
     let stackLabel;
 
@@ -2696,7 +2699,7 @@ export class TimelineUIUtils {
 
     const initiator = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).initiator();
     // Indirect causes.
-    if (event instanceof SDK.TracingModel.Event &&
+    if (event instanceof TraceEngine.Legacy.Event &&
         TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event) && target) {
       // Full invalidation tracking (experimental).
       contentHelper.addSection(i18nString(UIStrings.invalidations));
@@ -2711,11 +2714,11 @@ export class TimelineUIUtils {
       link.tabIndex = 0;
       link.textContent = i18nString(UIStrings.reveal);
       link.addEventListener('click', () => {
-        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as SDK.TracingModel.Event)));
+        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as TraceEngine.Legacy.Event)));
       });
       link.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
-          TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as SDK.TracingModel.Event)));
+          TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as TraceEngine.Legacy.Event)));
           event.consume(true);
         }
       });
@@ -2731,7 +2734,7 @@ export class TimelineUIUtils {
   }
 
   private static generateInvalidations(
-      event: SDK.TracingModel.Event, target: SDK.Target.Target,
+      event: TraceEngine.Legacy.Event, target: SDK.Target.Target,
       relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
     const invalidationTrackingEvents = TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event);
     if (!invalidationTrackingEvents) {
@@ -2819,10 +2822,10 @@ export class TimelineUIUtils {
       total: {
         [x: string]: number,
       },
-      model: TimelineModel.TimelineModel.TimelineModelImpl, event: SDK.TracingModel.CompatibleTraceEvent): boolean {
+      model: TimelineModel.TimelineModel.TimelineModelImpl, event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
     const events = model.inspectedTargetEvents();
-    const {startTime, endTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
-    function eventComparator(startTime: number, e: SDK.TracingModel.Event): number {
+    const {startTime, endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+    function eventComparator(startTime: number, e: TraceEngine.Legacy.Event): number {
       return startTime - e.startTime;
     }
 
@@ -2841,7 +2844,7 @@ export class TimelineUIUtils {
         if (!nextEvent.selfTime) {
           continue;
         }
-        if (SDK.TracingModel.threadIDForEvent(nextEvent) !== SDK.TracingModel.threadIDForEvent(event)) {
+        if (TraceEngine.Legacy.threadIDForEvent(nextEvent) !== TraceEngine.Legacy.threadIDForEvent(event)) {
           continue;
         }
         if (i > index) {
@@ -2851,7 +2854,7 @@ export class TimelineUIUtils {
         total[categoryName] = (total[categoryName] || 0) + nextEvent.selfTime;
       }
     }
-    if (TraceEngine.Types.TraceEvents.isAsyncPhase(SDK.TracingModel.phaseForEvent(event))) {
+    if (TraceEngine.Types.TraceEvents.isAsyncPhase(TraceEngine.Legacy.phaseForEvent(event))) {
       if (endTime) {
         let aggregatedTotal = 0;
         for (const categoryName in total) {
@@ -2864,7 +2867,7 @@ export class TimelineUIUtils {
     return hasChildren;
   }
 
-  static async buildPicturePreviewContent(event: SDK.TracingModel.Event, target: SDK.Target.Target):
+  static async buildPicturePreviewContent(event: TraceEngine.Legacy.Event, target: SDK.Target.Target):
       Promise<Element|null> {
     const snapshotWithRect =
         await new TimelineModel.TimelineFrameModel.LayerPaintEvent(event, target).snapshotPromise();
@@ -2900,7 +2903,7 @@ export class TimelineUIUtils {
     return stylesContainer;
   }
 
-  static createEventDivider(event: SDK.TracingModel.Event, zeroTime: number): Element {
+  static createEventDivider(event: TraceEngine.Legacy.Event, zeroTime: number): Element {
     const eventDivider = document.createElement('div');
     eventDivider.classList.add('resources-event-divider');
     const startTime = i18n.TimeUtilities.millisToString(event.startTime - zeroTime);
@@ -3117,7 +3120,7 @@ export class TimelineUIUtils {
     return eventDispatchDesciptors;
   }
 
-  static markerShortTitle(event: SDK.TracingModel.Event): string|null {
+  static markerShortTitle(event: TraceEngine.Legacy.Event): string|null {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
       case recordTypes.MarkDOMContent:
@@ -3134,20 +3137,21 @@ export class TimelineUIUtils {
     return null;
   }
 
-  static markerStyleForEvent(event: SDK.TracingModel.Event|
+  static markerStyleForEvent(event: TraceEngine.Legacy.Event|
                              TraceEngine.Types.TraceEvents.TraceEventData): TimelineMarkerStyle {
     const tallMarkerDashStyle = [6, 4];
     const title = TimelineUIUtils.eventTitle(event);
     const recordTypes = TimelineModel.TimelineModel.RecordType;
 
     if (event.name !== recordTypes.NavigationStart &&
-        (SDK.TracingModel.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
-         SDK.TracingModel.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming))) {
+        (TraceEngine.Legacy.eventHasCategory(event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console) ||
+         TraceEngine.Legacy.eventHasCategory(
+             event, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming))) {
       return {
         title: title,
         dashStyle: tallMarkerDashStyle,
         lineWidth: 0.5,
-        color: SDK.TracingModel.eventHasCategory(
+        color: TraceEngine.Legacy.eventHasCategory(
                    event, TimelineModel.TimelineModel.TimelineModelImpl.Category.UserTiming) ?
             'purple' :
             'orange',
@@ -3209,11 +3213,11 @@ export class TimelineUIUtils {
     return colorGenerator.colorForID(id);
   }
 
-  static eventWarning(event: SDK.TracingModel.CompatibleTraceEvent, warningType?: string): Element|null {
-    const timelineData = event instanceof SDK.TracingModel.Event ?
+  static eventWarning(event: TraceEngine.Legacy.CompatibleTraceEvent, warningType?: string): Element|null {
+    const timelineData = event instanceof TraceEngine.Legacy.Event ?
         TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event) :
         null;
-    const {duration} = SDK.TracingModel.timesForEventInMilliseconds(event);
+    const {duration} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
     const warning = warningType || timelineData?.warning;
     if (!warning) {
       return null;
@@ -3658,7 +3662,7 @@ export class TimelineDetailsContentHelper {
     stackTraceElement.appendChild(callFrameContents.element);
   }
 
-  appendWarningRow(event: SDK.TracingModel.CompatibleTraceEvent, warningType?: string): void {
+  appendWarningRow(event: TraceEngine.Legacy.CompatibleTraceEvent, warningType?: string): void {
     const warning = TimelineUIUtils.eventWarning(event, warningType);
     if (warning) {
       this.appendElementRow(i18nString(UIStrings.warning), warning, true);
@@ -3688,10 +3692,10 @@ export interface TimelineMarkerStyle {
  * TraceEngine helpers, and not have it take the legacy model.
  **/
 export function timeStampForEventAdjustedForClosestNavigationIfPossible(
-    event: SDK.TracingModel.CompatibleTraceEvent, model: TimelineModel.TimelineModel.TimelineModelImpl,
+    event: TraceEngine.Legacy.CompatibleTraceEvent, model: TimelineModel.TimelineModel.TimelineModelImpl,
     traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null): TraceEngine.Types.Timing.MilliSeconds {
-  const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
-  if (SDK.TracingModel.eventIsFromNewEngine(event) && traceParsedData) {
+  const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+  if (TraceEngine.Legacy.eventIsFromNewEngine(event) && traceParsedData) {
     const time = TraceEngine.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
         event,
         traceParsedData.Meta.traceBounds,

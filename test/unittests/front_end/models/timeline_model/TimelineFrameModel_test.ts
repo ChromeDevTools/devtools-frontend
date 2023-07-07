@@ -26,7 +26,7 @@ describeWithMockConnection('TimelineFrameModel', () => {
 
     function setupLayerPaintEvent(): {
       layerPaintEvent: TimelineModel.TimelineFrameModel.LayerPaintEvent,
-      pictureSnapshotEvent: SDK.TracingModel.ObjectSnapshot,
+      pictureSnapshotEvent: TraceEngine.Legacy.ObjectSnapshot,
     } {
       // To set up this test, we need to do a few things:
       // 1. Create a Paint event with a layer ID
@@ -60,7 +60,7 @@ describeWithMockConnection('TimelineFrameModel', () => {
         },
       });
       const pictureSnapshotEvent =
-          SDK.TracingModel.ObjectSnapshot.fromPayload(pictureEventPayload, fakePaintEvent.thread);
+          TraceEngine.Legacy.ObjectSnapshot.fromPayload(pictureEventPayload, fakePaintEvent.thread);
 
       TimelineModel.TimelineModel.EventOnTimelineData.forEvent(fakePaintEvent).picture = pictureSnapshotEvent;
 

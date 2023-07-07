@@ -6,11 +6,11 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 
 const UIStrings = {
   /**
@@ -47,7 +47,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  */
 export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private client: Client|null;
-  private tracingModel: SDK.TracingModel.TracingModel|null;
+  private tracingModel: TraceEngine.Legacy.TracingModel|null;
   private canceledCallback: (() => void)|null;
   private state: State;
   private buffer: string;
@@ -59,7 +59,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private filter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null;
   constructor(client: Client, title?: string) {
     this.client = client;
-    this.tracingModel = new SDK.TracingModel.TracingModel(title);
+    this.tracingModel = new TraceEngine.Legacy.TracingModel(title);
     this.canceledCallback = null;
     this.state = State.Initial;
     this.buffer = '';
@@ -84,7 +84,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
-  static loadFromEvents(events: SDK.TracingManager.EventPayload[], client: Client): TimelineLoader {
+  static loadFromEvents(events: TraceEngine.TracingManager.EventPayload[], client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
     window.setTimeout(async () => {
       void loader.addEvents(events);
@@ -148,12 +148,12 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
-  async addEvents(events: SDK.TracingManager.EventPayload[]): Promise<void> {
+  async addEvents(events: TraceEngine.TracingManager.EventPayload[]): Promise<void> {
     await this.client?.loadingStarted();
     const eventsPerChunk = 15_000;
     for (let i = 0; i < events.length; i += eventsPerChunk) {
       const chunk = events.slice(i, i + eventsPerChunk);
-      (this.tracingModel as SDK.TracingModel.TracingModel).addEvents(chunk);
+      (this.tracingModel as TraceEngine.Legacy.TracingModel).addEvents(chunk);
       await this.client?.loadingProgress((i + chunk.length) / events.length);
       await new Promise(r => window.setTimeout(r));  // Yield event loop to paint.
     }
@@ -252,7 +252,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
     let items;
     try {
-      items = (JSON.parse(json) as SDK.TracingManager.EventPayload[]);
+      items = (JSON.parse(json) as TraceEngine.TracingManager.EventPayload[]);
     } catch (e) {
       this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: e.toString()}));
       return;
@@ -267,7 +267,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     }
 
     try {
-      (this.tracingModel as SDK.TracingModel.TracingModel).addEvents(items);
+      (this.tracingModel as TraceEngine.Legacy.TracingModel).addEvents(items);
     } catch (e) {
       this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: e.toString()}));
     }
@@ -299,7 +299,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       this.parseCPUProfileFormat(this.buffer);
       this.buffer = '';
     }
-    (this.tracingModel as SDK.TracingModel.TracingModel).tracingComplete();
+    (this.tracingModel as TraceEngine.Legacy.TracingModel).tracingComplete();
     await (this.client as Client).loadingComplete(this.tracingModel, this.filter);
   }
 
@@ -314,7 +314,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       return;
     }
     this.filter = TimelineLoader.getCpuProfileFilter();
-    (this.tracingModel as SDK.TracingModel.TracingModel).addEvents(traceEvents);
+    (this.tracingModel as TraceEngine.Legacy.TracingModel).addEvents(traceEvents);
   }
 }
 
@@ -328,7 +328,7 @@ export interface Client {
   processingStarted(): Promise<void>;
 
   loadingComplete(
-      tracingModel: SDK.TracingModel.TracingModel|null,
+      tracingModel: TraceEngine.Legacy.TracingModel|null,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null): Promise<void>;
 }
 

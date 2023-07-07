@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
+import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
@@ -24,7 +24,7 @@ function nodeId<T extends Protocol.DOM.BackendNodeId|Protocol.DOM.NodeId>(x: num
 describeWithMockConnection('TraceSDKServices', function() {
   beforeEach(async () => {
     clearAllMockConnectionResponseHandlers();
-    SDK.TraceSDKServices._TEST_clearCache();
+    TraceEngine.SDKServices._TEST_clearCache();
   });
 
   describe('DOMNodeLookup', function() {
@@ -46,13 +46,13 @@ describeWithMockConnection('TraceSDKServices', function() {
       domModel.registerNode(domNode);
 
       const modelData = await loadModelDataFromTraceFile(this, 'cls-single-frame.json.gz');
-      const result = await SDK.TraceSDKServices.domNodeForBackendNodeID(modelData, nodeId(2));
+      const result = await TraceEngine.SDKServices.domNodeForBackendNodeID(modelData, nodeId(2));
       assert.strictEqual(result, domNode);
 
       // Clear the mock and re-set it to return nothing to test the bad path.
       clearMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend');
       setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: []}));
-      const doesNotExistResult = await SDK.TraceSDKServices.domNodeForBackendNodeID(modelData, nodeId(99));
+      const doesNotExistResult = await TraceEngine.SDKServices.domNodeForBackendNodeID(modelData, nodeId(99));
       assert.isNull(doesNotExistResult);
     });
 
@@ -75,11 +75,11 @@ describeWithMockConnection('TraceSDKServices', function() {
       // The model data is only used as a cache key, so we don't need it to be real to test this.
       const modelData1 = {} as unknown as TraceEngine.Handlers.Types.TraceParseData;
       const modelData2 = {} as unknown as TraceEngine.Handlers.Types.TraceParseData;
-      const result = await SDK.TraceSDKServices.domNodeForBackendNodeID(modelData1, nodeId(2));
+      const result = await TraceEngine.SDKServices.domNodeForBackendNodeID(modelData1, nodeId(2));
       assert.isNotNull(result);
       // Look it up again to test the cache.
-      await SDK.TraceSDKServices.domNodeForBackendNodeID(modelData1, nodeId(2));
-      await SDK.TraceSDKServices.domNodeForBackendNodeID(modelData2, nodeId(2));
+      await TraceEngine.SDKServices.domNodeForBackendNodeID(modelData1, nodeId(2));
+      await TraceEngine.SDKServices.domNodeForBackendNodeID(modelData2, nodeId(2));
       // The call with the new model data did not hit the cache.
       assert.strictEqual(pushNodesSpy.callCount, 2);
     });
@@ -106,7 +106,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       // The model data is only used as a cache key, so we don't need it to be real to test this.
       const modelData = {} as unknown as TraceEngine.Handlers.Types.TraceParseData;
       const result =
-          await SDK.TraceSDKServices.domNodesForMultipleBackendNodeIds(modelData, new Set([nodeId(2), nodeId(3)]));
+          await TraceEngine.SDKServices.domNodesForMultipleBackendNodeIds(modelData, new Set([nodeId(2), nodeId(3)]));
       assert.isNotNull(result);
       const entries = Array.from(result.entries());
       assert.deepEqual(entries, [
@@ -146,7 +146,7 @@ describeWithMockConnection('TraceSDKServices', function() {
           },
         },
       } as unknown as TraceEngine.Types.TraceEvents.TraceEventLayoutShift;
-      const sources = await SDK.TraceSDKServices.sourcesForLayoutShift(modelData, event);
+      const sources = await TraceEngine.SDKServices.sourcesForLayoutShift(modelData, event);
       assert.lengthOf(sources, 1);
       assert.deepEqual(sources.at(0), {
         node: domNode,
@@ -173,7 +173,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       const mockShift = {args: {data: {impacted_nodes: impactedNodes}}} as
           TraceEngine.Types.TraceEvents.TraceEventLayoutShift;
       const modelData = {} as unknown as TraceEngine.Handlers.Types.TraceParseData;
-      const normalized = await SDK.TraceSDKServices.normalizedImpactedNodesForLayoutShift(modelData, mockShift);
+      const normalized = await TraceEngine.SDKServices.normalizedImpactedNodesForLayoutShift(modelData, mockShift);
       assert.deepEqual(normalized, [
         {
           new_rect: [0, 0, 10, 20],
@@ -202,7 +202,7 @@ describeWithMockConnection('TraceSDKServices', function() {
         upload: 1,
         latency: 1,
       });
-      const metadata = await SDK.TraceSDKServices.getMetadataForFreshRecording();
+      const metadata = await TraceEngine.SDKServices.getMetadataForFreshRecording();
       assert.deepEqual(metadata, {
         source: 'DevTools',
         startTime: undefined,
@@ -224,7 +224,7 @@ describeWithMockConnection('TraceSDKServices', function() {
         upload: 1,
         latency: 1,
       });
-      const metadata = await SDK.TraceSDKServices.getMetadataForFreshRecording();
+      const metadata = await TraceEngine.SDKServices.getMetadataForFreshRecording();
       assert.deepEqual(metadata, {
         source: 'DevTools',
         startTime: undefined,
@@ -246,7 +246,7 @@ describeWithMockConnection('TraceSDKServices', function() {
         upload: 1,
         latency: 1,
       });
-      const metadata = await SDK.TraceSDKServices.getMetadataForFreshRecording();
+      const metadata = await TraceEngine.SDKServices.getMetadataForFreshRecording();
       assert.deepEqual(metadata, {
         source: 'DevTools',
         startTime: undefined,

@@ -5,18 +5,17 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import {Capability, type Target} from './Target.js';
-import {SDKModel} from './SDKModel.js';
-import {type ObjectSnapshot} from './TracingModel.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import {type ObjectSnapshot} from './LegacyTracingModel.js';
+import type * as Types from './types/types.js';
 
-export class TracingManager extends SDKModel<void> {
+export class TracingManager extends SDK.SDKModel.SDKModel<void> {
   readonly #tracingAgent: ProtocolProxyApi.TracingApi;
   #activeClient: TracingManagerClient|null;
   #eventBufferSize: number|null;
   #eventsRetrieved: number;
   #finishing?: boolean;
-  constructor(target: Target) {
+  constructor(target: SDK.Target.Target) {
     super(target);
     this.#tracingAgent = target.tracingAgent();
     target.registerTracingDispatcher(new TracingDispatcher(this));
@@ -121,13 +120,13 @@ class TracingDispatcher implements ProtocolProxyApi.TracingDispatcher {
   }
 }
 
-SDKModel.register(TracingManager, {capabilities: Capability.Tracing, autostart: false});
+SDK.SDKModel.SDKModel.register(TracingManager, {capabilities: SDK.Target.Capability.Tracing, autostart: false});
 export interface EventPayload {
   cat?: string;
   pid: number;
   tid: number;
   ts: number;
-  ph: TraceEngine.Types.TraceEvents.Phase;
+  ph: Types.TraceEvents.Phase;
   name: string;
   args: {
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

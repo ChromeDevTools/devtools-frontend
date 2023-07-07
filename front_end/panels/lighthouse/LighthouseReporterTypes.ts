@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../core/platform/platform.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 export class LighthouseReportGenerator {
   generateReportHtml(_lhr: ReportJSON): string {
@@ -64,7 +64,7 @@ export interface DetailsJSON {
   displayUnit?: string;
 }
 export interface RunnerResultArtifacts {
-  traces: {defaultPass: {traceEvents: SDK.TracingManager.EventPayload[]}};
+  traces: {defaultPass: {traceEvents: TraceEngine.TracingManager.EventPayload[]}};
   settings: {throttlingMethod: string};
 }
 export interface RunnerResult {

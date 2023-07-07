@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
@@ -61,8 +60,8 @@ describeWithEnvironment('TimelineSelection', function() {
     }
     const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(firstLCPEvent);
     assert.strictEqual(selection.object, firstLCPEvent);
-    assert.strictEqual(selection.startTime, SDK.TracingModel.timesForEventInMilliseconds(firstLCPEvent).startTime);
-    assert.strictEqual(selection.endTime, SDK.TracingModel.timesForEventInMilliseconds(firstLCPEvent).endTime);
+    assert.strictEqual(selection.startTime, TraceEngine.Legacy.timesForEventInMilliseconds(firstLCPEvent).startTime);
+    assert.strictEqual(selection.endTime, TraceEngine.Legacy.timesForEventInMilliseconds(firstLCPEvent).endTime);
     assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isTraceEventSelection(selection.object));
   });
 

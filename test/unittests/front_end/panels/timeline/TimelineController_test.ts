@@ -4,6 +4,7 @@
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
+import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 
@@ -16,7 +17,7 @@ describeWithRealConnection('TimelineController', () => {
       loadingStarted: sinon.stub(),
       processingStarted: sinon.stub(),
       loadingProgress: sinon.stub(),
-      loadingComplete: sinon.stub().callsFake(function(_tracingModel: SDK.TracingModel.TracingModel|null) {}),
+      loadingComplete: sinon.stub().callsFake(function(_tracingModel: TraceEngine.Legacy.TracingModel|null) {}),
     };
     const client: Timeline.TimelineController.Client = {
       recordingProgress(usage) {
@@ -67,7 +68,7 @@ describeWithRealConnection('TimelineController', () => {
     assert.strictEqual(stubs.loadingStarted.callCount, 1);
     assert.isAtLeast(stubs.loadingProgress.callCount, 1);
     assert.strictEqual(stubs.loadingComplete.callCount, 1);
-    const tracingModel = stubs.loadingComplete.getCall(0).firstArg as SDK.TracingModel.TracingModel;
+    const tracingModel = stubs.loadingComplete.getCall(0).firstArg as TraceEngine.Legacy.TracingModel;
     assert.isDefined(tracingModel);
     // Sanity check: ensure that we saw some events during the trace.
     assert.isTrue(tracingModel.allRawEvents().length > 0);

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {
   defaultTraceEvent,
@@ -23,7 +22,7 @@ describe('EventTypeHelpers', () => {
       };
       const event = makeFakeSDKEventFromPayload(payload);
       event.selfTime = 5;
-      const times = SDK.TracingModel.timesForEventInMilliseconds(event);
+      const times = TraceEngine.Legacy.timesForEventInMilliseconds(event);
       assert.deepEqual(times, {
         startTime: TraceEngine.Types.Timing.MilliSeconds(10),
         endTime: TraceEngine.Types.Timing.MilliSeconds(15),
@@ -40,7 +39,7 @@ describe('EventTypeHelpers', () => {
         ts: 10_000,
       };
       const event = makeFakeSDKEventFromPayload(payload);
-      const times = SDK.TracingModel.timesForEventInMilliseconds(event);
+      const times = TraceEngine.Legacy.timesForEventInMilliseconds(event);
       assert.deepEqual(times, {
         startTime: TraceEngine.Types.Timing.MilliSeconds(10),
         endTime: TraceEngine.Types.Timing.MilliSeconds(10),
@@ -58,7 +57,7 @@ describe('EventTypeHelpers', () => {
         dur: TraceEngine.Types.Timing.MicroSeconds(5_000),
       };
 
-      const times = SDK.TracingModel.timesForEventInMilliseconds(event);
+      const times = TraceEngine.Legacy.timesForEventInMilliseconds(event);
       assert.deepEqual(times, {
         startTime: TraceEngine.Types.Timing.MilliSeconds(10),
         endTime: TraceEngine.Types.Timing.MilliSeconds(15),
@@ -74,7 +73,7 @@ describe('EventTypeHelpers', () => {
         ts: TraceEngine.Types.Timing.MicroSeconds(10_000),
       };
 
-      const times = SDK.TracingModel.timesForEventInMilliseconds(event);
+      const times = TraceEngine.Legacy.timesForEventInMilliseconds(event);
       assert.deepEqual(times, {
         startTime: TraceEngine.Types.Timing.MilliSeconds(10),
         endTime: TraceEngine.Types.Timing.MilliSeconds(10),
@@ -93,8 +92,8 @@ describe('EventTypeHelpers', () => {
         dur: 5_000,
       };
       const event = makeFakeSDKEventFromPayload(payload);
-      const hasCategory = SDK.TracingModel.eventHasCategory(event, 'testing2');
-      const notHasCategory = SDK.TracingModel.eventHasCategory(event, 'not-testing');
+      const hasCategory = TraceEngine.Legacy.eventHasCategory(event, 'testing2');
+      const notHasCategory = TraceEngine.Legacy.eventHasCategory(event, 'not-testing');
       assert.isTrue(hasCategory);
       assert.isFalse(notHasCategory);
     });
@@ -105,8 +104,8 @@ describe('EventTypeHelpers', () => {
         name: 'test-event',
         cat: 'disabled-by-default-devtools.timeline,blink.console',
       };
-      const hasCategory = SDK.TracingModel.eventHasCategory(event, 'blink.console');
-      const notHasCategory = SDK.TracingModel.eventHasCategory(event, 'timeline');
+      const hasCategory = TraceEngine.Legacy.eventHasCategory(event, 'blink.console');
+      const notHasCategory = TraceEngine.Legacy.eventHasCategory(event, 'timeline');
       assert.isTrue(hasCategory);
       assert.isFalse(notHasCategory);
     });
@@ -121,7 +120,7 @@ describe('EventTypeHelpers', () => {
         dur: 5_000,
       };
       const event = makeFakeSDKEventFromPayload(payload);
-      const phase = SDK.TracingModel.phaseForEvent(event);
+      const phase = TraceEngine.Legacy.phaseForEvent(event);
       assert.strictEqual(phase, TraceEngine.Types.TraceEvents.Phase.BEGIN);
     });
 
@@ -130,7 +129,7 @@ describe('EventTypeHelpers', () => {
         ...defaultTraceEvent,
         ph: TraceEngine.Types.TraceEvents.Phase.BEGIN,
       };
-      const phase = SDK.TracingModel.phaseForEvent(event);
+      const phase = TraceEngine.Legacy.phaseForEvent(event);
       assert.strictEqual(phase, TraceEngine.Types.TraceEvents.Phase.BEGIN);
     });
   });
@@ -144,11 +143,11 @@ describe('EventTypeHelpers', () => {
         dur: 5_000,
       };
       const payload = makeFakeEventPayload(fakePayload);
-      const tracingModel = new SDK.TracingModel.TracingModel();
-      const process = new SDK.TracingModel.Process(tracingModel, 1);
-      const thread = new SDK.TracingModel.Thread(process, 1);
-      const event = SDK.TracingModel.PayloadEvent.fromPayload(payload, thread);
-      const threadID = SDK.TracingModel.threadIDForEvent(event);
+      const tracingModel = new TraceEngine.Legacy.TracingModel();
+      const process = new TraceEngine.Legacy.Process(tracingModel, 1);
+      const thread = new TraceEngine.Legacy.Thread(process, 1);
+      const event = TraceEngine.Legacy.PayloadEvent.fromPayload(payload, thread);
+      const threadID = TraceEngine.Legacy.threadIDForEvent(event);
       assert.strictEqual(threadID, 1);
     });
 
@@ -158,7 +157,7 @@ describe('EventTypeHelpers', () => {
         ph: TraceEngine.Types.TraceEvents.Phase.BEGIN,
         tid: 2 as TraceEngine.Types.TraceEvents.ThreadID,
       };
-      const phase = SDK.TracingModel.threadIDForEvent(event);
+      const phase = TraceEngine.Legacy.threadIDForEvent(event);
       assert.strictEqual(phase, 2 as TraceEngine.Types.TraceEvents.ThreadID);
     });
   });

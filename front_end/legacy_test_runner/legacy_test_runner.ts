@@ -25,6 +25,7 @@ import '../models/extensions/extensions-legacy.js';
 import '../models/formatter/formatter-legacy.js';
 import '../ui/legacy/components/inline_editor/inline_editor-legacy.js';
 import '../core/root/root-legacy.js';
+import '../models/trace/trace-legacy.js';
 import '../core/sdk/sdk-legacy.js';
 import './test_runner/test_runner.js';
 

@@ -4,7 +4,6 @@
 
 const {assert} = chai;
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {
@@ -17,13 +16,13 @@ import {
 describeWithEnvironment('TracingModel', function() {
   it('can create events from an EventPayload[] and finds the correct number of processes', async function() {
     const events = await loadTraceEventsLegacyEventPayload(this, 'basic.json.gz');
-    const model = new SDK.TracingModel.TracingModel();
+    const model = new TraceEngine.Legacy.TracingModel();
     model.addEvents(events);
     assert.strictEqual(model.sortedProcesses().length, 4);
   });
 
   describe('parsing trace events with unusual characters and large snapshots', function() {
-    function setupAndReturnMainThread(): SDK.TracingModel.Thread {
+    function setupAndReturnMainThread(): TraceEngine.Legacy.Thread {
       const testEvents = [
         makeFakeEventPayload({
           name: 'NonAscii',
@@ -58,7 +57,7 @@ describeWithEnvironment('TracingModel', function() {
         }),
       ];
 
-      const model = new SDK.TracingModel.TracingModel();
+      const model = new TraceEngine.Legacy.TracingModel();
       model.addEvents(testEvents);
       const process = model.sortedProcesses()[0];
       const thread = process.sortedThreads()[0];
@@ -79,11 +78,11 @@ describeWithEnvironment('TracingModel', function() {
     it('can parse an event with a non ascii snapshot', async function() {
       const mainThread = setupAndReturnMainThread();
       const nonAsciiEvent =
-          mainThread.events().find(event => event.name === 'NonAsciiSnapshot') as SDK.TracingModel.ObjectSnapshot;
+          mainThread.events().find(event => event.name === 'NonAsciiSnapshot') as TraceEngine.Legacy.ObjectSnapshot;
       if (!nonAsciiEvent) {
         throw new Error('Could not find expected NonAscii event');
       }
-      assert.isTrue(nonAsciiEvent instanceof SDK.TracingModel.ObjectSnapshot);
+      assert.isTrue(nonAsciiEvent instanceof TraceEngine.Legacy.ObjectSnapshot);
       const data = nonAsciiEvent.getSnapshot() as unknown as string;
       if (!data) {
         throw new Error('Could not get object from snapshot event');
@@ -94,11 +93,11 @@ describeWithEnvironment('TracingModel', function() {
     it('can parse an event with a short snapshot', async function() {
       const mainThread = setupAndReturnMainThread();
       const snapshotEvent =
-          mainThread.events().find(event => event.name === 'ShortSnapshot') as SDK.TracingModel.ObjectSnapshot;
+          mainThread.events().find(event => event.name === 'ShortSnapshot') as TraceEngine.Legacy.ObjectSnapshot;
       if (!snapshotEvent) {
         throw new Error('Could not find expected snapshot event');
       }
-      assert.isTrue(snapshotEvent instanceof SDK.TracingModel.ObjectSnapshot);
+      assert.isTrue(snapshotEvent instanceof TraceEngine.Legacy.ObjectSnapshot);
       const data = snapshotEvent.getSnapshot() as unknown as string;
       if (!data) {
         throw new Error('Could not get object from snapshot event');
@@ -108,11 +107,11 @@ describeWithEnvironment('TracingModel', function() {
     it('can parse an event with a long snapshot', async function() {
       const mainThread = setupAndReturnMainThread();
       const snapshotEvent =
-          mainThread.events().find(event => event.name === 'LongSnapshot') as SDK.TracingModel.ObjectSnapshot;
+          mainThread.events().find(event => event.name === 'LongSnapshot') as TraceEngine.Legacy.ObjectSnapshot;
       if (!snapshotEvent) {
         throw new Error('Could not find expected snapshot event');
       }
-      assert.isTrue(snapshotEvent instanceof SDK.TracingModel.ObjectSnapshot);
+      assert.isTrue(snapshotEvent instanceof TraceEngine.Legacy.ObjectSnapshot);
       const data = snapshotEvent.getSnapshot() as unknown as string;
       if (!data) {
         throw new Error('Could not get object from snapshot event');
@@ -133,7 +132,7 @@ describeWithEnvironment('TracingModel', function() {
         throw new Error('Could not find LCP event');
       }
       const fakeThread = StubbedThread.make(firstLCPEventPayload.tid);
-      const event = SDK.TracingModel.PayloadEvent.fromPayload(firstLCPEventPayload, fakeThread);
+      const event = TraceEngine.Legacy.PayloadEvent.fromPayload(firstLCPEventPayload, fakeThread);
       assert.deepEqual(event.args, firstLCPEventPayload.args);
       assert.deepEqual(event.name, firstLCPEventPayload.name);
       assert.strictEqual(event.startTime, firstLCPEventPayload.ts / 1000);
@@ -153,7 +152,7 @@ describeWithEnvironment('TracingModel', function() {
       // events do not have an ID field.
       firstLCPEventPayload.id = 'test-id';
       const fakeThread = StubbedThread.make(firstLCPEventPayload.tid);
-      const event = SDK.TracingModel.PayloadEvent.fromPayload(firstLCPEventPayload, fakeThread);
+      const event = TraceEngine.Legacy.PayloadEvent.fromPayload(firstLCPEventPayload, fakeThread);
       assert.deepEqual(event.id, firstLCPEventPayload.id);
     });
 
@@ -168,7 +167,7 @@ describeWithEnvironment('TracingModel', function() {
         throw new Error('Could not find LCP event');
       }
       const fakeThread = StubbedThread.make(firstLCPEventPayload.tid);
-      const event = SDK.TracingModel.PayloadEvent.fromPayload(firstLCPEventPayload, fakeThread);
+      const event = TraceEngine.Legacy.PayloadEvent.fromPayload(firstLCPEventPayload, fakeThread);
       assert.strictEqual(event.rawLegacyPayload(), firstLCPEventPayload);
     });
 
@@ -182,7 +181,7 @@ describeWithEnvironment('TracingModel', function() {
         throw new Error('Could not find run task');
       }
       const fakeThread = StubbedThread.make(firstRunTask.tid);
-      const event = SDK.TracingModel.PayloadEvent.fromPayload(firstRunTask, fakeThread);
+      const event = TraceEngine.Legacy.PayloadEvent.fromPayload(firstRunTask, fakeThread);
       assert.strictEqual(event.startTime, firstRunTask.ts / 1000);
       assert.strictEqual(event.endTime, (firstRunTask.ts + firstRunTask.dur) / 1000);
     });
@@ -192,16 +191,16 @@ describeWithEnvironment('TracingModel', function() {
     it('can extract the ID from the id field if it exists', async function() {
       const fakePayload = {
         id: '123',
-      } as unknown as SDK.TracingManager.EventPayload;
-      assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), '123');
+      } as unknown as TraceEngine.TracingManager.EventPayload;
+      assert.strictEqual(TraceEngine.Legacy.TracingModel.extractId(fakePayload), '123');
     });
 
     it('prepends the scope to the id if it is present', async function() {
       const fakePayload = {
         id: '123',
         scope: 'test-scope',
-      } as unknown as SDK.TracingManager.EventPayload;
-      assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), 'test-scope@123');
+      } as unknown as TraceEngine.TracingManager.EventPayload;
+      assert.strictEqual(TraceEngine.Legacy.TracingModel.extractId(fakePayload), 'test-scope@123');
     });
 
     it('prioritises the id2 global field over id if they are both present', async function() {
@@ -211,8 +210,8 @@ describeWithEnvironment('TracingModel', function() {
           global: 'global-id',
         },
         scope: 'test-scope',
-      } as unknown as SDK.TracingManager.EventPayload;
-      assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), ':test-scope:global-id');
+      } as unknown as TraceEngine.TracingManager.EventPayload;
+      assert.strictEqual(TraceEngine.Legacy.TracingModel.extractId(fakePayload), ':test-scope:global-id');
     });
 
     it('prioritises the id2 local field over id if they are both present, and includes the PID of the event',
@@ -224,8 +223,8 @@ describeWithEnvironment('TracingModel', function() {
            },
            pid: 'test-pid',
            scope: 'test-scope',
-         } as unknown as SDK.TracingManager.EventPayload;
-         assert.strictEqual(SDK.TracingModel.TracingModel.extractId(fakePayload), ':test-scope:test-pid:local-id');
+         } as unknown as TraceEngine.TracingManager.EventPayload;
+         assert.strictEqual(TraceEngine.Legacy.TracingModel.extractId(fakePayload), ':test-scope:test-pid:local-id');
        });
 
     it('logs an error and returns undefined if the id2 object has both global and local keys', async function() {
@@ -238,9 +237,9 @@ describeWithEnvironment('TracingModel', function() {
         pid: 'test-pid',
         scope: 'test-scope',
         ts: 1000,
-      } as unknown as SDK.TracingManager.EventPayload;
+      } as unknown as TraceEngine.TracingManager.EventPayload;
       const consoleErrorStub = sinon.stub(console, 'error');
-      assert.isUndefined(SDK.TracingModel.TracingModel.extractId(fakePayload));
+      assert.isUndefined(TraceEngine.Legacy.TracingModel.extractId(fakePayload));
       assert(consoleErrorStub.calledWithExactly(
           // The number 1 here is the timestamp divided by 1000.
           'Unexpected id2 field at 1, one and only one of \'local\' and \'global\' should be present.'));
@@ -249,7 +248,7 @@ describeWithEnvironment('TracingModel', function() {
 
   it('finds the browser main thread from the tracing model', async function() {
     const {tracingModel} = await allModelsFromFile(this, 'web-dev.json.gz');
-    const mainThread = SDK.TracingModel.TracingModel.browserMainThread(tracingModel);
+    const mainThread = TraceEngine.Legacy.TracingModel.browserMainThread(tracingModel);
     assert.strictEqual(mainThread?.id(), 775);
     assert.strictEqual(mainThread?.name(), 'CrBrowserMain');
   });

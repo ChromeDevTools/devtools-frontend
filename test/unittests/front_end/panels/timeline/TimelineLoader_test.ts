@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
+import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import type * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
-import type * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 
 async function loadWebDevTraceAsFile(): Promise<File> {
   const file = new URL('../../../fixtures/traces/web-dev.json.gz', import.meta.url);
@@ -36,7 +36,7 @@ describe('TimelineLoader', () => {
         processingStartedSpy();
       },
       async loadingComplete(
-          tracingModel: SDK.TracingModel.TracingModel|null,
+          tracingModel: TraceEngine.Legacy.TracingModel|null,
           exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null,
       ) {
         loadingCompleteSpy(tracingModel, exclusiveFilter);

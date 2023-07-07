@@ -31,8 +31,8 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -84,7 +84,7 @@ export class CountersGraph extends UI.Widget.VBox {
   private readonly counterUI: CounterUI[];
   private readonly countersByName: Map<string, Counter>;
   private readonly gpuMemoryCounter: Counter;
-  #events: SDK.TracingModel.CompatibleTraceEvent[]|null = null;
+  #events: TraceEngine.Legacy.CompatibleTraceEvent[]|null = null;
   currentValuesBar?: HTMLElement;
   private markerXPosition?: number;
 
@@ -138,7 +138,7 @@ export class CountersGraph extends UI.Widget.VBox {
     this.countersByName.set('gpuMemoryUsedKB', this.gpuMemoryCounter);
   }
 
-  setModel(model: PerformanceModel|null, events: SDK.TracingModel.CompatibleTraceEvent[]|null): void {
+  setModel(model: PerformanceModel|null, events: TraceEngine.Legacy.CompatibleTraceEvent[]|null): void {
     this.#events = events;
     if (!events) {
       return;
@@ -171,7 +171,7 @@ export class CountersGraph extends UI.Widget.VBox {
       for (const name in counters) {
         const counter = this.countersByName.get(name);
         if (counter) {
-          const {startTime} = SDK.TracingModel.timesForEventInMilliseconds(event);
+          const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
           counter.appendSample(startTime, counters[name]);
         }
       }

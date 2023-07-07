@@ -22,17 +22,17 @@ const {assert} = chai;
 
 describeWithMockConnection('TimelineUIUtils', function() {
   setTraceModelTimeout(this);
-  let tracingModel: SDK.TracingModel.TracingModel;
-  let process: SDK.TracingModel.Process;
-  let thread: SDK.TracingModel.Thread;
+  let tracingModel: TraceEngine.Legacy.TracingModel;
+  let process: TraceEngine.Legacy.Process;
+  let thread: TraceEngine.Legacy.Thread;
   let target: SDK.Target.Target;
   const SCRIPT_ID = 'SCRIPT_ID' as Protocol.Runtime.ScriptId;
 
   beforeEach(() => {
     target = createTarget();
-    tracingModel = new SDK.TracingModel.TracingModel();
-    process = new SDK.TracingModel.Process(tracingModel, 1);
-    thread = new SDK.TracingModel.Thread(process, 1);
+    tracingModel = new TraceEngine.Legacy.TracingModel();
+    process = new TraceEngine.Legacy.Process(tracingModel, 1);
+    thread = new TraceEngine.Legacy.Thread(process, 1);
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -46,7 +46,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   it('creates top frame location text for function calls', async function() {
-    const event = new SDK.TracingModel.ConstructedEvent(
+    const event = new TraceEngine.Legacy.ConstructedEvent(
         'devtools.timeline', 'FunctionCall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
 
     event.addArgs({
@@ -64,7 +64,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   it('creates top frame location text as a fallback', async function() {
     // 'TimerInstall' is chosen such that we run into the 'default' case.
-    const event = new SDK.TracingModel.ConstructedEvent(
+    const event = new TraceEngine.Legacy.ConstructedEvent(
         'devtools.timeline', 'TimerInstall', TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
 
     event.addArgs({
@@ -87,9 +87,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   describe('script location as an URL', function() {
-    let event: SDK.TracingModel.ConstructedEvent;
+    let event: TraceEngine.Legacy.ConstructedEvent;
     beforeEach(() => {
-      event = new SDK.TracingModel.ConstructedEvent(
+      event = new TraceEngine.Legacy.ConstructedEvent(
           'devtools.timeline', TimelineModel.TimelineModel.RecordType.FunctionCall,
           TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
 
@@ -180,7 +180,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.strictEqual(node.textContent, 'original-script.ts:1:1');
     });
     it('maps to the authored script when a trace event with a stack trace is provided', async function() {
-      const functionCallEvent = new SDK.TracingModel.ConstructedEvent(
+      const functionCallEvent = new TraceEngine.Legacy.ConstructedEvent(
           'devtools.timeline', TimelineModel.TimelineModel.RecordType.FunctionCall,
           TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
       functionCallEvent.addArgs({

@@ -4,7 +4,6 @@
 
 import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Common from '../../core/common/common.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -164,13 +163,14 @@ export class CompatibilityTracksAppender {
    * Given a trace event returns instantiates a legacy SDK.Event. This should
    * be used for compatibility purposes only.
    */
-  getLegacyEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): SDK.TracingModel.Event|null {
+  getLegacyEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): TraceEngine.Legacy.Event|null {
     const process = this.#legacyTimelineModel.tracingModel()?.getProcessById(event.pid);
     const thread = process?.threadById(event.tid);
     if (!thread) {
       return null;
     }
-    return SDK.TracingModel.PayloadEvent.fromPayload(event as unknown as SDK.TracingManager.EventPayload, thread);
+    return TraceEngine.Legacy.PayloadEvent.fromPayload(
+        event as unknown as TraceEngine.TracingManager.EventPayload, thread);
   }
 
   timingsTrackAppender(): TimingsTrackAppender {

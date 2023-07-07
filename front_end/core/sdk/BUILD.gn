@@ -76,9 +76,6 @@ devtools_module("sdk") {
     "StorageKeyManager.ts",
     "Target.ts",
     "TargetManager.ts",
-    "TraceSDKServices.ts",
-    "TracingManager.ts",
-    "TracingModel.ts",
     "WebAuthnModel.ts",
   ]
 
@@ -93,7 +90,6 @@ devtools_module("sdk") {
     "../../generated:protocol",
     "../../models/cpu_profile:bundle",
     "../../models/text_utils:bundle",
-    "../../models/trace:bundle",
   ]
 }
 

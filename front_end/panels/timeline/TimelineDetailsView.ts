@@ -79,7 +79,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private rangeDetailViews: Map<string, TimelineTreeView>;
   private readonly additionalMetricsToolbar: UI.Toolbar.Toolbar;
   private model!: PerformanceModel;
-  #selectedEvents?: SDK.TracingModel.CompatibleTraceEvent[]|null;
+  #selectedEvents?: TraceEngine.Legacy.CompatibleTraceEvent[]|null;
   private lazyPaintProfilerView?: TimelinePaintProfilerView|null;
   private lazyLayersView?: TimelineLayersView|null;
   private preferredTabId?: string;
@@ -129,7 +129,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
   async setModel(
       model: PerformanceModel|null, traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null,
-      selectedEvents: SDK.TracingModel.CompatibleTraceEvent[]|null): Promise<void> {
+      selectedEvents: TraceEngine.Legacy.CompatibleTraceEvent[]|null): Promise<void> {
     if (this.model !== model) {
       if (this.model) {
         this.model.removeEventListener(Events.WindowChanged, this.onWindowChanged, this);
@@ -307,10 +307,10 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.tabbedPane.selectTab(Tab.PaintProfiler, true);
   }
 
-  private appendDetailsTabsForTraceEventAndShowDetails(event: SDK.TracingModel.CompatibleTraceEvent, content: Node):
+  private appendDetailsTabsForTraceEventAndShowDetails(event: TraceEngine.Legacy.CompatibleTraceEvent, content: Node):
       void {
     this.setContent(content);
-    if (SDK.TracingModel.eventIsFromNewEngine(event)) {
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
       // TODO(crbug.com/1386091): Add support for this use case in the
       // new engine.
       return;
@@ -321,7 +321,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
   }
 
-  private showEventInPaintProfiler(event: SDK.TracingModel.Event): void {
+  private showEventInPaintProfiler(event: TraceEngine.Legacy.Event): void {
     const paintProfilerModel =
         SDK.TargetManager.TargetManager.instance().models(SDK.PaintProfiler.PaintProfilerModel)[0];
     if (!paintProfilerModel) {

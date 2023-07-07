@@ -27,7 +27,6 @@ import {
   setLegacyNavigation,
   setThrottlingMethod,
   setToolbarCheckboxWithText,
-  unregisterAllServiceWorkers,
   waitForResult,
 } from '../helpers/lighthouse-helpers.js';
 
@@ -62,9 +61,7 @@ describe('Navigation', async function() {
   });
 
   afterEach(async function() {
-    await unregisterAllServiceWorkers();
-
-    const {frontend} = await getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
     frontend.off('console', consoleListener);
 
     if (this.currentTest?.isFailed()) {

@@ -14,7 +14,6 @@ import {
   navigateToLighthouseTab,
   registerServiceWorker,
   selectMode,
-  unregisterAllServiceWorkers,
   waitForResult,
 } from '../helpers/lighthouse-helpers.js';
 
@@ -37,10 +36,6 @@ describe('Snapshot', async function() {
     expectError(/Protocol Error: the message with wrong session id/);
     expectError(/Protocol Error: the message with wrong session id/);
     expectError(/Protocol Error: the message with wrong session id/);
-  });
-
-  afterEach(async () => {
-    await unregisterAllServiceWorkers();
   });
 
   it('successfully returns a Lighthouse report for the page state', async () => {

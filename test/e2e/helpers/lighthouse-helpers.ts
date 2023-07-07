@@ -214,23 +214,12 @@ export async function getServiceWorkerCount() {
 }
 
 export async function registerServiceWorker() {
-  const {target} = await getBrowserAndPages();
+  const {target} = getBrowserAndPages();
   await target.evaluate(async () => {
     // @ts-expect-error Custom function added to global scope.
     await window.registerServiceWorker();
   });
   assert.strictEqual(await getServiceWorkerCount(), 1);
-}
-
-export async function unregisterAllServiceWorkers() {
-  const {target} = await getBrowserAndPages();
-  await target.evaluate(async () => {
-    if (!navigator.serviceWorker) {
-      return;
-    }
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    await Promise.all(registrations.map(r => r.unregister()));
-  });
 }
 
 export async function interceptNextFileSave(): Promise<() => Promise<string>> {

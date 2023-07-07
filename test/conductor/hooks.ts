@@ -144,6 +144,17 @@ async function loadTargetPageAndFrontend(testServerPort: number) {
   setBrowserAndPages({target: targetTab.page, frontend, browser});
 }
 
+export async function unregisterAllServiceWorkers() {
+  const {target} = getBrowserAndPages();
+  await target.evaluate(async () => {
+    if (!navigator.serviceWorker) {
+      return;
+    }
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map(r => r.unregister()));
+  });
+}
+
 export async function resetPages() {
   await targetTab.reset();
 

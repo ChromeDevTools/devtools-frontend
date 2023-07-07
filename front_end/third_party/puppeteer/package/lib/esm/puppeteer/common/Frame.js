@@ -73,11 +73,11 @@ export class Frame extends BaseFrame {
         const watcher = new LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
         let error = await Deferred.race([
             navigate(__classPrivateFieldGet(this, _Frame_client, "f"), url, referer, referrerPolicy, this._id),
-            watcher.timeoutOrTerminationPromise(),
+            watcher.terminationPromise(),
         ]);
         if (!error) {
             error = await Deferred.race([
-                watcher.timeoutOrTerminationPromise(),
+                watcher.terminationPromise(),
                 ensureNewDocumentNavigation
                     ? watcher.newDocumentNavigationPromise()
                     : watcher.sameDocumentNavigationPromise(),
@@ -120,7 +120,7 @@ export class Frame extends BaseFrame {
         const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
         const watcher = new LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
         const error = await Deferred.race([
-            watcher.timeoutOrTerminationPromise(),
+            watcher.terminationPromise(),
             watcher.sameDocumentNavigationPromise(),
             watcher.newDocumentNavigationPromise(),
         ]);

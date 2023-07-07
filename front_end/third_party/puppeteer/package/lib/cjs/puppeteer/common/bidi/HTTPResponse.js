@@ -69,6 +69,9 @@ class HTTPResponse extends HTTPResponse_js_1.HTTPResponse {
     timing() {
         return __classPrivateFieldGet(this, _HTTPResponse_timings, "f");
     }
+    frame() {
+        return __classPrivateFieldGet(this, _HTTPResponse_request, "f").frame();
+    }
 }
 exports.HTTPResponse = HTTPResponse;
 _HTTPResponse_request = new WeakMap(), _HTTPResponse_remoteAddress = new WeakMap(), _HTTPResponse_status = new WeakMap(), _HTTPResponse_statusText = new WeakMap(), _HTTPResponse_url = new WeakMap(), _HTTPResponse_fromCache = new WeakMap(), _HTTPResponse_headers = new WeakMap(), _HTTPResponse_timings = new WeakMap();

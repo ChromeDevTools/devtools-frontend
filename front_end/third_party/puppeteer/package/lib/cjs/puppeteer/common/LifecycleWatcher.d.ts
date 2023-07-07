@@ -35,7 +35,7 @@ export declare class LifecycleWatcher {
     sameDocumentNavigationPromise(): Promise<Error | undefined>;
     newDocumentNavigationPromise(): Promise<Error | undefined>;
     lifecyclePromise(): Promise<void>;
-    timeoutOrTerminationPromise(): Promise<Error | TimeoutError | undefined>;
+    terminationPromise(): Promise<Error | TimeoutError | undefined>;
     dispose(): void;
 }
 //# sourceMappingURL=LifecycleWatcher.d.ts.map

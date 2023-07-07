@@ -447,9 +447,6 @@ export class CDPPage extends Page {
         ]);
         return result[0];
     }
-    async waitForNavigation(options = {}) {
-        return await this.mainFrame().waitForNavigation(options);
-    }
     async waitForRequest(urlOrPredicate, options = {}) {
         const { timeout = __classPrivateFieldGet(this, _CDPPage_timeoutSettings, "f").timeout() } = options;
         return waitForEvent(__classPrivateFieldGet(this, _CDPPage_frameManager, "f").networkManager, NetworkManagerEmittedEvents.Request, async (request) => {
@@ -907,6 +904,7 @@ _CDPPage_closed = new WeakMap(), _CDPPage_client = new WeakMap(), _CDPPage_targe
     }
     const result = await __classPrivateFieldGet(this, _CDPPage_client, "f").send('Page.captureScreenshot', {
         format,
+        optimizeForSpeed: options.optimizeForSpeed,
         quality: options.quality,
         clip: clip && {
             ...clip,

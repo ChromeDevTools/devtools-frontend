@@ -105,7 +105,6 @@ export declare class CDPPage extends Page {
         referrerPolicy?: string;
     }): Promise<HTTPResponse | null>;
     reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
-    waitForNavigation(options?: WaitForOptions): Promise<HTTPResponse | null>;
     waitForRequest(urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>), options?: {
         timeout?: number;
     }): Promise<HTTPRequest>;

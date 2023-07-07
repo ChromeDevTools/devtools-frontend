@@ -52,6 +52,121 @@ var Schema = /*#__PURE__*/Object.freeze({
     get AssertedEventType () { return exports.AssertedEventType; }
 });
 
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+/*! https://mths.be/cssesc v3.0.0 by @mathias */
+
+var object = {};
+var hasOwnProperty = object.hasOwnProperty;
+var merge = function merge(options, defaults) {
+	if (!options) {
+		return defaults;
+	}
+	var result = {};
+	for (var key in defaults) {
+		// `if (defaults.hasOwnProperty(key) { … }` is not needed here, since
+		// only recognized option names are used.
+		result[key] = hasOwnProperty.call(options, key) ? options[key] : defaults[key];
+	}
+	return result;
+};
+
+var regexAnySingleEscape = /[ -,\.\/:-@\[-\^`\{-~]/;
+var regexSingleEscape = /[ -,\.\/:-@\[\]\^`\{-~]/;
+var regexExcessiveSpaces = /(^|\\+)?(\\[A-F0-9]{1,6})\x20(?![a-fA-F0-9\x20])/g;
+
+// https://mathiasbynens.be/notes/css-escapes#css
+var cssesc = function cssesc(string, options) {
+	options = merge(options, cssesc.options);
+	if (options.quotes != 'single' && options.quotes != 'double') {
+		options.quotes = 'single';
+	}
+	var quote = options.quotes == 'double' ? '"' : '\'';
+	var isIdentifier = options.isIdentifier;
+
+	var firstChar = string.charAt(0);
+	var output = '';
+	var counter = 0;
+	var length = string.length;
+	while (counter < length) {
+		var character = string.charAt(counter++);
+		var codePoint = character.charCodeAt();
+		var value = void 0;
+		// If it’s not a printable ASCII character…
+		if (codePoint < 0x20 || codePoint > 0x7E) {
+			if (codePoint >= 0xD800 && codePoint <= 0xDBFF && counter < length) {
+				// It’s a high surrogate, and there is a next character.
+				var extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) {
+					// next character is low surrogate
+					codePoint = ((codePoint & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000;
+				} else {
+					// It’s an unmatched surrogate; only append this code unit, in case
+					// the next code unit is the high surrogate of a surrogate pair.
+					counter--;
+				}
+			}
+			value = '\\' + codePoint.toString(16).toUpperCase() + ' ';
+		} else {
+			if (options.escapeEverything) {
+				if (regexAnySingleEscape.test(character)) {
+					value = '\\' + character;
+				} else {
+					value = '\\' + codePoint.toString(16).toUpperCase() + ' ';
+				}
+			} else if (/[\t\n\f\r\x0B]/.test(character)) {
+				value = '\\' + codePoint.toString(16).toUpperCase() + ' ';
+			} else if (character == '\\' || !isIdentifier && (character == '"' && quote == character || character == '\'' && quote == character) || isIdentifier && regexSingleEscape.test(character)) {
+				value = '\\' + character;
+			} else {
+				value = character;
+			}
+		}
+		output += value;
+	}
+
+	if (isIdentifier) {
+		if (/^-[-\d]/.test(output)) {
+			output = '\\-' + output.slice(1);
+		} else if (/\d/.test(firstChar)) {
+			output = '\\3' + firstChar + ' ' + output.slice(1);
+		}
+	}
+
+	// Remove spaces after `\HEX` escapes that are not followed by a hex digit,
+	// since they’re redundant. Note that this is only possible if the escape
+	// sequence isn’t preceded by an odd number of backslashes.
+	output = output.replace(regexExcessiveSpaces, function ($0, $1, $2) {
+		if ($1 && $1.length % 2) {
+			// It’s not safe to remove the space, so don’t.
+			return $0;
+		}
+		// Strip the space.
+		return ($1 || '') + $2;
+	});
+
+	if (!isIdentifier && options.wrap) {
+		return quote + output + quote;
+	}
+	return output;
+};
+
+// Expose default options (so they can be overridden globally).
+cssesc.options = {
+	'escapeEverything': false,
+	'isIdentifier': false,
+	'quotes': 'single',
+	'wrap': false
+};
+
+cssesc.version = '3.0.0';
+
+var cssesc_1 = cssesc;
+
+var cssesc$1 = /*@__PURE__*/getDefaultExportFromCjs(cssesc_1);
+
 /**
     Copyright 2022 Google LLC
 
@@ -549,6 +664,36 @@ function getSelectorType(selector) {
     }
     return exports.SelectorType.CSS;
 }
+/**
+ * Converts a selector or an array of selector parts into a Puppeteer selector.
+ *
+ * @see https://pptr.dev/guides/query-selectors#p-elements
+ */
+function selectorToPElementSelector(selector) {
+    if (!Array.isArray(selector)) {
+        selector = [selector];
+    }
+    function escape(input) {
+        return cssesc$1(input, {
+            isIdentifier: true,
+        });
+    }
+    const result = selector.map((s) => {
+        switch (getSelectorType(s)) {
+            case exports.SelectorType.ARIA:
+                return `::-p-aria(${escape(s.substring(exports.SelectorType.ARIA.length + 1))})`;
+            case exports.SelectorType.CSS:
+                return s;
+            case exports.SelectorType.XPath:
+                return `::-p-xpath(${escape(s.substring(exports.SelectorType.XPath.length + 1))})`;
+            case exports.SelectorType.Pierce:
+                return `::-p-pierce(${s.substring(exports.SelectorType.Pierce.length + 1)})`;
+            case exports.SelectorType.Text:
+                return `::-p-text(${escape(s.substring(exports.SelectorType.Text.length + 1))})`;
+        }
+    });
+    return result.join(' >>>> ');
+}
 
 /**
     Copyright 2022 Google LLC
@@ -695,6 +840,9 @@ class InMemoryLineWriter {
     endBlock() {
         var _a;
         __classPrivateFieldSet(this, _InMemoryLineWriter_currentIndentation, (_a = __classPrivateFieldGet(this, _InMemoryLineWriter_currentIndentation, "f"), _a--, _a), "f");
+        if (__classPrivateFieldGet(this, _InMemoryLineWriter_currentIndentation, "f") < 0) {
+            throw new Error('Extra endBlock');
+        }
         return this;
     }
     toString() {
@@ -868,14 +1016,14 @@ const formatAsJSLiteral = (content) => {
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-var _PuppeteerStringifyExtension_instances, _PuppeteerStringifyExtension_appendTarget, _PuppeteerStringifyExtension_appendFrame, _PuppeteerStringifyExtension_appendContext, _PuppeteerStringifyExtension_appendWaitForSelector, _PuppeteerStringifyExtension_appendClickStep, _PuppeteerStringifyExtension_appendDoubleClickStep, _PuppeteerStringifyExtension_appendHoverStep, _PuppeteerStringifyExtension_appendChangeStep, _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep, _PuppeteerStringifyExtension_appendKeyDownStep, _PuppeteerStringifyExtension_appendKeyUpStep, _PuppeteerStringifyExtension_appendCloseStep, _PuppeteerStringifyExtension_appendViewportStep, _PuppeteerStringifyExtension_appendScrollStep, _PuppeteerStringifyExtension_appendStepType, _PuppeteerStringifyExtension_appendNavigationStep, _PuppeteerStringifyExtension_appendWaitExpressionStep, _PuppeteerStringifyExtension_appendWaitForElementStep;
+var _PuppeteerStringifyExtension_instances, _PuppeteerStringifyExtension_appendTarget, _PuppeteerStringifyExtension_appendFrame, _PuppeteerStringifyExtension_appendContext, _PuppeteerStringifyExtension_appendLocators, _PuppeteerStringifyExtension_appendClickStep, _PuppeteerStringifyExtension_appendDoubleClickStep, _PuppeteerStringifyExtension_appendHoverStep, _PuppeteerStringifyExtension_appendChangeStep, _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep, _PuppeteerStringifyExtension_appendKeyDownStep, _PuppeteerStringifyExtension_appendKeyUpStep, _PuppeteerStringifyExtension_appendCloseStep, _PuppeteerStringifyExtension_appendViewportStep, _PuppeteerStringifyExtension_appendScrollStep, _PuppeteerStringifyExtension_appendStepType, _PuppeteerStringifyExtension_appendNavigationStep, _PuppeteerStringifyExtension_appendWaitExpressionStep, _PuppeteerStringifyExtension_appendWaitForElementStep;
 class PuppeteerStringifyExtension extends StringifyExtension {
     constructor() {
         super(...arguments);
         _PuppeteerStringifyExtension_instances.add(this);
     }
     async beforeAllSteps(out, flow) {
-        out.appendLine("const puppeteer = require('puppeteer'); // v19.11.1 or later");
+        out.appendLine("const puppeteer = require('puppeteer'); // v20.7.4 or later");
         out.appendLine('');
         out.appendLine('(async () => {').startBlock();
         out.appendLine("const browser = await puppeteer.launch({headless: 'new'});");
@@ -904,6 +1052,7 @@ class PuppeteerStringifyExtension extends StringifyExtension {
         __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendContext).call(this, out, step);
         if (step.assertedEvents) {
             out.appendLine('const promises = [];');
+            out.appendLine('const startWaitingForEvents = () => {').startBlock();
             for (const event of step.assertedEvents) {
                 switch (event.type) {
                     case exports.AssertedEventType.Navigation: {
@@ -914,6 +1063,7 @@ class PuppeteerStringifyExtension extends StringifyExtension {
                         throw new Error(`Event type ${event.type} is not supported`);
                 }
             }
+            out.endBlock().appendLine('}');
         }
         __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendStepType).call(this, out, step);
         if (step.assertedEvents) {
@@ -943,51 +1093,60 @@ _PuppeteerStringifyExtension_instances = new WeakSet(), _PuppeteerStringifyExten
     if (step.frame) {
         __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendFrame).call(this, out, step.frame);
     }
-}, _PuppeteerStringifyExtension_appendWaitForSelector = function _PuppeteerStringifyExtension_appendWaitForSelector(out, step) {
-    out.appendLine(`await scrollIntoViewIfNeeded(${formatJSONAsJS(step.selectors, out.getIndent())}, ${step.frame ? 'frame' : 'targetPage'}, timeout);`);
-    out.appendLine(`const element = await waitForSelectors(${formatJSONAsJS(step.selectors, out.getIndent())}, ${step.frame ? 'frame' : 'targetPage'}, { timeout, visible: true });`);
+}, _PuppeteerStringifyExtension_appendLocators = function _PuppeteerStringifyExtension_appendLocators(out, step, action) {
+    var _a;
+    out.appendLine('await puppeteer.Locator.race([').startBlock();
+    out.appendLine(step.selectors
+        .map((s) => {
+        return `${step.frame ? 'frame' : 'targetPage'}.locator(${formatJSONAsJS(selectorToPElementSelector(s), out.getIndent())})`;
+    })
+        .join(',\n'));
+    out.endBlock().appendLine('])');
+    out.startBlock().appendLine('.setTimeout(timeout)');
+    if ((_a = step.assertedEvents) === null || _a === void 0 ? void 0 : _a.length) {
+        out.appendLine(`.on('action', () => startWaitingForEvents())`);
+    }
+    action();
+    out.endBlock();
 }, _PuppeteerStringifyExtension_appendClickStep = function _PuppeteerStringifyExtension_appendClickStep(out, step) {
-    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-    out.appendLine('await element.click({');
-    if (step.duration) {
-        out.appendLine(`  delay: ${step.duration},`);
-    }
-    if (step.button) {
-        out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
-    }
-    out.appendLine('  offset: {');
-    out.appendLine(`    x: ${step.offsetX},`);
-    out.appendLine(`    y: ${step.offsetY},`);
-    out.appendLine('  },');
-    out.appendLine('});');
+    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendLocators).call(this, out, step, () => {
+        out.appendLine('.click({');
+        if (step.duration) {
+            out.appendLine(`  delay: ${step.duration},`);
+        }
+        if (step.button) {
+            out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
+        }
+        out.appendLine('  offset: {');
+        out.appendLine(`    x: ${step.offsetX},`);
+        out.appendLine(`    y: ${step.offsetY},`);
+        out.appendLine('  },');
+        out.appendLine('});');
+    });
 }, _PuppeteerStringifyExtension_appendDoubleClickStep = function _PuppeteerStringifyExtension_appendDoubleClickStep(out, step) {
-    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-    out.appendLine('await element.click({');
-    out.appendLine(`  count: 2,`);
-    if (step.duration) {
-        out.appendLine(`  delay: ${step.duration},`);
-    }
-    if (step.button) {
-        out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
-    }
-    out.appendLine('  offset: {');
-    out.appendLine(`    x: ${step.offsetX},`);
-    out.appendLine(`    y: ${step.offsetY},`);
-    out.appendLine('  },');
-    out.appendLine('});');
+    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendLocators).call(this, out, step, () => {
+        out.appendLine('.click({');
+        out.appendLine(`  count: 2,`);
+        if (step.duration) {
+            out.appendLine(`  delay: ${step.duration},`);
+        }
+        if (step.button) {
+            out.appendLine(`  button: '${mouseButtonMap.get(step.button)}',`);
+        }
+        out.appendLine('  offset: {');
+        out.appendLine(`    x: ${step.offsetX},`);
+        out.appendLine(`    y: ${step.offsetY},`);
+        out.appendLine('  },');
+        out.appendLine('});');
+    });
 }, _PuppeteerStringifyExtension_appendHoverStep = function _PuppeteerStringifyExtension_appendHoverStep(out, step) {
-    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-    out.appendLine('await element.hover();');
+    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendLocators).call(this, out, step, () => {
+        out.appendLine('.hover();');
+    });
 }, _PuppeteerStringifyExtension_appendChangeStep = function _PuppeteerStringifyExtension_appendChangeStep(out, step) {
-    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-    out.appendLine('const inputType = await element.evaluate(el => el.type);');
-    out.appendLine(`if (inputType === 'select-one') {`);
-    out.appendLine(`  await changeSelectElement(element, ${formatJSONAsJS(step.value, out.getIndent())})`);
-    out.appendLine(`} else if (${formatJSONAsJS(Array.from(typeableInputTypes), out.getIndent())}.includes(inputType)) {`);
-    out.appendLine(`  await typeIntoElement(element, ${formatJSONAsJS(step.value, out.getIndent())});`);
-    out.appendLine('} else {');
-    out.appendLine(`  await changeElementValue(element, ${formatJSONAsJS(step.value, out.getIndent())});`);
-    out.appendLine('}');
+    __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendLocators).call(this, out, step, () => {
+        out.appendLine(`.fill(${formatJSONAsJS(step.value, out.getIndent())});`);
+    });
 }, _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep = function _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep(out, step) {
     out.appendLine('await targetPage.emulateNetworkConditions({');
     out.appendLine(`  offline: ${!step.download && !step.upload},`);
@@ -1008,8 +1167,9 @@ _PuppeteerStringifyExtension_instances = new WeakSet(), _PuppeteerStringifyExten
     }, out.getIndent())})`);
 }, _PuppeteerStringifyExtension_appendScrollStep = function _PuppeteerStringifyExtension_appendScrollStep(out, step) {
     if ('selectors' in step) {
-        __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendWaitForSelector).call(this, out, step);
-        out.appendLine(`await element.evaluate((el, x, y) => { el.scrollTop = y; el.scrollLeft = x; }, ${step.x}, ${step.y});`);
+        __classPrivateFieldGet(this, _PuppeteerStringifyExtension_instances, "m", _PuppeteerStringifyExtension_appendLocators).call(this, out, step, () => {
+            out.appendLine(`.scroll({ scrollTop: ${step.y}, scrollLeft: ${step.x}});`);
+        });
     }
     else {
         out.appendLine(`await targetPage.evaluate((x, y) => { window.scroll(x, y); }, ${step.x}, ${step.y})`);
@@ -1048,6 +1208,10 @@ _PuppeteerStringifyExtension_instances = new WeakSet(), _PuppeteerStringifyExten
             return assertAllStepTypesAreHandled(step);
     }
 }, _PuppeteerStringifyExtension_appendNavigationStep = function _PuppeteerStringifyExtension_appendNavigationStep(out, step) {
+    var _a;
+    if ((_a = step.assertedEvents) === null || _a === void 0 ? void 0 : _a.length) {
+        out.appendLine(`startWaitingForEvents();`);
+    }
     out.appendLine(`await targetPage.goto(${formatJSONAsJS(step.url, out.getIndent())});`);
 }, _PuppeteerStringifyExtension_appendWaitExpressionStep = function _PuppeteerStringifyExtension_appendWaitExpressionStep(out, step) {
     out.appendLine(`await ${step.frame ? 'frame' : 'targetPage'}.waitForFunction(${formatJSONAsJS(step.expression, out.getIndent())}, { timeout });`);
@@ -1055,80 +1219,7 @@ _PuppeteerStringifyExtension_instances = new WeakSet(), _PuppeteerStringifyExten
     out.appendLine(`await waitForElement(${formatJSONAsJS(step, out.getIndent())}, ${step.frame ? 'frame' : 'targetPage'}, timeout);`);
 };
 const defaultTimeout = 5000;
-const helpers = `async function waitForSelectors(selectors, frame, options) {
-  for (const selector of selectors) {
-    try {
-      return await waitForSelector(selector, frame, options);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-  throw new Error('Could not find element for selectors: ' + JSON.stringify(selectors));
-}
-
-async function scrollIntoViewIfNeeded(selectors, frame, timeout) {
-  const element = await waitForSelectors(selectors, frame, { visible: false, timeout });
-  if (!element) {
-    throw new Error(
-      'The element could not be found.'
-    );
-  }
-  await waitForConnected(element, timeout);
-  const isInViewport = await element.isIntersectingViewport({threshold: 0});
-  if (isInViewport) {
-    return;
-  }
-  await element.evaluate(element => {
-    element.scrollIntoView({
-      block: 'center',
-      inline: 'center',
-      behavior: 'auto',
-    });
-  });
-  await waitForInViewport(element, timeout);
-}
-
-async function waitForConnected(element, timeout) {
-  await waitForFunction(async () => {
-    return await element.getProperty('isConnected');
-  }, timeout);
-}
-
-async function waitForInViewport(element, timeout) {
-  await waitForFunction(async () => {
-    return await element.isIntersectingViewport({threshold: 0});
-  }, timeout);
-}
-
-async function waitForSelector(selector, frame, options) {
-  if (!Array.isArray(selector)) {
-    selector = [selector];
-  }
-  if (!selector.length) {
-    throw new Error('Empty selector provided to waitForSelector');
-  }
-  let element = null;
-  for (let i = 0; i < selector.length; i++) {
-    const part = selector[i];
-    if (element) {
-      element = await element.waitForSelector(part, options);
-    } else {
-      element = await frame.waitForSelector(part, options);
-    }
-    if (!element) {
-      throw new Error('Could not find element: ' + selector.join('>>'));
-    }
-    if (i < selector.length - 1) {
-      element = (await element.evaluateHandle(el => el.shadowRoot ? el.shadowRoot : el)).asElement();
-    }
-  }
-  if (!element) {
-    throw new Error('Could not find element: ' + selector.join('|'));
-  }
-  return element;
-}
-
-async function waitForElement(step, frame, timeout) {
+const helpers = `async function waitForElement(step, frame, timeout) {
   const {
     count = 1,
     operator = '>=',
@@ -1254,40 +1345,6 @@ async function waitForFunction(fn, timeout) {
     await new Promise(resolve => setTimeout(resolve, 100));
   }
   throw new Error('Timed out');
-}
-
-async function changeSelectElement(element, value) {
-  await element.select(value);
-  await element.evaluateHandle((e) => {
-    e.blur();
-    e.focus();
-  });
-}
-
-async function changeElementValue(element, value) {
-  await element.focus();
-  await element.evaluate((input, value) => {
-    input.value = value;
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  }, value);
-}
-
-async function typeIntoElement(element, value) {
-  const textToType = await element.evaluate((input, newValue) => {
-    if (
-      newValue.length <= input.value.length ||
-      !newValue.startsWith(input.value)
-    ) {
-      input.value = '';
-      return newValue;
-    }
-    const originalValue = input.value;
-    input.value = '';
-    input.value = originalValue;
-    return newValue.substring(originalValue.length);
-  }, value);
-  await element.type(textToType);
 }`;
 
 /**
@@ -1476,21 +1533,6 @@ class RunnerExtension {
     async afterEachStep(step, flow) { }
 }
 
-/**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
- */
 var _PuppeteerRunnerExtension_instances, _PuppeteerRunnerExtension_ensureAutomationEmulatation, _PuppeteerRunnerExtension_getTimeoutForStep;
 const comparators = {
     '==': (a, b) => a === b,
@@ -1535,71 +1577,50 @@ class PuppeteerRunnerExtension extends RunnerExtension {
      * @internal
      */
     async runStepInFrame(step, mainPage, targetPageOrFrame, localFrame, timeout) {
-        const waitForVisible = true;
         let assertedEventsPromise = null;
         const startWaitingForEvents = () => {
             assertedEventsPromise = waitForEvents(localFrame, step, timeout);
         };
+        const locatorRace = this.page.locatorRace;
         switch (step.type) {
             case exports.StepType.DoubleClick:
-                {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
-                    });
-                    if (!element) {
-                        throw new Error('Could not find element: ' + step.selectors[0]);
-                    }
-                    startWaitingForEvents();
-                    await element.click({
-                        count: 2,
-                        button: step.button && mouseButtonMap.get(step.button),
-                        delay: step.duration,
-                        offset: {
-                            x: step.offsetX,
-                            y: step.offsetY,
-                        },
-                    });
-                    await element.dispose();
-                }
+                await locatorRace(step.selectors.map((selector) => {
+                    return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                }))
+                    .setTimeout(timeout)
+                    .on('action', () => startWaitingForEvents())
+                    .click({
+                    count: 2,
+                    button: step.button && mouseButtonMap.get(step.button),
+                    delay: step.duration,
+                    offset: {
+                        x: step.offsetX,
+                        y: step.offsetY,
+                    },
+                });
                 break;
             case exports.StepType.Click:
-                {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
-                    });
-                    if (!element) {
-                        throw new Error('Could not find element: ' + step.selectors[0]);
-                    }
-                    startWaitingForEvents();
-                    await element.click({
-                        delay: step.duration,
-                        button: step.button && mouseButtonMap.get(step.button),
-                        offset: {
-                            x: step.offsetX,
-                            y: step.offsetY,
-                        },
-                    });
-                    await element.dispose();
-                }
+                await locatorRace(step.selectors.map((selector) => {
+                    return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                }))
+                    .setTimeout(timeout)
+                    .on('action', () => startWaitingForEvents())
+                    .click({
+                    delay: step.duration,
+                    button: step.button && mouseButtonMap.get(step.button),
+                    offset: {
+                        x: step.offsetX,
+                        y: step.offsetY,
+                    },
+                });
                 break;
             case exports.StepType.Hover:
-                {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
-                    });
-                    if (!element) {
-                        throw new Error('Could not find element: ' + step.selectors[0]);
-                    }
-                    startWaitingForEvents();
-                    await element.hover();
-                    await element.dispose();
-                }
+                await locatorRace(step.selectors.map((selector) => {
+                    return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                }))
+                    .setTimeout(timeout)
+                    .on('action', () => startWaitingForEvents())
+                    .hover();
                 break;
             case exports.StepType.EmulateNetworkConditions:
                 {
@@ -1630,32 +1651,12 @@ class PuppeteerRunnerExtension extends RunnerExtension {
                 }
                 break;
             case exports.StepType.Change:
-                {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = (await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
-                    }));
-                    if (!element) {
-                        throw new Error('Could not find element: ' + step.selectors[0]);
-                    }
-                    const inputType = await element.evaluate(
-                    /* c8 ignore start */
-                    (el) => el.type
-                    /* c8 ignore stop */
-                    );
-                    startWaitingForEvents();
-                    if (inputType === 'select-one') {
-                        await this.changeSelectElement(step, element);
-                    }
-                    else if (typeableInputTypes.has(inputType)) {
-                        await this.typeIntoElement(step, element);
-                    }
-                    else {
-                        await this.changeElementValue(step, element);
-                    }
-                    await element.dispose();
-                }
+                await locatorRace(step.selectors.map((selector) => {
+                    return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                }))
+                    .on('action', () => startWaitingForEvents())
+                    .setTimeout(timeout)
+                    .fill(step.value);
                 break;
             case exports.StepType.SetViewport: {
                 if ('setViewport' in targetPageOrFrame) {
@@ -1666,19 +1667,15 @@ class PuppeteerRunnerExtension extends RunnerExtension {
             }
             case exports.StepType.Scroll: {
                 if ('selectors' in step) {
-                    await scrollIntoViewIfNeeded(step.selectors, localFrame, timeout);
-                    const element = await waitForSelectors(step.selectors, localFrame, {
-                        timeout,
-                        visible: waitForVisible,
+                    await locatorRace(step.selectors.map((selector) => {
+                        return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                    }))
+                        .on('action', () => startWaitingForEvents())
+                        .setTimeout(timeout)
+                        .scroll({
+                        scrollLeft: step.x || 0,
+                        scrollTop: step.y || 0,
                     });
-                    startWaitingForEvents();
-                    await element.evaluate((e, x, y) => {
-                        /* c8 ignore start */
-                        e.scrollTop = y;
-                        e.scrollLeft = x;
-                        /* c8 ignore stop */
-                    }, step.x || 0, step.y || 0);
-                    await element.dispose();
                 }
                 else {
                     startWaitingForEvents();
@@ -1725,51 +1722,6 @@ class PuppeteerRunnerExtension extends RunnerExtension {
                 assertAllStepTypesAreHandled(step);
         }
         await assertedEventsPromise;
-    }
-    /**
-     * @internal
-     */
-    async typeIntoElement(step, element) {
-        const textToType = await element.evaluate((input, newValue) => {
-            /* c8 ignore start */
-            if (newValue.length <= input.value.length ||
-                !newValue.startsWith(input.value)) {
-                input.value = '';
-                return newValue;
-            }
-            const originalValue = input.value;
-            // Move cursor to the end of the common prefix.
-            input.value = '';
-            input.value = originalValue;
-            return newValue.substring(originalValue.length);
-            /* c8 ignore stop */
-        }, step.value);
-        await element.type(textToType);
-    }
-    /**
-     * @internal
-     */
-    async changeElementValue(step, element) {
-        await element.focus();
-        await element.evaluate((input, value) => {
-            /* c8 ignore start */
-            input.value = value;
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-            /* c8 ignore stop */
-        }, step.value);
-    }
-    /**
-     * @internal
-     */
-    async changeSelectElement(step, element) {
-        await element.select(step.value);
-        await element.evaluateHandle((e) => {
-            /* c8 ignore start */
-            e.blur();
-            e.focus();
-            /* c8 ignore stop */
-        });
     }
 }
 _PuppeteerRunnerExtension_instances = new WeakSet(), _PuppeteerRunnerExtension_ensureAutomationEmulatation = async function _PuppeteerRunnerExtension_ensureAutomationEmulatation(pageOrFrame) {
@@ -1881,121 +1833,6 @@ async function waitForElement(step, frame, timeout) {
         await elementsHandle.dispose();
         return result === visible;
     }, timeout);
-}
-const asSVGElementHandle = async (handle) => {
-    if (await handle.evaluate((element) => {
-        /* c8 ignore start */
-        return element instanceof SVGElement;
-        /* c8 ignore stop */
-    })) {
-        return handle;
-    }
-    else {
-        return null;
-    }
-};
-async function scrollIntoViewIfNeeded(selectors, frame, timeout) {
-    const element = await waitForSelectors(selectors, frame, {
-        visible: false,
-        timeout,
-    });
-    if (!element) {
-        throw new Error('The element could not be found.');
-    }
-    await waitForConnected(element, timeout);
-    const svgHandle = await asSVGElementHandle(element);
-    const intersectionTarget = svgHandle
-        ? await getOwnerSVGElement(svgHandle)
-        : element;
-    const isInViewport = intersectionTarget
-        ? await intersectionTarget.isIntersectingViewport({ threshold: 0 })
-        : false;
-    if (isInViewport) {
-        return;
-    }
-    await scrollIntoView(element);
-    if (intersectionTarget) {
-        await waitForInViewport(intersectionTarget, timeout);
-    }
-    await intersectionTarget.dispose();
-    if (intersectionTarget !== element) {
-        await element.dispose();
-    }
-}
-async function getOwnerSVGElement(handle) {
-    // If there is no ownerSVGElement, the element must be the top-level SVG
-    // element itself.
-    return await handle.evaluateHandle((element) => {
-        var _a;
-        /* c8 ignore start */
-        return (_a = element.ownerSVGElement) !== null && _a !== void 0 ? _a : element;
-        /* c8 ignore stop */
-    });
-}
-async function scrollIntoView(element) {
-    await element.evaluate((element) => {
-        /* c8 ignore start */
-        element.scrollIntoView({
-            block: 'center',
-            inline: 'center',
-            behavior: 'auto',
-        });
-        /* c8 ignore stop */
-    });
-}
-async function waitForConnected(element, timeout) {
-    await waitForFunction(async () => {
-        /* c8 ignore start */
-        return await element.evaluate((el) => el.isConnected);
-        /* c8 ignore stop */
-    }, timeout);
-}
-async function waitForInViewport(element, timeout) {
-    await waitForFunction(async () => {
-        return await element.isIntersectingViewport({ threshold: 0 });
-    }, timeout);
-}
-async function waitForSelectors(selectors, frame, options) {
-    for (const selector of selectors) {
-        try {
-            return await waitForSelector(selector, frame, options);
-        }
-        catch (err) {
-            console.error('error in waitForSelectors', err);
-            // TODO: report the error somehow
-        }
-    }
-    throw new Error('Could not find element for selectors: ' + JSON.stringify(selectors));
-}
-async function waitForSelector(selector, frame, options) {
-    if (!Array.isArray(selector)) {
-        selector = [selector];
-    }
-    if (!selector.length) {
-        throw new Error('Empty selector provided to `waitForSelector`');
-    }
-    let isLastPart = selector.length === 1;
-    let handle = await frame.waitForSelector(selector[0], {
-        ...options,
-        visible: isLastPart && options.visible,
-    });
-    for (const part of selector.slice(1, selector.length)) {
-        if (!handle) {
-            throw new Error('Could not find element: ' + selector.join('>>'));
-        }
-        const innerHandle = await handle.evaluateHandle((el) => el.shadowRoot ? el.shadowRoot : el);
-        handle.dispose();
-        isLastPart = selector[selector.length - 1] === part;
-        handle = await innerHandle.waitForSelector(part, {
-            ...options,
-            visible: isLastPart && options.visible,
-        });
-        innerHandle.dispose();
-    }
-    if (!handle) {
-        throw new Error('Could not find element: ' + selector.join('>>'));
-    }
-    return handle;
 }
 async function querySelectorsAll(selectors, frame) {
     for (const selector of selectors) {
@@ -2400,6 +2237,7 @@ exports.parse = parse;
 exports.parseSourceMap = parseSourceMap;
 exports.parseStep = parseStep;
 exports.pointerDeviceTypes = pointerDeviceTypes;
+exports.selectorToPElementSelector = selectorToPElementSelector;
 exports.stringify = stringify;
 exports.stringifyStep = stringifyStep;
 exports.stripSourceMap = stripSourceMap;

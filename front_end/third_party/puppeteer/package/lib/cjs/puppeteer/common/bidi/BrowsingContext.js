@@ -12,7 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _CDPSessionWrapper_context, _CDPSessionWrapper_sessionId, _BrowsingContext_timeoutSettings, _BrowsingContext_id, _BrowsingContext_url, _BrowsingContext_cdpSession;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWaitUntilSingle = exports.BrowsingContext = exports.CDPSessionWrapper = void 0;
+exports.getWaitUntilSingle = exports.BrowsingContext = exports.CDPSessionWrapper = exports.lifeCycleToSubscribedEvent = void 0;
 const assert_js_1 = require("../../util/assert.js");
 const Deferred_js_1 = require("../../util/Deferred.js");
 const Errors_js_1 = require("../Errors.js");
@@ -22,7 +22,7 @@ const Realm_js_1 = require("./Realm.js");
 /**
  * @internal
  */
-const lifeCycleToSubscribedEvent = new Map([
+exports.lifeCycleToSubscribedEvent = new Map([
     ['load', 'browsingContext.load'],
     ['domcontentloaded', 'browsingContext.domContentLoaded'],
 ]);
@@ -47,7 +47,7 @@ class CDPSessionWrapper extends EventEmitter_js_1.EventEmitter {
             context: context.id,
         })
             .then(session => {
-            __classPrivateFieldGet(this, _CDPSessionWrapper_sessionId, "f").resolve(session.result.cdpSession);
+            __classPrivateFieldGet(this, _CDPSessionWrapper_sessionId, "f").resolve(session.result.session);
         })
             .catch(err => {
             __classPrivateFieldGet(this, _CDPSessionWrapper_sessionId, "f").reject(err);
@@ -57,11 +57,11 @@ class CDPSessionWrapper extends EventEmitter_js_1.EventEmitter {
         return undefined;
     }
     async send(method, ...paramArgs) {
-        const cdpSession = await __classPrivateFieldGet(this, _CDPSessionWrapper_sessionId, "f").valueOrThrow();
+        const session = await __classPrivateFieldGet(this, _CDPSessionWrapper_sessionId, "f").valueOrThrow();
         const result = await __classPrivateFieldGet(this, _CDPSessionWrapper_context, "f").connection.send('cdp.sendCommand', {
-            cdpMethod: method,
-            cdpParams: paramArgs[0] || {},
-            cdpSession,
+            method: method,
+            params: paramArgs[0],
+            session,
         });
         return result.result;
     }
@@ -83,12 +83,16 @@ class BrowsingContext extends Realm_js_1.Realm {
         super(connection, info.context);
         _BrowsingContext_timeoutSettings.set(this, void 0);
         _BrowsingContext_id.set(this, void 0);
-        _BrowsingContext_url.set(this, 'about:blank');
+        _BrowsingContext_url.set(this, void 0);
         _BrowsingContext_cdpSession.set(this, void 0);
         this.connection = connection;
         __classPrivateFieldSet(this, _BrowsingContext_timeoutSettings, timeoutSettings, "f");
         __classPrivateFieldSet(this, _BrowsingContext_id, info.context, "f");
+        __classPrivateFieldSet(this, _BrowsingContext_url, info.url, "f");
         __classPrivateFieldSet(this, _BrowsingContext_cdpSession, new CDPSessionWrapper(this), "f");
+        this.on('browsingContext.fragmentNavigated', (info) => {
+            __classPrivateFieldSet(this, _BrowsingContext_url, info.url, "f");
+        });
     }
     createSandboxRealm(sandbox) {
         return new Realm_js_1.Realm(this.connection, __classPrivateFieldGet(this, _BrowsingContext_id, "f"), sandbox);
@@ -101,6 +105,9 @@ class BrowsingContext extends Realm_js_1.Realm {
     }
     get cdpSession() {
         return __classPrivateFieldGet(this, _BrowsingContext_cdpSession, "f");
+    }
+    navigated(url) {
+        __classPrivateFieldSet(this, _BrowsingContext_url, url, "f");
     }
     async goto(url, options = {}) {
         const { waitUntil = 'load', timeout = __classPrivateFieldGet(this, _BrowsingContext_timeoutSettings, "f").navigationTimeout(), } = options;
@@ -134,7 +141,7 @@ class BrowsingContext extends Realm_js_1.Realm {
     }
     async setContent(html, options) {
         const { waitUntil = 'load', timeout = __classPrivateFieldGet(this, _BrowsingContext_timeoutSettings, "f").navigationTimeout(), } = options;
-        const waitUntilEvent = lifeCycleToSubscribedEvent.get(getWaitUntilSingle(waitUntil));
+        const waitUntilEvent = exports.lifeCycleToSubscribedEvent.get(getWaitUntilSingle(waitUntil));
         await Promise.all([
             (0, util_js_1.setPageContent)(this, html),
             (0, util_js_1.waitWithTimeout)(new Promise(resolve => {

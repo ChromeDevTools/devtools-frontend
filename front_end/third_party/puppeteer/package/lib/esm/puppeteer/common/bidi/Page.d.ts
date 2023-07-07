@@ -16,6 +16,7 @@
 /// <reference types="node" />
 /// <reference types="node" />
 import type { Readable } from 'stream';
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import Protocol from 'devtools-protocol';
 import { GeolocationOptions, MediaFeature, Page as PageBase, ScreenshotOptions, WaitForOptions } from '../../api/Page.js';
 import { Accessibility } from '../Accessibility.js';
@@ -35,8 +36,8 @@ import { Keyboard, Mouse, Touchscreen } from './Input.js';
  */
 export declare class Page extends PageBase {
     #private;
-    constructor(browserContext: BrowserContext, info: {
-        context: string;
+    constructor(browserContext: BrowserContext, info: Omit<Bidi.BrowsingContext.Info, 'url'> & {
+        url?: string;
     });
     get accessibility(): Accessibility;
     get tracing(): Tracing;

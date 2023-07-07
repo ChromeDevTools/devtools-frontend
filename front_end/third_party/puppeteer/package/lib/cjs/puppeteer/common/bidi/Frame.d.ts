@@ -41,11 +41,11 @@ export declare class Frame extends BaseFrame {
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     goto(url: string, options?: {
-        referer?: string | undefined;
-        referrerPolicy?: string | undefined;
-        timeout?: number | undefined;
-        waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[] | undefined;
-    } | undefined): Promise<HTTPResponse | null>;
+        referer?: string;
+        referrerPolicy?: string;
+        timeout?: number;
+        waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
+    }): Promise<HTTPResponse | null>;
     setContent(html: string, options: {
         timeout?: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
@@ -58,6 +58,10 @@ export declare class Frame extends BaseFrame {
     $eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<NodeFor<Selector>, Params> = EvaluateFuncWith<NodeFor<Selector>, Params>>(selector: Selector, pageFunction: string | Func, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: string | Func, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     $x(expression: string): Promise<Array<ElementHandle<Node>>>;
+    waitForNavigation(options?: {
+        timeout?: number;
+        waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
+    }): Promise<HTTPResponse | null>;
     dispose(): void;
 }
 //# sourceMappingURL=Frame.d.ts.map

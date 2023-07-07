@@ -24,10 +24,13 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Frame_page, _Frame_context;
+var _Frame_page, _Frame_context, _Frame_timeoutSettings, _Frame_abortDeferred;
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { Frame as BaseFrame } from '../../api/Frame.js';
+import { Deferred } from '../../util/Deferred.js';
 import { UTILITY_WORLD_NAME } from '../FrameManager.js';
-import { withSourcePuppeteerURLIfNone } from '../util.js';
+import { waitForEvent, withSourcePuppeteerURLIfNone } from '../util.js';
+import { getWaitUntilSingle, lifeCycleToSubscribedEvent, } from './BrowsingContext.js';
 import { MAIN_SANDBOX, PUPPETEER_SANDBOX, Sandbox, } from './Sandbox.js';
 /**
  * Puppeteer's Frame class could be viewed as a BiDi BrowsingContext implementation
@@ -38,8 +41,11 @@ export class Frame extends BaseFrame {
         super();
         _Frame_page.set(this, void 0);
         _Frame_context.set(this, void 0);
+        _Frame_timeoutSettings.set(this, void 0);
+        _Frame_abortDeferred.set(this, Deferred.create());
         __classPrivateFieldSet(this, _Frame_page, page, "f");
         __classPrivateFieldSet(this, _Frame_context, context, "f");
+        __classPrivateFieldSet(this, _Frame_timeoutSettings, timeoutSettings, "f");
         this._id = __classPrivateFieldGet(this, _Frame_context, "f").id;
         this._parentId = parentId ?? undefined;
         const puppeteerRealm = context.createSandboxRealm(UTILITY_WORLD_NAME);
@@ -94,25 +100,39 @@ export class Frame extends BaseFrame {
         return __classPrivateFieldGet(this, _Frame_context, "f");
     }
     $(selector) {
-        return this.sandboxes[MAIN_SANDBOX].$(selector);
+        return this.mainRealm().$(selector);
     }
     $$(selector) {
-        return this.sandboxes[MAIN_SANDBOX].$$(selector);
+        return this.mainRealm().$$(selector);
     }
     $eval(selector, pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-        return this.sandboxes[MAIN_SANDBOX].$eval(selector, pageFunction, ...args);
+        return this.mainRealm().$eval(selector, pageFunction, ...args);
     }
     $$eval(selector, pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
-        return this.sandboxes[MAIN_SANDBOX].$$eval(selector, pageFunction, ...args);
+        return this.mainRealm().$$eval(selector, pageFunction, ...args);
     }
     $x(expression) {
-        return this.sandboxes[MAIN_SANDBOX].$x(expression);
+        return this.mainRealm().$x(expression);
+    }
+    async waitForNavigation(options = {}) {
+        const { waitUntil = 'load', timeout = __classPrivateFieldGet(this, _Frame_timeoutSettings, "f").navigationTimeout(), } = options;
+        const waitUntilEvent = lifeCycleToSubscribedEvent.get(getWaitUntilSingle(waitUntil));
+        const [info] = await Promise.all([
+            waitForEvent(__classPrivateFieldGet(this, _Frame_context, "f"), waitUntilEvent, () => {
+                return true;
+            }, timeout, __classPrivateFieldGet(this, _Frame_abortDeferred, "f").valueOrThrow()),
+            waitForEvent(__classPrivateFieldGet(this, _Frame_context, "f"), Bidi.BrowsingContext.EventNames.FragmentNavigated, () => {
+                return true;
+            }, timeout, __classPrivateFieldGet(this, _Frame_abortDeferred, "f").valueOrThrow()),
+        ]);
+        return __classPrivateFieldGet(this, _Frame_page, "f").getNavigationResponse(info.navigation);
     }
     dispose() {
+        __classPrivateFieldGet(this, _Frame_abortDeferred, "f").reject(new Error('Frame detached'));
         __classPrivateFieldGet(this, _Frame_context, "f").dispose();
     }
 }
-_Frame_page = new WeakMap(), _Frame_context = new WeakMap();
+_Frame_page = new WeakMap(), _Frame_context = new WeakMap(), _Frame_timeoutSettings = new WeakMap(), _Frame_abortDeferred = new WeakMap();
 //# sourceMappingURL=Frame.js.map

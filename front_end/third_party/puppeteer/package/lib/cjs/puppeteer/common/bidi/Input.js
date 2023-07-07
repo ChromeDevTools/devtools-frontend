@@ -55,6 +55,7 @@ const Bidi = __importStar(require("chromium-bidi/lib/cjs/protocol/protocol.js"))
 const Input_js_1 = require("../../api/Input.js");
 const getBidiKeyValue = (key) => {
     switch (key) {
+        case '\r':
         case '\n':
             key = 'Enter';
             break;
@@ -64,8 +65,6 @@ const getBidiKeyValue = (key) => {
         return key;
     }
     switch (key) {
-        case 'Unidentified':
-            return '\uE000';
         case 'Cancel':
             return '\uE001';
         case 'Help':
@@ -76,22 +75,21 @@ const getBidiKeyValue = (key) => {
             return '\uE004';
         case 'Clear':
             return '\uE005';
-        case 'Return':
-            return '\uE006';
         case 'Enter':
             return '\uE007';
         case 'Shift':
+        case 'ShiftLeft':
             return '\uE008';
         case 'Control':
+        case 'ControlLeft':
             return '\uE009';
         case 'Alt':
+        case 'AltLeft':
             return '\uE00A';
         case 'Pause':
             return '\uE00B';
         case 'Escape':
             return '\uE00C';
-        case ' ':
-            return '\uE00D';
         case 'PageUp':
             return '\uE00E';
         case 'PageDown':
@@ -112,41 +110,37 @@ const getBidiKeyValue = (key) => {
             return '\uE016';
         case 'Delete':
             return '\uE017';
-        case ';':
-            return '\uE018';
-        case '=':
+        case 'NumpadEqual':
             return '\uE019';
-        case '0':
+        case 'Numpad0':
             return '\uE01A';
-        case '1':
+        case 'Numpad1':
             return '\uE01B';
-        case '2':
+        case 'Numpad2':
             return '\uE01C';
-        case '3':
+        case 'Numpad3':
             return '\uE01D';
-        case '4':
+        case 'Numpad4':
             return '\uE01E';
-        case '5':
+        case 'Numpad5':
             return '\uE01F';
-        case '6':
+        case 'Numpad6':
             return '\uE020';
-        case '7':
+        case 'Numpad7':
             return '\uE021';
-        case '8':
+        case 'Numpad8':
             return '\uE022';
-        case '9':
+        case 'Numpad9':
             return '\uE023';
-        case '*':
+        case 'NumpadMultiply':
             return '\uE024';
-        case '+':
+        case 'NumpadAdd':
             return '\uE025';
-        case ',':
-            return '\uE026';
-        case '-':
+        case 'NumpadSubtract':
             return '\uE027';
-        case '.':
+        case 'NumpadDecimal':
             return '\uE028';
-        case '/':
+        case 'NumpadDivide':
             return '\uE029';
         case 'F1':
             return '\uE031';
@@ -173,9 +167,110 @@ const getBidiKeyValue = (key) => {
         case 'F12':
             return '\uE03C';
         case 'Meta':
+        case 'MetaLeft':
             return '\uE03D';
-        case 'ZenkakuHankaku':
-            return '\uE040';
+        case 'ShiftRight':
+            return '\uE050';
+        case 'ControlRight':
+            return '\uE051';
+        case 'AltRight':
+            return '\uE052';
+        case 'MetaRight':
+            return '\uE053';
+        case 'Digit0':
+            return '0';
+        case 'Digit1':
+            return '1';
+        case 'Digit2':
+            return '2';
+        case 'Digit3':
+            return '3';
+        case 'Digit4':
+            return '4';
+        case 'Digit5':
+            return '5';
+        case 'Digit6':
+            return '6';
+        case 'Digit7':
+            return '7';
+        case 'Digit8':
+            return '8';
+        case 'Digit9':
+            return '9';
+        case 'KeyA':
+            return 'a';
+        case 'KeyB':
+            return 'b';
+        case 'KeyC':
+            return 'c';
+        case 'KeyD':
+            return 'd';
+        case 'KeyE':
+            return 'e';
+        case 'KeyF':
+            return 'f';
+        case 'KeyG':
+            return 'g';
+        case 'KeyH':
+            return 'h';
+        case 'KeyI':
+            return 'i';
+        case 'KeyJ':
+            return 'j';
+        case 'KeyK':
+            return 'k';
+        case 'KeyL':
+            return 'l';
+        case 'KeyM':
+            return 'm';
+        case 'KeyN':
+            return 'n';
+        case 'KeyO':
+            return 'o';
+        case 'KeyP':
+            return 'p';
+        case 'KeyQ':
+            return 'q';
+        case 'KeyR':
+            return 'r';
+        case 'KeyS':
+            return 's';
+        case 'KeyT':
+            return 't';
+        case 'KeyU':
+            return 'u';
+        case 'KeyV':
+            return 'v';
+        case 'KeyW':
+            return 'w';
+        case 'KeyX':
+            return 'x';
+        case 'KeyY':
+            return 'y';
+        case 'KeyZ':
+            return 'z';
+        case 'Semicolon':
+            return ';';
+        case 'Equal':
+            return '=';
+        case 'Comma':
+            return ',';
+        case 'Minus':
+            return '-';
+        case 'Period':
+            return '.';
+        case 'Slash':
+            return '/';
+        case 'Backquote':
+            return '`';
+        case 'BracketLeft':
+            return '[';
+        case 'Backslash':
+            return '\\';
+        case 'BracketRight':
+            return ']';
+        case 'Quote':
+            return '"';
         default:
             throw new Error(`Unknown key: "${key}"`);
     }
@@ -192,10 +287,7 @@ class Keyboard extends Input_js_1.Keyboard {
         _Keyboard_context.set(this, void 0);
         __classPrivateFieldSet(this, _Keyboard_context, context, "f");
     }
-    async down(key, options) {
-        if (options) {
-            throw new Error('KeyDownOptions are not supported');
-        }
+    async down(key, _options) {
         await __classPrivateFieldGet(this, _Keyboard_context, "f").connection.send('input.performActions', {
             context: __classPrivateFieldGet(this, _Keyboard_context, "f").id,
             actions: [

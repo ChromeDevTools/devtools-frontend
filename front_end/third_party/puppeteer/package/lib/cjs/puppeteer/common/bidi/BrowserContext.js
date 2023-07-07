@@ -61,7 +61,10 @@ class BrowserContext extends BrowserContext_js_1.BrowserContext {
         const { result } = await __classPrivateFieldGet(this, _BrowserContext_connection, "f").send('browsingContext.create', {
             type: 'tab',
         });
-        const page = new Page_js_1.Page(this, result);
+        const page = new Page_js_1.Page(this, {
+            context: result.context,
+            children: [],
+        });
         if (__classPrivateFieldGet(this, _BrowserContext_defaultViewport, "f")) {
             try {
                 await page.setViewport(__classPrivateFieldGet(this, _BrowserContext_defaultViewport, "f"));
@@ -75,6 +78,9 @@ class BrowserContext extends BrowserContext_js_1.BrowserContext {
     }
     async close() {
         await __classPrivateFieldGet(this, _BrowserContext_init, "f").valueOrThrow();
+        if (__classPrivateFieldGet(this, _BrowserContext_isDefault, "f")) {
+            throw new Error('Default context cannot be closed!');
+        }
         for (const page of __classPrivateFieldGet(this, _BrowserContext_pages, "f").values()) {
             await page?.close().catch(error => {
                 (0, utils_js_1.debugError)(error);

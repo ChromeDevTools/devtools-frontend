@@ -255,6 +255,14 @@ export class Page extends EventEmitter {
         return Locator.create(this, selector);
     }
     /**
+     * A shortcut for {@link Locator.race} that does not require static imports.
+     *
+     * @internal
+     */
+    locatorRace(locators) {
+        return Locator.race(locators);
+    }
+    /**
      * Runs `document.querySelector` within the page. If no element matches the
      * selector, the return value resolves to `null`.
      *
@@ -518,8 +526,35 @@ export class Page extends EventEmitter {
     async reload() {
         throw new Error('Not implemented');
     }
-    async waitForNavigation() {
-        throw new Error('Not implemented');
+    /**
+     * Waits for the page to navigate to a new URL or to reload. It is useful when
+     * you run code that will indirectly cause the page to navigate.
+     *
+     * @example
+     *
+     * ```ts
+     * const [response] = await Promise.all([
+     *   page.waitForNavigation(), // The promise resolves after navigation has finished
+     *   page.click('a.my-link'), // Clicking the link will indirectly cause a navigation
+     * ]);
+     * ```
+     *
+     * @remarks
+     * Usage of the
+     * {@link https://developer.mozilla.org/en-US/docs/Web/API/History_API | History API}
+     * to change the URL is considered a navigation.
+     *
+     * @param options - Navigation parameters which might have the following
+     * properties:
+     * @returns A `Promise` which resolves to the main resource response.
+     *
+     * - In case of multiple redirects, the navigation will resolve with the
+     *   response of the last redirect.
+     * - In case of navigation to a different anchor or navigation due to History
+     *   API usage, the navigation will resolve with `null`.
+     */
+    async waitForNavigation(options = {}) {
+        return await this.mainFrame().waitForNavigation(options);
     }
     async waitForRequest() {
         throw new Error('Not implemented');

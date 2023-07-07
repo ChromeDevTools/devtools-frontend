@@ -55,11 +55,9 @@ class Browser extends Browser_js_1.Browser {
             (0, utils_js_1.debugError)(err);
         }
         await opts.connection.send('session.subscribe', {
-            events: (browserName.toLocaleLowerCase().includes('firefox')
-                ? Browser.subscribeModules.filter(module => {
-                    return !['cdp'].includes(module);
-                })
-                : Browser.subscribeModules),
+            events: browserName.toLocaleLowerCase().includes('firefox')
+                ? Browser.subscribeModules
+                : [...Browser.subscribeModules, ...Browser.subscribeCdpEvents],
         });
         return new Browser({
             ...opts,
@@ -146,6 +144,13 @@ Browser.subscribeModules = [
     'browsingContext',
     'network',
     'log',
-    'cdp',
+];
+Browser.subscribeCdpEvents = [
+    // Coverage
+    'cdp.Debugger.scriptParsed',
+    'cdp.CSS.styleSheetAdded',
+    'cdp.Runtime.executionContextsCleared',
+    // Tracing
+    'cdp.Tracing.tracingComplete',
 ];
 //# sourceMappingURL=Browser.js.map

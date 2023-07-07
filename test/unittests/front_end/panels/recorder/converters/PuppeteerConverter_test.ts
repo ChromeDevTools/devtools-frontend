@@ -16,7 +16,7 @@ describe('PuppeteerConverter', () => {
       title: 'test',
       steps: [{type: Models.Schema.StepType.Scroll, selectors: [['.cls']]}],
     });
-    const expected = `const puppeteer = require('puppeteer'); // v19.11.1 or later
+    const expected = `const puppeteer = require('puppeteer'); // v20.7.4 or later
 
 (async () => {
   const browser = await puppeteer.launch({headless: 'new'});
@@ -26,23 +26,17 @@ describe('PuppeteerConverter', () => {
 
   {
     const targetPage = page;
-    await scrollIntoViewIfNeeded([
-      [
-        '.cls'
-      ]
-    ], targetPage, timeout);
-    const element = await waitForSelectors([
-      [
-        '.cls'
-      ]
-    ], targetPage, { timeout, visible: true });
-    await element.evaluate((el, x, y) => { el.scrollTop = y; el.scrollLeft = x; }, undefined, undefined);
+    await puppeteer.Locator.race([
+      targetPage.locator('.cls')
+    ])
+      .setTimeout(timeout)
+      .scroll({ scrollTop: undefined, scrollLeft: undefined});
   }
 
   await browser.close();`;
     const actual = result.substring(0, expected.length);
     assert.strictEqual(actual, expected, `Unexpected start of generated result:\n${actual}`);
-    assert.deepStrictEqual(sourceMap, [1, 8, 14]);
+    assert.deepStrictEqual(sourceMap, [1, 8, 8]);
   });
 
   it('should stringify a step', async () => {

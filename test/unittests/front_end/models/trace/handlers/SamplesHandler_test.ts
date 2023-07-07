@@ -152,17 +152,17 @@ describeWithEnvironment('SamplesHandler', function() {
       const data = TraceModel.Handlers.ModelHandlers.Samples.data();
       const calls = data.profilesInProcess.get(pid)?.get(id)?.profileCalls;
       const expectedResult = [
-        {id: A, ts: 0, dur: 154, selfDur: 58, children: [B, D]},
-        {id: B, ts: 1, dur: 27, selfDur: 9, children: [C]},
-        {id: C, ts: 3, dur: 18, selfDur: 18, children: []},
-        {id: D, ts: 36, dur: 69, selfDur: 69, children: []},
-        {id: E, ts: 154, dur: 117, selfDur: 117, children: []},
+        {id: A, ts: 0, dur: 154, selfTime: 58, children: [B, D]},
+        {id: B, ts: 1, dur: 27, selfTime: 9, children: [C]},
+        {id: C, ts: 3, dur: 18, selfTime: 18, children: []},
+        {id: D, ts: 36, dur: 69, selfTime: 69, children: []},
+        {id: E, ts: 154, dur: 117, selfTime: 117, children: []},
       ];
       const callsTestData = calls?.map(c => ({
                                          id: c.nodeId,
                                          dur: Math.round(c.dur),
                                          ts: c.ts,
-                                         selfDur: Math.round(c.selfDur),
+                                         selfTime: Math.round(c.selfTime),
                                          children: c.children.map(child => child.nodeId),
                                        }));
 
@@ -176,17 +176,17 @@ describeWithEnvironment('SamplesHandler', function() {
       const profilesFirstProcess = data.profilesInProcess.get(firstProcessId);
       const calls = profilesFirstProcess?.get(profileId)?.profileCalls.slice(0, 5);
       const expectedResult = [
-        {'id': 2, 'dur': 392, 'ts': 643496962681, 'selfDur': 392, 'children': []},
-        {'id': 4, 'dur': 682, 'ts': 643496963073, 'selfDur': 160, 'children': [5]},
-        {'id': 3, 'dur': 682, 'ts': 643496963073, 'selfDur': 0, 'children': [4]},
-        {'id': 5, 'dur': 522, 'ts': 643496963233, 'selfDur': 178, 'children': [6, 7]},
-        {'id': 6, 'dur': 175, 'ts': 643496963411, 'selfDur': 175, 'children': []},
+        {'id': 2, 'dur': 392, 'ts': 643496962681, 'selfTime': 392, 'children': []},
+        {'id': 4, 'dur': 682, 'ts': 643496963073, 'selfTime': 160, 'children': [5]},
+        {'id': 3, 'dur': 682, 'ts': 643496963073, 'selfTime': 0, 'children': [4]},
+        {'id': 5, 'dur': 522, 'ts': 643496963233, 'selfTime': 178, 'children': [6, 7]},
+        {'id': 6, 'dur': 175, 'ts': 643496963411, 'selfTime': 175, 'children': []},
       ];
       const callsTestData = calls?.map(c => ({
                                          id: c.nodeId,
                                          dur: Math.round(c.dur),
                                          ts: c.ts,
-                                         selfDur: Math.round(c.selfDur),
+                                         selfTime: Math.round(c.selfTime),
                                          children: c.children.map(child => child.nodeId),
                                        }));
       assert.deepEqual(callsTestData, expectedResult);

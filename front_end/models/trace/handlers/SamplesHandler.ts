@@ -34,7 +34,7 @@ export function buildProfileCalls(): void {
       }
       function closeFrameCallback(
           depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, _timeStamp: number, durMs: number,
-          selfDurMs: number): void {
+          selfTimeMs: number): void {
         const partialProfileCall = trackingStack.pop();
         if (!partialProfileCall) {
           return;
@@ -45,9 +45,9 @@ export function buildProfileCalls(): void {
           return;
         }
         const dur = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(durMs));
-        const selfDur = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(selfDurMs));
+        const selfTime = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(selfTimeMs));
         const completeProfileCall:
-            ProfileCall = {callFrame, ts, pid, profileId, dur, selfDur, children, depth, nodeId: node.id};
+            ProfileCall = {callFrame, ts, pid, profileId, dur, selfTime, children, depth, nodeId: node.id};
         const parent = trackingStack.at(-1);
         const profileData = getOrCreateProfileData(processId, profileId);
         const calls = profileData.profileCalls;
@@ -57,8 +57,8 @@ export function buildProfileCalls(): void {
         }
         parent.children = parent.children || [];
         parent.children.push(completeProfileCall);
-        if (parent.selfDur) {
-          parent.selfDur = Types.Timing.MicroSeconds(parent.selfDur - dur);
+        if (parent.selfTime) {
+          parent.selfTime = Types.Timing.MicroSeconds(parent.selfTime - dur);
         }
       }
     }
@@ -183,7 +183,7 @@ export interface ProfileCall {
   depth: number;
   ts: Types.Timing.MicroSeconds;
   dur: Types.Timing.MicroSeconds;      // "time"
-  selfDur: Types.Timing.MicroSeconds;  // "self time"
+  selfTime: Types.Timing.MicroSeconds;  // "self time"
   children: ProfileCall[];
 }
 

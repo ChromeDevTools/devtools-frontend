@@ -385,7 +385,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    */
   forEachFrame(
       openFrameCallback: (depth: number, node: ProfileNode, timestamp: number) => void,
-      closeFrameCallback: (depth: number, node: ProfileNode, timestamp: number, dur: number, selfDur: number) => void,
+      closeFrameCallback: (depth: number, node: ProfileNode, timestamp: number, dur: number, selfTime: number) => void,
       startTime?: number, stopTime?: number): void {
     if (!this.profileHead || !this.samples) {
       return;

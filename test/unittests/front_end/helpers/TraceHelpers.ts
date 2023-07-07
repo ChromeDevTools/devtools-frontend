@@ -298,13 +298,13 @@ export async function getNetworkFlameChartWithLegacyTrack(traceFileName: string,
   return {flameChart, dataProvider};
 }
 
-type LoadedModels = {
+type AllModelsLoaded = {
   tracingModel: TraceEngine.Legacy.TracingModel,
   timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
   performanceModel: Timeline.PerformanceModel.PerformanceModel,
   traceParsedData: TraceModel.Handlers.Types.TraceParseData,
 };
-const traceModelsCache = new Map<string, LoadedModels>();
+const allModelsCache = new Map<string, AllModelsLoaded>();
 
 /**
  * Returns tracingModel, timelineModel, performanceModel, traceParsedData
@@ -319,8 +319,9 @@ const traceModelsCache = new Map<string, LoadedModels>();
  * @returns tracingModel, timelineModel, performanceModel, traceParsedData
  * from this trace file
  */
-export async function allModelsFromFile(context: Mocha.Context|Mocha.Suite|null, file: string): Promise<LoadedModels> {
-  const fromCache = traceModelsCache.get(file);
+export async function allModelsFromFile(
+    context: Mocha.Context|Mocha.Suite|null, file: string): Promise<AllModelsLoaded> {
+  const fromCache = allModelsCache.get(file);
   if (fromCache) {
     return fromCache;
   }
@@ -334,13 +335,13 @@ export async function allModelsFromFile(context: Mocha.Context|Mocha.Suite|null,
   tracingModel.tracingComplete();
   await performanceModel.setTracingModel(tracingModel);
   const timelineModel = performanceModel.timelineModel();
-  const result: LoadedModels = {
+  const result: AllModelsLoaded = {
     tracingModel,
     timelineModel,
     performanceModel,
     traceParsedData,
   };
-  traceModelsCache.set(file, result);
+  allModelsCache.set(file, result);
   return result;
 }
 
@@ -597,11 +598,19 @@ export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): T
   return event;
 }
 
-export async function traceModelFromTraceFile(context: Mocha.Context|Mocha.Suite|null, file: string): Promise<{
+type LoadedLegacyModels = {
   tracingModel: TraceEngine.Legacy.TracingModel,
   timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
   performanceModel: Timeline.PerformanceModel.PerformanceModel,
-}> {
+};
+const legacyModelsCache = new Map<string, LoadedLegacyModels>();
+
+export async function traceModelFromTraceFile(
+    context: Mocha.Context|Mocha.Suite|null, file: string): Promise<LoadedLegacyModels> {
+  const fromCache = legacyModelsCache.get(file);
+  if (fromCache) {
+    return fromCache;
+  }
   const events = await loadTraceEventsLegacyEventPayload(context, file);
   const tracingModel = new TraceEngine.Legacy.TracingModel();
   const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
@@ -609,11 +618,13 @@ export async function traceModelFromTraceFile(context: Mocha.Context|Mocha.Suite
   tracingModel.tracingComplete();
   await performanceModel.setTracingModel(tracingModel);
   const timelineModel = performanceModel.timelineModel();
-  return {
+  const loaded: LoadedLegacyModels = {
     tracingModel,
     timelineModel,
     performanceModel,
   };
+  legacyModelsCache.set(file, loaded);
+  return loaded;
 }
 
 export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataProvider {

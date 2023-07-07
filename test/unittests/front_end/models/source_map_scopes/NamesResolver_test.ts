@@ -186,8 +186,7 @@ describeWithMockConnection('NameResolver', () => {
     it(test.name, async () => {
       const callFrame = await backend.createCallFrame(
           target, {url: URL, content: test.source}, test.scopes, {url: 'file:///dummy.map', content: dummyMapContent});
-      const identifiers =
-          await SourceMapScopes.NamesResolver.scopeIdentifiers(callFrame.localScope(), callFrame.scopeChain()[0]);
+      const identifiers = await SourceMapScopes.NamesResolver.scopeIdentifiers(callFrame.scopeChain()[0]);
       const boundIdentifiers = identifiers?.boundVariables ?? [];
       const freeIdentifiers = identifiers?.freeVariables ?? [];
       boundIdentifiers.sort(

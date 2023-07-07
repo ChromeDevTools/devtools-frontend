@@ -51,18 +51,13 @@ export class IdentifierPositions {
   }
 }
 
-const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeChainEntry): Promise<{
+const computeScopeTree = async function(script: SDK.Script.Script): Promise<{
   scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode, text: TextUtils.Text.Text,
 }|null> {
-  const functionStartLocation = functionScope.startLocation();
-  const functionEndLocation = functionScope.endLocation();
-  if (!functionStartLocation || !functionEndLocation) {
+  if (!script.sourceMapURL) {
     return null;
   }
-  const script = functionStartLocation.script();
-  if (!script || !script.sourceMapURL || script !== functionEndLocation.script()) {
-    return null;
-  }
+
   const text = await getTextFor(script);
   if (!text) {
     return null;
@@ -75,26 +70,25 @@ const computeScopeTree = async function(functionScope: SDK.DebuggerModel.ScopeCh
   return {scopeTree, text};
 };
 
-export const scopeIdentifiers = async function(
-    functionScope: SDK.DebuggerModel.ScopeChainEntry|null, scope: SDK.DebuggerModel.ScopeChainEntry): Promise<{
+export const scopeIdentifiers = async function(scope: SDK.DebuggerModel.ScopeChainEntry): Promise<{
   freeVariables: IdentifierPositions[], boundVariables: IdentifierPositions[],
 }|null> {
-  if (!functionScope) {
-    return null;
-  }
-
   const startLocation = scope.startLocation();
   const endLocation = scope.endLocation();
   if (!startLocation || !endLocation) {
     return null;
   }
 
-  // Parse the function scope to get the scope tree.
-  const scopeTreeAndStart = await computeScopeTree(functionScope);
-  if (!scopeTreeAndStart) {
+  const script = startLocation.script();
+  if (!script || script !== endLocation.script()) {
     return null;
   }
-  const {scopeTree, text} = scopeTreeAndStart;
+
+  const scopeTreeAndText = await computeScopeTree(script);
+  if (!scopeTreeAndText) {
+    return null;
+  }
+  const {scopeTree, text} = scopeTreeAndText;
 
   // Compute the offset within the scope tree coordinate space.
   const scopeOffsets = {
@@ -239,8 +233,7 @@ const resolveScope =
             promises.push(resolvePosition());
           };
 
-          const functionScope = findFunctionScope();
-          const parsedVariables = await scopeIdentifiers(functionScope, scope);
+          const parsedVariables = await scopeIdentifiers(scope);
           if (!parsedVariables) {
             return {variableMapping, thisMapping};
           }
@@ -350,24 +343,6 @@ const resolveScope =
 
       return {name, punctuation};
     }
-  }
-
-  function findFunctionScope(): SDK.DebuggerModel.ScopeChainEntry|null {
-    // First find the scope in the callframe's scope chain and then find the containing function scope (closure or local).
-    const scopeChain = scope.callFrame().scopeChain();
-    let scopeIndex = 0;
-    for (scopeIndex; scopeIndex < scopeChain.length; scopeIndex++) {
-      if (scopeChain[scopeIndex] === scope) {
-        break;
-      }
-    }
-    for (scopeIndex; scopeIndex < scopeChain.length; scopeIndex++) {
-      const kind = scopeChain[scopeIndex].type();
-      if (kind === Protocol.Debugger.ScopeType.Local || kind === Protocol.Debugger.ScopeType.Closure) {
-        break;
-      }
-    }
-    return scopeIndex === scopeChain.length ? null : scopeChain[scopeIndex];
   }
 };
 

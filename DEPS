@@ -11,13 +11,13 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '83f733bb6b735946e9ba17573bf4fdb855768666',
+  'build_revision': '7b53ef4011162fd27b24cec3e491c307ea27746f',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': 'f11186bf34951052edaf91832b77767109d4b301',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '4303140531212c351f8216b1eafcbd12bf7fd371',
+  'depot_tools_revision': '247429efd9e04d492ff5fe756818661d7feb7889',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '692caf90eaa861010d9ef7b5023d96db12c06ecc',

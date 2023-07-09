@@ -46,8 +46,8 @@ async function waitForFirstBodyCellText(cellText: string) {
   });
 }
 
-// preloadForCodeCoverage Navigation times out
-describe.skipOnPlatforms(['win32'], '[crbug.com/1442175] data grid controller', () => {
+// preloadForCodeCoverage Tests are failing due to collected promise and timeouts
+describe.skip('[crbug.com/1442175] data grid controller', () => {
   preloadForCodeCoverage('data_grid_controller/basic.html');
 
   // Flaky test

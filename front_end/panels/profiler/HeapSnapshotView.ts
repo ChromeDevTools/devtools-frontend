@@ -931,7 +931,10 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.perspectiveSelect.removeOptions();
     this.perspectives.forEach((perspective, index) => {
       if (multipleSnapshots || perspective !== this.comparisonPerspective) {
-        this.perspectiveSelect.createOption(perspective.title(), String(index));
+        const option = this.perspectiveSelect.createOption(perspective.title(), String(index));
+        if (perspective === this.currentPerspective) {
+          this.perspectiveSelect.select(option);
+        }
       }
     });
   }

@@ -1269,7 +1269,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (kAllowedOrigins.includes(parsedURL.origin)) {
       return true;
     }
-    if (parsedURL.protocol === 'chrome:' || parsedURL.protocol === 'devtools:') {
+    if (parsedURL.protocol === 'chrome:' || parsedURL.protocol === 'devtools:' ||
+        parsedURL.protocol === 'chrome-untrusted:') {
       return false;
     }
     if (parsedURL.protocol.startsWith('http') && parsedURL.hostname === 'chrome.google.com' &&

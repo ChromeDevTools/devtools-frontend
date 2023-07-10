@@ -97,7 +97,7 @@
   word-wrap: break-word;
   white-space: normal;
 
-  .query-list {
+  .ancestor-rule-list {
     color: var(--color-text-disabled);
   }
 }
@@ -116,14 +116,6 @@
 
 .sidebar-pane-open-brace,
 .sidebar-pane-closing-brace {
-  color: var(--color-text-primary);
-}
-
-.nesting-symbol.implicit {
-  color: var(--color-text-disabled);
-}
-
-.nesting-symbol:hover {
   color: var(--color-text-primary);
 }
 

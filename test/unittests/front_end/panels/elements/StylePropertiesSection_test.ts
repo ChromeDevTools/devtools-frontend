@@ -23,29 +23,18 @@ describe('StylePropertiesSection', async () => {
         specificity);
   });
 
-  it('renders selectors with nesting symbols correctly', async () => {
+  it('renders selectors correctly', async () => {
     let selectorElement = Elements.StylePropertiesSection.StylePropertiesSection.renderSelectors(
         [{text: '.child', specificity: {a: 0, b: 2, c: 0}}, {text: '.item', specificity: {a: 0, b: 2, c: 0}}], [true],
-        new WeakMap(), ['.parent']);
-    assert.deepEqual(selectorElement.textContent, '& .child, .item');
+        new WeakMap());
+    assert.deepEqual(selectorElement.textContent, '.child, .item');
     selectorElement = Elements.StylePropertiesSection.StylePropertiesSection.renderSelectors(
         [{text: '.child', specificity: {a: 0, b: 2, c: 0}}, {text: '& .item', specificity: {a: 0, b: 2, c: 0}}], [true],
-        new WeakMap(), ['.parent']);
+        new WeakMap());
     assert.deepEqual(selectorElement.textContent, '.child, & .item');
     selectorElement = Elements.StylePropertiesSection.StylePropertiesSection.renderSelectors(
         [{text: '&.child', specificity: {a: 0, b: 2, c: 0}}, {text: '& .item', specificity: {a: 0, b: 2, c: 0}}],
-        [true], new WeakMap(), ['.parent']);
+        [true], new WeakMap());
     assert.deepEqual(selectorElement.textContent, '&.child, & .item');
-  });
-
-  it('renders nesting symbols with correct nesting selectors', async () => {
-    let nestingSymbol = Elements.StylePropertiesSection.StylePropertiesSection.createNestingSymbol(['.parent']);
-    assert.deepEqual(nestingSymbol.dataset.nestingSelectors, '.parent');
-    nestingSymbol =
-        Elements.StylePropertiesSection.StylePropertiesSection.createNestingSymbol(['.parent', '.grand-parent']);
-    assert.deepEqual(nestingSymbol.dataset.nestingSelectors, '.grand-parent .parent');
-    nestingSymbol =
-        Elements.StylePropertiesSection.StylePropertiesSection.createNestingSymbol(['mid1, #mid2, .mid3', '.parent']);
-    assert.deepEqual(nestingSymbol.dataset.nestingSelectors, '.parent :is(mid1, #mid2, .mid3)');
   });
 });

@@ -235,6 +235,10 @@
   filter: brightness(0) invert(1);
 }
 
+.network-log-grid.data-grid:focus-within .network-error-row.selected div.icon:not(.image) {
+  filter: none;
+}
+
 .network-log-grid.data-grid:focus-within .data-grid-data-grid-node.selected [is="ui-icon"].icon-mask {
   --network-grid-selected-color: #dadce0;
   --override-icon-mask-background-color: var(--network-grid-selected-color);
@@ -251,7 +255,6 @@
 }
 
 .network-log-grid.data-grid.small .icon {
-  margin-top: 2px;
   width: 16px;
   height: 16px;
 }

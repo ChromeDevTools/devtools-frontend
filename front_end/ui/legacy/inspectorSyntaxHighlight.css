@@ -90,40 +90,40 @@
   color: var(--color-link);
   text-decoration: underline;
   outline-offset: 2px;
-}
 
-.elements-disclosure .devtools-link {
-  color: var(--color-link);
-}
-
-.devtools-link [is="ui-icon"] {
-  vertical-align: middle;
-}
-
-.devtools-link [is="ui-icon"].icon-mask {
-  background-color: var(--color-link);
-}
-
-:focus .selected .devtools-link [is="ui-icon"].icon-mask {
-  background-color: var(--legacy-item-selection-bg-color);
-}
-
-.devtools-link:focus-visible {
-  outline-width: unset;
-}
-
-.devtools-link:not(.devtools-link-prevent-click) {
-  cursor: pointer;
-}
-
-@media (forced-colors: active) {
-  .devtools-link:not(.devtools-link-prevent-click) {
-    forced-color-adjust: none;
-    color: linktext;
+  .elements-disclosure & {
+    color: var(--color-link);
   }
 
-  .devtools-link:focus-visible {
-    background: Highlight;
-    color: HighlightText;
+  [is="ui-icon"] {
+    vertical-align: middle;
+  }
+
+  [is="ui-icon"].icon-mask {
+    background-color: var(--color-link);
+  }
+
+  :focus .selected & [is="ui-icon"].icon-mask {
+    background-color: var(--legacy-item-selection-bg-color);
+  }
+
+  &:focus-visible {
+    outline-width: unset;
+  }
+
+  &:not(.devtools-link-prevent-click) {
+    cursor: pointer;
+  }
+
+  @media (forced-colors: active) {
+    &:not(.devtools-link-prevent-click) {
+      forced-color-adjust: none;
+      color: linktext;
+    }
+
+    &:focus-visible {
+      background: Highlight;
+      color: HighlightText;
+    }
   }
 }

@@ -41,10 +41,10 @@
 .style-panes-wrapper {
   overflow: hidden scroll;
   background-color: var(--color-background);
-}
 
-.style-panes-wrapper > div:not(:last-child) {
-  border-bottom: 1px solid var(--color-details-hairline);
+  & > div:not(:last-child) {
+    border-bottom: 1px solid var(--color-details-hairline);
+  }
 }
 
 #elements-content:not(.elements-wrap) > div {

@@ -12,29 +12,29 @@
 .styles-sidebar-pane-filter-box {
   flex: auto;
   display: flex;
-}
 
-.styles-sidebar-pane-filter-box > input {
-  outline: none !important; /* stylelint-disable-line declaration-no-important */
-  border: none;
-  width: 100%;
-  background: var(--color-background);
-  padding-left: 4px;
-  margin: 3px;
-}
+  & > input {
+    outline: none !important; /* stylelint-disable-line declaration-no-important */
+    border: none;
+    width: 100%;
+    background: var(--color-background);
+    padding-left: 4px;
+    margin: 3px;
+  }
 
-.styles-sidebar-pane-filter-box > input:focus,
-.styles-sidebar-pane-filter-box > input:not(:placeholder-shown) {
-  box-shadow: var(--legacy-focus-ring-active-shadow);
-}
+  & > input:focus,
+  & > input:not(:placeholder-shown) {
+    box-shadow: var(--legacy-focus-ring-active-shadow);
+  }
 
-.styles-sidebar-pane-filter-box > input::placeholder {
-  color: var(--color-text-secondary);
-}
+  & > input::placeholder {
+    color: var(--color-text-secondary);
+  }
 
-@media (forced-colors: active) {
-  .styles-sidebar-pane-filter-box > input {
-    border: 1px solid ButtonText;
+  @media (forced-colors: active) {
+    & > input {
+      border: 1px solid ButtonText;
+    }
   }
 }
 

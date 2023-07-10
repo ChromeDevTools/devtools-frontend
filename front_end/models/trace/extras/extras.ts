@@ -3,3 +3,4 @@
 // found in the LICENSE file.
 
 export * as FilmStrip from './FilmStrip.js';
+export * as Metadata from './Metadata.js';

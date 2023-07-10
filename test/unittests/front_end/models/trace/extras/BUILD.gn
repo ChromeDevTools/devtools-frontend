@@ -6,7 +6,10 @@ import("../../../../../../third_party/typescript/typescript.gni")
 
 ts_library("extras") {
   testonly = true
-  sources = [ "FilmStrip_test.ts" ]
+  sources = [
+    "FilmStrip_test.ts",
+    "Metadata_test.ts",
+  ]
 
   deps = [
     "../../../../../../front_end/core/platform:bundle",

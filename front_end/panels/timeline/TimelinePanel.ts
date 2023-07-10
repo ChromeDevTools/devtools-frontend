@@ -1336,7 +1336,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       recordStartTime?: number): Promise<void> {
     const shouldGatherMetadata = isFreshRecording && !isNode;
     const metadata =
-        shouldGatherMetadata ? await TraceEngine.SDKServices.getMetadataForFreshRecording(recordStartTime) : undefined;
+        shouldGatherMetadata ? await TraceEngine.Extras.Metadata.forNewRecording(recordStartTime) : undefined;
 
     return this.#traceEngineModel.parse(
         // OPP's data layer uses `EventPayload` as the type to represent raw JSON from the trace.

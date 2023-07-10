@@ -7,10 +7,14 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../visibility.gni")
 
 devtools_module("extras") {
-  sources = [ "FilmStrip.ts" ]
+  sources = [
+    "FilmStrip.ts",
+    "Metadata.ts",
+  ]
 
   deps = [
     "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
     "../handlers:bundle",
     "../types:bundle",
   ]

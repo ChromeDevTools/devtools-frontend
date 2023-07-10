@@ -70,6 +70,54 @@ const computeScopeTree = async function(script: SDK.Script.Script): Promise<{
   return {scopeTree, text};
 };
 
+/**
+ * @returns the scope chain from outer-most to inner-most scope where the inner-most
+ * scope either contains or matches the "needle".
+ */
+const findScopeChain = function(
+                           scopeTree: Formatter.FormatterWorkerPool.ScopeTreeNode,
+                           scopeNeedle: {start: number, end: number}): Formatter.FormatterWorkerPool.ScopeTreeNode[] {
+  if (!contains(scopeTree, scopeNeedle)) {
+    return [];
+  }
+
+  // Find the corresponding scope in the scope tree.
+  let containingScope = scopeTree;
+  const scopeChain = [scopeTree];
+  while (true) {
+    let childFound = false;
+    for (const child of containingScope.children) {
+      if (contains(child, scopeNeedle)) {
+        // We found a nested containing scope, continue with search there.
+        scopeChain.push(child);
+        containingScope = child;
+        childFound = true;
+        break;
+      }
+      // Sanity check: |scope| should not straddle any of the scopes in the tree. That is:
+      // Either |scope| is disjoint from |child| or |child| must be inside |scope|.
+      // (Or the |scope| is inside |child|, but that case is covered above.)
+      if (!disjoint(scopeNeedle, child) && !contains(scopeNeedle, child)) {
+        console.error('Wrong nesting of scopes');
+        return [];
+      }
+    }
+    if (!childFound) {
+      // We found the deepest scope in the tree that contains our scope chain entry.
+      break;
+    }
+  }
+
+  return scopeChain;
+
+  function contains(scope: {start: number, end: number}, candidate: {start: number, end: number}): boolean {
+    return (scope.start <= candidate.start) && (scope.end >= candidate.end);
+  }
+  function disjoint(scope: {start: number, end: number}, other: {start: number, end: number}): boolean {
+    return (scope.end <= other.start) || (other.end <= scope.start);
+  }
+};
+
 export const scopeIdentifiers = async function(scope: SDK.DebuggerModel.ScopeChainEntry): Promise<{
   freeVariables: IdentifierPositions[], boundVariables: IdentifierPositions[],
 }|null> {
@@ -96,35 +144,10 @@ export const scopeIdentifiers = async function(scope: SDK.DebuggerModel.ScopeCha
     end: text.offsetFromPosition(endLocation.lineNumber, endLocation.columnNumber),
   };
 
-  if (!contains(scopeTree, scopeOffsets)) {
+  const scopeChain = findScopeChain(scopeTree, scopeOffsets);
+  const containingScope = scopeChain.pop();
+  if (!containingScope) {
     return null;
-  }
-
-  // Find the corresponding scope in the scope tree.
-  let containingScope = scopeTree;
-  const ancestorScopes = [];
-  while (true) {
-    let childFound = false;
-    for (const child of containingScope.children) {
-      if (contains(child, scopeOffsets)) {
-        // We found a nested containing scope, continue with search there.
-        ancestorScopes.push(containingScope);
-        containingScope = child;
-        childFound = true;
-        break;
-      }
-      // Sanity check: |scope| should not straddle any of the scopes in the tree. That is:
-      // Either |scope| is disjoint from |child| or |child| must be inside |scope|.
-      // (Or the |scope| is inside |child|, but that case is covered above.)
-      if (!disjoint(scopeOffsets, child) && !contains(scopeOffsets, child)) {
-        console.error('Wrong nesting of scopes');
-        return null;
-      }
-    }
-    if (!childFound) {
-      // We found the deepest scope in the tree that contains our scope chain entry.
-      break;
-    }
   }
 
   // Now we have containing scope. Collect all the scope variables.
@@ -147,7 +170,7 @@ export const scopeIdentifiers = async function(scope: SDK.DebuggerModel.ScopeCha
 
   // Compute free variables by collecting all the ancestor variables that are used in |containingScope|.
   const freeVariables = [];
-  for (const ancestor of ancestorScopes) {
+  for (const ancestor of scopeChain) {
     for (const ancestorVariable of ancestor.variables) {
       let identifier = null;
       for (const offset of ancestorVariable.offsets) {
@@ -165,13 +188,6 @@ export const scopeIdentifiers = async function(scope: SDK.DebuggerModel.ScopeCha
     }
   }
   return {boundVariables, freeVariables};
-
-  function contains(scope: {start: number, end: number}, candidate: {start: number, end: number}): boolean {
-    return (scope.start <= candidate.start) && (scope.end >= candidate.end);
-  }
-  function disjoint(scope: {start: number, end: number}, other: {start: number, end: number}): boolean {
-    return (scope.end <= other.start) || (other.end <= scope.start);
-  }
 };
 
 const identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,=]?)\s*$/;

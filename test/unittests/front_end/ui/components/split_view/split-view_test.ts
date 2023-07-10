@@ -4,13 +4,13 @@
 
 const {assert} = chai;
 
-import * as Components from '../../../../../../front_end/panels/recorder/components/components.js';
+import * as SplitView from '../../../../../../front_end/ui/components/split_view/split_view.js';
 
 import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
 
 describe('SplitView', () => {
   it('should resize split view', async () => {
-    const view = new Components.SplitView.SplitView();
+    const view = new SplitView.SplitView.SplitView();
     renderElementIntoDOM(view);
     view.style.width = '800px';
     view.style.height = '600px';
@@ -49,8 +49,8 @@ describe('SplitView', () => {
     );
   });
 
-  it('should change layout to vertical on resize to narrow view', () => {
-    const view = new Components.SplitView.SplitView();
+  it('should change layout to vertical on resize to narrow view', async () => {
+    const view = new SplitView.SplitView.SplitView();
     renderElementIntoDOM(view);
     view.style.width = '800px';
     view.style.height = '600px';
@@ -69,7 +69,7 @@ describe('SplitView', () => {
   });
 
   it('should keep horizontal layout on short viewports', () => {
-    const view = new Components.SplitView.SplitView();
+    const view = new SplitView.SplitView.SplitView();
     renderElementIntoDOM(view);
     view.style.width = '800px';
     view.style.height = '600px';

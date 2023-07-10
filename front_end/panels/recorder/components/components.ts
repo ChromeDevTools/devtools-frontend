@@ -9,7 +9,6 @@ import * as RecordingListView from './RecordingListView.js';
 import * as RecordingView from './RecordingView.js';
 import * as ReplayButton from './ReplayButton.js';
 import * as SelectButton from './SelectButton.js';
-import * as SplitView from './SplitView.js';
 import * as StartView from './StartView.js';
 import * as StepEditor from './StepEditor.js';
 import * as StepView from './StepView.js';
@@ -23,7 +22,6 @@ export {
   RecordingView,
   ReplayButton,
   SelectButton,
-  SplitView,
   StartView,
   StepEditor,
   StepView,

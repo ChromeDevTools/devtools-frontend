@@ -1,0 +1,25 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../visibility.gni")
+
+devtools_module("split_view") {
+  sources = [ "SplitView.ts" ]
+  deps = [
+    "../../../ui/components/helpers:bundle",
+    "../../../ui/lit-html:bundle",
+  ]
+
+  visibility = [ "../../../../test/unittests/front_end/ui/components" ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "split_view.ts"
+
+  deps = [ ":split_view" ]
+
+  visibility = default_components_visibility
+}

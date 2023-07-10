@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/legacy/legacy.js';
-
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -138,7 +136,6 @@ export class SplitView extends HTMLElement {
     } else {
       this.#mainAxisIdx = 0;
     }
-    this.style.setProperty('--current-main-area-size', '60%');
   };
 
   #onMouseDown = (event: MouseEvent): void => {

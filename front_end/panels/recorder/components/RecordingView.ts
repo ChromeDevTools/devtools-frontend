@@ -40,7 +40,7 @@ import {
   type ReplayButtonData,
   type StartReplayEvent,
 } from './ReplayButton.js';
-import {SplitView} from './SplitView.js';
+import * as SplitView from '../../../ui/components/split_view/split_view.js';
 import {ExtensionView} from './ExtensionView.js';
 
 const UIStrings = {
@@ -869,7 +869,7 @@ export class RecordingView extends HTMLElement {
     return !this.#showCodeView
       ? this.#renderSections()
       : LitHtml.html`
-        <${SplitView.litTagName}>
+        <${SplitView.SplitView.SplitView.litTagName}>
           <div slot="main">
             ${this.#renderSections()}
           </div>
@@ -923,7 +923,7 @@ export class RecordingView extends HTMLElement {
         }></${TextEditor.TextEditor.TextEditor.litTagName}>
             </div>
           </div>
-        </${SplitView.litTagName}>
+        </${SplitView.SplitView.SplitView.litTagName}>
       `;
     // clang-format on
   }

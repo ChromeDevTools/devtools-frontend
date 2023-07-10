@@ -12,7 +12,6 @@ ts_library("components") {
     "recording-view_test.ts",
     "replay-button_test.ts",
     "select-button_test.ts",
-    "split-view_test.ts",
     "step-editor_test.ts",
     "step-view_test.ts",
   ]

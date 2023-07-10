@@ -858,8 +858,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         reject('Could not find TimelineController');
         return;
       }
-      const target = this.controller.mainTarget();
-      const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      const resourceModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
       if (!resourceModel) {
         reject('Could not load resourceModel');
         return;

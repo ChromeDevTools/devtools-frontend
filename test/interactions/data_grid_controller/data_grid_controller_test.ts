@@ -51,16 +51,15 @@ describe.skip('[crbug.com/1442175] data grid controller', () => {
   preloadForCodeCoverage('data_grid_controller/basic.html');
 
   // Flaky test
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/1418918] lets the user right click on a header to show the context menu', async () => {
-        await loadComponentDocExample('data_grid_controller/basic.html');
-        await activateContextMenuOnColumnHeader('Key');
+  it.skip('[crbug.com/1418918] lets the user right click on a header to show the context menu', async () => {
+    await loadComponentDocExample('data_grid_controller/basic.html');
+    await activateContextMenuOnColumnHeader('Key');
 
-        const contextMenu = await $('.soft-context-menu');
-        assert.isNotNull(contextMenu);
-        await assertTopLevelContextMenuItemsText(
-            ['Value', platformSpecificTextForSubMenuEntryItem('Sort By'), 'Reset Columns']);
-      });
+    const contextMenu = await $('.soft-context-menu');
+    assert.isNotNull(contextMenu);
+    await assertTopLevelContextMenuItemsText(
+        ['Value', platformSpecificTextForSubMenuEntryItem('Sort By'), 'Reset Columns']);
+  });
 
   it('lists the hideable columns in the context menu and lets the user click to toggle the visibility', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');

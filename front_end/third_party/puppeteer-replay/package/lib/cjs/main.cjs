@@ -899,11 +899,12 @@ const formatAsJSLiteral = (content) => {
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-var _PuppeteerStringifyExtension_instances, _PuppeteerStringifyExtension_appendTarget, _PuppeteerStringifyExtension_appendFrame, _PuppeteerStringifyExtension_appendContext, _PuppeteerStringifyExtension_appendLocators, _PuppeteerStringifyExtension_appendClickStep, _PuppeteerStringifyExtension_appendDoubleClickStep, _PuppeteerStringifyExtension_appendHoverStep, _PuppeteerStringifyExtension_appendChangeStep, _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep, _PuppeteerStringifyExtension_appendKeyDownStep, _PuppeteerStringifyExtension_appendKeyUpStep, _PuppeteerStringifyExtension_appendCloseStep, _PuppeteerStringifyExtension_appendViewportStep, _PuppeteerStringifyExtension_appendScrollStep, _PuppeteerStringifyExtension_appendStepType, _PuppeteerStringifyExtension_appendNavigationStep, _PuppeteerStringifyExtension_appendWaitExpressionStep, _PuppeteerStringifyExtension_appendWaitForElementStep;
+var _PuppeteerStringifyExtension_instances, _PuppeteerStringifyExtension_shouldAppendWaitForElementHelper, _PuppeteerStringifyExtension_appendTarget, _PuppeteerStringifyExtension_appendFrame, _PuppeteerStringifyExtension_appendContext, _PuppeteerStringifyExtension_appendLocators, _PuppeteerStringifyExtension_appendClickStep, _PuppeteerStringifyExtension_appendDoubleClickStep, _PuppeteerStringifyExtension_appendHoverStep, _PuppeteerStringifyExtension_appendChangeStep, _PuppeteerStringifyExtension_appendEmulateNetworkConditionsStep, _PuppeteerStringifyExtension_appendKeyDownStep, _PuppeteerStringifyExtension_appendKeyUpStep, _PuppeteerStringifyExtension_appendCloseStep, _PuppeteerStringifyExtension_appendViewportStep, _PuppeteerStringifyExtension_appendScrollStep, _PuppeteerStringifyExtension_appendStepType, _PuppeteerStringifyExtension_appendNavigationStep, _PuppeteerStringifyExtension_appendWaitExpressionStep, _PuppeteerStringifyExtension_appendWaitForElementStep;
 class PuppeteerStringifyExtension extends StringifyExtension {
     constructor() {
         super(...arguments);
         _PuppeteerStringifyExtension_instances.add(this);
+        _PuppeteerStringifyExtension_shouldAppendWaitForElementHelper.set(this, false);
     }
     async beforeAllSteps(out, flow) {
         out.appendLine("const puppeteer = require('puppeteer'); // v20.7.4 or later");
@@ -914,13 +915,16 @@ class PuppeteerStringifyExtension extends StringifyExtension {
         out.appendLine(`const timeout = ${flow.timeout || defaultTimeout};`);
         out.appendLine('page.setDefaultTimeout(timeout);');
         out.appendLine('');
+        __classPrivateFieldSet(this, _PuppeteerStringifyExtension_shouldAppendWaitForElementHelper, false, "f");
     }
     async afterAllSteps(out, flow) {
         out.appendLine('');
         out.appendLine('await browser.close();');
         out.appendLine('');
-        for (const line of helpers.split('\n')) {
-            out.appendLine(line);
+        if (__classPrivateFieldGet(this, _PuppeteerStringifyExtension_shouldAppendWaitForElementHelper, "f")) {
+            for (const line of waitForElementHelper.split('\n')) {
+                out.appendLine(line);
+            }
         }
         out.endBlock().appendLine('})().catch(err => {').startBlock();
         out.appendLine('console.error(err);');
@@ -955,7 +959,7 @@ class PuppeteerStringifyExtension extends StringifyExtension {
         out.endBlock().appendLine('}');
     }
 }
-_PuppeteerStringifyExtension_instances = new WeakSet(), _PuppeteerStringifyExtension_appendTarget = function _PuppeteerStringifyExtension_appendTarget(out, target) {
+_PuppeteerStringifyExtension_shouldAppendWaitForElementHelper = new WeakMap(), _PuppeteerStringifyExtension_instances = new WeakSet(), _PuppeteerStringifyExtension_appendTarget = function _PuppeteerStringifyExtension_appendTarget(out, target) {
     if (target === 'main') {
         out.appendLine('const targetPage = page;');
     }
@@ -1099,10 +1103,11 @@ _PuppeteerStringifyExtension_instances = new WeakSet(), _PuppeteerStringifyExten
 }, _PuppeteerStringifyExtension_appendWaitExpressionStep = function _PuppeteerStringifyExtension_appendWaitExpressionStep(out, step) {
     out.appendLine(`await ${step.frame ? 'frame' : 'targetPage'}.waitForFunction(${formatJSONAsJS(step.expression, out.getIndent())}, { timeout });`);
 }, _PuppeteerStringifyExtension_appendWaitForElementStep = function _PuppeteerStringifyExtension_appendWaitForElementStep(out, step) {
+    __classPrivateFieldSet(this, _PuppeteerStringifyExtension_shouldAppendWaitForElementHelper, true, "f");
     out.appendLine(`await waitForElement(${formatJSONAsJS(step, out.getIndent())}, ${step.frame ? 'frame' : 'targetPage'}, timeout);`);
 };
 const defaultTimeout = 5000;
-const helpers = `async function waitForElement(step, frame, timeout) {
+const waitForElementHelper = `async function waitForElement(step, frame, timeout) {
   const {
     count = 1,
     operator = '>=',

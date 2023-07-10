@@ -110,6 +110,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   connectedCallback(): void {
+    this.wrapper?.contentElement.classList.add('vbox');
     this.#shadow.adoptedStyleSheets = [trustTokensViewStyles];
     void this.render();
   }

@@ -491,8 +491,10 @@ export class DebuggerPlugin extends Plugin {
       }
     } else {
       const removeTitle = i18nString(UIStrings.removeBreakpoint, {n: breakpoints.length});
-      contextMenu.debugSection().appendItem(
-          removeTitle, () => breakpoints.forEach(breakpoint => void breakpoint.remove(false)));
+      contextMenu.debugSection().appendItem(removeTitle, () => breakpoints.forEach(breakpoint => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromGutterContextMenu);
+        void breakpoint.remove(false);
+      }));
       if (breakpoints.length === 1 && supportsConditionalBreakpoints) {
         // Editing breakpoints only make sense for conditional breakpoints
         // and logpoints and both are currently only available for JavaScript
@@ -1526,6 +1528,7 @@ export class DebuggerPlugin extends Plugin {
       if (onlyDisable) {
         breakpoint.setEnabled(hasDisabled);
       } else {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromGutterToggle);
         void breakpoint.remove(false);
       }
     }

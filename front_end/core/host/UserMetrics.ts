@@ -531,7 +531,9 @@ export enum Action {
   FileSystemSourceSelected = 78,
   OverridesSourceSelected = 79,
   StyleSheetInitiatorLinkClicked = 80,
-  MaxValue = 81,
+  BreakpointRemovedFromGutterContextMenu = 81,
+  BreakpointRemovedFromGutterToggle = 82,
+  MaxValue = 83,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

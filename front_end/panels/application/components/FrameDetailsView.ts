@@ -286,7 +286,6 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     super();
     this.#frame = frame;
     this.#prerenderedUrl = '';
-    this.classList.add('overflow-auto');
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ChildTargetManager.ChildTargetManager, SDK.ChildTargetManager.Events.TargetInfoChanged, this.targetChanged,
@@ -305,6 +304,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   }
 
   connectedCallback(): void {
+    this.parentElement?.classList.add('overflow-auto');
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocolMonitor');
     this.#shadow.adoptedStyleSheets = [frameDetailsReportViewStyles];
   }

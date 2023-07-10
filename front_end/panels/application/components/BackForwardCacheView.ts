@@ -158,7 +158,6 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.render, this);
     this.#getMainResourceTreeModel()?.addEventListener(
         SDK.ResourceTreeModel.Events.BackForwardCacheDetailsUpdated, this.render, this);
-    this.classList.add('overflow-auto');
   }
 
   #getMainResourceTreeModel(): SDK.ResourceTreeModel.ResourceTreeModel|null {
@@ -170,6 +169,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     return this.#getMainResourceTreeModel()?.mainFrame || null;
   }
   connectedCallback(): void {
+    this.parentElement?.classList.add('overflow-auto');
     this.#shadow.adoptedStyleSheets = [backForwardCacheViewStyles];
   }
 

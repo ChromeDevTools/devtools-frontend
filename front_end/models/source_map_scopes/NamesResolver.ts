@@ -17,7 +17,7 @@ interface CachedScopeMap {
   mappingPromise: Promise<{variableMapping: Map<string, string>, thisMapping: string|null}>;
 }
 
-const scopeToCachedIdentifiersMap = new WeakMap<SDK.DebuggerModel.ScopeChainEntry, CachedScopeMap>();
+const scopeToCachedIdentifiersMap = new WeakMap<Formatter.FormatterWorkerPool.ScopeTreeNode, CachedScopeMap>();
 const cachedMapByCallFrame = new WeakMap<SDK.DebuggerModel.CallFrame, Map<string, string>>();
 const cachedTextByDeferredContent = new WeakMap<TextUtils.ContentProvider.DeferredContent, TextUtils.Text.Text|null>();
 
@@ -118,23 +118,22 @@ const findScopeChain = function(
   }
 };
 
-export const scopeIdentifiers = async function(scope: SDK.DebuggerModel.ScopeChainEntry): Promise<{
-  freeVariables: IdentifierPositions[], boundVariables: IdentifierPositions[],
-}|null> {
+export async function findScopeChainForDebuggerScope(scope: SDK.DebuggerModel.ScopeChainEntry):
+    Promise<Formatter.FormatterWorkerPool.ScopeTreeNode[]> {
   const startLocation = scope.startLocation();
   const endLocation = scope.endLocation();
   if (!startLocation || !endLocation) {
-    return null;
+    return [];
   }
 
   const script = startLocation.script();
   if (!script || script !== endLocation.script()) {
-    return null;
+    return [];
   }
 
   const scopeTreeAndText = await computeScopeTree(script);
   if (!scopeTreeAndText) {
-    return null;
+    return [];
   }
   const {scopeTree, text} = scopeTreeAndText;
 
@@ -144,16 +143,23 @@ export const scopeIdentifiers = async function(scope: SDK.DebuggerModel.ScopeCha
     end: text.offsetFromPosition(endLocation.lineNumber, endLocation.columnNumber),
   };
 
-  const scopeChain = findScopeChain(scopeTree, scopeOffsets);
-  const containingScope = scopeChain.pop();
-  if (!containingScope) {
+  return findScopeChain(scopeTree, scopeOffsets);
+}
+
+export const scopeIdentifiers = async function(
+    script: SDK.Script.Script, scope: Formatter.FormatterWorkerPool.ScopeTreeNode,
+    ancestorScopes: Formatter.FormatterWorkerPool.ScopeTreeNode[]): Promise<{
+  freeVariables: IdentifierPositions[], boundVariables: IdentifierPositions[],
+}|null> {
+  const text = await getTextFor(script);
+  if (!text) {
     return null;
   }
 
   // Now we have containing scope. Collect all the scope variables.
   const boundVariables = [];
   const cursor = new TextUtils.TextCursor.TextCursor(text.lineEndings());
-  for (const variable of containingScope.variables) {
+  for (const variable of scope.variables) {
     // Skip the fixed-kind variable (i.e., 'this' or 'arguments') if we only found their "definition"
     // without any uses.
     if (variable.kind === Formatter.FormatterWorkerPool.DefinitionKind.Fixed && variable.offsets.length <= 1) {
@@ -170,11 +176,11 @@ export const scopeIdentifiers = async function(scope: SDK.DebuggerModel.ScopeCha
 
   // Compute free variables by collecting all the ancestor variables that are used in |containingScope|.
   const freeVariables = [];
-  for (const ancestor of scopeChain) {
+  for (const ancestor of ancestorScopes) {
     for (const ancestorVariable of ancestor.variables) {
       let identifier = null;
       for (const offset of ancestorVariable.offsets) {
-        if (offset >= containingScope.start && offset < containingScope.end) {
+        if (offset >= scope.start && offset < scope.end) {
           if (!identifier) {
             identifier = new IdentifierPositions(ancestorVariable.name);
           }
@@ -203,7 +209,12 @@ const enum Punctuation {
 const resolveScope =
     async(scope: SDK.DebuggerModel
               .ScopeChainEntry): Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
-  let cachedScopeMap = scopeToCachedIdentifiersMap.get(scope);
+  const scopeChain = await findScopeChainForDebuggerScope(scope);
+  const parsedScope = scopeChain.pop();
+  if (!parsedScope) {
+    return {variableMapping: new Map<string, string>(), thisMapping: null};
+  }
+  let cachedScopeMap = scopeToCachedIdentifiersMap.get(parsedScope);
   const script = scope.callFrame().script;
   const sourceMap = script.debuggerModel.sourceMapManager().sourceMapForClient(script);
 
@@ -249,7 +260,7 @@ const resolveScope =
             promises.push(resolvePosition());
           };
 
-          const parsedVariables = await scopeIdentifiers(scope);
+          const parsedVariables = await scopeIdentifiers(script, parsedScope, scopeChain);
           if (!parsedVariables) {
             return {variableMapping, thisMapping};
           }
@@ -272,7 +283,7 @@ const resolveScope =
           return {variableMapping, thisMapping};
         })();
     cachedScopeMap = {sourceMap, mappingPromise: identifiersPromise};
-    scopeToCachedIdentifiersMap.set(scope, {sourceMap, mappingPromise: identifiersPromise});
+    scopeToCachedIdentifiersMap.set(parsedScope, {sourceMap, mappingPromise: identifiersPromise});
   }
   return await cachedScopeMap.mappingPromise;
 

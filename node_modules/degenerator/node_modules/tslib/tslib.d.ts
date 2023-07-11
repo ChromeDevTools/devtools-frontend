@@ -428,3 +428,26 @@ export declare function __classPrivateFieldIn(
  * @param objectKey The property key to re-export as. Defaults to `key`.
  */
 export declare function __createBinding(object: object, target: object, key: PropertyKey, objectKey?: PropertyKey): void;
+
+/**
+ * Adds a disposable resource to a resource-tracking environment object.
+ * @param env A resource-tracking environment object.
+ * @param value Either a Disposable or AsyncDisposable object, `null`, or `undefined`.
+ * @param async When `true`, `AsyncDisposable` resources can be added. When `false`, `AsyncDisposable` resources cannot be added.
+ * @returns The {@link value} argument.
+ *
+ * @throws {TypeError} If {@link value} is not an object, or if either `Symbol.dispose` or `Symbol.asyncDispose` are not
+ * defined, or if {@link value} does not have an appropriate `Symbol.dispose` or `Symbol.asyncDispose` method.
+ */
+export declare function __addDisposableResource<T>(env: { stack: { value?: unknown, dispose?: Function, async: boolean }[]; error: unknown; hasError: boolean; }, value: T, async: boolean): T;
+
+/**
+ * Disposes all resources in a resource-tracking environment object.
+ * @param env A resource-tracking environment object.
+ * @returns A {@link Promise} if any resources in the environment were marked as `async` when added; otherwise, `void`.
+ *
+ * @throws {SuppressedError} if an error thrown during disposal would have suppressed a prior error from disposal or the
+ * error recorded in the resource-tracking environment object.
+ * @seealso {@link __addDisposableResource}
+ */
+export declare function __disposeResources(env: { stack: { value?: unknown, dispose?: Function, async: boolean }[]; error: unknown; hasError: boolean; }): any;

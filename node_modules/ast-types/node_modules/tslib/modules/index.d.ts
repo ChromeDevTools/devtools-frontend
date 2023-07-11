@@ -31,5 +31,7 @@ export {
   __classPrivateFieldSet,
   __classPrivateFieldIn,
   __createBinding,
+  __addDisposableResource,
+  __disposeResources,
 } from '../tslib.js';
 export * as default from '../tslib.js';

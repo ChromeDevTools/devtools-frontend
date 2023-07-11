@@ -8,6 +8,12 @@ module.exports = class FastFIFO {
     this.length = 0
   }
 
+  clear () {
+    this.head = this.tail
+    this.head.clear()
+    this.length = 0
+  }
+
   push (val) {
     this.length++
     if (!this.head.push(val)) {

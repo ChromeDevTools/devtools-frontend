@@ -396,9 +396,7 @@ export async function waitWithTimeout(promise, taskName, timeout) {
         message: `waiting for ${taskName} failed: timeout ${timeout}ms exceeded`,
         timeout,
     });
-    return await Deferred.race([promise, deferred]).finally(() => {
-        deferred.reject(new Error('Cleared'));
-    });
+    return await Deferred.race([promise, deferred]);
 }
 /**
  * @internal

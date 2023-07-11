@@ -54,7 +54,11 @@ export class NetworkManager extends EventEmitter {
         }
     }
     getNavigationResponse(navigationId) {
-        return __classPrivateFieldGet(this, _NetworkManager_navigationMap, "f").get(navigationId ?? '') ?? null;
+        if (!navigationId) {
+            return null;
+        }
+        const response = __classPrivateFieldGet(this, _NetworkManager_navigationMap, "f").get(navigationId);
+        return response ?? null;
     }
     inFlightRequestsCount() {
         let inFlightRequestCounter = 0;
@@ -64,6 +68,18 @@ export class NetworkManager extends EventEmitter {
             }
         }
         return inFlightRequestCounter;
+    }
+    clearMapAfterFrameDispose(frame) {
+        for (const [id, request] of __classPrivateFieldGet(this, _NetworkManager_requestMap, "f").entries()) {
+            if (request.frame() === frame) {
+                __classPrivateFieldGet(this, _NetworkManager_requestMap, "f").delete(id);
+            }
+        }
+        for (const [id, response] of __classPrivateFieldGet(this, _NetworkManager_navigationMap, "f").entries()) {
+            if (response.frame() === frame) {
+                __classPrivateFieldGet(this, _NetworkManager_requestMap, "f").delete(id);
+            }
+        }
     }
     dispose() {
         this.removeAllListeners();
@@ -92,18 +108,20 @@ _NetworkManager_connection = new WeakMap(), _NetworkManager_page = new WeakMap()
     this.emit(NetworkManagerEmittedEvents.Request, upsertRequest);
 }, _NetworkManager_onResponseStarted = function _NetworkManager_onResponseStarted(_event) { }, _NetworkManager_onResponseCompleted = function _NetworkManager_onResponseCompleted(event) {
     const request = __classPrivateFieldGet(this, _NetworkManager_requestMap, "f").get(event.request.request);
-    if (request) {
-        const response = new HTTPResponse(request, event);
-        request._response = response;
-        if (event.navigation) {
-            __classPrivateFieldGet(this, _NetworkManager_navigationMap, "f").set(event.navigation, response);
-        }
-        if (response.fromCache()) {
-            this.emit(NetworkManagerEmittedEvents.RequestServedFromCache, request);
-        }
-        this.emit(NetworkManagerEmittedEvents.Response, response);
-        this.emit(NetworkManagerEmittedEvents.RequestFinished, request);
+    if (!request) {
+        return;
     }
+    const response = new HTTPResponse(request, event);
+    request._response = response;
+    if (event.navigation) {
+        __classPrivateFieldGet(this, _NetworkManager_navigationMap, "f").set(event.navigation, response);
+    }
+    if (response.fromCache()) {
+        this.emit(NetworkManagerEmittedEvents.RequestServedFromCache, request);
+    }
+    this.emit(NetworkManagerEmittedEvents.Response, response);
+    this.emit(NetworkManagerEmittedEvents.RequestFinished, request);
+    __classPrivateFieldGet(this, _NetworkManager_requestMap, "f").delete(event.request.request);
 }, _NetworkManager_onFetchError = function _NetworkManager_onFetchError(event) {
     const request = __classPrivateFieldGet(this, _NetworkManager_requestMap, "f").get(event.request.request);
     if (!request) {
@@ -111,5 +129,6 @@ _NetworkManager_connection = new WeakMap(), _NetworkManager_page = new WeakMap()
     }
     request._failureText = event.errorText;
     this.emit(NetworkManagerEmittedEvents.RequestFailed, request);
+    __classPrivateFieldGet(this, _NetworkManager_requestMap, "f").delete(event.request.request);
 };
 //# sourceMappingURL=NetworkManager.js.map

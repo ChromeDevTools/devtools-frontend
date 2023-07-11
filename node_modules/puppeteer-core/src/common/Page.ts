@@ -885,12 +885,6 @@ export class CDPPage extends Page {
     return result[0];
   }
 
-  override async waitForNavigation(
-    options: WaitForOptions = {}
-  ): Promise<HTTPResponse | null> {
-    return await this.mainFrame().waitForNavigation(options);
-  }
-
   override async waitForRequest(
     urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>),
     options: {timeout?: number} = {}
@@ -1273,6 +1267,7 @@ export class CDPPage extends Page {
 
     const result = await this.#client.send('Page.captureScreenshot', {
       format,
+      optimizeForSpeed: options.optimizeForSpeed,
       quality: options.quality,
       clip: clip && {
         ...clip,

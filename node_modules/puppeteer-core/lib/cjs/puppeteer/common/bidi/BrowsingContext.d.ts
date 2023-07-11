@@ -10,6 +10,10 @@ import { Realm } from './Realm.js';
 /**
  * @internal
  */
+export declare const lifeCycleToSubscribedEvent: Map<PuppeteerLifeCycleEvent, string>;
+/**
+ * @internal
+ */
 export declare class CDPSessionWrapper extends EventEmitter implements CDPSession {
     #private;
     constructor(context: BrowsingContext);
@@ -28,6 +32,7 @@ export declare class BrowsingContext extends Realm {
     get url(): string;
     get id(): string;
     get cdpSession(): CDPSession;
+    navigated(url: string): void;
     goto(url: string, options?: {
         referer?: string;
         referrerPolicy?: string;

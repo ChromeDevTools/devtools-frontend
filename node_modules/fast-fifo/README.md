@@ -37,6 +37,10 @@ Push a value to the FIFO. `value` can be anything other than undefined.
 
 Return the oldest value from the FIFO.
 
+#### `q.clear()`
+
+Remove all values from the FIFO.
+
 #### `bool = q.isEmpty()`
 
 Returns `true` if the FIFO is empty and false otherwise.

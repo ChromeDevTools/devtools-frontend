@@ -15,6 +15,7 @@
  */
 /// <reference types="node" />
 import { ChildProcess } from 'child_process';
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { Browser as BrowserBase, BrowserCloseCallback, BrowserContextOptions } from '../../api/Browser.js';
 import { BrowserContext as BrowserContextBase } from '../../api/BrowserContext.js';
 import { Page } from '../../api/Page.js';
@@ -26,7 +27,8 @@ import { Connection } from './Connection.js';
  */
 export declare class Browser extends BrowserBase {
     #private;
-    static readonly subscribeModules: string[];
+    static readonly subscribeModules: Bidi.Session.SubscriptionRequestEvent[];
+    static readonly subscribeCdpEvents: Bidi.Cdp.EventNames[];
     static create(opts: Options): Promise<Browser>;
     constructor(opts: Options & {
         browserName: string;

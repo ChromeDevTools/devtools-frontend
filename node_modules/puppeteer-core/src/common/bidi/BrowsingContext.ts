@@ -17,7 +17,10 @@ import {Realm} from './Realm.js';
 /**
  * @internal
  */
-const lifeCycleToSubscribedEvent = new Map<PuppeteerLifeCycleEvent, string>([
+export const lifeCycleToSubscribedEvent = new Map<
+  PuppeteerLifeCycleEvent,
+  string
+>([
   ['load', 'browsingContext.load'],
   ['domcontentloaded', 'browsingContext.domContentLoaded'],
 ]);
@@ -48,7 +51,7 @@ export class CDPSessionWrapper extends EventEmitter implements CDPSession {
         context: context.id,
       })
       .then(session => {
-        this.#sessionId.resolve(session.result.cdpSession);
+        this.#sessionId.resolve(session.result.session!);
       })
       .catch(err => {
         this.#sessionId.reject(err);
@@ -62,11 +65,11 @@ export class CDPSessionWrapper extends EventEmitter implements CDPSession {
     method: T,
     ...paramArgs: ProtocolMapping.Commands[T]['paramsType']
   ): Promise<ProtocolMapping.Commands[T]['returnType']> {
-    const cdpSession = await this.#sessionId.valueOrThrow();
+    const session = await this.#sessionId.valueOrThrow();
     const result = await this.#context.connection.send('cdp.sendCommand', {
-      cdpMethod: method,
-      cdpParams: paramArgs[0] || {},
-      cdpSession,
+      method: method,
+      params: paramArgs[0],
+      session,
     });
     return result.result;
   }
@@ -87,7 +90,7 @@ export class CDPSessionWrapper extends EventEmitter implements CDPSession {
 export class BrowsingContext extends Realm {
   #timeoutSettings: TimeoutSettings;
   #id: string;
-  #url = 'about:blank';
+  #url: string;
   #cdpSession: CDPSession;
 
   constructor(
@@ -99,7 +102,15 @@ export class BrowsingContext extends Realm {
     this.connection = connection;
     this.#timeoutSettings = timeoutSettings;
     this.#id = info.context;
+    this.#url = info.url;
     this.#cdpSession = new CDPSessionWrapper(this);
+
+    this.on(
+      'browsingContext.fragmentNavigated',
+      (info: Bidi.BrowsingContext.NavigationInfo) => {
+        this.#url = info.url;
+      }
+    );
   }
 
   createSandboxRealm(sandbox: string): Realm {
@@ -116,6 +127,10 @@ export class BrowsingContext extends Realm {
 
   get cdpSession(): CDPSession {
     return this.#cdpSession;
+  }
+
+  navigated(url: string): void {
+    this.#url = url;
   }
 
   async goto(

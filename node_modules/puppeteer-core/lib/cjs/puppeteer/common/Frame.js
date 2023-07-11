@@ -76,11 +76,11 @@ class Frame extends Frame_js_1.Frame {
         const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
         let error = await Deferred_js_1.Deferred.race([
             navigate(__classPrivateFieldGet(this, _Frame_client, "f"), url, referer, referrerPolicy, this._id),
-            watcher.timeoutOrTerminationPromise(),
+            watcher.terminationPromise(),
         ]);
         if (!error) {
             error = await Deferred_js_1.Deferred.race([
-                watcher.timeoutOrTerminationPromise(),
+                watcher.terminationPromise(),
                 ensureNewDocumentNavigation
                     ? watcher.newDocumentNavigationPromise()
                     : watcher.sameDocumentNavigationPromise(),
@@ -123,7 +123,7 @@ class Frame extends Frame_js_1.Frame {
         const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
         const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
         const error = await Deferred_js_1.Deferred.race([
-            watcher.timeoutOrTerminationPromise(),
+            watcher.terminationPromise(),
             watcher.sameDocumentNavigationPromise(),
             watcher.newDocumentNavigationPromise(),
         ]);

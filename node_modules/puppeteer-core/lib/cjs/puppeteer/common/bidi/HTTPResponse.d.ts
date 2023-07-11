@@ -15,6 +15,7 @@
  */
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import Protocol from 'devtools-protocol';
+import { Frame } from '../../api/Frame.js';
 import { HTTPResponse as BaseHTTPResponse, RemoteAddress } from '../../api/HTTPResponse.js';
 import { HTTPRequest } from './HTTPRequest.js';
 /**
@@ -31,5 +32,6 @@ export declare class HTTPResponse extends BaseHTTPResponse {
     request(): HTTPRequest;
     fromCache(): boolean;
     timing(): Protocol.Network.ResourceTiming | null;
+    frame(): Frame | null;
 }
 //# sourceMappingURL=HTTPResponse.d.ts.map

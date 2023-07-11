@@ -1,6 +1,6 @@
 {
   "name": "puppeteer-core",
-  "version": "20.7.3",
+  "version": "20.8.0",
   "description": "A high-level API to control headless Chrome over the DevTools Protocol",
   "keywords": [
     "puppeteer",
@@ -42,7 +42,8 @@
     "clean": "tsc -b --clean && rm -rf lib src/generated",
     "generate:package-json": "wireit",
     "generate:sources": "wireit",
-    "prepack": "wireit"
+    "prepack": "wireit",
+    "unit": "wireit"
   },
   "wireit": {
     "prepack": {
@@ -123,22 +124,29 @@
       "dependencies": [
         "build:tsc"
       ]
+    },
+    "unit": {
+      "command": "node --test --test-reporter spec lib/cjs",
+      "dependencies": [
+        "build"
+      ]
     }
   },
   "files": [
     "lib",
     "src",
+    "!*.test.js",
     "!*.tsbuildinfo"
   ],
   "author": "The Chromium Authors",
   "license": "Apache-2.0",
   "dependencies": {
-    "chromium-bidi": "0.4.12",
-    "cross-fetch": "3.1.6",
+    "chromium-bidi": "0.4.16",
+    "cross-fetch": "4.0.0",
     "debug": "4.3.4",
     "devtools-protocol": "0.0.1135028",
     "ws": "8.13.0",
-    "@puppeteer/browsers": "1.4.2"
+    "@puppeteer/browsers": "1.4.3"
   },
   "peerDependencies": {
     "typescript": ">= 4.7.4"

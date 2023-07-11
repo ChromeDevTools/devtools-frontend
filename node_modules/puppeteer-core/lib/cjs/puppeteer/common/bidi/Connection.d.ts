@@ -104,12 +104,12 @@ interface Commands {
         returnType: Bidi.Message.EmptyResult;
     };
     'cdp.sendCommand': {
-        params: Bidi.CDP.SendCommandParams;
-        returnType: Bidi.CDP.SendCommandResult;
+        params: Bidi.Cdp.SendCommandParams;
+        returnType: Bidi.Cdp.SendCommandResult;
     };
     'cdp.getSession': {
-        params: Bidi.CDP.GetSessionParams;
-        returnType: Bidi.CDP.GetSessionResult;
+        params: Bidi.Cdp.GetSessionParams;
+        returnType: Bidi.Cdp.GetSessionResult;
     };
 }
 /**

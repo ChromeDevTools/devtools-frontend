@@ -135,6 +135,10 @@ export interface ScreenshotClip {
  */
 export interface ScreenshotOptions {
     /**
+     * @defaultValue `false`
+     */
+    optimizeForSpeed?: boolean;
+    /**
      * @defaultValue `png`
      */
     type?: 'png' | 'jpeg' | 'webp';
@@ -667,6 +671,12 @@ export declare class Page extends EventEmitter {
      * change in the Locators API.
      */
     locator(selector: string): Locator;
+    /**
+     * A shortcut for {@link Locator.race} that does not require static imports.
+     *
+     * @internal
+     */
+    locatorRace(locators: Locator[]): Locator;
     /**
      * Runs `document.querySelector` within the page. If no element matches the
      * selector, the return value resolves to `null`.
@@ -1660,7 +1670,7 @@ export declare class Page extends EventEmitter {
     /**
      * Evaluates a function in the page's context and returns the result.
      *
-     * If the function passed to `page.evaluateHandle` returns a Promise, the
+     * If the function passed to `page.evaluate` returns a Promise, the
      * function will wait for the promise to resolve and return its value.
      *
      * @example

@@ -396,6 +396,12 @@ declare function parse(data: unknown): UserFlow;
  * therefore, SelectorType.CSS is the default type if other types didn't match.
  */
 declare function getSelectorType(selector: string): SelectorType;
+/**
+ * Converts a selector or an array of selector parts into a Puppeteer selector.
+ *
+ * @see https://pptr.dev/guides/query-selectors#p-elements
+ */
+declare function selectorToPElementSelector(selector: string[] | string): string;
 
 /**
     Copyright 2022 Google LLC
@@ -714,4 +720,4 @@ declare class LighthouseRunnerExtension extends PuppeteerRunnerExtension {
 declare function formatJSONAsJS(json: unknown, indent: string): string;
 declare const formatAsJSLiteral: (content: string) => string;
 
-export { AssertedEvent, AssertedEventType, AssertionStep, BaseStep, ChangeStep, ClickAttributes, ClickStep, CloseStep, CustomStep, CustomStepParams, DoubleClickStep, EmulateNetworkConditionsStep, FrameSelector, HoverStep, JSONStringifyExtension, Key, KeyDownStep, KeyUpStep, LighthouseRunnerExtension, LighthouseStringifyExtension, LineWriter, NavigateStep, NavigationEvent, Pattern, PointerButtonType, PointerDeviceType, PuppeteerReplayStringifyExtension, PuppeteerRunnerExtension, PuppeteerRunnerOwningBrowserExtension, PuppeteerStringifyExtension, Runner, RunnerExtension, Schema, ScrollElementStep, ScrollPageStep, ScrollStep, Selector, SelectorType, SetViewportStep, SourceMap, Step, StepType, StepWithFrame, StepWithSelectors, StepWithTarget, StringifyExtension, StringifyOptions, Target, UserFlow, UserStep, WaitForElementStep, WaitForExpressionStep, assertAllStepTypesAreHandled, createRunner, formatAsJSLiteral, formatJSONAsJS, getSelectorType, maxTimeout, minTimeout, mouseButtonMap, parse, parseSourceMap, parseStep, pointerDeviceTypes, stringify, stringifyStep, stripSourceMap, typeableInputTypes, validTimeout };
+export { AssertedEvent, AssertedEventType, AssertionStep, BaseStep, ChangeStep, ClickAttributes, ClickStep, CloseStep, CustomStep, CustomStepParams, DoubleClickStep, EmulateNetworkConditionsStep, FrameSelector, HoverStep, JSONStringifyExtension, Key, KeyDownStep, KeyUpStep, LighthouseRunnerExtension, LighthouseStringifyExtension, LineWriter, NavigateStep, NavigationEvent, Pattern, PointerButtonType, PointerDeviceType, PuppeteerReplayStringifyExtension, PuppeteerRunnerExtension, PuppeteerRunnerOwningBrowserExtension, PuppeteerStringifyExtension, Runner, RunnerExtension, Schema, ScrollElementStep, ScrollPageStep, ScrollStep, Selector, SelectorType, SetViewportStep, SourceMap, Step, StepType, StepWithFrame, StepWithSelectors, StepWithTarget, StringifyExtension, StringifyOptions, Target, UserFlow, UserStep, WaitForElementStep, WaitForExpressionStep, assertAllStepTypesAreHandled, createRunner, formatAsJSLiteral, formatJSONAsJS, getSelectorType, maxTimeout, minTimeout, mouseButtonMap, parse, parseSourceMap, parseStep, pointerDeviceTypes, selectorToPElementSelector, stringify, stringifyStep, stripSourceMap, typeableInputTypes, validTimeout };

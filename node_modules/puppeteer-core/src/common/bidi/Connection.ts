@@ -136,12 +136,12 @@ interface Commands {
     returnType: Bidi.Message.EmptyResult;
   };
   'cdp.sendCommand': {
-    params: Bidi.CDP.SendCommandParams;
-    returnType: Bidi.CDP.SendCommandResult;
+    params: Bidi.Cdp.SendCommandParams;
+    returnType: Bidi.Cdp.SendCommandResult;
   };
   'cdp.getSession': {
-    params: Bidi.CDP.GetSessionParams;
-    returnType: Bidi.CDP.GetSessionResult;
+    params: Bidi.Cdp.GetSessionParams;
+    returnType: Bidi.Cdp.GetSessionResult;
   };
 }
 
@@ -234,17 +234,14 @@ export class Connection extends EventEmitter {
       // `log.entryAdded` specific context
     } else if ('source' in event.params && event.params.source.context) {
       context = this.#browsingContexts.get(event.params.source.context);
-    } else if (event.method === 'cdp.eventReceived') {
+    } else if (isCDPEvent(event)) {
       // TODO: this is not a good solution and we need to find a better one.
       // Perhaps we need to have a dedicated CDP event emitter or emulate
       // the CDPSession interface with BiDi?.
-      const cdpSessionId = event.params.cdpSession;
+      const cdpSessionId = event.params.session;
       for (const context of this.#browsingContexts.values()) {
         if (context.cdpSession?.id() === cdpSessionId) {
-          context.cdpSession!.emit(
-            event.params.cdpMethod,
-            event.params.cdpParams
-          );
+          context.cdpSession!.emit(event.params.event, event.params.params);
         }
       }
     }
@@ -284,4 +281,10 @@ function createProtocolError(object: Bidi.Message.ErrorResult): string {
     message += ` ${object.stacktrace}`;
   }
   return message;
+}
+
+function isCDPEvent(
+  event: Bidi.Message.EventMessage
+): event is Bidi.Cdp.EventReceivedEvent {
+  return event.method.startsWith('cdp.');
 }

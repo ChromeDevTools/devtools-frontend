@@ -168,7 +168,7 @@ export class IsolatedWorld {
         await setPageContent(this, html);
         const watcher = new LifecycleWatcher(__classPrivateFieldGet(this, _IsolatedWorld_instances, "a", _IsolatedWorld_frameManager_get), __classPrivateFieldGet(this, _IsolatedWorld_frame, "f"), waitUntil, timeout);
         const error = await Deferred.race([
-            watcher.timeoutOrTerminationPromise(),
+            watcher.terminationPromise(),
             watcher.lifecyclePromise(),
         ]);
         watcher.dispose();

@@ -25,13 +25,12 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _LifecycleWatcher_instances, _LifecycleWatcher_expectedLifecycle, _LifecycleWatcher_frameManager, _LifecycleWatcher_frame, _LifecycleWatcher_timeout, _LifecycleWatcher_navigationRequest, _LifecycleWatcher_eventListeners, _LifecycleWatcher_initialLoaderId, _LifecycleWatcher_sameDocumentNavigationDeferred, _LifecycleWatcher_lifecycleDeferred, _LifecycleWatcher_newDocumentNavigationDeferred, _LifecycleWatcher_terminationDeferred, _LifecycleWatcher_timeoutPromise, _LifecycleWatcher_maximumTimer, _LifecycleWatcher_hasSameDocumentNavigation, _LifecycleWatcher_swapped, _LifecycleWatcher_navigationResponseReceived, _LifecycleWatcher_onRequest, _LifecycleWatcher_onRequestFailed, _LifecycleWatcher_onResponse, _LifecycleWatcher_onFrameDetached, _LifecycleWatcher_terminate, _LifecycleWatcher_createTimeoutPromise, _LifecycleWatcher_navigatedWithinDocument, _LifecycleWatcher_navigated, _LifecycleWatcher_frameSwapped, _LifecycleWatcher_checkLifecycleComplete;
+var _LifecycleWatcher_instances, _LifecycleWatcher_expectedLifecycle, _LifecycleWatcher_frameManager, _LifecycleWatcher_frame, _LifecycleWatcher_timeout, _LifecycleWatcher_navigationRequest, _LifecycleWatcher_eventListeners, _LifecycleWatcher_initialLoaderId, _LifecycleWatcher_terminationDeferred, _LifecycleWatcher_sameDocumentNavigationDeferred, _LifecycleWatcher_lifecycleDeferred, _LifecycleWatcher_newDocumentNavigationDeferred, _LifecycleWatcher_hasSameDocumentNavigation, _LifecycleWatcher_swapped, _LifecycleWatcher_navigationResponseReceived, _LifecycleWatcher_onRequest, _LifecycleWatcher_onRequestFailed, _LifecycleWatcher_onResponse, _LifecycleWatcher_onFrameDetached, _LifecycleWatcher_terminate, _LifecycleWatcher_navigatedWithinDocument, _LifecycleWatcher_navigated, _LifecycleWatcher_frameSwapped, _LifecycleWatcher_checkLifecycleComplete;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LifecycleWatcher = void 0;
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const Connection_js_1 = require("./Connection.js");
-const Errors_js_1 = require("./Errors.js");
 const FrameManager_js_1 = require("./FrameManager.js");
 const NetworkManager_js_1 = require("./NetworkManager.js");
 const util_js_1 = require("./util.js");
@@ -41,7 +40,6 @@ const puppeteerToProtocolLifecycle = new Map([
     ['networkidle0', 'networkIdle'],
     ['networkidle2', 'networkAlmostIdle'],
 ]);
-const noop = () => { };
 /**
  * @internal
  */
@@ -55,12 +53,10 @@ class LifecycleWatcher {
         _LifecycleWatcher_navigationRequest.set(this, null);
         _LifecycleWatcher_eventListeners.set(this, void 0);
         _LifecycleWatcher_initialLoaderId.set(this, void 0);
+        _LifecycleWatcher_terminationDeferred.set(this, void 0);
         _LifecycleWatcher_sameDocumentNavigationDeferred.set(this, Deferred_js_1.Deferred.create());
         _LifecycleWatcher_lifecycleDeferred.set(this, Deferred_js_1.Deferred.create());
         _LifecycleWatcher_newDocumentNavigationDeferred.set(this, Deferred_js_1.Deferred.create());
-        _LifecycleWatcher_terminationDeferred.set(this, Deferred_js_1.Deferred.create());
-        _LifecycleWatcher_timeoutPromise.set(this, void 0);
-        _LifecycleWatcher_maximumTimer.set(this, void 0);
         _LifecycleWatcher_hasSameDocumentNavigation.set(this, void 0);
         _LifecycleWatcher_swapped.set(this, void 0);
         _LifecycleWatcher_navigationResponseReceived.set(this, void 0);
@@ -90,7 +86,10 @@ class LifecycleWatcher {
             (0, util_js_1.addEventListener)(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f").networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.Response, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_onResponse).bind(this)),
             (0, util_js_1.addEventListener)(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f").networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFailed, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_onRequestFailed).bind(this)),
         ], "f");
-        __classPrivateFieldSet(this, _LifecycleWatcher_timeoutPromise, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_createTimeoutPromise).call(this), "f");
+        __classPrivateFieldSet(this, _LifecycleWatcher_terminationDeferred, Deferred_js_1.Deferred.create({
+            timeout: __classPrivateFieldGet(this, _LifecycleWatcher_timeout, "f"),
+            message: `Navigation timeout of ${__classPrivateFieldGet(this, _LifecycleWatcher_timeout, "f")} ms exceeded`,
+        }), "f");
         __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_checkLifecycleComplete).call(this);
     }
     async navigationResponse() {
@@ -107,16 +106,16 @@ class LifecycleWatcher {
     lifecyclePromise() {
         return __classPrivateFieldGet(this, _LifecycleWatcher_lifecycleDeferred, "f").valueOrThrow();
     }
-    timeoutOrTerminationPromise() {
-        return Deferred_js_1.Deferred.race([__classPrivateFieldGet(this, _LifecycleWatcher_timeoutPromise, "f"), __classPrivateFieldGet(this, _LifecycleWatcher_terminationDeferred, "f")]);
+    terminationPromise() {
+        return __classPrivateFieldGet(this, _LifecycleWatcher_terminationDeferred, "f").valueOrThrow();
     }
     dispose() {
         (0, util_js_1.removeEventListeners)(__classPrivateFieldGet(this, _LifecycleWatcher_eventListeners, "f"));
-        clearTimeout(__classPrivateFieldGet(this, _LifecycleWatcher_maximumTimer, "f"));
+        __classPrivateFieldGet(this, _LifecycleWatcher_terminationDeferred, "f").resolve(new Error('LifecycleWatcher disposed'));
     }
 }
 exports.LifecycleWatcher = LifecycleWatcher;
-_LifecycleWatcher_expectedLifecycle = new WeakMap(), _LifecycleWatcher_frameManager = new WeakMap(), _LifecycleWatcher_frame = new WeakMap(), _LifecycleWatcher_timeout = new WeakMap(), _LifecycleWatcher_navigationRequest = new WeakMap(), _LifecycleWatcher_eventListeners = new WeakMap(), _LifecycleWatcher_initialLoaderId = new WeakMap(), _LifecycleWatcher_sameDocumentNavigationDeferred = new WeakMap(), _LifecycleWatcher_lifecycleDeferred = new WeakMap(), _LifecycleWatcher_newDocumentNavigationDeferred = new WeakMap(), _LifecycleWatcher_terminationDeferred = new WeakMap(), _LifecycleWatcher_timeoutPromise = new WeakMap(), _LifecycleWatcher_maximumTimer = new WeakMap(), _LifecycleWatcher_hasSameDocumentNavigation = new WeakMap(), _LifecycleWatcher_swapped = new WeakMap(), _LifecycleWatcher_navigationResponseReceived = new WeakMap(), _LifecycleWatcher_instances = new WeakSet(), _LifecycleWatcher_onRequest = function _LifecycleWatcher_onRequest(request) {
+_LifecycleWatcher_expectedLifecycle = new WeakMap(), _LifecycleWatcher_frameManager = new WeakMap(), _LifecycleWatcher_frame = new WeakMap(), _LifecycleWatcher_timeout = new WeakMap(), _LifecycleWatcher_navigationRequest = new WeakMap(), _LifecycleWatcher_eventListeners = new WeakMap(), _LifecycleWatcher_initialLoaderId = new WeakMap(), _LifecycleWatcher_terminationDeferred = new WeakMap(), _LifecycleWatcher_sameDocumentNavigationDeferred = new WeakMap(), _LifecycleWatcher_lifecycleDeferred = new WeakMap(), _LifecycleWatcher_newDocumentNavigationDeferred = new WeakMap(), _LifecycleWatcher_hasSameDocumentNavigation = new WeakMap(), _LifecycleWatcher_swapped = new WeakMap(), _LifecycleWatcher_navigationResponseReceived = new WeakMap(), _LifecycleWatcher_instances = new WeakSet(), _LifecycleWatcher_onRequest = function _LifecycleWatcher_onRequest(request) {
     if (request.frame() !== __classPrivateFieldGet(this, _LifecycleWatcher_frame, "f") || !request.isNavigationRequest()) {
         return;
     }
@@ -147,15 +146,6 @@ _LifecycleWatcher_expectedLifecycle = new WeakMap(), _LifecycleWatcher_frameMana
     __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_checkLifecycleComplete).call(this);
 }, _LifecycleWatcher_terminate = function _LifecycleWatcher_terminate(error) {
     __classPrivateFieldGet(this, _LifecycleWatcher_terminationDeferred, "f").resolve(error);
-}, _LifecycleWatcher_createTimeoutPromise = async function _LifecycleWatcher_createTimeoutPromise() {
-    if (!__classPrivateFieldGet(this, _LifecycleWatcher_timeout, "f")) {
-        return new Promise(noop);
-    }
-    const errorMessage = 'Navigation timeout of ' + __classPrivateFieldGet(this, _LifecycleWatcher_timeout, "f") + ' ms exceeded';
-    await new Promise(fulfill => {
-        return (__classPrivateFieldSet(this, _LifecycleWatcher_maximumTimer, setTimeout(fulfill, __classPrivateFieldGet(this, _LifecycleWatcher_timeout, "f")), "f"));
-    });
-    return new Errors_js_1.TimeoutError(errorMessage);
 }, _LifecycleWatcher_navigatedWithinDocument = function _LifecycleWatcher_navigatedWithinDocument(frame) {
     if (frame !== __classPrivateFieldGet(this, _LifecycleWatcher_frame, "f")) {
         return;

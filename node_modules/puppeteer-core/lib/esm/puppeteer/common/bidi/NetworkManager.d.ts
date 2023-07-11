@@ -15,6 +15,7 @@
  */
 import { EventEmitter } from '../EventEmitter.js';
 import { Connection } from './Connection.js';
+import { Frame } from './Frame.js';
 import { HTTPResponse } from './HTTPResponse.js';
 import { Page } from './Page.js';
 /**
@@ -25,6 +26,7 @@ export declare class NetworkManager extends EventEmitter {
     constructor(connection: Connection, page: Page);
     getNavigationResponse(navigationId: string | null): HTTPResponse | null;
     inFlightRequestsCount(): number;
+    clearMapAfterFrameDispose(frame: Frame): void;
     dispose(): void;
 }
 //# sourceMappingURL=NetworkManager.d.ts.map

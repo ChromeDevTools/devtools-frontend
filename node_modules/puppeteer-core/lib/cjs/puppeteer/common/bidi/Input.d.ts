@@ -26,7 +26,7 @@ export declare class Keyboard extends BaseKeyboard {
      * @internal
      */
     constructor(context: BrowsingContext);
-    down(key: KeyInput, options?: Readonly<KeyDownOptions>): Promise<void>;
+    down(key: KeyInput, _options?: Readonly<KeyDownOptions>): Promise<void>;
     up(key: KeyInput): Promise<void>;
     press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
     type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;

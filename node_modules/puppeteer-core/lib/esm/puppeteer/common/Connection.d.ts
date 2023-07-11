@@ -15,7 +15,7 @@
  */
 import { Protocol } from 'devtools-protocol';
 import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
-import { Deferred } from '../util/util.js';
+import { Deferred } from '../util/Deferred.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
 import { ProtocolError } from './Errors.js';
 import { EventEmitter } from './EventEmitter.js';

@@ -8,6 +8,12 @@ module.exports = class FixedFIFO {
     this.next = null
   }
 
+  clear () {
+    this.top = this.btm = 0
+    this.next = null
+    this.buffer.fill(undefined)
+  }
+
   push (data) {
     if (this.buffer[this.top] !== undefined) return false
     this.buffer[this.top] = data

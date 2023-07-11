@@ -29,11 +29,11 @@ var _Callback_id, _Callback_error, _Callback_deferred, _Callback_timer, _Callbac
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isTargetClosedError = exports.CDPSessionImpl = exports.CDPSession = exports.CDPSessionEmittedEvents = exports.Connection = exports.CallbackRegistry = exports.Callback = exports.ConnectionEmittedEvents = void 0;
 const assert_js_1 = require("../util/assert.js");
-const util_js_1 = require("../util/util.js");
+const Deferred_js_1 = require("../util/Deferred.js");
 const Debug_js_1 = require("./Debug.js");
 const Errors_js_1 = require("./Errors.js");
 const EventEmitter_js_1 = require("./EventEmitter.js");
-const util_js_2 = require("./util.js");
+const util_js_1 = require("./util.js");
 const debugProtocolSend = (0, Debug_js_1.debug)('puppeteer:protocol:SEND ►');
 const debugProtocolReceive = (0, Debug_js_1.debug)('puppeteer:protocol:RECV ◀');
 /**
@@ -60,7 +60,7 @@ class Callback {
     constructor(id, label, timeout) {
         _Callback_id.set(this, void 0);
         _Callback_error.set(this, new Errors_js_1.ProtocolError());
-        _Callback_deferred.set(this, util_js_1.Deferred.create());
+        _Callback_deferred.set(this, Deferred_js_1.Deferred.create());
         _Callback_timer.set(this, void 0);
         _Callback_label.set(this, void 0);
         __classPrivateFieldSet(this, _Callback_id, id, "f");
@@ -115,7 +115,7 @@ class CallbackRegistry {
             // callback.
             callback.promise
                 .valueOrThrow()
-                .catch(util_js_2.debugError)
+                .catch(util_js_1.debugError)
                 .finally(() => {
                 __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").delete(callback.id);
             });

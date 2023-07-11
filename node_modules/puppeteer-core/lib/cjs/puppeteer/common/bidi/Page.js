@@ -48,7 +48,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Page_instances, _Page_accessibility, _Page_timeoutSettings, _Page_browserContext, _Page_connection, _Page_frameTree, _Page_networkManager, _Page_viewport, _Page_closedDeferred, _Page_subscribedEvents, _Page_networkManagerEvents, _Page_tracing, _Page_coverage, _Page_emulationManager, _Page_mouse, _Page_touchscreen, _Page_keyboard, _Page_onFrameAttached, _Page_onFrameNavigated, _Page_onFrameDetached, _Page_removeFramesRecursively, _Page_onLogEntryAdded;
+var _Page_instances, _Page_accessibility, _Page_timeoutSettings, _Page_browserContext, _Page_connection, _Page_frameTree, _Page_networkManager, _Page_viewport, _Page_closedDeferred, _Page_subscribedEvents, _Page_networkManagerEvents, _Page_tracing, _Page_coverage, _Page_emulationManager, _Page_mouse, _Page_touchscreen, _Page_keyboard, _Page_onFrameLoaded, _Page_onFrameDOMContentLoaded, _Page_onFrameAttached, _Page_onFrameNavigated, _Page_onFrameDetached, _Page_removeFramesRecursively, _Page_onLogEntryAdded;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Page = void 0;
 const Page_js_1 = require("../../api/Page.js");
@@ -59,7 +59,6 @@ const ConsoleMessage_js_1 = require("../ConsoleMessage.js");
 const Coverage_js_1 = require("../Coverage.js");
 const EmulationManager_js_1 = require("../EmulationManager.js");
 const Errors_js_1 = require("../Errors.js");
-const FrameManager_js_1 = require("../FrameManager.js");
 const FrameTree_js_1 = require("../FrameTree.js");
 const NetworkManager_js_1 = require("../NetworkManager.js");
 const TimeoutSettings_js_1 = require("../TimeoutSettings.js");
@@ -88,17 +87,10 @@ class Page extends Page_js_1.Page {
         _Page_closedDeferred.set(this, Deferred_js_1.Deferred.create());
         _Page_subscribedEvents.set(this, new Map([
             ['log.entryAdded', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onLogEntryAdded).bind(this)],
-            [
-                'browsingContext.load',
-                () => {
-                    return this.emit("load" /* PageEmittedEvents.Load */);
-                },
-            ],
+            ['browsingContext.load', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameLoaded).bind(this)],
             [
                 'browsingContext.domContentLoaded',
-                () => {
-                    return this.emit("domcontentloaded" /* PageEmittedEvents.DOMContentLoaded */);
-                },
+                __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameDOMContentLoaded).bind(this),
             ],
             ['browsingContext.contextCreated', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameAttached).bind(this)],
             ['browsingContext.contextDestroyed', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameDetached).bind(this)],
@@ -107,33 +99,23 @@ class Page extends Page_js_1.Page {
         _Page_networkManagerEvents.set(this, new Map([
             [
                 NetworkManager_js_1.NetworkManagerEmittedEvents.Request,
-                event => {
-                    return this.emit("request" /* PageEmittedEvents.Request */, event);
-                },
+                this.emit.bind(this, "request" /* PageEmittedEvents.Request */),
             ],
             [
                 NetworkManager_js_1.NetworkManagerEmittedEvents.RequestServedFromCache,
-                event => {
-                    return this.emit("requestservedfromcache" /* PageEmittedEvents.RequestServedFromCache */, event);
-                },
+                this.emit.bind(this, "requestservedfromcache" /* PageEmittedEvents.RequestServedFromCache */),
             ],
             [
                 NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFailed,
-                event => {
-                    return this.emit("requestfailed" /* PageEmittedEvents.RequestFailed */, event);
-                },
+                this.emit.bind(this, "requestfailed" /* PageEmittedEvents.RequestFailed */),
             ],
             [
                 NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFinished,
-                event => {
-                    return this.emit("requestfinished" /* PageEmittedEvents.RequestFinished */, event);
-                },
+                this.emit.bind(this, "requestfinished" /* PageEmittedEvents.RequestFinished */),
             ],
             [
                 NetworkManager_js_1.NetworkManagerEmittedEvents.Response,
-                event => {
-                    return this.emit("response" /* PageEmittedEvents.Response */, event);
-                },
+                this.emit.bind(this, "response" /* PageEmittedEvents.Response */),
             ],
         ]));
         _Page_tracing.set(this, void 0);
@@ -147,8 +129,8 @@ class Page extends Page_js_1.Page {
         __classPrivateFieldSet(this, _Page_networkManager, new NetworkManager_js_2.NetworkManager(__classPrivateFieldGet(this, _Page_connection, "f"), this), "f");
         __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameAttached).call(this, {
             ...info,
-            url: 'about:blank',
-            children: [],
+            url: info.url ?? 'about:blank',
+            children: info.children ?? [],
         });
         for (const [event, subscriber] of __classPrivateFieldGet(this, _Page_subscribedEvents, "f")) {
             __classPrivateFieldGet(this, _Page_connection, "f").on(event, subscriber);
@@ -211,11 +193,12 @@ class Page extends Page_js_1.Page {
             return;
         }
         __classPrivateFieldGet(this, _Page_closedDeferred, "f").resolve(new Errors_js_1.TargetCloseError('Page closed!'));
-        this.removeAllListeners();
         __classPrivateFieldGet(this, _Page_networkManager, "f").dispose();
         await __classPrivateFieldGet(this, _Page_connection, "f").send('browsingContext.close', {
             context: this.mainFrame()._id,
         });
+        this.emit("close" /* PageEmittedEvents.Close */);
+        this.removeAllListeners();
     }
     async evaluateHandle(pageFunction, ...args) {
         pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluateHandle.name, pageFunction);
@@ -375,29 +358,39 @@ class Page extends Page_js_1.Page {
     }
 }
 exports.Page = Page;
-_Page_accessibility = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Page_browserContext = new WeakMap(), _Page_connection = new WeakMap(), _Page_frameTree = new WeakMap(), _Page_networkManager = new WeakMap(), _Page_viewport = new WeakMap(), _Page_closedDeferred = new WeakMap(), _Page_subscribedEvents = new WeakMap(), _Page_networkManagerEvents = new WeakMap(), _Page_tracing = new WeakMap(), _Page_coverage = new WeakMap(), _Page_emulationManager = new WeakMap(), _Page_mouse = new WeakMap(), _Page_touchscreen = new WeakMap(), _Page_keyboard = new WeakMap(), _Page_instances = new WeakSet(), _Page_onFrameAttached = function _Page_onFrameAttached(info) {
+_Page_accessibility = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Page_browserContext = new WeakMap(), _Page_connection = new WeakMap(), _Page_frameTree = new WeakMap(), _Page_networkManager = new WeakMap(), _Page_viewport = new WeakMap(), _Page_closedDeferred = new WeakMap(), _Page_subscribedEvents = new WeakMap(), _Page_networkManagerEvents = new WeakMap(), _Page_tracing = new WeakMap(), _Page_coverage = new WeakMap(), _Page_emulationManager = new WeakMap(), _Page_mouse = new WeakMap(), _Page_touchscreen = new WeakMap(), _Page_keyboard = new WeakMap(), _Page_instances = new WeakSet(), _Page_onFrameLoaded = function _Page_onFrameLoaded(info) {
+    const frame = this.frame(info.context);
+    if (frame && this.mainFrame() === frame) {
+        this.emit("load" /* PageEmittedEvents.Load */);
+    }
+}, _Page_onFrameDOMContentLoaded = function _Page_onFrameDOMContentLoaded(info) {
+    const frame = this.frame(info.context);
+    if (frame && this.mainFrame() === frame) {
+        this.emit("domcontentloaded" /* PageEmittedEvents.DOMContentLoaded */);
+    }
+}, _Page_onFrameAttached = function _Page_onFrameAttached(info) {
     if (!this.frame(info.context) &&
         (this.frame(info.parent ?? '') || !__classPrivateFieldGet(this, _Page_frameTree, "f").getMainFrame())) {
         const context = new BrowsingContext_js_1.BrowsingContext(__classPrivateFieldGet(this, _Page_connection, "f"), __classPrivateFieldGet(this, _Page_timeoutSettings, "f"), info);
         __classPrivateFieldGet(this, _Page_connection, "f").registerBrowsingContexts(context);
         const frame = new Frame_js_1.Frame(this, context, __classPrivateFieldGet(this, _Page_timeoutSettings, "f"), info.parent);
         __classPrivateFieldGet(this, _Page_frameTree, "f").addFrame(frame);
-        this.emit(FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached, frame);
+        this.emit("frameattached" /* PageEmittedEvents.FrameAttached */, frame);
     }
 }, _Page_onFrameNavigated = async function _Page_onFrameNavigated(info) {
     const frameId = info.context;
     let frame = this.frame(frameId);
     // Detach all child frames first.
     if (frame) {
-        for (const child of frame.childFrames()) {
-            __classPrivateFieldGet(this, _Page_instances, "m", _Page_removeFramesRecursively).call(this, child);
-        }
         frame = await __classPrivateFieldGet(this, _Page_frameTree, "f").waitForFrame(frameId);
-        this.emit(FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated, frame);
+        this.emit("framenavigated" /* PageEmittedEvents.FrameNavigated */, frame);
     }
 }, _Page_onFrameDetached = function _Page_onFrameDetached(info) {
     const frame = this.frame(info.context);
     if (frame) {
+        if (frame === this.mainFrame()) {
+            this.emit("close" /* PageEmittedEvents.Close */);
+        }
         __classPrivateFieldGet(this, _Page_instances, "m", _Page_removeFramesRecursively).call(this, frame);
     }
 }, _Page_removeFramesRecursively = function _Page_removeFramesRecursively(frame) {
@@ -405,8 +398,9 @@ _Page_accessibility = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Pag
         __classPrivateFieldGet(this, _Page_instances, "m", _Page_removeFramesRecursively).call(this, child);
     }
     frame.dispose();
+    __classPrivateFieldGet(this, _Page_networkManager, "f").clearMapAfterFrameDispose(frame);
     __classPrivateFieldGet(this, _Page_frameTree, "f").removeFrame(frame);
-    this.emit(FrameManager_js_1.FrameManagerEmittedEvents.FrameDetached, frame);
+    this.emit("framedetached" /* PageEmittedEvents.FrameDetached */, frame);
 }, _Page_onLogEntryAdded = function _Page_onLogEntryAdded(event) {
     const frame = this.frame(event.source.context);
     if (!frame) {

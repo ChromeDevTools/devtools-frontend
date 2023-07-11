@@ -117,14 +117,14 @@ _Connection_url = new WeakMap(), _Connection_transport = new WeakMap(), _Connect
     else if ('source' in event.params && event.params.source.context) {
         context = __classPrivateFieldGet(this, _Connection_browsingContexts, "f").get(event.params.source.context);
     }
-    else if (event.method === 'cdp.eventReceived') {
+    else if (isCDPEvent(event)) {
         // TODO: this is not a good solution and we need to find a better one.
         // Perhaps we need to have a dedicated CDP event emitter or emulate
         // the CDPSession interface with BiDi?.
-        const cdpSessionId = event.params.cdpSession;
+        const cdpSessionId = event.params.session;
         for (const context of __classPrivateFieldGet(this, _Connection_browsingContexts, "f").values()) {
             if (context.cdpSession?.id() === cdpSessionId) {
-                context.cdpSession.emit(event.params.cdpMethod, event.params.cdpParams);
+                context.cdpSession.emit(event.params.event, event.params.params);
             }
         }
     }
@@ -147,5 +147,8 @@ function createProtocolError(object) {
         message += ` ${object.stacktrace}`;
     }
     return message;
+}
+function isCDPEvent(event) {
+    return event.method.startsWith('cdp.');
 }
 //# sourceMappingURL=Connection.js.map

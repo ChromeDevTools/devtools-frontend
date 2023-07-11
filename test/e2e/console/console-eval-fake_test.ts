@@ -6,8 +6,7 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, pasteText, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
-import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
+import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', async () => {
   it('doesn’t break when global `eval` is overwritten', async () => {

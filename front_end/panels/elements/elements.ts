@@ -27,7 +27,6 @@ import './ElementsPanel.js';
 import './ClassesPaneWidget.js';
 import './ElementStatePaneWidget.js';
 import './ElementsTreeElementHighlighter.js';
-import './TopLayerContainer.js';
 import './AccessibilityTreeUtils.js';
 import './AccessibilityTreeView.js';
 

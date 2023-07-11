@@ -120,6 +120,13 @@ module.exports = {
     // Closure does not properly typecheck default exports
     'import/no-default-export': 2,
 
+    /**
+     * Catch duplicate import paths. For example this would catch the following example:
+     * import {Foo} from './foo.js'
+     * import * as FooModule from './foo.js'
+     **/
+    'import/no-duplicates': 2,
+
     // Try to spot '// console.log()' left over from debugging
     'rulesdir/commented_out_console': 2,
 

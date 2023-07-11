@@ -10,8 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 
 import {FrameManager} from './FrameManager.js';
 import {IOModel} from './IOModel.js';
-import {MultitargetNetworkManager} from './NetworkManager.js';
-import {NetworkManager} from './NetworkManager.js';
+import {MultitargetNetworkManager, NetworkManager} from './NetworkManager.js';
 
 import {
   Events as ResourceTreeModelEvents,

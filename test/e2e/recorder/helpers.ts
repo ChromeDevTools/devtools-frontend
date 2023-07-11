@@ -17,10 +17,10 @@ import {
   timeout,
   waitFor,
   waitForAria,
+  platform,
 } from '../../../test/shared/helper.js';
 
 import {assertMatchesJSONSnapshot} from '../../../test/shared/snapshots.js';
-import {platform} from '../../../test/shared/helper.js';
 import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
 

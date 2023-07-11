@@ -40,7 +40,13 @@ export {FrontendMessageSource, FrontendMessageType} from './ConsoleModelTypes.js
 
 import {CPUProfilerModel, Events as CPUProfilerModelEvents, type EventData} from './CPUProfilerModel.js';
 
-import {Events as DebuggerModelEvents, type Location, BreakpointType} from './DebuggerModel.js';
+import {
+  Events as DebuggerModelEvents,
+  type Location,
+  BreakpointType,
+  COND_BREAKPOINT_SOURCE_URL,
+  LOGPOINT_SOURCE_URL,
+} from './DebuggerModel.js';
 import {LogModel} from './LogModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {
@@ -61,8 +67,6 @@ import {
 import {Capability, type Target, Type} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 import {SDKModel} from './SDKModel.js';
-
-import {COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL} from './DebuggerModel.js';
 
 const UIStrings = {
   /**

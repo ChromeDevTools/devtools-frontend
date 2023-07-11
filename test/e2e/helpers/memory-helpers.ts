@@ -5,8 +5,10 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {$, platform, waitForElementWithTextContent} from '../../shared/helper.js';
 import {
+  $,
+  platform,
+  waitForElementWithTextContent,
   $$,
   click,
   clickElement,

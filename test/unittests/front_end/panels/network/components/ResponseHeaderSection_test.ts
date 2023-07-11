@@ -15,10 +15,9 @@ import {
   renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import {setUpEnvironment} from '../../../helpers/OverridesHelpers.js';
+import {createWorkspaceProject, setUpEnvironment} from '../../../helpers/OverridesHelpers.js';
 
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
-import {createWorkspaceProject} from '../../../helpers/OverridesHelpers.js';
 import * as Workspace from '../../../../../../front_end/models/workspace/workspace.js';
 import type * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
 import * as Root from '../../../../../../front_end/core/root/root.js';

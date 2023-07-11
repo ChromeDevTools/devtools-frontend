@@ -1042,7 +1042,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   private renderPrimaryCell(cell: HTMLElement, columnId: string, text?: string): void {
-    const columnIndex = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>).indexOfVisibleColumn(columnId);
+    const columnIndex = (this.dataGrid as DataGrid.DataGrid.DataGridImpl<unknown>)?.indexOfVisibleColumn(columnId) | 0;
     const isFirstCell = (columnIndex === 0);
     if (isFirstCell) {
       const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';

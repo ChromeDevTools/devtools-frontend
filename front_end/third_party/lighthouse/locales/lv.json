@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Elementam `<html>` ir derīga tā atribūta `[lang]` vērtība"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Ja tīmekļa lapā netiek norādīta konsekventa valoda, iespējams, ekrāna lasītāji pareizi neatskaņos lapas tekstu. [Uzziniet vairāk par atribūtu `lang`.](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Elementam `<html>` nav atribūta `[xml:lang]` ar tādu pašu pamata valodu kā atribūtam `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Elementam `<html>` ir atribūts `[xml:lang]` ar tādu pašu pamata valodu kā atribūtam `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informatīvajiem elementiem ir nepieciešams īss, aprakstošs alternatīvais teksts. Dekoratīvajiem elementiem alternatīvo atribūtu var atstāt tukšu. [Uzziniet vairāk par atribūtu “`alt`”](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Attēlu elementiem ir atribūti `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Pievienojot ievades pogām saprotamu un pieejamu tekstu, varat palīdzēt ekrāna lasītāju lietotājiem saprast, kam ievades pogas ir paredzētas. [Uzziniet vairāk par ievades pogām.](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Ievades pogām nav pievienots saprotams teksts."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Ievades pogām ir pievienots saprotams teksts"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Ja attēls tiek izmantots kā poga `<input>`, alternatīvais teksts var sniegt informāciju par pogas nozīmi lietotājiem, kuri izmanto ekrāna lasītāju. [Uzziniet vairāk par ievades pogas attēla alternatīvo tekstu](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Nevienam elementam nav atribūta `[tabindex]` vērtības, kas augstāka par 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Ekrāna lasītāju funkcijas atvieglo pārvietošanos tabulās. Gādājot, lai tabulās tiktu izmantots elements “caption”, nevis šūnas ar atribūtu `[colspan]`, varat uzlabot lietošanas pieredzi lietotājiem, kuri izmanto ekrāna lasītājus. [Uzziniet vairāk par subtitriem.](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Lai tabulās norādītu uzrakstus, tiek izmantots nevis `<caption>`, bet šūnas ar atribūtu `[colspan]`."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Lai tabulās norādītu uzrakstus, tiek izmantots `<caption>`, nevis šūnas ar atribūtu `[colspan]`"
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Ekrāna lasītāju funkcijas atvieglo pārvietošanos tabulās. Parūpējoties, lai lielā tabulā (tādā, kurā ir vismaz trīs rindas un trīs kolonnas) katram `<td>` elementam būtu saistīta tabulas galvene, varat uzlabot lietošanas pieredzi lietotājiem, kuri izmanto ekrāna lasītājus. [Uzziniet vairāk par tabulu galvenēm.](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "`<td>` elementiem lielā `<table>` elementā nav tabulas galveņu."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "`<td>` elementiem lielā `<table>` elementā ir viena vai vairākas tabulas galvenes"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Ekrāna lasītāju funkcijas atvieglo pārvietošanos tabulās. Ja elementa `<td>` šūnās, kas izmanto atribūtu `[headers]`, ir atsauces tikai uz citām šūnām tajā pašā tabulā, tiek nodrošināta labāka pieredze lietotājiem, kuri izmanto ekrāna lasītājus. [Uzziniet vairāk par atribūtu “`headers`”](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1005,7 +1041,7 @@
     "message": "LLPB"
   },
   "core/audits/largest-contentful-paint-element.js | title": {
-    "message": "Lielākais satura atveidojuma elements"
+    "message": "Largest Contentful Paint elements"
   },
   "core/audits/layout-shift-elements.js | columnContribution": {
     "message": "CLS daļa"
@@ -1017,13 +1053,13 @@
     "message": "Centieties novērst lielas izkārtojuma nobīdes"
   },
   "core/audits/lcp-lazy-loaded.js | description": {
-    "message": "Attēli pirmajā ekrānā, kam tiek veikta atliktā ielāde, tiek atveidoti vēlāk lapas darbības ciklā. Tas var aizkavēt lielāko satura atveidojumu. [Uzziniet vairāk par optimālu atlikto ielādi](https://web.dev/lcp-lazy-loading/)."
+    "message": "Attēli pirmajā ekrānā, kam tiek veikta atliktā ielāde, tiek atveidoti vēlāk lapas darbības ciklā. Tas var aizkavēt Largest Contentful Paint. [Uzziniet vairāk par optimālu atlikto ielādi](https://web.dev/lcp-lazy-loading/)."
   },
   "core/audits/lcp-lazy-loaded.js | failureTitle": {
     "message": "Lielākā satura atveidojuma attēlam tika veikta atliktā ielāde"
   },
   "core/audits/lcp-lazy-loaded.js | title": {
-    "message": "Lielākā satura atveidojuma attēlam netika veikta atliktā ielāde"
+    "message": "Largest Contentful Paint attēlam netika veikta atliktā ielāde"
   },
   "core/audits/long-tasks.js | description": {
     "message": "Šeit ir norādīti galvenā pavediena uzdevumi ar visilgāko izpildes laiku, lai palīdzētu noteikt, kuri uzdevumi visvairāk palielina ievades aizkavi. [Uzziniet, kā izvairīties no ilgiem galvenā pavediena uzdevumiem](https://web.dev/long-tasks-devtools/)."
@@ -1074,31 +1110,31 @@
     "message": "Manifestā ir maskējama ikona"
   },
   "core/audits/metrics/cumulative-layout-shift.js | description": {
-    "message": "Kopējā izkārtojuma nobīde norāda redzamo elementu kustību skatvietā. [Uzziniet vairāk par rādītāju “Kopējā izkārtojuma nobīde”](https://web.dev/cls/)."
+    "message": "Cumulative Layout Shift norāda redzamo elementu kustību skatvietā. [Uzziniet vairāk par rādītāju “Cumulative Layout Shift”](https://web.dev/cls/)."
   },
   "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Mijiedarbība līdz nākamajai atveidei nosaka lapas atbildi — laiku, kas lapai nepieciešams, lai redzami reaģētu uz lietotāja ievadi. [Uzziniet vairāk par rādītāju “Mijiedarbība līdz nākamajai atveidei”](https://web.dev/inp/)."
+    "message": "Interaction to Next Paint nosaka lapas atbildi — laiku, kas lapai nepieciešams, lai redzami reaģētu uz lietotāja ievadi. [Uzziniet vairāk par rādītāju “Interaction to Next Paint”](https://web.dev/inp/)."
   },
   "core/audits/metrics/first-contentful-paint.js | description": {
-    "message": "Rādītājs “Pirmais satura atveidojums” ataino laiku, kad tiek atveidots pirmais teksts vai attēls. [Uzziniet vairāk par rādītāju “Pirmais satura atveidojums”](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
+    "message": "Rādītājs “First Contentful Paint” ataino laiku, kad tiek atveidots pirmais teksts vai attēls. [Uzziniet vairāk par rādītāju “First Contentful Paint”](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Rādītājs “Pirmais nozīmīgais satura atveidojums” ataino, kad kļūst redzams lapas galvenais saturs. [Uzziniet vairāk par rādītāju “Pirmais nozīmīgais satura atveidojums”](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
   },
   "core/audits/metrics/interactive.js | description": {
-    "message": "Rādītājs “Laiks līdz interaktivitātei” ir laiks, kas nepieciešams, lai lapa kļūtu pilnībā interaktīva. [Uzziniet vairāk par rādītāju “Laiks līdz interaktivitātei”](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
+    "message": "Rādītājs “Time to Interactive” ir laiks, kas nepieciešams, lai lapa kļūtu pilnībā interaktīva. [Uzziniet vairāk par rādītāju “Time to Interactive”](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
   },
   "core/audits/metrics/largest-contentful-paint.js | description": {
-    "message": "Lielākais satura atveidojums norāda laiku, kurā tiek atveidots apjomīgākais teksts vai attēls. [Uzziniet vairāk par rādītāju “Lielākais satura atveidojums”](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)."
+    "message": "Largest Contentful Paint norāda laiku, kurā tiek atveidots apjomīgākais teksts vai attēls. [Uzziniet vairāk par rādītāju “Largest Contentful Paint”](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)."
   },
   "core/audits/metrics/max-potential-fid.js | description": {
-    "message": "Iespējamā maksimālā pirmās ievades aizkave, ar ko jūsu lietotāji var saskarties, ir ilgākā uzdevuma ilgums. [Uzziniet vairāk par rādītāju “Iespējamā maksimālā pirmās ievades aizkave”](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)."
+    "message": "Iespējamā maksimālā First Input Delay, ar ko jūsu lietotāji var saskarties, ir ilgākā uzdevuma ilgums. [Uzziniet vairāk par rādītāju “Iespējamā maksimālā First Input Delay”](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)."
   },
   "core/audits/metrics/speed-index.js | description": {
     "message": "Ātruma rādītājs norāda, cik ātri tiek parādīts lapas saturs. [Uzziniet vairāk par ātruma rādītāju](https://developer.chrome.com/docs/lighthouse/performance/speed-index/)."
   },
   "core/audits/metrics/total-blocking-time.js | description": {
-    "message": "Visu laika periodu summa (no PSM līdz “Laiks līdz interaktivitātei”), kad uzdevuma ilgums pārsniedz 50 ms (izteikts milisekundēs). [Uzziniet vairāk par rādītāju “Kopējais bloķēšanas laiks”](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/)."
+    "message": "Visu laika periodu summa (no PSM līdz “Time to Interactive”), kad uzdevuma ilgums pārsniedz 50 ms (izteikts milisekundēs). [Uzziniet vairāk par rādītāju “Kopējais bloķēšanas laiks”](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/)."
   },
   "core/audits/network-rtt.js | description": {
     "message": "Tīkla aprites laiks (RTT — round trip time) ievērojami ietekmē veiktspēju. Ja aprites laiks līdz avotam ir ilgs, tas norāda, ka var tikt uzlabota to serveru veiktspēja, kas atrodas tuvāk lietotājam. [Uzziniet vairāk par aprites laiku](https://hpbn.co/primer-on-latency-and-bandwidth/)."
@@ -1170,7 +1206,7 @@
     "message": "Ja LCP elements tiek dinamiski pievienots lapai, jums attēls ir jāielādē iepriekš, lai varētu uzlabot LCP. [Uzziniet vairāk par LCP elementu iepriekšēju ielādi](https://web.dev/optimize-lcp/#optimize-when-the-resource-is-discovered)."
   },
   "core/audits/prioritize-lcp-image.js | title": {
-    "message": "Lielākā satura atveidojuma attēla iepriekšēja ielāde"
+    "message": "Largest Contentful Paint attēla iepriekšēja ielāde"
   },
   "core/audits/redirects.js | description": {
     "message": "Novirzīšana rada papildu aizkaves pirms lapas ielādes. [Uzziniet, kā izvairīties no lapu novirzīšanas.](https://developer.chrome.com/docs/lighthouse/performance/redirects/)"
@@ -1545,7 +1581,7 @@
     "message": "Ir tags `<meta name=\"viewport\">` ar `width` vai `initial-scale`"
   },
   "core/audits/work-during-interaction.js | description": {
-    "message": "Tas ir pavediena bloķēšanas darbs laikā, kad notiek mijiedarbības līdz nākamajai atveidei mērīšana. [Uzziniet vairāk par rādītāju “Mijiedarbība līdz nākamajai atveidei”](https://web.dev/inp/)."
+    "message": "Tas ir pavediena bloķēšanas darbs laikā, kad notiek Interaction to Next Paint mērīšana. [Uzziniet vairāk par rādītāju “Interaction to Next Paint”](https://web.dev/inp/)."
   },
   "core/audits/work-during-interaction.js | displayValue": {
     "message": "{timeInMs, number, milliseconds} ms tika patērēts notikumam “{interactionType}”"
@@ -1653,7 +1689,7 @@
     "message": "Diagnostika"
   },
   "core/config/default-config.js | firstPaintImprovementsGroupDescription": {
-    "message": "Vissvarīgākais veiktspējas aspekts ir pikseļu renderēšanas ātrums ekrānā. Galvenās metrikas: “Pirmais saturīgais satura atveidojums”, “Pirmais nozīmīgais satura atveidojums”"
+    "message": "Vissvarīgākais veiktspējas aspekts ir pikseļu renderēšanas ātrums ekrānā. Galvenās metrikas: “First Contentful Paint”, “First Meaningful Paint”"
   },
   "core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "Pirmā satura atveidojuma uzlabojumi"
@@ -1692,7 +1728,7 @@
     "message": "PTL optimizācija"
   },
   "core/config/default-config.js | seoCategoryDescription": {
-    "message": "Šīs pārbaudes nodrošina, ka jūsu lapa atbilst meklētājprogrammu optimizācijas pamatnostādnēm. Ir daudz papildu faktoru, kurus Lighthouse neņem vērā, taču kuri var ietekmēt jūsu meklēšanas rezultātu ranžēšanu, tostarp [tīmekļa pamatrādītāju](https://web.dev/learn-core-web-vitals/) veiktspēju. [Uzziniet vairāk par Google meklēšanas pamatiem](https://support.google.com/webmasters/answer/35769)."
+    "message": "Šīs pārbaudes nodrošina, ka jūsu lapa atbilst meklētājprogrammu optimizācijas pamatnostādnēm. Ir daudz papildu faktoru, kurus Lighthouse neņem vērā, taču kuri var ietekmēt jūsu meklēšanas rezultātu ranžēšanu, tostarp [Core Web Vitals](https://web.dev/learn-core-web-vitals/) veiktspēju. [Uzziniet vairāk par Google meklēšanas pamatiem](https://support.google.com/webmasters/answer/35769)."
   },
   "core/config/default-config.js | seoCategoryManualDescription": {
     "message": "Palaidiet savā vietnē šos papildu apstiprināšanas rīkus, lai aplūkotu papildu MPO paraugpraksi."
@@ -1750,6 +1786,9 @@
   },
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Lapas, kurās tiek pieprasīts AppBanner, pašlaik nevar pilnīgi saglabāt kešatmiņā."
+  },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo tika saņemts saites darbības pārbaudes pieprasījums."
   },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Pilnīgu saglabāšanu kešatmiņā atspējoja karodziņu iestatījumi. Lai šajā ierīcē to iespējotu lokāli, atveriet lapu chrome://flags/#back-forward-cache."
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Lapas, kurās tiek izmantota saskarne WebUSB API, nevar pilnīgi saglabāt kešatmiņā."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo lapā, kurā tiek izmantota direktīva `Cache-Control: no-store`, ir atspējoti sīkfaili."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Lapas, kurās tiek izmantots atsevišķs strādnis vai uzdevumu kopa, pašlaik nevar pilnīgi saglabāt kešatmiņā."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Lapas, kurās ir atvērts IndexedDB savienojums, pašlaik nevar pilnīgi saglabāt kešatmiņā."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota IndexedDB notikuma dēļ."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Tika izmantotas nepiemērotas API."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Pašlaik nevar pilnīgi saglabāt kešatmiņā lapas, kurās paplašinājumi iepludina JavaScript kodu."
+    "message": "Pašlaik nevar pilnīgi saglabāt kešatmiņā lapas, kurās paplašinājumi iepludina `JavaScript` kodu."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Lapas, kurās paplašinājumi iepludina stilu lapu, pašlaik nevar pilnīgi saglabāt kešatmiņā."
+    "message": "Pašlaik nevar pilnīgi saglabāt kešatmiņā lapas, kurās paplašinājumi iepludina `StyleSheet`."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Iekšēja kļūda."
@@ -2138,6 +2183,192 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Lai nodrošinātu atpakaļsaderību ar vecākām pārlūkprogrammām, varat pievienot atslēgvārdu “unsafe-inline” (pārlūkprogrammās, kas atbalsta vienreizējos kodus vai jaucējvērtības, šis atslēgvārds tiks ignorēts)."
   },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Plašāku informāciju skatiet funkcijas statusa lapā."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Šīs izmaiņas stāsies spēkā galvenajā versijā {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Tiek izmantota novecojusi funkcija"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Galvenei “authorization” nevarēs izmantot aizstājējzīmi (*), citas izcelsmes resursu kopīgošanas mehānismam apstrādājot “`Access-Control-Allow-Headers`”."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Lai atspējotu noklusējuma Cast integrāciju, ir jāizmanto atribūts “`disableRemotePlayback`”, nevis atlasītājs “`-internal-media-controls-overlay-cast-button`”."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Resursu pieprasījumi, kuru vietrāžos URL bija ietvertas gan noņemtas baltstarpas rakstzīmes (`(n|r|t)`), gan rakstzīmes “mazāk nekā” (`<`), ir bloķēti. Lai ielādētu šos resursus, lūdzu, noņemiet jaunas rindas rakstzīmes un kodējiet rakstzīmes “mazāk nekā” tādās vietās kā elementu atribūtu vērtības."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "Metode “`chrome.loadTimes()`” vairs netiek izmantota, tās vietā izmantojiet standartizētu API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "Metode “`chrome.loadTimes()`” vairs netiek izmantota, tās vietā izmantojiet standartizētu API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "Metode “`chrome.loadTimes()`” vairs netiek izmantota, tās vietā izmantojiet standartizētu API: “`nextHopProtocol`” saskarnē Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Sīkfaili, kuros ir rakstzīme “`(0|r|n)`”, tiks noraidīti, nevis saīsināti."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Tās pašas izcelsmes politikas ierobežojumu noņemšana, iestatot “`document.domain`”, vairs netiek izmantota, un šī iespēja tiks atspējota pēc noklusējuma. Šis darbības pārtraukšanas brīdinājums ir saistīts ar citas izcelsmes piekļuvi, kas tika iespējota, iestatot “`document.domain`”."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Funkcijas window.alert aktivizēšanai no citas izcelsmes iframe ietvariem ir pārtraukts atbalsts, un nākotnē šī iespēja tiks noņemta."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Funkcijas window.confirm aktivizēšanai no citas izcelsmes iframe ietvariem ir pārtraukts atbalsts, un nākotnē šī iespēja tiks noņemta."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM mutācijas notikumi, tostarp `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` un `DOMCharacterDataModified`, ir novecojuši (https://w3c.github.io/uievents/#legacy-event-types) un tiks noņemti. To vietā izmantojiet `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Datu atbalsts: vietrāžiem URL ir pārtraukts atbalsts SVG elementā <use>, un nākotnē tie tiks noņemti."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Tās pašas izcelsmes politikas ierobežojumu noņemšana, iestatot “`document.domain`”, vairs netiek izmantota, un šī iespēja tiks atspējota pēc noklusējuma. Lai turpinātu izmantot šo funkciju, lūdzu, atsakieties no aģentu grupēšanas pēc izcelsmes, nosūtot galveni “`Origin-Agent-Cluster: ?0`” kopā ar HTTP atbildi dokumentam un ietvariem. Plašāku informāciju skatiet vietnē https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Galvene “`Expect-CT`” vairs netiek atbalstīta un tiks noņemta. Pārlūkā Chrome visiem sertifikātiem, kas izdoti pēc 2018. gada 30. aprīļa un publiski atzīti par uzticamiem, ir jāizmanto sertifikāta pārredzamība."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "Metodes “`getCurrentPosition()`” un “`watchPosition()`” vairs nedarbojas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "Metodes “`getCurrentPosition()`” un “`watchPosition()`” vairs netiek izmantotas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "Metode “`getUserMedia()`” vairs nedarbojas nedrošiem avotiem. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "Objekts “`RTCPeerConnectionIceErrorEvent.hostCandidate`” vairs netiek atbalstīts. Tā vietā izmantojiet “`RTCPeerConnectionIceErrorEvent.address`” vai “`RTCPeerConnectionIceErrorEvent.port`”."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Tirgotāja izcelsme un patvaļīgi noteikti dati no pakalpojumu skripta notikuma “`canmakepayment`” ir novecojuši un tiks noņemti: `topOrigin`, `paymentRequestOrigin`, `methodData` un `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Vietne pieprasīja apakšresursu no tīkla, kam varēja piekļūt tikai lietotāju priviliģētā tīkla stāvokļa dēļ. Šie pieprasījumi saista publiski nepieejamas ierīces un serverus ar internetu, palielinot starpvietņu pieprasījuma viltošanas uzbrukumu un/vai informācijas noplūdes risku. Lai samazinātu šos riskus, Chrome pārtrauc atbalstīt pieprasījumus publiski nepieejamiem apakšresursiem, ja tie aktivizēti nedrošā vidē, un sāks tos bloķēt."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "`InterestGroups` lauks `dailyUpdateUrl`, kas tiek iestatīts kā vērtība metodei `joinAdInterestGroup()`, ir pārdēvēts par `updateUrl`, lai precīzāk atspoguļotu tā darbību."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS nevar ielādēt no “`file:`” vietrāžiem URL, ja tie nebeidzas ar faila paplašinājumu “`.css`”."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Specifikācijas izmaiņu dēļ metodes “`SourceBuffer.abort()`” izmantošana, lai priekšlaikus pārtrauktu “`remove()`” asinhrono diapazona noņemšanu, ir novecojusi. Tiek plānots pārtraukt tās atbalstu. Tās vietā ieteicams izmantot notikuma “`updateend`” uztveršanu. Metode “`abort()`” ir paredzēta tikai asinhronas multivides līdzekļu pievienošanas priekšlaicīgai pārtraukšanai vai parsētāja statusa atiestatīšanai."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Specifikācijas izmaiņu dēļ vairs netiek atbalstīta “`MediaSource.duration`” iestatīšana zem lielākā parādīšanas laikspiedola buferī ievietotiem kodētiem ietvariem. Saīsināta, buferī ievietota multivides satura netiešas noņemšanas atbalsts tiks pārtraukts. Tās vietā izmantojiet tiešu metodi “`remove(newDuration, oldDuration)`” visiem objektiem “`sourceBuffers`”, ja tiek izpildīts nosacījums “`newDuration < oldDuration`”."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI vaicās izmantošanas atļauju, pat ja objektā “`MIDIOptions`” nav norādīta vērtība “sysex”."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Vecajam, nestandartizētajam atribūtam `shadowroot` ir pārtraukts atbalsts, un tas *vairs nedarbosies* versijā M119. Tā vietā izmantojiet jauno, standartizēto atribūtu `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Paziņojumu API vairs nevar izmantot no nedrošiem avotiem. Apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "No citas izcelsmes iframe ietvara vairs nevar pieprasīt atļauju saskarnei Paziņojumu API. Apsveriet iespēju pieprasīt atļauju no augšējā līmeņa ietvara vai atvērt jaunu logu."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Metodes createImageBitmap opcijai `imageOrientation: 'none'` ir pārtraukts atbalsts. Tās vietā izmantojiet metodi createImageBitmap ar opciju \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Jūsu partneris saskaņo novecojušu (D)TLS versiju. Lūdzu, sazinieties ar partneri, lai to novērstu."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Tagos “img”, “video” un “canvas” norādot vērtību “`overflow: visible`”, vizuāls saturs var tikt rādīts ārpus elementa robežām. Skatiet vietni https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "Saskarne `paymentManager.instruments` vairs netiek atbalstīta. Tās vietā maksājumu apdarinātājiem izmantojiet instalēšanu tieši laikā."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Ar jūsu `PaymentRequest` izsaukumu tika apieta Content-Security-Policy (satura drošības politikas — SDP) direktīva “`connect-src`”. Šādai apiešanai ir pārtraukts atbalsts. SDP direktīvai “`connect-src`” pievienojiet maksājuma veida identifikatoru no `PaymentRequest` API (laukā `supportedMethods`)."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "Saskarnei `StorageType.persistent` ir pārtraukts atbalsts. Tās vietā izmantojiet standartizēto elementu “`navigator.storage`”."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Elements `<source src>` ar galveno elementu `<picture>` nav derīgs, tādēļ tiks ignorēts. Tā vietā, lūdzu, izmantojiet `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Metode webkitCancelAnimationFrame ir piesaistīta nodrošinātājam. Tās vietā izmantojiet standarta metodi cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Metode webkitRequestAnimationFrame ir piesaistīta nodrošinātājam. Tās vietā izmantojiet standarta metodi requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "Saskarnei HTMLVideoElement.webkitDisplayingFullscreen ir pārtraukts atbalsts. Tās vietā izmantojiet saskarni Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "Saskarnei HTMLVideoElement.webkitEnterFullScreen() ir pārtraukts atbalsts. Tās vietā izmantojiet saskarni Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "Saskarnei HTMLVideoElement.webkitEnterFullscreen() ir pārtraukts atbalsts. Tās vietā izmantojiet saskarni Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "Saskarnei HTMLVideoElement.webkitExitFullScreen() ir pārtraukts atbalsts. Tās vietā izmantojiet saskarni Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "Saskarnei HTMLVideoElement.webkitExitFullscreen() ir pārtraukts atbalsts. Tās vietā izmantojiet saskarni Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "Saskarnei HTMLVideoElement.webkitSupportsFullscreen ir pārtraukts atbalsts. Tās vietā izmantojiet saskarni Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Plānojam pārtraukt atbalstu saskarnei API `chrome.privacy.websites.privacySandboxEnabled`, kaut gan atpakaļsaderības nolūkiem tā būs aktīva līdz laidiena M113 publicēšanai. Tās vietā izmantojiet `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` un `chrome.privacy.websites.adMeasurementEnabled`. Skatiet vietni https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Ierobežojums “`DtlsSrtpKeyAgreement`” ir noņemts. Jūs šim ierobežojumam esat noteicis vērtību “`false`”, un tas tiek interpretēts kā mēģinājums izmantot noņemto metodi “`SDES key negotiation`”. Šī funkcionalitāte ir noņemta. Tās vietā izmantojiet pakalpojumu, kas atbalsta metodi “`DTLS key negotiation`”."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Ierobežojums “`DtlsSrtpKeyAgreement`” ir noņemts. Jūs šim ierobežojumam esat noteicis vērtību “`true`”, taču tas nedarbojās. Skaidrības labad varat noņemt šo ierobežojumu."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Uz izsaukumu balstītajai metodei getStats() ir pārtraukts atbalsts, un tā tiks noņemta. Tās vietā izmantojiet specifikācijām atbilstošo metodi getStats()."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Saskarnei Range.expand() ir pārtraukts atbalsts. Tās vietā izmantojiet saskarni Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Apakšresursu pieprasījumi, kuru vietrāžos URL ir iegulti akreditācijas dati (piem., `https://user:pass@host/`), ir bloķēti."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Opcija “`rtcpMuxPolicy`” vairs nav pieejama un tiks noņemta."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "Objektam “`SharedArrayBuffer`” būs nepieciešama izolēšana no citas izcelsmes resursiem. Plašāku informāciju skatiet vietnē https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Metode “`speechSynthesis.speak()`” bez lietotāja aktivizācijas vairs netiek izmantota un tiks noņemta."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Lai turpinātu izmantot “`SharedArrayBuffer`”, paplašinājumiem ir jāizvēlas izolācija no citas izcelsmes resursiem. Plašāku informāciju skatiet vietnē https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Saskarne Web SQL vairs netiek izmantota. Izmantojiet SQLite WebAssembly vai Indexed Database."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Atļaujas deskriptoram `window-placement` ir pārtraukts atbalsts. Tā vietā izmantojiet deskriptoru `window-management`. Plašāku informāciju skatiet vietnē https://bit.ly/window-placement-rename"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Atļauju politikai `window-placement` ir pārtraukts atbalsts. Tās vietā izmantojiet politiku `window-management`. Plašāku informāciju skatiet vietnē https://bit.ly/window-placement-rename"
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "Saskarnē “`XMLHttpRequest`” atbildes json failos netiek atbalstīts UTF-16."
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Sinhroniem saskarnes `XMLHttpRequest` pieprasījumiem galvenajā pavedienā ir pārtraukts atbalsts, jo tie negatīvi ietekmēja galalietotāju pieredzi. Plašāku informāciju skatiet vietnē https://xhr.spec.whatwg.org/"
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "Metode “`supportsSession()`” vairs netiek atbalstīta. Lūdzu, izmantojiet metodi “`isSessionSupported()`” un pārbaudiet saņemto Būla vērtību."
+  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Galvenā pavediena bloķēšanas laiks"
   },
@@ -2226,7 +2457,7 @@
     "message": "Attēls"
   },
   "core/lib/i18n/i18n.js | interactionToNextPaint": {
-    "message": "Mijiedarbība līdz nākamajai atveidei"
+    "message": "Interaction to Next Paint"
   },
   "core/lib/i18n/i18n.js | interactiveMetric": {
     "message": "Time to Interactive"
@@ -2244,7 +2475,7 @@
     "message": "Largest Contentful Paint"
   },
   "core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
-    "message": "Maks. potenciālā pirmā ievades aizkave"
+    "message": "Maks. potenciālā First Input Delay"
   },
   "core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "Multivide"
@@ -2400,7 +2631,7 @@
     "message": "Iegūstiet Lighthouse veiktspējas rādītāju."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation2": {
-    "message": "Nosakiet tādus lapas ielādes veiktspējas rādītājus kā lielākais satura atveidojums un ātruma indekss."
+    "message": "Nosakiet tādus lapas ielādes veiktspējas rādītājus kā Largest Contentful Paint un ātruma indekss."
   },
   "flow-report/src/i18n/ui-strings.js | helpUseCaseNavigation3": {
     "message": "Izvērtējiet progresīvo tīmekļa lietotņu iespējas."

@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "לרכיב `<html>` יש ערך חוקי עבור המאפיין `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "אם בדף האינטרנט לא מצוינת שפה עקבית, יכול להיות שקורא המסך לא יקריא את הטקסט שבדף בצורה נכונה. [מידע נוסף על המאפיין `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "לרכיב `<html>` אין מאפיין `[xml:lang]` ששפת הבסיס שלו זהה לשפה במאפיין `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "לרכיב `<html>` יש מאפיין `[xml:lang]` ששפת הבסיס שלו זהה לשפה במאפיין `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "רכיבים אינפורמטיביים צריכים לכלול טקסט חלופי קצר ותיאורי. אפשר להתעלם מרכיבי עיצוב עם מאפיין alt ריק. [מידע נוסף על המאפיין `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "לרכיבי תמונה יש מאפייני `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "הוספה של טקסט נגיש וברור ללחצני קלט עשויה לעזור למשתמשים בקורא מסך להבין את המטרה של לחצן הקלט. [מידע נוסף על לחצני קלט](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "אין טקסט ברור בלחצני הקלט"
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "יש טקסט ברור בלחצני הקלט"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "כשתמונה משמשת כלחצן `<input>`, הוספה של טקסט חלופי יכולה לעזור למשתמשים הנעזרים בקוראי מסך להבין מה מטרת הלחצן. [מידע על טקסט חלופי של תמונה בקלט](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "לאף רכיב אין ערך `[tabindex]` גדול מ-0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "קוראי מסך כוללים תכונות שעוזרות לנווט בטבלאות. כדאי לוודא שבטבלאות יש שימוש ברכיב הכיתוב בפועל במקום בתאים עם המאפיין `[colspan]`, כדי לשפר את החוויה של המשתמשים בקורא מסך. [מידע נוסף על רכיבי כיתוב](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "אין שימוש במאפיין `<caption>` במקום בתאים עם המאפיין `[colspan]` כדי לציין כיתוב בטבלאות."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "יש שימוש במאפיין `<caption>` במקום בתאים עם המאפיין `[colspan]` כדי לציין כיתוב בטבלאות."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "קוראי מסך כוללים תכונות שעוזרות לנווט בטבלאות. בטבלאות גדולות (3 תאים לפחות ברוחב ובגובה), כדאי להקפיד לשייך לרכיבי `<td>` כותרת טבלה כדי לשפר את החוויה של המשתמשים בקורא מסך. [מידע נוסף על כותרות של טבלאות](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "לרכיבי `<td>` במאפיין `<table>` גדול אין כותרות של טבלאות."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "לרכיבי `<td>` במאפיין `<table>` גדול יש כותרת טבלה אחת או יותר."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "קוראי מסך כוללים תכונות שעוזרות לנווט בטבלאות. כשתאי `<td>` שמשתמשים במאפיין `[headers]` מתייחסים רק לתאים אחרים באותה טבלה, משתמשים הנעזרים בקוראי מסך יכולים ליהנות מחוויה טובה יותר. [מידע נוסף על המאפיין `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "בשלב זה, דפים שנשלחה מהם בקשה ל-AppBanner לא מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה עקב בקשה מסוג הודעת keep-alive."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה על ידי תכונות ניסיוניות. צריך לעבור לכתובת chrome://flags/#back-forward-cache כדי להפעיל אותה באופן מקומי במכשיר הזה."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "דפים שנעשה בהם שימוש ב-WebUSB API לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה כי קובצי cookie הושבתו בדף עם שימוש ב-`Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "בשלב זה, דפים שנעשה בהם שימוש ב-worker או ב-worklet ייעודיים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "בשלב זה, דפים שיש בהם חיבור IndexedDB פתוח לא מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה בגלל אירוע מסוג IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "נעשה שימוש בממשקי API לא מתאימים."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "בשלב זה, דפים שמוחדר אליהם JavaScript באמצעות תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+    "message": "בשלב זה, דפים שמחדירים אליהם `JavaScript` באמצעות תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "בשלב זה, דפים שמוחדר אליהם גיליון סגנונות באמצעות תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+    "message": "בשלב זה, דפים שמחדירים אליהם `StyleSheet` באמצעות תוספים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "שגיאה פנימית."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "כדאי להוסיף רכיב 'unsafe-inline' (דפדפנים שתומכים בגיבובים/צפנים חד-פעמיים יתעלמו ממנו) לצורך תאימות לאחור עם דפדפנים ישנים."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "פרטים נוספים זמינים בדף של סטטוס התכונה."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "השינוי הזה ייכנס לתוקף בגרסה {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "נעשה שימוש בתכונה שהוצאה משימוש"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "ההרשאה לא תיכלל עם השימוש בסמל של התו הכללי לחיפוש (*) בהגדרות לטיפול ב-`Access-Control-Allow-Headers` של CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "יש להשתמש במאפיין `disableRemotePlayback` כדי להשבית את שילוב ההעברה (cast) המוגדר כברירת מחדל במקום להשתמש בבורר `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "בקשות למשאבים שכתובות ה-URL שלהן מכילות גם תווי `(n|r|t)` של רווח לבן מחוק וגם תווי 'פחות מ-' (`<`) חסומות. כדי לטעון את המשאבים האלה, יש להסיר תווי 'פחות מ-' מקודדים ושורות חדשות ממקומות כמו ערכי מאפיינים של רכיבים."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "האפשרות `chrome.loadTimes()` הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: תזמון ניווט 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "האפשרות `chrome.loadTimes()` הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: תזמון המרת תמונה וקטורית למפת סיביות."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "האפשרות `chrome.loadTimes()` הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: `nextHopProtocol` בתזמון ניווט 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "קובצי cookie המכילים תו `(0|r|n)` יידחו במקום להיחתך."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "האפשרות למתן את מדיניות המקור הזהה על ידי הגדרת `document.domain` הוצאה משימוש, ותושבת כברירת מחדל. האזהרה הזו על הוצאה משימוש מתייחסת לגישה ממקורות שונים שהופעלה על ידי הגדרת `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "האפשרות להפעיל את הפונקציה window.alert דרך רכיבי iframe ממקורות שונים הוצאה משימוש ותוסר בעתיד."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "האפשרות להפעיל את הפונקציה window.confirm דרך רכיבי iframe ממקורות שונים הוצאה משימוש ותוסר בעתיד."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "אירועי מוטציה של DOM, כולל `DOMSubtreeModified`,‏ `DOMNodeInserted`,‏ `DOMNodeRemoved`,‏ `DOMNodeRemovedFromDocument`,‏ `DOMNodeInsertedIntoDocument` ו-`DOMCharacterDataModified` הוצאו משימוש (https://w3c.github.io/uievents/#legacy-event-types) ויוסרו בעתיד. במקומם יש להשתמש ב-`MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "התמיכה בהקצאת כתובות URL מסוג data:‎ לרכיב <use> מסוג SVG הוצאה משימוש ותוסר בעתיד."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "האפשרות למתן את מדיניות המקור הזהה על ידי הגדרת `document.domain` הוצאה משימוש, ותושבת כברירת מחדל. כדי להמשיך להשתמש בתכונה הזו, יש לבטל את ההסכמה לאשכולות סוכנים המשויכים למקור על ידי שליחת כותרת `Origin-Agent-Cluster: ?0` עם תגובת HTTP למסמך ולמסגרות. פרטים נוספים זמינים בכתובת https://developer.chrome.com/blog/immutable-document-domain/‎."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "הכותרת `Expect-CT` הוצאה משימוש ותוסר. ב-Chrome נדרשת שקיפות לגבי כל האישורים הציבוריים המהימנים שהונפקו אחרי 30 באפריל 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "האפשרויות `getCurrentPosition()` ו-`watchPosition()` לא פועלות יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "האפשרויות `getCurrentPosition()` ו-`watchPosition()` הוצאו משימוש במקורות שאינם מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "האפשרות `getUserMedia()` לא פועלת יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "האפשרות `RTCPeerConnectionIceErrorEvent.hostCandidate` הוצאה משימוש. במקומה יש להשתמש באפשרות `RTCPeerConnectionIceErrorEvent.address` או באפשרות `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "המקור של המוכר ונתונים שרירותיים מאירוע של קובץ השירות (service worker)‏ `canmakepayment` הוצאו משימוש ויוסרו: `topOrigin`‏, `paymentRequestOrigin`‏, `methodData`‏, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "האתר שלח בקשה למשאב משנה מרשת שיש לו גישה אליה רק בגלל שלמשתמשים שלו יש הרשאות למיקום הרשת. הבקשות האלה חושפות שרתים ומכשירים שלא גלויים לכולם לאינטרנט, ומגבירות את הסיכון למתקפת Cross-Site Request Forgery‏ (CSRF) ולדליפת מידע. כדי להפחית את הסיכונים האלה, מערכת Chrome מוציאה משימוש בקשות למשאבי משנה שאינם גלויים לכולם כשהן מגיעות מהקשרים לא מאובטחים, ובקרוב המערכת תתחיל לחסום אותן."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "שם השדה `dailyUpdateUrl` של `InterestGroups` שהועבר אל `joinAdInterestGroup()` שונה לשם `updateUrl` כדי לשקף את ההתנהגות בצורה מדויקת יותר."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "לא ניתן לטעון CSS מכתובות URL של `file:` אלא אם הן מסתיימות בסיומת הקובץ `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "האפשרות לבטל את הסרת הטווח האסינכרוני של `remove()` באמצעות `SourceBuffer.abort()` הוצאה משימוש עקב שינוי במפרט. התמיכה באפשרות הזו תוסר בעתיד. במקום זאת, יש להפעיל listener לאירוע של `updateend`. ניתן להשתמש ב-`abort()` רק כדי לבטל צירוף מדיה אסינכרוני או לאפס מצב מנתח."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "האפשרות להגדיר את `MediaSource.duration` מתחת לערך הגבוה ביותר של חותמת הזמן להצגה של כל המסגרות המקודדות השמורות במאגר נתונים זמני הוצאה משימוש עקב שינוי במפרט. בעתיד תוסר התמיכה בהסרה מרומזת של מדיה חתוכה ששמורה במאגר נתונים זמני. במקום זאת, יש להשתמש באפשרות `remove(newDuration, oldDuration)` מפורשת בכל `sourceBuffers`, ולהגדיר `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "תתקבל מ-Web MIDI בקשת הרשאה לשימוש גם אם לא צוין sysex ב-`MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "המאפיין `shadowroot` שהוא ישן יותר ולא סטנדרטי הוצא משימוש, ו*לא יפעל יותר* בגרסה M119. במקומו צריך להשתמש במאפיין `shadowrootmode` שהוא חדש וסטנדרטי."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "אי אפשר יותר להשתמש ב-Notification API ממקורות לא מאובטחים. כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "לא ניתן יותר לבקש הרשאה ל-Notification API מ-iframe ממקורות שונים. במקום זאת, כדאי לבקש הרשאה ממסגרת ברמה עליונה או לפתוח חלון חדש."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "האפשרות `imageOrientation: 'none'` ב-createImageBitmap הוצאה משימוש. במקומה צריך להשתמש ב-createImageBitmap ולהוסיף את האפשרות ‎\\{imageOrientation: 'from-image'‎\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "השותף שלך מנהל משא ומתן על גרסת ‎(D)TLS מיושנת. עליך לפנות לשותף שלך כדי לתקן זאת."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "ציון של '`overflow: visible`' בתגי img,‏ video ו-canvas עלול לגרום להופעת תוכן חזותי מחוץ לגבולות הרכיב. פרטים נוספים זמינים בכתובת https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "האפשרות `paymentManager.instruments` הוצאה משימוש. במקום זאת, אפשר להשתמש בהתקנה בזמן ריצה עבור רכיבי handler של תשלומים."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "הקריאה `PaymentRequest` עקפה את ההוראה `connect-src` של Content-Security-Policy ‏(CSP). המעקף הזה הוצא משימוש. יש להוסיף את מזהה אמצעי התשלום מ-`PaymentRequest` API (בשדה `supportedMethods`) להוראה `connect-src` של CSP."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "האפשרות `StorageType.persistent` הוצאה משימוש. במקומו יש להשתמש ב-`navigator.storage` רגיל."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "רכיב `<source src>` עם הורה מסוג `<picture>` נחשב ללא תקין, והמערכת מתעלמת ממנו. במקומו יש להשתמש במאפיין `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "הפונקציה webkitCancelAnimationFrame היא ספציפית לספק. במקומה צריך להשתמש בפונקציה הסטנדרטית cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "הפונקציה webkitRequestAnimationFrame היא ספציפית לספק. במקומה צריך להשתמש בפונקציה הסטנדרטית requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitDisplayingFullscreen הוצא משימוש. במקומו צריך להשתמש ב-Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitEnterFullScreen()‎ הוצא משימוש. במקומו צריך להשתמש ב-Element.requestFullscreen()‎."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitEnterFullscreen()‎ הוצא משימוש. במקומו צריך להשתמש ב-Element.requestFullscreen()‎."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitExitFullScreen()‎ הוצא משימוש. במקומו צריך להשתמש ב-Document.exitFullscreen()‎."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitExitFullscreen()‎ הוצא משימוש. במקומו צריך להשתמש ב-Document.exitFullscreen()‎."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "ה-API‏ HTMLVideoElement.webkitSupportsFullscreen הוצא משימוש. במקומו צריך להשתמש ב-Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "אנחנו מוציאים משימוש את ה-API‏ `chrome.privacy.websites.privacySandboxEnabled`, אבל הוא ימשיך לפעול לצורך תאימות לאחור עד גרסה M113. במקומו צריך להשתמש ב-`chrome.privacy.websites.topicsEnabled`, ב-`chrome.privacy.websites.fledgeEnabled` וב-`chrome.privacy.websites.adMeasurementEnabled`. פרטים נוספים זמינים בכתובת https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "המגבלה `DtlsSrtpKeyAgreement` הוסרה. ציינת ערך `false` למגבלה הזו, והוא מפורש כניסיון להשתמש בשיטה `SDES key negotiation` שהוסרה. הפונקציונליות הזו הוסרה. במקומה יש להשתמש בשירות שתומך ב-`DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "המגבלה `DtlsSrtpKeyAgreement` הוסרה. ציינת ערך `true` למגבלה הזו ואין לו השפעה, אבל אפשר להסיר את המגבלה הזו כדי לשמור על סדר."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "הפונקציה getStats()‎ שמבוססת על קריאה חוזרת (callback) הוצאה משימוש ותוסר. במקומה אפשר להשתמש בפונקציה getStats()‎ שתואמת למפרט."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "ה-API‏ Range.expand()‎ הוצא משימוש. במקומו צריך להשתמש ב-Selection.modify()‎."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "בקשות למשאבי משנה שכתובות ה-URL שלהן מכילות פרטי כניסה מוטמעים (למשל `https://user:pass@host/`) חסומות."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "האפשרות `rtcpMuxPolicy` הוצאה משימוש ותוסר."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "תידרש חסימה לגישה מדומיינים אחרים עבור `SharedArrayBuffer`. פרטים נוספים זמינים בכתובת https://developer.chrome.com/blog/enabling-shared-array-buffer/‎."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "האפשרות להפעיל את `speechSynthesis.speak()` ללא הפעלת משתמש הוצאה משימוש ותוסר."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "כדי להמשיך להשתמש ב-`SharedArrayBuffer`, צריך לאשר חסימה לגישה מדומיינים אחרים בתוספים. הסבר זמין בכתובת https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL הוצא משימוש. אפשר להשתמש ב-SQLite WebAssembly או ב-Indexed Database."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "רכיב descriptor של ההרשאה `window-placement` הוצא משימוש. במקומו צריך להשתמש ברכיב `window-management`. ניתן לקבל עוד עזרה בכתובת https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "מדיניות ההרשאות `window-placement` הוצאה משימוש. במקומה צריך להשתמש במדיניות `window-management`. ניתן לקבל עוד עזרה בכתובת https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "אין תמיכה ב-UTF-16 ב-JSON של התגובה ב-`XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "האפשרות הסינכרונית `XMLHttpRequest` ב-thread הראשי הוצאה משימוש כי היא משפיעה לרעה על החוויה של משתמשי הקצה. ניתן לקבל עוד עזרה בכתובת https://xhr.spec.whatwg.org/‎."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "האפשרות `supportsSession()` הוצאה משימוש. במקומה, יש להשתמש באפשרות `isSessionSupported()` ולסמן את הערך הבוליאני שהתקבל בהתאמת הנתונים."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "משך החסימה של התהליכון הראשי"

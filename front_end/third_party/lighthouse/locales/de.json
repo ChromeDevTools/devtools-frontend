@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Das `<html>`-Element hat einen gültigen Wert für sein `[lang]`-Attribut"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Wenn für die Webseite keine konsistente Sprache angegeben ist, kündigt der Screenreader den Text der Seite möglicherweise nicht richtig an. [Weitere Informationen zum Attribut „`lang`“](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Das `<html>`-Element hat kein `[xml:lang]`-Attribut mit derselben Basissprache wie das `[lang]`-Attribut."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Das `<html>`-Element hat ein `[xml:lang]`-Attribut mit derselben Basissprache wie das `[lang]`-Attribut."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Für informative Elemente sollte ein kurzer, beschreibenden alternativer Text verwendet werden. Dekorative Elemente können mit einem leeren ALT-Attribut ignoriert werden. [Weitere Informationen zum Attribut `alt`.](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Bildelemente verfügen über `[alt]`-Attribute"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Das Hinzufügen von erkennbarem, zugänglichem Text zu Eingabeschaltflächen hilft den Nutzern von Screenreadern möglicherweise, den Zweck der entsprechenden Schaltfläche zu verstehen. [Weitere Informationen zu Eingabeschaltflächen](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Eingabeschaltflächen haben keinen erkennbaren Text."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Eingabeschaltflächen haben erkennbaren Text."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Wenn ein Bild als `<input>`-Schaltfläche verwendet wird, kann alternativer Text Screenreader-Nutzern helfen, den Zweck der Schaltfläche besser zu verstehen. [Informationen zum Alt-Text für Eingabebilder.](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Kein Element hat einen `[tabindex]`-Wert größer als 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Screenreader bieten Funktionen, die die Navigation in Tabellen vereinfachen. Wenn du dafür sorgst, dass Tabellen das tatsächliche Untertitelelement anstelle von Zellen mit dem `[colspan]`-Attribut verwenden, kann das für Screenreader-Nutzer hilfreich sein. [Weitere Informationen zu Untertiteln.](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tabellen verwenden nicht `<caption>` anstelle von Zellen mit dem `[colspan]`-Attribut, um Untertitel anzugeben."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tabellen verwenden `<caption>` anstelle von Zellen mit dem `[colspan]`-Attribut, um Untertitel anzugeben."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Screenreader bieten Funktionen, die die Navigation in Tabellen vereinfachen. Wenn du `<td>`-Elementen in einer großen Tabelle (mindestens 3 Zellen in Breite und Höhe) eine entsprechende Überschrift gibst, kann das für Screenreader-Nutzer hilfreich sein. [Weitere Informationen zu Tabellenüberschriften](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "`<td>`-Elemente in einer großen `<table>` haben keine Tabellenüberschriften."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "`<td>`-Elemente in einer großen `<table>` haben eine oder mehrere Tabellenüberschriften."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Screenreader bieten Funktionen, die die Navigation in Tabellen vereinfachen. Wenn du dafür sorgst, dass `<td>`-Zellen, die das Attribut `[headers]` verwenden, nur auf andere Zellen in derselben Tabelle verweisen, kann dies für Screenreader-Nutzer hilfreich sein. [Weitere Informationen zum Attribut `headers`.](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Seiten, für die ein App-Banner angefragt wurde, können den Back-Forward-Cache aktuell nicht verwenden."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Der Back-Forward-Cache wurde aufgrund einer Keepalive-Anfrage deaktiviert."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Der Back-Forward-Cache wurde durch Flags deaktiviert. Rufe chrome://flags/#back-forward-cache auf, um die Funktion lokal für dieses Gerät zu aktivieren."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Seiten, auf denen die WebUSB API genutzt wird, können den Back-Forward-Cache nicht verwenden."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Der Back-Forward-Cache wurde deaktiviert, weil Cookies für eine Seite, bei der `Cache-Control: no-store` verwendet wird, deaktiviert sind."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Seiten, auf denen ein Dedicated Worker oder ein Worklet genutzt wird, können den Back-Forward-Cache aktuell nicht verwenden."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Seiten mit einer offenen IndexedDB-Verbindung können den Back-Forward-Cache aktuell nicht verwenden."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Der Back-Forward-Cache wurde aufgrund eines IndexedDB-Ereignisses deaktiviert."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Es wurden ungültige APIs verwendet."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Seiten, bei denen durch Erweiterungen JavaScript eingeschleust wird, können den Back-Forward-Cache aktuell nicht verwenden."
+    "message": "Seiten, bei denen durch Erweiterungen `JavaScript`-Informationen eingeschleust werden, können den Back-Forward-Cache aktuell nicht verwenden."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Seiten, bei denen durch Erweiterungen Stylesheetinformationen eingeschleust werden, können den Back-Forward-Cache aktuell nicht verwenden."
+    "message": "Seiten, bei denen durch Erweiterungen `StyleSheet`-Informationen eingeschleust werden, können den Back-Forward-Cache momentan nicht verwenden."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Interner Fehler."
@@ -2138,6 +2183,192 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Du kannst „unsafe-inline“ hinzufügen (wird von Browsern ignoriert, die Nonces/Hashes unterstützen), um mit älteren Browsern kompatibel zu sein."
   },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Weitere Details findest du auf der Funktionsstatus-Seite."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Diese Änderung wird im Rahmen von Meilenstein {milestone} angewandt."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Verworfene Funktion verwendet"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Die Autorisierung wird vom Platzhaltersymbol (*) bei der `Access-Control-Allow-Headers`-Verarbeitung durch CORS nicht abgedeckt."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Zum Deaktivieren der standardmäßigen Cast-Integration sollte statt der `-internal-media-controls-overlay-cast-button`-Auswahl das Attribut `disableRemotePlayback` verwendet werden."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Ressourcenanfragen mit entfernten Leerzeichen (`(n|r|t)`) und Kleiner-als-Zeichen (`<`) in den URLs werden blockiert. Du musst Zeilenumbrüche entfernen und Kleiner-als-Zeichen an Stellen wie Elementattributwerten codieren, um diese Ressourcen laden zu können."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` wurde verworfen. Bitte verwende stattdessen die standardisierte API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` wurde verworfen. Bitte verwende stattdessen die standardisierte API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` wurde verworfen. Bitte verwende stattdessen die standardisierte API: `nextHopProtocol` in Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookies, die ein `(0|r|n)`-Zeichen enthalten, werden abgelehnt und nicht abgeschnitten."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Das Abschwächen der Richtlinie für denselben Ursprung durch das Festlegen von `document.domain` wurde verworfen und wird standardmäßig deaktiviert. Diese Warnung zum Status als verworfen gilt für einen ursprungsübergreifenden Zugriff, der durch das Festlegen von `document.domain` aktiviert wurde."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Das Auslösen von window.alert über ursprungsübergreifende iFrames wurde eingestellt und wird in Zukunft entfernt."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Das Auslösen von window.confirm über ursprungsübergreifende iFrames wurde eingestellt und wird in Zukunft entfernt."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM-Mutationsereignisse, einschließlich `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` und `DOMCharacterDataModified`, wurden eingestellt (https://w3c.github.io/uievents/#legacy-event-types) und werden entfernt. Verwende stattdessen `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Die Unterstützung für „data:“-URLs im SVG-<use>-Element wurde eingestellt und wird in Zukunft entfernt."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Das Abschwächen der Richtlinie für denselben Ursprung durch das Festlegen von `document.domain` wurde verworfen und wird standardmäßig deaktiviert. Wenn du diese Funktion weiter verwenden möchtest, musst du das an Ursprünge gebundene Agent-Clustering deaktivieren. Dazu sendest du einen `Origin-Agent-Cluster: ?0`-Header zusammen mit der HTTP-Antwort für das Dokument und Frames. Weitere Informationen findest du unter https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Der `Expect-CT`-Header wurde verworfen und wird entfernt. In Chrome müssen alle nach dem 30. April 2018 ausgestellten öffentlich vertrauenswürdigen Zertifikate die Certificate Transparency-Anforderungen erfüllen."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` und `watchPosition()` funktionieren nicht mehr bei unsicheren Ursprüngen. Wenn du diese Funktion nutzen möchtest, solltest du deine App auf einen sicheren Ursprung umstellen, z. B. HTTPS. Weitere Informationen findest du unter https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` und `watchPosition()` für unsichere Ursprünge wurden verworfen. Wenn du diese Funktion nutzen möchtest, solltest du deine App auf einen sicheren Ursprung umstellen, z. B. HTTPS. Weitere Informationen findest du unter https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` funktioniert nicht mehr bei unsicheren Ursprüngen. Wenn du diese Funktion nutzen möchtest, solltest du deine App auf einen sicheren Ursprung umstellen, z. B. HTTPS. Weitere Informationen findest du unter https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` wurde verworfen. Bitte verwende stattdessen `RTCPeerConnectionIceErrorEvent.address` oder `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Der Händlerursprung und beliebige Daten aus dem Service-Worker-Ereignis `canmakepayment` wurden verworfen und werden entfernt: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Die Website hat eine Unterressource von einem Netzwerk angefordert, auf das sie nur aufgrund der privilegierten Netzwerkposition ihrer Nutzer zugreifen konnte. Durch solche Anfragen werden nicht öffentliche Geräte und Server im Internet preisgegeben, was das Risiko von CSRF-Angriffen (Cross-Site Request Forgery) und/oder Datenlecks erhöht. Um diesen Risiken entgegenzuwirken, werden Anfragen an nicht öffentliche Unterressourcen, die über nicht sichere Kontexte initiiert werden, in Chrome verworfen und in Zukunft blockiert."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Das an `joinAdInterestGroup()` übergebene Feld „`dailyUpdateUrl`“ von `InterestGroups` wurde in „`updateUrl`“ umbenannt, um sein Verhalten genauer abzubilden."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS kann nur von `file:`-URLs geladen werden, wenn sie die Dateiendung `.css` haben."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Der Einsatz von `SourceBuffer.abort()` zum Abbrechen der asynchronen Bereichsentfernung von `remove()` wurde aufgrund einer Änderung der Spezifikation verworfen. Die Unterstützung wird in Zukunft eingestellt. Wir empfehlen, stattdessen das Ereignis `updateend` zu beobachten. `abort()` ist nur dazu vorgesehen, ein asynchrones Anfügen von Medien abzubrechen oder den Zustand des Parsers zurückzusetzen."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Das Festlegen von `MediaSource.duration` auf einen Wert unter dem höchsten Präsentationszeitstempel beliebiger zwischengespeicherter codierter Frames wurde aufgrund einer Änderung der Spezifikation verworfen. Die Unterstützung für die implizite Entfernung abgeschnittener zwischengespeicherter Medien wird in Zukunft entfernt. Führe stattdessen `remove(newDuration, oldDuration)` für alle `sourceBuffers`, für die `newDuration < oldDuration` gilt, explizit aus."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI fordert eine Berechtigung zur Nutzung an, auch dann, wenn die Systemexklusivität (SysEx) nicht in `MIDIOptions` angegeben ist."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Das ältere, nicht standardisierte Attribut „`shadowroot`“ wurde eingestellt und funktioniert in M119 NICHT mehr. Verwende stattdessen das neue standardisierte Attribut „`shadowrootmode`“."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Die Notification API darf nicht mehr über unsichere Ursprünge verwendet werden. Wir empfehlen dir, deine App auf einen sicheren Ursprung umzustellen, z. B. HTTPS. Weitere Informationen findest du unter https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Die Berechtigung für die Notification API darf nicht mehr über einen ursprungsübergreifenden iFrame angefordert werden. Stattdessen sollte sie über einen Frame auf höchster Ebene angefordert oder ein neues Fenster geöffnet werden."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Die Option „`imageOrientation: 'none'`“ in createImageBitmap wurde eingestellt. Verwende createImageBitmap stattdessen mit der Option „\\{imageOrientation: 'from-image'\\}“."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Dein Partner verwendet eine veraltete (D)TLS-Version. Bitte wende dich an den Partner, um dieses Problem zu beheben."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Wenn du „`overflow: visible`“ für „img“-, „video“- und „canvas“-Tags angibst, können visuelle Inhalte dadurch außerhalb der Elementgrenzen gerendert werden. Weitere Informationen findest du unter https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "„`paymentManager.instruments`“ wurde verworfen. Verwende für Zahlungs-Handler stattdessen die JIT-Installation (Just In Time)."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Mit dem Aufruf „`PaymentRequest`“ wird die Anweisung „`connect-src`“ der Content Security Policy (CSP) umgangen. Diese Umgehung wurde verworfen. Füge die Kennung der Zahlungsmethode aus der `PaymentRequest` API (im Feld „`supportedMethods`“) in die CSP-Anweisung „`connect-src`“ ein."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` wurde eingestellt. Verwende stattdessen das standardisierte `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` mit einem übergeordneten `<picture>`-Element ist ungültig und wird deshalb ignoriert. Bitte verwende stattdessen `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame ist anbieterspezifisch. Verwende stattdessen die standardmäßige cancelAnimationFrame-Methode."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame ist anbieterspezifisch. Verwende stattdessen die standardmäßige requestAnimationFrame-Methode."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen wurde eingestellt. Verwende stattdessen Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() wurde eingestellt. Verwende stattdessen Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() wurde eingestellt. Verwende stattdessen Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() wurde eingestellt. Verwende stattdessen Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() wurde eingestellt. Verwende stattdessen Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen wurde eingestellt. Verwende stattdessen Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Die API „`chrome.privacy.websites.privacySandboxEnabled`“ wird eingestellt, bleibt aber bis zur Veröffentlichung von M113 zum Zweck der Abwärtskompatibilität aktiv. Verwende stattdessen `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` und `chrome.privacy.websites.adMeasurementEnabled`. Weitere Informationen findest du unter https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Die Einschränkung `DtlsSrtpKeyAgreement` wird entfernt. Du hast den Wert `false` für diese Einschränkung angegeben, was als Versuch interpretiert wird, die entfernte `SDES key negotiation`-Methode zu verwenden. Diese Funktion wird entfernt. Verwende stattdessen einen Dienst, der `DTLS key negotiation` unterstützt."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Die Einschränkung `DtlsSrtpKeyAgreement` wird entfernt. Du hast `true` für diese Einschränkung angegeben. Das hatte keine Auswirkungen, du kannst diese Einschränkung aber für mehr Übersichtlichkeit entfernen."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Die callback-basierte getStats()-Methode wurde eingestellt und wird entfernt. Verwende stattdessen die spezifikationskonforme getStats()-Methode."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() wurde eingestellt. Verwende stattdessen Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Anforderungen von Unterressourcen, deren URLs eingebettete Anmeldedaten enthalten (z. B. `https://user:pass@host/`), werden blockiert."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Die Option `rtcpMuxPolicy` wurde verworfen und wird entfernt."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "Für `SharedArrayBuffer` muss die ursprungsübergreifende Isolierung aktiviert werden. Weitere Informationen findest du unter https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` ohne Nutzeraktivierung wurde verworfen und wird entfernt."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Für Erweiterungen muss die ursprungsübergreifende Isolierung aktiviert werden, um `SharedArrayBuffer` weiter zu nutzen. Weitere Informationen findest du unter https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL wurde eingestellt. Verwende SQLite WebAssembly oder Indexed Database."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Der Berechtigungsdeskriptor „`window-placement`“ wurde eingestellt. Verwende stattdessen `window-management`. Weitere Informationen findest du unter https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Die Berechtigungsrichtlinie „`window-placement`“ wurde eingestellt. Verwende stattdessen `window-management`. Weitere Informationen findest du unter https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16 wird von Antwort-JSON in einer `XMLHttpRequest` nicht unterstützt"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synchrone Anfragen von der `XMLHttpRequest` API im Hauptthread wurden eingestellt, da sie sich nachteilig auf die Endnutzererfahrung auswirken. Weitere Informationen findest du unter https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` wurde verworfen. Bitte verwende stattdessen `isSessionSupported()` und prüfe den aufgelösten booleschen Wert."
+  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Dauer der Blockierung des Hauptthreads"
   },
@@ -2259,7 +2490,7 @@
     "message": "Weitere Ressourcen"
   },
   "core/lib/i18n/i18n.js | scriptResourceType": {
-    "message": "Skript"
+    "message": "Script"
   },
   "core/lib/i18n/i18n.js | seconds": {
     "message": "{timeInMs, number, seconds} s"
@@ -2556,7 +2787,7 @@
     "message": "Du kannst ungenutzte CSS-Regeln entfernen und nur die benötigten Drupal-Bibliotheken zu relevanten Seiten oder Seitenkomponenten hinzufügen. Weitere Informationen findest du in der [Drupal-Dokumentation](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Wenn du die angehängten Bibliotheken ermitteln möchtest, über die irrelevantes CSS hinzugefügt wird, kannst du das Prüftool zur [Codeabdeckung](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Modul kannst du anhand der URL des Stylesheets erkennen, wenn die CSS-Aggregation auf deiner Drupal-Website deaktiviert ist. Suche in der Liste nach Designs/Modulen mit vielen Stylesheets, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Stylesheet sollte nur dann in ein Design/Modul aufgenommen werden, wenn es auch tatsächlich auf der Seite verwendet wird."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
-    "message": "Du hast die Möglichkeit, ungenutzte JavaScript-Assets zu entfernen und nur die benötigten Drupal-Bibliotheken zu relevanten Seiten oder Seitenkomponenten hinzuzufügen. Weitere Informationen findest du in der [Drupal-Dokumentation](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Wenn du die angehängten Bibliotheken ermitteln möchtest, über die irrelevantes JavaScript hinzugefügt wird, kannst du das Prüftool zur [Codeabdeckung](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Modul kannst du anhand der URL des Skripts erkennen, wenn die JavaScript-Aggregation auf deiner Drupal-Website deaktiviert ist. Suche in der Liste nach Designs/Modulen mit vielen Skripts, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Skript sollte nur dann in ein Design/Modul aufgenommen werden, wenn es auch tatsächlich auf der Seite verwendet wird."
+    "message": "Du hast die Möglichkeit, ungenutzte JavaScript-Assets zu entfernen und nur die benötigten Drupal-Bibliotheken zu relevanten Seiten oder Seitenkomponenten hinzuzufügen. Weitere Informationen findest du in der [Drupal-Dokumentation](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Wenn du die angehängten Bibliotheken ermitteln möchtest, über die irrelevantes JavaScript hinzugefügt wird, kannst du das Prüftool zur [Codeabdeckung](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Modul kannst du anhand der URL des Scripts erkennen, wenn die JavaScript-Aggregation auf deiner Drupal-Website deaktiviert ist. Suche in der Liste nach Designs/Modulen mit vielen Scripts, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Script sollte nur dann in ein Design/Modul aufgenommen werden, wenn es auch tatsächlich auf der Seite verwendet wird."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
     "message": "Konfiguriere die Option \"Browser and proxy cache maximum age\" (Maximale Lebensdauer für Browser- und Proxy-Cache) unter \"Administration\" (Verwalten) > \"Configuration\" (Konfiguration) > Development (Entwicklung). [Hier findest du weitere Informationen über den Drupal-Cache und Leistungsoptimierungen.](https://www.drupal.org/docs/7/managing-site-performance-and-scalability/caching-to-improve-performance/caching-overview#s-drupal-performance-resources)"
@@ -2664,7 +2895,7 @@
     "message": "Prüfe, ob du [Joomla-Erweiterungen](https://extensions.joomla.org/), über die nicht verwendetes CSS auf deine Seite geladen wird, entfernen oder durch alternative Erweiterungen ersetzen kannst. Wenn du die Erweiterungen ermitteln möchtest, über die irrelevantes CSS hinzugefügt wird, kannst du das Prüftool zur [Codeabdeckung](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Plug-in kannst du anhand der URL des Stylesheets erkennen. Suche in der Liste nach Plug-ins mit vielen Stylesheets, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Stylesheet sollte nur dann in ein Plug-in aufgenommen werden, wenn es auch tatsächlich auf der Seite verwendet wird."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | unused-javascript": {
-    "message": "Prüfe, ob du [Joomla-Erweiterungen](https://extensions.joomla.org/), über die nicht verwendetes JavaScript auf deine Seite geladen wird, entfernen oder durch alternative Plug-ins ersetzen kannst. Wenn du die Plug-ins ermitteln möchtest, über die irrelevantes JavaScript hinzugefügt wird, kannst du das Prüftool zur [Codeabdeckung](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in den Chrome-Entwicklertools verwenden. Die entsprechende Erweiterung kannst du anhand der URL des Skripts erkennen. Suche in der Liste nach Erweiterungen mit vielen Skripts, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Skript sollte nur dann in eine Erweiterung aufgenommen werden, wenn es auch tatsächlich auf der Seite verwendet wird."
+    "message": "Prüfe, ob du [Joomla-Erweiterungen](https://extensions.joomla.org/), über die nicht verwendetes JavaScript auf deine Seite geladen wird, entfernen oder durch alternative Plug-ins ersetzen kannst. Wenn du die Plug-ins ermitteln möchtest, über die irrelevantes JavaScript hinzugefügt wird, kannst du das Prüftool zur [Codeabdeckung](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in den Chrome-Entwicklertools verwenden. Die entsprechende Erweiterung kannst du anhand der URL des Scripts erkennen. Suche in der Liste nach Erweiterungen mit vielen Scripts, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Script sollte nur dann in eine Erweiterung aufgenommen werden, wenn es auch tatsächlich auf der Seite verwendet wird."
   },
   "node_modules/lighthouse-stack-packs/packs/joomla.js | uses-long-cache-ttl": {
     "message": "[Hier erhältst du Informationen zum Browser-Caching in Joomla.](https://docs.joomla.org/Cache)"
@@ -2796,7 +3027,7 @@
     "message": "Prüfe die [Plug-ins](https://octobercms.com/plugins), über die nicht verwendete CSS auf der Website geladen werden. Wenn du Plug-ins ermitteln möchtest, über die nicht notwendige CSS hinzugefügt werden, kannst du das Prüftool zur [Codeabdeckung](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Plug-in kannst du anhand der URL des Stylesheets erkennen. Suche nach Plug-ins mit vielen Stylesheets und viel nicht verwendetem Code (markiert in Rot) in der Codeabdeckung. Ein Plug-in sollte nur dann ein Stylesheet hinzufügen, wenn es auch tatsächlich auf der Webseite verwendet wird."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | unused-javascript": {
-    "message": "Du solltest prüfen, über welche [Plug-ins](https://octobercms.com/plugins?search=javascript) nicht verwendetes JavaScript auf deine Webseite geladen wird. Wenn du Plug-ins ermitteln möchtest, über die nicht notwendiges JavaScript hinzugefügt wird, kannst du das Prüftool zur [Codeabdeckung](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Plug-in kannst du anhand der URL des Skripts erkennen. Suche nach Plug-ins mit vielen Skripts, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Plug-in sollte nur dann ein Skript hinzufügen, wenn es auch tatsächlich auf der Webseite verwendet wird."
+    "message": "Du solltest prüfen, über welche [Plug-ins](https://octobercms.com/plugins?search=javascript) nicht verwendetes JavaScript auf deine Webseite geladen wird. Wenn du Plug-ins ermitteln möchtest, über die nicht notwendiges JavaScript hinzugefügt wird, kannst du das Prüftool zur [Codeabdeckung](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Plug-in kannst du anhand der URL des Scripts erkennen. Suche nach Plug-ins mit vielen Scripts, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Plug-in sollte nur dann ein Script hinzufügen, wenn es auch tatsächlich auf der Webseite verwendet wird."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | uses-long-cache-ttl": {
     "message": "[Hier findest du Informationen, wie du unnötige Netzwerkanfragen mit dem HTTP-Cache verhinderst.](https://web.dev/http-cache/#caching-checklist). Es gibt zahlreiche [Plug-ins](https://octobercms.com/plugins?search=Caching), die zum Beschleunigen des Cachings verwendet werden können."
@@ -2859,7 +3090,7 @@
     "message": "Prüfe, ob du [WordPress-Plug-ins](https://wordpress.org/plugins/), über die nicht verwendete CSS auf deine Seite geladen werden, entfernen oder durch alternative Plug-ins ersetzen kannst. Wenn du die Plug-ins ermitteln möchtest, über die irrelevante CSS hinzugefügt werden, kannst du das Prüftool zur [Codeabdeckung](https://developer.chrome.com/docs/devtools/coverage/) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Plug-in kannst du anhand der URL des Stylesheets erkennen. Suche in der Liste nach Plug-ins mit vielen Stylesheets, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Stylesheet sollte nur dann in ein Plug-in aufgenommen werden, wenn es auch tatsächlich auf der Seite verwendet wird."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | unused-javascript": {
-    "message": "Prüfe, ob du [WordPress-Plug-ins](https://wordpress.org/plugins/), über die nicht verwendete JavaScript-Dateien auf deiner Seite geladen werden, entfernen oder durch alternative Plug-ins ersetzen kannst. Wenn du die Plug-ins ermitteln möchtest, über die irrelevante JavaScript-Dateien hinzugefügt werden, kannst du das Prüftool zur [Codeabdeckung](https://developer.chrome.com/docs/devtools/coverage/) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Plug-in kannst du anhand der URL des Skripts erkennen. Suche in der Liste nach Plug-ins mit vielen Skripts, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Skript sollte nur dann in ein Plug-in aufgenommen werden, wenn es auch tatsächlich auf der Seite verwendet wird."
+    "message": "Prüfe, ob du [WordPress-Plug-ins](https://wordpress.org/plugins/), über die nicht verwendete JavaScript-Dateien auf deiner Seite geladen werden, entfernen oder durch alternative Plug-ins ersetzen kannst. Wenn du die Plug-ins ermitteln möchtest, über die irrelevante JavaScript-Dateien hinzugefügt werden, kannst du das Prüftool zur [Codeabdeckung](https://developer.chrome.com/docs/devtools/coverage/) in den Chrome-Entwicklertools verwenden. Das entsprechende Design/Plug-in kannst du anhand der URL des Scripts erkennen. Suche in der Liste nach Plug-ins mit vielen Scripts, bei denen im Prüftool zur Codeabdeckung viel nicht verwendeter Code (markiert in Rot) angezeigt wird. Ein Script sollte nur dann in ein Plug-in aufgenommen werden, wenn es auch tatsächlich auf der Seite verwendet wird."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | uses-long-cache-ttl": {
     "message": "Hier erhältst du Informationen zum [Browser-Caching in WordPress](https://wordpress.org/support/article/optimization/#browser-caching)."

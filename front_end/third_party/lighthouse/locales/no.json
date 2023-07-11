@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>`-elementet har en gyldig verdi for `[lang]`-attributtet"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Hvis nettsiden ikke spesifiserer samme språk overalt, kan det hende at skjermleseren leser teksten på siden feil. [Finn ut mer om `lang`-attributtet](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>`-elementet har ikke noe `[xml:lang]`-attributt med samme grunnspråk som `[lang]`-attributtet."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>`-elementet har et `[xml:lang]`-attributt med samme grunnspråk som `[lang]`-attributtet."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informative elementer bør ta sikte på korte og beskrivende alternative tekster. Dekorative elementer kan ignoreres med tomme alt-attributter. [Finn ut mer om `alt`-attributtet](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Bildeelementene har `[alt]`-attributter"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Når du legger til leselig og tilgjengelig tekst på inndataknapper, blir det enklere for brukere av skjermlesere å forstå formålet med inndataknappen. [Finn ut mer om inndataknapper](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Inndataknappene har ikke leselig tekst."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Inndataknappene har leselig tekst."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Når et bilde brukes som `<input>`-knapp, bør du oppgi en alternativ tekst som hjelper brukere av skjermlesere med å forstå hva knappen er til. [Finn ut mer om alt-tekst for «input»-bilder](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Ingen elementer har en `[tabindex]`-verdi som er større enn 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Skjermlesere har funksjonalitet som gjør det enklere å navigere i tabeller. Når du sørger for at tabeller bruker det faktiske «caption»-elementet i stedet for celler med `[colspan]`-attributtet, kan du gjøre opplevelsen bedre for brukere av skjermlesere. [Finn ut mer om «caption»-elementer](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tabeller bruker ikke `<caption>` i stedet for celler med `[colspan]`-attributtet for å indikere etiketter."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tabeller bruker `<caption>` i stedet for celler med `[colspan]`-attributtet for å indikere etiketter."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Skjermlesere har funksjonalitet som gjør det enklere å navigere i tabeller. Ved å sørge for at `<td>`-elementer i store tabeller (tre eller flere celler i bredde og høyde) har tilhørende tabelloverskrifter, kan du gjøre opplevelsen bedre for brukere av skjermlesere. [Finn ut mer om tabelloverskrifter](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "`<td>`-elementer i store `<table>`-elementer har ikke tabelloverskrifter."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "`<td>`-elementer i et stort `<table>`-element har en eller flere tabelloverskrifter."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Skjermlesere har funksjonalitet som gjør det enklere å navigere i tabeller. Ved å sørge for at `<td>`-celler som bruker `[headers]`-attributtet, kun refererer til andre celler i den samme tabellen, kan du gjøre opplevelsen bedre for brukere av skjermlesere. [Finn ut mer om `headers`-attributtet](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Sider som bruker har forespurt AppBanner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert på grunn av en keepalive-forespørsel."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Frem-og-tilbake-bufferen er deaktivert via flagg. Gå til chrome://flags/#back-forward-cache for å aktivere den lokalt på denne enheten."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Sider som bruker WebUSB-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert fordi informasjonskapsler er deaktivert på en side som bruker `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Sider som bruker en dedikert Service Worker eller worklet, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Sider med åpne IndexedDB-tilkoblinger kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert på grunn av en IndexedDB-hendelse."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Det ble brukt API-er som ikke er kvalifisert."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Sider som utvidelser injiserer JavaScript i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+    "message": "Sider som utvidelser har injisert `JavaScript` i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Sider som utvidelser har injisert StyleSheet i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
+    "message": "Sider som utvidelser har injisert `StyleSheet` i, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Intern feil."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Vurder å legge til «unsafe-inline» (ignoreres av nettlesere som støtter engangsverdier eller hasher) for bakoverkompatibilitet med eldre nettlesere."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Se statussiden for funksjonen for å få mer informasjon."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Denne endringen trer i kraft med milepæl {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "En avviklet funksjon ble brukt"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Autorisasjon kommer ikke til å bli dekket av jokertegnet (*) ved håndtering av CORS-hodet `Access-Control-Allow-Headers`."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "For å slå av Cast-integreringen som brukes som standard, bruk `disableRemotePlayback`-attributtet i stedet for `-internal-media-controls-overlay-cast-button`-velgeren."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Ressursforespørsler med nettadresser som inneholdt både fjernede mellomromstegn (`(n|r|t)`) og mindre-enn-tegn (`<`), er blokkert. For å kunne laste inn disse ressursene, fjern linjeskift og gjør mindre-enn-tegn om til kode på steder som i attributtverdiene til elementer."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` er avviklet. Bruk heller det standardiserte API-et Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` er avviklet. Bruk heller det standardiserte API-et Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` er avviklet. Bruk heller det standardiserte API-et `nextHopProtocol` i Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Informasjonskapsler som inneholder tegnet `(0|r|n)`, blir avvist i stedet for å bli avkortet."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Oppmykning av samme opphav-reglene ved å angi `document.domain` er avviklet og kommer til å være avslått som standard. Dette avviklingsvarselet gjelder en opphavsuavhengig tilgang som ble påslått ved å angi `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Utløsing av window.alert fra iframe-elementer med andre opphav er avviklet og kommer til å bli fjernet i fremtiden."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Utløsing av window.confirm fra iframe-elementer med andre opphav er avviklet og kommer til å bli fjernet i fremtiden."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM-mutasjonshendelser, inkludert `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` og `DOMCharacterDataModified`, er avviklet (https://w3c.github.io/uievents/#legacy-event-types) og kommer til å bli fjernet. Bruk `MutationObserver` i stedet."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Støtte for data:-nettadresser i <use>-elementer i SVG-filer er avviklet og kommer til å bli fjernet i fremtiden."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Oppmykning av samme opphav-reglene ved å angi `document.domain` er avviklet og kommer til å være avslått som standard. For å fortsette å bruke denne funksjonen, velg bort agentgrupper med opphavsnøkler ved å sende et `Origin-Agent-Cluster: ?0`-hode sammen med HTTP-svaret for dokumentet og rammene. Se https://developer.chrome.com/blog/immutable-document-domain/ for mer informasjon."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "`Expect-CT`-hodet er avviklet og kommer til å bli fjernet. Chrome krever sertifikatåpenhet for alle offentlig klarerte sertifikater som er utstedt etter 30. april 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` og `watchPosition()` fungerer ikke på usikre opphav lenger. For å bruke denne funksjonen bør du vurdere å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` og `watchPosition()` er avviklet på usikre opphav. For å bruke denne funksjonen bør du vurdere å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` fungerer ikke på usikre opphav lenger. For å bruke denne funksjonen bør du vurdere å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` er avviklet. Bruk `RTCPeerConnectionIceErrorEvent.address` eller `RTCPeerConnectionIceErrorEvent.port` i stedet."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Selgerens opprinnelse og vilkårlige data fra Service Worker-hendelsen `canmakepayment` er avviklet og blir fjernet: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Nettstedet forespurte en underressurs fra et nettverk det kun hadde tilgang til på grunn av den privilegerte nettverksposisjonen til brukerne sine. Disse forespørslene eksponerer ikke-offentlige enheter og tjenere for internett, noe som øker risikoen for angrep via forfalskning av tredjepartsforespørsler (CSRF) og/eller informasjonslekkasjer. For å forebygge disse risikoene avvikler Chrome forespørsler til ikke-offentlige underressurser når disse igangsettes fra ikke-sikre kontekster, og kommer til å begynne å blokkere dem."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Feltet `dailyUpdateUrl` for `InterestGroups`, som ble sendt til `joinAdInterestGroup()`, har fått det nye navnet `updateUrl` for å gjenspeile funksjonaliteten bedre."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS-filer kan ikke lastes inn fra `file:`-nettadresser med mindre de har filetternavnet `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Bruk av `SourceBuffer.abort()` for å avbryte den asynkrone områdefjerningen som utføres av `remove()`, er avviklet på grunn av endringer i spesifikasjonen. Støtten kommer til å bli fjernet i fremtiden. Du bør lytte etter `updateend`-hendelsen i stedet. `abort()` er kun ment å avbryte asynkrone medietilføyninger eller tilbakestille parsertilstanden."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Å angi en verdi for `MediaSource.duration` som er lavere enn det høyeste presentasjonstidsstempelet for noen bufret, kodet ramme, er avviklet på grunn av endringer i spesifikasjonen. Støtte for implisitt fjerning av avkortede, bufrede medier kommer til å bli fjernet i fremtiden. Du bør i stedet utføre eksplisitte `remove(newDuration, oldDuration)`-kall på alle `sourceBuffers`, hvor `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI kommer til å be om brukstillatelse selv om sysex ikke er angitt i `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Det eldre, ikke-standardiserte `shadowroot`-attributtet er avviklet og *fungerer ikke lenger* i M119. Bruk det nye, standardiserte `shadowrootmode`-attributtet i stedet."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification API kan ikke lenger brukes fra usikre opphav. Vurder å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Det er ikke lenger mulig å be om tillatelse for Notification API via «iframe»-elementer med andre opphav. Vurder å be om tillatelse via en toppnivåramme eller åpne et nytt vindu i stedet."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Alternativet `imageOrientation: 'none'` i createImageBitmap er avviklet. Bruk createImageBitmap med alternativet \\{imageOrientation: 'from-image'\\} i stedet."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Partneren din bruker en foreldet (D)TLS-versjon. Snakk med partneren din for å få rettet dette."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Hvis du angir `overflow: visible` på img-, video- eller canvas-tagger, kan det hende at de produserer visuelt innhold utenfor elementgrensene. Se https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` er avviklet. Bruk siste liten-installasjon for betalingsbehandlere i stedet."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "`PaymentRequest`-kallet ditt omgikk Content-Security-Policy (CSP)-direktivet `connect-src`. Denne omgåelsen er avviklet. Legg til identifikatoren for betalingsmåten fra `PaymentRequest`-API-et (i `supportedMethods`-feltet) i CSP-direktivet `connect-src`."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` er avviklet. Bruk standardisert `navigator.storage` i stedet."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` med `<picture>` som overordnet element er ugyldig og blir derfor ignorert. Bruk `<source srcset>` i stedet."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame er en leverandørspesifikk metode. Bruk standardmetoden cancelAnimationFrame i stedet."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame er en leverandørspesifikk metode. Bruk standardmetoden requestAnimationFrame i stedet."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen er avviklet. Bruk Document.fullscreenElement i stedet."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() er avviklet. Bruk Element.requestFullscreen() i stedet."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() er avviklet. Bruk Element.requestFullscreen() i stedet."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() er avviklet. Bruk Document.exitFullscreen() i stedet."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() er avviklet. Bruk Document.exitFullscreen() i stedet."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen er avviklet. Bruk Document.fullscreenEnabled i stedet."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Vi avvikler API-et `chrome.privacy.websites.privacySandboxEnabled`, men av hensyn til bakoverkompatibilitet forblir det aktivt frem til versjon M113. Bruk `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` og `chrome.privacy.websites.adMeasurementEnabled` i stedet. Se https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Begrensningen `DtlsSrtpKeyAgreement` er fjernet. Du har angitt verdien `false` for denne begrensningen, noe som tolkes som et forsøk på å bruke den fjernede `SDES key negotiation`-metoden. Denne funksjonaliteten er fjernet. Bruk en tjeneste som støtter `DTLS key negotiation` i stedet."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Begrensningen `DtlsSrtpKeyAgreement` er fjernet. Du har angitt verdien `true` for denne begrensningen. Dette har ingen virkning, men du kan fjerne denne begrensningen for ryddighets skyld."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Den tilbakekallbaserte metoden getStats() er avviklet og kommer til å bli fjernet. Bruk den spesifikasjonskompatible metoden getStats() i stedet."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() er avviklet. Bruk Selection.modify() i stedet."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Underressursforespørsler med nettadresser som inneholder innebygd legitimasjon (f.eks. `https://user:pass@host/`), er blokkert."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "`rtcpMuxPolicy`-alternativet er avviklet og kommer til å bli fjernet."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` kommer til å kreve isolering fra andre opphav. Se https://developer.chrome.com/blog/enabling-shared-array-buffer/ for mer informasjon."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` uten brukeraktivering er avviklet og kommer til å bli fjernet."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Utvidelser må slå på isolering fra andre opphav for å fortsette å bruke `SharedArrayBuffer`. Se https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL er avviklet. Bruk SQLite WebAssembly eller Indexed Database"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Tillatelsesbeskrivelsen `window-placement` er avviklet. Bruk `window-management` i stedet. Du finner mer hjelp på https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Tillatelsesregelen `window-placement` er avviklet. Bruk `window-management` i stedet. Du finner mer hjelp på https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16 støttes ikke av JSON-svaret i `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synkrone `XMLHttpRequest`-forespørsler på hovedtråden er avviklet på grunn av de negative virkningene på sluttbrukerens opplevelse. For å få mer hjelp, se https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` er avviklet. Bruk `isSessionSupported()` og sjekk den resulterende boolske verdien i stedet."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Blokkeringstid i hovedtråden"
@@ -2874,7 +3105,7 @@
     "message": "Du kan slå på tekstkomprimering i oppsettet av nettjeneren."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | modern-image-formats": {
-    "message": "Slå på «Forstørr» fra Bildeoptimalisering-fanen i «WP Rocket» for å konvertere bildene dine til WebP."
+    "message": "Slå på «Imagify» fra Bildeoptimalisering-fanen i «WP Rocket» for å konvertere bildene dine til WebP."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | offscreen-images": {
     "message": "Slå på [LazyLoad](https://docs.wp-rocket.me/article/1141-lazyload-for-images) i WP Rocket for å løse denne anbefalingen. Denne funksjonen forsinker innlastingen av bildene til den besøkende ruller ned på siden og faktisk trenger å se dem."
@@ -2895,7 +3126,7 @@
     "message": "Slå på [Utsett JavaScript-kjøring](https://docs.wp-rocket.me/article/1349-delay-javascript-execution) i «WP Rocket» for å løse dette problemet. Dette forbedrer innlastingen av siden ved å forsinke kjøringen av skript til brukerinteraksjon. Hvis nettstedet ditt har iframes, kan du også bruke WP Rockets [LazyLoad for iframes og videoer](https://docs.wp-rocket.me/article/1674-lazyload-for-iframes-and-videos) og [Erstatt YouTube iframe med forhåndsvisningsbilde](https://docs.wp-rocket.me/article/1488-replace-youtube-iframe-with-preview-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | uses-optimized-images": {
-    "message": "Slå på «Forstørr» fra Bildeoptimalisering-fanen i «WP Rocket» og kjør masseoptimalisering for å komprimere bildene dine."
+    "message": "Slå på «Imagify» fra Bildeoptimalisering-fanen i «WP Rocket» og kjør masseoptimalisering for å komprimere bildene dine."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | uses-rel-preconnect": {
     "message": "Bruk [Hent DNS-forespørsler på forhånd](https://docs.wp-rocket.me/article/1302-prefetch-dns-requests) i «WP Rocket» for å legge til «dns-prefetch» og øke hastigheten til forbindelsen med eksterne domener. «WP Rocket» legger også automatisk til «preconnect» (forhåndstilkoble) på [Google Fonts-domenet](https://docs.wp-rocket.me/article/1312-optimize-google-fonts) og eventuelle CNAME-er som legges til via funksjonen [Enable CDN](https://docs.wp-rocket.me/article/42-using-wp-rocket-with-a-cdn) (aktiver ILN)."

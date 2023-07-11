@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>` 要素の `[lang]` 属性に有効な値が指定されています"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "ウェブページで一貫性のある言語が指定されていない場合、スクリーン リーダーでページのテキストが正しく読み上げられないことがあります。[`lang` 属性の詳細](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>` 要素に、`[lang]` 属性と同じベース言語の `[xml:lang]` 属性がありません。"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>` 要素に、`[lang]` 属性と同じベース言語の `[xml:lang]` 属性があります。"
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "説明的要素は、簡潔でわかりやすい代替テキストにする必要があります。装飾的要素は、alt 属性が空の場合は無視される可能性があります。[`alt` 属性の詳細](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "画像要素に `[alt]` 属性が指定されています"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "識別可能およびアクセス可能なテキストを入力ボタンに追加すると、スクリーン リーダーのユーザーが入力ボタンの目的を把握するのに役立ちます。[入力ボタンの詳細](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "入力ボタンに識別可能なテキストがありません。"
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "入力ボタンに識別可能なテキストがあります。"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "画像を `<input>` ボタンとして使用している場合は、代替テキストを指定すると、スクリーン リーダーのユーザーがボタンの用途を理解しやすくなります。[入力画像の代替テキストの詳細](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "`[tabindex]` に 0 より大きい値を指定している要素はありません"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "スクリーン リーダーには、表内の移動を補助する機能があります。表で `[colspan]` 属性を含むセルの代わりに、実際の字幕要素を使用すると、スクリーン リーダー ユーザーの利便性が向上する可能性があります。[字幕の詳細](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "表で字幕を示すために `[colspan]` 属性を含むセルの代わりに `<caption>` が使用されていません。"
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "表で字幕を示すために `[colspan]` 属性を含むセルの代わりに `<caption>` が使用されています。"
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "スクリーン リーダーには、表内の移動を補助する機能があります。サイズの大きい表（幅と高さが 3 セル以上）の `<td>` 要素にテーブル ヘッダーを関連付けると、スクリーン リーダー ユーザーの利便性が向上する可能性があります。[テーブル ヘッダーの詳細](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "サイズの大きい `<table>` の `<td>` 要素にテーブル ヘッダーがありません。"
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "サイズの大きい `<table>` の `<td>` 要素にテーブル ヘッダーが 1 つ以上含まれています。"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "スクリーン リーダーには、表内の移動を補助する機能があります。`[headers]` 属性を使用している `<td>` セルが同じ表の他のセルのみを参照するように設定すると、スクリーン リーダーの利便性が向上する可能性があります。[`headers` 属性の詳細](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "AppBanner をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "バックフォワード キャッシュはキープアライブ リクエストが原因で無効になっています。"
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "バックフォワード キャッシュはフラグにより無効になっています。chrome://flags/#back-forward-cache に移動して、このデバイスでローカルに有効化してください。"
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "WebUSB API を使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "`Cache-Control: no-store` を使用するページで Cookie が無効になっているため、バックフォワード キャッシュは無効になっています。"
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "専用のワーカーまたはワークレットを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "IndexedDB 接続が開いているページは、現時点ではバックフォワード キャッシュの対象になりません。"
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "バックフォワード キャッシュは IndexedDB イベントが原因で無効になっています。"
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "対象外の API が使用されました。"
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "拡張機能によって JavaScript が挿入されるページは、現時点ではバックフォワード キャッシュの対象になりません。"
+    "message": "拡張機能によって `JavaScript` が挿入されるページは、現時点ではバックフォワード キャッシュの対象になりません。"
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "拡張機能によってスタイルシートが挿入されるページは、現時点ではバックフォワード キャッシュの対象になりません。"
+    "message": "拡張機能によって `StyleSheet` が挿入されるページは、現時点ではバックフォワード キャッシュの対象になりません。"
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "内部エラーが発生しました。"
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "古いブラウザとの下位互換性を保つため、'unsafe-inline' を追加することを検討してください（nonce / hash をサポートしているブラウザでは無視されます）。"
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "詳しくは、機能のステータス ページをご覧ください。"
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "この変更はマイルストーン {milestone} で有効になります。"
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "非推奨の機能が使用されています"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "CORS の `Access-Control-Allow-Headers` の処理では、Authorization はワイルドカード記号（*）で表されなくなります。"
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "デフォルトの Cast の統合を無効にするには、`-internal-media-controls-overlay-cast-button` セレクタではなく `disableRemotePlayback` 属性を使用する必要があります。"
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "URL に削除された空白文字（`(n|r|t)`）と小なり記号（`<`）が含まれるリソース リクエストはブロックされます。これらのリソースを読み込むには、要素の属性値などの場所にある改行を削除し、小なり記号をエンコードしてください。"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` は非推奨となっています。代わりに標準化 API の Navigation Timing 2 を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` は非推奨となっています。代わりに標準化 API の Paint Timing を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` は非推奨となっています。代わりに標準化 API である Navigation Timing 2 の `nextHopProtocol` を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "`(0|r|n)` 文字が含まれる Cookie は、切り捨てではなく拒否されます。"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "`document.domain` の設定による同一オリジン ポリシーの緩和は非推奨であり、デフォルトで無効になる予定です。この非推奨の警告は、`document.domain` の設定により有効にしたクロスオリジンのアクセスに対して行われます。"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "クロスオリジンの iframe から window.alert をトリガーすることは非推奨であり、今後削除される予定です。"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "クロスオリジンの iframe から window.confirm をトリガーすることは非推奨であり、今後削除される予定です。"
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "`DOMSubtreeModified`、`DOMNodeInserted`、`DOMNodeRemoved`、`DOMNodeRemovedFromDocument`、`DOMNodeInsertedIntoDocument`、`DOMCharacterDataModified` を含む DOM ミューテーション イベントは非推奨となり（https://w3c.github.io/uievents/#legacy-event-types）、削除される予定です。代わりに `MutationObserver` を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "データのサポート: SVG の <use> 要素の URL は非推奨となり、今後削除される予定です。"
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "`document.domain` の設定による同一オリジン ポリシーの緩和は非推奨であり、デフォルトで無効になる予定です。引き続きこの機能を使用するには、オリジンキー エージェント クラスタを無効にしてください。これには、ドキュメントとフレームの HTTP レスポンスとともに `Origin-Agent-Cluster: ?0` ヘッダーを送信します。詳しくは、https://developer.chrome.com/blog/immutable-document-domain/ をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "`Expect-CT` ヘッダーは非推奨であり、削除される予定です。Chrome では、2018 年 4 月 30 日以降に発行されたすべての公的に信頼されている証明書に対して、Certificate Transparency（証明書の透明性）を設定する必要があります。"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` と `watchPosition()` は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` と `watchPosition()` は、保護されていないオリジンでは非推奨となっています。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` は非推奨になりました。代わりに `RTCPeerConnectionIceErrorEvent.address` または `RTCPeerConnectionIceErrorEvent.port` を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "`canmakepayment` Service Worker イベントの、次の販売者のオリジンと任意のデータのサポートは終了し、削除される予定です。`topOrigin`、`paymentRequestOrigin`、`methodData`、`modifiers`。"
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "ウェブサイトが、ネットワークで特権を持つユーザーのみアクセス可能な、ネットワークのサブリソースをリクエストしました。これらのリクエストにより、非公開のデバイスやサーバーがインターネット上で参照できるようになるため、クロスサイト リクエスト フォージェリ（CSRF）攻撃や情報漏洩のリスクが高まります。これらのリスクを軽減するため、Chrome では、保護されていないコンテキストからの非公開サブリソースへのリクエストは非推奨となっており、今後ブロックされるようになる予定です。"
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "動作を正確に反映させるため、`joinAdInterestGroup()` に渡される `InterestGroups` の `dailyUpdateUrl` フィールドの名前を `updateUrl` に変更しました。"
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "末尾が `.css` ファイル拡張子ではない CSS を、`file:` の URL から読み込むことはできません。"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "`remove()` の非同期の範囲の削除を中止するための `SourceBuffer.abort()` の使用は、仕様変更により非推奨となっており、今後サポートされなくなります。代わりに `updateend` イベントをリッスンします。なお、`abort()` については、非同期メディアの追加の中止と、パーサーの状態のリセットのみを行います。"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "バッファ済みコードフレームの最も高いプレゼンテーション タイムスタンプを下回る `MediaSource.duration` の設定は、仕様変更により非推奨となりました。切り捨てられたバッファ済みメディアの暗黙的な削除は、今後サポートされなくなります。代わりに、すべての `sourceBuffers` で明示的に `remove(newDuration, oldDuration)` を実行してください。このとき、`newDuration < oldDuration` となるよう指定してください。"
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI は、`MIDIOptions` で SysEx が指定されていない場合でも使用許可を要求します。"
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "標準化されていない古い `shadowroot` 属性は非推奨になり、M119 以降*は機能しなくなります*。代わりに、標準化されている新しい `shadowrootmode` 属性を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification API は保護されていないオリジンから使用できなくなっている可能性があります。アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "通知 API の権限は、クロスオリジンの iframe からリクエストできなくなっている可能性があります。最上位フレームからの権限をリクエストするか、代わりに新しいウィンドウを開くことを検討してください。"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap の `imageOrientation: 'none'` オプションは非推奨になりました。createImageBitmap を使用する際は、代わりに \\{imageOrientation: 'from-image'\\} オプションを使用してください。"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "パートナーは古い (D)TLS バージョンの交渉を行っています。パートナーに確認してこれを修正してもらってください。"
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "img タグ、video タグ、canvas タグに `overflow: visible` を指定すると、要素の境界外にビジュアル コンテンツが作成される場合があります。https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` が非推奨となりました。支払いハンドラには、代わりに JIT インストールを使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "`PaymentRequest` 呼び出しが Content-Security-Policy（CSP）`connect-src` ディレクティブをバイパスしました。このバイパスは非推奨となっています。`PaymentRequest` API（`supportedMethods` フィールド）のお支払い方法 ID を CSP の `connect-src` ディレクティブに追加してください。"
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` が非推奨となりました。代わりに、標準化された `navigator.storage` を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` で `<picture>` 親要素を使用すると無効となり、無視されます。代わりに `<source srcset>` を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame はベンダー固有です。代わりに標準の cancelAnimationFrame を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame はベンダー固有です。代わりに標準の requestAnimationFrame を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen は非推奨になりました。代わりに Document.fullscreenElement を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() は非推奨になりました。代わりに Element.requestFullscreen() を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() は非推奨になりました。代わりに Element.requestFullscreen() を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() は非推奨になりました。代わりに Document.exitFullscreen() を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() は非推奨になりました。代わりに Document.exitFullscreen() を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen は非推奨になりました。代わりに Document.fullscreenEnabled を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "API `chrome.privacy.websites.privacySandboxEnabled` は非推奨になりますが、下位互換性を確保するため、リリース M113 まで引き続き有効です。代わりに、`chrome.privacy.websites.topicsEnabled`、`chrome.privacy.websites.fledgeEnabled`、`chrome.privacy.websites.adMeasurementEnabled` を使用してください。詳しくは https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "`DtlsSrtpKeyAgreement` の制約は削除されました。この制約に指定されている `false` 値は、削除された `SDES key negotiation` の方法を使用する試みとして解釈されます。この機能は削除されたため、`DTLS key negotiation` をサポートしているサービスで代用してください。"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "`DtlsSrtpKeyAgreement` の制約は削除されました。この制約に指定されている `true` 値は適用されませんが、この制約を削除するとシンプルにできます。"
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "コールバックベースの getStats() は非推奨になっており、今後削除されます。代わりに、仕様に準拠した getStats() を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() は非推奨になりました。代わりに Selection.modify() を使用してください。"
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "URL に埋め込み認証情報（`https://user:pass@host/` など）が含まれるサブリソース リクエストはブロックされます。"
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "`rtcpMuxPolicy` オプションは非推奨であり、削除される予定です。"
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` ではクロスオリジン分離が必要となります。詳しくは、https://developer.chrome.com/blog/enabling-shared-array-buffer/ をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "ユーザー アクティベーションのない `speechSynthesis.speak()` は非推奨であり、削除される予定です。"
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "拡張機能で引き続き `SharedArrayBuffer` を使用するには、クロスオリジン分離を有効にする必要があります。https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "ウェブ SQL は非推奨となっています。SQLite WebAssembly または Indexed Database を使用してください"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "権限記述子 `window-placement` は非推奨になりました。代わりに `window-management` を使用してください。詳しくは、https://bit.ly/window-placement-rename をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "権限ポリシー `window-placement` は非推奨になりました。代わりに `window-management` を使用してください。詳しくは、https://bit.ly/window-placement-rename をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16 は、`XMLHttpRequest` のレスポンス JSON ではサポートされていません。"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "メインスレッドの同期的な `XMLHttpRequest` は、エンドユーザーのエクスペリエンスに悪影響があるため、非推奨となっています。詳しくは、https://xhr.spec.whatwg.org/ をご覧ください。"
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` は非推奨になりました。代わりに `isSessionSupported()` を使用して、解決済みのブール値を確認してください。"
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "メインスレッドのブロック時間"

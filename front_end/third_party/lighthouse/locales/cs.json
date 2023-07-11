@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Prvek `<html>` má atribut `[lang]` s platnou hodnotou"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Pokud webová stránka neuvádí konzistentně jazyk, nemusí čtečka obrazovky text stránky oznámit správně. [Další informace o atributu `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Prvek `<html>` nemá atribut `[xml:lang]` se stejným základním jazykem, jaký je uveden v atributu `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Prvek `<html>` má atribut `[xml:lang]` se stejným základním jazykem, jaký je uveden v atributu `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informativní prvky by měly mít krátký, popisný alternativní text. Dekorativní prvky lze ignorovat pomocí prázdného atributu alt. [Další informace o atributu `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Prvky obrázků mají atributy `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Přidání rozeznatelného a přístupného textu k tlačítkům vstupu může uživatelům čteček obrazovek pomoci pochopit účel tlačítka. [Další informace o tlačítkách vstupu](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Tlačítka vstupu nemají rozeznatelný text."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Vstupní tlačítka mají rozeznatelný text."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Když je jako tlačítko `<input>` použit obrázek, uvedení alternativního textu pomůže uživatelům čteček obrazovek porozumět účelu tlačítka. [Další informace o alternativním textu obrázku použitého pro vstup](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Žádný prvek nemá hodnotu `[tabindex]` větší než 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Pokud v tabulkách namísto buněk s atributem `[colspan]` použijete skutečné prvky popisků (caption), může to zlepšit uživatelský dojem uživatelů čteček obrazovky. [Další informace o popiscích](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "V tabulkách nejsou k označení popisků použity prvky `<caption>` (namísto buněk s atributem `[colspan]`)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "V tabulkách jsou k označení popisků použity prvky `<caption>` (namísto buněk s atributem `[colspan]`)."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Pokud prvky `<td>` ve velké tabulce (tři nebo více buněk na šířku a výšku) budou mít přidružené záhlaví tabulky, uživatelům čteček obrazovky to usnadní orientaci. [Další informace o záhlavích tabulek](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Prvky `<td>` ve velké tabulce `<table>` nemají záhlaví."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Prvky `<td>` ve velké tabulce `<table>` mají alespoň jedno záhlaví."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Když zajistíte, aby buňky `<td>` s atributem `[headers]` odkazovaly pouze na jiné buňky ve stejné tabulce, můžete tím uživatelům čteček obrazovek usnadnit používání. [Další informace o atributu `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -858,13 +894,13 @@
     "message": "Příčina selhání"
   },
   "core/audits/installable-manifest.js | description": {
-    "message": "Service worker je technologie, která aplikaci umožňuje využívat mnoho funkcí progresivních webových aplikací, jako jsou režim offline, přidání na plochu nebo oznámení push. Při správné implementaci skriptu service worker a manifestu mohou prohlížeče uživatele aktivně vyzývat, aby si aplikaci přidali na plochu, což může vést k vyšší míře interakce. [Další informace o požadavcích na instalovatelnost manifestu](https://developer.chrome.com/docs/lighthouse/pwa/installable-manifest/)"
+    "message": "Pracovní proces služby je technologie, která aplikaci umožňuje využívat mnoho funkcí progresivních webových aplikací, jako jsou režim offline, přidání na plochu nebo oznámení push. Při správné implementaci skriptu pracovní proces služby a manifestu mohou prohlížeče uživatele aktivně vyzývat, aby si aplikaci přidali na plochu, což může vést k vyšší míře interakce. [Další informace o požadavcích na instalovatelnost manifestu](https://developer.chrome.com/docs/lighthouse/pwa/installable-manifest/)"
   },
   "core/audits/installable-manifest.js | displayValue": {
     "message": "{itemCount,plural, =1{1 důvod}few{# důvody}many{# důvodu}other{# důvodů}}"
   },
   "core/audits/installable-manifest.js | failureTitle": {
-    "message": "Manifest webové aplikace nebo service worker nesplňují instalační požadavky"
+    "message": "Manifest webové aplikace nebo pracovní proces služby nesplňují instalační požadavky"
   },
   "core/audits/installable-manifest.js | ids-do-not-match": {
     "message": "Adresa URL aplikace v Obchodu Play a ID Obchodu Play si vzájemně neodpovídají"
@@ -903,10 +939,10 @@
     "message": "Stránka neobsahuje prvek <link> s adresou URL manifestu"
   },
   "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Nebyl nalezen žádný odpovídající service worker. Je možné, že stránku budete muset načíst znovu nebo zkontrolovat, zda rozsah (scope) skriptu service worker pro aktuální stránku zahrnuje rozsah a počáteční URL (start_url) z manifestu."
+    "message": "Nebyl nalezen žádný odpovídající pracovní proces služby. Je možné, že stránku budete muset načíst znovu nebo zkontrolovat, zda rozsah (scope) skriptu pracovní proces služby pro aktuální stránku zahrnuje rozsah a počáteční URL (start_url) z manifestu."
   },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
-    "message": "Skript service worker nelze zkontrolovat bez pole „start_url“ v manifestu"
+    "message": "Skript pracovní proces služby nelze zkontrolovat bez pole „start_url“ v manifestu"
   },
   "core/audits/installable-manifest.js | noErrorId": {
     "message": "ID chyby nestability {errorId} nelze rozpoznat"
@@ -933,7 +969,7 @@
     "message": "Parametr prefer_related_applications je podporován pouze v beta verzi Chromu a ve stabilních verzích v systému Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Nástroj Lighthouse nedokázal zjistit, zda byl spuštěn skript service worker. Zkuste to s novější verzí Chromu."
+    "message": "Nástroj Lighthouse nedokázal zjistit, zda byl spuštěn skript pracovní proces služby. Zkuste to s novější verzí Chromu."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Schéma adresy URL manifestu ({scheme}) není v systému Android podporováno."
@@ -942,7 +978,7 @@
     "message": "Počáteční URL (start_url) v manifestu není platná"
   },
   "core/audits/installable-manifest.js | title": {
-    "message": "Manifest webové aplikace a service worker splňují instalační požadavky"
+    "message": "Manifest webové aplikace a pracovní proces služby splňují instalační požadavky"
   },
   "core/audits/installable-manifest.js | url-not-supported-for-webapk": {
     "message": "Adresa URL v manifestu obsahuje uživatelské jméno, heslo nebo port"
@@ -1377,25 +1413,25 @@
     "message": "Počáteční odpověď serveru byla rychlá"
   },
   "core/audits/service-worker.js | description": {
-    "message": "Service worker je technologie, která aplikaci umožňuje využívat mnoho funkcí progresivní webové aplikace, jako je režim offline, přidání na plochu nebo oznámení push. [Další informace o skriptech service službě worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
+    "message": "Pracovní proces služby je technologie, která aplikaci umožňuje využívat mnoho funkcí progresivní webové aplikace, jako je režim offline, přidání na plochu nebo oznámení push. [Další informace o skriptech service službě worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
   },
   "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Tuto stránku ovládá soubor service worker, nebyl ale nalezen atribut `start_url`, protože se manifest nepodařilo analyzovat jako platný soubor JSON"
+    "message": "Tuto stránku ovládá soubor pracovní proces služby, nebyl ale nalezen atribut `start_url`, protože se manifest nepodařilo analyzovat jako platný soubor JSON"
   },
   "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Tuto stránku ovládá soubor service worker, ale atribut `start_url` ({startUrl}) pod soubor service worker ({scopeUrl}) nespadá."
+    "message": "Tuto stránku ovládá soubor pracovní proces služby, ale atribut `start_url` ({startUrl}) pod soubor pracovní proces služby ({scopeUrl}) nespadá."
   },
   "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Tuto stránku ovládá soubor service worker, ale atribut `start_url` nebyl nalezen, protože nebyl načten žádný manifest."
+    "message": "Tuto stránku ovládá soubor pracovní proces služby, ale atribut `start_url` nebyl nalezen, protože nebyl načten žádný manifest."
   },
   "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Tento zdroj má jeden či více souborů service worker, ale stránka ({pageUrl}) pod něj nespadá."
+    "message": "Tento zdroj má jeden či více souborů pracovní proces služby, ale stránka ({pageUrl}) pod něj nespadá."
   },
   "core/audits/service-worker.js | failureTitle": {
-    "message": "Neregistruje soubor service worker, který ovládá stránku a `start_url`"
+    "message": "Neregistruje soubor pracovní proces služby, který ovládá stránku a `start_url`"
   },
   "core/audits/service-worker.js | title": {
-    "message": "Registruje soubor service worker, který ovládá stránku a atribut `start_url`"
+    "message": "Registruje soubor pracovní proces služby, který ovládá stránku a atribut `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Stylová úvodní obrazovka zajišťuje kvalitní uživatelský dojem při spuštění aplikace z plochy. [Další informace o úvodních obrazovkách](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Stránky, které požádaly o AppBanner, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je kvůli požadavku keepalive zakázána."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Mezipaměť pro přechod zpět nebo vpřed je deaktivována pomocí příznaků. Pokud ji na tomto zařízení chcete místně povolit, přejděte na adresu chrome://flags/#back-forward-cache."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Stránky, které používají rozhraní WebUSB API, nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je zakázána, protože na stránce, která používá `Cache-Control: no-store`, jsou zakázány soubory cookie."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Stránky, které používají vyhrazený pracovní proces nebo worklet, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Stránky, které mají otevřené připojení k databázi IndexedDB, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Mezipaměť pro přechod zpět nebo vpřed je zakázána kvůli události IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Byla použita nepodporovaná rozhraní API."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Stránky, na které rozšíření vkládají JavaScript, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+    "message": "Stránky, na které rozšíření vkládají položky `JavaScript`, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Stránky, na které rozšíření vkládají šablony stylů, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
+    "message": "Stránky, na které rozšíření vkládají položky `StyleSheet`, v současné době nemohou využívat mezipaměť pro přechod zpět nebo vpřed."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Interní chyba."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Zvažte, zda nepřidat unsafe-inline (ignorováno prohlížeči, které podporují hodnoty nonce/hash) z důvodu zpětné kompatibility se staršími prohlížeči."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Další podrobnosti najdete na stránce s informacemi o stavu funkcí."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Tato změna nabude účinnosti od milníku {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Byla použita zastaralá funkce"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Zástupný symbol (*) se při zpracování záhlaví `Access-Control-Allow-Headers` pro CORS nevztahuje na záhlaví Authorization."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Namísto selektoru `-internal-media-controls-overlay-cast-button` byste k vypnutí výchozí integrace funkce Cast měli použít atribut `disableRemotePlayback`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Požadavky na zdroje, jejichž adresy URL obsahovaly jak odstraněné prázdné znaky `(n|r|t)`, tak znaky menší než (`<`), jsou blokovány. Aby se tyto zdroje načetly, je na místech, jako jsou hodnoty atributů, potřeba odstranit zalomení řádků a zakódovat znaky menší než."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "Metoda `chrome.loadTimes()` je zastaralá, použijte místo ní standardizované API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "API `chrome.loadTimes()` je zastaralé. Použijte místo něj standardizované API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "Metoda `chrome.loadTimes()` je zastaralá. Použijte místo ní standardizované API: `nextHopProtocol` v Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Soubory cookie obsahující znak `(0|r|n)` budou namísto zkrácení odmítnuty."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Uvolnění zásad stejného původu nastavením atributu `document.domain` je zastaralé a bude ve výchozím nastavení zakázáno. Toto upozornění na ukončení podpory se týká přístupu mezi různými zdroji, který byl povolen nastavením `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Podpora volání funkce window.alert z prvků iframe jiných domén byla ukončena a v budoucnu bude odstraněno."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Podpora volání funkce window.confirm z prvků iframe jiných domén je zastaralá a v budoucnu bude odstraněna."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Události změny DOM, včetně `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` a `DOMCharacterDataModified` jsou zastaralé (https://w3c.github.io/uievents/ #legacy-event-types) a budou odstraněny. Použijte místo nich rozhraní `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Podpora adres URL se schématem data: v prvku <use> v SVG je zastaralá a v budoucnu bude odstraněna."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Uvolnění zásad stejného původu nastavením atributu `document.domain` je zastaralé a bude ve výchozím nastavení zakázáno. Pokud tuto funkci chcete nadále používat, odesláním záhlaví `Origin-Agent-Cluster: ?0` spolu s odpovědí HTTP pro dokument a rámce se odhlaste z clusterů zástupců rozlišovaných podle zdrojů. Další podrobnosti najdete na stránce https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Záhlaví `Expect-CT` je zastaralé a bude odstraněno. Chrome u všech veřejně důvěryhodných certifikátů vydaných po 30. dubnu 2018 vyžaduje ochranu Certificate Transparency."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` a `watchPosition()` již nefungují u nezabezpečených zdrojů. Pokud tuto funkci chcete použít, měli byste zvážit převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "Metody `getCurrentPosition()` a `watchPosition()` již v nezabezpečených zdrojích nejsou podporovány. Pokud tuto funkci chcete použít, měli byste zvážit převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` již nefunguje u nezabezpečených zdrojů. Pokud tuto funkci chcete použít, měli byste zvážit převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "Rozhraní `RTCPeerConnectionIceErrorEvent.hostCandidate` je zastaralé. Použijte místo něj rozhraní `RTCPeerConnectionIceErrorEvent.address` nebo `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Zdroj obchodníka a libovolná data z události `canmakepayment` procesu pracovní proces služby jsou zastaralé a budou odstraněny: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Web si vyžádal dílčí zdroj ze sítě, ke které měl přístup pouze díky privilegované pozici svých uživatelů v síti. Tyto požadavky umožňují získat z internetu přístup k neveřejným zařízením a serverům, čímž se zvyšuje riziko útoku CSRF (cross-site request forgery) a/nebo úniku informací. Aby Chrome tato rizika zmírnil, přestává podporovat požadavky na neveřejné dílčí zdroje iniciované z nezabezpečených kontextů a začne je blokovat."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Pole `dailyUpdateUrl` struktury `InterestGroups` předávané do `joinAdInterestGroup()` bylo přejmenováno na `updateUrl`, aby jeho název přesněji odpovídal chování."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Styly CSS lze z adres URL `file:` načíst pouze v případě, že končí příponou souboru `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Použití `SourceBuffer.abort()` ke zrušení asynchronního odstranění rozsahu pomocí metody `remove()` je vzhledem ke změně specifikace zastaralé. Podpora bude v budoucnu odstraněna. Doporučujeme místo toho naslouchat události `updateend`. Metoda `abort()` je určena pouze ke zrušení asynchronního připojení média nebo resetování stavu analyzátoru."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Nastavení hodnoty `MediaSource.duration` nižší, než je nejvyšší prezentační časové razítko kterýchkoliv kódovaných snímků ve vyrovnávací paměti, je z důvodu změny specifikace zastaralé. Podpora implicitního odstranění zkrácených médií ve vyrovnávací pamětí bude v budoucnu odstraněna. Místo toho byste u všech objektů `sourceBuffers`, u kterých je `newDuration < oldDuration`, měli explicitně provést `remove(newDuration, oldDuration)`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Rozhraní Web MIDI požádá o oprávnění k použití i v případě, že v `MIDIOptions` není zadán sysex."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Starší, nestandardizovaný atribut `shadowroot` je zastaralý a ve vydání M119 už *nebude fungovat*. Použijte místo něj nový, standardizovaný atribut `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification API již nelze používat z nezabezpečených zdrojů. Zvažte převedení aplikace na zabezpečený zdroj, jako je HTTPS. Další podrobnosti najdete na stránce https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Oprávnění pro rozhraní Notification API již nelze požadovat z prvku iframe z jiného zdroje. Měli byste zvážit vyžádání oprávnění z rámce nejvyšší úrovně nebo otevření nového okna."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Možnost `imageOrientation: 'none'` v metodě createImageBitmap je zastaralá. Použijte místo ní metodu createImageBitmap s možností \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Váš partner vyjednává zastaralou verzi (D)TLS. Požádejte ho o nápravu."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Pokud u značek img, video či canvas zadáte vlastnost `overflow: visible`, může se vizuální obsah zobrazit mimo hranice prvku. Viz https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "API `paymentManager.instruments` je zastaralé. Obslužné nástroje pro platby místo toho instalujte bezprostředně před použitím."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Vaše volání rozhraní `PaymentRequest` obchází direktivu `connect-src` zásad zabezpečení obsahu (CSP). Toto obcházení již není podporováno. Přidejte do direktivy CSP `connect-src` identifikátor platební metody z rozhraní API `PaymentRequest` (v poli `supportedMethods`)."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "Rozhraní `StorageType.persistent` je zastaralé. Použijte místo něj standardizované rozhraní `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Prvek `<source src>` s nadřazeným prvkem `<picture>` je neplatný, a proto je ignorován. Použijte místo něj prvek `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Metoda webkitCancelAnimationFrame je specifická pro dodavatele. Použijte místo ní standardní metodu cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Metoda webkitRequestAnimationFrame je specifická pro dodavatele. Místo ní použijte standardní metodu requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "Vlastnost HTMLVideoElement.webkitDisplayingFullscreen je zastaralá. Použijte místo ní vlastnost Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "Metoda HTMLVideoElement.webkitEnterFullScreen() je zastaralá. Použijte místo ní metodu Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "Metoda HTMLVideoElement.webkitEnterFullscreen() je zastaralá. Použijte místo ní metodu Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "Metoda HTMLVideoElement.webkitExitFullScreen() je zastaralá. Použijte místo ní metodu Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "Metoda HTMLVideoElement.webkitExitFullscreen() je zastaralá. Použijte místo ní metodu Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "Vlastnost HTMLVideoElement.webkitSupportsFullscreen je zastaralá. Použijte místo ní vlastnost Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Ukončujeme podporu rozhraní API `chrome.privacy.websites.privacySandboxEnabled`. Z důvodu zpětné kompatibility však zůstane aktivní až do vydání M113. Namísto toho použijte vlastnosti `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` a `chrome.privacy.websites.adMeasurementEnabled`. Viz https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Omezení `DtlsSrtpKeyAgreement` je odstraněno. Pro toto omezení jste zadali hodnotu `false`, která je interpretována jako pokus o použití odstraněné metody `SDES key negotiation`. Tato funkce je odstraněna. Použijte místo toho službu, která podporuje metodu `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Omezení `DtlsSrtpKeyAgreement` je odstraněno. Pro toto omezení jste zadali hodnotu `true`, což nemělo žádný účinek, ale pro pořádek můžete toto omezení odstranit."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Metoda getStats() založená na zpětném volání je zastaralá a bude odstraněna. Místo toho použijte metodu getStats() odpovídající specifikacím."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Metoda Range.expand() je zastaralá. Použijte místo ní metodu Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Požadavky na dílčí zdroje, jejichž adresy URL obsahují vložené přihlašovací údaje (např. `https://user:pass@host/`), jsou blokovány."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Možnost `rtcpMuxPolicy` je zastaralá a bude odstraněna."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` bude vyžadovat izolaci od jiných zdrojů. Další podrobnosti najdete na stránce https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Volání metody `speechSynthesis.speak()` bez aktivace ze strany uživatele je zastaralé a bude odstraněno."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Pokud v rozšířeních chcete používat technologii `SharedArrayBuffer`, je u nich potřeba aktivovat izolaci od jiných zdrojů. Viz https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Technologie Web SQL je zastaralá. Použijte SQLite WebAssembly nebo rozhraní Indexed Database"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Deskriptor oprávnění `window-placement` je zastaralý. Použijte místo něj deskriptor `window-management`. Další informace najdete na stránce https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Zásada oprávnění `window-placement` je zastaralá. Použijte místo ní zásadu `window-management`. Další informace najdete na stránce https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "Kódování UTF-16 není v objektech JSON odpovědí rozhraní `XMLHttpRequest` podporováno"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synchronní požadavky `XMLHttpRequest` v hlavním vláknu jsou zastaralé, protože mají nepříznivý vliv na dojem koncového uživatele. Další informace najdete na stránce https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "Metoda `supportsSession()` je zastaralá. Použijte místo ní metodu `isSessionSupported()` a zkontrolujte vrácenou logickou hodnotu."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Doba blokování hlavního podprocesu"

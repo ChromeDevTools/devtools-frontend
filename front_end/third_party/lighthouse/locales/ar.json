@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "عنصر `<html>` يحتوي على قيمة صحيحة لسمة `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "إذا لم تحدِّد صفحة الويب لغة متسقة، قد لا تتم قراءة نص الصفحة بشكل صحيح من خلال قارئ الشاشة. [مزيد من المعلومات حول السمة `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "لا يتضمّن العنصر `<html>` السمة `[xml:lang]` باللغة الأساسية نفسها المستخدَمة في السمة `[lang]`"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "يحتوي العنصر `<html>` على السمة `[xml:lang]` التي تستخدم اللغة الأساسية نفسها للسمة `[lang]`"
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "يجب أن تتضمن العناصر الإعلامية نصًا بديلاً وصفيًا وقصيرًا. يمكن تجاهل العناصر غير الضرورية من خلال استخدام سمة نص بديل فارغة. [مزيد من المعلومات حول السمة `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "عناصر الصور تحتوي على سمات `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "إنّ إضافة نص واضح يمكن الوصول إليه إلى أزرار الإدخال قد تساعد مستخدمي قارئ الشاشة على فهم الغرض من زر الإدخال. [مزيد من المعلومات حول أزرار الإدخال](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "لا تتضمَّن أزرار الإدخال نصًا واضحًا"
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "تحتوي أزرار الإدخال على نص واضح"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "عند استخدام صورة كزر `<input>`، يمكن أن يساعد توفير نص بديل مستخدمي قارئ الشاشة على فهم الغرض من الزر. [مزيد من المعلومات حول إدخال نص بديل للصورة](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "لا يتوفّر عنصر له قيمة `[tabindex]` أكبر من 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقّل بين الجداول. يمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال ضمان استخدام الجداول لعنصر الشرح الفعلي بدلاً من الخلايا التي تستخدم السمة `[colspan]`. [مزيد من المعلومات حول الشرح](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "لا تستخدم الجداول `<caption>` بدلاً من الخلايا التي تستخدم السمة `[colspan]` للإشارة إلى الشرح"
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "تستخدم الجداول `<caption>` بدلاً من الخلايا التي تستخدم السمة `[colspan]` للإشارة إلى الشرح"
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقّل بين الجداول. يمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال ضمان توفُّر عناوين جداول لعناصر `<td>` في الجداول الكبيرة (التي تتكوَّن من 3 خلايا أو أكثر في العرض والارتفاع). [مزيد من المعلومات حول عناوين الجداول](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "عناصر `<td>` في جدول `<table>` كبير لا تحتوي على عناوين جدول"
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "عناصر `<td>` في جدول `<table>` كبير تحتوي على عنوان جدول واحد أو أكثر"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "تحتوي برامج قراءة الشاشة على ميزات لتسهيل التنقّل بين الجداول. يمكن تحسين تجربة استخدام برامج قراءة الشاشة من خلال ضمان إشارة الخلايا `<td>` التي تستخدم السمة `[headers]` إلى خلايا أخرى في الجدول نفسه فقط. [مزيد من المعلومات حول السمة `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي طلبت AppBanner."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب طلب التحقّق من الاتصال."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" في chrome://flags. يمكنك الانتقال إلى الرابط chrome://flags/#back-forward-cache لتفعيلها على هذا الجهاز."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" لتخزين الصفحات التي تستخدم WebUSB API."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب إيقاف ملفات تعريف الارتباط على صفحة تستخدم السمة `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تستخدم مشغّل خدمات مخصَّصًا أو وظيفة مصغَّرة."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تحتوي على اتصال IndexedDB مفتوح."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب حدث في IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "تم استخدام واجهات غير مؤهَّلة لبرمجة التطبيقات."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي يتم إدخال رموز JavaScript فيها من خلال الإضافات."
+    "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تم إدخال `JavaScript` فيها من خلال الإضافات."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تم إدخال ورقة أنماط فيها من خلال الإضافات."
+    "message": "لا يمكن استخدام ميزة \"التخزين المؤقت للصفحات\" حاليًا لتخزين الصفحات التي تم إدخال `StyleSheet` فيها من خلال الإضافات."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "حدث خطأ داخلي."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "ننصحك بإضافة الأمر التوجيهي 'unsafe-inline' (الذي تتجاهله المتصفِّحات المتوافقة مع nonces/hashes) لجعل CSP متوافقة مع أنظمة المتصفِّحات القديمة."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "لمزيد من التفاصيل، يُرجى الاطّلاع على صفحة حالة الميزة."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "سيسري هذا التغيير عند تحديد المرحلة {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "تم استخدام ميزة متوقّفة نهائيًا"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "لن يشمل رمز حرف البدل (*) الإذن في معالجة العنوان `Access-Control-Allow-Headers` في سياسة Cross-Origin Resource Sharing ‏(CORS)."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "يجب استخدام السمة `disableRemotePlayback` لإيقاف الدمج التلقائي للبث بدلاً من استخدام أداة الاختيار `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "يتم حظر طلبات الموارد التي تتضمّن عناوين URL الخاصة بها كلاً من أحرف `(n|r|t)` للمسافة البيضاء وأحرف \"أقل من\" (`<`) التي تمت إزالتها. لتحميل هذه الموارد، يُرجى إزالة السطور الجديدة وترميز أحرف \"أقل من\" من خلال مواضع مثل قيم سمات العناصر."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "تم إيقاف `chrome.loadTimes()` نهائيًا، ويمكنك بدلاً منها استخدام واجهة برمجة التطبيقات Navigation Timing 2 الموحَّدة."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات `chrome.loadTimes()` نهائيًا. وبدلاً منها، يمكنك استخدام واجهة برمجة التطبيقات الموحَّدة Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات `chrome.loadTimes()` نهائيًا. وبدلاً منها، يمكنك استخدام واجهة برمجة التطبيقات الموحَّدة Navigation Timing 2 التي تتضمّن `nextHopProtocol`."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "سيتم رفض ملفات تعريف الارتباط التي تتضمّن الحرف `(0|r|n)` بدلاً من اقتطاعها."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "إنّ ميزة تخفيف قيود السياسة المشتركة المصدر من خلال ضبط `document.domain` تم إيقافها نهائيًا، وستصبح غير مفعَّلة تلقائيًا. ويتعلّق تحذير الإيقاف النهائي هذا بإذن الوصول من مصادر متعددة والذي تم تفعيله من خلال ضبط `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "إنَّ ميزة تنفيذ الوظيفة window.alert المستنِدة إلى إطارات iframe من مصادر متعددة تم إيقافها نهائيًا وستتم إزالتها في المستقبل."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "إنّ ميزة تنفيذ الوظيفة window.confirm المستنِدة إلى إطارات iframe من مصادر متعددة تم إيقافها نهائيًا وستتم إزالتها في المستقبل."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "تم إيقاف أحداث تغيُّر نموذج العناصر في المستند (DOM)، بما في ذلك `DOMSubtreeModified` و`DOMNodeInserted` و`DOMNodeRemoved` و`DOMNodeRemovedFromDocument` و`DOMNodeInsertedIntoDocument` و`DOMCharacterDataModified` (https://w3c.github.io/uievents/#legacy-event-types) وستتم إزالتها. يُرجى استخدام `MutationObserver` بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "تم إيقاف المخطّطات data: URL نهائيًا في عنصر <use> للرسومات الموجّهة التي يمكن تغيير حجمها (SVG) وستتم إزالتها في المستقبل."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "إنّ ميزة تخفيف قيود السياسة المشتركة المصدر من خلال ضبط `document.domain` تم إيقافها نهائيًا، وستصبح غير مفعَّلة تلقائيًا. لمواصلة استخدام هذه الميزة، يُرجى إيقاف مجموعات الوكلاء المرتبطة حسب المصدر من خلال إرسال العنوان `Origin-Agent-Cluster: ?0` مع استجابة HTTP للمستند والإطارات. لمعرفة مزيد من التفاصيل، يمكنك الاطّلاع على https://developer.chrome.com/blog/immutable-document-domain/‎."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "تم إيقاف عنوان `Expect-CT` نهائيًا وستتم إزالته. يتطلَّب Chrome توفُّر شهادة الشفافية لجميع الشهادات الموثوق بها التي تم إصدارها بشكل علني بعد 30 نيسان (أبريل) 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "لم تعُد الميزتان `getCurrentPosition()` و`watchPosition()` متوافقتين مع المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "تم إيقاف الإجراءين `getCurrentPosition()` و`watchPosition()` نهائيًا على المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "لم تعُد ميزة `getUserMedia()` متوافقة مع المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "تم إيقاف `RTCPeerConnectionIceErrorEvent.hostCandidate` نهائيًا. يُرجى استخدام `RTCPeerConnectionIceErrorEvent.address` أو `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "إنّ مصدر تطبيق التاجر والبيانات العشوائية من حدث مشغّل الخدمات في `canmakepayment` تم إيقافهما نهائيًا وستتم إزالتهما: `topOrigin` و`paymentRequestOrigin` و`methodData` و`modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "طلب الموقع الإلكتروني موردًا فرعيًا من شبكة يمكن الوصول إليه من خلال الموقع الإلكتروني فقط بسبب موضع مستخدميه المميّز على الشبكة. تكشف هذه الطلبات عن الأجهزة والخوادم الخاصة على الإنترنت، ما يزيد من خطر التعرض لهجمات تقليد الطلبات من موقع إلكتروني مختلف (CSRF) و/أو تسرُّب المعلومات. وللحدِّ من هذه المخاطر، أوقف Chrome نهائيًا طلبات الوصول إلى موارد فرعية خاصة، وذلك عند تقديمها من خلال سياقات غير آمنة، وسيبدأ في حظرها."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "إنّ الحقل `dailyUpdateUrl` في `InterestGroups` المضبوط على `joinAdInterestGroup()` تمت إعادة تسميته إلى `updateUrl` للإشارة إلى سلوكه بدقة أكبر."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "لا يمكن تحميل صفحات الأنماط المتتالية (CSS) من عناوين URL للملفات `file:` ما لم تنتهِ الملفات بالامتداد `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "نظرًا لتغيّر المواصفات، تم بشكل نهائي إيقاف إمكانية استخدام `SourceBuffer.abort()` الهادفة إلى إلغاء عملية إزالة النطاق غير المتزامن الذي يخصّ `remove()`. ستتم إزالة الميزة في المستقبل. وعليك معالجة الحدث `updateend` بدلاً من ذلك. ‫`abort()` مخصَّص فقط لإلغاء إمكانية إلحاق الوسائط غير المتزامنة أو إعادة ضبط حالة المحلِّل."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "نظرًا لتغيّر المواصفات، تم بشكل نهائي إيقاف إمكانية ضبط `MediaSource.duration` على قيمة أقل من الحد الأقصى للطابع الزمني المخصَّص لعرض أي إطارات تم ترميزها وتخزينها مؤقتًا. إنّ الإزالة الضمنية للوسائط المُقتطَعة التي تم تخزينها مؤقتًا لن تكون متاحة في المستقبل. وبدلاً من ذلك، يجب تطبيق `remove(newDuration, oldDuration)` بشكل واضح على جميع `sourceBuffers` التي تتوفّر بها `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "ستطلب واجهة برمجة التطبيقات Web MIDI إذنًا للاستخدام حتى في حال عدم تحديد رسائل النظام الحصرية (Sysex) في `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "إنّ سمة `shadowroot` القديمة غير الموحّدة تم إيقافها نهائيًا، و*لن تعمل* بعد الآن في الإصدار M119. يُرجى استخدام سمة `shadowrootmode` الجديدة الموحّدة بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "قد يتوقف استخدام واجهة برمجة التطبيقات Notification API من مصادر غير آمنة. يجب مراعاة نقل تطبيقك إلى مصدر آمن، مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "قد تتوقّف إمكانية طلب إذن لواجهة برمجة التطبيقات Notification API من أحد إطارات iframe من مصادر متعددة. يجب مراعاة طلب إذن من إطار عالي المستوى أو فتح نافذة جديدة بدلاً من ذلك."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "تم إيقاف الخيار `imageOrientation: 'none'`‎ في createImageBitmap نهائيًا. يُرجى استخدام createImageBitmap مع الخيار ‎\\{imageOrientation: 'from-image'\\} بدلاً منه."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "يتفاوض شريكك لاستخدام إصدار (D) القديم من بروتوكول أمان طبقة النقل (TLS). يُرجى التحقّق من الأمر مع شريكك لحلّ هذه المشكلة."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "في حال تحديد القيمة `overflow: visible` ضمن علامات img وvideo وcanvas، قد يُعرَض محتوى مرئي خارج حدود العنصر. يُرجى الاطّلاع على الرابط https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "تم إيقاف `paymentManager.instruments` نهائيًا. يُرجى استخدام ميزة التثبيت الفوري (JIT) مع تطبيقات معالجة عمليات الدفع."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "تجاوز طلب البيانات من واجهة برمجة التطبيقات `PaymentRequest` التوجيه `connect-src` في Content-Security-Policy (سياسة أمان المحتوى). تم إيقاف هذا التجاوز نهائيًا. يُرجى إضافة معرِّف طريقة الدفع من واجهة برمجة التطبيقات `PaymentRequest` (في حقل `supportedMethods`) إلى توجيه `connect-src` في سياسة أمان المحتوى."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "تم إيقاف `StorageType.persistent` نهائيًا. يُرجى استخدام `navigator.storage` الموحّدة بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "إنّ استخدام `<source src>` مع العنصر الرئيسي `<picture>` غير صالح، وبالتالي سيتم تجاهله. يُرجى استخدام `<source srcset>` بدلاً من ذلك."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "إنّ طريقة webkitCancelAnimationFrame مخصّصة للمورّدين. يُرجى استخدام طريقة cancelAnimationFrame العادية بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "إنّ طريقة webkitRequestAnimationFrame مخصّصة للمورّدين. يُرجى استخدام طريقة requestAnimationFrame العادية بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitDisplayingFullscreen نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Document.fullscreenElement بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitEnterFullscreen()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Element.requestFullscreen()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitEnterFullscreen()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Element.requestFullscreen()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitExitFullscreen()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Document.exitFullscreen()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitExitFullscreen()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Document.exitFullscreen()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات HTMLVideoElement.webkitSupportsFullscreen نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Document.fullscreenEnabled بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "سيتم إيقاف واجهة برمجة التطبيقات `chrome.privacy.websites.privacySandboxEnabled` نهائيًا، علمًا بأنّها ستظل نشطة للتوافق مع الأنظمة القديمة إلى أن يتم طرح الإصدار الرئيسي M113. بدلاً من هذه الواجهة، يُرجى استخدام واجهات برمجة التطبيقات `chrome.privacy.websites.topicsEnabled` و`chrome.privacy.websites.fledgeEnabled` و`chrome.privacy.websites.adMeasurementEnabled`. لمعرفة مزيد من المعلومات، يمكنك الانتقال إلى https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "تمت إزالة القيد `DtlsSrtpKeyAgreement`. لقد حدَّدت القيمة `false` لهذا القيد، وهو ما يتم تفسيره كمحاولة لاستخدام إجراء `SDES key negotiation` الذي تمت إزالته. لقد تمت إزالة هذه الوظيفة. وبدلاً منها، يمكنك استخدام إحدى الخدمات المتوافقة مع `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "تمت إزالة القيد `DtlsSrtpKeyAgreement`. لقد حدَّدت القيمة `true` لهذا القيد، وهو إجراء ليس له أي تأثير، غير أنّه يمكنك إزالة هذا القيد بغرض التنظيم."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "تم إيقاف الطريقة getStats()‎ المستنِدة إلى معاودة الاتصال نهائيًا وستتم إزالتها. يُرجى استخدام الطريقة getStats()‎ المتوافقة مع المواصفات بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "تم إيقاف واجهة برمجة التطبيقات Range.expand()‎ نهائيًا. يُرجى استخدام واجهة برمجة التطبيقات Selection.modify()‎ بدلاً منها."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "يتم حظر طلبات الموارد الفرعية إذا كانت عناوين URL الخاصة بها تحتوي على بيانات اعتماد مُضمَّنة (مثل `https://user:pass@host/`)."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "تم إيقاف الخيار `rtcpMuxPolicy` نهائيًا وستتم إزالته."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "ستتطلّب `SharedArrayBuffer` حظر الوصول من نطاقات أخرى. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://developer.chrome.com/blog/enabling-shared-array-buffer/‎."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "إنّ ميزة تنفيذ `speechSynthesis.speak()` بدون تفعيل المستخدِم له متوقفة نهائيًا وستتم إزالتها."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "يجب أن تستخدم الإضافات ميزة حظر الوصول من نطاقات أخرى لمواصلة استخدام `SharedArrayBuffer`. يُرجى الاطّلاع على https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/‎."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "تم إيقاف لغة الاستعلامات البنيوية (SQL) على الويب نهائيًا. يُرجى استخدام SQLite WebAssembly أو Indexed Database."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "تم إيقاف واصف الأذونات `window-placement` نهائيًا. يمكنك استخدام `window-management` كبديل. للحصول على مزيد من المساعدة، يُرجى الاطّلاع على الرابط https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "تم إيقاف سياسة الأذونات `window-placement` نهائيًا. يمكنك استخدام `window-management` كبديل. للحصول على مزيد من المساعدة، يُرجى الاطّلاع على الرابط https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "لا يتوفّر الترميز UTF-16 من خلال استجابة تنسيق json في واجهة برمجة التطبيقات `XMLHttpRequest`."
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "واجهة برمجة التطبيقات `XMLHttpRequest` المتزامنة في سلسلة أنظمة التشغيل الرئيسية متوقفة نهائيًا بسبب تأثيراتها الضارة في تجربة المستخدِم النهائي. للحصول على مزيد من المساعدة، يُرجى الاطّلاع على الرابط https://xhr.spec.whatwg.org/‎."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "تم إيقاف `supportsSession()` نهائيًا. يُرجى استخدام `isSessionSupported()` والتحقّق من القيمة المنطقية النهائية."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "وقت حظر سلسلة المحادثات الأساسية"

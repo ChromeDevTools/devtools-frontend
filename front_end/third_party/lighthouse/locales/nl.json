@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>`-element bevat een geldige waarde voor het `[lang]`-kenmerk"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Als de webpagina geen consistente taal specificeert, kan de schermlezer de tekst van de pagina misschien niet juist aankondigen. [Meer informatie over het kenmerk `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Het element `<html>` heeft geen `[xml:lang]`-kenmerk met dezelfde basistaal als het kenmerk `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Het element `<html>` heeft een `[xml:lang]`-kenmerk met dezelfde basistaal als het kenmerk `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Voor informatieve elementen moet een korte, beschrijvende alternatieve tekst worden gebruikt. Decoratieve elementen kunnen worden genegeerd met een leeg alt-kenmerk. [Meer informatie over het kenmerk `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Afbeeldingselementen bevatten `[alt]`-kenmerken"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Als je onderscheidende en toegankelijke tekst aan invoerknoppen toevoegt, kunnen gebruikers van een schermlezer beter begrijpen wat het doel van de invoerknop is. [Meer informatie over invoerknoppen](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Invoerknoppen bevatten geen onderscheidende tekst."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Invoerknoppen bevatten onderscheidende tekst."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Als je een afbeelding gebruikt als `<input>`-knop en hiervoor alternatieve tekst opgeeft, kunnen gebruikers van een schermlezer beter begrijpen wat het doel van de knop is. [Meer informatie over de invoer van alt-text voor afbeeldingen](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Geen element dat een `[tabindex]`-waarde heeft die groter is dan 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Schermlezers hebben functies die navigeren in tabellen makkelijker maken. Als je zorgt dat tabellen het daadwerkelijke bijschriftelement gebruiken in plaats van cellen met het kenmerk `[colspan]`, kun je de functionaliteit verbeteren voor gebruikers van een schermlezer. [Meer informatie over bijschriften](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tabellen gebruiken geen `<caption>` in plaats van cellen met het kenmerk `[colspan]` om een bijschrift aan te geven."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tabellen gebruiken `<caption>` in plaats van cellen met het kenmerk `[colspan]` om een bijschrift aan te geven."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Schermlezers hebben functies die navigeren in tabellen makkelijker maken. Als je zorgt dat `<td>`-elementen in een grote tabel (3 of meer cellen in breedte en hoogte) een gekoppelde tabelkop hebben, kun je de functionaliteit verbeteren voor gebruikers van een schermlezer. [Meer informatie over tabelkoppen](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "`<td>`-elementen in een grote `<table>` hebben geen tabelkoppen."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "`<td>`-elementen in een grote `<table>` hebben een of meer tabelkoppen."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Schermlezers hebben functies die navigeren in tabellen makkelijker maken. Als je zorgt dat `<td>`-cellen die het `[headers]`-kenmerk gebruiken, alleen verwijzen naar andere cellen in dezelfde tabel, kun je de functionaliteit verbeteren voor gebruikers van een schermlezer. [Meer informatie over het kenmerk `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Pagina's die een AppBanner hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Back-Forward Cache is uitgezet vanwege een keepalive-verzoek."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Back-Forward Cache is uitgezet door flags. Ga naar chrome://flags/#back-forward-cache om het lokaal aan te zetten op dit apparaat."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Pagina's die de WebUSB API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Back-Forward Cache is uitgezet omdat cookies zijn uitgezet op een pagina die `Cache-Control: no-store` gebruikt."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Pagina's die een specifieke worker of worklet gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Pagina's met een open IndexedDB-verbinding komen momenteel niet in aanmerking voor Back-Forward Cache."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Back-Forward Cache is uitgezet vanwege een IndexedDB-gebeurtenis."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Er zijn niet in aanmerking komende API's gebruikt."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Pagina's waarin JavaScript is geïnjecteerd door extensies, komen momenteel niet in aanmerking voor Back-Forward Cache."
+    "message": "Pagina's waarin `JavaScript` is geïnjecteerd door extensies, komen op dit moment niet in aanmerking voor Back-Forward Cache."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Pagina's waarin StyleSheet is geïnjecteerd door extensies, komen momenteel niet in aanmerking voor Back-Forward Cache."
+    "message": "Pagina's waarin een `StyleSheet` is geïnjecteerd door extensies, komen op dit moment niet in aanmerking voor Back-Forward Cache."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Interne fout."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Voor compatibiliteit met oudere browsers kun je overwegen 'unsafe-inline' toe te voegen (dit wordt genegeerd door browsers die nonces/hashes ondersteunen)."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Check de statuspagina van de functie voor meer informatie."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Deze wijziging wordt van kracht vanaf mijlpaal {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Beëindigde functie gebruikt"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Autorisatie wordt niet gedekt door het jokerteken (*) voor het gebruik van `Access-Control-Allow-Headers` in CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "In plaats van de kiezer `-internal-media-controls-overlay-cast-button` moet het kenmerk `disableRemotePlayback` worden gebruikt om de standaardintegratie van Cast uit te zetten."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Bronverzoeken waarvan de URL's verwijderde `(n|r|t)`-tekens voor witruimten en kleiner-dan-tekens (`<`) bevatten, worden geblokkeerd. Verwijder nieuwe-regelitems en codeer kleiner-dan-tekens, bijvoorbeeld in kenmerkwaarden voor elementen, om deze bronnen te laden."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` is beëindigd, gebruik in plaats daarvan de gestandaardiseerde API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` is beëindigd, gebruik in plaats daarvan de gestandaardiseerde API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` is beëindigd, gebruik in plaats daarvan de gestandaardiseerde API: `nextHopProtocol` in Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookies die een `(0|r|n)`-teken bevatten, worden afgewezen in plaats van afgekapt."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Versoepeling van het same-origin-beleid door `document.domain` in te stellen is beëindigd en wordt standaard uitgezet. Deze beëindigingswaarschuwing is voor een cross-origin-toegang die is aangezet door `document.domain` in te stellen."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "De activering van window.alert via cross-origin iframes is beëindigd en wordt in de toekomst verwijderd."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "De activering van window.confirm van cross-origin iframes is beëindigd en wordt in de toekomst verwijderd."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM-mutatiegebeurtenissen, waaronder `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` en `DOMCharacterDataModified`, zijn beëindigd (https://w3c.github.io/uievents/#legacy-event-types) en worden verwijderd. Gebruik in plaats daarvan `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Ondersteuning voor gegevens: URL's in <use>-element van svg zijn beëindigd en worden in de toekomst verwijderd."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Versoepeling van het same-origin-beleid door `document.domain` in te stellen is beëindigd en wordt standaard uitgezet. Als je deze functie wilt blijven gebruiken, meld je je af voor origin-keyed agentclusters door een `Origin-Agent-Cluster: ?0`-header met de HTTP-reactie voor het document en de frames mee te sturen. Zie https://developer.chrome.com/blog/immutable-document-domain/ voor meer informatie."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "De header `Expect-CT` is beëindigd en wordt verwijderd. Chrome vereist certificaattransparantie voor alle openbaar vertrouwde certificaten die na 30 april 2018 zijn uitgegeven."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` en `watchPosition()` werken niet meer op niet-beveiligde oorsprongen. Als je deze functie wilt gebruiken, kun je overwegen om een beveiligde oorsprong voor je app te gebruiken, zoals HTTPS. Zie https://goo.gle/chrome-insecure-origins voor meer informatie."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` en `watchPosition()` zijn beëindigd op niet-beveiligde oorsprongen. Als je deze functie wilt gebruiken, kun je overwegen om een beveiligde oorsprong voor je app te gebruiken, zoals HTTPS. Zie https://goo.gle/chrome-insecure-origins voor meer informatie."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` werkt niet meer op niet-beveiligde oorsprongen. Als je deze functie wilt gebruiken, kun je overwegen om een beveiligde oorsprong voor je app te gebruiken, zoals HTTPS. Zie https://goo.gle/chrome-insecure-origins voor meer informatie."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` is beëindigd. Gebruik in plaats daarvan `RTCPeerConnectionIceErrorEvent.address` of `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "De verkoperoorsprong en willekeurige gegevens van de `canmakepayment`-service worker-gebeurtenis zijn beëindigd en worden verwijderd: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "De website heeft een subbron bij een netwerk aangevraagd die alleen toegankelijk is vanwege de bevoorrechte netwerkpositie van de gebruikers. Deze verzoeken stellen niet-openbare apparaten en servers bloot aan internet, waardoor het risico op een CSRF-aanval (cross-site request forgery) en/of informatielekken toeneemt. Ter beperking van deze risico's beëindigt Chrome verzoeken naar niet-openbare subbronnen als deze worden gestart vanuit onbeveiligde omgevingen en gaat Chrome dergelijke verzoeken blokkeren."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "De naam van het veld `dailyUpdateUrl` van `InterestGroups` dat is doorgegeven aan `joinAdInterestGroup()`, is gewijzigd in `updateUrl` om het gedrag nauwkeuriger aan te geven."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Css kan niet worden geladen via `file:`-URL's, tenzij ze eindigen op een `.css`-bestandsextensie."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Het gebruik van `SourceBuffer.abort()` om de verwijdering van het asynchrone bereik van `remove()` te annuleren, is verwijderd vanwege wijzigingen in de specificaties. Ondersteuning wordt in de toekomst verwijderd. Gebruik in plaats daarvan een listener voor de gebeurtenis `updateend`. `abort()` is alleen bedoeld om een asynchrone mediatoevoeging te annuleren of om de status van de parser te resetten."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Het instellen van `MediaSource.duration` onder het hoogste presentatietijdstempel van gebufferde gecodeerde frames is beëindigd vanwege wijzigingen in de specificaties. Ondersteuning voor impliciete verwijdering van afgebroken gebufferde media wordt in de toekomst verwijderd. In plaats daarvan moet je `remove(newDuration, oldDuration)` expliciet uitvoeren voor alle `sourceBuffers`, waarbij `newDuration < oldDuration` is."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI vraagt toestemming voor het gebruik van SysEx, zelfs als de SysEx niet is opgegeven in de `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Het oudere, niet-gestandaardiseerde kenmerk `shadowroot` is beëindigd en *werkt niet meer* in M119. Gebruik in plaats daarvan het nieuwe, gestandaardiseerde kenmerk `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "De Notification API mag niet meer worden gebruikt vanaf niet-beveiligde oorsprongen. Je kunt overwegen om een beveiligde oorsprong voor je app te gebruiken, zoals HTTPS. Zie https://goo.gle/chrome-insecure-origins voor meer informatie."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Rechten voor de Notification API kunnen niet meer worden aangevraagd bij een cross-origin iframe. Je kunt rechten aanvragen bij een frame op het hoofdniveau of in plaats daarvan een nieuw venster openen."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Optie `imageOrientation: 'none'` in createImageBitmap is beëindigd. Gebruik in plaats daarvan createImageBitmap met de optie \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Je partner gebruikt een verouderde (D)TLS-versie. Neem contact op met je partner om dit op te lossen."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Als je `overflow: visible` opgeeft voor img-, video- en canvas-tags, kunnen deze visuele content produceren buiten de elementgrenzen. Zie https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` is beëindigd. Gebruik in plaats daarvan just-in-time-installaties voor betalingshandlers."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Je aanroep van `PaymentRequest` heeft de instructie Content-Security-Policy (CSP) `connect-src` genegeerd. Deze negeeractie is beëindigd. Voeg de betaalmethode-ID van de `PaymentRequest`-API (in het veld `supportedMethods`) toe aan je CSP-instructie `connect-src`."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` is beëindigd. Gebruik in plaats daarvan de gestandaardiseerde `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` met een bovenliggende `<picture>` is ongeldig en wordt daarom genegeerd. Gebruik in plaats daarvan `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimatieFrame is leverancierspecifiek. Gebruik in plaats daarvan het standaard cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame is leverancierspecifiek. Gebruik in plaats daarvan het standaard requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen is beëindigd. Gebruik in plaats daarvan Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() is beëindigd. Gebruik in plaats daarvan Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() is beëindigd. Gebruik in plaats daarvan Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() is beëindigd. Gebruik in plaats daarvan Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() is beëindigd. Gebruik in plaats daarvan Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen is beëindigd. Gebruik in plaats daarvan Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "De API `chrome.privacy.websites.privacySandboxEnabled` wordt beëindigd, maar blijft actief voor compatibiliteit met eerdere versies tot release M113. Gebruik in plaats daarvan `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` en `chrome.privacy.websites.adMeasurementEnabled`. Zie https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "De beperking `DtlsSrtpKeyAgreement` is verwijderd. Je hebt een `false`-waarde voor deze beperking opgegeven. Deze wordt geïnterpreteerd als een poging om de verwijderde `SDES key negotiation`-methode te gebruiken. Deze functionaliteit is verwijderd. Gebruik een service die `DTLS key negotiation` wel ondersteunt."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "De beperking `DtlsSrtpKeyAgreement` is verwijderd. Je hebt een `true`-waarde voor deze beperking opgegeven. Deze heeft geen effect en kan worden verwijderd om meer orde te scheppen."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "De op callback gebaseerde getStats() is beëindigd en wordt verwijderd. Gebruik in plaats daarvan de getStats() die aan de specificaties voldoet."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() is beëindigd. Gebruik in plaats daarvan Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Subbronverzoeken waarvan de URL's ingesloten inloggegevens bevatten (bijv. `https://user:pass@host/`), worden geblokkeerd."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "De optie `rtcpMuxPolicy` is beëindigd en wordt verwijderd."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` vereist cross-origin-isolatie. Zie https://developer.chrome.com/blog/enabling-shared-array-buffer/ voor meer informatie."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` zonder gebruikersactivering is beëindigd en wordt verwijderd."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Extensies moeten toestemming geven voor cross-origin-isolatie om `SharedArrayBuffer` te blijven gebruiken. Zie https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL is beëindigd. Gebruik SQLite WebAssembly of Indexed Database."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "De rechtenbeschrijving `window-placement` is beëindigd. Gebruik in plaats daarvan `window-management`. Ga voor meer hulp naar https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Het rechtenbeleid `window-placement` is beëindigd. Gebruik in plaats daarvan `window-management`. Ga voor meer hulp naar https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16 wordt niet ondersteund door de reactie-json in `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synchrone `XMLHttpRequest` op de primaire thread is beëindigd vanwege het nadelige effect op de gebruikerservaring van de eindgebruiker. Ga voor meer hulp naar https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` is beëindigd. Gebruik `isSessionSupported()` en check in plaats daarvan de omgezette booleaanse waarde."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Tijd dat primaire thread is geblokkeerd"

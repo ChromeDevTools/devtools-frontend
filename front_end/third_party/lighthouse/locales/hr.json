@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Element `<html>` ima valjanu vrijednost za svoj atribut `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Ako web-stranica ne navodi dosljedan jezik, čitač zaslona možda neće pravilno najavljivati tekst sa stranice. [Saznajte više o atributu `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Element `<html>` nema atribut `[xml:lang]` s istim osnovnim jezikom kao atribut `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Element `<html>` ima atribut `[xml:lang]` s istim osnovnim jezikom kao atribut `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informativni elementi trebali bi sadržavati kratak, opisni zamjenski tekst. Ukrasni elementi mogu se zanemariti praznim atributom alt. [Saznajte više o atributu `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Elementi slike imaju `[alt]` atribute"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Dodavanje vidljivog i dostupnog teksta gumbima za unos može pomoći korisnicima čitača zaslona da shvate svrhu gumba za unos. [Saznajte više o gumbima za unos](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Gumbi za unos nemaju prepoznatljiv tekst."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Gumbi za unos imaju prepoznatljiv tekst."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Kada se slika upotrebljava kao gumb `<input>`, navođenje zamjenskog teksta može pomoći korisnicima čitača zaslona da shvate svrhu gumba. [Saznajte više o zamjenskom tekstu slike za unos](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Nijedan element nema vrijednost `[tabindex]` veću od 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Čitači zaslona sadrže značajke za olakšavanje kretanja po tablicama. Ako tablice upotrebljavaju stvarni element titlova umjesto ćelija s atributom `[colspan]`, to može poboljšati doživljaj za korisnike čitača zaslona. [Saznajte više o titlovima](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tablice ne upotrebljavaju `<caption>` umjesto ćelija s atributom `[colspan]` da bi naznačili naslov."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tablice upotrebljavaju `<caption>` umjesto ćelija s atributom `[colspan]` kako bi naznačile naslov."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Čitači zaslona sadrže značajke za olakšavanje kretanja po tablicama. Ako elementi `<td>` u velikoj tablici (tri ili više ćelija u širini i visini) imaju povezano zaglavlje tablice, to može poboljšati doživljaj za korisnike čitača zaslona. [Saznajte više o zaglavljima tablice](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Elementi `<td>` u velikom elementu `<table>` nemaju zaglavlja tablice."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Elementi `<td>` u velikom elementu `<table>` imaju jedno ili više zaglavlja tablice."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Čitači zaslona sadrže značajke za olakšavanje kretanja po tablicama. Potrebno je pripaziti da se ćelije `<td>` koje upotrebljavaju atribut `[headers]` odnose samo na druge ćelije u istoj tablici kako bi se korisnicima čitača zaslona omogućio bolji doživljaj. [Saznajte više o atributu `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Stranice koje su zatražile AppBanner trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Predmemoriranje cijele stranice onemogućeno je zbog keepalive zahtjeva."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Oznake onemogućuju predmemoriranje cijele stranice. Otvorite chrome://flags/#back-forward-cache da biste ga lokalno omogućili na ovom uređaju."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Stranice koje koriste WebUSB API ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Predmemoriranje cijele stranice onemogućeno je jer su kolačići onemogućeni na stranici koja upotrebljava `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Stranice koje koriste predviđeni alat ili radni zadatak trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Stranice koje imaju otvorenu IndexedDB vezu trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Predmemoriranje cijele stranice onemogućeno je zbog IndexedDB događaja."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Korišteni su API-ji koji ne ispunjavaju kriterije."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Stranice u koje je JavaScript ugrađen putem proširenja trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+    "message": "Stranice u koje je `JavaScript` ugrađen putem proširenja trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Stranice u koje je StyleSheet ugrađen putem proširenja trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+    "message": "Stranice u koje je `StyleSheet` ugrađen putem proširenja trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Interna pogreška."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Savjetujemo vam da koristite unsafe-inline (koji ignoriraju preglednici koji podržavaju nonceove/hasheve) radi kompatibilnosti s prijašnjim verzijama preglednika."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Više pojedinosti potražite na stranici statusa značajki."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Promjena će stupiti na snagu uz prekretnicu {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Koristi se obustavljena značajka"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Autorizacija neće biti pokrivena zamjenskim znakom (*) u rukovanju CORS zaglavljem `Access-Control-Allow-Headers`."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Atribut `disableRemotePlayback` trebao bi se koristiti kako bi se onemogućila zadana integracija Casta umjesto upotrebe selektora `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Blokirani su zahtjevi za resurse čiji su URL-ovi sadržavali uklonjene znakove razmaka `(n|r|t)` i znakove \"manje od\" (`<`). Uklonite nove retke i kodirajte znakove \"manje od\" s mjesta kao što su vrijednosti atributa elemenata kako bi se ti resursi učitali."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` je obustavljen, upotrijebite standardizirani API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` je obustavljen, upotrijebite standardizirani API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` je obustavljen, upotrijebite standardizirani API: `nextHopProtocol` u Navigation Timingu 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Kolačići koji sadrže znak `(0|r|n)` neće se skratiti već će se odbiti."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Popuštanje pravila istog porijekla postavljanjem `document.domain` obustavlja se i onemogućit će se prema zadanim postavkama. Ovo upozorenje o obustavljanju odnosi se na pristupanje iz više izvora koje je bilo omogućeno postavkom `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Pokretanje window.alert iz iframea različitih izvora obustavlja se i ubuduće će biti uklonjeno."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Pokretanje API-ja window.confirm iz iframesa različitih izvora obustavlja se i ubuduće će biti uklonjeno."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Obustavljeni su događaji mutacije DOM-a, uključujući `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` i `DOMCharacterDataModified` (https://w3c.github.io/uievents/#legacy-event-types) i uklonit će se. Umjesto toga koristite `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Podrška za podatke: URL-ovi u SVG elementu <use> obustavljaju se i uklanjaju."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Popuštanje pravila istog porijekla postavljanjem `document.domain` obustavlja se i onemogućit će se prema zadanim postavkama. Da biste nastavili koristiti tu značajku, isključite grupe agenata s ključem porijekla slanjem zaglavlja `Origin-Agent-Cluster: ?0` uz HTTP odgovor za dokument i okvire. Više pojedinosti pročitajte na vezi https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Zaglavlje `Expect-CT` obustavlja se i uklonit će se. Chrome zahtijeva Transparentnost certifikata za sve javno pouzdane certifikate izdane nakon 30. travnja 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` i `watchPosition()` više ne rade na nesigurnim izvorima. Da biste upotrebljavali tu značajku, trebali biste razmisliti o prebacivanju svoje aplikacije na siguran izvor kao što je HTTPS. Više pojedinosti pročitajte na vezi https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` i `watchPosition()` obustavljaju se na nesigurnim izvorima. Da biste upotrebljavali tu značajku, trebali biste razmisliti o prebacivanju svoje aplikacije na siguran izvor kao što je HTTPS. Više pojedinosti pročitajte na vezi https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` više ne funkcionira na nesigurnim izvorima. Da biste upotrebljavali tu značajku, trebali biste razmisliti o prebacivanju svoje aplikacije na siguran izvor kao što je HTTPS. Više pojedinosti pročitajte na vezi https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` je obustavljen. Upotrijebite `RTCPeerConnectionIceErrorEvent.address` ili `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Podaci o izvoru trgovca i proizvoljni podaci o događaju uslužnog alata `canmakepayment` obustavljeni su te će se ukloniti: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Web-lokacija je zatražila podresurs s mreže kojem može pristupiti samo zbog privilegiranog položaja svojih korisnika u mreži. Ti zahtjevi internetu izlažu uređaje i poslužitelje koji nisu javni, povećavajući opasnost od napada krivotvorenjem zahtjeva s druge web-lokacije (CSRF) i/ili curenja informacija. Da bi smanjio te opasnosti, Chrome obustavlja zahtjeve podresursima koji nisu javni kad se pokreću iz nesigurnih konteksta i počet će ih blokirati."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Polje `dailyUpdateUrl` u strukturi `InterestGroups` koje je proslijeđeno na `joinAdInterestGroup()` preimenovano je u `updateUrl` kako bi preciznije odražavalo njegovo ponašanje."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS se ne može učitati s `file:` URL-ova osim ako završavaju na datotečni nastavak `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Upotreba `SourceBuffer.abort()` za prekid uklanjanja asinkronog raspona za `remove()` obustavljena je zbog promjene specifikacija. Podrška će se ukloniti u budućnosti. Umjesto toga trebali biste osluškivati događaj `updateend`. `abort()` može prekinuti samo stanje dodavanja asinkronog medija ili raščlanjivača vraćanja na zadano."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Postavljanje atributa `MediaSource.duration` ispod najviše vremenske oznake prezentacije bilo kojeg kodiranog okvira spremljenog u međuspremnik obustavljeno je zbog promjene specifikacija. Podrška za implicitno uklanjanje skraćenog medija spremljenog u međuspremnik uklonit će se. Umjesto toga trebali biste izvesti eksplicitni `remove(newDuration, oldDuration)` na svim `sourceBuffers`, gdje je `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI tražit će dopuštenje za upotrebu čak i ako sysex nije naveden u `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Obustavljen je stariji nestandardizirani atribut `shadowroot` više *neće funkcionirati* u verziji M119. Umjesto njega koristite novi, standardizirani atribut `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification API možda se više neće upotrebljavati iz nesigurnih izvora. Savjetujemo vam da svoju aplikaciju prebacite na siguran izvor kao što je HTTPS. Više pojedinosti pročitajte na vezi https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Možda se više neće tražiti dopuštenje za Notification API iz iframea različitih izvora. Trebali biste razmisliti o traženju dopuštenja okvira najviše razine ili o otvaranju novog prozora."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Opcija `imageOrientation: 'none'` u stavci CreateImageBitmapa je obustavljena. Umjesto nje upotrijebite oznaku createImageBitmap s opcijom \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Vaš partner pregovara o zastarjeloj verziji (D)TLS-a. Provjerite s partnerom kako biste to ispravili."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Ako navedete `overflow: visible` za oznake img, video i canvas, te oznake mogu proizvesti vizualni sadržaj izvan granica elemenata. Pogledajte https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` je obustavljen. Umjesto toga koristite just-in-time instalaciju za rukovatelje plaćanjem."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Vaš je poziv `PaymentRequest` zaobilazio direktivu `connect-src` Pravila o sigurnosti sadržaja (CSP). To je zaobilaženje obustavljeno. Dodajte identifikator načina plaćanja iz `PaymentRequest` API-ja (u polju `supportedMethods`) direktivi `connect-src` CSP-a."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` je obustavljen. Umjesto njega upotrijebite standardizirani `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` s nadređenim `<picture>` nevažeći je i stoga se zanemaruje. Umjesto toga koristite `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame odnosi se na dobavljača. Upotrijebite standardni cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame odnosi se na dobavljača. Umjesto njega upotrijebite standardni requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingfullscreen je obustavljen. Umjesto njega koristite Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() je obustavljen. Umjesto njega koristite Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() je obustavljen. Umjesto njega koristite Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() je obustavljen. Umjesto njega koristite Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() je obustavljen. Umjesto njega koristite Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen je obustavljen. Umjesto njega koristite Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Obustavljamo API `chrome.privacy.websites.privacySandboxEnabled`, ali će ostati aktivan za kompatibilnost s prijašnjim verzijama do izdanja M113. Umjesto toga upotrijebite `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` i `chrome.privacy.websites.adMeasurementEnabled`. Posjetite https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Uklonjeno je ograničenje `DtlsSrtpKeyAgreement`. Naveli ste vrijednost `false` za ograničenje, što se tumači kao pokušaj korištenja uklonjene metode `SDES key negotiation`. Ta je funkcija uklonjena. Umjesto nje koristite uslugu koja podržava `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Uklonjeno je ograničenje `DtlsSrtpKeyAgreement`. Naveli ste vrijednost `true` za to ograničenje, što nije imalo učinka, ali možete ukloniti to ograničenje radi jasnoće."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "GetStats() na temelju poziva obustavljen je i uklonit će se. Umjesto toga upotrijebite getStats() usklađen sa specifikacijama."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() je obustavljen. Umjesto njega upotrijebite Select.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Blokirani su zahtjevi podresursa čiji URL-ovi sadrže ugrađene vjerodajnice (npr. `https://user:pass@host/`)."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Opcija `rtcpMuxPolicy` obustavlja se i uklonit će se."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` će zahtijevati izoliranje unakrsnih izvora. Više pojedinosti pročitajte na vezi https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` bez aktivacije korisnika obustavlja se i uklonit će se."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Proširenja se trebaju uključiti u izoliranje unakrsnih izvora da bi se nastavio upotrebljavati `SharedArrayBuffer`. Posjetite https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL je obustavljen. Upotrijebite SQLite WebAssembly ili indeksiranu bazu podataka"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Obustavljen je opisnik dopuštenja `window-placement`. Umjesto toga upotrijebite pravilo `window-management`. Za dodatnu pomoć posjetite https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Obustavljeno je pravilo o dopuštenjima `window-placement`. Umjesto toga upotrijebite pravilo `window-management`. Za dodatnu pomoć posjetite https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "JSON odgovor ne podržava UTF-16 u `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Sinkroni `XMLHttpRequest` na glavnoj niti obustavlja se zbog negativnog utjecaja na doživljaj krajnjeg korisnika. Za dodatnu pomoć posjetite https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "Metoda `supportsSession()` je obustavljena. Umjesto toga koristite `isSessionSupported()` i označite riješenu Booleovu vrijednost."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Vrijeme blokiranja glavne niti"
@@ -2937,7 +3168,7 @@
     "message": "Spremi kao JSON"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
-    "message": "Otvori u pregledaču"
+    "message": "Otvori u pregledniku"
   },
   "report/renderer/report-utils.js | errorLabel": {
     "message": "Pogreška!"

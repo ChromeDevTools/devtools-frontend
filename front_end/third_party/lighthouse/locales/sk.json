@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Prvok `<html>` má platnú hodnotu pre svoj atribút `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Ak na webovej stránke nie je uvedený konzistentný jazyk, čítačka obrazovky nemusí jej text oznámiť správne. [Ďalšie informácie o atribúte `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Prvok `<html>` nemá atribút `[xml:lang]` s rovnakým základným jazykom ako atribút `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Prvok `<html>` má atribút `[xml:lang]` s rovnakým základným jazykom ako atribút `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informatívne prvky by mali mať krátky opisný alternatívny text. Dekoratívne prvky je možné ignorovať pomocou prázdneho atribútu alt. [Ďalšie informácie o atribúte `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Prvky obrázka majú atribúty `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Pridaním rozlíšiteľného a prístupného textu k tlačidlám vstupu môžete pomôcť používateľom čítačiek obrazovky porozumieť účelu tlačidla vstupu. [Ďalšie informácie o tlačidlách vstupu](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Tlačidlá vstupu nemajú rozlíšiteľný text."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Tlačidlá vstupu majú rozlíšiteľný text."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Keď je ako tlačidlo `<input>` použitý obrázok, uvedenie alternatívneho textu môže pomôcť používateľom čítačky obrazovky pochopiť účel tlačidla. [Ďalšie informácie o alternatívnom texte obrázka vstupu](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Žiadny prvok nemá hodnotu `[tabindex]` vyššiu ako 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Čítačky obrazovky majú funkcie, ktoré zjednodušujú prehliadanie tabuliek. Ak zaistíte, že tabuľky budú používať príslušný prvok titulku namiesto buniek s atribútom `[colspan]`, môžete zlepšiť prostredie pre používateľov čítačiek obrazovky. [Ďalšie informácie o titulkoch](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tabuľky neuvádzajú titulok pomocou `<caption>` namiesto buniek s atribútom `[colspan]`."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tabuľky uvádzajú titulok pomocou `<caption>` namiesto buniek s atribútom `[colspan]`."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Čítačky obrazovky majú funkcie, ktoré zjednodušujú prehliadanie tabuliek. Ak zaistíte, že prvky `<td>` vo veľkej tabuľke (minimálne tri bunky na šírku a výšku) budú mať spojenú hlavičku tabuľky, môžete tým zlepšiť prostredie pre používateľov čítačiek obrazovky. [Ďalšie informácie o hlavičkách tabuliek](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Prvky `<td>` vo veľkej `<table>` nemajú hlavičky tabuľky."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Prvky `<td>` vo veľkej `<table>` majú jednu alebo viac hlavičiek tabuľky."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Čítačky obrazovky majú funkcie, ktoré zjednodušujú prehliadanie tabuliek. Keď zaistíte, aby bunky `<td>` s atribútom `[headers]` odkazovali iba na bunky v rovnakej tabuľke, môžete tým používateľom čítačiek obrazovky zjednodušiť prehliadanie. [Ďalšie informácie o atribúte `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Stránky, ktoré požiadali o AppBanner, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná v dôsledku žiadosti so signálom keepalive."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Spätná vyrovnávacia pamäť bola deaktivovaná experimentálnymi funkciami. Prejdite na chrome://flags/#back-forward-cache a aktivujte ju miestne v tomto zariadení."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Stránky s rozhraním WebUSB API nemôžu používať spätnú vyrovnávaciu pamäť."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Spätná vyrovnávacia pamäť je deaktivovaná, pretože súbory cookie sú zakázané na stránke, ktorá používa `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Stránky s vyhradenou obsluhou alebo workletom momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Stránky s otvoreným pripojením IndexedDB momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná v dôsledku udalosti IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Boli použité nevhodné rozhrania API."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Stránky, do ktorých rozšírenia vložili JavaScript, nemôžu momentálne používať spätnú vyrovnávaciu pamäť."
+    "message": "Stránky, do ktorých rozšírenia vložili `JavaScript`, nemôžu momentálne používať spätnú vyrovnávaciu pamäť."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Stránky, do ktorých rozšírenia vložili šablónu so štýlmi, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
+    "message": "Stránky, do ktorých rozšírenia vložili šablónu`StyleSheet`, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Interná chyba."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Odporúčame pridať direktívu unsafe-inline (ignorovanú prehliadačmi podporujúcimi iba raz použiteľné čísla a hodnoty hash), aby boli pravidlá spätne kompatibilné so staršími prehliadačmi."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Ďalšie podrobnosti nájdete na stránke stavu funkcie."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Táto zmena začne platiť po dosiahnutí míľnika {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Používa sa funkcia s ukončenou podporou"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Autorizácie sa nebude týkať zástupný symbol (*) pri spracovaní CORS `Access-Control-Allow-Headers`."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Ak chcete zakázať predvolenú integráciu prenosu, použite namiesto selektora `-internal-media-controls-overlay-cast-button` atribút `disableRemotePlayback`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Požiadavky zdrojov, ktorých webové adresy zahrnujú odstránené prázdne znaky `(n|r|t)` a znaky „menej ako“ (`<`), sú blokované. Ak chcete načítať tieto zdroje, odstráňte nové riadky a kódujte znaky „menej ako“ z miest, ako sú hodnoty atribútu prvkov."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "Podpora funkcie `chrome.loadTimes()` bola ukončená. Namiesto nej použite štandardizované rozhranie API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "Podpora funkcie `chrome.loadTimes()` bola ukončená. Namiesto nej použite štandardizované rozhranie API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "Podpora funkcie `chrome.loadTimes()` bola ukončená. Namiesto nej použite štandardizované rozhranie API: `nextHopProtocol` v rámci funkcie Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Súbory cookie so znakom `(0|r|n)` budú namiesto skrátenia odmietnuté."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Podpora uvoľnenia pravidla z rovnakých zdrojov nastavením funkcie `document.domain` bola ukončená a táto možnosť bude predvolene zakázaná. Upozornenie na ukončenie podpory pochádza z prístupu z iných zdrojov, ktorý bol povolený nastavením funkcie `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Podpora spúšťania funkcie window.alert z prvkov iframe z rôznych zdrojov bola ukončená a v budúcnosti bude odstránená."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Podpora spúšťania funkcie window.confirm z prvkov iframe z rôznych zdrojov bola ukončená a v budúcnosti bude odstránená."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Podpora udalostí DOM Mutation vrátane `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` a `DOMCharacterDataModified` bola ukončená (https://w3c.github.io/uievents/#legacy-event-types) a udalosti budú odstránené. Použite namiesto nich `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Podpora údajov: podpora webových adries v prvku SVG <use> bola ukončená a v budúcnosti budú odstránené."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Podpora uvoľnenia pravidla z rovnakých zdrojov nastavením funkcie `document.domain` bola ukončená a táto možnosť bude predvolene zakázaná. Ak chcete naďalej používať túto funkciu, odhláste sa z klastrov zástupcu spojených so zdrojom odoslaním hlavičky `Origin-Agent-Cluster: ?0` spolu s odpoveďou HTTP pre dokument a rámy. Viac sa dozviete na https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Podpora hlavičky `Expect-CT` bola ukončená a bude odstránená. Chrome vyžaduje transparentnosť pre všetky verejne dôveryhodné certifikáty vydané po 30. apríli 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "Funkcie `getCurrentPosition()` a `watchPosition()` už nefungujú v nezabezpečených zdrojoch. Ak chcete túto funkciu používať, mali by ste zvážiť prechod svojej aplikácie na zabezpečený zdroj, ako je HTTPS. Viac sa dozviete na https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "Podpora funkcií `getCurrentPosition()` a `watchPosition()` bola ukončená v nezabezpečených zdrojoch. Ak chcete túto funkciu používať, mali by ste zvážiť prechod svojej aplikácie na zabezpečený zdroj, ako je HTTPS. Viac sa dozviete na https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` už nefunguje v nezabezpečených zdrojoch. Ak chcete túto funkciu používať, mali by ste zvážiť prechod svojej aplikácie na zabezpečený zdroj, ako je HTTPS. Viac sa dozviete na https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "Podpora funkcie `RTCPeerConnectionIceErrorEvent.hostCandidate` bola ukončená. Namiesto nej použite funkciu `RTCPeerConnectionIceErrorEvent.address` alebo `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Podpora údajov o zdroji obchodníka a ľubovoľných údajov z udalosti obsluhy `canmakepayment` bola ukončená a tieto údaje budú odstránené: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Web požiadal o podzdroj zo siete, ku ktorému má prístup iba na základe privilegovanej pozície siete svojich používateľov. Tieto požiadavky vystavujú neverejné zariadenia a servery internetu, čím zvyšujú riziko útoku zahrnujúceho falšovanie požiadaviek z iného webu alebo úniku informácií. Na zmiernenie týchto rizík Chrome ukončuje podporu požiadaviek neverejných podzdrojov pri ich odoslaní z nezabezpečených kontextov a začne ich blokovať."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Pole `dailyUpdateUrl` položky `InterestGroups` odovzdané položke `joinAdInterestGroup()` bolo premenované na `updateUrl`, aby presnejšie vyjadrovalo vlastné správanie."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Šablóny CSS nie je možné načítať z webových adries `file:`, pokiaľ sa nekončia príponou súboru `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Podpora použitia funkcie `SourceBuffer.abort()` na prerušenie odstránenia asynchrónneho rozsahu možnosti `remove()` bola ukončená z dôvodu zmeny špecifikácie. Podpora bude v budúcnosti odstránená. Namiesto toho by ste mali prijímať udalosť `updateend`. Funkcia `abort()` je určená iba na prerušenie pripojenia asynchrónnych médií alebo resetovanie stavu analyzátora."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Podpora nastavenia funkcie `MediaSource.duration` pod najvyššiu časovú pečiatku prezentácie akýchkoľvek kódovaných rámov vo vyrovnávacej pamäti bola ukončená z dôvodu zmeny špecifikácie. V budúcnosti bude odstránená podpora implicitného odstránenia skrátených médií vo vyrovnávacej pamäti. Namiesto toho by ste mali vykonať explicitnú funkciu `remove(newDuration, oldDuration)` v prípade všetkých možností `sourceBuffers`, kde platí `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI požiada o povolenie na použitie, aj keď exkluzívne správy systému (SysEx) nie sú vo funkcii `MIDIOptions` špecifikované."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Podpora staršieho neštandardizovaného atribútu `shadowroot` bola ukončená a vo verzii M119 *už nebude fungovať*. Použite namiesto neho nový štandardizovaný atribút `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Rozhranie Notification API už nie je možné používať z nezabezpečených zdrojov. Mali by ste zvážiť prechod svojej aplikácie na zabezpečený zdroj, ako je HTTPS. Viac sa dozviete na https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Povolenie pre rozhranie Notification API už nie je možné požadovať z prvku iframe od iných zdrojov. Namiesto toho by ste mali zvážiť požadovanie povolenia z rámu najvyššej úrovne alebo otvorenie nového okna."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Podpora možnosti `imageOrientation: 'none'` v nástroji createImageBitmap bola ukončená. Namiesto nej použite nástroj createImageBitmap pomocou možnosti \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Váš partner používa zastaranú verziu (D)TLS. Požiadajte ho, aby tento problém odstránil."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Ak v značkách img, značkách videa a značkách canvas špecifikujete atribút `overflow: visible`, môže to spôsobiť, že vytvoria vizuálny obsah mimo hraníc prvku. Prejdite na https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "Podpora rozhrania `paymentManager.instruments` bola ukončená. Použite namiesto nej inštaláciu v pravej chvíli pre obslužné nástroje platieb."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Volanie `PaymentRequest` obišlo direktívu `connect-src` pravidiel na zabezpečenie obsahu (PZO). Podpora tohto obchádzania bola ukončená. Pridajte identifikátor spôsobu platby z rozhrania API `PaymentRequest` (v poli `supportedMethods`) do direktívy `connect-src` svojich PZO."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "Podpora rozhrania `StorageType.persistent` bola ukončená. Použite namiesto nej štandardizovaný parameter `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Prvok `<source src>` s nadradeným prvkom `<picture>` je neplatný, a preto bude ignorovaný. Použite radšej `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame je metóda špecifická pre konkrétneho dodávateľa. Použite namiesto nej štandardnú metódu cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame je metóda špecifická pre konkrétneho dodávateľa. Použite namiesto nej štandardnú metódu requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "Podpora rozhrania HTMLVideoElement.webkitDisplayingFullscreen bola ukončená. Použite namiesto neho Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "Podpora rozhrania HTMLVideoElement.webkitEnterFullScreen() bola ukončená. Použite namiesto neho Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "Podpora rozhrania HTMLVideoElement.webkitEnterFullscreen() bola ukončená. Použite namiesto neho Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "Podpora rozhrania HTMLVideoElement.webkitExitFullScreen() bola ukončená. Použite namiesto neho Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "Podpora rozhrania HTMLVideoElement.webkitExitFullscreen() bola ukončená. Použite namiesto neho Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "Podpora rozhrania HTMLVideoElement.webkitSupportsFullscreen bola ukončená. Použite namiesto neho Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Ukončujeme podporu rozhrania API `chrome.privacy.websites.privacySandboxEnabled`, ale zostane aktívne na zaistenie spätnej kompatibility až do vydania verzie M113. Používajte namiesto neho `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` a `chrome.privacy.websites.adMeasurementEnabled`. Viac sa dozviete na https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Obmedzenie `DtlsSrtpKeyAgreement` bolo odstránené. Pre toto obmedzenie ste špecifikovali hodnotu `false`, ktorá je interpretovaná ako pokus o použitie odstránenej metódy `SDES key negotiation`. Táto funkcia bola odstránená. Namiesto nej použite službu, ktorá podporuje funkciu `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Obmedzenie `DtlsSrtpKeyAgreement` bolo odstránené. Pre toto obmedzenie ste špecifikovali hodnotu `true`, ktorá nemala žiadny účinok. Toto obmedzenie však môžete odstrániť pre poriadok."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Podpora metódy callback-based getStats() bola ukončená. Táto metóda bude odstránená. Použite namiesto nej spec-compliant getStats()."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Podpora rozhrania Range.expand() bola ukončená. Použite namiesto neho Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Požiadavky podzdrojov, ktorých webové adresy zahrnujú vložené prihlasovacie údaje (napr. `https://user:pass@host/`), sú blokované."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Podpora možnosti `rtcpMuxPolicy` bola ukončená a táto možnosť bude odstránená."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` bude vyžadovať izoláciu od iných zdrojov. Viac sa dozviete na https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Podpora funkcie `speechSynthesis.speak()` bez aktivácie používateľa bola ukončená a funkcia bude odstránená."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Rozšírenia by sa mali prihlásiť do izolovania od iných zdrojov, ak chcú ďalej používať funkciu `SharedArrayBuffer`. Prejdite na https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Podpora jazyka Web SQL bola ukončená. Použite SQLite WebAssembly alebo indexovanú databázu."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Podpora deskriptora povolenia `window-placement` bola ukončená. Radšej použite `window-management`. Ďalšiu pomoc nájdete na https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Podpora pravidiel povolenia `window-placement` bola ukončená. Radšej použite `window-management`. Ďalšiu pomoc nájdete na https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "JSON odpoveď nepodporuje kódovanie UTF‑16 v rámci funkcie `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Podpora synchrónnej funkcie `XMLHttpRequest` v hlavnom vlákne bola ukončená pre nepriaznivé účinky na prostredie koncového používateľa. Viac sa dozviete na https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "Podpora funkcie `supportsSession()` bola ukončená. Namiesto toho použite značku `isSessionSupported()` a skontrolujte vybranú logickú hodnotu."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Čas blokovania hlavného vlákna"

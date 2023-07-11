@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Elemen `<html>` memiliki nilai yang valid untuk atribut `[lang]`-nya"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Jika halaman tidak menentukan bahasa yang konsisten, pembaca layar mungkin tidak dapat membacakan teks di halaman tersebut dengan benar. [Pelajari atribut lebih lanjut `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Elemen `<html>` tidak memiliki atribut `[xml:lang]` dengan bahasa dasar yang sama dengan atribut `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Elemen `<html>` memiliki atribut `[xml:lang]` dengan bahasa dasar yang sama dengan atribut `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Elemen informatif harus memberikan teks alternatif yang singkat dan deskriptif. Elemen dekoratif dapat diabaikan dengan atribut alt kosong. [Pelajari atribut lebih lanjut `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Elemen halaman memiliki atribut `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Menambahkan teks yang jelas dan mudah diakses ke tombol input dapat membantu pengguna pembaca layar memahami tujuan tombol input. [Pelajari tombol input lebih lanjut](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Tombol input tidak memiliki teks yang jelas."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Tombol input memiliki teks yang jelas."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Saat suatu gambar digunakan sebagai tombol `<input>`, penyediaan teks alternatif dapat membantu pengguna pembaca layar memahami fungsi tombol tersebut. [Pelajari teks alternatif gambar input](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Tidak ada elemen yang memiliki nilai `[tabindex]` lebih besar dari 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Pembaca layar memiliki fitur yang memudahkan navigasi tabel. Memastikan tabel menggunakan elemen teks yang sebenarnya, bukan sel dengan atribut `[colspan]`, dapat meningkatkan pengalaman bagi pengguna pembaca layar. [Pelajari teks lebih lanjut](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tabel tidak menggunakan `<caption>`, bukan sel dengan atribut `[colspan]`, untuk menunjukkan teks."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tabel menggunakan `<caption>`, bukan sel dengan atribut `[colspan]` untuk menunjukkan teks."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Pembaca layar memiliki fitur yang memudahkan navigasi tabel. Memastikan elemen `<td>` dalam tabel besar (lebar atau tinggi 3 sel atau lebih) memiliki header tabel terkait dapat meningkatkan kualitas pengalaman pengguna pembaca layar. [Pelajari lebih lanjut header tabel](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Elemen `<td>` dalam `<table>` besar tidak memiliki header tabel."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Elemen `<td>` dalam `<table>` besar memiliki satu atau beberapa header tabel."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Pembaca layar memiliki fitur yang memudahkan navigasi tabel. Memastikan sel `<td>` yang menggunakan atribut `[headers]` hanya merujuk ke sel lain dalam tabel yang sama dapat meningkatkan kualitas pengalaman bagi pengguna pembaca layar. [Pelajari lebih lanjut atribut `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Halaman yang meminta AppBanner saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Back-forward cache dinonaktifkan karena permintaan keepalive."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Back-forward cache dinonaktifkan oleh tanda. Buka chrome://flags/#back-forward-cache untuk mengaktifkannya secara lokal di perangkat ini."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Halaman yang menggunakan WebUSB API tidak dapat disimpan dengan benar dalam back-forward cache."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Back-forward cache dinonaktifkan karena cookie dinonaktifkan di halaman yang menggunakan `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Halaman yang menggunakan pekerja atau worklet khusus saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Halaman yang memiliki IndexedDB connection terbuka saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Back-forward cache dinonaktifkan karena peristiwa IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "API yang tidak memenuhi syarat telah digunakan."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Halaman yang disertai JavaScript oleh ekstensi saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
+    "message": "Halaman yang disertai `JavaScript` oleh ekstensi saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Halaman yang disertai StyleSheet oleh ekstensi saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
+    "message": "Halaman yang disertai `StyleSheet` oleh ekstensi saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Error internal."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Sebaiknya tambahkan 'unsafe-inline' (diabaikan oleh browser yang mendukung nonce/hash) agar kompatibel dengan browser versi lama."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Periksa halaman status fitur untuk mendapatkan detail selengkapnya."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Perubahan ini akan berlaku dengan milestone {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Menggunakan Fitur yang Tidak Digunakan Lagi"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Otorisasi tidak akan dicakup oleh simbol karakter pengganti (*) dalam penanganan `Access-Control-Allow-Headers` CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Daripada menggunakan pemilih `-internal-media-controls-overlay-cast-button`, sebaiknya gunakan `disableRemotePlayback` untuk menonaktifkan integrasi Cast default."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Permintaan resource yang URL-nya berisi karakter `(n|r|t)` spasi kosong yang dihapus dan karakter kurang dari (`<`) akan diblokir. Hapus baris baru dan enkode karakter kurang dari, dari tempat seperti nilai atribut elemen untuk memuat resource ini."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` tidak digunakan lagi. Sebagai gantinya, gunakan API standar: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` tidak digunakan lagi. Sebagai gantinya, gunakan API standar: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` tidak digunakan lagi. Sebagai gantinya, gunakan API standar: `nextHopProtocol` di Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookie yang berisi karakter `(0|r|n)` akan ditolak, bukan dipotong."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Melonggarkan kebijakan origin yang sama dengan menyetel `document.domain` sudah tidak digunakan lagi, dan akan dinonaktifkan secara default. Peringatan penghentian ini ditujukan untuk akses lintas origin yang diaktifkan dengan menyetel `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Memicu window.alert dari iframe lintas origin tidak digunakan lagi dan akan dihapus pada masa mendatang."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Memicu window.confirm dari iframe lintas origin tidak digunakan lagi dan akan dihapus pada masa mendatang."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Peristiwa Mutasi DOM, termasuk `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, dan `DOMCharacterDataModified` tidak digunakan lagi (https://w3c.github.io/uievents/#legacy-event-types) dan akan dihapus. Sebagai gantinya, gunakan `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Dukungan untuk data: URL dalam elemen <use> SVG tidak digunakan lagi dan akan dihapus pada masa mendatang."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Melonggarkan kebijakan origin yang sama dengan menyetel `document.domain` sudah tidak digunakan lagi, dan akan dinonaktifkan secara default. Untuk terus menggunakan fitur ini, pilih untuk tidak menggunakan cluster agen dengan kunci origin dengan mengirimkan header `Origin-Agent-Cluster: ?0` bersama respons HTTP untuk dokumen dan bingkai. Lihat https://developer.chrome.com/blog/immutable-document-domain/ untuk detail selengkapnya."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Header `Expect-CT` tidak digunakan lagi dan akan dihapus. Chrome mewajibkan Transparansi Sertifikat untuk semua sertifikat tepercaya publik yang diterbitkan setelah 30 April 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` dan `watchPosition()` tidak lagi berfungsi pada origin yang tidak aman. Untuk menggunakan fitur ini, sebaiknya alihkan aplikasi ke origin yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` dan `watchPosition()` tidak digunakan lagi karena origin yang tidak aman. Untuk menggunakan fitur ini, sebaiknya alihkan aplikasi ke origin yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` tidak lagi berfungsi pada origin yang tidak aman. Untuk menggunakan fitur ini, sebaiknya alihkan aplikasi ke origin yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` tidak digunakan lagi. Sebagai gantinya, gunakan `RTCPeerConnectionIceErrorEvent.address` atau `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Data arbitrer dan origin penjual dari peristiwa pekerja layanan `canmakepayment` tidak digunakan lagi dan akan dihapus: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Situs meminta subresource dari jaringan yang hanya dapat diakses karena posisi jaringan istimewa penggunanya. Permintaan ini mengekspos perangkat dan server non-publik ke internet, yang meningkatkan risiko serangan pemalsuan permintaan lintas situs (CSRF), dan/atau kebocoran informasi. Untuk mengurangi risiko tersebut, Chrome menghentikan permintaan ke subresource non-publik saat dimulai dari konteks yang tidak aman, dan akan mulai memblokirnya."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Kolom `dailyUpdateUrl` dari `InterestGroups` yang diteruskan ke `joinAdInterestGroup()` telah diganti namanya menjadi `updateUrl`, untuk mencerminkan perilakunya dengan lebih akurat."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS tidak dapat dimuat dari URL `file:` kecuali jika diakhiri dengan ekstensi file `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Penggunaan `SourceBuffer.abort()` untuk membatalkan penghapusan rentang asinkron `remove()` tidak digunakan lagi karena perubahan spesifikasi. Dukungan akan dihapus pada masa mendatang. Sebagai gantinya, Anda harus memproses peristiwa `updateend`. `abort()` dimaksudkan untuk hanya membatalkan penambahan media asinkron atau mereset status parser."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Menyetel `MediaSource.duration` di bawah stempel waktu presentasi tertinggi dari semua bingkai berkode dan yang di-buffer kini tidak digunakan lagi karena perubahan spesifikasi. Dukungan untuk penghapusan implisit media yang di-buffer dan terpotong akan dihapus pada masa mendatang. Anda harus menjalankan `remove(newDuration, oldDuration)` eksplisit pada semua `sourceBuffers`, saat status menunjukkan `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI akan meminta izin untuk menggunakan sysex meskipun sysex tidak ditentukan dalam `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Atribut `shadowroot` lama yang tidak distandardisasi tidak digunakan lagi, dan *tidak lagi berfungsi* di M119. Sebagai gantinya, gunakan atribut `shadowrootmode` baru yang distandardisasi."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification API mungkin tidak lagi digunakan dari origin yang tidak aman. Sebaiknya Anda mengalihkan aplikasi Anda ke origin yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Izin untuk Notification API mungkin tidak lagi diminta dari iframe lintas asal. Sebaiknya Anda meminta izin dari bingkai level teratas atau membuka jendela baru."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Opsi `imageOrientation: 'none'` di createImageBitmap tidak digunakan lagi. Sebagai gantinya, gunakan createImageBitmap dengan opsi \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Partner Anda sedang menegosiasikan versi (D)TLS yang usang. Hubungi partner Anda untuk memperbaikinya."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Menentukan `overflow: visible` pada tag img, video, dan canvas dapat menyebabkannya menghasilkan konten visual di luar batas elemen. Lihat https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` tidak digunakan lagi. Sebagai gantinya, gunakan penginstalan tepat waktu untuk pengendali pembayaran."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Panggilan `PaymentRequest` mengabaikan perintah `connect-src` Kebijakan Keamanan Konten (CSP). Pengabaian ini tidak digunakan lagi. Tambahkan ID metode pembayaran dari `PaymentRequest` API (di kolom `supportedMethods`) ke perintah `connect-src` CSP."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` tidak digunakan lagi. Sebagai gantinya, gunakan `navigator.storage` standar."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` dengan induk `<picture>` tidak valid dan akan diabaikan. Sebagai gantinya, gunakan `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame adalah metode khusus vendor. Sebagai gantinya, gunakan cancelAnimationFrame standar."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame adalah metode khusus vendor. Sebagai gantinya, gunakan requestAnimationFrame standar."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen tidak digunakan lagi. Sebagai gantinya, gunakan Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() tidak digunakan lagi. Sebagai gantinya, gunakan Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() tidak digunakan lagi. Sebagai gantinya, gunakan Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() tidak digunakan lagi. Sebagai gantinya, gunakan Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() tidak digunakan lagi. Sebagai gantinya, gunakan Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen tidak digunakan lagi. Sebagai gantinya, gunakan Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Kami menghentikan penggunaan API `chrome.privacy.websites.privacySandboxEnabled`, meskipun akan tetap aktif untuk kompatibilitas mundur hingga rilis M113. Sebagai gantinya, gunakan `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled`, dan `chrome.privacy.websites.adMeasurementEnabled`. Lihat https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Batasan `DtlsSrtpKeyAgreement` dihapus. Anda telah menentukan nilai `false` untuk batasan ini, yang ditafsirkan sebagai upaya untuk menggunakan metode `SDES key negotiation` yang dihapus. Fungsi ini dihapus. Sebagai gantinya, gunakan layanan yang mendukung `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Batasan `DtlsSrtpKeyAgreement` dihapus. Anda telah menentukan nilai `true` untuk batasan ini, yang tidak berpengaruh, tetapi Anda dapat menghapus batasan ini agar rapi."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "GetStats() berbasis callback tidak digunakan lagi dan akan dihapus. Sebagai gantinya, gunakan getStats() yang sesuai dengan spesifikasi."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() tidak digunakan lagi. Sebagai gantinya, gunakan Selection.Modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Permintaan subresource yang URL-nya berisi kredensial yang disematkan (mis. `https://user:pass@host/`) akan diblokir."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Opsi `rtcpMuxPolicy` tidak digunakan lagi dan akan dihapus."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` akan memerlukan isolasi lintas asal. Lihat https://developer.chrome.com/blog/enabling-shared-array-buffer/ untuk detail selengkapnya."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` tanpa aktivasi pengguna tidak digunakan lagi dan akan dihapus."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Ekstensi harus ikut serta dalam isolasi lintas asal untuk terus menggunakan `SharedArrayBuffer`. Lihat https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL tidak digunakan lagi. Gunakan SQLite WebAssembly atau Indexed Database"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Deskripsi izin `window-placement` tidak digunakan lagi. Sebagai gantinya, gunakan `window-management`. Untuk mendapatkan bantuan lebih lanjut, buka https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Kebijakan izin `window-placement` tidak digunakan lagi. Sebagai gantinya, gunakan `window-management`. Untuk mendapatkan bantuan lebih lanjut, buka https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16 tidak didukung oleh respons JSON di `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "`XMLHttpRequest` sinkron pada thread utama tidak digunakan lagi karena efeknya yang merugikan terhadap pengalaman pengguna akhir. Untuk mendapatkan bantuan lebih lanjut, buka https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` tidak digunakan lagi. Sebagai gantinya, gunakan `isSessionSupported()` dan periksa nilai boolean yang di-resolve."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Waktu Pemblokiran Thread Utama"

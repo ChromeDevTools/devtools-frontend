@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>` 元素的 `[lang]` 属性具备有效值"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "如果网页未指定一致的语言，屏幕阅读器可能无法正确读出相应网页上的文本。[详细了解 `lang` 属性](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)。"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>` 元素的 `[xml:lang]` 属性与 `[lang]` 属性使用了不同的基本语言。"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>` 元素的 `[xml:lang]` 属性与 `[lang]` 属性使用了相同的基本语言。"
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "说明性元素应力求使用简短的描述性替代文字。未指定 alt 属性的装饰性元素可被忽略。[详细了解 `alt` 属性](https://dequeuniversity.com/rules/axe/4.7/image-alt)。"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "图片元素具备 `[alt]` 属性"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "向输入按钮添加可识别的无障碍文本可帮助屏幕阅读器用户了解输入按钮的用途。[详细了解输入按钮](https://dequeuniversity.com/rules/axe/4.7/input-button-name)。"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "输入按钮没有可识别的文本。"
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "输入按钮具有可识别的文本。"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "将图片用作 `<input>` 按钮时，提供替代文字有助于屏幕阅读器用户了解该按钮的用途。[了解输入图片替代文字](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)。"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "所有元素的 `[tabindex]` 值都不大于 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "屏幕阅读器提供了更便于用户浏览表格内容的功能。请务必确保表格实际使用了 <caption> 元素（而非带有 `[colspan]` 属性的单元格），这可以提升屏幕阅读器用户的体验。[详细了解表格标题](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)。"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "表格未使用 `<caption>`（而是使用了带有 `[colspan]` 属性的单元格）来表示表格标题。"
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "表格使用了 `<caption>`（而非带有 `[colspan]` 属性的单元格）来表示表格标题。"
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "屏幕阅读器提供了更便于用户浏览表格内容的功能。请务必确保大型表格（宽度和高度至少为 3 个单元格）中的 `<td>` 元素具有关联的表格标头，这可以提升屏幕阅读器用户的体验。[详细了解表格标头](https://dequeuniversity.com/rules/axe/4.7/td-has-header)。"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "大型 `<table>` 中的 `<td>` 元素没有表格标头。"
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "大型 `<table>` 中的 `<td>` 元素具有一个或多个表格标头。"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "屏幕阅读器提供了更便于用户浏览表格内容的功能。请确保那些使用 `[headers]` 属性的 `<td>` 单元格仅引用同一个表格中的其他单元格，这样做可提升屏幕阅读器用户的体验。[详细了解 `headers` 属性](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)。"
@@ -498,7 +534,7 @@
     "message": "采用新一代格式提供图片"
   },
   "core/audits/byte-efficiency/offscreen-images.js | description": {
-    "message": "建议您在所有关键资源加载完毕后再加载屏幕外图片和处于隐藏状态的图片，从而缩短可交互时间。[了解如何推迟加载屏幕外图片](https://developer.chrome.com/docs/lighthouse/performance/offscreen-images/)。"
+    "message": "建议您在所有关键资源加载完毕后再加载屏幕外图片和处于隐藏状态的图片，从而缩短 Time to Interactive。[了解如何推迟加载屏幕外图片](https://developer.chrome.com/docs/lighthouse/performance/offscreen-images/)。"
   },
   "core/audits/byte-efficiency/offscreen-images.js | title": {
     "message": "推迟加载屏幕外图片"
@@ -1086,19 +1122,19 @@
     "message": "“首次有效绘制时间”测量的是网页主要内容开始对用户显示的时间。[详细了解“首次有效绘制时间”指标](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)。"
   },
   "core/audits/metrics/interactive.js | description": {
-    "message": "“可交互时间”是指网页需要多长时间才能提供完整的交互功能。[详细了解“可交互时间”指标](https://developer.chrome.com/docs/lighthouse/performance/interactive/)。"
+    "message": "“Time to Interactive”是指网页需要多长时间才能提供完整的交互功能。[详细了解“Time to Interactive”指标](https://developer.chrome.com/docs/lighthouse/performance/interactive/)。"
   },
   "core/audits/metrics/largest-contentful-paint.js | description": {
     "message": "Largest Contentful Paint 标记了绘制出最大文本或图片的时间。[详细了解 Largest Contentful Paint 指标](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
   },
   "core/audits/metrics/max-potential-fid.js | description": {
-    "message": "您的用户可能会遇到的最长首次输入延迟是用时最长的任务的耗时。[详细了解 Maximum Potential First Input Delay 指标](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)。"
+    "message": "您的用户可能会遇到的最长 First Input Delay 是用时最长的任务的耗时。[详细了解 Maximum Potential First Input Delay 指标](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)。"
   },
   "core/audits/metrics/speed-index.js | description": {
     "message": "Speed Index 表明了网页内容的可见填充速度。[详细了解 Speed Index 指标](https://developer.chrome.com/docs/lighthouse/performance/speed-index/)。"
   },
   "core/audits/metrics/total-blocking-time.js | description": {
-    "message": "当任务用时超过 50 毫秒时计算首次内容绘制 (FCP) 和可交互时间之间的所有时间段的总和，以毫秒表示。[详细了解 Total Blocking Time 指标](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/)。"
+    "message": "当任务用时超过 50 毫秒时计算 FCP 和 Time to Interactive 之间的所有时间段的总和，以毫秒表示。[详细了解 Total Blocking Time 指标](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/)。"
   },
   "core/audits/network-rtt.js | description": {
     "message": "网络往返时间 (RTT) 对性能有很大的影响。如果与来源之间的 RTT 较长，则表明缩短服务器与用户之间的距离可能会提高性能。[详细了解往返时间](https://hpbn.co/primer-on-latency-and-bandwidth/)。"
@@ -1653,7 +1689,7 @@
     "message": "诊断结果"
   },
   "core/config/default-config.js | firstPaintImprovementsGroupDescription": {
-    "message": "像素在屏幕上的呈现速度是性能的最重要方面。关键指标：首次内容绘制时间、首次有效绘制时间"
+    "message": "像素在屏幕上的呈现速度是性能的最重要方面。关键指标：First Contentful Paint、First Meaningful Paint"
   },
   "core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "改进首次绘制"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "已请求 AppBanner 的网页目前无法储存至往返缓存。"
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "往返缓存已被停用，因为这是一项 keepalive 请求。"
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "往返缓存被相关 flag 停用了。请在此设备上访问 chrome://flags/#back-forward-cache 以从本地启用该功能。"
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "使用 WebUSB API 的网页无法储存至往返缓存。"
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "往返缓存已被停用，因为在使用 `Cache-Control: no-store` 的网页上 Cookie 处于停用状态。"
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "使用专用 Worker 或 Worklet 的网页目前无法储存至往返缓存。"
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "具备开放的 IndexedDB 连接的网页目前无法储存至往返缓存。"
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "往返缓存已被停用，因为发生了 IndexedDB 事件。"
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "使用了不符合条件的 API。"
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "已被扩展程序注入 JavaScript 的网页目前无法储存至往返缓存。"
+    "message": "已被扩展程序注入 `JavaScript` 的网页目前无法储存至往返缓存。"
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "已被扩展程序注入样式表的网页目前无法储存至往返缓存。"
+    "message": "已被扩展程序注入 `StyleSheet` 的网页目前无法储存至往返缓存。"
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "内部错误。"
@@ -2138,6 +2183,192 @@
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "建议您添加“unsafe-inline”（会被支持 nonces/hashes 的浏览器忽略），以便向后兼容旧版浏览器。"
   },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "如需了解详情，请参阅功能状态页面。"
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "此变更将从里程碑 {milestone} 生效。"
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "使用了已弃用的功能"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "处理 CORS `Access-Control-Allow-Headers` 时，授权将不在通配符 (*) 的涵盖范围内。"
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "若要停用默认 Cast 集成，应使用 `disableRemotePlayback` 属性，而非 `-internal-media-controls-overlay-cast-button` 选择器。"
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "如果资源请求的网址同时包含已移除的空白字符 `(n|r|t)` 和小于字符 (`<`)，相应资源请求会被屏蔽。请从元素属性值等位置移除换行符并编码小于字符，以便加载这些资源。"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` 已被弃用，请改用标准化 API：Navigation Timing 2。"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` 已被弃用，请改用标准化 API：Paint Timing。"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` 已被弃用，请改用标准化 API：Navigation Timing 2 中的 `nextHopProtocol`。"
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "包含 `(0|r|n)` 字符的 Cookie 将被拒，而不是被截断。"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "通过设置 `document.domain` 放宽同源政策的功能已被弃用，并将默认处于停用状态。此弃用警告针对的是通过设置 `document.domain` 启用的跨源访问。"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "从跨源 iframe 触发 window.alert 的功能已被弃用，日后将被移除。"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "从跨源 iframe 触发 window.confirm 的功能已被弃用，日后将被移除。"
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM 变更事件（包括 `DOMSubtreeModified`、`DOMNodeInserted`、`DOMNodeRemoved`、`DOMNodeRemovedFromDocument`、`DOMNodeInsertedIntoDocument` 和 `DOMCharacterDataModified`，详见 https://w3c.github.io/uievents/#legacy-event-types）已被弃用，并将被移除。请改用 `MutationObserver`。"
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "对 SVG <use> 元素中 data: URL 的支持已被弃用，日后将被移除。"
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "通过设置 `document.domain` 放宽同源政策的功能已被弃用，并将默认处于停用状态。若要继续使用此功能，请通过发送 `Origin-Agent-Cluster: ?0` 标头以及文档和框架的 HTTP 响应来选择停用以源为键的代理集群。如需了解详情，请访问 https://developer.chrome.com/blog/immutable-document-domain/。"
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "`Expect-CT` 标头已被弃用，并将被移除。Chrome 要求，在 2018 年 4 月 30 日之后颁发的所有受大众信任的证书均须遵守证书透明度政策。"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` 和 `watchPosition()` 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` 和 `watchPosition()` 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` 已被弃用。请改用 `RTCPeerConnectionIceErrorEvent.address` 或 `RTCPeerConnectionIceErrorEvent.port`。"
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "`canmakepayment` Service Worker 事件中的商家源和任意数据已被弃用，并将被移除：`topOrigin`、`paymentRequestOrigin`、`methodData`、`modifiers`。"
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "该网站向网络请求了一项子资源，而且完全是因为其用户的特权网络位置才能够访问此项资源。此类请求会向互联网公开非公用设备和服务器，这会增加跨站请求伪造 (CSRF) 攻击和/或信息泄露的风险。为降低这类风险，Chrome 不再支持从非安全上下文发起针对非公用子资源的请求，并将开始阻止此类请求。"
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "向 `joinAdInterestGroup()` 传递的 `InterestGroups` 所含 `dailyUpdateUrl` 字段已被重命名为 `updateUrl`，以便更准确地反映其行为。"
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "无法从 `file:` 网址加载 CSS，除非它们以 `.css` 文件扩展名结尾。"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "由于规范变更，使用 `SourceBuffer.abort()` 中止 `remove()` 移除异步范围的功能已被弃用。日后我们会移除相应支持。您应改为监听 `updateend` 事件。`abort()` 只应当用于中止异步媒体附加或重置解析状态。"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "由于规范变更，我们不再支持将 `MediaSource.duration` 设为低于任何缓冲编码帧的最高呈现时间戳。日后我们将不再支持隐式移除被截断的缓冲媒体。您应改为对 `newDuration < oldDuration` 的所有 `sourceBuffers` 执行显式 `remove(newDuration, oldDuration)`。"
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "即使 `MIDIOptions` 中未指定 sysex，Web MIDI 也会请求获得使用许可。"
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "较旧的非标准化 `shadowroot` 属性已被弃用，自 M119 起将*不再起作用*。请改用新的标准化 `shadowrootmode` 属性。"
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "无法再从不安全的源使用 Notification API。您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "无法再从跨源 iframe 中请求 Notification API 权限。您应考虑改为从顶级框架中请求权限，或者打开一个新窗口。"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap 中的 `imageOrientation: 'none'` 选项已被弃用。请改用带有 \\{imageOrientation: 'from-image'\\} 选项的 createImageBitmap。"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "您的合作伙伴正在协商某个已过时的 (D)TLS 版本。请与您的合作伙伴联系，以解决此问题。"
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "为 img、video 和 canvas 标记指定 `overflow: visible` 可能会导致这些标记在元素边界之外生成视觉内容。请参阅 https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md。"
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` 已被弃用。请改用即时安装方式安装付款处理程序。"
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "您的 `PaymentRequest` 调用已绕过内容安全政策 (CSP) `connect-src` 指令。此绕过方式已被弃用。请将 `PaymentRequest` API 中的付款方式标识符（在 `supportedMethods` 字段中）添加到 CSP `connect-src` 指令中。"
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` 已被弃用。请改用标准化 `navigator.storage`。"
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "带有 `<picture>` 父级的 `<source src>` 无效，因此会被忽略。请改用 `<source srcset>`。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame 因供应商而异。请改用标准 cancelAnimationFrame。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame 因供应商而异。请改用标准 requestAnimationFrame。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen 已被弃用。请改用 Document.fullscreenElement。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() 已被弃用。请改用 Element.requestFullscreen()。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() 已被弃用。请改用 Element.requestFullscreen()。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() 已被弃用。请改用 Document.exitFullscreen()。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() 已被弃用。请改用 Document.exitFullscreen()。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen 已被弃用。请改用 Document.fullscreenEnabled。"
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "我们即将弃用 API `chrome.privacy.websites.privacySandboxEnabled`，但为了保持向后兼容性，该 API 可持续使用到 M113 版。届时，请改用 `chrome.privacy.websites.topicsEnabled`、`chrome.privacy.websites.fledgeEnabled` 和 `chrome.privacy.websites.adMeasurementEnabled`。请参阅 https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled。"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "约束条件 `DtlsSrtpKeyAgreement` 已被移除。您已为此约束条件指定 `false` 值，系统会将这种情况解读为尝试使用已被移除的 `SDES key negotiation` 方法。此功能已被移除；请改用支持 `DTLS key negotiation`的服务。"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "约束条件 `DtlsSrtpKeyAgreement` 已被移除。您已为此约束条件指定 `true` 值，这没有任何作用，但为整洁起见，您可以移除此约束条件。"
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "基于回调的 getStats() 已被弃用，并将被移除。请改用符合规范的 getStats()。"
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() 已被弃用。请改用 Selection.modify()。"
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "如果子资源请求的网址包含嵌入式凭据（例如 `https://user:pass@host/`），相应子资源请求会被屏蔽。"
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "`rtcpMuxPolicy` 选项已被弃用，并将被移除。"
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` 将要求进行跨域隔离。如需了解详情，请访问 https://developer.chrome.com/blog/enabling-shared-array-buffer/。"
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "无需用户激活的 `speechSynthesis.speak()` 已被弃用，并将被移除。"
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "扩展程序应选择启用跨域隔离，以便继续使用 `SharedArrayBuffer`。请参阅 https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/。"
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL 已被弃用。请使用 SQLite WebAssembly 或 Indexed Database"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "权限描述符 `window-placement` 已被弃用。请改用 `window-management`。如需更多帮助，请访问 https://bit.ly/window-placement-rename。"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "权限政策 `window-placement` 已被弃用。请改用 `window-management`。如需更多帮助，请访问 https://bit.ly/window-placement-rename。"
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "`XMLHttpRequest` 中的响应 JSON 不支持 UTF-16"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "主线程上的同步 `XMLHttpRequest` 已被弃用，因为它会对最终用户的体验产生不利影响。如需更多帮助，请访问 https://xhr.spec.whatwg.org/。"
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` 已被弃用。请改用 `isSessionSupported()` 并查看已解析的布尔值。"
+  },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "主线程拦截时间"
   },
@@ -2244,7 +2475,7 @@
     "message": "Largest Contentful Paint"
   },
   "core/lib/i18n/i18n.js | maxPotentialFIDMetric": {
-    "message": "首次输入延迟最长预估值"
+    "message": "First Input Delay 最长预估值"
   },
   "core/lib/i18n/i18n.js | mediaResourceType": {
     "message": "媒体"

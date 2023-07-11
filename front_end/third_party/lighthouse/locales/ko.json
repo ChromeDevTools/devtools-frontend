@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>` 요소에 `[lang]` 속성의 유효한 값이 있음"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "웹페이지에서 일관된 언어를 지정하지 않으면 스크린 리더에서 페이지의 텍스트를 올바르게 알리지 못할 수 있습니다. [`lang` 속성에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>` 요소에 기본 속성이 `[lang]` 속성과 기본 언어가 동일한 `[xml:lang]` 속성이 없습니다"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>` 요소에는 `[lang]` 속성과 동일한 기본 언어를 사용하는 `[xml:lang]` 속성이 있습니다."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "정보 요소는 짧아야 하며 설명을 제공하는 대체 텍스트를 목표로 해야 합니다. 장식 요소는 Alt 속성이 비어 있는 경우 무시될 수 있습니다. [`alt` 속성에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "이미지 요소에 `[alt]` 속성이 있음"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "입력 버튼에 식별 가능하고 액세스 가능한 텍스트를 추가하면 스크린 리더 사용자가 입력 버튼의 목적을 이해하는 데 도움이 될 수 있습니다. [입력 버튼에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "입력 버튼에 식별 가능한 텍스트가 없습니다."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "입력 버튼에 식별 가능한 텍스트가 있습니다"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "이미지가 `<input>` 버튼으로 사용되는 경우 대체 텍스트를 제공하면 스크린 리더 사용자가 버튼의 목적을 쉽게 이해하는 데 도움이 됩니다. [입력 이미지 대체 텍스트에 관해 알아보기](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "`[tabindex]` 값이 0보다 큰 요소가 없음"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "스크린 리더에는 표를 좀 더 쉽게 탐색하는 기능이 있습니다. 표에서 `[colspan]` 속성이 있는 셀 대신 실제 자막 요소를 사용하면 스크린 리더 사용자 환경을 개선할 수 있습니다. [자막에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "표에서 자막을 나타내기 위해 `[colspan]` 속성이 있는 셀 대신 `<caption>`을(를) 사용하지 않습니다"
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "표에서 자막을 나타내기 위해 `[colspan]` 속성이 있는 셀 대신 `<caption>`을(를) 사용합니다."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "스크린 리더에는 표를 좀 더 쉽게 탐색하는 기능이 있습니다. 큰 표(너비와 높이의 셀이 3개 이상)의 `<td>` 요소에 표 헤더가 연결되어 있는지 확인하면 스크린 리더 사용자의 환경을 개선할 수 있습니다. [표 헤더에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "큰 `<table>`의 `<td>` 요소에는 표 헤더가 없습니다."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "큰 `<table>`의 `<td>` 요소에는 하나 이상의 표 헤더가 있습니다."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "스크린 리더에는 표를 좀 더 쉽게 탐색하는 기능이 있습니다. `[headers]` 속성을 사용하는 `<td>` 셀이 동일한 표에 있는 다른 셀만 참조하게 하면 스크린 리더 사용자 환경을 개선할 수 있습니다. [`headers` 속성에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "AppBanner를 요청한 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "연결 유지 요청으로 인해 뒤로-앞으로 캐시가 사용 중지되었습니다."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "플래그에서 뒤로-앞으로 캐시가 사용 중지되었습니다. chrome://flags/#back-forward-cache로 이동하여 뒤로-앞으로 캐시를 사용 설정하세요. 캐시는 기기의 로컬에 저장됩니다."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "WebUSB API를 사용하는 페이지에서는 뒤로-앞으로 캐시를 사용할 수 없습니다."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "`Cache-Control: no-store`를 사용하는 페이지에서 쿠키가 사용 중지되므로 뒤로-앞으로 캐시가 사용 중지됩니다."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "전용 worker 또는 Worklet을 사용하는 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "IndexedDB가 연결된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "IndexedDB 이벤트로 인해 뒤로-앞으로 캐시가 사용 중지되었습니다."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "사용 불가능한 API가 사용되었습니다."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "확장 프로그램에 의해 자바스크립트가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+    "message": "확장 프로그램에 의해 `JavaScript`가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "확장 프로그램에 의해 스타일시트가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
+    "message": "확장 프로그램에 의해 `StyleSheet`가 삽입된 페이지에서는 현재 뒤로-앞으로 캐시를 사용할 수 없습니다."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "내부 오류입니다."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "기존 브라우저와의 하위 호환성을 위하여 'unsafe-inline(nonce/hash를 지원하는 브라우저에서 무시됨)'을 추가하는 것이 좋습니다."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "자세한 내용은 기능 상태 페이지에서 확인하세요."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "이 변경사항은 주 버전 번호 {milestone}에 적용됩니다."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "지원 중단된 기능이 사용됨"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "CORS `Access-Control-Allow-Headers` 처리 시 와일드 카드 기호(*)를 사용하면 승인되지 않습니다."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "기본 Cast 통합을 사용 중지하려면 `-internal-media-controls-overlay-cast-button` 선택기 대신 `disableRemotePlayback` 속성을 사용해야 합니다."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "URL에 삭제된 공백 `(n|r|t)` 문자 및 '미만' 문자(`<`)가 포함된 리소스 요청이 차단되었습니다. 이러한 리소스를 로드하려면 요소 속성 값과 같은 위치에서 줄바꿈을 삭제하고 '미만' 문자를 인코딩하세요."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()`는 지원 중단되었습니다. 대신 표준화된 API인 Navigation Timing 2를 사용하세요."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()`는 사용 중지되었습니다. 대신 표준화된 API인 Paint Timing을 사용하세요."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()`는 지원 중단되었습니다. 대신 `nextHopProtocol`이 추가된 표준화된 API인 Navigation Timing 2를 사용하세요."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "`(0|r|n)` 문자를 포함하는 쿠키는 잘리는 대신 거부됩니다."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "`document.domain` 설정을 통한 동일 출처 정책의 해제는 지원 중단되었으며 기본적으로 사용 중지될 예정입니다. 이 지원 중단 경고는 `document.domain` 설정에 의해 사용 설정된 교차 출처 액세스에 적용됩니다."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "교차 출처 iframe에서의 window.alert 트리거는 지원 중단되었으며 앞으로 삭제될 예정입니다."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "교차 출처 iframe에서의 window.confirm 트리거는 지원 중단되었으며 앞으로 삭제될 예정입니다."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "`DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, `DOMCharacterDataModified` 등의 DOM 변형 이벤트가 지원 중단되었으며(https://w3c.github.io/uievents/#legacy-event-types) 삭제됩니다. 대신 `MutationObserver`를 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "데이터 지원: SVG <use> 요소의 URL은 지원 중단되었으며 앞으로 삭제될 예정입니다."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "`document.domain` 설정을 통한 동일 출처 정책의 해제는 지원 중단되었으며 기본적으로 사용 중지될 예정입니다. 이 기능을 계속 사용하려면 문서 및 프레임의 HTTP 응답과 함께 `Origin-Agent-Cluster: ?0` 헤더를 전송하여 오리진 키 에이전트 클러스터를 선택 해제하세요. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/blog/immutable-document-domain/"
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "`Expect-CT` 헤더는 지원 중단되었으며 삭제될 예정입니다. Chrome에서는 2018년 4월 30일 이후 발행되었으며 공개적으로 신뢰할 수 있는 모든 인증서에 대해 인증서 투명성을 요구합니다."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` 및 `watchPosition()`은 안전하지 않은 출처에서 더 이상 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "안전하지 않은 출처의 `getCurrentPosition()` 및 `watchPosition()`은 지원 중단되었습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()`는 안전하지 않은 출처에서 더 이상 작동하지 않습니다. 이 기능을 사용하려면 애플리케이션을 HTTPS와 같은 안전한 출처로 전환하는 것을 고려해야 합니다. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate`는 지원 중단되었습니다. 대신 `RTCPeerConnectionIceErrorEvent.address` 또는 `RTCPeerConnectionIceErrorEvent.port`를 사용하세요."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "`canmakepayment` 서비스 워커 이벤트의 판매자 원본 및 임의 데이터인 `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`가 지원 중단되었으며 삭제될 예정입니다."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "웹사이트에서 사용자 권한이 지정된 네트워크 위치로 인해 해당 웹사이트만 액세스 가능한 네트워크의 하위 리소스를 요청했습니다. 이러한 요청은 비공개 기기 및 서버를 인터넷에 노출시켜 크로스 사이트 요청 위조(CSRF) 공격 또는 정보 유출의 위험을 높입니다. 위험을 완화하기 위해 Chrome은 안전하지 않은 컨텍스트에서 시작된 비공개 하위 리소스에 대한 요청을 사용 중지하고 차단하기 시작합니다."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "`joinAdInterestGroup()`에 전달된 `InterestGroups`의 `dailyUpdateUrl` 필드 이름이 동작을 더 정확하게 반영하도록 `updateUrl`로 변경되었습니다."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "`.css` 파일 확장자로 끝나지 않는 CSS는 `file:` URL에서 로드할 수 없습니다."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "사양 변경으로 인해 `SourceBuffer.abort()`를 사용하여 `remove()`의 비동기 범위 삭제를 취소하는 기능이 지원 중단되었습니다. 향후 지원이 삭제될 예정입니다. 대신 `updateend` 이벤트를 수신 대기해야 합니다. `abort()`는 비동기 미디어 추가 항목을 취소하거나 파서 상태를 초기화하는 데만 사용하도록 만들어졌습니다."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "사양 변경으로 인해, `MediaSource.duration`을 버퍼링된 코드 프레임의 최고 타임스탬프보다 낮게 설정하는 기능이 지원 중단되었습니다. 버퍼링된 미디어의 잘린 부분을 암시적으로 삭제하는 기능에 대한 지원은 앞으로 삭제될 예정입니다. `newDuration < oldDuration`의 경우 대신 모든 `sourceBuffers`에서 명시적 `remove(newDuration, oldDuration)`을 수행해야 합니다."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "sysex가 `MIDIOptions`에 지정되어 있지 않은 경우에도 사용할 수 있도록 웹 MIDI가 권한을 요청합니다."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "표준화되지 않은 이전 `shadowroot` 속성의 지원이 중단되며 M119에서 *더 이상 작동하지 않습니다*. 대신 새로운 표준화된 `shadowrootmode` 속성을 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "안전하지 않은 출처의 Notification API는 더 이상 사용할 수 없습니다. 애플리케이션을 HTTPS와 같이 안전한 출처로 전환해 보세요. 자세한 내용은 다음 페이지를 참고하세요. https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "더 이상 교차 출처 iframe에서 Notification API 권한을 요청할 수 없습니다. 최상위 프레임에서 권한을 요청하거나 대신 새로운 창을 여는 방법을 고려해야 합니다."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap의 `imageOrientation: 'none'` 옵션은 지원이 중단됩니다. 대신 \\{imageOrientation: 'from-image'\\} 옵션으로 createImageBitmap을 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "파트너가 지원 중단된 (D)TLS 버전을 협상합니다. 파트너에게 확인하여 이를 해결하세요."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "img, video, canvas 태그에 `overflow: visible`을 지정하면 요소 경계 외부에 시각적 콘텐츠가 생성될 수 있습니다. 다음을 참고하세요. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments`가 지원 중단되었습니다. 대신 결제 핸들러에 just-in-time (JIT) 설치를 사용하세요."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "`PaymentRequest` 호출이 콘텐츠 보안 정책(CSP) `connect-src` 지시어를 우회했습니다. 이 우회 지원은 중단되었습니다. `PaymentRequest` API(`supportedMethods` 입력란)의 결제 수단 식별자를 CSP `connect-src` 지시어에 추가하세요."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` 지원이 중단됩니다. 대신 표준화된 `navigator.storage`를 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<picture>` 상위 요소를 지닌 `<source src>`가 잘못되었으므로 무시됩니다. 대신 `<source srcset>`를 사용하세요."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame은 공급업체별로 다릅니다. 대신 표준 cancelAnimationFrame을 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame은 공급업체별로 다릅니다. 대신 표준 requestAnimationFrame을 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen 지원이 중단됩니다. 대신 Document.fullscreenElement를 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() 지원이 중단됩니다. 대신 Element.requestFullscreen()을 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() 지원이 중단됩니다. 대신 Element.requestFullscreen()을 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() 지원이 중단됩니다. 대신 Document.exitFullscreen()을 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() 지원이 중단됩니다. 대신 Document.exitFullscreen()을 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen 지원이 중단됩니다. 대신 Document.fullscreenEnabled를 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "`chrome.privacy.websites.privacySandboxEnabled` API는 지원 중단되지만 M113 버전이 출시될 때까지 이전 버전과의 호환성을 위해 활성 상태로 유지됩니다. 대신 `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled`, `chrome.privacy.websites.adMeasurementEnabled`를 사용하시기 바랍니다. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "`DtlsSrtpKeyAgreement` 제약 조건은 삭제되었습니다. 이 제약 조건에 `false` 값을 지정했으며 이는 삭제된 `SDES key negotiation` 메서드를 사용하기 위한 시도로 해석될 수 있습니다. 해당 기능은 삭제되었습니다. 대신 `DTLS key negotiation`을 지원하는 서비스를 사용하세요."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "`DtlsSrtpKeyAgreement` 제약 조건은 삭제되었습니다. 이 제약 조건에 `true` 값을 지정했으며 이는 아무런 영향을 미치지 않습니다. 정돈을 위해 이 제약 조건을 삭제할 수 있습니다."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "콜백 기반 getStats() 지원이 중단되었으며 삭제될 예정입니다. 대신 사양을 준수하는 getStats()를 사용하세요."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() 지원이 중단됩니다. 대신 Selection.modify()를 사용하시기 바랍니다."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "삽입된 사용자 인증 정보(예: `https://user:pass@host/`)가 URL에 포함된 하위 리소스 요청이 차단되었습니다."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "`rtcpMuxPolicy` 옵션은 지원 중단되었으며 삭제될 예정입니다."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer`에서는 교차 출처 분리를 요구합니다. 자세한 내용은 다음 페이지를 참고하세요. https://developer.chrome.com/blog/enabling-shared-array-buffer/"
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "사용자 활성화를 포함하지 않은 `speechSynthesis.speak()`는 지원 중단되었으며 삭제될 예정입니다."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "`SharedArrayBuffer`를 계속 사용하려면 확장 프로그램에서 교차 출처 분리를 사용해야 합니다. 다음 페이지를 참고하세요. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "웹 SQL 지원이 중단됩니다. SQLite WebAssembly 또는 Indexed Database를 사용하세요."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "`window-placement` 권한 설명자의 지원이 중단됩니다. 대신 `window-management`를 사용하세요. 추가 지원이 필요한 경우 다음 페이지를 참고하세요. https://bit.ly/window-placement-rename"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "`window-placement` 권한 정책의 지원이 중단됩니다. 대신 `window-management`를 사용하세요. 추가 지원이 필요한 경우 다음 페이지를 참고하세요. https://bit.ly/window-placement-rename"
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16은 `XMLHttpRequest`의 response.json에서 지원되지 않습니다."
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "최종 사용자 환경에 부정적인 영향을 미치므로 기본 스레드의 동기식 `XMLHttpRequest` 지원이 중단됩니다. 추가 지원이 필요한 경우 다음 페이지를 참고하세요. https://xhr.spec.whatwg.org/"
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()`은 지원 중단되었습니다. 대신 `isSessionSupported()`를 사용하고 결정된 불리언 값을 확인하세요."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "기본 스레드 차단 시간"

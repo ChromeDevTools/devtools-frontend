@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "A(z) `<html>` elem `[lang]` attribútumának értéke érvényes"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Ha a weboldal nyelve nem konzisztens, akkor előfordulhat, hogy a képernyőolvasó helytelenül olvassa majd fel az oldal szövegét. [További információ a(z) `lang` attribútumról](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "A(z) `<html>` elem nem rendelkezik olyan `[xml:lang]` attribútummal, amelynek az alapnyelve megegyezik a(z) `[lang]` attribútuméval."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "A(z) `<html>` elem `[xml:lang]` attribútuma ugyanazzal az alapnyelvvel rendelkezik, mint a(z) `[lang]` attribútum."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Rövid, beszédes alternatív szöveget használjon a tájékoztató elemekhez. A díszítőelemek figyelmen kívül hagyhatók üres alt attribútummal. [További információ az `alt` attribútumról](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "A képelemekhez tartozik `[alt]` attribútum"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Ha felismerhető és jól olvasható szöveggel látja el a beviteli gombokat, azzal segíthet a képernyőolvasót használó felhasználóknak a beviteli gombok funkciójának megértésében. [További információ a beviteli gombokról](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "A beviteli gombokhoz nem tartozik felismerhető szöveg."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "A beviteli gombok felismerhető szöveget tartalmaznak."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Ha az `<input>` típusú gombként használt képekhez alternatív szöveget is megad, segíthet a képernyőolvasót használó látogatóknak a gomb rendeltetésének megértésében. [További információ a bemeneti kép leíró szövegéről](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Egyetlen elem `[tabindex]` attribútumának sem 0-nál nagyobb az értéke"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "A képernyőolvasók olyan funkciókkal is rendelkeznek, amelyek megkönnyítik a táblázatokban való navigációt. Ha biztosítja, hogy a táblázatok a tényleges feliratelemet használják a(z) `[colspan]` attribútummal rendelkező cellák helyett, akkor javíthatja a képernyőolvasóra hagyatkozók felhasználói élményét. [További információk a feliratokról](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "A táblázatok nem a(z) `<caption>` paramétert használják feliratok jelölésére a(z) `[colspan]` attribútummal rendelkező cellák helyett."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "A táblázatok a(z) `<caption>` paramétert használják feliratok jelölésére a(z) `[colspan]` attribútummal rendelkező cellák helyett."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "A képernyőolvasók olyan funkciókkal is rendelkeznek, amelyek megkönnyítik a táblázatokban való navigációt. Ha biztosítja, hogy egy nagy táblázatban (legalább három cellányi szélesség és magasság) szereplő `<td>` elemekhez társítva legyen táblázatfejléc, akkor javíthatja a képernyőolvasóra hagyatkozók felhasználói élményét. [További információ a táblázatfejlécekről](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "A nagy `<table>` paraméterhez tartozó `<td>` elemek nem rendelkeznek táblázatfejlécekkel."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Egy nagy `<table>` paraméterhez tartozó `<td>` elemnek legalább egy táblázatfejléce van."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "A képernyőolvasók olyan funkciókkal is rendelkeznek, amelyek megkönnyítik a táblázatokban való navigációt. Ha a `[headers]` attribútumot használó `<td>` cellák csak a saját táblázatuk más celláira hivatkoznak, az jobb felhasználói élményt nyújthat a képernyő felolvasása során. [További információ a `headers` attribútumról](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Az AppBannert kérelmező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Az előre-vissza gyorsítótárazás keepalive kérelem miatt le van tiltva."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Az előre-vissza gyorsítótárazást jelzők tiltják le. Keresse fel a chrome://flags/#back-forward-cache oldalt, ahol helyileg tudja erre az eszközre vonatkozóan engedélyezni."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "A WebUSB API-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva, mert a cookie-k le vannak tiltva egy `Cache-Control: no-store` paramétert használó oldalon."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "A dedikált feldolgozót vagy workletet használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "A nyílt IndexedDB-kapcsolattal rendelkező oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva IndexedDB-esemény miatt."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Nem megfelelő API-k használata."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Azok az oldalak, amelyekbe JavaScript van bővítménnyel beszúrva, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+    "message": "Azok az oldalak, amelyekbe `JavaScript` van bővítménnyel beszúrva, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Azok az oldalak, amelyekbe bővítmény szúrja be a StyleSheet fájlt, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
+    "message": "Azok az oldalak, amelyekbe `StyleSheet` van bővítménnyel beszúrva, jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Belső hiba."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "A régebbi böngészőkkel való kompatibilitás érdekében használhatja az „unsafe-inline” kulcsszót (a nonce-t/hasht támogató böngészők figyelmen kívül hagyják)."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "További részleteket a funkció állapotát jelző oldalon találhat."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Ez a módosítás a következő mérföldkő elérésekor lép érvénybe: {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Megszüntetett funkció használata"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "A CORS `Access-Control-Allow-Headers` kezelésében az engedélyezést nem fogja fedni a helyettesítő karakter (*)."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Az `-internal-media-controls-overlay-cast-button` választó helyett a `disableRemotePlayback` attribútumot kell használni az alapértelmezett Cast-integráció letiltásához."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Le vannak tiltva azok az erőforráskérések, amelyek esetében az URL-ek eltávolított `(n|r|t)` térközkaraktereket és kisebb mint karaktereket (`<`) is tartalmaznak. Az ilyen erőforrások betöltése érdekében távolítsa el az „új sor” jelöléseket, és kódolja a kisebb mint karaktereket az olyan helyeken, mint az elemek attribútumértékei."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "A `chrome.loadTimes()` függvényt megszüntettük. Használja helyette a szabványosított Navigation Timing 2 API-t."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "A `chrome.loadTimes()` függvényt megszüntettük, használja helyette a következő szabványosított API-t: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "A `chrome.loadTimes()` függvényt megszüntettük, használja helyette a következőt a szabványosított Navigation Timing 2 API keretein belül: `nextHopProtocol`."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "A `(0|r|n)` karaktert tartalmazó cookie-kat a böngésző csonkolás helyett el fogja utasítani."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Az ugyanarra az eredetre vonatkozó házirendnek a `document.domain` beállításával történő enyhítésére szolgáló lehetőséget megszüntettük, és alapértelmezés szerint le lesz tiltva. Ez a megszüntetési figyelmeztetés azokra az eredeteken átívelő hozzáférésekre érvényes, amelyek a `document.domain` beállításával lettek engedélyezve."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "A window.alert eredeteken átívelő iframe-ekből való aktiválásának lehetőségét megszüntettük, és a jövőben el fogjuk távolítani."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "A window.confirm eredeteken átívelő iframe-ekből való aktiválásának lehetőségét megszüntettük, és a jövőben el fogjuk távolítani."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "A DOM-mutációs események, köztük a(z) `DOMSubtreeModified`, a(z) `DOMNodeInserted`, a(z) `DOMNodeRemoved`, a(z) `DOMNodeRemovedFromDocument`, a(z) `DOMNodeInsertedIntoDocument` és a(z) `DOMCharacterDataModified` elavultak (https://w3c.github.io/uievents/#legacy-event-types), és el lesznek távolítva. Használja helyettük a következőt: `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Adatok támogatása: az SVG <use> elemében lévő URL elavult, és a jövőben el fogjuk távolítani."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Az ugyanarra az eredetre vonatkozó házirendnek a `document.domain` beállításával történő enyhítésére szolgáló lehetőséget megszüntettük, és alapértelmezés szerint le lesz tiltva. A funkció használatának folytatásához iratkozzon le az eredetkulccsal rendelkező ügynökklaszterekről úgy, hogy a HTTP-válasszal együtt egy `Origin-Agent-Cluster: ?0` fejlécet is elküld a dokumentumok és a keretek esetében. További részletek: https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Az `Expect-CT` fejlécet megszüntettük, és el fogjuk távolítani. A Chrome megköveteli A tanúsítványok átláthatósága funkció használatát a 2018. április 30. után kibocsátott összes nyilvánosan megbízható tanúsítvány esetében."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "A `getCurrentPosition()` és `watchPosition()` függvények többé nem működnek nem biztonságos eredetek esetében. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "A következő függvényeket megszüntettük a nem biztonságos eredetek esetében: `getCurrentPosition()` és `watchPosition()`. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "A `getUserMedia()` függvény többé nem működik nem biztonságos eredetek esetében. A funkció használatához fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "A `RTCPeerConnectionIceErrorEvent.hostCandidate` paramétert megszüntettük. Használja helyette a következők valamelyikét: `RTCPeerConnectionIceErrorEvent.address` vagy `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "A kereskedői eredetet és a `canmakepayment` service worker-eseményből származó tetszőleges adatokat megszüntettük, és eltávolítjuk őket: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "A webhely olyan hálózatból igényelt alerőforrást, amelyhez csak a felhasználói kiemelt hálózati pozíciója miatt tudott hozzáférni. Az ilyen kérelmek láthatóvá teszik a nem nyilvános eszközöket és szervereket az interneten, és így növelik a webhelyközi kérések hamisításával (CSRF) elkövetett támadások és az információszivárgás kockázatát. A kockázatok csökkentése érdekében a Chrome megszünteti a nem nyilvános részerőforrásokhoz irányuló olyan kérelmeket, amelyeket nem biztonságos környezetből indítanak, és elkezdi blokkolni őket."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "A(z) `InterestGroups` `joinAdInterestGroup()` struktúrának átadott `dailyUpdateUrl` mezőjét átnevezte a rendszer a következőre, hogy pontosabban kifejezze a viselkedését: `updateUrl`."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "`file:` URL-ekből csak akkor lehet CSS-t betölteni, ha az URL-ek `.css` fájlkiterjesztésre végződnek."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Megszüntettük a `SourceBuffer.abort()` használatának lehetőségét a `remove()` függvény aszinkron tartományeltávolításának megszakítására a specifikációk változása miatt. A funkció támogatását is megszüntetjük a jövőben. Ehelyett figyelje az`updateend` eseményt. Az `abort()` csak arra szolgál, hogy megszakítson egy aszinkron médiatartalom-hozzáfűzést, vagy hogy visszaállítsa az elemző állapotát."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "A specifikációk változása miatt megszüntettük annak lehetőségét, hogy a `MediaSource.duration` értékét a pufferelt és kódolt keretek legmagasabb prezentációs időbélyege alá lehessen beállítani. A csonkolt és pufferelt médiatartalmak implicit eltávolításának támogatását meg fogjuk szüntetni a jövőben. Helyette explicit `remove(newDuration, oldDuration)` műveletet hajtson végre az összes olyan `sourceBuffers` esetében, amelyre igaz a következő: `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "A webes MIDI még akkor is engedélyt kér a használatra, ha a SysEx nincs megadva itt: `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "A régebbi, nem szabványosított `shadowroot` attribútum elavult, és az M119-ben *már nem működik*. Ehelyett az új, szabványosított `shadowrootmode` attribútumot használja."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "A Notification API többé nem használható nem biztonságos helyek esetében. Fontolja meg az alkalmazás biztonságos eredetre (pl. HTTPS-re) való módosítását. További részletek: https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "A Notification API-ra vonatkozó engedélyt többé nem lehet eredeteken átívelő iframe-ből kérelmezni. Helyette inkább egy legfelső szintű kerettől kérjen engedélyt, vagy nyisson meg egy új ablakot."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "A createImageBitmap `imageOrientation: 'none'` lehetősége megszűnt. A createImageBitmap metódust ehelyett az \\{imageOrientation: 'from-image'\\} lehetőséggel használja."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Partnere egy elavult (D)TLS-verzióról tárgyal. Kérje meg partnerét, hogy javítsa ki ezt a problémát."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Ha a(z) `overflow: visible` értéket adja meg az img, video és canvas címkéken, előfordulhat, hogy az elem határain kívül hoznak létre vizuális tartalmat. Lásd: https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "A `paymentManager.instruments` paramétert megszüntettük. Használja helyette az igény szerinti telepítést a fizetéskezelőkhöz."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "A(z) `PaymentRequest` hívás megkerülte a Tartalombiztonsági irányelvek (CSP) `connect-src` utasítását. Ez a megkerülés elavult. Adja hozzá a(z) `PaymentRequest` API-ban szereplő fizetési mód azonosítóját (a[z] `supportedMethods` mezőben) a(z) `connect-src` CSP-utasításhoz."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "A(z) `StorageType.persistent` paramétert megszüntettük. Használja helyette a szabványosított `navigator.storage` paramétert."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "A `<picture>` fölérendelt elemmel rendelkező `<source src>` elem érvénytelen, ezért a rendszer figyelmen kívül hagyja. Használja helyette a következőt: `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "A webkitCancelAnimationFrame szolgáltatóspecifikus. A szabványos cancelAnimationFrame elemet használja helyette."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "A webkitRequestAnimationFrame szolgáltatóspecifikus. A szabványos requestAnimationFrame elemet használja helyette."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "A HTMLVideoElement.webkitDisplayingFullscreen elavult. Használja helyette a következőt: Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "A HTMLVideoElement.webkitEnterFullScreen() elavult. Az Element.requestFullscreen() elemet használja helyette."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "A HTMLVideoElement.webkitEnterFullscreen() elavult. Az Element.requestFullscreen() elemet használja helyette."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "A HTMLVideoElement.webkitExitFullScreen() elavult. A Document.exitFullscreen() elemet használja helyette."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "A HTMLVideoElement.webkitExitFullscreen() elavult. A Document.exitFullscreen() elemet használja helyette."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "A HTMLVideoElement.webkitSupportsFullscreen elavult. A Document.fullscreenEnabled elemet használja helyette."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Megszüntetjük a(z) `chrome.privacy.websites.privacySandboxEnabled` API-t, de a visszamenőleges kompatibilitás érdekében az M113-as kiadásig aktív marad. Használja helyette a következők valamelyikét: `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` vagy `chrome.privacy.websites.adMeasurementEnabled`. Lásd: https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "A `DtlsSrtpKeyAgreement` korlátozást eltávolítottuk. Olyan `false` értéket adott meg ennél a korlátozásnál, amelyet a rendszer úgy értelmez, hogy az eltávolított `SDES key negotiation` metódust szeretné használni. Ezt a funkciót eltávolítottuk. Használjon helyette egy olyan szolgáltatást, amely támogatja a `DTLS key negotiation` műveletet."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "A `DtlsSrtpKeyAgreement` korlátozást eltávolítottuk. Olyan `true` értéket adott meg ennél a korlátozásnál, amely nem járt semmilyen hatással, de a kód rendben tartása érdekében eltávolíthatja."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "A visszahíváson alapuló getStats() függvényt megszüntettük, és el fogjuk távolítani. Helyette a specifikációknak megfelelő getStats() függvényt használja."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "A Range.expand() elavult. A Select.modify() elemet használja helyette."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Le vannak tiltva azok az alerőforrás-kérések, amelyek URL-jei beágyazott hitelesítési adatokat tartalmaznak (pl. `https://user:pass@host/`)."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Az `rtcpMuxPolicy` lehetőséget megszüntettük, és el fogjuk távolítani."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "A `SharedArrayBuffer` objektum megköveteli az eltérő eredetek elkülönítését. További részletek: https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "A felhasználói aktiválás nélküli `speechSynthesis.speak()` függvényt megszüntettük, és el fogjuk távolítani."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "A `SharedArrayBuffer` használatának folytatásához a bővítményeknél engedélyezni kell az eltérő eredetek elkülönítését. További információ: https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "A Web SQL elavult. Használjon SQLite WebAssembly szabványt vagy Indexed Database API-t."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Az engedélyleíró (`window-placement`) elavult. Inkább ezt használja: `window-management`. További információ: https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "A(z) `window-placement` engedélykérésekre vonatkozó házirendje elavult. Inkább ezt használja: `window-management`. További információ: https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "Az `XMLHttpRequest` esetében az UTF-16 kódolást nem támogatja a válasz-JSON."
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "A fő szálon futó szinkron `XMLHttpRequest` függvényt megszüntettük, mert hátrányos hatással van a végfelhasználói élményre. További információ: https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "A `supportsSession()` paramétert megszüntettük. Használja helyette az `isSessionSupported()` függvényt, és ellenőrizze inkább a feloldott logikai értéket."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Fő szál akadályozásának időtartama"

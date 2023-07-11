@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "May valid na value ang element na `<html>` para sa `[lang]` na attribute nito"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Kung walang tinutukoy na consistent na wika ang webpage, posibleng hindi maanunsyo nang tama ng screen reader ang text ng page. [Matuto pa tungkol sa attribute na `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Ang element na `<html>` ay walang attribute na `[xml:lang]` na may parehong batayang wika tulad ng attribute na `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Ang element na `<html>` ay may attribute na `[xml:lang]` na may parehong batayang wika tulad ng attribute na `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Layunin dapat ng mga nagbibigay-impormasyong element na magkaroon ng maikli at naglalarawang alternatibong text. Puwedeng balewalain ang mga decorative na element sa pamamagitan ng walang lamang kahaliling attribute. [Matuto pa tungkol sa attribute na `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "May mga attribute na `[alt]` ang mga element na larawan"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Kapag nagdagdag ng natutukoy at accessible na text sa mga button ng input, posible nitong matulungan ang mga user ng screen reader na maunawaan ang layunin ng button ng input. [Matuto pa tungkol sa mga button ng input](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Walang natutukoy na text ang mga button ng input."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "May natutukoy na text ang mga button ng input."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Kapag gumagamit ng larawan bilang button na `<input>`, makakatulong sa mga user ng screen reader ang pagbibigay ng alternatibong text na maunawaan kung para saan ang button. [Matuto pa tungkol sa alt text ng input image](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Walang element na may value na `[tabindex]` na mas mataas sa 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "May mga feature ang mga screen reader na mas nagpapadali ng pag-navigate sa mga talahanayan. Kapag tiniyak na ginagamit ng mga talahanayan ang mga aktwal na element ng caption sa halip na ang mga cell na may attribute na `[colspan]`, posibleng mapaganda ang experience para sa mga user ng screen reader. [Matuto pa tungkol sa mga caption](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Hindi gumagamit ng `<caption>` ang mga talahanayan sa halip na mga cell na may attribute na `[colspan]` para magsaad ng caption."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Gumagamit ang mga talahanayan ng `<caption>` sa halip na mga cell na may attribute na `[colspan]` para magsaad ng caption."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "May mga feature ang mga screen reader na mas nagpapadali ng pag-navigate sa mga talahanayan. Kapag tiniyak na may nauugnay na header ng talahanayan ang mga element na `<td>` sa isang malaking talahanayan (3 o higit pang cell sa lapad at taas), posibleng mapaganda ang experience para sa mga user ng screen reader. [Matuto pa tungkol sa mga header ng talahanayan](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Walang header ng talahanayan ang mga element na `<td>` sa isang malaking `<table>`."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "May isa o higit pang header ng talahanayan ang mga element na `<td>` sa isang malaking `<table>`."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "May mga feature ang mga screen reader na mas nagpapadali ng pag-navigate sa mga talahanayan. Kapag tiniyak na ang mga cell na `<td>` na gumagamit sa attribute na `[headers]` ay tumutukoy lang sa iba pang cell sa talahanayang ding iyon, puwedeng mapaganda ang experience para sa mga user ng screen reader. [Matuto pa tungkol sa attribute na `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na nag-request ng AppBanner."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na request."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Dini-disable ng mga pag-flag ang back/forward cache. Bumisita sa chrome://flags/#back-forward-cache para lokal itong i-enable sa device na ito."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng WebUSB API."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Naka-disable ang back/forward cache dahil naka-disable ang cookies sa isang page na gumagamit ng `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng nakalaang worker o worklet."
@@ -1892,20 +1934,23 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na may bukas na IndexedDBConnection."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Naka-disable ang back/forward cache dahil sa event na IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "May ginamit na mga hindi kwalipikadong API."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page kung saan na-inject ng mga extension ang JavaScript."
+    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page kung saan na-inject ng mga extension ang `JavaScript`."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page kung saan na-inject ng mga extension ang StyleSheet."
+    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page kung saan na-inject ng mga extension ang `StyleSheet`."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Internal na error."
   },
   "core/lib/bf-cache-strings.js | keepaliveRequest": {
-    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive request."
+    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na request."
   },
   "core/lib/bf-cache-strings.js | keyboardLock": {
     "message": "Kasalukuyang hindi available para sa back/forward cache ang mga page na gumagamit ng KeyboardLock."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Pag-isipang magdagdag ng 'unsafe-inline' (binabalewala ng mga browser na sumusuporta sa mga nonce/hash) para maging backward compatible sa mga lumang browser."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Tingnan ang page ng status ng feature para sa higit pang detalye."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Magkakaroon ng bisa ang pagbabagong ito sa milestone na {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Gumagamit ng Hindi na Ginagamit na Feature"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Hindi sasaklawin ang pagpapahintulot ng simbolong wildcard (*) sa pangangasiwa ng `Access-Control-Allow-Headers` sa CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Dapat gamitin ang attribute na `disableRemotePlayback` para i-disable ang default na integration ng Cast sa halip na gamitin ang selector na `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Naka-block ang mga kahiligan sa resource na may mga URL na naglalaman ng mga inalis na whitespace `(n|r|t)` character at less-than character (`<`). Pakialis ang mga newline at i-encode ang mga less-than character mula sa mga lugar tulad ng mga value na attribute ng element para ma-load ang mga resource na ito."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "Hindi na ginagamit ang `chrome.loadTimes()`, standardized na API: Navigation Timing 2 na lang ang gamitin."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "Hindi na ginagamit ang `chrome.loadTimes()`, standardized na API: Paint Timing na lang ang gamitin."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "Hindi na ginagamit ang `chrome.loadTimes()`, standardized na API: `nextHopProtocol` sa Navigation Timing 2 na lang ang gamitin."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Tatanggihan sa halip na puputulin ang cookies na naglalaman ng `(0|r|n)` character."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Hindi na ginagamit, at madi-disable nang default ang pagpapahinga ng patakaran sa iisang origin sa pamamagitan ng pagtatakda sa `document.domain`. Ang babalang ito sa paghinto sa paggamit ay para sa isang cross-origin na access na na-enable sa pamamagitan ng pagtatakda sa `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Hindi na ginagamit ang pag-trigger ng window.alert mula sa mga cross origin na iframe at aalisin na ito sa hinaharap."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Hindi na ginagamit ang pag-trigger ng window.confirm mula sa mga cross origin na iframe at aalisin na ito sa hinaharap."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Hindi na ginagamit at aalisin na ang Mga Event ng DOM Mutation, kasama ang `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, at `DOMCharacterDataModified` (https://w3c.github.io/uievents/#legacy-event-types). `MutationObserver` na lang ang gamitin."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Suporta para sa data: Hindi na ginagamit ang mga URL sa SVG <use> na element at aalisin na ito sa hinaharap."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Hindi na ginagamit, at madi-disable nang default ang pagpapahinga ng patakaran sa iisang origin sa pamamagitan ng pagtatakda sa `document.domain`. Para patuloy na magamit ang feature na ito, mag-opt out sa mga origin-keyed agent cluster sa pamamagitan ng pagpapadala ng header na `Origin-Agent-Cluster: ?0` kasama ng sagot ng HTTP para sa dokumento at mga frame. Tingnan ang https://developer.chrome.com/blog/immutable-document-domain/ para sa higit pang detalye."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Hindi na ginagamit at aalisin na ang `Expect-CT` na header. Iniaatas ng Chrome ang Transparency ng Certificate para sa lahat ng pampublikong pinagkakatiwalaang certificate na ibinigay pagkalipas ng Abril 30, 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "Hindi na gumagana ang `getCurrentPosition()` at `watchPosition()` sa mga hindi secure na origin. Para magamit ang feature na ito, pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "Hindi na ginagamit ang `getCurrentPosition()` at `watchPosition()` sa mga hindi secure na origin. Para magamit ang feature na ito, pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "Hindi na gumagana ang `getUserMedia()` sa mga hindi secure na origin. Para magamit ang feature na ito, pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "Hindi na ginagamit ang `RTCPeerConnectionIceErrorEvent.hostCandidate`. `RTCPeerConnectionIceErrorEvent.address` o `RTCPeerConnectionIceErrorEvent.port` na lang ang gamitin."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Ang origin ng merchant at arbitrary na data mula sa `canmakepayment` na event ng service worker ay hindi na ginagamit at aalisin: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Humiling ang website ng subresource mula sa isang network na maa-access lang nito dahil sa privileged na posisyon ng network ng mga user nito. Ine-expose ng mga kahilingang ito ang mga hindi pampublikong device at server sa internet, na nagpapataas sa panganib ng cross-site request forgery (CSRF) na pag-atake, at/o pag-leak ng impormasyon. Para mapigilan ang mga panganib na ito, hindi na gagamitin ng Chrome ang mga kahilingan sa mga hindi pampublikong subresource kapag sinimulan mula sa mga hindi secure na konteksto, at magsisimula itong i-block ang mga iyon."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Na-rename sa `updateUrl` ang field ng `dailyUpdateUrl` ng `InterestGroups` na ipinasa sa `joinAdInterestGroup()`, para mas tumpak na maipakita ang gawi nito."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Hindi ma-load ang CSS mula sa mga URL ng `file:` maliban na lang kung nagtatapos ang mga ito sa file extension na `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Hindi na ginagamit ang paggamit ng `SourceBuffer.abort()` para i-abort ang asynchronous na pag-aalis ng sakop ng `remove()` dahil sa pagbabago ng detalye. Aalisin ang suporta sa hinaharap. Dapat mong pakinggan na lang ang `updateend`. Nilalayon lang ng `abort()` na i-abort ang asynchronous na pagdaragdag ng media o i-reset ang status ng pang-parse."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Hindi na ginagamit ang pagtatakda ng `MediaSource.duration` sa ibaba ng pinakamataas na timestamp ng presentation ng anumang naka-buffer at naka-code na frame dahil sa pagbabago ng detalye. Aalisin ang suporta para sa direktang pag-aalis ng naputol at naka-buffer na media sa hinaharap. Sa halip, dapat kang magsagawa ng direktang `remove(newDuration, oldDuration)` sa lahat ng `sourceBuffers`, kung saan `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Hihingi ng pahintulot ang Web MIDI sa paggamit kahit na hindi tinukoy ang sysex sa `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Hindi na ginagamit ang luma at hindi standardized na attribute na `shadowroot` at *hindi na ito gagana* sa M119. Pakigamit na lang ang bago at standardized na attribute na `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Posibleng hindi na magamit ang Notification API mula sa mga hindi secure na origin. Pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Posibleng hindi na humiling ng pahintulot para sa Notification API mula sa isang cross-origin na iframe. Pag-isipang humiling ng pahintulot mula sa isang top-level na frame o magbukas na lang ng bagong window."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Hindi na ginagamit ang opsyong `imageOrientation: 'none'` sa createImageBitmap. Pakigamit na lang ang createImageBitmap na may opsyong \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Nagne-negotiate ang iyong partner ng lumang bersyon ng (D)TLS. Sumangguni sa iyong partner para maayos ito."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Kapag tinukoy ang `overflow: visible` sa mga tag ng img, video, at canvas, posibleng gumawa ang mga ito ng visual na content sa labas ng mga hangganan ng element. Tingnan ang https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "Hindi na ginagamit ang `paymentManager.instruments`. Gumamit na lang ng just-in-time na pag-install para sa mga tagapangasiwa ng pagbabayad."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Na-bypass ng iyong call na `PaymentRequest` ang direktibang `connect-src` ng Content-Security-Policy (CSP). Hindi na ginagamit ang pag-bypass na ito. Magdagdag ng identifier ng paraan ng pagbabayad mula sa `PaymentRequest` API (sa field na `supportedMethods`) sa iyong direktibang `connect-src` ng CSP."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "Hindi na ginagamit ang `StorageType.persistent`. Pakigamit na lang ang standardized na `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Invalid at binabalewala ang `<source src>` na may parent na `<picture>`. `<source srcset>` na lang ang gamitin."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Partikular sa vendor ang webkitCancelAnimationFrame. Pakigamit na lang ang karaniwang cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Partikular sa vendor ang webkitRequestAnimationFrame. Pakigamit na lang ang karaniwang requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "Hindi na ginagamit ang HTMLVideoElement.webkitDisplayingFullscreen. Pakigamit na lang ang Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "Hindi na ginagamit ang HTMLVideoElement.webkitEnterFullScreen(). Pakigamit na lang ang Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "Hindi na ginagamit ang HTMLVideoElement.webkitEnterFullscreen(). Pakigamit na lang ang Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "Hindi na ginagamit ang HTMLVideoElement.webkitExitFullScreen(). Pakigamit na lang ang Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "Hindi na ginagamit ang HTMLVideoElement.webkitExitFullscreen(). Pakigamit na lang ang Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "Hindi na ginagamit ang HTMLVideoElement.webkitSupportsFullscreen. Pakigamit na lang ang Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Hindi na namin gagamitin ang API na `chrome.privacy.websites.privacySandboxEnabled`, pero mananatili itong aktibo para sa backward compatibility hanggang sa pag-release ng M113. Sa halip, pakigamit ang `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled`, at `chrome.privacy.websites.adMeasurementEnabled`. Tingnan ang https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Inalis ang paghihigpit na `DtlsSrtpKeyAgreement`. Tinukoy mo ang isang `false` na value para sa paghihigpit na ito, na itinuturing na pagsubok na gamitin ang inalis na paraan ng `SDES key negotiation`. Inalis ang functionality na ito; isang serbisyong sumusuporta sa `DTLS key negotiation` na lang ang gamitin."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Inalis ang paghihigpit na `DtlsSrtpKeyAgreement`. Tinukoy mo ang isang `true` na value para sa paghihigpit na ito, na walang epekto, pero puwede mong alisin ang paghihigpit na ito para sa kaayusan."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Hindi na ginagamit at aalisin na ang nakabatay sa callback na getStats(). Gamitin na lang ang sumusunod sa spec na getStats()."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Hindi na ginagamit ang Range.expand(). Pakigamit na lang ang Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Naka-block ang mga kahilingan sa subresource na may mga URL na naglalaman ng mga naka-embed na kredensyal (hal. `https://user:pass@host/`)."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Hindi na ginagamit at aalisin na ang opsyong `rtcpMuxPolicy`."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "Mangangailangan ang `SharedArrayBuffer` ng pag-isolate ng cross-origin. Tingnan ang https://developer.chrome.com/blog/enabling-shared-array-buffer/ para sa higit pang detalye."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Hindi na ginagamit at aalisin ang `speechSynthesis.speak()` nang walang pag-activate ng user."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Dapat mag-opt in ang mga extension sa mga pag-isolate ng cross-origin para patuloy na magamit ang `SharedArrayBuffer`. Tingnan ang https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Hindi na ginagamit ang Web SQL. Gumamit ng SQLite WebAssembly o Indexed Database"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Hindi na ginagamit ang `window-placement` na descriptor ng pahintulot. `window-management` na lang ang gamitin. Para sa higit pang tulong, tingnan ang https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Hindi na ginagamit ang `window-placement` na patakaran sa pahintulot. `window-management` na lang ang gamitin. Para sa higit pang tulong, tingnan ang https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "Hindi sinusuportahan ang UTF-16 ng sagot na json sa `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Hindi na ginagamit ang synchronous na `XMLHttpRequest` sa pangunahing thread dahil sa mga nakakapinsalang epekto nito sa experience ng end user. Para sa higit pang tulong, tingnan ang https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "Hindi na ginagamit ang `supportsSession()`. Sa halip, pakigamit ang `isSessionSupported()` at tingnan ang nalutas na boolean value."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Oras ng Pag-block ng Pangunahing Thread"
@@ -2874,7 +3105,7 @@
     "message": "Puwede mong i-enable ang pag-compress ng text sa configuration ng iyong server sa web."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | modern-image-formats": {
-    "message": "I-enable ang 'I-imagify' mula sa tab na Pag-optimize ng Larawan sa 'WP Rocket' para i-convert ang iyong mga larawan sa WebP."
+    "message": "I-enable ang 'Imagify' mula sa tab na Pag-optimize ng Larawan sa 'WP Rocket' para i-convert ang iyong mga larawan sa WebP."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | offscreen-images": {
     "message": "I-enable ang [LazyLoad](https://docs.wp-rocket.me/article/1141-lazyload-for-images) sa WP Rocket para ayusin ang rekomendasyong ito. Inaantala ng feature na ito ang pag-load ng mga larawan hanggang sa mag-scroll pababa ang bisita sa page at talagang kailangan na niyang makita ang mga ito."
@@ -2895,7 +3126,7 @@
     "message": "I-enable ang [Iantala ang pag-execute ng JavaScript](https://docs.wp-rocket.me/article/1349-delay-javascript-execution) sa 'WP Rocket' para ayusin ang problemang ito. Papahusayin nito ang pag-load ng iyong page sa pamamagitan ng pag-aantala sa pag-execute ng mga script hanggang sa interaction ng user. Kung may mga iframe ang iyong site, puwede mong gamtin ang [LazyLoad para sa mga iframe at video](https://docs.wp-rocket.me/article/1674-lazyload-for-iframes-and-videos) at puwede mo ring [Palitan ng preview image ang iframe ng YouTube](https://docs.wp-rocket.me/article/1488-replace-youtube-iframe-with-preview-image)."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | uses-optimized-images": {
-    "message": "I-enable ang 'I-imagify' mula sa tab na Pag-optimize ng larawan sa 'WP Rocket' at patakbuhin ang Maramihang Pag-optimize para i-compress ang iyong mga larawan."
+    "message": "I-enable ang 'Imagify' mula sa tab na Pag-optimize ng larawan sa 'WP Rocket' at patakbuhin ang Maramihang Pag-optimize para i-compress ang iyong mga larawan."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | uses-rel-preconnect": {
     "message": "Gamitin ang [Mga Request para I-prefetch ang DNS](https://docs.wp-rocket.me/article/1302-prefetch-dns-requests) sa 'WP Rocket' para maidagdag ang \"dns-prefetch\" at mapabilis ang koneksyon sa mga external na domain. Awtomatiko ring idinaragdag ng 'WP Rocket' ang \"preconnect\" sa [domain ng Google Fonts](https://docs.wp-rocket.me/article/1312-optimize-google-fonts) at anumang CNAME na idinagdag sa pamamagitan ng feature na [I-enable ang CDN](https://docs.wp-rocket.me/article/42-using-wp-rocket-with-a-cdn)."

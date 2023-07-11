@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Elementul `<html>` are o valoare validă pentru atributul `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Dacă pagina web nu specifică o limbă consecventă, atunci cititorul de ecran poate să nu anunțe corect textul paginii. [Află mai multe despre atributul `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Elementul `<html>` nu are un atribut `[xml:lang]` cu aceeași limbă de bază ca atributul `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Elementul `<html>` are un atribut `[xml:lang]` cu aceeași limbă de bază ca atributul `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Elementele informative ar trebui să conțină texte alternative descriptive scurte. Elementele decorative pot fi ignorate cu un atribut Alt gol. [Află mai multe despre atributul `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Elementele imagine au atribute `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Adăugarea de text vizibil și accesibil la butoanele de introducere poate ajuta utilizatorii cititoarelor de ecran să înțeleagă scopul butonului de introducere. [Află mai multe despre butoanele de introducere](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Butoanele de introducere nu conțin text care se poate distinge."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Butoanele de introducere au text care se poate distinge."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Când o imagine este folosită ca buton `<input>`, furnizarea unui text alternativ poate ajuta utilizatorii cititorului de ecran să înțeleagă scopul butonului. [Află despre textul alternativ pentru imaginea input](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Niciun element nu are o valoare `[tabindex]` mai mare decât 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Cititoarele de ecran au funcții care facilitează navigarea în tabele. Dacă te asiguri că tabelele folosesc elementul de subtitrare în locul celulelor cu atributul `[colspan]`, experiența utilizatorilor de cititoare de ecran poate fi îmbunătățită. [Află mai multe despre subtitrări](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tabelele nu folosesc `<caption>` în locul celulelor cu atributul `[colspan]` pentru a indica o legendă."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tabelele folosesc `<caption>` în locul celulelor cu atributul `[colspan]` pentru a indica o legendă."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Cititoarele de ecran au funcții care facilitează navigarea în tabele. Dacă te asiguri că elementele `<td>` dintr-un tabel mare (trei sau mai multe celule în lățime și înălțime) au un antet de tabel asociat, experiența poate fi îmbunătățită pentru utilizatorii cititoarelor de ecran. [Află mai multe despre antetele tabelelor](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Elementele `<td>` dintr-o clasă `<table>` mare nu au anteturi de tabel."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Elementele `<td>` dintr-o unitate `<table>` mare au unul sau mai multe anteturi de tabel."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Cititoarele de ecran au funcții care facilitează navigarea în tabele. Dacă se asigură că celulele `<td>` care folosesc atributul `[headers]` se referă doar la alte celule din același tabel, se poate îmbunătăți experiența pentru utilizatorii de cititoare de ecran. [Află mai multe despre atributul `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Paginile care au solicitat un AppBanner nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Memoria cache înainte-înapoi este dezactivată din cauza unei solicitări keep-alive."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Memoria cache înainte/înapoi este dezactivată de funcțiile experimentale. Accesează chrome://flags/#back-forward-cache ca să o activezi local pe acest dispozitiv."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Paginile care folosesc API-ul WebUSB nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Memoria cache înainte-înapoi este dezactivată, deoarece cookie-urile sunt dezactivate pentru o pagină care folosește `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Paginile care folosesc un lucrător sau un worklet special nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Paginile care au o conexiune IndexedDB deschisă nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Memoria cache înainte-înapoi este dezactivată din cauza unui eveniment IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "S-au folosit API-uri ineligibile."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Paginile în care se injectează JavaScript prin extensii nu sunt eligibile momentan pentru memoria cache înainte-înapoi."
+    "message": "Paginile în care se injectează `JavaScript` prin extensii nu sunt eligibile momentan pentru memoria cache înainte-înapoi."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Paginile în care se injectează StyleSheet prin extensii nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
+    "message": "Paginile în care se injectează `StyleSheet` prin extensii nu sunt eligibile momentan pentru memoria cache înainte-înapoi."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Eroare internă."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Îți recomandăm să adaugi opțiunea unsafe-inline (ignorată de browserele care acceptă valori nonce/hash) pentru retrocompatibilitatea cu browsere mai vechi."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Pentru mai multe detalii accesează pagina cu starea funcțiilor."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Această modificare va intra în vigoare cu obiectivul {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "S-a folosit o funcție învechită"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Autorizarea nu va fi acoperită de simbolul pentru metacaracter (*) în cadrul gestionării `Access-Control-Allow-Headers` prin CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Pentru a dezactiva integrarea Cast prestabilită, trebuie folosit atributul `disableRemotePlayback` în locul selectorului `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Solicitările de resurse ale căror adrese URL conțineau atât caractere pentru spații `(n|r|t)`, cât și semnul mai mic decât (`<`) sunt blocate. Pentru a încărca resursele, elimină caracterele de rând nou și codifică semnul mai mic decât în locuri cum ar fi valorile atributelor elementelor."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` s-a învechit. Folosește API-ul standardizat Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` s-a învechit. Folosește API-ul standardizat Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` s-a învechit. Folosește API-ul standardizat `nextHopProtocol` din Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookie-urile care conțin un caracter `(0|r|n)` vor fi respinse în loc de a fi trunchiate."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Relaxarea politicii pentru aceeași origine prin setarea `document.domain` este învechită și va fi dezactivată în mod prestabilit. Acest avertisment privind renunțarea la dezvoltare este asociat unei accesări cu origini diferite, care a fost activată din setarea `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Declanșarea window.alert din cadre iframe cu origini diferite s-a învechit și va fi eliminată pe viitor."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Declanșarea window.confirm din cadre iframe cu origini diferite s-a învechit și va fi eliminată pe viitor."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Evenimentele de mutare DOM, inclusiv `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` și `DOMCharacterDataModified`, sunt învechite (https://w3c.github.io/uievents/#legacy-event-types) și vor fi eliminate. Folosește `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Compatibilitate cu datele: adresele URL din elementul SVG <use> sunt învechite și vor fi eliminate pe viitor."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Relaxarea politicii pentru aceeași origine prin setarea `document.domain` este învechită și va fi dezactivată în mod prestabilit. Pentru a folosi în continuare funcția, renunță la grupurile de agenți pentru care au fost configurate anumite origini, trimițând un antet `Origin-Agent-Cluster: ?0` împreună cu răspunsul HTTP pentru document și cadre. Consultă https://developer.chrome.com/blog/immutable-document-domain/ pentru detalii suplimentare."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Antetul `Expect-CT` este învechit și va fi eliminat. Chrome necesită Transparența certificatului pentru toate certificatele de încredere publice emise după 30 aprilie 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` și `watchPosition()` nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` și `watchPosition()` sunt învechite pentru originile nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` s-a învechit. Folosește `RTCPeerConnectionIceErrorEvent.address` sau `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Originea comerciantului și datele arbitrare din evenimentul service worker `canmakepayment` sunt învechite și vor fi eliminate: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Site-ul a solicitat o subresursă de la o rețea pe care a putut să o acceseze numai datorită poziției privilegiate în rețea a utilizatorilor săi. Aceste solicitări expun pe internet dispozitive și servere care nu sunt publice, crescând riscul de atacuri prin falsificarea solicitărilor de pe alt site (CSRF) și de scurgeri de informații. Pentru a reduce aceste riscuri, Chrome marchează drept învechite solicitările de la subresurse care nu sunt publice atunci când sunt inițiate din contexte nesigure și va începe să le blocheze."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Câmpul `dailyUpdateUrl` din `InterestGroups` transmis către `joinAdInterestGroup()` a fost redenumit `updateUrl`, astfel încât să reflecte mai exact comportamentul asociat."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Fișierul CSS nu se poate încărca din adrese URL `file:` dacă acestea nu se termină cu extensia de fișier `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Folosirea `SourceBuffer.abort()` pentru a abandona eliminarea intervalului asincron pentru `remove()` este învechită din cauza modificării specificațiilor. Pe viitor, aceasta nu va mai fi acceptată. Ar trebui să asculți evenimentul `updateend`. `abort()` are numai rolul de a abandona atașări media asincrone sau de a reseta starea parserului."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Setarea `MediaSource.duration` sub cel mai mare marcaj temporal de prezentare al oricăror cadre codificate din memoria temporară este învechită din cauza modificării specificațiilor. Eliminarea implicită a elementelor media trunchiate din memoria temporară va fi eliminată pe viitor. În locul acesteia, trebuie să rulezi `remove(newDuration, oldDuration)` pentru toate obiectele `sourceBuffers`, unde `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI va solicita o permisiune de folosit chiar dacă sysex nu este specificat în `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Atributul `shadowroot` nestandardizat mai vechi a fost retras și *nu va mai funcționa* în M119. Folosește noul atribut standardizat `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "API-ul Notification nu mai poate fi folosit din origini nesigure. Îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Este posibil ca permisiunea pentru API-ul Notification să nu mai fie solicitată dintr-un iframe cu origini diferite. Îți recomandăm să soliciți permisiunea dintr-un cadru de nivel superior sau să deschizi o fereastră nouă."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Opțiunea `imageOrientation: 'none'` din createImageBitmap este învechită. Folosește createImageBitmap cu opțiunea \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Partenerul tău negociază o versiune (D)TLS învechită. Consultă-te cu partenerul pentru a remedia problema."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Dacă specifici `overflow: visible` pe etichetele imagine, video și pânză, este posibil să se producă conținut vizual în afara limitelor elementului. Accesează https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` s-a învechit. Folosește instalarea la timp pentru handlerele pentru plăți."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Apelul `PaymentRequest` a omis directiva Content-Security-Policy (CSP) `connect-src`. Această opțiune de ocolire este învechită. Adaugă identificatorul metodei de plată din API-ul `PaymentRequest` (în câmpul `supportedMethods`) la directiva CSP `connect-src`."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` s-a învechit. Folosește `navigator.storage` standardizat."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` cu un element părinte `<picture>` nu este valid, deci va fi ignorat. Folosește `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Metoda webkitCancelAnimationFrame este specifică furnizorului. Folosește metoda standard cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Metoda webkitRequestAnimationFrame este specifică furnizorului. Folosește metoda standard requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen este învechit. Folosește Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() este învechit. Folosește Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() este învechit. Folosește Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() este învechit. Folosește Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() este învechit. Folosește Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen este învechit. Folosește Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Urmează să retragem API-ul `chrome.privacy.websites.privacySandboxEnabled`, dar acesta va rămâne activ pentru retrocompatibilitate până la lansarea M113. Folosește `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` și `chrome.privacy.websites.adMeasurementEnabled`. Consultă https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Restricția `DtlsSrtpKeyAgreement` a fost eliminată. Ai specificat o valoare `false` pentru această restricție, care este interpretată ca o încercare de a folosi metoda `SDES key negotiation` eliminată. Această funcție a fost eliminată. Folosește un serviciu care acceptă `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Restricția `DtlsSrtpKeyAgreement` a fost eliminată. Ai specificat o valoare `true` pentru această restricție, care nu a avut niciun efect, dar poți elimina restricția pentru un aspect ordonat."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Metoda callback-based getStats() este învechită și va fi eliminată. Folosește spec-compliant getStats()."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() este învechit. Folosește Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Solicitările de subresurse ale căror adrese URL conțin date de conectare încorporate (de ex., `https://user:pass@host/`) sunt blocate."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Opțiunea `rtcpMuxPolicy` este învechită și va fi eliminată."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` va necesita blocarea accesului de la mai multe surse. Consultă https://developer.chrome.com/blog/enabling-shared-array-buffer/ pentru mai multe detalii."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Apelarea `speechSynthesis.speak()` fără activarea utilizatorului este învechită și va fi eliminată."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Extensiile trebuie să aibă blocarea accesului de la mai multe surse activată pentru a folosi în continuare `SharedArrayBuffer`. Consultă https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "SQL web este învechit. Folosește SQLite WebAssembly sau Indexed Database"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Descrierea permisiunii `window-placement` este învechită. Folosește `window-management`. Pentru mai mult ajutor, consultă https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Politica privind permisiunile `window-placement` este învechită. Folosește `window-management`. Pentru mai mult ajutor, consultă https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "Fișierul JSON de răspuns din `XMLHttpRequest` nu acceptă UTF-16"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Obiectul sincron `XMLHttpRequest` din firul principal este învechit din cauza efectelor sale negative asupra experienței utilizatorului final. Pentru mai mult ajutor, consultă https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` s-a învechit. Folosește `isSessionSupported()` și verifică valoarea booleană rezultată."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Timpul de blocare a firului principal"

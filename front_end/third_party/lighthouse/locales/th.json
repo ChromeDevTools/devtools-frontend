@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "องค์ประกอบ `<html>` มีค่าที่ถูกต้องสำหรับแอตทริบิวต์ `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "หากหน้าเว็บไม่ได้ระบุภาษาที่สอดคล้องกัน โปรแกรมอ่านหน้าจออาจอ่านข้อความของหน้าเว็บไม่ถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "องค์ประกอบ `<html>` ไม่มีแอตทริบิวต์ `[xml:lang]` ที่มีภาษาฐานเดียวกันกับแอตทริบิวต์ `[lang]`"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "องค์ประกอบ `<html>` มีแอตทริบิวต์ `[xml:lang]` ที่มีภาษาฐานเดียวกันกับแอตทริบิวต์ `[lang]`"
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "องค์ประกอบเพื่อการให้ข้อมูลควรมีข้อความสำรองที่สั้นกระชับและสื่อความหมาย การใช้แอตทริบิวต์ Alt ที่ว่างเปล่าจะเป็นการเพิกเฉยต่อองค์ประกอบเพื่อการตกแต่ง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "องค์ประกอบรูปภาพมีแอตทริบิวต์ `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "การเพิ่มข้อความช่วยการเข้าถึงซึ่งมองเห็นได้ลงในปุ่มอินพุตอาจช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอเข้าใจวัตถุประสงค์ของปุ่มอินพุต [ดูข้อมูลเพิ่มเติมเกี่ยวกับปุ่มอินพุต](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "ปุ่มอินพุตไม่มีข้อความที่มองเห็นได้ชัดเจน"
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "ปุ่มอินพุตมีข้อความที่มองเห็นได้ชัดเจน"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "เมื่อมีการใช้รูปภาพเป็นปุ่ม `<input>` การระบุข้อความสำรองจะช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอเข้าใจวัตถุประสงค์ของปุ่มได้ [ดูข้อมูลเกี่ยวกับข้อความแสดงแทนของรูปภาพที่ป้อน](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "ไม่มีองค์ประกอบที่มีค่า `[tabindex]` มากกว่า 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การตรวจสอบว่าตารางใช้องค์ประกอบคำบรรยายจริงแทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` อาจช่วยปรับปรุงประสบการณ์การใช้งานของผู้ใช้โปรแกรมอ่านหน้าจอได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับคำบรรยาย](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "ตารางไม่ได้ใช้ `<caption>` แทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` ในการระบุคำบรรยาย"
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "ตารางใช้ `<caption>` แทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` ในการระบุคำบรรยาย"
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การตรวจสอบว่าองค์ประกอบ `<td>` ในตารางขนาดใหญ่ (เซลล์อย่างน้อย 3 เซลล์มีขนาดกว้างและสูง) มีส่วนหัวตารางที่เชื่อมโยงอาจปรับปรุงประสบการณ์การใช้งานของผู้ใช้โปรแกรมอ่านหน้าจอได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับส่วนหัวของตาราง](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "องค์ประกอบ `<td>` ใน `<table>` ขนาดใหญ่ไม่มีส่วนหัวตาราง"
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "องค์ประกอบ `<td>` ใน `<table>` ขนาดใหญ่มีส่วนหัวตารางอย่างน้อย 1 รายการ"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การดูแลให้เซลล์ `<td>` ที่ใช้แอตทริบิวต์ `[headers]` อ้างอิงถึงเซลล์อื่นๆ ในตารางเดียวกันเท่านั้นอาจช่วยปรับปรุงประสบการณ์สำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "หน้าที่ขอ AppBanner ยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากคำขอ Keepalive"
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากมีการแจ้งว่าไม่เหมาะสม ไปที่ chrome://flags/#back-forward-cache เพื่อเปิดใช้งานในอุปกรณ์นี้โดยตรง"
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "หน้าที่ใช้ WebUSB API ไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache"
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากมีการปิดใช้คุกกี้ในหน้าที่ใช้ `Cache-Control: no-store`"
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "หน้าที่ใช้ Dedicated Worker หรือ Worklet ยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "หน้าที่มีการเชื่อมต่อ IndexedDB แบบเปิดยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากเหตุการณ์ IndexedDB"
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "มีการใช้ API ที่ไม่มีสิทธิ์"
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "หน้าที่มีการแทรก JavaScript ลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
+    "message": "หน้าที่มีการแทรก `JavaScript` ลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "หน้าที่มีการแทรกสไตล์ชีตลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
+    "message": "หน้าที่มีการแทรก`StyleSheet`ลงในส่วนขยายยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "ข้อผิดพลาดภายใน"
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "ลองเพิ่ม \"unsafe-inline\" (ซึ่งเบราว์เซอร์ที่รองรับ nonces/hashes จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "ดูรายละเอียดเพิ่มเติมที่หน้าสถานะฟีเจอร์"
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "การเปลี่ยนแปลงนี้จะมีผลกับเป้าหมาย {milestone}"
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "ใช้ฟีเจอร์ที่เลิกใช้งานแล้ว"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "สัญลักษณ์ไวลด์การ์ด (*) จะไม่ครอบคลุมการให้สิทธิ์ในการใช้งาน `Access-Control-Allow-Headers` สำหรับ CORS"
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "ควรใช้แอตทริบิวต์ `disableRemotePlayback` เพื่อปิดใช้การผสานรวมการแคสต์เริ่มต้นแทนการใช้ตัวเลือก `-internal-media-controls-overlay-cast-button`"
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "คำขอทรัพยากรที่ URL มีทั้งอักขระ `(n|r|t)` แบบช่องว่างซึ่งนำออกไปแล้วและมีอักขระน้อยกว่า (`<`) ถูกบล็อก โปรดนำบรรทัดใหม่ออกและเข้ารหัสอักขระที่น้อยกว่าจากที่ต่างๆ อย่างเช่นค่าแอตทริบิวต์ขององค์ประกอบเพื่อโหลดทรัพยากรเหล่านี้"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` เลิกใช้งานแล้ว โปรดใช้ Navigation Timing 2 ซึ่งเป็น API แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` เลิกใช้งานแล้ว โปรดใช้ Paint Timing ซึ่งเป็น API แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` เลิกใช้งานแล้ว โปรดใช้ `nextHopProtocol` ใน Navigation Timing 2 ซึ่งเป็น API แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "คุกกี้ที่มีอักขระ `(0|r|n)` จะถูกปฏิเสธแทนการตัดให้สั้นลง"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า `document.domain` เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น คำเตือนการเลิกใช้งานนี้มีไว้สำหรับการเข้าถึงแบบข้ามต้นทางที่เปิดใช้โดยการตั้งค่า `document.domain`"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "การเรียกใช้ window.alert จาก iframe แบบข้ามต้นทางเลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "การเรียกใช้ window.confirm จาก iframe แบบข้ามต้นทางเลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "เหตุการณ์การเปลี่ยนแปลง DOM ซึ่งรวมถึง `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` และ `DOMCharacterDataModified` เลิกใช้งานแล้ว (https://w3c.github.io/uievents/#legacy-event-types) และจะถูกนำออก โปรดใช้ `MutationObserver` แทน"
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "การรองรับข้อมูล: URL ในองค์ประกอบ SVG <use> เลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า `document.domain` เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น หากต้องการใช้ฟีเจอร์นี้ต่อ โปรดเลือกไม่ใช้คลัสเตอร์ Agent ที่ผูกกับต้นทางโดยการส่งส่วนหัว `Origin-Agent-Cluster: ?0` พร้อมด้วยการตอบสนองของ HTTP สำหรับเอกสารและเฟรม ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/immutable-document-domain/"
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "ส่วนหัว `Expect-CT` เลิกใช้งานแล้วและจะถูกนำออก Chrome ต้องการ \"ความโปร่งใสของใบรับรอง\" สำหรับใบรับรองทั้งหมดที่ได้รับความเชื่อถือจากสาธารณะซึ่งออกหลังจากวันที่ 30 เมษายน 2018"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` และ `watchPosition()` ไม่ทำงานในต้นทางที่ไม่ปลอดภัยอีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` และ `watchPosition()` เลิกใช้งานแล้วในต้นทางที่ไม่ปลอดภัย คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` ทำงานในต้นทางที่ไม่ปลอดภัยไม่ได้อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` เลิกใช้งานแล้ว โปรดใช้ `RTCPeerConnectionIceErrorEvent.address` หรือ `RTCPeerConnectionIceErrorEvent.port` แทน"
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "ต้นทางของผู้ขายและข้อมูลที่กําหนดเองจากเหตุการณ์ Service Worker `canmakepayment` ซึ่งได้แก่ `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers` เลิกใช้งานแล้วและจะถูกนำออก"
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "เว็บไซต์ขอทรัพยากรย่อยจากเครือข่ายที่เข้าถึงได้เท่านั้นเนื่องจากมีตำแหน่งเครือข่ายที่เป็นสิทธิ์เฉพาะของผู้ใช้ คำขอเหล่านี้จะเปิดเผยอุปกรณ์และเซิร์ฟเวอร์ที่ไม่เผยแพร่ต่อสาธารณะไปยังอินเทอร์เน็ต ซึ่งเพิ่มความเสี่ยงในการโจมตีโดยการปลอมแปลงคำขอแบบข้ามเว็บไซต์ (CSRF) และ/หรือข้อมูลรั่วไหล Chrome จะเลิกใช้งานคำขอไปยังทรัพยากรย่อยที่ไม่เผยแพร่ต่อสาธารณะเมื่อเริ่มต้นมาจากบริบทที่ไม่ปลอดภัยและจะเริ่มบล็อกคำขอดังกล่าวเพื่อลดความเสี่ยงเหล่านี้"
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "ฟิลด์ `dailyUpdateUrl` ของ `InterestGroups` ที่ส่งไปยัง `joinAdInterestGroup()` ได้เปลี่ยนชื่อเป็น `updateUrl` เพื่อให้สะท้อนลักษณะการทำงานได้อย่างแม่นยำยิ่งขึ้น"
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "โหลด CSS จาก URL `file:` ไม่ได้ เว้นแต่จะลงท้ายด้วยนามสกุลไฟล์ `.css`"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "การใช้ `SourceBuffer.abort()` เพื่อล้มเลิกการนำช่วงที่ไม่พร้อมกันออกของ `remove()` เลิกใช้งานแล้วเนื่องจากการเปลี่ยนแปลงข้อกำหนด ระบบจะนำการรองรับออกในอนาคต คุณควรให้ความสำคัญกับเหตุการณ์ `updateend` แทน `abort()` มีไว้เพื่อล้มเลิกการเพิ่มสื่อที่ไม่พร้อมกันหรือรีเซ็ตสถานะโปรแกรมแยกวิเคราะห์เท่านั้น"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "การตั้งค่า `MediaSource.duration` ต่ำกว่าการประทับเวลาการนำเสนอสูงสุดของเฟรมที่ใส่โค้ดที่บัฟเฟอร์เลิกใช้งานแล้วเนื่องจากการเปลี่ยนแปลงข้อกำหนด การรองรับการนำสื่อที่บัฟเฟอร์ที่มีการตัดให้สั้นลงออกแบบไม่เจาะจงจะถูกนำออกในอนาคต คุณควรดำเนินการ `remove(newDuration, oldDuration)` แบบเจาะจงแทนใน `sourceBuffers` ทั้งหมดที่ `newDuration < oldDuration`"
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI จะขอสิทธิ์ในการใช้แม้ว่าจะไม่ได้ระบุ SysEx ใน `MIDIOptions` ก็ตาม"
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "แอตทริบิวต์ `shadowroot` เวอร์ชันเก่าที่ไม่เป็นไปตามมาตรฐานเลิกใช้งานแล้ว และจะ *ไม่ทำงานอีกต่อไป* ใน M119 โปรดใช้แอตทริบิวต์ `shadowrootmode` เวอร์ชันใหม่ที่เป็นมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "ต้นทางที่ไม่ปลอดภัยอาจไม่ใช้ Notification API อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "iframe แบบข้ามต้นทางอาจไม่ขอสิทธิ์สำหรับ Notification API อีกต่อไป คุณควรพิจารณาขอสิทธิ์จากเฟรมระดับบนสุดหรือเปิดหน้าต่างใหม่แทน"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "ตัวเลือก `imageOrientation: 'none'` ใน createImageBitmap เลิกใช้งานแล้ว โปรดใช้ createImageBitmap กับตัวเลือก \\{imageOrientation: 'from-image'\\} แทน"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "พาร์ทเนอร์ของคุณต่อรอง (D)TLS เวอร์ชันที่ล้าสมัย โปรดตรวจสอบกับพาร์ทเนอร์เพื่อดำเนินการแก้ไข"
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "การระบุ `overflow: visible` ในแท็ก img, video และ canvas อาจทำให้แท็กเหล่านี้สร้างเนื้อหาภาพนอกขอบเขตขององค์ประกอบ โปรดดู https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md"
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` เลิกใช้งานแล้ว โปรดใช้การติดตั้งแบบทันท่วงทีแทนสำหรับตัวแฮนเดิลการชำระเงิน"
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "การเรียกใช้ `PaymentRequest` ได้ข้ามคำสั่งของนโยบายรักษาความปลอดภัยเนื้อหา (CSP) `connect-src` การข้ามนี้เลิกใช้งานแล้ว โปรดเพิ่มตัวระบุวิธีการชำระเงินจาก `PaymentRequest` API (ในช่อง `supportedMethods`) ลงในคำสั่งของ CSP `connect-src`"
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` เลิกใช้งานแล้ว โปรดใช้ `navigator.storage` มาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` ที่มีองค์ประกอบหลัก `<picture>` ไม่ถูกต้องและด้วยเหตุนี้ระบบจึงจะไม่สนใจ โปรดใช้ `<source srcset>` แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame เจาะจงผู้ให้บริการ โปรดใช้ cancelAnimationFrame แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame เจาะจงผู้ให้บริการ โปรดใช้ requestAnimationFrame แบบมาตรฐานแทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen เลิกใช้งานแล้ว โปรดใช้ Document.fullscreenElement แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() เลิกใช้งานแล้ว โปรดใช้ Element.requestFullscreen() แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() เลิกใช้งานแล้ว โปรดใช้ Element.requestFullscreen() แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() เลิกใช้งานแล้ว โปรดใช้ Document.exitFullscreen() แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() เลิกใช้งานแล้ว โปรดใช้ Document.exitFullscreen() แทน"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen เลิกใช้งานแล้ว โปรดใช้ Document.fullscreenEnabled แทน"
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "เรากำลังจะเลิกใช้งาน API `chrome.privacy.websites.privacySandboxEnabled` แม้ว่า API นี้จะยังคงมีการใช้งานต่อไปเพื่อความเข้ากันได้แบบย้อนหลังจนกว่าจะเปิดตัวเวอร์ชัน M113 โปรดใช้ `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` และ `chrome.privacy.websites.adMeasurementEnabled` แทน ดู https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "ข้อจำกัด `DtlsSrtpKeyAgreement` ถูกนำออกแล้ว คุณได้ระบุค่า `false` สำหรับข้อจำกัดนี้ ซึ่งระบบตีความว่าเป็นการพยายามใช้เมธอด `SDES key negotiation` ที่นำออกไปแล้ว ฟังก์ชันการทำงานนี้ถูกนำออกแล้ว โปรดใช้บริการที่รองรับ `DTLS key negotiation` แทน"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "ข้อจำกัด `DtlsSrtpKeyAgreement` ถูกนำออกแล้ว คุณได้ระบุค่า `true` สำหรับข้อจำกัดนี้ซึ่งไม่มีผลกระทบ แต่สามารถนำข้อจำกัดนี้ออกได้เพื่อความเรียบร้อย"
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "getStats() ที่อิงตามโค้ดเรียกกลับเลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ getStats() ที่สอดคล้องกับข้อกำหนดแทน"
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() เลิกใช้งานแล้ว โปรดใช้ Selection.modify() แทน"
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "คำขอทรัพยากรย่อยที่ URL มีข้อมูลเข้าสู่ระบบที่ฝังไว้ (เช่น `https://user:pass@host/`) ถูกบล็อก"
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "ตัวเลือก `rtcpMuxPolicy` เลิกใช้งานแล้วและจะถูกนำออก"
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` จะต้องใช้การแยกแบบข้ามต้นทาง ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/enabling-shared-array-buffer/"
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` แบบไม่ต้องมีการเปิดใช้งานของผู้ใช้เลิกใช้งานแล้วและจะถูกนำออก"
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "ส่วนขยายควรเลือกใช้การแยกแบบข้ามต้นทางเพื่อใช้ `SharedArrayBuffer` ต่อ ดู https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/"
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "SQL ในเว็บเลิกใช้งานแล้ว โปรดใช้ SQLite WebAssembly หรือฐานข้อมูลที่จัดทำดัชนีแล้ว"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "ข้อบ่งชี้สิทธิ์ `window-placement` เลิกใช้งานแล้ว โปรดใช้ `window-management` แทน ดูความช่วยเหลือเพิ่มเติมได้ที่ https://bit.ly/window-placement-rename"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "นโยบายสิทธิ์ `window-placement` เลิกใช้งานแล้ว โปรดใช้ `window-management` แทน ดูความช่วยเหลือเพิ่มเติมได้ที่ https://bit.ly/window-placement-rename"
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "JSON ของการตอบกลับไม่รองรับ UTF-16 ใน `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "`XMLHttpRequest` แบบพร้อมกันในชุดข้อความหลักเลิกใช้งานแล้วเนื่องจากมีผลกระทบที่เป็นอันตรายต่อประสบการณ์ของผู้ใช้ปลายทาง ดูความช่วยเหลือเพิ่มเติมได้ที่ https://xhr.spec.whatwg.org/"
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` เลิกใช้งานแล้ว โปรดใช้ `isSessionSupported()` และตรวจสอบค่าบูลีนที่แก้ไขแล้วแทน"
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "เวลาในการบล็อกเทรดหลัก"

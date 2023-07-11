@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "L'attributo `[lang]` dell'elemento `<html>` ha un valore valido"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Se la pagina web non specifica un linguaggio coerente, lo screen reader potrebbe non annunciare correttamente il testo della pagina. [Scopri di più sull'attributo `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "L'elemento `<html>` non ha un attributo `[xml:lang]` con la stessa lingua di base dell'attributo `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "L'elemento `<html>` ha un attributo `[xml:lang]` con la stessa lingua di base dell'attributo `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Gli elementi informativi dovrebbero mostrare testo alternativo breve e descrittivo. Gli elementi decorativi possono essere ignorati con un attributo ALT vuoto. [Scopri di più sull'attributo `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Gli elementi immagine hanno attributi `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "L'aggiunta di testo distinguibile e accessibile ai pulsanti di immissione può aiutare gli utenti di screen reader a comprendere lo scopo dei pulsanti. [Scopri di più sui pulsanti di immissione](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "I pulsanti di immissione non hanno testo distinguibile."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "I pulsanti di immissione hanno testo distinguibile."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Quando viene utilizzata un'immagine come pulsante `<input>`, fornire un testo alternativo può aiutare gli utenti di screen reader a comprendere lo scopo del pulsante. [Scopri di più sul testo alternativo dell'immagine di input](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Nessun elemento ha un valore `[tabindex]` maggiore di 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se nelle tabelle usi l'elemento effettivo dei sottotitoli codificati anziché le celle con l'attributo `[colspan]`, puoi migliorare l'esperienza degli utenti di screen reader. [Scopri di più sui sottotitoli codificati](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Le tabelle non utilizzano `<caption>` anziché celle con l'attributo `[colspan]` per indicare un sottotitolo codificato."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Le tabelle utilizzano `<caption>` anziché celle con l'attributo `[colspan]` per indicare un sottotitolo codificato."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se gli elementi `<td>` in una tabella di grandi dimensioni (3 o più celle in larghezza e altezza) hanno un'intestazione di tabella associata, potrebbe migliorare l'esperienza degli utenti di screen reader. [Scopri di più sulle intestazioni delle tabelle](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Gli elementi `<td>` in un elemento `<table>` di grandi dimensioni non hanno intestazioni di tabella."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Gli elementi `<td>` in un elemento `<table>` di grandi dimensioni hanno una o più intestazioni di tabella."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Gli screen reader sono dotati di funzionalità che semplificano la navigazione nelle tabelle. Se ti assicuri che le celle `<td>` che usano l'attributo `[headers]` facciano riferimento esclusivamente ad altre celle nella stessa tabella, puoi migliorare l'esperienza degli utenti di screen reader. [Scopri di più sull'attributo `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Al momento le pagine che hanno richiesto un AppBanner non possono essere memorizzate nella cache back-forward."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "La cache back-forward è disattivata a causa di una richiesta keepalive."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "La cache back-forward è stata disattivata in chrome://flags. Visita la pagina chrome://flags/#back-forward-cache per attivarla localmente su questo dispositivo."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Le pagine che utilizzano l'API WebUSB non possono essere memorizzate nella cache back-forward."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "La cache back-forward è disattivata perché i cookie sono disattivati in una pagina che usa `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Al momento le pagine che utilizzano un worker o worklet dedicato non possono essere memorizzate nella cache back-forward."
@@ -1892,20 +1934,23 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Al momento le pagine che hanno una connessione IndexedDB aperta non possono essere memorizzate nella cache back-forward."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "La cache back-forward è disattivata a causa di un evento IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Sono state usate API non idonee."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Al momento le pagine in cui JavaScript viene inserito dalle estensioni non possono essere memorizzate nella cache back-forward."
+    "message": "Al momento le pagine in cui l'elemento `JavaScript` viene inserito dalle estensioni non possono essere memorizzate nella cache back-forward."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Al momento le pagine in cui StyleSheet viene inserito dalle estensioni non possono essere memorizzate nella cache back-forward."
+    "message": "Al momento le pagine in cui un elemento `StyleSheet` viene inserito dalle estensioni non possono essere memorizzate nella cache back-forward."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Errore interno."
   },
   "core/lib/bf-cache-strings.js | keepaliveRequest": {
-    "message": "La cache back-forward è stata disattivata a causa di una richiesta keepalive."
+    "message": "La cache back-forward è disattivata a causa di una richiesta keepalive."
   },
   "core/lib/bf-cache-strings.js | keyboardLock": {
     "message": "Al momento le pagine che utilizzano il blocco della tastiera non possono essere memorizzate nella cache back-forward."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Potresti aggiungere l'istruzione \"unsafe-inline\" (ignorata dai browser che supportano nonce/hash) per la compatibilità con le versioni precedenti dei browser."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Per maggiori dettagli, controlla la pagina dello stato della funzionalità."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Questa modifica entrerà in vigore per il traguardo {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "È stata usata una funzionalità deprecata"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "L'autorizzazione non verrà coperta dal carattere jolly (*) durante la gestione di `Access-Control-Allow-Headers` da parte del meccanismo CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Per disattivare l'integrazione predefinita di Cast, utilizza l'attributo `disableRemotePlayback` invece del selettore `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Le richieste di risorse i cui URL contenevano sia spazi vuoti rimossi `(n|r|t)` sia simboli di minore (`<`) sono bloccati. Per caricare queste risorse, rimuovi i ritorni a capo e codifica i simboli di minore da posizioni come valori degli attributi di elementi."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "L'elemento `chrome.loadTimes()` è deprecato, utilizza invece l'API standardizzata: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "L'elemento `chrome.loadTimes()` è deprecato, utilizza invece l'API standardizzata: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "L'elemento `chrome.loadTimes()` è deprecato, utilizza invece l'API standardizzata: `nextHopProtocol` in Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "I cookie che contengono un carattere `(0|r|n)` verranno rifiutati e non troncati."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Il rilascio del criterio della stessa origine impostando `document.domain` è deprecato e verrà disattivato per impostazione predefinita. Questo avviso di ritiro riguarda un accesso multiorigine che è stato attivato impostando `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "L'attivazione di window.alert da iframe multiorigine è stata ritirata e verrà rimossa in futuro."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "L'attivazione di window.confirm da iframe multiorigine è stata ritirata e verrà rimossa in futuro."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Gli eventi Mutazione del DOM, inclusi `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` e `DOMCharacterDataModified`, sono deprecati (https://w3c.github.io/uievents/#legacy-event-types) e verranno rimossi. Usa invece `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Supporto per i dati: gli URL nell'elemento <use> SVG sono deprecati e verranno rimossi in futuro."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Il rilascio del criterio della stessa origine impostando `document.domain` è deprecato e verrà disattivato per impostazione predefinita. Per continuare a utilizzare questa funzionalità, disattiva i cluster di agenti in base all'origine inviando un'intestazione `Origin-Agent-Cluster: ?0` insieme alla risposta HTTP per documento e frame. Vedi https://developer.chrome.com/blog/immutable-document-domain/ per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "L'intestazione `Expect-CT` è deprecata e verrà rimossa. Chrome richiede Certificate Transparency per tutti i certificati attendibili pubblicamente emessi dopo il 30 aprile 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` e `watchPosition()` non funzionano più su origini non sicure. Per utilizzare questa funzionalità, considera di passare la tua applicazione a un'origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "Gli elementi `getCurrentPosition()` e `watchPosition()` su origini non sicure sono deprecati. Per utilizzare questa funzionalità, considera di passare la tua applicazione a un'origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` non funziona più su origini non sicure. Per utilizzare questa funzionalità, considera di passare la tua applicazione a un'origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "L'elemento `RTCPeerConnectionIceErrorEvent.hostCandidate` è deprecato. Utilizza invece `RTCPeerConnectionIceErrorEvent.address` o `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "L'origine del commerciante e i dati arbitrari dell'evento del service worker di `canmakepayment` sono deprecati e verranno rimossi: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Il sito web ha richiesto una sottorisorsa a una rete a cui può accedere solo a causa della posizione di rete privilegiata dei relativi utenti. Queste richieste espongono dispositivi e servizi non pubblici a Internet, aumentando il rischio di un attacco Cross-Site Request Forgery (CSRF) e/o una fuga di informazioni. Per limitare questi rischi, Chrome ritira le richieste a sottorisorse non pubbliche quando iniziate da contesti non sicuri e le blocca."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Il campo `dailyUpdateUrl` di `InterestGroups` passato a `joinAdInterestGroup()` è stato rinominato in `updateUrl` per rispecchiare in modo più preciso il suo comportamento."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Non è possibile caricare il CSS dagli URL di `file:` a meno che questi non terminino in un'estensione del file `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "L'utilizzo dell'elemento `SourceBuffer.abort()` per interrompere la rimozione dell'intervallo asincrono di `remove()` è deprecato a causa di una modifica di specifica. Il relativo supporto verrà rimosso in futuro. Dovrai invece ascoltare l'evento `updateend`. L'elemento `abort()` è destinato solo a interrompere un allegato multimediale asincrono o a reimpostare lo stato dell'analizzatore sintattico."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "L'impostazione di `MediaSource.duration` al di sotto del timestamp di presentazione più alto di qualsiasi frame codificato con buffer è deprecata a causa di una modifica di specifica. Il supporto della rimozione implicita di contenuti multimediali con buffer troncati verrà rimosso in futuro. Dovresti invece eseguire l'elemento esplicito `remove(newDuration, oldDuration)` su tutti gli elementi `sourceBuffers`, in cui si trova`newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI richiederà l'autorizzazione per l'utilizzo anche se il valore sysex non è specificato nell'elemento `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "L'attributo precedente `shadowroot` non standardizzato è deprecato e *non funzionerà più* nella versione M119. Usa invece il nuovo attributo `shadowrootmode` standardizzato."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "L'uso dell'API Notification da origini non sicure potrebbe non essere più supportato. Dovresti considerare di passare la tua applicazione a un’origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "L'autorizzazione per l'API Notification potrebbe non essere più richiesta da un iframe multiorigine. Considera di richiedere l'autorizzazione da un frame di primo livello o aprire invece una nuova finestra."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "L'opzione `imageOrientation: 'none'` in createImageBitmap è deprecata. Usa invece createImageBitmap con l'opzione \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Il tuo partner sta negoziando una versione (D)TLS obsoleta. Rivolgiti al tuo partner per correggere questo problema."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Se specifichi `overflow: visible` nei tag img, video e canvas, gli spettatori potrebbero produrre contenuti visivi al di fuori dei limiti dell'elemento. Vedi https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "L'API `paymentManager.instruments` è deprecata. Utilizza l'installazione just-in-time per i gestori dei pagamenti."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "La tua chiamata `PaymentRequest` ha ignorato l'istruzione `connect-src` dei Criteri di sicurezza del contenuto (CSP). L'esclusione è stata ritirata. Aggiungi all'istruzione CSP `connect-src` l'identificatore del metodo di pagamento dall'API `PaymentRequest` (nel campo `supportedMethods`)."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "L'elemento `StorageType.persistent` è deprecato. Utilizza invece l'elemento `navigator.storage` standardizzato."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "L'elemento `<source src>` con un elemento principale `<picture>` non è valido e pertanto viene ignorato. Utilizza invece `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Il metodo webkitCancelAnimationFrame è specifico del fornitore. Usa invece il metodo cancelAnimationFrame standard."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Il metodo webkitRequestAnimationFrame è specifico del fornitore. Usa invece il metodo requestAnimationFrame standard."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitDisplayingFullscreen è deprecata. Usa invece Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "L'API HTMLVideoElement.webkitEnterFullScreen() è deprecata. Usa invece Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitEnterFullscreen() è deprecata. Usa invece Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "L'API HTMLVideoElement.webkitExitFullScreen() è deprecata. Usa invece Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitExitFullscreen() è deprecata. Usa invece Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "L'API HTMLVideoElement.webkitSupportsFullscreen è deprecata. Usa invece Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Stiamo ritirando l'API `chrome.privacy.websites.privacySandboxEnabled`, ma rimarrà attiva per garantire la compatibilità con le versioni precedenti fino alla release M113. Usa invece i criteri `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` e `chrome.privacy.websites.adMeasurementEnabled`. Vedi https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Il vincolo `DtlsSrtpKeyAgreement` è stato rimosso. Hai specificato un valore `false` per questo vincolo, il che viene interpretato come un tentativo di utilizzo del metodo `SDES key negotiation` rimosso. Questa funzionalità è stata rimossa; utilizza invece un servizio che supporti `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Il vincolo `DtlsSrtpKeyAgreement` è stato rimosso. Hai specificato un valore `true` per questo vincolo, il che non ha avuto alcun effetto, ma puoi rimuovere il vincolo per fare ordine."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Il metodo getStats() basato su callback è deprecato e verrà rimosso. Usa invece il metodo getStats() conforme alle specifiche."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "L'API Range.expand() è deprecata. Usa invece Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Le richieste di sottorisorse i cui URL contengono credenziali incorporate (ad es. `https://user:pass@host/`) sono bloccate."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "L'opzione `rtcpMuxPolicy` è deprecata e verrà rimossa."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` richiederà l'isolamento multiorigine. Vedi https://developer.chrome.com/blog/enabling-shared-array-buffer/ per maggiori dettagli."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "L'API `speechSynthesis.speak()` senza attivazione utente è deprecata e verrà rimossa."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Le estensioni dovrebbero attivare l'isolamento multiorigine per continuare a utilizzare `SharedArrayBuffer`. Vedi https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "API SQL web deprecata. Utilizza SQLite WebAssembly o Indexed Database."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Il descrittore di autorizzazione `window-placement` è deprecato. Usa invece il descrittore `window-management`. Per ulteriore assistenza, visita la pagina https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Il criterio di autorizzazione `window-placement` è deprecato. Usa invece il criterio `window-management`. Per ulteriore assistenza, visita la pagina https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "L'elemento UTF-16 non è supportato dal file json di risposta in `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "L'elemento `XMLHttpRequest` sincrono nel thread principale è deprecato a causa dei suoi effetti negativi sull'esperienza dell'utente finale. Per ulteriore assistenza, visita la pagina https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "L'elemento `supportsSession()` è deprecato. Al suo posto utilizza `isSessionSupported()` e controlla il valore booleano risolto."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Durata blocco thread principale"

@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>` 元素的 `[lang]` 屬性具備有效的值"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "如果網頁指定的語言不一致，螢幕閱讀器可能無法正確朗讀頁面上的文字。[進一步瞭解此 `lang` 屬性](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)。"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>` 元素的 `[xml:lang]` 屬性與`[lang]` 屬性中的基本語言不同。"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>` 元素的 `[xml:lang]` 屬性與 `[lang]` 屬性的基本語言相同。"
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "資訊型元素應提供簡短貼切的替代文字。只要將 alt 屬性留空，系統便會忽略該裝飾元素。[進一步瞭解此 `alt` 屬性](https://dequeuniversity.com/rules/axe/4.7/image-alt)。"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "圖片元素具有 `[alt]` 屬性"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "您可以為輸入按鈕新增可識別且可存取的文字，協助螢幕閱讀器使用者瞭解輸入按鈕的用途。[進一步瞭解輸入按鈕](https://dequeuniversity.com/rules/axe/4.7/input-button-name)。"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "輸入按鈕沒有可識別的文字。"
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "輸入按鈕有可識別的文字。"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "如果 `<input>` 按鈕是以圖片呈現，提供替代文字可協助螢幕閱讀器使用者瞭解該按鈕的用途。[瞭解輸入圖片說明文字](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)。"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "所有元素的 `[tabindex]` 值皆未超過 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "螢幕閱讀器的功能可讓使用者更輕鬆瀏覽表格。如果表格使用實際的標題元素，而非含有 `[colspan]` 屬性的儲存格，或許可提升螢幕閱讀器的使用體驗。[進一步瞭解標題](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)。"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "表格使用含有 `[colspan]` 屬性的儲存格表示標題，而非使用 `<caption>` 屬性。"
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "表格使用 `<caption>` 屬性表示標題，而非使用含有 `[colspan]` 屬性的儲存格。"
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "螢幕閱讀器的功能可讓使用者更輕鬆瀏覽表格。如果大型表格 (寬度和高度為 3 個或以上儲存格) 中的 `<td>` 元素使用相關聯的表格標題，或許可提升螢幕閱讀器的使用體驗。[進一步瞭解表格標題](https://dequeuniversity.com/rules/axe/4.7/td-has-header)。"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "大型 `<table>` 中的 `<td>` 元素沒有表格標題。"
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "大型 `<table>` 中的 `<td>` 元素有一或多個表格標題。"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "螢幕閱讀器的功能可讓使用者更輕鬆瀏覽表格。如能確保採用 `[headers]` 屬性的 `<td>` 儲存格只參照同一表格中的其他儲存格，或許能改善螢幕閱讀器的使用體驗。[進一步瞭解 `headers` 屬性](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)。"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "要求 AppBanner 的網頁目前不符合向前/返回快取的資格。"
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "由於有 Keepalive 要求，因此系統已停用向前/返回快取。"
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "標記已停用向前/返回快取。如要在此裝置上啟用該功能，請前往 chrome://flags/#back-forward-cache。"
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "使用 WebUSB API 的網頁不符合向前/返回快取的資格。"
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "由於使用 `Cache-Control: no-store` 的頁面已停用 Cookie，因此系統已停用向前/返回快取。"
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "使用專屬 Worker 或 Worklet 的網頁目前不符合向前/返回快取的資格。"
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "包含開放式 IndexedDB 連線的網頁目前不符合向前/返回快取的資格。"
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "由於發生 IndexedDB 事件，因此系統已停用向前/返回快取。"
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "使用了不符合資格的 API。"
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "由擴充程式插入 JavaScript 的網頁目前不符合向前/返回快取的資格。"
+    "message": "由擴充程式插入 `JavaScript` 的網頁目前不符合向前/返回快取的資格。"
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "由擴充程式插入 StyleSheet 的網頁目前不符合向前/返回快取的資格。"
+    "message": "由擴充程式插入 `StyleSheet` 的網頁目前不符合向前/返回快取的資格。"
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "內部錯誤。"
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "建議新增「unsafe-inline」，以便退回兼容舊版瀏覽器 (支援 nonce/hash 的瀏覽器會忽略 unsafe-inline)。"
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "詳情請參閱「功能狀態」頁面。"
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "此變更將會在第 {milestone} 個里程碑時生效。"
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "使用已淘汰的功能"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "CORS `Access-Control-Allow-Headers` 處理操作中的萬用字元符號 (*) 不包含授權。"
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "應使用 `disableRemotePlayback` 屬性停用預設的「投放整合」功能，而非 `-internal-media-controls-overlay-cast-button` 選取器。"
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "系統將封鎖網址同時包含已移除的空白 `(n|r|t)` 字元和小於字元 (`<`) 的資源要求。請從元素屬性值等位置移除換行符號，並編碼小於字元，以便載入這些資源。"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` 已淘汰，請改用標準化 API：Navigation Timing 2。"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` 已淘汰，請改用標準化 API：Paint Timing。"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` 已淘汰，請改用標準化 API：Navigation Timing 2 中的 `nextHopProtocol`。"
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "系統將會拒絕包含 `(0|r|n)` 字元的 Cookie，而非縮短。"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "透過設定 `document.domain` 啟用相同來源政策的功能已淘汰，並將根據預設移除。此淘汰警告是針對透過設定 `document.domain` 來啟用跨來源存取功能。"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "從跨來源 iframe 觸發 window.alert 的功能已淘汰，並將會在日後移除。"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "從跨來源 iframe 觸發 window.confirm 的功能已淘汰，並將會在日後移除。"
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM 變更事件 (包括 `DOMSubtreeModified`、`DOMNodeInserted`、`DOMNodeRemoved`、`DOMNodeRemovedFromDocument`、`DOMNodeInsertedIntoDocument` 和 `DOMCharacterDataModified`) 已淘汰 (https://w3c.github.io/uievents/#legacy-event-types)，並將於日後移除。請改用 `MutationObserver`。"
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "SVG <use> 元素不再支援「data: 網址」，並將於日後移除。"
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "透過設定 `document.domain` 啟用相同來源政策的功能已淘汰，並將根據預設移除。如要繼續使用此功能，請傳送文件和頁框的 `Origin-Agent-Cluster: ?0` 標題和 HTTP 回應，藉此選擇不採用 origin-keyed 代理程式叢集。詳情請參閱 https://developer.chrome.com/blog/immutable-document-domain/。"
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "`Expect-CT` 標題已淘汰，並將會移除。Chrome 要求 2018 年 4 月 30 日後發出的所有公開信任憑證都必須符合《憑證透明度政策》的規定。"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` 和 `watchPosition()` 無法再在不安全來源上運作。如要使用此功能，請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "不安全來源上的 `getCurrentPosition()` 和 `watchPosition()` 已淘汰。如要使用此功能，請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` 無法再在不安全來源上運作。如要使用此功能，請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` 已淘汰。請改用 `RTCPeerConnectionIceErrorEvent.address` 或 `RTCPeerConnectionIceErrorEvent.port`。"
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "「`canmakepayment`」Service Worker 事件的商家來源和任意資料目前已淘汰，並將在之後移除：`topOrigin`、`paymentRequestOrigin`、`methodData`、`modifiers`。"
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "網站根據使用者具備權限的網絡位置，透過只能存取的網絡要求一個子資源。這些要求會向互聯網暴露非公開的裝置和伺服器，因而增加偽造跨網站要求 (CSRF) 攻擊和/或資料洩漏的風險。為降低風險，Chrome 會忽略不安全內容向非公開子資源發出的要求，並將開始封鎖這類要求。"
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "已傳送至 `joinAdInterestGroup()` 的 `InterestGroups` `dailyUpdateUrl` 欄位已重新命名為 `updateUrl`，以便更準確地反映其行為。"
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "除非 CSS 以 `.css` 副檔名作結，否則無法從 `file:` 網址載入。"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "由於規格變更，系統已淘汰使用 `SourceBuffer.abort()` 取消 `remove()` 的非同步範圍移除操作，日後亦將停止支援此功能。建議您改為監聽 `updateend` 事件。`abort()` 的用途只限於取消非同步媒體附加內容或重設剖析器狀態。"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "由於規格變更，系統已淘汰將 `MediaSource.duration` 設定為低於任何緩衝編碼頁框的最高顯示時間戳記。日後將停止支援對已縮短緩衝媒體的隱含移除操作。請改為在 `newDuration < oldDuration` 的所有 `sourceBuffers` 上執行明確 `remove(newDuration, oldDuration)`。"
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "即使在 `MIDIOptions` 中未指定系統專用 (SysEx) 訊息，Web MIDI 亦會要求使用權限。"
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "非標準化的舊 `shadowroot` 屬性已淘汰，將「無法在 M119 中運作」。請改用標準化的新 `shadowrootmode` 屬性。"
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "系統可能無法再使用不安全來源的 Notification API。請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "系統可能無法再透過跨來源 iframe 要求 Notification API。請考慮透過頂層頁框要求權限，或改為開啟新視窗。"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap 中的 `imageOrientation: 'none'` 選項已淘汰。使用 createImageBitmap 時請改用 \\{imageOrientation: 'from-image'\\} 選項。"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "您的合作夥伴正在交涉已過時的傳輸層安全標準 (TLS)/DTLS 版本。請向您的合作夥伴查詢，以便修正問題。"
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "如果指定 img、video 和 canvas 標籤的「`overflow: visible`」，可能會導致這些標籤產生的視覺內容超出元素邊界。詳情請參閱 https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md。"
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` 已淘汰。請改用付款處理常式的即時安裝方法。"
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "您的「`PaymentRequest`」調用已繞過內容安全政策 (CSP)「`connect-src`」指令，但目前已無法再繞過。請將 `PaymentRequest` API 的付款方法識別碼 (位於「`supportedMethods`」欄位) 新增至 CSP「`connect-src`」指令。"
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` 已淘汰。請改用標準化的 `navigator.storage`。"
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "具有 `<picture>` 父項的 `<source src>` 無效，因此系統會忽略。請改用「`<source srcset>`」。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame 只限供應商使用，請改用標準的 cancelAnimationFrame。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame 只限供應商使用，請改用標準 requestAnimationFrame。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen 已淘汰，請改用 Document.fullscreenElement。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() 已淘汰，請改用 Element.requestFullscreen()。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() 已淘汰，請改用 Element.requestFullscreen()。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() 已淘汰，請改用 Document.exitFullscreen()。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() 已淘汰，請改用 Document.exitFullscreen()。"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen 已淘汰，請改用 Document.fullscreenEnabled。"
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "我們已淘汰此 API `chrome.privacy.websites.privacySandboxEnabled`，但為提供回溯兼容性，此 API 可持續使用至版本 M113。請改用 `chrome.privacy.websites.topicsEnabled`、`chrome.privacy.websites.fledgeEnabled` 和 `chrome.privacy.websites.adMeasurementEnabled`。詳情請參閱 https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled。"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "已移除 `DtlsSrtpKeyAgreement` 限制。系統將您為此限制指定的 `false` 值解讀為嘗試使用已移除的「`SDES key negotiation`」方法。此功能已移除，請改用支援「`DTLS key negotiation`」的方法。"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "已移除 `DtlsSrtpKeyAgreement` 限制。您為此限制指定的 `true` 值已不再適用，不過您可將此限制移除以保持畫面整潔。"
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "回呼式 getStats() 已淘汰，並將會移除。請改用合規的 getStats()。"
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() 已淘汰，請改用 Selection.modify()。"
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "系統將封鎖網址包含嵌入憑證 (例如 `https://user:pass@host/`) 的子資源要求。"
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "`rtcpMuxPolicy` 選項已淘汰，並將會移除。"
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` 會要求跨來源隔離。詳情請參閱 https://developer.chrome.com/blog/enabling-shared-array-buffer/。"
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "無需使用者啟用即可呼叫 `speechSynthesis.speak()` 的功能已淘汰，並將會移除。"
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "擴充程式應選擇接受跨來源隔離功能，以繼續使用 `SharedArrayBuffer`。詳情請參閱 https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/。"
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "網絡 SQL 已淘汰。請使用 SQLite WebAssembly 或「已加入索引的資料庫」"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "權限描述項 `window-placement` 已淘汰。請改用 `window-management`。如需進一步說明，請查看 https://bit.ly/window-placement-rename。"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "權限政策 `window-placement` 已淘汰。請改用 `window-management`。如需進一步說明，請查看 https://bit.ly/window-placement-rename。"
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "`XMLHttpRequest` 中的 JSON 回應不支援 UTF-16。"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "主要執行緒上同步的 `XMLHttpRequest` 會對使用者體驗造成負面影響，因此已淘汰。如需進一步說明，請查看 https://xhr.spec.whatwg.org/。"
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` 已淘汰。請改用 `isSessionSupported()` 並查看解析的布林值。"
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "主要執行緒封鎖時間"

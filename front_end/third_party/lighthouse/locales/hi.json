@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>` एलिमेंट के पास अपनी `[lang]` विशेषता के लिए एक सही मान है"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "अगर वेबपेज एक ही भाषा के बारे में नहीं बताता है, तो हो सकता है कि स्क्रीन रीडर, पेज के टेक्स्ट को ठीक से न बोल पाए. [`lang` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>` एलिमेंट में ऐसा `[xml:lang]` एट्रिब्यूट मौजूद नहीं है जिसकी मुख्य भाषा `[lang]` एट्रिब्यूट है."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>` एलिमेंट में `[xml:lang]` एट्रिब्यूट है, जिसकी मुख्य भाषा `[lang]` एट्रिब्यूट है."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "जानकारी वाले एलिमेंट में, छोटा और ब्यौरे वाला वैकल्पिक टेक्स्ट होना चाहिए. सजावटी एलिमेंट में एक खाली ऑल्ट एट्रिब्यूट का इस्तेमाल किया जा सकता है. [`alt` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "इमेज एलिमेंट में `[alt]` विशेषताएं शामिल हैं"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "इनपुट बटन में आसानी से समझ में आने वाला और ऐक्सेस किया जा सकने वाला टेक्स्ट जोड़ने से, स्क्रीन रीडर इस्तेमाल करने वालों को इनपुट बटन के मकसद को समझने में मदद मिल सकती है. [इनपुट बटन के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "इनपुट बटन में समझने लायक टेक्स्ट नहीं होता."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "इनपुट बटन में समझने लायक टेक्स्ट होता है."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "जब किसी इमेज को `<input>` बटन के रूप में इस्तेमाल किया जाता है, तब वैकल्पिक टेक्स्ट देने से, स्क्रीन रीडर इस्तेमाल करने वालों को उस बटन के मकसद को समझने में मदद मिलती है. [इनपुट इमेज के वैकल्पिक टेक्स्ट के बारे में जानें](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "किसी भी एलिमेंट का `[tabindex]` मान 0 से ज़्यादा नहीं हो सकता"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनकी मदद से, टेबल पर नेविगेट करना आसान हो जाता है. यह पक्का करें कि टेबल में `[colspan]` एट्रिब्यूट वाले सेल के बजाय, असल कैप्शन एलिमेंट का इस्तेमाल किया जाता है. इससे स्क्रीन रीडर का इस्तेमाल करने वालों को बेहतर अनुभव मिल सकता है. [कैप्शन के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "टेबल में कैप्शन दिखाने के लिए, `[colspan]` एट्रिब्यूट वाली सेल के बजाय, `<caption>` का इस्तेमाल नहीं किया जाता."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "टेबल में कैप्शन दिखाने के लिए, `[colspan]` एट्रिब्यूट वाली सेल के बजाय, `<caption>` का इस्तेमाल किया जाता है."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनकी मदद से, टेबल पर नेविगेट करना आसान हो जाता है. यह पक्का करें कि बड़ी टेबल (चौड़ाई और ऊंचाई में तीन या उससे ज़्यादा सेल) के `<td>` एलिमेंट में संबंधित टेबल हेडर का इस्तेमाल किया जाता है. इससे स्क्रीन रीडर का इस्तेमाल करने वालों के अनुभव को बेहतर बनाया जा सकता है. [टेबल हेडर के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "बड़े `<table>` में `<td>` एलिमेंट के टेबल हेडर नहीं होते."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "बड़े `<table>` में `<td>` एलिमेंट के एक या उससे ज़्यादा टेबल हेडर होते हैं."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "स्क्रीन रीडर में ऐसी सुविधाएं होती हैं जिनकी मदद से, टेबल पर नेविगेट करना आसान हो जाता है. `[headers]` एट्रिब्यूट का इस्तेमाल करके, `<td>` सेल की मौजूदगी पक्की करने के लिए, उसी टेबल में मौजूद दूसरे सेल का हवाला दिया जाता है. इससे स्क्रीन रीडर का इस्तेमाल करने वालों के अनुभव को बेहतर बनाया जा सकता है. [`headers` एट्रिब्यूट के बारे में ज़्यादा जानें](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "जिन पेजों के लिए AppBanner का अनुरोध किया गया है वे फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "कीपअलाइव (चालू रखें) के अनुरोध की वजह से, बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा को बंद किया गया."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "फ़्लैग की मदद से, बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा बंद की गई. इस डिवाइस पर यह सुविधा चालू करने के लिए, chrome://flags/#back-forward-cache पर जाएं."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "WebUSB API का इस्तेमाल करने वाले पेज, फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा बंद है, क्योंकि `Cache-Control: no-store` का इस्तेमाल करने वाले पेज पर कुकी बंद होती हैं."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "किसी काम को करने के लिए खास तौर पर तय किए गए वर्कर या वर्कलेट का इस्तेमाल करने वाले पेज, फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
@@ -1892,20 +1934,23 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "जिन पेजों के लिए कोई ओपेन IndexedDB कनेक्शन मौजूद है वे फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "IndexedDB इवेंट की वजह से, बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा को बंद किया गया."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "गलत एपीआई इस्तेमाल किए गए थे."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "जिन पेजों के लिए, एक्सटेंशन की मदद से JavaScript को इंजेक्ट किया जाता है वे फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
+    "message": "जिन पेजों की `JavaScript`, एक्सटेंशन की मदद से इंजेक्ट की जाती है वे फ़िलहाल बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "जिन पेजों की StyleSheet, एक्सटेंशन की मदद से इंजेक्ट की जाती है वे फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
+    "message": "जिन पेजों की `StyleSheet`, एक्सटेंशन की मदद से इंजेक्ट की जाती है वे फ़िलहाल बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "कोई अंदरूनी गड़बड़ी हुई."
   },
   "core/lib/bf-cache-strings.js | keepaliveRequest": {
-    "message": "कीपअलाइव (चालू रखें) के अनुरोध की वजह से, बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा को बंद किया गया."
+    "message": "कीपअलाइव (चालू रखें) के अनुरोध की वजह से, बैक/फ़ॉरवर्ड कैश मेमोरी की सुविधा को बंद किया गया."
   },
   "core/lib/bf-cache-strings.js | keyboardLock": {
     "message": "कीबोर्ड लॉक का इस्तेमाल करने वाले पेज, फ़िलहाल बैक-फ़ॉरवर्ड कैश मेमोरी की सुविधा का इस्तेमाल नहीं कर सकते."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "'unsafe-inline' जोड़ें, ताकि CSP पुराने ब्राउज़र के साथ काम कर सके. nonces/hashes के साथ काम करने वाले ब्राउज़र पर 'unsafe-inline' को अनदेखा किया जा सकता है."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "ज़्यादा जानकारी के लिए, सुविधा की स्थिति वाला पेज देखें."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "माइलस्टोन {milestone} इस्तेमाल करने पर, यह बदलाव लागू हो जाएगा."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "पाबंदी वाली सुविधा का इस्तेमाल किया गया"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "सीओआरएस `Access-Control-Allow-Headers` हैंडलिंग में, वाइल्डकार्ड सिंबल (*) की ओर से अनुमति देने की सुविधा कवर नहीं की जाएगी."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "`-internal-media-controls-overlay-cast-button` सिलेक्टर के बजाय, `disableRemotePlayback` एट्रिब्यूट का इस्तेमाल किया जाना चाहिए, ताकि डिफ़ॉल्ट कास्ट इंटिग्रेशन को बंद किया जा सके."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "जिन रिसॉर्स के यूआरएल में खाली सफ़ेद जगह के हटाए गए वर्ण `(n|r|t)` और लेस-दैन वर्ण (`<`), दोनों शामिल हों उनका अनुरोध नहीं किया जा सकता है. उन रिसॉर्स को ब्लॉक किया गया है. एलिमेंट एट्रिब्यूट की वैल्यू जैसी जगहों से, कृपया नई लाइनों को हटाएं और कम वर्णों को एन्कोड करें, ताकि इन रिसॉर्स को लोड किया जा सके."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` is deprecated, instead use standardized API: `nextHopProtocol` in Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookies containing a `(0|r|n)` character will be rejected instead of truncated."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "`document.domain` को सेट करके, एक ही ऑरिजिन से जुड़ी नीति में पाबंदियों को हटाने की सुविधा पर रोक लगा दी गई है. इसे डिफ़ॉल्ट रूप से बंद कर दिया जाएगा. इस्तेमाल पर पाबंदी लागने की यह चेतावनी, उस क्रॉस-ऑरिजिन ऐक्सेस के लिए है जिसे `document.domain` सेटिंग की मदद से चालू किया गया था."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "क्रॉस ओरिजिन iframe से window.alert को ट्रिगर करने की सुविधा अब काम नहीं करती. इसे आने वाले समय में हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "क्रॉस ऑरिजिन iframe से window.confirm को ट्रिगर करने की सुविधा अब काम नहीं करती. इसे आने वाले समय में हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "`DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument`, और `DOMCharacterDataModified` जैसे DOM म्यूटेशन इवेंट बंद कर दिए गए हैं (https://w3c.github.io/uievents/#legacy-event-types) और इन्हें हटा दिया जाएगा. इसके बजाय, कृपया `MutationObserver` का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "डेटा के लिए सहायता: SVG <use> एलिमेंट में मौजूद यूआरएल अब काम नहीं करते. इन्हें बाद में हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "`document.domain` को सेट करके, एक ही ऑरिजिन से जुड़ी नीति में पाबंदियों को हटाने की सुविधा पर रोक लगा दी गई है. इसे डिफ़ॉल्ट रूप से बंद कर दिया जाएगा. इस सुविधा का इस्तेमाल जारी रखने के लिए, कृपया ऑरिजिन के हिसाब से बने एजेंट क्लस्टर से ऑप्ट आउट करें. इसके लिए, `Origin-Agent-Cluster: ?0` हेडर के साथ-साथ, दस्तावेज़ और फ़्रेम के लिए एचटीटीपी रिस्पॉन्स भेजें. ज़्यादा जानकारी के लिए, https://developer.chrome.com/blog/immutable-document-domain/ पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "`Expect-CT` हेडर के इस्तेमाल पर पाबंदी लगा दी गई है और इसे हटा दिया जाएगा. Chrome को 30 अप्रैल, 2018 के बाद जारी किए गए सभी सर्टिफ़िकेट के लिए, पारदर्शिता सर्टिफ़िकेट फ़्रेमवर्क की ज़रूरत होगी. ऐसा सार्वजनिक रूप से भरोसेमंद सर्टिफ़िकेट के तौर पर पुष्टि किए गए सर्टिफ़िकेट के लिए ज़रूरी है."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` और `watchPosition()` असुरक्षित ऑरिजिन पर, अब काम नहीं करते. इस सुविधा का इस्तेमाल करने के लिए, आपको अपने ऐप्लिकेशन को एचटीटीपीएस जैसे किसी सुरक्षित ऑरिजिन पर स्विच करना होगा. ज़्यादा जानकारी के लिए, https://goo.gle/chrome-insecure-origins पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "असुरक्षित ऑरिजिन पर, `getCurrentPosition()` और `watchPosition()` के इस्तेमाल पर पाबंदी लगा दी गई है. इस सुविधा का इस्तेमाल करने के लिए, आपको अपने ऐप्लिकेशन को एचटीटीपीएस जैसे किसी सुरक्षित ऑरिजिन पर स्विच करना होगा. ज़्यादा जानकारी के लिए, https://goo.gle/chrome-insecure-origins पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` के इस्तेमाल पर पाबंदी लगा दी गई है. इसके बजाय `RTCPeerConnectionIceErrorEvent.address` या `RTCPeerConnectionIceErrorEvent.port` इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "`canmakepayment` सर्विस वर्कर इवेंट से लिए गए, व्यापारी या कंपनी के ऑरिजिन और उनके आर्बिट्रेरी डेटा के इस्तेमाल पर पाबंदी लगा दी गई है और उन्हें हटा दिया जाएगा: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "`InterestGroups` के `dailyUpdateUrl` फ़ील्ड को `joinAdInterestGroup()` के पास भेजा गया है. इसके काम करने के तरीके को ज़्यादा सटीक रूप से दिखाने के लिए, नाम को बदल कर `updateUrl` कर दिया गया है."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS cannot be loaded from `file:` URLs unless they end in a `.css` file extension."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Using `SourceBuffer.abort()` to abort `remove()`'s asynchronous range removal is deprecated due to specification change. Support will be removed in the future. You should listen to the `updateend` event instead. `abort()` is intended to only abort an asynchronous media append or reset parser state."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Setting `MediaSource.duration` below the highest presentation timestamp of any buffered coded frames is deprecated due to specification change. Support for implicit removal of truncated buffered media will be removed in the future. You should instead perform explicit `remove(newDuration, oldDuration)` on all `sourceBuffers`, where `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI will ask a permission to use even if the sysex is not specified in the `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "पुराना, नॉन-स्टैंडर्ड `shadowroot` एट्रिब्यूट अब काम नहीं करता है और M119 में *अब काम नहीं करेगा*. इसके बजाय, कृपया नए और स्टैंडर्ड `shadowrootmode` एट्रिब्यूट का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "अब असुरक्षित ऑरिजिन से, Notification API का इस्तेमाल नहीं किया जा सकेगा. कृपया अपने ऐप्लिकेशन को एचटीटीपीएस जैसे सुरक्षित ऑरिजिन पर ले जाएं. ज़्यादा जानकारी के लिए, https://goo.gle/chrome-insecure-origins पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Notification API को इस्तेमाल करने की अनुमति से जुड़ा अनुरोध, क्रॉस-ऑरिजिन iframe से नहीं किया जा सकता. इसके बजाय, आप किसी टॉप लेवल फ़्रेम से अनुरोध करें या नई विंडो का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap में `imageOrientation: 'none'` विकल्प अब काम नहीं करता. इसके बजाय, कृपया \\{imageOrientation: 'from-image'\\} विकल्प के साथ, createImageBitmap का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Your partner is negotiating an obsolete (D)TLS version. Please check with your partner to have this fixed."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "img, video, और canvas टैग पर `overflow: visible` लागू होने से, विज़ुअल कॉन्टेंट एलिमेंट की सीमाओं के बाहर दिखते हैं. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md देखें."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` के इस्तेमाल पर रोक लगा दी गई है. इसके बजाय, पेमेंट हैंडलर के लिए just-in-time इंस्टॉल करने की सुविधा इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "आपके `PaymentRequest` कॉल ने Content-Security-Policy (सीएसपी) `connect-src` डायरेक्टिव को बायपास किया है. हालांकि, यह बायपास अब काम नहीं करता. कृपया `PaymentRequest` API (`supportedMethods` फ़ील्ड में) से अपने सीएसपी `connect-src` डायरेक्टिव में, पैसे चुकाने के तरीके के आइडेंटिफ़ायर को जोड़ें."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` के इस्तेमाल पर रोक लगा दी गई है. इसके बजाय, कृपया स्टैंडर्ड `navigator.storage` का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<picture>` पैरंट वाला `<source src>` गलत है. इसलिए, इसे अनदेखा किया गया है. इसके बजाय, कृपया `<source srcset>` का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "हर वेंडर का webkitCancelAnimationFrame अलग होता है. इसके बजाय, कृपया स्टैंडर्ड cancelAnimationFrame का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "हर वेंडर का webkitRequestAnimationFrame अलग होता है. इसके बजाय, कृपया स्टैंडर्ड requestAnimationFrame का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen अब काम नहीं करता. इसके बजाय, कृपया Document.fullscreenElement का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() अब काम नहीं करता. इसके बजाय, कृपया Element.requestFullscreen() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() अब काम नहीं करता. इसके बजाय, कृपया Element.requestFullscreen() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() अब काम नहीं करता. इसके बजाय, कृपया Document.exitFullscreen() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() अब काम नहीं करता. इसके बजाय, कृपया Document.exitFullscreen() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen अब काम नहीं करता. इसके बजाय, कृपया Document.fullscreenEnabled का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "हम `chrome.privacy.websites.privacySandboxEnabled` API का इस्तेमाल रोक रहे हैं. हालांकि, वर्शन M113 के रिलीज़ होने तक, यह पुराने सिस्टम के साथ काम करता रहेगा. इसके बजाय, `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled`, और `chrome.privacy.websites.adMeasurementEnabled` का इस्तेमाल करें. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "कंस्ट्रेंट `DtlsSrtpKeyAgreement` को हटा दिया गया है. आपने इस कंस्ट्रेंट के लिए, `false` वैल्यू दी है. इससे ऐसा लगता है कि आपने हटाए गए `SDES key negotiation` तरीके को इस्तेमाल करने की कोशिश की है. इस सुविधा को हटा दिया गया है. इसके बजाय, ऐसी सेवा का इस्तेमाल करें जो `DTLS key negotiation` के साथ काम करती हो."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "कंस्ट्रेंट `DtlsSrtpKeyAgreement` को हटा दिया गया है. आपने इस कंस्ट्रेंट के लिए `true` वैल्यू दी है, जिससे कोई फ़र्क़ नहीं पड़ेगा. हालांकि, व्यवस्थित रखने के लिए, इस कंस्ट्रेंट को हटाया जा सकता है."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "कॉलबैक-आधारित getStats() अब काम नहीं करता है. इसे हटा दिया जाएगा. इसके बजाय, निर्देशों का पालन करने वाले getStats() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() अब काम नहीं करता. इसके बजाय, कृपया Selection.modify() का इस्तेमाल करें."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Subresource requests whose URLs contain embedded credentials (e.g. `https://user:pass@host/`) are blocked."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "`rtcpMuxPolicy` विकल्प के इस्तेमाल पर रोक लगा दी गई है और इसे हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` के लिए क्रॉस-ऑरिजिन आइसोलेशन ज़रूरी है. ज़्यादा जानकारी के लिए, https://developer.chrome.com/blog/enabling-shared-array-buffer/ देखें."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "उपयोगकर्ता की गतिविधि के बिना, `speechSynthesis.speak()` का इस्तेमाल नहीं किया जा सकता और इस सुविधा को हटा दिया जाएगा."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "`SharedArrayBuffer` का इस्तेमाल जारी रखने के लिए, एक्सटेंशन को क्रॉस-ऑरिजिन आइसोलेशन के लिए ऑप्ट करना चाहिए. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ देखें."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "वेब एसक्यूएल की सुविधा अब काम नहीं करती. कृपया SQLite WebAssembly या इंडेक्स किए गए डेटाबेस का इस्तेमाल करें"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "अनुमति डिस्क्रिप्टर `window-placement` अब काम नहीं करता. इसके बजाय, `window-management` का इस्तेमाल करें. इस बारे में किसी भी तरह की मदद के लिए, https://bit.ly/window-placement-rename पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "अनुमति की नीति `window-placement` अब काम नहीं करती. इसके बजाय, `window-management` का इस्तेमाल करें. इस बारे में किसी भी तरह की मदद के लिए, https://bit.ly/window-placement-rename पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16, `XMLHttpRequest` में response.json के साथ काम नहीं करता"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "मुख्य थ्रेड पर सिंक किया गया `XMLHttpRequest` अब काम नहीं करता. इसकी वजह यह है कि असली उपयोगकर्ता के अनुभव पर इसका बुरा असर पड़ रहा था. इस बारे में किसी भी तरह की मदद के लिए, https://xhr.spec.whatwg.org/ पर जाएं."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` के इस्तेमाल पर पाबंदी लगा दी गई है. इसके बजाय, कृपया `isSessionSupported()` का इस्तेमाल करें और रिज़ॉल्व की गई बूलियन वैल्यू देखें."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "मुख्य थ्रेड ब्लॉक होने का समय"
@@ -2874,7 +3105,7 @@
     "message": "आप अपने वेब सर्वर कॉन्फ़िगरेशन में टेक्स्ट कंप्रेस करने की सुविधा चालू कर सकते हैं."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | modern-image-formats": {
-    "message": "अपनी इमेज को WebP में बदलने के लिए, 'WP Rocket' में 'इमेज ऑप्टिमाइज़ेशन' टैब से 'Imagify' सुविधा को चालू करें."
+    "message": "अपनी इमेज को WebP में बदलने के लिए, WP Rocket में 'इमेज ऑप्टिमाइज़ेशन' टैब से Imagify सुविधा को चालू करें."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | offscreen-images": {
     "message": "इस सुझाव को ठीक करने के लिए, WP Rocket में [LazyLoad](https://docs.wp-rocket.me/article/1141-lazyload-for-images) सुविधा को चालू करें. इस सुविधा के ज़रिए, इमेज लोड होने में तब तक देरी होती है, जब तक वेबसाइट पर आने वाला व्यक्ति पेज पर नीचे स्क्रोल नहीं करता और असल में उसे इमेज देखने की ज़रूरत नहीं होती."
@@ -2895,7 +3126,7 @@
     "message": "इस समस्या को हल करने के लिए, 'WP Rocket' में [Delay JavaScript execution](https://docs.wp-rocket.me/article/1349-delay-javascript-execution) की सुविधा चालू करें. यह सुविधा स्क्रिप्ट को तब तक लोड नहीं होने देती, जब तक उपयोगकर्ता कोई इंटरैक्शन न करे. इस वजह से, आपके पेज की लोडिंग परफ़ॉर्मेंस बेहतर हो जाती है. अगर आपकी साइट पर iframe हैं, तो WP Rocket की [LazyLoad for iframes and videos](https://docs.wp-rocket.me/article/1674-lazyload-for-iframes-and-videos) और [Replace YouTube iframe with preview image](https://docs.wp-rocket.me/article/1488-replace-youtube-iframe-with-preview-image) सुविधा का इस्तेमाल करें."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | uses-optimized-images": {
-    "message": "'WP Rocket' में इमेज ऑप्टिमाइज़ेशन टैब से 'Imagify' सुविधा चालू करें और अपनी इमेज कंप्रेस करने के लिए Bulk Optimization चलाएं."
+    "message": "WP Rocket में इमेज ऑप्टिमाइज़ेशन टैब से Imagify सुविधा चालू करें और अपनी इमेज कंप्रेस करने के लिए Bulk Optimization चलाएं."
   },
   "node_modules/lighthouse-stack-packs/packs/wp-rocket.js | uses-rel-preconnect": {
     "message": "\"dns-prefetch\" जोड़ने और बाहरी डोमेन के साथ कनेक्शन की रफ़्तार बढ़ाने के लिए, 'WP Rocket' में [Prefetch DNS Requests](https://docs.wp-rocket.me/article/1302-prefetch-dns-requests) सुविधा का इस्तेमाल करें. साथ ही, 'WP Rocket', [Google Fonts डोमेन](https://docs.wp-rocket.me/article/1312-optimize-google-fonts) में \"preconnect\" की सुविधा को अपने-आप जोड़ देता है. इसके अलावा, यह [Enable CDN](https://docs.wp-rocket.me/article/42-using-wp-rocket-with-a-cdn) सुविधा के ज़रिए जोड़े गए सभी CNAME से भी \"preconnect\"  को जोड़ देता है."

@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Елемент `<html>` има важећу вредност за свој атрибут `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Ако веб-страница не наводи доследан језик, читач екрана можда неће правилно читати текст са странице. [Сазнајте више о атрибуту `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Елемент `<html>` нема атрибут `[xml:lang]` са истим основним језиком као атрибут `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Елемент `<html>` има атрибут `[xml:lang]` са истим основним језиком као и атрибут `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Информативни елементи треба да садрже кратки, описни алтернативни текст. Декоративни елементи могу да се занемаре празним атрибутом alt. [Сазнајте више о атрибуту `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Елементи слика имају атрибуте `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Додавање препознатљивог и приступачног текста дугмадима за унос може да помогне корисницима читача екрана да разумеју сврху дугмета за унос. [Сазнајте више о дугмади за унос](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Дугмад за унос не садрже препознатљив текст."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Дугмад за унос текста имају препознатљив текст."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Када се слика користи као дугме `<input>`, навођење алтернативног текста може да помогне корисницима да разумеју сврху дугмета. [Сазнајте више о алтернативном тексту слике за унос](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Вредност ниједног елемента `[tabindex]` није већа од 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Читачи екрана имају функције које олакшавају кретање кроз табеле. Ако се побринете да табеле користе стварни елемент титла уместо ћелија са атрибутом `[colspan]`, можете да побољшате доживљај за кориснике читача екрана. [Сазнајте више о титловима](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Табеле не користе `<caption>` уместо ћелија са атрибутом `[colspan]` за означавање титла."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Табеле користе `<caption>` уместо ћелија са атрибутом `[colspan]` за означавање титла."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Читачи екрана имају функције које олакшавају кретање кроз табеле. Ако се побринете да елементи `<td>` у великој табели (3 или више ћелија ширине и висине) имају повезано заглавље табеле, можете да побољшате доживљај за кориснике читача екрана. [Сазнајте више о заглављима табела](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Елементи `<td>` у великој ставци `<table>` немају заглавља табеле."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Елементи `<td>` у великој ставци `<table>` имају једно или више заглавља табеле."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Читачи екрана имају функције које олакшавају кретање кроз табеле. Ако се побринете да се ћелије `<td>` које користе атрибут `[headers]` односе само на друге ћелије у истој табели, можете да побољшате доживљај за кориснике читача екрана. [Сазнајте више о атрибуту `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Странице које су захтевале AppBanner тренутно не испуњавају услове за кеширање целе странице."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Кеширање целе странице је онемогућено због захтева за одржавање линка."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Ознаке су онемогућиле кеширање целе странице. Посетите chrome://flags/#back-forward-cache да бисте га омогућили локално на уређају."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Странице које користе WebUSB API тренутно не испуњавају услове за кеширање целе странице."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Кеширање целе странице је онемогућено зато што су колачићи онемогућени на страници која користи `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Странице које користе предвиђени обрађивач или радни задатак тренутно не испуњавају услове за кеширање целе странице."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Странице које имају отворену IndexedDB везу тренутно не испуњавају услове за кеширање целе странице."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Кеширање целе странице је онемогућено због IndexedDB догађаја."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Користе се API-ји који не испуњавају услове."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Странице на којима се StyleSheet умеће помоћу додатака тренутно не испуњавају услове за кеширање целе странице."
+    "message": "Странице на којима се `JavaScript` умеће помоћу додатака тренутно не испуњавају услове за кеширање целе странице."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Странице на којима се StyleSheet умеће помоћу додатака тренутно не испуњавају услове за кеширање целе странице."
+    "message": "Странице на којима се `StyleSheet` умеће помоћу додатака тренутно не испуњавају услове за кеширање целе странице."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Интерна грешка."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Саветујемо вам да додате директиву unsafe-inline (коју игноришу прегледачи који подржавају једнократне кључеве/хешове) ради компатибилности уназад са старијим прегледачима."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Више детаља потражите на страници за статус функције."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Ова измена ће ступити на снагу са циљем {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Користи се застарела функција"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Овлашћење неће бити покривено симболом џокерског знака (*) у оквиру CORS управљања атрибутом `Access-Control-Allow-Headers`."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Атрибут `disableRemotePlayback` треба да се користи да би се онемогућила подразумевана интеграција за пребацивање уместо коришћења бирача `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Захтеви за ресурсе чији URL-ови су садржали уклоњене знакове за размак (`(n|r|t)`) и знакове „мање-од“ (`<`) су блокирани. Уклоните нове редове и кодирајте знакове „мање-од“ из извора као што су вредности атрибута елемената да би се учитали ти ресурси."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "Атрибут `chrome.loadTimes()` је застарео, па користите стандардизовани API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "Атрибут `chrome.loadTimes()` је застарео, па користите стандардизовани API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` је застарели тип, па користите стандардизовани API: `nextHopProtocol` за Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Колачићи који садрже знак `(0|r|n)` ће бити одбијени, а не скраћени."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Попуштање смерница за исто порекло подешавањем атрибута `document.domain` је застарело и биће подразумевано онемогућено. Ово упозорење о застаревању се односи на приступ различитог порекла који је омогућен подешавањем атрибута `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Покретање window.alert из iframe-ова различитог порекла је застарело и уклониће се у будућности."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Покретање window.confirm из iframe-ова различитог порекла је застарело и уклониће се у будућности."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Догађаји DOM мутације, укључујући `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` и `DOMCharacterDataModified` су застарели (https://w3c.github.io/uievents/#legacy-event-types) и биће уклоњени. Уместо њега користите `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Подршка за податке: URL-ови у SVG <use> елементу су застарели и биће уклоњени у будућности."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Попуштање смерница за исто порекло подешавањем атрибута `document.domain` је застарело и биће подразумевано онемогућено. Да бисте наставили да користите ову функцију онемогућите групе агената са кључевима према пореклу тако што ћете послати заглавље атрибута `Origin-Agent-Cluster: ?0` заједно са HTTP одговором за документ и оквире. Погледајте https://developer.chrome.com/blog/immutable-document-domain/ за више детаља."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Заглавље `Expect-CT` је застарело и биће уклоњено. Chrome захтева транспарентност сертификата за све јавно поуздане сертификате издате после 30. априла 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` и`watchPosition()` више не раде са небезбедним пореклом. Да бисте користили ову функцију, размислите о пребацивању апликације на безбедно порекло као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` и`watchPosition()` су застарели или небезбедни извори. Да бисте користили ову функцију, размислите о пребацивању апликације на безбедно порекло као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` више не ради са небезбедним пореклом. Да бисте користили ову функцију, размислите о пребацивању апликације на безбедно порекло као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` је застарели тип. Уместо њега користите `RTCPeerConnectionIceErrorEvent.address` или `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Порекло продавца и произвољни подаци из догађаја сервисeра `canmakepayment` су застарели и биће уклоњени: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Веб-сајт је затражио подизвор са мреже којој је могао да приступи само због привилеговане мрежне позиције својих корисника. Ови захтеви излажу уређаје и сервере који нису јавни интернету, чиме се повећава ризик од напада фалсификовањем захтева са других сајтова (CSRF) и/или цурења информација. Да би ублажио ове ризике, Chrome застарева захтеве ка подизворима који нису јавни када се покрену из небезбедног контекста и почеће да их блокира."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Поље `dailyUpdateUrl` из структуре `InterestGroups` које је пренето у структуру `joinAdInterestGroup()` преименовано је у `updateUrl`, што прецизније одражава његово понашање."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS не може да се учита са `file:` URL-ова ако се не завршавају екстензијом фајла `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Коришћење атрибута `SourceBuffer.abort()` да би се отказало уклањање асинхроног опсега за `remove()` је застарело због промене спецификације. Подршка ће се уклонити у будућности. Уместо њега треба да слушате догађај `updateend`. `abort()` има за циљ само да откаже додавање асинхроних медија или да ресетује стање рашчлањивача."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Подешавање атрибута `MediaSource.duration` испод највише временске ознаке презентације било којих баферованих кодираних оквира је застарело због промене спецификације. Подршка за имплицитно уклањање скраћеног баферованог медијског садржаја ће се уклонити у будућности. Уместо тога треба да извршите експлицитни `remove(newDuration, oldDuration)` на све `sourceBuffers`, где је `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI ће затражити дозволу за коришћење чак и ако SysEx није наведен у атрибуту `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Старији, нестандардизовани атрибут `shadowroot` је застарео и *више неће радити* у M119. Уместо њега користите нови, стандардизовани атрибут `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "API за обавештења више не сме да се користи из незбезбедног порекла. Размислите о пребацивању апликације на безбедно порекло, као што је HTTPS. Погледајте https://goo.gle/chrome-insecure-origins за више детаља."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Дозвола за API за обавештења више не може да се тражи од iframe-а различитог порекла. Размислите о томе да затражите дозволу од оквира највишег нивоа или да отворите нови прозор."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Опција `imageOrientation: 'none'` у ставци createImageBitmap је застарела. Користите createImageBitmap са опцијом \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Ваш партнер користи застарелу (D)TLS верзију. Проверите са партнером да бисте исправили ово."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Ако наведете `overflow: visible` на ознакама img, video и canvas, оне могу да доведу до прављења визуелног садржаја ван граница елемента. Погледајте https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` је застарели тип. Боље да користите једнократно инсталирање за обрађиваче плаћања."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "`PaymentRequest` позив је заобишао директиву `connect-src` за смернице за безбедност садржаја (CSP). Ово заобилажење је застарело. Додајте идентификатор начина плаћања из API-ја `PaymentRequest` (у пољу `supportedMethods`) у директиву `connect-src` за CSP."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` је застарели тип. Користите стандардизовани `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Атрибут `<source src>` са надређеним елементом `<picture>` је неважећи, па се игнорише. Уместо њега користите `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame зависи од продавца. Уместо њега користите стандардни cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame зависи од продавца. Уместо њега користите стандардни requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen је застарео. Уместо тога користите Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() је застарео. Уместо тога користите Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() је застарео. Уместо тога користите Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() је застарео. Уместо тога користите Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() је застарео. Уместо тога користите Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen је застарео. Уместо тога користите Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Обустављамо API `chrome.privacy.websites.privacySandboxEnabled`, али ће остати активан за компатибилност уназад до издања M113. Уместо тога, користите `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` и `chrome.privacy.websites.adMeasurementEnabled`. Погледајте https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Ограничење `DtlsSrtpKeyAgreement` је уклоњено. Навели сте вредност `false` за ово ограничење, што се тумачи као покушај коришћења уклоњеног метода `SDES key negotiation`. Ова функција је уклоњена, па користите услугу која подржава `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Ограничење `DtlsSrtpKeyAgreement` је уклоњено. Навели сте вредност `true` за ово ограничење, што није имало ефекта, али можете да уклоните ово ограничење ради прегледности."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "getStats() заснован на повратном позиву је застарео и биће уклоњен. Уместо тога користите getStats() који је у складу са спецификацијама."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() је застарео. Уместо њега користите Select.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Блокирани су захтеви за подресурсе чији URL-ови садрже уграђене акредитиве (нпр. `https://user:pass@host/`)."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Опција `rtcpMuxPolicy` је застарела и биће уклоњена."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` ће захтевати изолацију од приступа из других извора. Погледајте https://developer.chrome.com/blog/enabling-shared-array-buffer/ за више детаља."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Атрибут `speechSynthesis.speak()` без активације корисника је застарео и уклониће се."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Додаци треба да омогуће изолацију од приступа из других извора да бисте и даље користили `SharedArrayBuffer`. Погледајте https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Веб SQL је застарео. Користите SQLite WebAssembly или индексирану базу података"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Атрибут дозвола `window-placement` је застарео. Боље користите `window-management`. Додатну помоћ потражите на https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Смернице за дозволе `window-placement` су застареле. Боље користите `window-management`. Додатну помоћ потражите на https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "JSON за одговор не подржава UTF-16 у атрибуту `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Синхрони `XMLHttpRequest` у главној нити је застарео због негативног утицаја на доживљај крајњег корисника. Додатну помоћ потражите на https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` је застарели тип. Користите `isSessionSupported()` и проверите решену логичку вредност."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Период блокирања главне нити"

@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>` öğesi, `[lang]` özelliği için geçerli bir değere sahip"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Web sayfası tutarlı bir dil belirtmiyorsa ekran okuyucu, sayfadaki metni doğru bir şekilde duyurmayabilir. [`lang` özelliği hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>` öğesi, `[lang]` özelliğiyle aynı temel dile sahip bir `[xml:lang]` özelliği içermiyor."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>` öğesi, `[lang]` özelliğiyle aynı temel dile sahip bir `[xml:lang]` özelliği içeriyor."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Bilgilendirme amaçlı öğelerin hedefi, kısa ve açıklayıcı alternatif metinler olmalıdır. Dekoratif öğeler boş bir alt özelliğiyle yok sayılabilir. [`alt` özelliği hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Resim öğelerinin `[alt]` özellikleri var"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Giriş düğmelerine fark edilebilir ve erişilebilir metin eklemeniz, ekran okuyucu kullanıcılarının giriş düğmesinin amacını anlamalarına yardımcı olabilir. [Giriş düğmeleri hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Giriş düğmelerinde ayırt edilebilir metin yok."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Giriş düğmelerinde ayırt edilebilir metin var."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Bir resim `<input>` düğmesi olarak kullanıldığında alternatif metin sağlamak, ekran okuyucu kullanıcılarının düğmenin amacını anlamalarına yardımcı olabilir. [Giriş resmi alternatif metni hakkında bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Hiçbir öğe 0'dan büyük `[tabindex]` değeri içermiyor"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Ekran okuyucuların tablolarda daha kolay gezinmeyi sağlayan özellikleri vardır. Tabloların, `[colspan]` özelliğine sahip hücreler yerine gerçek başlık öğesini kullandığından emin olursanız ekran okuyucunun kullanıcılara daha iyi bir deneyim sunmasını sağlayabilirsiniz. [Altyazı hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tablolar, başlığı belirtmek için `[colspan]` özelliğine sahip hücreler yerine `<caption>` kullanmıyor."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tablolar, başlığı belirtmek için `[colspan]` özelliğine sahip hücreler yerine `<caption>` kullanıyor."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Ekran okuyucuların tablolarda daha kolay gezinmeyi sağlayan özellikleri vardır. Büyük bir tablodaki (genişlik ve yüksekliği en az 3 hücre olan) `<td>` öğelerinin, ilişkili bir tablo başlığı içerdiğinden emin olursanız ekran okuyucunun kullanıcılara daha iyi bir deneyim sunmasını sağlayabilirsiniz. [Tablo başlıkları hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Büyük bir `<table>` içinde yer alan `<td>` öğelerinin tablo başlıkları yok."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Büyük bir `<table>` içinde yer alan `<td>` öğelerinin bir veya daha fazla tablo başlığı var."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Ekran okuyucuların tablolarda daha kolay gezinmeyi sağlayan özellikleri vardır. `[headers]` özelliğini kullanan `<td>` hücrelerinin yalnızca aynı tablodaki diğer hücrelere atıfta bulunmasını sağlamak, ekran okuyucu kullanıcılarına daha iyi bir deneyim sunabilir. [`headers` özelliği hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "AppBanner isteğinde bulunan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Geri-ileri önbellek, keepalive isteği nedeniyle devre dışı bırakıldı."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Geri-ileri önbellek, flag'lerle devre dışı bırakılmış. Özelliği yerel olarak bu cihazda etkinleştirmek için chrome://flags/#back-forward-cache adresine gidin."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "WebUSB API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "`Cache-Control: no-store` kullanan bir sayfada çerezler devre dışı bırakıldığı için geri-ileri önbellek devre dışı bırakıldı."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Özel bir çalışan veya iş akışı kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Açık bir IndexedDB bağlantısına sahip olan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Geri-ileri önbellek, IndexedDB etkinliği nedeniyle devre dışı bırakılmış."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Uygun olmayan API'ler kullanılmış."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Uzantılar aracılığıyla JavaScript'in yerleştirildiği sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+    "message": "Uzantılar aracılığıyla `JavaScript` yerleştirilen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Uzantılar aracılığıyla StyleSheet'in yerleştirildiği sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
+    "message": "Uzantılar aracılığıyla `StyleSheet` yerleştirilen sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Dahili hata."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Eski tarayıcılarla geriye dönük uyumluluk sağlamak için \"unsafe-inline\" yönergesi (nonce/hash destekleyen tarayıcılar tarafından yok sayılır) eklemeyi düşünün."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Daha fazla bilgi için özellik durumu sayfasına göz atın."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Bu değişiklik, {milestone} olan kilometre taşıyla geçerli olacak."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Desteği Sonlandırılan Özellik Kullanıldı"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "CORS `Access-Control-Allow-Headers` işlemlerinde kimlik doğrulama, joker karakter (*) simgesinin kapsamına girmeyecektir."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Varsayılan Cast entegrasyonunu devre dışı bırakmak için `-internal-media-controls-overlay-cast-button` yerine `disableRemotePlayback` özelliği kullanılmalıdır."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "URL'lerinde hem kaldırılan boşluk `(n|r|t)` karakterleri hem küçüktür karakterleri (`<`) bulunan kaynak istekleri engellenir. Bu kaynakları yüklemek için lütfen yeni satırları kaldırıp öğe özellik değeri gibi yerlerdeki küçüktür karakterlerini kodlayın."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` desteği sonlandırıldı. Onun yerine standart API: Navigation Timing 2'yi kullanın."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` desteği sonlandırıldı. Lütfen standart API: Paint Timing'i kullanın."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` desteği sonlandırıldı. Onun yerine Navigation Timing 2'de standart API: `nextHopProtocol` kullanın."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "`(0|r|n)` karakteri içeren çerezler kısaltılmayıp reddedilecektir."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "`document.domain` ayarlayarak aynı kaynak politikasını esnetme işleviyle ilgili destek sonlandırılmış olup varsayılan olarak devre dışı bırakılacaktır. Bu desteği sonlandırma uyarısı, `document.domain` ayarlamak suretiyle izin verilen bir çapraz kaynak erişimine yöneliktir."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Çapraz kaynak iframe'lerden window.alert tetikleme işlevinin desteği sonlandırılmış olup ileride kaldırılacaktır."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Çapraz kaynak iframe'lerden window.confirm tetikleme desteği sonlandırılmış olup ileride kaldırılacaktır."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "`DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` ve `DOMCharacterDataModified` dahil omak üzere DOM dönüşümü etkinliklerinin desteği sonlandırılmıştır (https://w3c.github.io/uievents/#legacy-event-types) ve bu etkinlikler kaldırılacaktır. Lütfen bunun yerine `MutationObserver` kullanın."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Veri desteği: SVG <use> öğesindeki URL'lerin desteği sonlandırılmıştır ve gelecekte kaldırılacaktır."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "`document.domain` ayarlayarak aynı kaynak politikasını esnetme işleviyle ilgili destek sonlandırılmış olup varsayılan olarak devre dışı bırakılacaktır. Bu özelliği kullanmayı sürdürmek için lütfen doküman ve çerçevelere yönelik HTTP yanıtıyla birlikte `Origin-Agent-Cluster: ?0` üstbilgisi göndererek kaynak anahtarlı aracı kümelerini devre dışı bırakın. Ayrıntılı bilgi için https://developer.chrome.com/blog/immutable-document-domain/ sayfasına bakın."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "`Expect-CT` seçeneği artık kullanılmıyor olup kaldırılacaktır. Chrome, 30 Nisan 2018'den sonra düzenlenen ve herkes tarafından güvenilen tüm sertifikalar için Sertifika Şeffaflığı'nı zorunlu kılmaktadır."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` ve `watchPosition()` güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` ve `watchPosition()` desteği güvenli olmayan kaynaklarda sonlandırıldı. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` desteği sonlandırıldı. Yerine lütfen `RTCPeerConnectionIceErrorEvent.address` veya `RTCPeerConnectionIceErrorEvent.port` kullanın."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "`canmakepayment` hizmet çalışanı etkinliğindeki satıcı kaynağı ve rastgele veriler ile ilgili destek sonlandırılacak olup bunlar kaldırılacaktır: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Web sitesi, kullanıcılarının ayrıcalıklı ağ konumu sayesinde erişebildiği bir ağdan alt kaynak istedi. Bu istekler herkese açık olmayan cihazların ve sunucuların internette açığa çıkmasına neden olarak, siteler arası istek sahtekarlığı (CSRF) saldırısı ve/veya bilgi sızıntısı riskini artırır. Bu riskleri azaltmak amacıyla Chrome, güvenli olmayan bağlamlardan herkese açık olmayan alt kaynaklara gönderilen isteklerle ilgili desteği sonlandırmıştır ve bu istekleri engellemeye başlayacaktır."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "`InterestGroups` adlı yapıdan `joinAdInterestGroup()` adlı yapıya iletilen `dailyUpdateUrl` alanı, davranışını daha doğru şekilde yansıtmak için `updateUrl` olarak yeniden adlandırıldı."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "`.css` dosya uzantısıyla bitmeyen `file:` URL'lerinden CSS yüklenemiyor."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Spesifikasyon değişimi nedeniyle artık `remove()` eşzamansız aralık kaldırma işlemini iptal etmek için `SourceBuffer.abort()` kullanılmamaktadır. Bu işlevle ilgili destek ileride kaldırılacaktır. Bunun yerine `updateend` etkinliğini dinlemeniz gerekir. `abort()` yalnızca eşzamansız medya eklerini iptal etmek veya ayrıştırıcı durumunu sıfırlamak için kullanılmalıdır."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Spesifikasyon değişikliği nedeniyle, arabellekte kodlanan çerçevelerdeki en yüksek sunum zaman damgasından düşük bir `MediaSource.duration` değeri ayarlama özelliğiyle ilgili destek sonlandırıldı. Arabellekteki kırpılmış medya öğelerinin dolaylı yoldan kaldırılması ileride desteklenmeyecektir. Onun yerine, `newDuration < oldDuration` olan durumlarda her `sourceBuffers` üzerinde açık `remove(newDuration, oldDuration)` uygulamanız gerekir."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Sysex, `MIDIOptions` içinde belirtilmiş olmasa bile Web MIDI, sysex kullanmak için izin ister."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Standart olmayan eski `shadowroot` özelliğinin desteği sonlandırıldı ve M119 sürümünde *artık çalışmayacak*. Lütfen bunun yerine standart olan yeni `shadowrootmode` özelliğini kullanın."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Artık Notification API güvenli olmayan kaynaklardan kullanılamaz. Uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Artık çapraz kaynak iframe'lerden Notification API izni istenemez. Bunun yerine izni üst düzey bir çerçeveden istemeniz veya yeni bir pencere açmanız gerekir."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "createImageBitmap içindeki `imageOrientation: 'none'` seçeneğinin desteği sonlandırıldı. Bunun yerine, createImageBitmap'i lütfen \\{imageOrientation: \"from-image\"\\} seçeneği ile kullanın."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "İş ortağınızın anlaşma yaptığı (D)TLS sürümü artık kullanılmıyor. Lütfen iş ortağınızla görüşüp bu durumu düzeltin."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "img, video ve canvas etiketlerinde `overflow: visible` belirtilmesi, öğe sınırlarının dışında görsel içerik oluşturulmasına neden olabilir. https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md sayfasını inceleyin."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` desteği sonlandırıldı. Bunun yerine, ödeme işleyiciler için lütfen tam zamanında yükleme özelliğini kullanın."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "`PaymentRequest` çağrınız, İçerik Güvenliği Politikası (İGP) `connect-src` yönergesini atladı. Bu atlama işleminin desteği sonlandırılmıştır. Lütfen `PaymentRequest` API'deki (`supportedMethods` alanındaki) ödeme yöntemi tanımlayıcısını İGP `connect-src` yönergenize ekleyin."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` desteği sonlandırıldı. Lütfen bunun yerine standart `navigator.storage` kullanın."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Üst öğesi `<picture>` olan `<source src>` öğeleri geçersiz olduğundan yoksayılır. Lütfen bunun yerine `<source srcset>` politikasını kullanın."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame, satıcıya özgü bir işlevdir. Lütfen bunun yerine standart cancelAnimationFrame işlevini kullanın."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame, satıcıya özgü bir işlevdir. Lütfen bunun yerine standart requestAnimationFrame işlevini kullanın."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen desteği sonlandırıldı. Lütfen bunun yerine Document.fullscreenElement kullanın."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() desteği sonlandırıldı. Lütfen bunun yerine Element.requestFullscreen() kullanın."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() desteği sonlandırıldı. Lütfen bunun yerine Element.requestFullscreen() kullanın."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() desteği sonlandırıldı. Lütfen bunun yerine Document.exitFullscreen() kullanın."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() desteği sonlandırıldı. Lütfen bunun yerine Document.exitFullscreen() kullanın."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen desteği sonlandırıldı. Lütfen bunun yerine Document.fullscreenEnabled kullanın."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "`chrome.privacy.websites.privacySandboxEnabled` API'sinin desteğini sonlandırıyoruz, ancak geriye dönük uyumluluk için M113 sürümüne kadar etkin kalacaktır. Bunun yerine lütfen `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` ve `chrome.privacy.websites.adMeasurementEnabled` kullanın. https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled adresini ziyaret edin."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "`DtlsSrtpKeyAgreement` kısıtlaması kaldırıldı. Bu kısıtlama için belirttiğiniz `false` değeri, kaldırılan `SDES key negotiation` yöntemini kullanmaya yönelik bir deneme olarak yorumlandı. Bu işlev kaldırılmıştır; onun yerine `DTLS key negotiation` destekleyen bir hizmet kullanın."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "`DtlsSrtpKeyAgreement` kısıtlaması kaldırıldı. Bu kısıtlama için belirttiğiniz `true` değeri etkisiz olmuştur ancak düzenli olmak adına bu kısıtlamayı kaldırabilirsiniz."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Geri çağırmaya dayalı getStats() desteği sonlandırılmış olup ileride kaldırılacaktır. Bunun yerine spesifikasyonla uyumlu getStats() kullanın."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() desteği sonlandırıldı. Lütfen bunun yerine Selection.modify() kullanın."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "URL'lerinde yerleştirilmiş kimlik bilgileri (ör. `https://user:pass@host/`) olan alt kaynak istekleri engellenir."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "`rtcpMuxPolicy` seçeneğinin desteği sonlandırılmış olup kaldırılacaktır."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer`, kökler arası erişimin kapatılmasını gerektiriyor. Daha fazla bilgi için https://developer.chrome.com/blog/enabling-shared-array-buffer/ adresini ziyaret edin."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Kullanıcı etkinliği olmadan `speechSynthesis.speak()` çağırma işlevi artık kullanılmıyor olup kaldırılacaktır."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Uzantıların `SharedArrayBuffer` kullanmayı sürdürmek için kökler arası erişimi kapatmaları gerekir. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ adresini ziyaret edin."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL desteği sonlandırıldı. Lütfen SQLite WebAssembly veya dizine eklenmiş veritabanı kullanın"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "`window-placement` izin tanımlayıcısının desteği sonlandırılmıştıır. Bunun yerine `window-management` politikasını kullanın. Daha fazla yardım için https://bit.ly/window-placement-rename adresini ziyaret edin."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "`window-placement` izin politikasının desteği sonlandırılmıştır. Bunun yerine `window-management` politikasını kullanın. Daha fazla yardım için https://bit.ly/window-placement-rename adresini ziyaret edin."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "`XMLHttpRequest` içindeki yanıt JSON dosyası UTF-16'yı desteklemiyor."
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Son kullanıcı deneyimini olumsuz etkilemesi nedeniyle, ana iş parçacığında eşzamanlı `XMLHttpRequest` işleviyle ilgili destek sonlandırıldı. Daha fazla yardım için https://xhr.spec.whatwg.org/ adresini ziyaret edin."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` desteği sonlandırıldı. Onun yerine lütfen `isSessionSupported()` kullanın ve çözümlenen boole değerini kontrol edin."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Ana İleti Dizisi Engelleme Süresi"

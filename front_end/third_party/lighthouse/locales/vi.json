@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Thuộc tính `[lang]` của phần tử `<html>` có giá trị hợp lệ"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Nếu trang web không chỉ định một ngôn ngữ nhất quán thì trình đọc màn hình có thể không thông báo chính xác văn bản trong trang. [Tìm hiểu thêm về thuộc tính `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Phần tử `<html>` không sở hữu thuộc tính `[xml:lang]` có cùng ngôn ngữ cơ sở như thuộc tính `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Phần tử `<html>` sở hữu thuộc tính `[xml:lang]` có cùng ngôn ngữ cơ sở như thuộc tính `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Các phần tử thông tin nên là đoạn văn bản thay thế ngắn, có tính mô tả. Có thể bỏ qua phần tử trang trí bằng một thuộc tính alt trống. [Tìm hiểu thêm về thuộc tính `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Các phần tử hình ảnh có thuộc tính `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Bạn nên thêm văn bản rõ ràng và dễ đọc vào các nút nhập để giúp người dùng trình đọc màn hình hiểu mục đích của nút nhập. [Tìm hiểu thêm về các nút nhập](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Các nút nhập không có văn bản rõ ràng."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Các nút nhập có văn bản rõ ràng."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Khi dùng một hình ảnh làm nút `<input>`, thì việc cung cấp văn bản thay thế có thể giúp người dùng trình đọc màn hình hiểu rõ mục đích của nút đó. [Tìm hiểu về văn bản thay thế hình ảnh đầu vào](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Không phần tử nào có giá trị `[tabindex]` lớn hơn 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Trình đọc màn hình có các tính năng giúp người dùng dễ dàng sử dụng bảng hơn. Các bảng cần sử dụng phần tử chú thích thực tế thay vì các ô có thuộc tính `[colspan]` để người dùng trình đọc màn hình có trải nghiệm tốt hơn. [Tìm hiểu thêm về chú thích](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Bảng không sử dụng `<caption>` thay cho các ô có thuộc tính `[colspan]` để biểu thị chú thích."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Bảng sử dụng `<caption>` thay vì các ô có thuộc tính `[colspan]` để biểu thị chú thích."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Trình đọc màn hình có các tính năng giúp người dùng dễ dàng sử dụng bảng hơn. Các phần tử `<td>` trong bảng lớn (chiều rộng và chiều cao từ 3 ô trở lên) cần có tiêu đề bảng liên kết để người dùng trình đọc màn hình có trải nghiệm tốt hơn. [Tìm hiểu thêm về tiêu đề bảng](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Các phần tử `<td>` trong `<table>` lớn không có tiêu đề bảng."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Các phần tử `<td>` trong `<table>` lớn có một hoặc nhiều tiêu đề bảng."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Trình đọc màn hình có các tính năng giúp người dùng dễ dàng sử dụng bảng hơn. Việc đảm bảo các ô `<td>` sử dụng thuộc tính `[headers]` chỉ tham chiếu các ô khác trong cùng bảng có thể cải thiện trải nghiệm của người dùng trình đọc màn hình. [Tìm hiểu thêm về thuộc tính `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Những trang đã yêu cầu AppBanner hiện không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Bộ nhớ đệm cho thao tác tiến/lùi đã bị tắt do có yêu cầu duy trì hoạt động."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Bộ nhớ đệm cho thao tác tiến/lùi đã bị tắt do cờ. Hãy truy cập chrome://flags/#back-forward-cache để bật bộ nhớ đó trên thiết bị này."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Những trang sử dụng API WebUSB không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Bộ nhớ đệm cho thao tác tiến/lùi bị tắt do các cookie bị tắt trên một trang sử dụng `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Những trang sử dụng một trình xử lý hoặc worklet riêng hiện không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Những trang có kết nối IndexedDB mở hiện không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Bộ nhớ đệm cho thao tác tiến/lùi bị tắt do sự kiện IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Các API được sử dụng không đủ điều kiện."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Những trang có JavaScript được chèn vào bằng tiện ích hiện không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
+    "message": "Các trang có `JavaScript` do tiện ích chèn vào hiện không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Những trang có StyleSheet được chèn vào bằng tiện ích hiện không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
+    "message": "Các trang có `StyleSheet` do tiện ích chèn vào hiện không đủ điều kiện dùng bộ nhớ đệm cho thao tác tiến/lùi."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Lỗi nội bộ."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Hãy cân nhắc thêm \"unsafe-inline\" (bị các trình duyệt hỗ trợ nonces/hashes bỏ qua) để tương thích ngược với những trình duyệt cũ."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Kiểm tra trang trạng thái của tính năng để biết thêm thông tin."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Thay đổi này sẽ có hiệu lực từ mốc {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Đang dùng một tính năng không dùng nữa"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Ký tự đại diện (*) sẽ không bao gồm việc uỷ quyền khi xử lý `Access-Control-Allow-Headers` CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Nên sử dụng thuộc tính `disableRemotePlayback`nhằm tắt chế độ tích hợp Truyền mặc định thay vì sử dụng bộ chọn `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Các yêu cầu tài nguyên có URL chứa cả ký tự `(n|r|t)` khoảng trắng đã bị xoá và ký tự nhỏ hơn (`<`) sẽ bị chặn. Vui lòng xoá các dòng mới và mã hoá ký tự nhỏ hơn khỏi các vị trí như giá trị thuộc tính phần tử để tải những tài nguyên như vậy."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` không được dùng nữa; thay vào đó, hãy sử dụng API đã chuẩn hoá: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` không được dùng nữa; thay vào đó, hãy sử dụng API đã chuẩn hoá: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` không được dùng nữa; thay vào đó, hãy sử dụng API đã chuẩn hoá: `nextHopProtocol` trong Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookie có chứa ký tự `(0|r|n)` sẽ bị từ chối thay vì cắt bớt."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Hệ thống không còn thiết lập `document.domain` để nới lỏng chính sách cùng nguồn gốc nữa và tính năng này sẽ bị tắt theo mặc định. Cảnh bảo về việc không dùng nữa này là dành cho quyền truy cập nhiều nguồn gốc đã được bật bằng cách thiết lập `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Tính năng kích hoạt window.alert qua các iframe trên nhiều nguồn gốc không được dùng nữa và sẽ bị loại bỏ trong tương lai."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Tính năng kích hoạt window.confirm qua các iframe trên nhiều nguồn gốc không được dùng nữa và sẽ bị loại bỏ trong tương lai."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Các Sự kiện đột biến DOM, trong đó có `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` và `DOMCharacterDataModified`, không được dùng nữa (https://w3c.github.io/uievents/#legacy-event-types) và sẽ bị loại bỏ. Thay vào đó, vui lòng sử dụng `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Hỗ trợ về dữ liệu: Các URL trong phần tử <use> của SVG không được dùng nữa và sẽ bị loại bỏ trong tương lai."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Hệ thống không còn thiết lập `document.domain` để nới lỏng chính sách cùng nguồn gốc nữa và tính năng này sẽ bị tắt theo mặc định. Để tiếp tục sử dụng tính năng này, vui lòng chọn không sử dụng cụm tác nhân dùng khoá gốc bằng cách gửi một tiêu đề `Origin-Agent-Cluster: ?0` kèm theo phản hồi HTTP cho tài liệu và khung. Xem https://developer.chrome.com/blog/immutable-document-domain/ để biết thêm chi tiết."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Tiêu đề `Expect-CT` không được dùng nữa và sẽ bị xoá. Chrome yêu cầu Tính minh bạch của chứng chỉ đối với tất cả chứng chỉ được tin cậy công khai cấp sau ngày 30 tháng 4 năm 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` và `watchPosition()` không còn hoạt động trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` và `watchPosition()` không còn được dùng trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` không còn hoạt động trên các nguồn gốc không an toàn. Để dùng tính năng này, bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` không được dùng nữa. Thay vào đó, hãy sử dụng `RTCPeerConnectionIceErrorEvent.address` hoặc `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Nguồn gốc của bên bán và dữ liệu bất kỳ trong sự kiện `canmakepayment` của trình chạy dịch vụ không được dùng nữa và sẽ bị loại bỏ: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Trang web này đã yêu cầu một tài nguyên phụ qua một mạng mà trang web này chỉ truy cập được do có vị thế mạng đặc quyền của người dùng. Những yêu cầu như vậy làm lộ các thiết bị và máy chủ không công khai trên Internet, làm tăng nguy cơ bị tấn công giả mạo yêu cầu trên nhiều trang web (CSRF) và/hoặc rò rỉ thông tin. Để giảm thiểu những rủi ro này, Chrome sẽ ngừng yêu cầu các nguồn phụ không công khai khi được khởi tạo từ các ngữ cảnh không an toàn và sẽ bắt đầu chặn những yêu cầu đó."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Trường `dailyUpdateUrl` của `InterestGroups` được truyền đến `joinAdInterestGroup()` đã được đổi tên thành `updateUrl` để phản ánh chính xác hơn hành vi của trường này."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Không tải được CSS qua các URL `file:` trừ phi chúng kết thúc bằng đuôi tệp `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Hệ thống không dùng `SourceBuffer.abort()` để huỷ việc xoá khoảng không đồng bộ của `remove()` nữa do thay đổi về quy cách. Sau này chế độ hỗ trợ cũng sẽ bị xoá. Thay vào đó, bạn nên nghe sự kiện `updateend`. Mục đích của `abort()` chỉ là huỷ lệnh thêm nội dung nghe nhìn không đồng bộ (asynchronous media append) hoặc đặt lại trạng thái của trình phân tích cú pháp."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Do thay đổi về quy cách, hệ thống không còn dùng chế độ đặt giá trị dưới dấu thời gian trình bày cao nhất cho `MediaSource.duration` nữa đối với mọi khung đã mã hoá và lưu vào vùng đệm. Chế độ hỗ trợ yêu cầu xoá tường minh cho nội dung phương tiện lưu trong bộ đệm bị cắt bớt sau này cũng sẽ bị xoá. Bạn nên triển khai lệnh `remove(newDuration, oldDuration)` tường minh trên mọi `sourceBuffers`, khi `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI sẽ yêu cầu cấp quyền sử dụng ngay cả khi `MIDIOptions` không chỉ rõ sysex."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Thuộc tính `shadowroot` cũ, không chuẩn hoá không được dùng nữa và sẽ *không còn hoạt động* trong M119. Thay vào đó, vui lòng sử dụng thuộc tính `shadowrootmode` mới và đã chuẩn hoá."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Có thể Notification API không còn được dùng qua các nguồn gốc không an toàn. Bạn nên cân nhắc việc chuyển ứng dụng sang một nguồn gốc an toàn, chẳng hạn như HTTPS. Xem https://goo.gle/chrome-insecure-origins để biết thêm thông tin."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Có thể quyền cho Notification API không còn được yêu cầu qua một iframe nhiều nguồn gốc nữa. Thay vào đó, bạn nên cân nhắc việc yêu cầu quyền qua một khung cấp cao hoặc mở một cửa sổ mới."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Tuỳ chọn `imageOrientation: 'none'` trong createImageBitmap không được dùng nữa. Thay vào đó, vui lòng sử dụng createImageBitmap bằng tuỳ chọn \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Đối tác của bạn đang đàm phán một phiên bản (D)TLS đã lỗi thời. Vui lòng trao đổi với đối tác của bạn để khắc phục."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Việc chỉ định `overflow: visible` trên thẻ img, video và canvas có thể khiến các thẻ này tạo ra nội dung hình ảnh bên ngoài ranh giới thành phần. Xem tại https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` không được dùng nữa. Vui lòng sử dụng chế độ cài đặt đúng thời điểm cho trình xử lý thanh toán."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Lệnh gọi `PaymentRequest` của bạn đã bỏ qua chỉ thị `connect-src` của Chính sách bảo mật nội dung (CSP). Chế độ bỏ qua này không được dùng nữa. Vui lòng thêm giá trị nhận dạng phương thức thanh toán từ API `PaymentRequest` (trong trường `supportedMethods`) vào chỉ thị `connect-src` của CSP."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` không được dùng nữa. Vui lòng sử dụng `navigator.storage` đã chuẩn hoá."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` có phần tử mẹ `<picture>` không hợp lệ nên sẽ bị bỏ qua. Thay vào đó, vui lòng sử dụng `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame là phương thức tuỳ theo nhà cung cấp cụ thể. Thay vào đó, vui lòng sử dụng cancelAnimationFrame tiêu chuẩn."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame là phương thức tuỳ theo nhà cung cấp cụ thể. Thay vào đó, vui lòng sử dụng requestAnimationFrame tiêu chuẩn."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen không được dùng nữa. Thay vào đó, vui lòng sử dụng Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() không được dùng nữa. Thay vào đó, vui lòng sử dụng Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() không được dùng nữa. Thay vào đó, vui lòng sử dụng Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() không được dùng nữa. Thay vào đó, vui lòng sử dụng Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() không được dùng nữa. Thay vào đó, vui lòng sử dụng Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen không được dùng nữa. Thay vào đó, vui lòng sử dụng Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Chúng tôi sẽ không dùng API `chrome.privacy.websites.privacySandboxEnabled` nữa. Tuy nhiên, API này sẽ vẫn hoạt động nhằm đảm bảo khả năng tương thích ngược cho đến khi phát hành phiên bản M113. Thay vào đó, vui lòng sử dụng `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` và `chrome.privacy.websites.adMeasurementEnabled`. Truy cập vào https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Điều kiện hạn chế `DtlsSrtpKeyAgreement` đã bị xoá. Bạn đã chỉ định một giá trị `false` cho điều kiện hạn chế này, đây được coi là nỗ lực sử dụng phương thức `SDES key negotiation` đã bị xoá. Chức năng này đã bị xoá; thay vào đó, hãy sử dụng một dịch vụ có hỗ trợ `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Điều kiện hạn chế `DtlsSrtpKeyAgreement` đã bị xoá. Bạn đã chỉ định một giá trị `true` cho điều kiện hạn chế này, việc này không có tác dụng gì nhưng bạn có thể xoá điều kiện hạn chế này cho gọn gàng."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Phương thức getStats() dựa trên lệnh gọi lại không được dùng nữa và sẽ bị loại bỏ. Thay vào đó, hãy sử dụng getStats() tuân thủ quy cách."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() không được dùng nữa. Thay vào đó, vui lòng sử dụng Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Yêu cầu tài nguyên phụ có URL chứa thông tin xác thực được nhúng (ví dụ: `https://user:pass@host/`) sẽ bị chặn."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Tuỳ chọn `rtcpMuxPolicy` không được dùng nữa và sẽ bị xoá."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` sẽ đòi hỏi việc tách biệt nhiều nguồn gốc. Xem https://developer.chrome.com/blog/enabling-shared-array-buffer/ để biết thêm thông tin."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Khi không có hoạt động kích hoạt của người dùng, `speechSynthesis.speak()` không được dùng nữa và sẽ bị loại bỏ."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Các tiện ích phải chọn sử dụng chế độ tách biệt nhiều nguồn gốc để có thể tiếp tục sử dụng `SharedArrayBuffer`. Xem https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL không được dùng nữa. Vui lòng sử dụng SQLite WebAssembly hoặc Cơ sở dữ liệu được lập chỉ mục"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Bộ mô tả quyền `window-placement` không được dùng nữa. Thay vào đó, hãy sử dụng `window-management`. Để được trợ giúp thêm, hãy xem https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Chính sách quyền `window-placement` không được dùng nữa. Thay vào đó, hãy sử dụng `window-management`. Để được trợ giúp thêm, hãy xem https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "JSON phản hồi không hỗ trợ UTF-16 trong `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Tính năng `XMLHttpRequest` đồng bộ trên luồng chính không được dùng nữa do có tác động không tốt đối với trải nghiệm của người dùng cuối. Để được trợ giúp thêm, hãy xem https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` không được dùng nữa. Thay vào đó, hãy sử dụng `isSessionSupported()` và kiểm tra giá trị boolean đã phân giải."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Thời gian chặn chuỗi chính"

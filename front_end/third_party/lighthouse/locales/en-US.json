@@ -26,6 +26,15 @@
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`, `link`, and `menuitem` elements have accessible names"
   },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "ARIA dialog elements without accessible names may prevent screen readers users from discerning the purpose of these elements. [Learn how to make ARIA dialog elements more accessible](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Elements with `role=\"dialog\"` or `role=\"alertdialog\"` do not have accessible names."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Elements with `role=\"dialog\"` or `role=\"alertdialog\"` have accessible names."
+  },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Assistive technologies, like screen readers, work inconsistently when `aria-hidden=\"true\"` is set on the document `<body>`. [Learn how `aria-hidden` affects the document body](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
   },
@@ -106,6 +115,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` values are valid"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Adding `role=text` around a text node split by markup enables VoiceOver to treat it as one phrase, but the element's focusable descendents will not be announced. [Learn more about the `role=text` attribute](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Elements with the `role=text` attribute do have focusable descendents."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Elements with the `role=text` attribute do not have focusable descendents."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "When a toggle field doesn't have an accessible name, screen readers announce it with a generic name, making it unusable for users who rely on screen readers. [Learn more about toggle fields](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +245,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ARIA IDs are unique"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "A heading with no content or inaccessible text prevent screen reader users from accessing information on the page's structure. [Learn more about headings](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Heading elements do not contain content."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "All heading elements contain content."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Form fields with multiple labels can be confusingly announced by assistive technologies like screen readers which use either the first, the last, or all of the labels. [Learn how to use form labels](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +308,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "`<html>` element has an `[xml:lang]` attribute with the same base language as the `[lang]` attribute."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Links with the same destination should have the same description, to help users understand the link's purpose and decide whether to follow it. [Learn more about identical links](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Identical links do not have the same purpose."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Identical links have the same purpose."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informative elements should aim for short, descriptive alternate text. Decorative elements can be ignored with an empty alt attribute. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -316,6 +352,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Form elements have associated labels"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "One main landmark helps screen reader users navigate a web page. [Learn more about landmarks](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Document does not have a main landmark."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Document has a main landmark."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Low-contrast text is difficult or impossible for many users to read. Link text that is discernible improves the experience for users with low vision. [Learn how to make links distinguishable](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Links rely on color to be distinguishable."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Links are distinguishable without relying on color."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Link text (and alternate text for images, when used as links) that is discernible, unique, and focusable improves the navigation experience for screen reader users. [Learn how to make links accessible](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +425,15 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>` elements have alternate text"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Form elements without effective labels can create frustrating experiences for screen reader users. [Learn more about the `select` element](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Select elements do not have associated label elements."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Select elements have associated label elements."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "A value greater than 0 implies an explicit navigation ordering. Although technically valid, this often creates frustrating experiences for users who rely on assistive technologies. [Learn more about the `tabindex` attribute](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -388,6 +451,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Tables use `<caption>` instead of cells with the `[colspan]` attribute to indicate a caption."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Touch targets do not have sufficient size or spacing."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Touch targets have sufficient size and spacing."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Screen readers have features to make navigating tables easier. Ensuring that `<td>` elements in a large table (3 or more cells in width and height) have an associated table header may improve the experience for screen reader users. [Learn more about table headers](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -3061,6 +3133,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Use the React DevTools Profiler, which makes use of the Profiler API, to measure the rendering performance of your components. [Learn more.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Place videos inside `VideoBoxes`, customize them using `Video Masks` or add `Transparent Videos`. [Learn more](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Upload images using `Wix Media Manager` to ensure they are automatically served as WebP. Find [more ways to optimize](https://support.wix.com/en/article/site-performance-optimizing-your-media) your site's media."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "When [adding third-party code](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) in the `Custom Code` tab of your site's dashboard, make sure it's deferred or loaded at the end of the code body. Where possible, use Wix’s [integrations](https://support.wix.com/en/article/about-marketing-integrations) to embed marketing tools on your site. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix utilizes CDNs and caching to serve responses as fast as possible for most visitors. Consider [manually enabling caching](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) for your site, especially if using `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Review any third-party code you've added to your site in the `Custom Code` tab of your site's dashboard and only keep the services that are necessary to your site. [Find out more](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Consider uploading your GIF to a service which will make it available to embed as an HTML5 video."

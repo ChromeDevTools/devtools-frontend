@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "[ᐅ`<html>`ᐊ éļéméñţ ĥåš å våļîð våļûé ƒöŕ îţš ᐅ`[lang]`ᐊ åţţŕîбûţé one two three four five six seven eight nine ten eleven]"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "[Îƒ ţĥé ŵéбþåĝé ðöéš ñöţ šþéçîƒý å çöñšîšţéñţ ļåñĝûåĝé, ţĥéñ ţĥé šçŕééñ ŕéåðéŕ mîĝĥţ ñöţ åññöûñçé ţĥé þåĝé'š ţéxţ çöŕŕéçţļý. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé ᐅ`lang`ᐊ åţţŕîбûţéᐅ](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "[ᐅ`<html>`ᐊ éļéméñţ ðöéš ñöţ ĥåvé åñ ᐅ`[xml:lang]`ᐊ åţţŕîбûţé ŵîţĥ ţĥé šåmé бåšé ļåñĝûåĝé åš ţĥé ᐅ`[lang]`ᐊ åţţŕîбûţé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "[ᐅ`<html>`ᐊ éļéméñţ ĥåš åñ ᐅ`[xml:lang]`ᐊ åţţŕîбûţé ŵîţĥ ţĥé šåmé бåšé ļåñĝûåĝé åš ţĥé ᐅ`[lang]`ᐊ åţţŕîбûţé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "[Îñƒöŕmåţîvé éļéméñţš šĥöûļð åîm ƒöŕ šĥöŕţ, ðéšçŕîþţîvé åļţéŕñåţé ţéxţ. Ðéçöŕåţîvé éļéméñţš çåñ бé îĝñöŕéð ŵîţĥ åñ émþţý åļţ åţţŕîбûţé. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé ᐅ`alt`ᐊ åţţŕîбûţéᐅ](https://dequeuniversity.com/rules/axe/4.7/image-alt)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "[Îmåĝé éļéméñţš ĥåvé ᐅ`[alt]`ᐊ åţţŕîбûţéš one two three four five six seven]"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "[Åððîñĝ ðîšçéŕñåбļé åñð åççéššîбļé ţéxţ ţö îñþûţ бûţţöñš måý ĥéļþ šçŕééñ ŕéåðéŕ ûšéŕš ûñðéŕšţåñð ţĥé þûŕþöšé öƒ ţĥé îñþûţ бûţţöñ. ᐅ[ᐊĻéåŕñ möŕé åбöûţ îñþûţ бûţţöñšᐅ](https://dequeuniversity.com/rules/axe/4.7/input-button-name)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "[Îñþûţ бûţţöñš ðö ñöţ ĥåvé ðîšçéŕñîбļé ţéxţ. one two three four five six seven eight nine]"
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "[Îñþûţ бûţţöñš ĥåvé ðîšçéŕñîбļé ţéxţ. one two three four five six seven eight]"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "[Ŵĥéñ åñ îmåĝé îš бéîñĝ ûšéð åš åñ ᐅ`<input>`ᐊ бûţţöñ, þŕövîðîñĝ åļţéŕñåţîvé ţéxţ çåñ ĥéļþ šçŕééñ ŕéåðéŕ ûšéŕš ûñðéŕšţåñð ţĥé þûŕþöšé öƒ ţĥé бûţţöñ. ᐅ[ᐊĻéåŕñ åбöûţ îñþûţ îmåĝé åļţ ţéxţᐅ](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "[Ñö éļéméñţ ĥåš å ᐅ`[tabindex]`ᐊ våļûé ĝŕéåţéŕ ţĥåñ 0 one two three four five six seven eight nine]"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "[Šçŕééñ ŕéåðéŕš ĥåvé ƒéåţûŕéš ţö måķé ñåvîĝåţîñĝ ţåбļéš éåšîéŕ. Éñšûŕîñĝ ţĥåţ ţåбļéš ûšé ţĥé åçţûåļ çåþţîöñ éļéméñţ îñšţéåð öƒ çéļļš ŵîţĥ ţĥé ᐅ`[colspan]`ᐊ åţţŕîбûţé måý îmþŕövé ţĥé éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ çåþţîöñšᐅ](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone]"
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "[Ţåбļéš ðö ñöţ ûšé ᐅ`<caption>`ᐊ îñšţéåð öƒ çéļļš ŵîţĥ ţĥé ᐅ`[colspan]`ᐊ åţţŕîбûţé ţö îñðîçåţé å çåþţîöñ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "[Ţåбļéš ûšé ᐅ`<caption>`ᐊ îñšţéåð öƒ çéļļš ŵîţĥ ţĥé ᐅ`[colspan]`ᐊ åţţŕîбûţé ţö îñðîçåţé å çåþţîöñ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "[Šçŕééñ ŕéåðéŕš ĥåvé ƒéåţûŕéš ţö måķé ñåvîĝåţîñĝ ţåбļéš éåšîéŕ. Éñšûŕîñĝ ţĥåţ ᐅ`<td>`ᐊ éļéméñţš îñ å ļåŕĝé ţåбļé (3 öŕ möŕé çéļļš îñ ŵîðţĥ åñð ĥéîĝĥţ) ĥåvé åñ åššöçîåţéð ţåбļé ĥéåðéŕ måý îmþŕövé ţĥé éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţåбļé ĥéåðéŕšᐅ](https://dequeuniversity.com/rules/axe/4.7/td-has-header)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree]"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "[ᐅ`<td>`ᐊ éļéméñţš îñ å ļåŕĝé ᐅ`<table>`ᐊ ðö ñöţ ĥåvé ţåбļé ĥéåðéŕš. one two three four five six seven eight nine ten eleven]"
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "[ᐅ`<td>`ᐊ éļéméñţš îñ å ļåŕĝé ᐅ`<table>`ᐊ ĥåvé öñé öŕ möŕé ţåбļé ĥéåðéŕš. one two three four five six seven eight nine ten eleven twelve]"
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "[Šçŕééñ ŕéåðéŕš ĥåvé ƒéåţûŕéš ţö måķé ñåvîĝåţîñĝ ţåбļéš éåšîéŕ. Éñšûŕîñĝ ᐅ`<td>`ᐊ çéļļš ûšîñĝ ţĥé ᐅ`[headers]`ᐊ åţţŕîбûţé öñļý ŕéƒéŕ ţö öţĥéŕ çéļļš îñ ţĥé šåmé ţåбļé måý îmþŕövé ţĥé éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé ᐅ`headers`ᐊ åţţŕîбûţéᐅ](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone]"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "[Þåĝéš ţĥåţ ŕéqûéšţéð åñ ÅþþБåññéŕ åŕé ñöţ çûŕŕéñţļý éļîĝîбļé ƒöŕ бåçķ/ƒöŕŵåŕð çåçĥé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "[Бåçķ/ƒöŕŵåŕð çåçĥé îš ðîšåбļéð ðûé ţö å ķééþåļîvé ŕéqûéšţ. one two three four five six seven eight nine ten eleven twelve]"
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "[Бåçķ/ƒöŕŵåŕð çåçĥé îš ðîšåбļéð бý ƒļåĝš. Vîšîţ çĥŕömé://ƒļåĝš/#бåçķ-ƒöŕŵåŕð-çåçĥé ţö éñåбļé îţ ļöçåļļý öñ ţĥîš ðévîçé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "[Þåĝéš ţĥåţ ûšé ŴéбÛŠБ ÅÞÎ åŕé ñöţ éļîĝîбļé ƒöŕ бåçķ/ƒöŕŵåŕð çåçĥé. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "[Бåçķ/ƒöŕŵåŕð çåçĥé îš ðîšåбļéð бéçåûšé çööķîéš åŕé ðîšåбļéð öñ å þåĝé ţĥåţ ûšéš ᐅ`Cache-Control: no-store`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "[Þåĝéš ţĥåţ ûšé å ðéðîçåţéð ŵöŕķéŕ öŕ ŵöŕķļéţ åŕé ñöţ çûŕŕéñţļý éļîĝîбļé ƒöŕ бåçķ/ƒöŕŵåŕð çåçĥé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "[Þåĝéš ţĥåţ ĥåvé åñ öþéñ ÎñðéxéðÐБ çöññéçţîöñ åŕé ñöţ çûŕŕéñţļý éļîĝîбļé ƒöŕ бåçķ/ƒöŕŵåŕð çåçĥé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "[Бåçķ/ƒöŕŵåŕð çåçĥé îš ðîšåбļéð ðûé ţö åñ ÎñðéxéðÐБ évéñţ. one two three four five six seven eight nine ten eleven twelve]"
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "[Îñéļîĝîбļé ÅÞÎš ŵéŕé ûšéð. one two three four five six]"
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "[Þåĝéš ţĥåţ ĴåvåŠçŕîþţ îš îñĵéçţéð îñţö бý éxţéñšîöñš åŕé ñöţ çûŕŕéñţļý éļîĝîбļé ƒöŕ бåçķ/ƒöŕŵåŕð çåçĥé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+    "message": "[Þåĝéš ţĥåţ ᐅ`JavaScript`ᐊ îš îñĵéçţéð îñţö бý éxţéñšîöñš åŕé ñöţ çûŕŕéñţļý éļîĝîбļé ƒöŕ бåçķ/ƒöŕŵåŕð çåçĥé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "[Þåĝéš ţĥåţ ŠţýļéŠĥééţ îš îñĵéçţéð îñţö бý éxţéñšîöñš åŕé ñöţ çûŕŕéñţļý éļîĝîбļé ƒöŕ бåçķ/ƒöŕŵåŕð çåçĥé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+    "message": "[Þåĝéš ţĥåţ å ᐅ`StyleSheet`ᐊ îš îñĵéçţéð îñţö бý éxţéñšîöñš åŕé ñöţ çûŕŕéñţļý éļîĝîбļé ƒöŕ бåçķ/ƒöŕŵåŕð çåçĥé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "[Îñţéŕñåļ éŕŕöŕ. one two]"
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "[Çöñšîðéŕ åððîñĝ 'ûñšåƒé-îñļîñé' (îĝñöŕéð бý бŕöŵšéŕš šûþþöŕţîñĝ ñöñçéš/ĥåšĥéš) ţö бé бåçķŵåŕð çömþåţîбļé ŵîţĥ öļðéŕ бŕöŵšéŕš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "[Çĥéçķ ţĥé ƒéåţûŕé šţåţûš þåĝé ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten]"
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "[Ţĥîš çĥåñĝé ŵîļļ ĝö îñţö éƒƒéçţ ŵîţĥ mîļéšţöñé ᐅ{milestone}ᐊ. one two three four five six seven eight nine ten eleven]"
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "[Ðéþŕéçåţéð Féåţûŕé Ûšéð one two three]"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "[Åûţĥöŕîžåţîöñ ŵîļļ ñöţ бé çövéŕéð бý ţĥé ŵîļðçåŕð šýmбöļ (*) îñ ÇÖŔŠ ᐅ`Access-Control-Allow-Headers`ᐊ ĥåñðļîñĝ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "[Ţĥé ᐅ`disableRemotePlayback`ᐊ åţţŕîбûţé šĥöûļð бé ûšéð îñ öŕðéŕ ţö ðîšåбļé ţĥé ðéƒåûļţ Çåšţ îñţéĝŕåţîöñ îñšţéåð öƒ ûšîñĝ ᐅ`-internal-media-controls-overlay-cast-button`ᐊ šéļéçţöŕ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "[Ŕéšöûŕçé ŕéqûéšţš ŵĥöšé ÛŔĻš çöñţåîñéð бöţĥ ŕémövéð ŵĥîţéšþåçé ᐅ`(n|r|t)`ᐊ çĥåŕåçţéŕš åñð ļéšš-ţĥåñ çĥåŕåçţéŕš (ᐅ`<`ᐊ) åŕé бļöçķéð. Þļéåšé ŕémövé ñéŵļîñéš åñð éñçöðé ļéšš-ţĥåñ çĥåŕåçţéŕš ƒŕöm þļåçéš ļîķé éļéméñţ åţţŕîбûţé våļûéš îñ öŕðéŕ ţö ļöåð ţĥéšé ŕéšöûŕçéš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo]"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "[ᐅ`chrome.loadTimes()`ᐊ îš ðéþŕéçåţéð, îñšţéåð ûšé šţåñðåŕðîžéð ÅÞÎ: Ñåvîĝåţîöñ Ţîmîñĝ 2. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "[ᐅ`chrome.loadTimes()`ᐊ îš ðéþŕéçåţéð, îñšţéåð ûšé šţåñðåŕðîžéð ÅÞÎ: Þåîñţ Ţîmîñĝ. one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "[ᐅ`chrome.loadTimes()`ᐊ îš ðéþŕéçåţéð, îñšţéåð ûšé šţåñðåŕðîžéð ÅÞÎ: ᐅ`nextHopProtocol`ᐊ îñ Ñåvîĝåţîöñ Ţîmîñĝ 2. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "[Çööķîéš çöñţåîñîñĝ å ᐅ`(0|r|n)`ᐊ çĥåŕåçţéŕ ŵîļļ бé ŕéĵéçţéð îñšţéåð öƒ ţŕûñçåţéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "[Ŕéļåxîñĝ ţĥé šåmé-öŕîĝîñ þöļîçý бý šéţţîñĝ ᐅ`document.domain`ᐊ îš ðéþŕéçåţéð, åñð ŵîļļ бé ðîšåбļéð бý ðéƒåûļţ. Ţĥîš ðéþŕéçåţîöñ ŵåŕñîñĝ îš ƒöŕ å çŕöšš-öŕîĝîñ åççéšš ţĥåţ ŵåš éñåбļéð бý šéţţîñĝ ᐅ`document.domain`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "[Ţŕîĝĝéŕîñĝ ŵîñðöŵ.åļéŕţ ƒŕöm çŕöšš öŕîĝîñ îƒŕåméš ĥåš бééñ ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð îñ ţĥé ƒûţûŕé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "[Ţŕîĝĝéŕîñĝ ŵîñðöŵ.çöñƒîŕm ƒŕöm çŕöšš öŕîĝîñ îƒŕåméš ĥåš бééñ ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð îñ ţĥé ƒûţûŕé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "[ÐÖM Mûţåţîöñ Évéñţš, îñçļûðîñĝ ᐅ`DOMSubtreeModified`ᐊ, ᐅ`DOMNodeInserted`ᐊ, ᐅ`DOMNodeRemoved`ᐊ, ᐅ`DOMNodeRemovedFromDocument`ᐊ, ᐅ`DOMNodeInsertedIntoDocument`ᐊ, åñð ᐅ`DOMCharacterDataModified`ᐊ åŕé ðéþŕéçåţéð (ĥţţþš://ŵ3ç.ĝîţĥûб.îö/ûîévéñţš/#ļéĝåçý-évéñţ-ţýþéš) åñð ŵîļļ бé ŕémövéð. Þļéåšé ûšé ᐅ`MutationObserver`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "[Šûþþöŕţ ƒöŕ ðåţå: ÛŔĻš îñ ŠVĜ <use> éļéméñţ îš ðéþŕéçåţéð åñð îţ ŵîļļ бé ŕémövéð îñ ţĥé ƒûţûŕé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "[Ŕéļåxîñĝ ţĥé šåmé-öŕîĝîñ þöļîçý бý šéţţîñĝ ᐅ`document.domain`ᐊ îš ðéþŕéçåţéð, åñð ŵîļļ бé ðîšåбļéð бý ðéƒåûļţ. Ţö çöñţîñûé ûšîñĝ ţĥîš ƒéåţûŕé, þļéåšé öþţ-öûţ öƒ öŕîĝîñ-ķéýéð åĝéñţ çļûšţéŕš бý šéñðîñĝ åñ ᐅ`Origin-Agent-Cluster: ?0`ᐊ ĥéåðéŕ åļöñĝ ŵîţĥ ţĥé ĤŢŢÞ ŕéšþöñšé ƒöŕ ţĥé ðöçûméñţ åñð ƒŕåméš. Šéé ĥţţþš://ðévéļöþéŕ.çĥŕömé.çöm/бļöĝ/îmmûţåбļé-ðöçûméñţ-ðömåîñ/ ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty]"
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "[Ţĥé ᐅ`Expect-CT`ᐊ ĥéåðéŕ îš ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð. Çĥŕömé ŕéqûîŕéš Çéŕţîƒîçåţé Ţŕåñšþåŕéñçý ƒöŕ åļļ þûбļîçļý ţŕûšţéð çéŕţîƒîçåţéš îššûéð åƒţéŕ Åþŕîļ 30, 2018. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "[ᐅ`getCurrentPosition()`ᐊ åñð ᐅ`watchPosition()`ᐊ ñö ļöñĝéŕ ŵöŕķ öñ îñšéçûŕé öŕîĝîñš. Ţö ûšé ţĥîš ƒéåţûŕé, ýöû šĥöûļð çöñšîðéŕ šŵîţçĥîñĝ ýöûŕ åþþļîçåţîöñ ţö å šéçûŕé öŕîĝîñ, šûçĥ åš ĤŢŢÞŠ. Šéé ĥţţþš://ĝöö.ĝļé/çĥŕömé-îñšéçûŕé-öŕîĝîñš ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "[ᐅ`getCurrentPosition()`ᐊ åñð ᐅ`watchPosition()`ᐊ åŕé ðéþŕéçåţéð öñ îñšéçûŕé öŕîĝîñš. Ţö ûšé ţĥîš ƒéåţûŕé, ýöû šĥöûļð çöñšîðéŕ šŵîţçĥîñĝ ýöûŕ åþþļîçåţîöñ ţö å šéçûŕé öŕîĝîñ, šûçĥ åš ĤŢŢÞŠ. Šéé ĥţţþš://ĝöö.ĝļé/çĥŕömé-îñšéçûŕé-öŕîĝîñš ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "[ᐅ`getUserMedia()`ᐊ ñö ļöñĝéŕ ŵöŕķš öñ îñšéçûŕé öŕîĝîñš. Ţö ûšé ţĥîš ƒéåţûŕé, ýöû šĥöûļð çöñšîðéŕ šŵîţçĥîñĝ ýöûŕ åþþļîçåţîöñ ţö å šéçûŕé öŕîĝîñ, šûçĥ åš ĤŢŢÞŠ. Šéé ĥţţþš://ĝöö.ĝļé/çĥŕömé-îñšéçûŕé-öŕîĝîñš ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "[ᐅ`RTCPeerConnectionIceErrorEvent.hostCandidate`ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé ᐅ`RTCPeerConnectionIceErrorEvent.address`ᐊ öŕ ᐅ`RTCPeerConnectionIceErrorEvent.port`ᐊ îñšţéåð. one two three four five six seven eight nine ten]"
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "[Ţĥé méŕçĥåñţ öŕîĝîñ åñð åŕбîţŕåŕý ðåţå ƒŕöm ţĥé ᐅ`canmakepayment`ᐊ šéŕvîçé ŵöŕķéŕ évéñţ åŕé ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð: ᐅ`topOrigin`ᐊ, ᐅ`paymentRequestOrigin`ᐊ, ᐅ`methodData`ᐊ, ᐅ`modifiers`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "[Ţĥé ŵéбšîţé ŕéqûéšţéð å šûбŕéšöûŕçé ƒŕöm å ñéţŵöŕķ ţĥåţ îţ çöûļð öñļý åççéšš бéçåûšé öƒ îţš ûšéŕš' þŕîvîļéĝéð ñéţŵöŕķ þöšîţîöñ. Ţĥéšé ŕéqûéšţš éxþöšé ñöñ-þûбļîç ðévîçéš åñð šéŕvéŕš ţö ţĥé îñţéŕñéţ, îñçŕéåšîñĝ ţĥé ŕîšķ öƒ å çŕöšš-šîţé ŕéqûéšţ ƒöŕĝéŕý (ÇŠŔF) åţţåçķ, åñð/öŕ îñƒöŕmåţîöñ ļéåķåĝé. Ţö mîţîĝåţé ţĥéšé ŕîšķš, Çĥŕömé ðéþŕéçåţéš ŕéqûéšţš ţö ñöñ-þûбļîç šûбŕéšöûŕçéš ŵĥéñ îñîţîåţéð ƒŕöm ñöñ-šéçûŕé çöñţéxţš, åñð ŵîļļ šţåŕţ бļöçķîñĝ ţĥém. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "[Ţĥé ᐅ`dailyUpdateUrl`ᐊ ƒîéļð öƒ ᐅ`InterestGroups`ᐊ þåššéð ţö ᐅ`joinAdInterestGroup()`ᐊ ĥåš бééñ ŕéñåméð ţö ᐅ`updateUrl`ᐊ, ţö möŕé åççûŕåţéļý ŕéƒļéçţ îţš бéĥåvîöŕ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "[ÇŠŠ çåññöţ бé ļöåðéð ƒŕöm ᐅ`file:`ᐊ ÛŔĻš ûñļéšš ţĥéý éñð îñ å ᐅ`.css`ᐊ ƒîļé éxţéñšîöñ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "[Ûšîñĝ ᐅ`SourceBuffer.abort()`ᐊ ţö åбöŕţ ᐅ`remove()`ᐊ'š åšýñçĥŕöñöûš ŕåñĝé ŕémövåļ îš ðéþŕéçåţéð ðûé ţö šþéçîƒîçåţîöñ çĥåñĝé. Šûþþöŕţ ŵîļļ бé ŕémövéð îñ ţĥé ƒûţûŕé. Ýöû šĥöûļð ļîšţéñ ţö ţĥé ᐅ`updateend`ᐊ évéñţ îñšţéåð. ᐅ`abort()`ᐊ îš îñţéñðéð ţö öñļý åбöŕţ åñ åšýñçĥŕöñöûš méðîå åþþéñð öŕ ŕéšéţ þåŕšéŕ šţåţé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree]"
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "[Šéţţîñĝ ᐅ`MediaSource.duration`ᐊ бéļöŵ ţĥé ĥîĝĥéšţ þŕéšéñţåţîöñ ţîméšţåmþ öƒ åñý бûƒƒéŕéð çöðéð ƒŕåméš îš ðéþŕéçåţéð ðûé ţö šþéçîƒîçåţîöñ çĥåñĝé. Šûþþöŕţ ƒöŕ îmþļîçîţ ŕémövåļ öƒ ţŕûñçåţéð бûƒƒéŕéð méðîå ŵîļļ бé ŕémövéð îñ ţĥé ƒûţûŕé. Ýöû šĥöûļð îñšţéåð þéŕƒöŕm éxþļîçîţ ᐅ`remove(newDuration, oldDuration)`ᐊ öñ åļļ ᐅ`sourceBuffers`ᐊ, ŵĥéŕé ᐅ`newDuration < oldDuration`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour]"
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "[Ŵéб MÎÐÎ ŵîļļ åšķ å þéŕmîššîöñ ţö ûšé évéñ îƒ ţĥé šýšéx îš ñöţ šþéçîƒîéð îñ ţĥé ᐅ`MIDIOptions`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "[Ţĥé öļðéŕ, ñöñ-šţåñðåŕðîžéð ᐅ`shadowroot`ᐊ åţţŕîбûţé îš ðéþŕéçåţéð, åñð ŵîļļ *ñö ļöñĝéŕ ƒûñçţîöñ* îñ M119. Þļéåšé ûšé ţĥé ñéŵ, šţåñðåŕðîžéð ᐅ`shadowrootmode`ᐊ åţţŕîбûţé îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "[Ţĥé Ñöţîƒîçåţîöñ ÅÞÎ måý ñö ļöñĝéŕ бé ûšéð ƒŕöm îñšéçûŕé öŕîĝîñš. Ýöû šĥöûļð çöñšîðéŕ šŵîţçĥîñĝ ýöûŕ åþþļîçåţîöñ ţö å šéçûŕé öŕîĝîñ, šûçĥ åš ĤŢŢÞŠ. Šéé ĥţţþš://ĝöö.ĝļé/çĥŕömé-îñšéçûŕé-öŕîĝîñš ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "[Þéŕmîššîöñ ƒöŕ ţĥé Ñöţîƒîçåţîöñ ÅÞÎ måý ñö ļöñĝéŕ бé ŕéqûéšţéð ƒŕöm å çŕöšš-öŕîĝîñ îƒŕåmé. Ýöû šĥöûļð çöñšîðéŕ ŕéqûéšţîñĝ þéŕmîššîöñ ƒŕöm å ţöþ-ļévéļ ƒŕåmé öŕ öþéñîñĝ å ñéŵ ŵîñðöŵ îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "[Öþţîöñ ᐅ`imageOrientation: 'none'`ᐊ îñ çŕéåţéÎmåĝéБîţmåþ îš ðéþŕéçåţéð. Þļéåšé ûšé çŕéåţéÎmåĝéБîţmåþ ŵîţĥ öþţîöñ \\{îmåĝéÖŕîéñţåţîöñ: 'ƒŕöm-îmåĝé'\\} îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "[Ýöûŕ þåŕţñéŕ îš ñéĝöţîåţîñĝ åñ öбšöļéţé (Ð)ŢĻŠ véŕšîöñ. Þļéåšé çĥéçķ ŵîţĥ ýöûŕ þåŕţñéŕ ţö ĥåvé ţĥîš ƒîxéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "[Šþéçîƒýîñĝ ᐅ`overflow: visible`ᐊ öñ îmĝ, vîðéö åñð çåñvåš ţåĝš måý çåûšé ţĥém ţö þŕöðûçé vîšûåļ çöñţéñţ öûţšîðé öƒ ţĥé éļéméñţ бöûñðš. Šéé ĥţţþš://ĝîţĥûб.çöm/ŴÎÇĜ/šĥåŕéð-éļéméñţ-ţŕåñšîţîöñš/бļöб/måîñ/ðéбûĝĝîñĝ_övéŕƒļöŵ_öñ_îmåĝéš.mð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "[ᐅ`paymentManager.instruments`ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé ĵûšţ-îñ-ţîmé îñšţåļļ ƒöŕ þåýméñţ ĥåñðļéŕš îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "[Ýöûŕ ᐅ`PaymentRequest`ᐊ çåļļ бýþåššéð Çöñţéñţ-Šéçûŕîţý-Þöļîçý (ÇŠÞ) ᐅ`connect-src`ᐊ ðîŕéçţîvé. Ţĥîš бýþåšš îš ðéþŕéçåţéð. Þļéåšé åðð ţĥé þåýméñţ méţĥöð îðéñţîƒîéŕ ƒŕöm ţĥé ᐅ`PaymentRequest`ᐊ ÅÞÎ (îñ ᐅ`supportedMethods`ᐊ ƒîéļð) ţö ýöûŕ ÇŠÞ ᐅ`connect-src`ᐊ ðîŕéçţîvé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "[ᐅ`StorageType.persistent`ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé šţåñðåŕðîžéð ᐅ`navigator.storage`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven]"
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "[ᐅ`<source src>`ᐊ ŵîţĥ å ᐅ`<picture>`ᐊ þåŕéñţ îš îñvåļîð åñð ţĥéŕéƒöŕé îĝñöŕéð. Þļéåšé ûšé ᐅ`<source srcset>`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "[ŵéбķîţÇåñçéļÅñîmåţîöñFŕåmé îš véñðöŕ-šþéçîƒîç. Þļéåšé ûšé ţĥé šţåñðåŕð çåñçéļÅñîmåţîöñFŕåmé îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "[ŵéбķîţŔéqûéšţÅñîmåţîöñFŕåmé îš véñðöŕ-šþéçîƒîç. Þļéåšé ûšé ţĥé šţåñðåŕð ŕéqûéšţÅñîmåţîöñFŕåmé îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "[ĤŢMĻVîðéöÉļéméñţ.ŵéбķîţÐîšþļåýîñĝFûļļšçŕééñ îš ðéþŕéçåţéð. Þļéåšé ûšé Ðöçûméñţ.ƒûļļšçŕééñÉļéméñţ îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "[ĤŢMĻVîðéöÉļéméñţ.ŵéбķîţÉñţéŕFûļļŠçŕééñ() îš ðéþŕéçåţéð. Þļéåšé ûšé Éļéméñţ.ŕéqûéšţFûļļšçŕééñ() îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "[ĤŢMĻVîðéöÉļéméñţ.ŵéбķîţÉñţéŕFûļļšçŕééñ() îš ðéþŕéçåţéð. Þļéåšé ûšé Éļéméñţ.ŕéqûéšţFûļļšçŕééñ() îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "[ĤŢMĻVîðéöÉļéméñţ.ŵéбķîţÉxîţFûļļŠçŕééñ() îš ðéþŕéçåţéð. Þļéåšé ûšé Ðöçûméñţ.éxîţFûļļšçŕééñ() îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "[ĤŢMĻVîðéöÉļéméñţ.ŵéбķîţÉxîţFûļļšçŕééñ() îš ðéþŕéçåţéð. Þļéåšé ûšé Ðöçûméñţ.éxîţFûļļšçŕééñ() îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "[ĤŢMĻVîðéöÉļéméñţ.ŵéбķîţŠûþþöŕţšFûļļšçŕééñ îš ðéþŕéçåţéð. Þļéåšé ûšé Ðöçûméñţ.ƒûļļšçŕééñÉñåбļéð îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "[Ŵé'ŕé ðéþŕéçåţîñĝ ţĥé ÅÞÎ ᐅ`chrome.privacy.websites.privacySandboxEnabled`ᐊ, ţĥöûĝĥ îţ ŵîļļ ŕémåîñ åçţîvé ƒöŕ бåçķŵåŕð çömþåţîбîļîţý ûñţîļ ŕéļéåšé M113. Îñšţéåð, þļéåšé ûšé ᐅ`chrome.privacy.websites.topicsEnabled`ᐊ, ᐅ`chrome.privacy.websites.fledgeEnabled`ᐊ åñð ᐅ`chrome.privacy.websites.adMeasurementEnabled`ᐊ. Šéé ĥţţþš://ðévéļöþéŕ.çĥŕömé.çöm/ðöçš/éxţéñšîöñš/ŕéƒéŕéñçé/þŕîvåçý/#þŕöþéŕţý-ŵéбšîţéš-þŕîvåçýŠåñðбöxÉñåбļéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo]"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "[Ţĥé çöñšţŕåîñţ ᐅ`DtlsSrtpKeyAgreement`ᐊ îš ŕémövéð. Ýöû ĥåvé šþéçîƒîéð å ᐅ`false`ᐊ våļûé ƒöŕ ţĥîš çöñšţŕåîñţ, ŵĥîçĥ îš îñţéŕþŕéţéð åš åñ åţţémþţ ţö ûšé ţĥé ŕémövéð ᐅ`SDES key negotiation`ᐊ méţĥöð. Ţĥîš ƒûñçţîöñåļîţý îš ŕémövéð; ûšé å šéŕvîçé ţĥåţ šûþþöŕţš ᐅ`DTLS key negotiation`ᐊ îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "[Ţĥé çöñšţŕåîñţ ᐅ`DtlsSrtpKeyAgreement`ᐊ îš ŕémövéð. Ýöû ĥåvé šþéçîƒîéð å ᐅ`true`ᐊ våļûé ƒöŕ ţĥîš çöñšţŕåîñţ, ŵĥîçĥ ĥåð ñö éƒƒéçţ, бûţ ýöû çåñ ŕémövé ţĥîš çöñšţŕåîñţ ƒöŕ ţîðîñéšš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "[Ţĥé çåļļбåçķ-бåšéð ĝéţŠţåţš() îš ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð. Ûšé ţĥé šþéç-çömþļîåñţ ĝéţŠţåţš() îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "[Ŕåñĝé.éxþåñð() îš ðéþŕéçåţéð. Þļéåšé ûšé Šéļéçţîöñ.möðîƒý() îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "[Šûбŕéšöûŕçé ŕéqûéšţš ŵĥöšé ÛŔĻš çöñţåîñ émбéððéð çŕéðéñţîåļš (é.ĝ. ᐅ`https://user:pass@host/`ᐊ) åŕé бļöçķéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "[Ţĥé ᐅ`rtcpMuxPolicy`ᐊ öþţîöñ îš ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð. one two three four five six seven eight nine ten]"
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "[ᐅ`SharedArrayBuffer`ᐊ ŵîļļ ŕéqûîŕé çŕöšš-öŕîĝîñ îšöļåţîöñ. Šéé ĥţţþš://ðévéļöþéŕ.çĥŕömé.çöm/бļöĝ/éñåбļîñĝ-šĥåŕéð-åŕŕåý-бûƒƒéŕ/ ƒöŕ möŕé ðéţåîļš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "[ᐅ`speechSynthesis.speak()`ᐊ ŵîţĥöûţ ûšéŕ åçţîvåţîöñ îš ðéþŕéçåţéð åñð ŵîļļ бé ŕémövéð. one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "[Éxţéñšîöñš šĥöûļð öþţ îñţö çŕöšš-öŕîĝîñ îšöļåţîöñ ţö çöñţîñûé ûšîñĝ ᐅ`SharedArrayBuffer`ᐊ. Šéé ĥţţþš://ðévéļöþéŕ.çĥŕömé.çöm/ðöçš/éxţéñšîöñš/mv3/çŕöšš-öŕîĝîñ-îšöļåţîöñ/. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "[Ŵéб ŠQĻ îš ðéþŕéçåţéð. Þļéåšé ûšé ŠQĻîţé ŴéбÅššémбļý öŕ Îñðéxéð Ðåţåбåšé one two three four five six seven eight nine ten eleven twelve thirteen]"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "[Ţĥé þéŕmîššîöñ ðéšçŕîþţöŕ ᐅ`window-placement`ᐊ îš ðéþŕéçåţéð. Ûšé ᐅ`window-management`ᐊ îñšţéåð. Föŕ möŕé ĥéļþ, çĥéçķ ĥţţþš://бîţ.ļý/ŵîñðöŵ-þļåçéméñţ-ŕéñåmé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "[Ţĥé þéŕmîššîöñ þöļîçý ᐅ`window-placement`ᐊ îš ðéþŕéçåţéð. Ûšé ᐅ`window-management`ᐊ îñšţéåð. Föŕ möŕé ĥéļþ, çĥéçķ ĥţţþš://бîţ.ļý/ŵîñðöŵ-þļåçéméñţ-ŕéñåmé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "[ÛŢF-16 îš ñöţ šûþþöŕţéð бý ŕéšþöñšé ĵšöñ îñ ᐅ`XMLHttpRequest`ᐊ one two three four five six seven eight nine ten]"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "[Šýñçĥŕöñöûš ᐅ`XMLHttpRequest`ᐊ öñ ţĥé måîñ ţĥŕéåð îš ðéþŕéçåţéð бéçåûšé öƒ îţš ðéţŕîméñţåļ éƒƒéçţš ţö ţĥé éñð ûšéŕ'š éxþéŕîéñçé. Föŕ möŕé ĥéļþ, çĥéçķ ĥţţþš://xĥŕ.šþéç.ŵĥåţŵĝ.öŕĝ/. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "[ᐅ`supportsSession()`ᐊ îš ðéþŕéçåţéð. Þļéåšé ûšé ᐅ`isSessionSupported()`ᐊ åñð çĥéçķ ţĥé ŕéšöļvéð бööļéåñ våļûé îñšţéåð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "[Måîñ-Ţĥŕéåð Бļöçķîñĝ Ţîmé one two three]"

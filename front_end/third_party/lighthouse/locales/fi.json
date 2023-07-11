@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>`-elementin `[lang]`-määritteen arvo on kelvollinen"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Jos verkkosivun kieli ei ole johdonmukaista, näytönlukuohjelma saattaa ilmoittaa sivun tekstin väärin. [Lue lisää `lang`‐määritteestä](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>`-elementissä ei ole `[xml:lang]`-määritettä, jolla on sama peruskieli kuin `[lang]`-määritteellä."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>`-elementillä on `[xml:lang]`-määrite, jolla on sama peruskieli kuin `[lang]`-määritteellä."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informatiivisilla elementeillä pitäisi olla lyhyt ja kuvaileva vaihtoehtoinen teksti. Koristeelliset elementit voidaan ohittaa tyhjällä Alt-määritteellä. [Lue lisää `alt`‐määritteestä](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Kuvaelementeillä on `[alt]`-määritteet"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Erottuvan ja näkyvän tekstin lisääminen syöttöpainikkeisiin voi auttaa näytönlukuohjelman käyttäjiä ymmärtämään syöttöpainikkeen tarkoituksen. [Lue lisää syöttöpainikkeista](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Syöttöpainikkeissa ei ole selkeää tekstiä."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Syöttöpainikkeilla on erottuva teksti."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Kun `<input>`-painikkeena käytetään kuvaa, vaihtoehtoisen tekstin lisääminen voi auttaa näytönlukuohjelman käyttäjiä ymmärtämään painikkeen tarkoituksen. [Lue lisää kuvan vaihtoehtoisesta tekstistä](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Yhdenkään elementin `[tabindex]`-arvo ei ole suurempi kuin 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Näytönlukuohjelmissa on ominaisuuksia, jotka tekevät taulukoissa siirtymisestä helpompaa. Voit parantaa näytönlukuohjelman käyttökokemusta varmistamalla, että taulukot käyttävät varsinaista tekstityselementtiä `[colspan]`-määritteen sisältävien solujen sijaan. [Katso lisätietoa tekstityksistä](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Taulukoissa ei käytetä `<caption>`-määritettä sellaisten solujen sijaan, joissa on `[colspan]`-attribuutti tekstityksen merkkinä."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Taulukoissa käytetään `<caption>`-määritettä sellaisten solujen sijaan, joissa on `[colspan]`-attribuutti tekstityksen merkkinä."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Näytönlukuohjelmissa on ominaisuuksia, jotka tekevät taulukoissa siirtymisestä helpompaa. Voit parantaa näytönlukuohjelman käyttökokemusta varmistamalla, että suuren taulukon (vähintään kolme sarake- ja rivisolua) `<td>`-elementeillä on niihin liittyvä taulukon otsikko. [Lue lisää taulukoiden otsikoista](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Suuren `<table>`-elementin `<td>`-elementeillä ei ole otsikoita taulukoissa."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Suuren `<table>`-elementin `<td>`-elementeillä on vähintään yksi otsikko taulukoissa."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Näytönlukuohjelmissa on ominaisuuksia, jotka tekevät taulukoissa siirtymisestä helpompaa. Voit parantaa näytönlukuohjelman käyttäjien kokemusta varmistamalla, että `[headers]`-määritettä käyttävät `<td>`-solut viittaavat vain toisiin soluihin samassa taulukossa. [Lue lisää `headers`‐määritteestä](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "AppBanneria pyytäneet sivut eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Keepalive-pyyntö estää siirtymisvälimuistin käytön."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Merkinnät estävät siirtymisvälimuistin käytön. Ota se käyttöön paikallisesti tällä laitteella osoitteessa chrome://flags/#back-forward-cache."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "WebUSB APIa käyttävät sivut eivät voi käyttää siirtymisvälimuistia."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Siirtymisvälimuisti on poistettu käytöstä, koska evästeet on poistettu käytöstä sivulla, jolla on käytössä `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Dedicated workeria tai workletia käyttävät sivut eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Sivut, joilla on avoin IndexedDB-yhteys, eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Siirtymisvälimuisti on poistettu käytöstä IndexedDB-tapahtuman vuoksi."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Käytetyt APIt eivät olleet soveltuvia."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Sivut, joihin laajennus lisää JavaScriptin, eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
+    "message": "Sivut, joihin `JavaScript` lisätään laajennuksen avulla, eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Sivut, joihin laajennus lisää tyyliarkin, eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
+    "message": "Sivut, joihin `StyleSheet` lisätään laajennusten avulla, eivät voi tällä hetkellä käyttää siirtymisvälimuistia."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Sisäinen virhe."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Harkitse \"unsafe-inlinen\" (jonka nonceja/hasheja tukevat selaimet ohittavat) lisäämistä, niin voit saavuttaa taaksepäinyhteensopivuuden vanhempien selainten kanssa."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Lisätietoa löydät ominaisuuden tilasivulta."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Tämä muutos tulee voimaan, kun versionumero {milestone} saavutetaan."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Käytöstä poistettua ominaisuutta käytetty"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Jokerimerkki (*) CORS `Access-Control-Allow-Headers` ‑käsittelyssä ei kata valtuutusta."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "`disableRemotePlayback` ‑attribuuttia pitäisi käyttää oletusarvoisen Cast-integraation käytöstä poistamiseen `-internal-media-controls-overlay-cast-button` ‑valitsimen sijaan."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Resurssipyynnöt, joiden URL-osoitteet sisälsivät sekä poistettuja tyhjätilamerkkejä (`(n|r|t)`) että pienempi kuin ‑merkkejä (`<`) on estetty. Poista newline-koodit ja koodaa pienempi kuin ‑merkkejä esimerkiksi elementin attribuuttiarvoista, jos haluat ladata näitä resursseja."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` on poistettu käytöstä, käytä sen sijaan standardoitua APIa: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` on poistettu käytöstä, käytä sen sijaan standardoitua APIa: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` on poistettu käytöstä, käytä sen sijaan standardoitua APIa: `nextHopProtocol` Navigation Timing 2:ssa."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "`(0|r|n)` ‑merkin sisältävät evästeet hylätään lyhentämisen sijaan."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Saman alkuperän käytännön lieventäminen määrittämällä `document.domain` on poistettu käytöstä eikä näin ollen ole käytössä oletuksena. Tämä käytöstäpoistovaroitus koskee eri lähteistä peräisin olevaa pääsyoikeutta, joka on otettu käyttöön asetuksella `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "window.alertin käynnistäminen eri lähteistä peräisin olevista iframeista on poistettu käytöstä ja poistetaan kokonaan tulevaisuudessa."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "window.confirmin käynnistäminen eri lähteistä peräisin olevista iframeista on poistettu käytöstä ja poistetaan kokonaan tulevaisuudessa."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM-muutostapahtumat, kuten `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` ja `DOMCharacterDataModified`, on poistettu käytöstä (https://w3c.github.io/uievents/#legacy-event-types) ja poistetaan. Käytä sen sijaan tätä: `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Datatuki: URL-osoitteet SVG:n <use>-elementissä on poistettu käytöstä, ja se poistetaan tulevaisuudessa."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Saman alkuperän käytännön lieventäminen määrittämällä `document.domain` on poistettu käytöstä eikä näin ollen ole käytössä oletuksena. Jos haluat jatkaa tämän ominaisuuden käyttöä, poista käytöstä alkuperään sidotut agenttiklusterit lähettämällä `Origin-Agent-Cluster: ?0` ‑otsikko dokumentin ja kehysten HTTP-vastauksen mukana. Lue lisää osoitteesta https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Otsikko (`Expect-CT`) on poistettu käytöstä ja poistetaan kokonaan. Chrome edellyttää Certificate Transparencya kaikille 30.4.2018 jälkeen myönnetyille julkisesti luotetuille varmenteille."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` ja `watchPosition()` eivät enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` ja `watchPosition()` on poistettu käytöstä suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` ei enää toimi suojaamattomien alkuperien kohdalla. Jos haluat käyttää tätä ominaisuutta, suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` on poistettu käytöstä. Valitse sen sijaan `RTCPeerConnectionIceErrorEvent.address` tai `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Kauppiaan alkuperän ja satunnaisen datan määrä service worker ‑tapahtumasta (`canmakepayment`) on poistettu käytöstä, ja se poistetaan seuraavista: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Verkkosivusto pyysi aliresurssia verkosta, johon sillä oli pääsy vain käyttäjiensä oikeutetun verkkoaseman vuoksi. Nämä pyynnöt altistavat ei-julkisia laitteita ja palvelimia näkyville internetiin, mikä lisää sivustojen välisten pyyntöjen väärennykseen (CSRF) liittyvän hyökkäyksen ja/tai tietovuodon riskiä. Pienentääkseen riskiä Chrome poistaa käytöstä ei-julkisille aliresursseille osoitetut pyynnöt, jos ne ovat peräisin suojaamattomista konteksteista, ja alkaa estää niitä."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "`InterestGroups`-rakenteen `dailyUpdateUrl`-kenttä on siirretty `joinAdInterestGroup()`-kenttään, ja uusi nimi on toimintaa paremmin vastaava `updateUrl`."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS:ää ei voi ladata `file:` ‑URL-osoitteista, elleivät ne pääty `.css` ‑tiedostotunnisteeseen."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Kohteen `SourceBuffer.abort()` käyttö kohteen `remove()` asynkronisen välin poistamiseen on poistettu käytöstä määritysmuutoksen vuoksi. Tuki poistetaan tulevaisuudessa. Kuuntele sen sijaan tapahtuma `updateend`. `abort()` on tarkoitettu ainoastaan asynkronisen medialiitteen tai nollausjäsentäjän tilan keskeytykseen."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Kohteen `MediaSource.duration` asettaminen puskuroidun koodatun kehyksen korkeinta esitysaikaleimaa alemmas on poistettu käytöstä määritysmuutoksen vuoksi. Lyhennetyn puskuroidun median implisiittisen poiston tuki poistetaan tulevaisuudessa. Tee sen sijaan eksplisiittinen `remove(newDuration, oldDuration)` kaikkien `sourceBuffers` ‑kohteiden kohdalla, joissa `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Web MIDI pyytää käyttölupaa, vaikka `MIDIOptions` ei ole määrittänyt sysexiä."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Vanha, standardoimaton `shadowroot`‐määrite on poistettu käytöstä, *eikä se enää toimi* M119:ssä. Käytä sen sijaan uutta, standardoitua `shadowrootmode`-määritettä."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification APIa ei saa enää käyttää suojaamattomista alkuperistä. Suosittelemme vaihtamaan sovelluksen turvalliseen alkuperään, esim. HTTPS:ään. Lue lisää osoitteesta https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Notification APIn lupaa ei välttämättä enää pyydetä eri lähteistä peräisin olevalta iframelta. Suosittelemme sen sijaan pyytämään lupaa ylätason kehykseltä tai avaamaan uuden ikkunan."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Vaihtoehto `imageOrientation: 'none'` on poistettu käytöstä createImageBitmapissa. Käytä sen sijaan createImageBitmapia, jossa on vaihtoehto \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Yhteistyökumppanisi neuvottelee vanhentuneesta (D)TLS-versiosta. Pyydä yhteistyökumppaniasi korjaamaan tämä."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Jos `overflow: visible` määritetään img-, video- ja canvas-tageissa, ne voivat tuottaa visuaalista sisältöä elementtirajojen ulkopuolella. Lue lisää osoitteesta https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` on poistettu käytöstä. Käytä maksujen käsittelijöille sen sijaan heti asennettavaa (JIT) APIa."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "`PaymentRequest`-kutsu ohitti Content-Security-Policy (CSP) ‑käytännön `connect-src`-säännön. Tämä ohitus on poistettu käytöstä. Lisää maksutavan tunniste `PaymentRequest` APIsta (`supportedMethods`-kentässä) CSP-käytännön `connect-src`-sääntöön."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` on poistettu käytöstä. Valitse sen sijaan standardoitu `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>`, jolla on `<picture>`-ylätaso, on virheellinen ja jätetään näin ollen huomiotta. Käytä sen sijaan tätä: `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame on myyjäkohtainen. Käytä sen sijaan normaalia cancelAnimationFrame-menetelmää."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame on myyjäkohtainen. Käytä sen sijaan normaalia requestAnimationFrame-menetelmää."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen on poistettu käytöstä. Käytä sen sijaan Document.fullscreenElement-APIa."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() on poistettu käytöstä. Käytä sen sijaan Element.requestFullscreen()-APIa."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() on poistettu käytöstä. Käytä sen sijaan Element.requestFullscreen()-APIa."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() on poistettu käytöstä. Käytä sen sijaan Document.exitFullscreen()-APIa."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() on poistettu käytöstä. Käytä sen sijaan Document.exitFullscreen()-APIa."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen on poistettu käytöstä. Käytä sen sijaan Document.fullscreenEnabled-APIa."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Poistamme APIn `chrome.privacy.websites.privacySandboxEnabled` käytöstä, mutta se pysyy taaksepäinyhteensopivana M113-versioon asti. Ota sen sijaan käyttöön `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` ja `chrome.privacy.websites.adMeasurementEnabled`. Lue lisää osoitteesta https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Rajoitus `DtlsSrtpKeyAgreement` on poistettu. Olet määrittänyt `false` ‑arvon tälle rajoitukselle, mikä tulkitaan yrityksenä käyttää poistettua `SDES key negotiation` ‑metodia. Tämä toiminto on poistettu. Käytä sen sijaan palvelua, joka tukee tätä: `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Rajoitus `DtlsSrtpKeyAgreement` on poistettu. Olet määrittänyt `true` ‑arvon tälle rajoitukselle, jolla ei ollut mitään vaikutusta, mutta voit poistaa rajoituksen siisteyden vuoksi."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Takaisinsoittopohjainen getStats() on poistettu käytöstä ja poistetaan kokonaan. Käytä sen sijaan vaatimusten mukaisia getStats()-sääntöjä."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() on poistettu käytöstä. Käytä sen sijaan Selection.modify()-APIa."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Aliresurssipyynnöt, joiden URL-osoitteet sisältävät upotettuja kirjautumistietoja (esim. `https://user:pass@host/`), on estetty."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "`rtcpMuxPolicy` ‑vaihtoehto on poistettu käytöstä ja poistetaan kokonaan."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` edellyttää muista lähteistä eristämistä. Lue lisää osoitteesta https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` ilman käyttäjän aktivointia on poistettu käytöstä ja poistetaan kokonaan."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Laajennusten pitäisi ottaa muista lähteistä eristäminen käyttöön, jotta ne voivat jatkaa tämän käyttöä: `SharedArrayBuffer`. Lue lisää osoitteesta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL on poistettu käytöstä. Käytä SQLite WebAssemblya tai Indexed Databasea"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "`window-placement`-luvan kuvaus on poistettu käytöstä. Valitse sen sijaan `window-management`. Lue lisäohjeita osoitteesta https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "`window-placement`-lupakäytäntö on poistettu käytöstä. Valitse sen sijaan `window-management`. Lue lisäohjeita osoitteesta https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "Vastaus-JSON ei tue UTF-16:ta kohteessa `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Pääsäikeen samanaikainen `XMLHttpRequest` on poistettu käytöstä, koska sillä oli haitallisia vaikutuksia loppukäyttäjän kokemukseen. Lue lisäohjeita osoitteesta https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` on poistettu käytöstä. Ota sen sijaan `isSessionSupported()` käyttöön ja tarkista ratkaistu looginen arvo."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Pääsäikeen estoaika"

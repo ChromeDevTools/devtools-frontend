@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Το στοιχείο `<html>` έχει μια έγκυρη τιμή για το χαρακτηριστικό `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Εάν η ιστοσελίδα δεν καθορίζει μια σταθερή γλώσσα, τότε ο αναγνώστης οθόνης μπορεί να μην εκφωνήσει σωστά το κείμενο της σελίδας. [Μάθετε περισσότερα σχετικά με το χαρακτηριστικό `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Το στοιχείο `<html>` δεν έχει ένα χαρακτηριστικό `[xml:lang]` με την ίδια βασική γλώσσα με το χαρακτηριστικό `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Το στοιχείο `<html>` έχει ένα χαρακτηριστικό `[xml:lang]` με την ίδια βασική γλώσσα με το χαρακτηριστικό `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Τα πληροφοριακά στοιχεία θα πρέπει να στοχεύουν σε σύντομο και περιγραφικό εναλλακτικό κείμενο. Τα διακοσμητικά στοιχεία μπορούν να παραβλεφθούν με ένα κενό χαρακτηριστικό alt. [Μάθετε περισσότερα σχετικά με το χαρακτηριστικό `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Τα στοιχεία εικόνας έχουν χαρακτηριστικά `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Η προσθήκη ευανάγνωστου και προσβάσιμου κειμένου στα κουμπιά εισόδου μπορεί να βοηθήσει τους χρήστες του αναγνώστη οθόνης να κατανοήσουν τον σκοπό των κουμπιών. [Μάθετε περισσότερα σχετικά με τα κουμπιά εισόδου](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Τα κουμπιά εισόδου δεν έχουν ευανάγνωστο κείμενο."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Τα κουμπιά εισόδου έχουν ευανάγνωστο κείμενο."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Όταν μια εικόνα χρησιμοποιείται ως κουμπί `<input>`, η παροχή εναλλακτικού κειμένου μπορεί να βοηθήσει τους χρήστες του αναγνώστη οθόνης να κατανοήσουν τον σκοπό του κουμπιού. [Μάθετε σχετικά με το εναλλακτικό κείμενο εικόνας εισόδου](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Κανένα στοιχείο δεν έχει τιμή `[tabindex]` μεγαλύτερη από 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Οι αναγνώστες οθόνης έχουν λειτουργίες που διευκολύνουν την πλοήγηση στους πίνακες. Διασφαλίζοντας ότι οι πίνακες χρησιμοποιούν το πραγματικό στοιχείο υποτίτλων αντί για κελιά με το χαρακτηριστικό `[colspan]`, ενδέχεται να βελτιωθεί η εμπειρία για τους χρήστες των αναγνωστών οθόνης. [Μάθετε περισσότερα σχετικά με τους υπότιτλους](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Οι πίνακες δεν χρησιμοποιούν το στοιχείο `<caption>` αντί για κελιά με το χαρακτηριστικό `[colspan]` για να υποδείξουν έναν υπότιτλο."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Οι πίνακες χρησιμοποιούν το στοιχείο `<caption>` αντί για κελιά με το χαρακτηριστικό `[colspan]`, για να υποδεικνύουν έναν υπότιτλο."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Οι αναγνώστες οθόνης έχουν λειτουργίες που διευκολύνουν την πλοήγηση στους πίνακες. Διασφαλίζοντας ότι τα στοιχεία `<td>` σε έναν μεγάλο πίνακα (3 ή περισσότερα κελιά σε πλάτος και ύψος) έχουν μια συσχετισμένη κεφαλίδα πίνακα, ενδέχεται να βελτιωθεί η εμπειρία για τους χρήστες των αναγνωστών οθόνης. [Μάθετε περισσότερα σχετικά με τις κεφαλίδες πίνακα](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Τα στοιχεία `<td>` σε ένα μεγάλο `<table>` δεν έχουν κεφαλίδες πίνακα."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Τα στοιχεία `<td>` σε ένα μεγάλο `<table>` έχουν μία ή περισσότερες κεφαλίδες πίνακα."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Οι αναγνώστες οθόνης έχουν λειτουργίες που διευκολύνουν την πλοήγηση στους πίνακες. Διασφαλίζοντας ότι τα κελιά `<td>` που χρησιμοποιούν το χαρακτηριστικό `[headers]` παραπέμπουν μόνο σε άλλα κελιά στον ίδιο πίνακα, μπορείτε να βελτιώσετε την εμπειρία των χρηστών των αναγνωστών οθόνης. [Μάθετε περισσότερα σχετικά με το χαρακτηριστικό `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Οι σελίδες που έχουν ζητήσει ένα AppBanner δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη λόγω ενός αιτήματος μηνύματος keepalive."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε από επισημάνσεις. Μεταβείτε στο chrome://flags/#back-forward-cache για να την ενεργοποιήσετε τοπικά σε αυτήν τη συσκευή."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Οι σελίδες που χρησιμοποιούν το WebUSB API δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη επειδή τα cookie έχουν απενεργοποιηθεί σε μια σελίδα που χρησιμοποιεί το `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Οι σελίδες που χρησιμοποιούν ένα ειδικό worker ή worklet δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
@@ -1892,20 +1934,23 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Οι σελίδες που έχουν ανοικτή σύνδεση IndexedDB δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη λόγω ενός συμβάντος IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Χρησιμοποιήθηκαν ακατάλληλα API."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Οι σελίδες στις οποίες εισάγεται JavaScript από επεκτάσεις δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+    "message": "Οι σελίδες στις οποίες εισάγεται `JavaScript` από επεκτάσεις δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Οι σελίδες στις οποίες έχει εισαχθεί φύλλο στιλ από επεκτάσεις δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
+    "message": "Οι σελίδες στις οποίες εισάγεται `StyleSheet` από επεκτάσεις δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Εσωτερικό σφάλμα."
   },
   "core/lib/bf-cache-strings.js | keepaliveRequest": {
-    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη λόγω αιτήματος μηνύματος keepalive."
+    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη λόγω ενός αιτήματος μηνύματος keepalive."
   },
   "core/lib/bf-cache-strings.js | keyboardLock": {
     "message": "Οι σελίδες που χρησιμοποιούν το κλείδωμα πληκτρολογίου δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Εξετάστε το ενδεχόμενο να προσθέσετε το unsafe-inline (παραβλέπεται από προγράμματα περιήγησης που υποστηρίζουν αριθμούς nonce/κατακερματισμούς) για συμβατότητα με παλαιότερα προγράμματα περιήγησης."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Ελέγξτε τη σελίδα κατάστασης λειτουργίας για περισσότερες λεπτομέρειες."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Αυτή η αλλαγή θα τεθεί σε ισχύ με το ορόσημο {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Χρησιμοποιήθηκε λειτουργία που έχει καταργηθεί"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Η εξουσιοδότηση θα καλυφθεί από τον χαρακτήρα μπαλαντέρ (*) στον χειρισμό `Access-Control-Allow-Headers` CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Το χαρακτηριστικό `disableRemotePlayback` θα πρέπει να χρησιμοποιείται για την απενεργοποίηση της προεπιλεγμένης ενσωμάτωσης μετάδοσης αντί να χρησιμοποιείται ο επιλογέας `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Τα αιτήματα πόρων των οποίων τα URL περιείχαν καταργημένους χαρακτήρες κενού διαστήματος `(n|r|t)` και χαρακτήρες \"λιγότερο από\" (`<`) αποκλείονται. Καταργήστε τις νέες γραμμές και κωδικοποιήστε τους χαρακτήρες \"λιγότερο από\" από μέρη, όπως οι τιμές χαρακτηριστικών στοιχείων, προκειμένου να γίνει φόρτωση αυτών των πόρων."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "Το `chrome.loadTimes()` έχει καταργηθεί. Αντ' αυτού, χρησιμοποιήστε το τυποποιημένο API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "Το `chrome.loadTimes()` έχει καταργηθεί. Αντ' αυτού χρησιμοποιήστε το τυποποιημένο API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "Το `chrome.loadTimes()` έχει καταργηθεί. Αντ' αυτού, χρησιμοποιήστε το τυποποιημένο API: `nextHopProtocol` στο Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Τα cookie που περιέχουν χαρακτήρα `(0|r|n)` θα απορριφθούν αντί να περικοπούν."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Η χαλάρωση της πολιτικής κοινής προέλευσης με ρύθμιση του `document.domain` έχει καταργηθεί και θα απενεργοποιηθεί από προεπιλογή. Αυτή η προειδοποίηση κατάργησης αφορά μια πρόσβαση διασταυρούμενων προελεύσεων που ενεργοποιήθηκε με τη ρύθμιση του `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Η ενεργοποίηση της συνάρτησης window.alerts από iframe διασταυρούμενων προελεύσεων έχει καταργηθεί και θα αποσυρθεί στο μέλλον."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Η ενεργοποίηση του window.confirm από iframe διασταυρούμενων προελεύσεων έχει καταργηθεί και θα αποσυρθεί στο μέλλον."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Τα συμβάντα σίγασης DOM, συμπεριλαμβανομένων των `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` και `DOMCharacterDataModified` έχουν καταργηθεί (https://w3c.github.io/uievents/#legacy-event-types) και θα αποσυρθούν. Εναλλακτικά, χρησιμοποιήστε το `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Η υποστήριξη για το στοιχείο data: URLs in SVG <use> έχει καταργηθεί και θα αποσυρθεί στο μέλλον."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Η χαλάρωση της πολιτικής κοινής προέλευσης με ρύθμιση του `document.domain` έχει καταργηθεί και θα απενεργοποιηθεί από προεπιλογή. Για να συνεχίσετε να χρησιμοποιείτε αυτήν τη λειτουργία, εξαιρεθείτε από τα συμπλέγματα παραγόντων με κλειδιά προέλευσης, στέλνοντας μια κεφαλίδα `Origin-Agent-Cluster: ?0` μαζί με την απόκριση HTTP για το έγγραφο και τα πλαίσια. Ανατρέξτε στη σελίδα https://developer.chrome.com/blog/immutable-document-domain/ για περισσότερες λεπτομέρειες."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Η κεφαλίδα `Expect-CT` καταργήθηκε και θα αποσυρθεί. Το Chrome απαιτεί Διαφάνεια πιστοποιητικών για όλα τα πιστοποιητικά που θεωρούνται αξιόπιστα δημοσίως και έχουν εκδοθεί μετά τις 30 Απριλίου 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "Τα `getCurrentPosition()` και `watchPosition()` δεν λειτουργούν πλέον σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτήν τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "Τα `getCurrentPosition()` και `watchPosition()` καταργήθηκαν σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτήν τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "Το `getUserMedia()` δεν λειτουργεί πλέον σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτήν τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "Το `RTCPeerConnectionIceErrorEvent.hostCandidate` καταργήθηκε. Αντ' αυτού, χρησιμοποιήστε το `RTCPeerConnectionIceErrorEvent.address` ή το `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Η προέλευση εμπόρου και αυθαίρετα δεδομένα από το συμβάν service worker `canmakepayment` έχουν αποσυρθεί και θα καταργηθούν: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Ο ιστότοπος ζήτησε έναν δευτερεύοντα πόρο από ένα δίκτυο στο οποίο θα μπορούσε να αποκτήσει πρόσβαση μόνο λόγω της προνομιακής θέσης δικτύου των χρηστών του. Αυτά τα αιτήματα εκθέτουν τις μη δημόσιες συσκευές και τους μη δημόσιους διακομιστές στο διαδίκτυο, αυξάνοντας τον κίνδυνο επίθεσης τύπου cross-site request forgery (CSRF) ή/και διαρροής πληροφοριών. Για να μειωθούν αυτοί οι κίνδυνοι, το Chrome καταργεί τα αιτήματα σε μη δημόσιους δευτερεύοντες πόρους, όταν εκκινούνται από μη ασφαλή περιβάλλοντα και θα αρχίσει να τα αποκλείει."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Το πεδίο `dailyUpdateUrl` του `InterestGroups` που μεταβιβάζεται στο `joinAdInterestGroup()` μετονομάστηκε σε `updateUrl`, ώστε να αντικατοπτρίζει με μεγαλύτερη ακρίβεια τη συμπεριφορά του."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "Δεν είναι δυνατή η φόρτωση του CSS από τα URL `file:`, εκτός εάν καταλήγουν σε επέκταση αρχείου `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Η χρήση του `SourceBuffer.abort()` για ακύρωση της ασύγχρονης κατάργησης εύρους του στοιχείου `remove()` έχει καταργηθεί λόγω αλλαγής προδιαγραφών. Η υποστήριξη θα καταργηθεί μελλοντικά. Εναλλακτικά, θα πρέπει να χρησιμοποιήσετε τη λειτουργία αναμονής για το συμβάν `updateend`. Το `abort()` προορίζεται μόνο για την ακύρωση της ασύγχρονης προσάρτησης μέσου ή την επαναφορά κατάστασης συντακτικού αναλυτή."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Η ρύθμιση του `MediaSource.duration` κάτω από την υψηλότερη χρονική σήμανση παρουσίασης τυχόν κωδικοποιημένων πλαισίων στην προσωρινή μνήμη έχει καταργηθεί λόγω αλλαγής προδιαγραφών. Η υποστήριξη για την έμμεση κατάργηση των περικομμένων μέσων στην προσωρινή μνήμη θα καταργηθεί στο μέλλον. Αντ' αυτού θα πρέπει να εκτελέσετε ρητή `remove(newDuration, oldDuration)` σε όλα τα `sourceBuffers`, όπου `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Το MIDI ιστού θα ζητήσει άδεια για χρήση ακόμα και αν το sysex δεν είναι καθορισμένο στο `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Το παλαιότερο, μη τυποποιημένο χαρακτηριστικό `shadowroot` έχει καταργηθεί και *δεν θα λειτουργεί πλέον* στο M119. Εναλλακτικά, χρησιμοποιήστε το νέο τυποποιημένο χαρακτηριστικό `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Το Notification API δεν μπορεί πλέον να χρησιμοποιείται από μη ασφαλείς προελεύσεις. Θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Δεν επιτρέπεται πλέον να ζητείται άδεια για το Notification API από ένα iframe διασταυρούμενων προελεύσεων. Θα πρέπει να εξετάσετε το ενδεχόμενο να ζητήσετε άδεια από ένα πλαίσιο ανώτερου επιπέδου ή, εναλλακτικά, να ανοίξετε ένα νέο παράθυρο."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Η επιλογή `imageOrientation: 'none'` στο createImageBitmap έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το createImageBitmap με την επιλογή \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Ο συνεργάτης σας κάνει διαπραγμάτευση για μια παρωχημένη έκδοση (D)TLS. Επικοινωνήστε με τον συνεργάτη σας για την επίλυση αυτού του ζητήματος."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Ο καθορισμός του στοιχείου `overflow: visible` σε ετικέτες img, video και canvas μπορεί να έχει ως αποτέλεσμα τη δημιουργία οπτικού περιεχομένου εκτός των ορίων του στοιχείου. Ανατρέξτε στη διεύθυνση https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "Το `paymentManager.instruments` καταργήθηκε. Χρησιμοποιήστε αντ' αυτού την έγκαιρη εγκατάσταση για τους δείκτες χειρισμού πληρωμών."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Η κλήση `PaymentRequest` παρέβλεψε την οδηγία `connect-src` της Πολιτικής ασφάλειας περιεχομένου (CSP). Αυτή η παράκαμψη καταργήθηκε. Προσθέστε το αναγνωριστικό τρόπου πληρωμής από το `PaymentRequest` API (στο πεδίο `supportedMethods`) στην οδηγία `connect-src` της CSP."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "Το `StorageType.persistent` έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το τυποποιημένο `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Το `<source src>` με γονικό στοιχείο `<picture>` δεν είναι έγκυρο και συνεπώς παραβλέφθηκε. Εναλλακτικά, χρησιμοποιήστε το `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Το webkitCancelAnimationFrame εξαρτάται από τον προμηθευτή. Εναλλακτικά, χρησιμοποιήστε το βασικό cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Το webkitRequestAnimationFrame εξαρτάται από τον προμηθευτή. Εναλλακτικά, χρησιμοποιήστε το βασικό requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "Το HTMLVideoElement.webkitDisplayingFullscreen έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "Το HTMLVideoElement.webkitEnterFullScreen() έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "Το HTMLVideoElement.webkitEnterFullscreen() έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "Το HTMLVideoElement.webkitExitFullScreen() έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "Το HTMLVideoElement.webkitExitFullscreen() έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "Το HTMLVideoElement.webkitSupportsFullscreen έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Το API `chrome.privacy.websites.privacySandboxEnabled` καταργείται αλλά θα παραμείνει ενεργό για συμβατότητα με παλιότερη έκδοση, έως την κυκλοφορία του M113. Εναλλακτικά, χρησιμοποιήστε τα `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` και `chrome.privacy.websites.adMeasurementEnabled`. Ανατρέξτε στη διεύθυνση https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Ο περιορισμός `DtlsSrtpKeyAgreement` καταργήθηκε. Έχετε καθορίσει μια τιμή `false` για αυτόν τον περιορισμό, η οποία ερμηνεύεται ως προσπάθεια χρήσης της μεθόδου `SDES key negotiation` που καταργήθηκε. Αυτή η λειτουργία καταργήθηκε, χρησιμοποιήστε εναλλακτικά μια υπηρεσία που υποστηρίζει το `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Ο περιορισμός `DtlsSrtpKeyAgreement` καταργήθηκε. Έχετε καθορίσει μια τιμή `true` για αυτόν τον περιορισμό, η οποία δεν είχε κάποια επίδραση, αλλά μπορείτε να καταργήσετε αυτόν τον περιορισμό για λόγους οργάνωσης."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Η μέθοδος getStats() που βασίζεται σε επανάκληση έχει καταργηθεί και θα αποσυρθεί. Εναλλακτικά, χρησιμοποιήστε τη μέθοδο getStats() που συμμορφώνεται με τις προδιαγραφές."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Το Range.expand() έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε το Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Τα αιτήματα δευτερευόντων πόρων των οποίων τα URL περιέχουν ενσωματωμένα διαπιστευτήρια (π.χ. `https://user:pass@host/`) είναι αποκλεισμένα."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Η επιλογή `rtcpMuxPolicy` καταργήθηκε και θα αποσυρθεί."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "Για το `SharedArrayBuffer` θα απαιτηθεί απομόνωση διασταυρούμενων προελεύσεων. Ανατρέξτε στη διεύθυνση https://developer.chrome.com/blog/enabling-shared-array-buffer/ για περισσότερες λεπτομέρειες."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Το `speechSynthesis.speak()` χωρίς ενεργοποίηση χρήστη καταργήθηκε και θα αποσυρθεί."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Οι επεκτάσεις θα πρέπει να συμμετέχουν στην απομόνωση διασταυρούμενων προελεύσεων, για να συνεχιστεί η χρήση του `SharedArrayBuffer`. Ανατρέξτε στη διεύθυνση https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Το SQL ιστού έχει καταργηθεί. Χρησιμοποιήστε το SQLite WebAssembly ή την καταλογοποιημένη βάση δεδομένων."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Το περιγραφικό στοιχείο άδειας `window-placement` έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε την πολιτική `window-management`. Για περισσότερη βοήθεια, ανατρέξτε στη διεύθυνση https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Η πολιτική άδειας `window-placement` έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε την πολιτική `window-management`. Για περισσότερη βοήθεια, ανατρέξτε στη διεύθυνση https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "Το UTF-16 δεν υποστηρίζεται από το json απόκρισης στο `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Το συγχρονισμένο `XMLHttpRequest` στο κύριο νήμα έχει καταργηθεί λόγω των επιζήμιων συνεπειών του στην εμπειρία τελικού χρήστη. Για περισσότερη βοήθεια, ανατρέξτε στη διεύθυνση https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "Το `supportsSession()` καταργήθηκε. Χρησιμοποιήστε το `isSessionSupported()` και ελέγξτε εναλλακτικά την τιμή boolean που έχει επιλυθεί."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Χρόνος αποκλεισμού κύριου νήματος"

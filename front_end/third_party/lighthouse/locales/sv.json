@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "`<html>`-elementets `[lang]`-attribut har ett giltigt värde"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Om inget enhetligt språk har angetts för webbsidan kanske skärmläsaren inte läser upp sidans text korrekt. [Läs mer om `lang`-attributet](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "`<html>`-elementet har inte ett `[xml:lang]`-attribut med samma basspråk som `[lang]`-attributet."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "`<html>`-elementet har ett `[xml:lang]`-attribut med samma basspråk som `[lang]`-attributet."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Element med informativ funktion bör ha en kort, beskrivande alternativ text. Element som bara har estetisk funktion kan ignoreras genom att alt-attributet lämnas tomt. [Läs mer om attributet `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Alla bildelement har `[alt]`-attribut"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Att lägga till urskiljbar och tillgänglig text på inmatningsknappar kan hjälpa användare med skärmläsare att förstå syftet med inmatningsknappen. [Läs mer om inmatningsknappar](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Inmatningsknapparna har inte urskiljbar text."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Inmatningsknapparna har urskiljbar text."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Om du anger en alternativ text när en bild används som `<input>`-knapp blir det lättare för användare med skärmläsare att förstå hur knappen används. [Läs om alternativ text för indata](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Det finns inga element med ett `[tabindex]`-värde som är större än 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Om du ser till att tabeller använder själva textningselementet i stället för celler med `[colspan]`-attributet kan det förbättra upplevelsen för användare med skärmläsare. [Läs mer om textning](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Tabellerna använder inte `<caption>` i stället för celler med `[colspan]`-attributet för att ange textning."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Tabeller använder `<caption>` i stället för celler med `[colspan]`-attributet för att ange textning."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Om du ser till att `<td>`-element i en stor tabell (tre eller fler celler i bredd och höjd) har en tillhörande tabellrubrik kan det förbättra upplevelsen för användare med skärmläsare. [Läs mer om tabellrubriker](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "`<td>`-element i en stor `<table>` saknar tabellrubriker."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "`<td>`-element i en stor `<table>` har en eller flera tabellrubriker."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Sidan fungerar bättre för den som använder skärmläsare om attributet `[headers]` i `<td>`-celler bara refererar till andra celler i samma tabell. [Läs mer om attributet `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Sidor som har begärt en AppBanner kan för närvarande inte placeras i vilocacheminnet."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Vilocacheminnet har inaktiverats på grund av en keepalive-begäran."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Vilocacheminnet har inaktiverats med hjälp av en flagga. Öppna chrome://flags/#back-forward-cache om du vill aktivera det lokalt på enheten."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Sidor som använder WebUSB API kan inte placeras i vilocacheminnet."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Vilocacheminnet har inaktiverats eftersom cookies har inaktiverats på en sida där `Cache-Control: no-store` används."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Sidor som använder en dedikerad tjänstefunktion eller worklet kan för närvarande inte placeras i vilocacheminnet."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Sidor med en öppen IndexedDB-anslutning kan för närvarande inte placeras i vilocacheminnet."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Vilocacheminnet har inaktiverats på grund av en IndexedDB-händelse."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Otillåtna API:er användes."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Sidor med ett JavaScript som injicerats av ett tillägg kan för närvarande inte placeras i vilocacheminnet."
+    "message": "Sidor med `JavaScript` som injicerats av tillägg kan för närvarande inte placeras i vilocacheminnet."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Sidor med ett StyleSheet som injicerats av ett tillägg kan för närvarande inte placeras i vilocacheminnet."
+    "message": "Sidor med ett `StyleSheet` som injicerats av tillägg kan för närvarande inte placeras i vilocacheminnet."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Internt fel."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Du kan lägga till unsafe-inline (ignoreras av webbläsare med stöd för noncevärden/hashvärden) för bakåtkompatibilitet med äldre webbläsare."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Du hittar mer information på sidan för funktionsstatus."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Ändringen träder i kraft vid milstolpen {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "En utfasad funktion användes"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Auktorisering omfattas inte av jokertecknet (*) i CORS `Access-Control-Allow-Headers`-hantering."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Attributet `disableRemotePlayback` ska användas för att inaktivera standardintegreringen av Cast i stället för väljaren `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Resursförfrågningar vars webbadresser innehöll både de borttagna blankstegstecknen `(n|r|t)` och mindre än-tecknen (`<`) blockeras. Ta bort radbrytningstecken och koda mindre än-tecken från t.ex. värden för elementattribut om du vill läsa in dessa resurser."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` är utfasat. Använd det standardiserade API:et Navigation Timing 2 i stället."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` är utfasat. Använd i stället det standardiserade API:et Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` är utfasat. Använd det standardiserade API:et `nextHopProtocol` i Navigation Timing 2 i stället."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Cookies som innehåller ett `(0|r|n)`-tecken avvisas i stället för att trunkeras."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Funktionen för att lätta på principen gällande samma ursprung genom att ange `document.domain` är utfasad och inaktiveras som standard. Denna varning om utfasning gäller åtkomst via korsursprung som aktiverades genom inställning av `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Aktivering av window.alert från iframes för korsursprung har fasats ut och kommer att tas bort."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Aktivering av window.confirm från iframes för korsursprung har fasats ut och kommer att tas bort."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "DOM-mutationshändelser, inklusive `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` och `DOMCharacterDataModified`, har fasats ut (https://w3c.github.io/uievents/#legacy-event-types) och kommer att tas bort. Använd `MutationObserver` i stället."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Stöd för data: webbadresser i SVG-elementet <use> har fasats ut och tas bort i framtiden."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Funktionen för att lätta på principen gällande samma ursprung genom att ange `document.domain` är utfasad och inaktiveras som standard. Om du vill fortsätta använda den här funktionen ska du välja bort ursprungsbundna agentkluster genom att skicka en `Origin-Agent-Cluster: ?0`-rubrik tillsammans med HTTP-svaret för dokumentet och ramarna. Läs mer på https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Huvudet `Expect-CT` är utfasat och kommer att tas bort. Chrome kräver certifikattransparens för alla offentligt betrodda certifikat som utfärdats efter den 30 april 2018."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` och `watchPosition()` fungerar inte längre i osäkra ursprung. Om du vill använda den här funktionen rekommenderar vi att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` och `watchPosition()` är utfasade i osäkra ursprung. Om du vill använda den här funktionen rekommenderar vi att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` fungerar inte längre i osäkra ursprung. Om du vill använda den här funktionen rekommenderar vi att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` är utfasat. Använd `RTCPeerConnectionIceErrorEvent.address` eller `RTCPeerConnectionIceErrorEvent.port` i stället."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Säljarursprunget och arbiträr data från tjänstefunktionens `canmakepayment`-händelse har fasats ut och tas bort: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Webbplatsen begärde en underresurs från ett nätverk som den enbart hade åtkomst till på grund av att användaren hade särskild nätverksbehörighet. Med dessa förfrågningar får enheter och servrar som inte är offentliga åtkomst till internet, vilket ökar risken för bedrägerier med begäran mellan webbplatser och/eller läckage av uppgifter. I syfte att minska dessa risker fasar Chrome ut förfrågningar till icke-offentliga underresurser som har startats i osäkra kontexter och kommer att blockera dem."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Fältet `dailyUpdateUrl` i `InterestGroups` som har vidarebefordrats till `joinAdInterestGroup()` har döpts om till `updateUrl` för att bättre motsvara dess beteende."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS går inte att läsas in från `file:`-webbadresser om de inte slutar med ett `.css`-filnamnstillägg."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Användning av `SourceBuffer.abort()` i syfte att avbryta borttagning av asynkrona intervall med `remove()` har fasats ut på grund av en ändring av specifikationen. Stödet tas bort i framtiden. Lyssna efter händelsen `updateend` i stället. `abort()` ska endast användas till att avbryta en asynkron mediebilaga eller återställa tolkningsläget."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Funktionen för att ställa in `MediaSource.duration` under den högsta visningstidsstämpeln för buffrade kodade ramar har fasats ut på grund av en ändring av specifikationen. Stödet för implicit borttagning av trunkerad buffrad media kommer att tas bort. Du ska i stället genomföra explicit `remove(newDuration, oldDuration)` för alla `sourceBuffers`, om `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Webb-MIDI ber om behörighet om användning även om SysEx inte har angetts i `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Det äldre, icke-standardiserade attributet `shadowroot` har fasats ut och fungerar inte längre i M119. Använd det nya, standardiserade attributet `shadowrootmode` i stället."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification API får inte längre användas från osäkra ursprung. Vi rekommenderar att du flyttar appen till ett säkert ursprung, till exempel HTTPS. Läs mer på https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Behörighet för aviserings-API:et kan inte längre begäras via en iframe för korsursprung. Vi rekommenderar att du begär behörighet från en ram på toppnivå eller öppnar ett nytt fönster i stället."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Alternativet `imageOrientation: 'none'` i createImageBitmap har fasats ut. Använd createImageBitmap med alternativet \\{imageOrientation: 'from-image'\\} i stället."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Partnern förhandlar med en föråldrad version av (D)TLS. Kontakta partnern om att åtgärda detta."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Om du anger `overflow: visible` för img-, video- och canvas-taggar kan det leda till att visuellt innehåll visas utanför elementets gränser. Läs mer på https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` har fasats ut. Använd just-in-time-installation för betalningshanterare i stället."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "`PaymentRequest`-anropet åsidosatte CSP-direktivet `connect-src`. Denna åsidosättning är utfasad. Lägg till betalningsmetodens identifierare från `PaymentRequest` API (i fältet `supportedMethods`) i CSP-direktivet `connect-src`."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` har fasats ut. Använd `navigator.storage` i stället."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "`<source src>` med `<picture>` som överordnat element är ogiltigt och ignoreras därför. Använd `<source srcset>` i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "webkitCancelAnimationFrame är leverantörsspecifik. Använd standardmetoden cancelAnimationFrame i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "webkitRequestAnimationFrame är leverantörsspecifik. Använd standardmetoden requestAnimationFrame i stället"
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "HTMLVideoElement.webkitDisplayingFullscreen har fasats ut. Använd Docs.fullscreenElement i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "HTMLVideoElement.webkitEnterFullScreen() har fasats ut. Använd Element.requestFullscreen() i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "HTMLVideoElement.webkitEnterFullscreen() har fasats ut. Använd Element.requestFullscreen() i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "HTMLVideoElement.webkitExitFullScreen() har fasats ut. Använd Document.exitFullscreen() i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "HTMLVideoElement.webkitExitFullscreen() har fasats ut. Använd Document.exitFullscreen() i stället."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "HTMLVideoElement.webkitSupportsFullscreen har fasats ut. Använd Document.fullscreenEnabled i stället."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Vi fasar ut API:et `chrome.privacy.websites.privacySandboxEnabled`, men det förblir aktivt för bakåtkompatibilitet tills version M113 lanseras. Använd i stället `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` och `chrome.privacy.websites.adMeasurementEnabled`. Läs mer på https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Begränsningen `DtlsSrtpKeyAgreement` har tagits bort. Du har angett ett `false`-värde för denna begränsning, vilket tolkas som ett försök att använda den borttagna `SDES key negotiation`-metoden. Denna funktion har tagits bort. Använd i stället en tjänst med stöd för `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Begränsningen `DtlsSrtpKeyAgreement` har tagits bort. Du har angett ett `true`-värde för denna begränsning, vilket inte hade någon inverkan, men du kan ta bort begränsningen för att göra det tydligare."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Återanropsbaserade getStats() har fasats ut och kommer att tas bort. Använd getStats() som uppfyller specifikationerna i stället."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Range.expand() har fasats ut. Använd Selection.modify() i stället."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Förfrågningar från underresurser vars webbadresser innehåller inbäddade användaruppgifter (t.ex. `https://user:pass@host/`) blockeras."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Alternativet `rtcpMuxPolicy` är utfasat och kommer att tas bort."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` kräver isolering för korsursprung. Läs mer på https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "`speechSynthesis.speak()` utan användaraktivering har fasats ut och kommer att tas bort."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Tillägg måste isoleras för korsursprung om du vill fortsätta använda `SharedArrayBuffer`. Läs mer på https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Webb-SQL har fasats ut. Använd SQLite WebAssembly eller indexerade databaser"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Behörighetsbeskrivningen `window-placement` är utfasad. Använd `window-management` i stället. Besök https://bit.ly/window-placement-rename om du behöver hjälp."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Behörighetspolicyn `window-placement` är utfasad. Använd `window-management` i stället. Besök https://bit.ly/window-placement-rename om du behöver hjälp."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16 stöds inte av json-svar i `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Synkron `XMLHttpRequest` i huvudtråden har fasats ut på grund av dess negativa effekt på slutanvändarens upplevelse. Besök https://xhr.spec.whatwg.org/ om du behöver hjälp."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` är utfasat. Använd `isSessionSupported()` och kontrollera det matchade booleska värdet i stället."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Tidsåtgång för blockering av huvudtråd"

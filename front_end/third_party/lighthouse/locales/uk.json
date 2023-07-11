@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Елемент `<html>` має дійсне значення атрибута `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Якщо веб-сторінка містить текст невідповідною мовою, програма зчитування з екрана може неправильно озвучувати його. [Докладніше про атрибут `lang`.](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)"
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Елемент `<html>` не містить атрибут `[xml:lang]` з такою самою базовою мовою, що й атрибут `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Елемент `<html>` містить атрибут `[xml:lang]`, який має таку саму базову мову, що й атрибут `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Інформативні елементи повинні містити короткий, описовий текст заміщення. Декоративні елементи можуть ігноруватись і мати порожній атрибут alt. [Докладніше про атрибут `alt`.](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Зображення мають атрибути `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Читабельний і зрозумілий текст на кнопках введення дасть користувачам програми зчитування з екрана змогу розпізнати їх призначення. [Докладніше про кнопки введення.](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Кнопки введення не містять читабельного тексту."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Кнопки введення містять читабельний текст."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Коли зображення застосовується як кнопка `<input>`, додавши текст заміщення, ви допоможете користувачам програм зчитування з екрана зрозуміти призначення такої кнопки. [Дізнайтесь, як додати текст заміщення для зображення.](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)"
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Жоден елемент не має значення `[tabindex]`, що перевищує 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Програми зчитування з екрана мають функції, які полегшують навігацію в таблицях. Якщо в таблицях замість клітинок з атрибутом `[colspan]` використовується елемент заголовка, користувачам програми зчитування з екрана може бути зручніше працювати з ними. [Докладніше про заголовки.](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Для позначення заголовків у таблицях замість клітинок з атрибутом `[colspan]` не використовується елемент `<caption>`."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "Для позначення заголовків у таблицях замість клітинок з атрибутом `[colspan]` використовується елемент `<caption>`."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Програми зчитування з екрана мають функції, які полегшують навігацію в таблицях. Якщо елементи `<td>` у великій таблиці (принаймні 3 клітинки у ширину й висоту) матимуть пов’язаний заголовок таблиці, користувачам програми зчитування з екрана може бути зручніше працювати з нею. [Докладніше про заголовки таблиць.](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "Елементи `<td>` у великій таблиці `<table>` не містять заголовків таблиці."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Елементи `<td>` у великій таблиці `<table>` містять принаймні один заголовок таблиці."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Програми зчитування з екрана мають функції, які полегшують навігацію в таблицях. Якщо клітинки `<td>`, які використовують атрибут `[headers]`, посилаються лише на інші клітинки в тій самій таблиці, це може покращити взаємодію для користувачів програми зчитування з екрана. [Докладніше про атрибут `headers`.](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)"
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Сторінки, які надіслали запит на AppBanner, зараз не підтримуються для зворотного кешу."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Зворотний кеш вимкнено через запит повідомлення keepalive."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Зворотний кеш вимкнено експериментальними параметрами. Щоб увімкнути його локально на цьому пристрої, перейдіть на сторінку chrome://flags/#back-forward-cache."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Сторінки, які використовують WebUSB API, не підтримуються для зворотного кешу."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Зворотний кеш вимкнено, оскільки файли cookie не дозволено на сторінці, де використовується `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Сторінки, які використовують Dedicated Worker або Worklet, зараз не підтримуються для зворотного кешу."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Сторінки з активованим з’єднанням IndexedDB зараз не підтримуються для зворотного кешу."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Зворотний кеш вимкнено через подію IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Використано непридатні інтерфейси API."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Сторінки, на які розширення вставили фрагменти JavaScript, зараз не підтримуються для зворотного кешу."
+    "message": "Сторінки, на які розширення вставили фрагменти `JavaScript`, зараз не підтримуються для зворотного кешу."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Сторінки, на які розширення вставили фрагменти StyleSheet, зараз не підтримуються для зворотного кешу."
+    "message": "Сторінки, на які розширення вставили фрагмент `StyleSheet`, зараз не підтримуються для зворотного кешу."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Внутрішня помилка."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Додайте команду unsafe-inline (ігнорується веб-переглядачами, що підтримують nonces/hashes) для зворотної сумісності зі старішими веб-переглядачами."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Щоб дізнатися більше, перегляньте сторінку зі статусом функції."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Ця зміна почне діяти для версії {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Використовується функція, яка більше не підтримується"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "На авторизацію під час обробки CORS `Access-Control-Allow-Headers` не поширюватиметься символ підстановки (*)."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "Щоб вимкнути інтеграцію Google Cast за умовчанням, використовуйте атрибут `disableRemotePlayback` замість засобу вибору `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Запити ресурсів до URL-адрес, які містять вилучені пробіли `(n|r|t)` та знаки менше (`<`), блокуються. Щоб завантажити ці ресурси, вилучіть символи нового рядка з таких місць, як значення атрибутів елементів, і закодуйте знаки менше."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "`chrome.loadTimes()` не підтримується. Натомість використовуйте стандартизований інтерфейс API: Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "`chrome.loadTimes()` не підтримується, натомість використовуйте стандартизований інтерфейс API: Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "`chrome.loadTimes()` не підтримується. Натомість використовуйте стандартизований метод API: `nextHopProtocol` у специфікації Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "Файли cookie, які містять символ `(0|r|n)`, будуть відхилятися, а не скорочуватися."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Правило одного джерела більше не можна буде послаблювати, налаштувавши `document.domain`, і цю функцію буде вилучено. Це сповіщення про припинення міждоменного доступу, активованого завдяки налаштуванню `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Запуск window.alert із міждоменних елементів iframe не підтримується, і в майбутньому цю функцію буде вилучено."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Запуск window.confirm із міждоменних елементів iframe не підтримується, і в майбутньому цю функцію буде вилучено."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Події DOM MutationEvent, зокрема `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` і `DOMCharacterDataModified`, більше не підтримуються (https://w3c.github.io/uievents/#legacy-event-types), і їх буде вилучено. Натомість використовуйте `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Підтримку значень \"data: URL\" в елементі <use> SVG припинено, і в майбутньому цю функцію буде вилучено."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Правило одного джерела більше не можна буде послаблювати, налаштувавши `document.domain`, і цю функцію буде вилучено. Щоб продовжити користуватися цією функцією, вимкніть кластери агентів за ключем джерела. Для цього надішліть заголовок `Origin-Agent-Cluster: ?0` із відповіддю HTTP для документа й фреймів. Докладніше читайте на сторінці https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Заголовок `Expect-CT` не підтримується, і його буде вилучено. Chrome вимагає перевірки всіх загальнодоступних надійних сертифікатів, виданих після 30 квітня 2018 року."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` і `watchPosition()` більше не працюють із незахищеними джерелами. Щоб користуватися цією функцією, перенесіть свій додаток у захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` і `watchPosition()` з незахищених джерел не підтримуються. Щоб користуватися цією функцією, перенесіть свій додаток у захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` більше не працює з незахищеними джерелами. Щоб користуватися цією функцією, перенесіть свій додаток у захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "`RTCPeerConnectionIceErrorEvent.hostCandidate` не підтримується. Натомість використовуйте `RTCPeerConnectionIceErrorEvent.address` або `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Джерело продавця й довільні дані події синтаксису Service Worker `canmakepayment` не підтримуються. Їх буде вилучено: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Веб-сайт надіслав запит на субресурс у мережі, доступній лише завдяки повноваженням її користувачів. Такі запити відкривають інтернет-доступ до приватних пристроїв і серверів, що збільшує ризик атак із підробкою міжсайтових запитів (CSRF) та/або витоку інформації. Щоб знизити ці ризики, Chrome ігнорує запити до приватних субресурсів, які надходять із небезпечного контексту, і почне блокувати їх."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Поле `InterestGroups` у структурі `dailyUpdateUrl`, призначене методу `joinAdInterestGroup()`, було перейменовано на `updateUrl`, щоб точніше відображати його поведінку."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS не можна завантажити з URL-адрес `file:`, які не мають розширення файлу `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "У зв’язку зі зміною специфікацій скасування асинхронного вилучення діапазону елемента `remove()` через `SourceBuffer.abort()` не підтримується. У майбутньому цю функцію буде вилучено. Натомість вам слід керуватися подією `updateend`. `abort()` слід використовувати лише для того, щоб скасувати асинхронне додавання медіафайлів або скинути стан синтаксичного аналізатора."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "У зв’язку зі зміною специфікацій налаштування значення `MediaSource.duration` нижче за найвищу відображувану позначку часу будь-яких закодованих фреймів у буфері не підтримується. У майбутньому неявне вилучення стиснених медіафайлів із буфера не підтримуватиметься. Натомість застосовуйте явну функцію `remove(newDuration, oldDuration)` для всіх елементів `sourceBuffers`, де `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Навіть якщо в `MIDIOptions` не вказано значення SysEx, веб-сайти проситимуть дозвіл на використання MIDI."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "Застарілий нестандартизований атрибут `shadowroot` більше не підтримується і *перестане працювати* у версії M119. Натомість використовуйте новий стандартизований атрибут `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "Notification API більше не можна використовувати з незахищених джерел. Перенесіть свій додаток у захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Дозвіл на Notification API більше не можна запитувати з міждоменних елементів iframe. Запитайте дозвіл із фрейму верхнього рівня або відкрийте нове вікно."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Опція `imageOrientation: 'none'` у параметрі createImageBitmap не підтримується. Натомість використовуйте опцію \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Ваш партнер використовує застарілу версію (D)TLS. Щоб вирішити проблему, зверніться до партнера."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Якщо вказати властивість `overflow: visible` у тегах img, video й canvas, візуальний контент може відображатися за межами цих елементів. Докладніше: https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "`paymentManager.instruments` не підтримується. Натомість скористайтесь актуальним інтерфейсом API для обробників платежів."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Ваш виклик `PaymentRequest` обійшов директиву `connect-src` Правил щодо безпеки контенту (CSP). Такий обхід не підтримується. Додайте в директиву CSP `connect-src` ідентифікатор способу оплати з `PaymentRequest` API (у полі `supportedMethods`)."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` не підтримується. Натомість використовуйте стандартну властивість `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Елемент `<source src>` із батьківським елементом `<picture>` недійсний і тому ігнорується. Натомість використовуйте `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Метод webkitCancelAnimationFrame залежить від постачальника. Натомість використовуйте стандартний метод cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Метод webkitRequestAnimationFrame залежить від постачальника. Натомість використовуйте стандартний метод requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "Метод HTMLVideoElement.webkitDisplayingFullscreen не підтримується. Натомість використовуйте метод Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "Метод HTMLVideoElement.webkitEnterFullScreen() не підтримується. Натомість використовуйте метод Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "Метод HTMLVideoElement.webkitEnterFullscreen() не підтримується. Натомість використовуйте метод Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "Метод HTMLVideoElement.webkitExitFullScreen() не підтримується. Натомість використовуйте метод Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "Метод HTMLVideoElement.webkitExitFullscreen() не підтримується. Натомість використовуйте метод Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "Метод HTMLVideoElement.webkitSupportsFullscreen не підтримується. Натомість використовуйте метод Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Ми припиняємо підтримку `chrome.privacy.websites.privacySandboxEnabled` API. Однак цей інтерфейс залишатиметься активним, щоб забезпечувати зворотну сумісність, доки не вийде версія M113. Натомість використовуйте `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` і `chrome.privacy.websites.adMeasurementEnabled`. Докладнішу інформацію наведено на сторінці https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Обмеження `DtlsSrtpKeyAgreement` вилучено. Ви вказали значення `false` для цього обмеження, що ми витлумачили як спробу застосувати вилучений метод \"`SDES key negotiation`\". Цю функцію вилучено; натомість використовуйте сервіс, що підтримує \"`DTLS key negotiation`\"."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Обмеження `DtlsSrtpKeyAgreement` вилучено. Ви вказали значення `true`, що не вплинуло на це обмеження, але можете вилучити його для більшої ясності."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Метод getStats() на основі зворотного виклику не підтримується, і його буде вилучено. Натомість використовуйте метод, що відповідає специфікаціям."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Метод Range.expand() не підтримується. Натомість використовуйте метод Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Запити субресурсів за URL-адресами, що містять вставлені облікові дані (наприклад, `https://user:pass@host/`), блокуються."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Опція `rtcpMuxPolicy` не підтримується, її буде вилучено."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "Для `SharedArrayBuffer` вимагатиметься ізоляція від міждоменних джерел. Докладніше читайте на сторінці https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Виклик `speechSynthesis.speak()` без активації користувача не підтримується, і цю функцію буде вилучено."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Щоб і надалі використовувати `SharedArrayBuffer`, для розширень потрібно ввімкнути ізоляцію від міждоменних джерел. Докладніше читайте на сторінці https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL не підтримується. Використовуйте SQLite WebAssembly або Indexed Database."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Дескриптор дозволів `window-placement` не підтримується. Натомість використовуйте `window-management`. Докладніше читайте на сторінці https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Правило щодо дозволів `window-placement` не підтримується. Натомість використовуйте `window-management`. Докладніше читайте на сторінці https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16 не підтримується відповіддю JSON у `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Синхронний виклик `XMLHttpRequest` в основному потоці не підтримується, оскільки негативно впливає на взаємодію з кінцевим користувачем. Докладніше читайте на сторінці https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "`supportsSession()` не підтримується. Натомість використовуйте `isSessionSupported()`, щоб перевірити передане логічне значення."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Час блокування основного ланцюжка"

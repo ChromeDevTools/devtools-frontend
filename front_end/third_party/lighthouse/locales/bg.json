@@ -272,6 +272,15 @@
   "core/audits/accessibility/html-lang-valid.js | title": {
     "message": "Елементът `<html>` има валидна стойност за атрибута `[lang]`"
   },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | description": {
+    "message": "Ако уеб страницата не посочва език по еднороден начин, екранният четец може да не прочете текста ѝ правилно. [Научете повече за атрибута `lang`](https://dequeuniversity.com/rules/axe/4.7/html-xml-lang-mismatch)."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | failureTitle": {
+    "message": "Елементът `<html>` няма атрибут `[xml:lang]` със същия основен език като атрибута `[lang]`."
+  },
+  "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
+    "message": "Елементът `<html>` има атрибут `[xml:lang]` със същия основен език като атрибута `[lang]`."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Информативните елементи трябва да имат кратък, описателен алтернативен текст. При декоративните елементи атрибутът alt може да бъде оставен без стойност. [Научете повече за атрибута `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -280,6 +289,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Графичните елементи имат атрибути `[alt]`"
+  },
+  "core/audits/accessibility/input-button-name.js | description": {
+    "message": "Добавянето на забележим и достъпен текст към бутоните за въвеждане може да помогне на потребителите на екранни четци да разберат за какво служи съответният бутон. [Научете повече за бутоните за въвеждане](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
+  },
+  "core/audits/accessibility/input-button-name.js | failureTitle": {
+    "message": "Бутоните за въвеждане нямат забележим текст."
+  },
+  "core/audits/accessibility/input-button-name.js | title": {
+    "message": "Бутоните за въвеждане са със забележим текст."
   },
   "core/audits/accessibility/input-image-alt.js | description": {
     "message": "Когато за бутон от тип `<input>` се използва изображение, предоставянето на алтернативен текст помага на потребителите на екранни четци да разберат за какво служи бутонът. [Научете повече за алтернативния текст на изображение за елемент input](https://dequeuniversity.com/rules/axe/4.7/input-image-alt)."
@@ -361,6 +379,24 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Никой от елементите няма атрибут `[tabindex]` със стойност, по-голяма от 0"
+  },
+  "core/audits/accessibility/table-fake-caption.js | description": {
+    "message": "Екранните четци имат функции за улесняване на навигирането в таблици. Когато в таблиците се използва елементът caption вместо клетки с атрибута `[colspan]`, това може да подобри практическата работа за потребителите на екранни четци. [Научете повече за надписите](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
+  },
+  "core/audits/accessibility/table-fake-caption.js | failureTitle": {
+    "message": "Таблиците не използват `<caption>` вместо клетки с атрибута `[colspan]`, за да посочат надпис."
+  },
+  "core/audits/accessibility/table-fake-caption.js | title": {
+    "message": "В таблиците се използва `<caption>` вместо клетки с атрибута `[colspan]`, за да се посочи надпис."
+  },
+  "core/audits/accessibility/td-has-header.js | description": {
+    "message": "Екранните четци имат функции за улесняване на навигирането в таблици. Когато елементите `<td>` в голяма таблица (с повече от 3 колони или реда) имат свързана заглавка на таблицата, това може да подобри практическата работа за потребителите на екранни четци. [Научете повече за заглавките на таблиците](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
+  },
+  "core/audits/accessibility/td-has-header.js | failureTitle": {
+    "message": "`<td>` елемента в голям елемент `<table>` нямат заглавки на таблицата."
+  },
+  "core/audits/accessibility/td-has-header.js | title": {
+    "message": "Елементите `<td>` в голям елемент `<table>` имат една или повече заглавки на таблицата."
   },
   "core/audits/accessibility/td-headers-attr.js | description": {
     "message": "Екранните четци имат функции за улесняване на навигирането в таблици. Когато клетките от типа `<td>`, използващи атрибута `[headers]`, сочат само към други клетки от същата таблица, това може да подобри практическата работа за потребителите на екранни четци. [Научете повече за атрибута `headers`](https://dequeuniversity.com/rules/axe/4.7/td-headers-attr)."
@@ -1751,6 +1787,9 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Страниците, които са заявили AppBanner, понастоящем не отговарят на условията за кеша за назад/напред."
   },
+  "core/lib/bf-cache-strings.js | authorizationHeader": {
+    "message": "Кешът за назад/напред е деактивиран поради заявка за проверка на връзката."
+  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Кешът за назад/напред е деактивиран чрез флагове. За да го активирате локално на това устройство, отворете chrome://flags/#back-forward-cache."
   },
@@ -1816,6 +1855,9 @@
   },
   "core/lib/bf-cache-strings.js | contentWebUSB": {
     "message": "Страниците, които използват WebUSB API, не отговарят на условията за кеша за назад/напред."
+  },
+  "core/lib/bf-cache-strings.js | cookieDisabled": {
+    "message": "Кешът за назад/напред е деактивиран, защото „бисквитките“ са деактивирани на страница, която използва `Cache-Control: no-store`."
   },
   "core/lib/bf-cache-strings.js | dedicatedWorkerOrWorklet": {
     "message": "Страниците, които използват worker или worklet само за себе си, понастоящем не отговарят на условията за кеша за назад/напред."
@@ -1892,14 +1934,17 @@
   "core/lib/bf-cache-strings.js | indexedDBConnection": {
     "message": "Страниците, които имат отворена връзка към IndexedDB, понастоящем не отговарят на условията за кеша за назад/напред."
   },
+  "core/lib/bf-cache-strings.js | indexedDBEvent": {
+    "message": "Кешът за назад/напред е деактивиран поради събитие за IndexedDB."
+  },
   "core/lib/bf-cache-strings.js | ineligibleAPI": {
     "message": "Използвани са неотговарящи на условията API."
   },
   "core/lib/bf-cache-strings.js | injectedJavascript": {
-    "message": "Страниците, в които JavaScript е вмъкнат от разширение, понастоящем не отговарят на условията за кеша за назад/напред."
+    "message": "Страниците, в които `JavaScript` е вмъкнат от разширение, понастоящем не отговарят на условията за кеша за назад/напред."
   },
   "core/lib/bf-cache-strings.js | injectedStyleSheet": {
-    "message": "Страниците, в които стиловият лист е вмъкнат от разширение, понастоящем не отговарят на условията за кеша за назад/напред."
+    "message": "Страниците, в които `StyleSheet` е вмъкнат от разширение, понастоящем не отговарят на условията за кеша за назад/напред."
   },
   "core/lib/bf-cache-strings.js | internalError": {
     "message": "Вътрешна грешка."
@@ -2137,6 +2182,192 @@
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
     "message": "Обмислете дали да не добавите unsafe-inline (пренебрегва се от браузъри, които поддържат nonce и хешове), за да се обезпечи обратна съвместимост с по-стари браузъри."
+  },
+  "core/lib/deprecation-description.js | feature": {
+    "message": "Проверете страницата за състояние на функцията за още подробности."
+  },
+  "core/lib/deprecation-description.js | milestone": {
+    "message": "Тази промяна ще влезе в сила с важния етап {milestone}."
+  },
+  "core/lib/deprecation-description.js | title": {
+    "message": "Използвана е оттеглена функция"
+  },
+  "core/lib/deprecations-strings.js | AuthorizationCoveredByWildcard": {
+    "message": "Заместващият знак (*) няма да обхваща заглавката Authorization при обработване на `Access-Control-Allow-Headers` в CORS."
+  },
+  "core/lib/deprecations-strings.js | CSSSelectorInternalMediaControlsOverlayCastButton": {
+    "message": "За деактивиране на стандартната интеграция на функцията за предаване трябва да се използва атрибутът `disableRemotePlayback`, а не селекторът `-internal-media-controls-overlay-cast-button`."
+  },
+  "core/lib/deprecations-strings.js | CanRequestURLHTTPContainingNewline": {
+    "message": "Заявките за ресурси, чиито URL адреси съдържат премахнатите знаци за интервал (`(n|r|t)`) и знака за по-малко (`<`), са блокирани. За да се заредят тези ресурси, премахнете новите редове и кодирайте знаците за по-малко, използвани например в стойности на атрибути за елементи."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesConnectionInfo": {
+    "message": "Приложният програмен интерфейс `chrome.loadTimes()` е оттеглен. Вместо него използвайте стандартизирания API Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesFirstPaintAfterLoadTime": {
+    "message": "Приложният програмен интерфейс `chrome.loadTimes()` е оттеглен. Вместо него използвайте стандартизирания API Paint Timing."
+  },
+  "core/lib/deprecations-strings.js | ChromeLoadTimesWasAlternateProtocolAvailable": {
+    "message": "Приложният програмен интерфейс `chrome.loadTimes()` е оттеглен. Вместо него използвайте стандартизирания API `nextHopProtocol` в Navigation Timing 2."
+  },
+  "core/lib/deprecations-strings.js | CookieWithTruncatingChar": {
+    "message": "„Бисквитките“, съдържащи знак `(0|r|n)`, ще бъдат отхвърляни вместо скъсявани."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
+    "message": "Възможността за отмяна на правилото за един и същ източник чрез задаване на `document.domain` е оттеглена и ще бъде деактивирана по подразбиране. Това предупреждение за оттегляне се отнася за достъпа от външни източници, активиран чрез настройката `document.domain`."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
+    "message": "Възможността за задействане на window.alert от вложени рамки от външни източници е оттеглена и ще бъде премахната в бъдеще."
+  },
+  "core/lib/deprecations-strings.js | CrossOriginWindowConfirm": {
+    "message": "Възможността за задействане на window.confirm от вложени рамки от външни източници е оттеглена и ще бъде премахната в бъдеще."
+  },
+  "core/lib/deprecations-strings.js | DOMMutationEvents": {
+    "message": "Събития за промяна на DOM, включително `DOMSubtreeModified`, `DOMNodeInserted`, `DOMNodeRemoved`, `DOMNodeRemovedFromDocument`, `DOMNodeInsertedIntoDocument` и `DOMCharacterDataModified`, са оттеглени (https://w3c.github.io/uievents/#legacy-event-types) и ще бъдат премахнати. Вместо това използвайте `MutationObserver`."
+  },
+  "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
+    "message": "Поддръжката на данни: URL адресите в елемента <use> в SVG са оттеглени и ще бъдат премахнати в бъдеще."
+  },
+  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
+    "message": "Възможността за отмяна на правилото за един и същ източник чрез задаване на `document.domain` е оттеглена и ще бъде деактивирана по подразбиране. За да продължите да използвате тази функция, откажете се от групите агенти с ключ източник, като изпратите заглавка `Origin-Agent-Cluster: ?0` заедно с HTTP отговора за документа и рамките. За повече подробности вижте https://developer.chrome.com/blog/immutable-document-domain/."
+  },
+  "core/lib/deprecations-strings.js | ExpectCTHeader": {
+    "message": "Заглавката `Expect-CT` е оттеглена и ще бъде премахната. Chrome изисква Прозрачност на сертификатите за всички публично надеждни сертификати, издадени след 30 април 2018 г."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
+    "message": "`getCurrentPosition()` и `watchPosition()` вече не работят за незащитени източници. За да използвате тази функция, препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GeolocationInsecureOriginDeprecatedNotRemoved": {
+    "message": "`getCurrentPosition()` и `watchPosition()` са оттеглени за незащитени източници. За да използвате тази функция, препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | GetUserMediaInsecureOrigin": {
+    "message": "`getUserMedia()` вече не работи за незащитени източници. За да използвате тази функция, препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | HostCandidateAttributeGetter": {
+    "message": "Полето `RTCPeerConnectionIceErrorEvent.hostCandidate` е оттеглено. Вместо него използвайте `RTCPeerConnectionIceErrorEvent.address` или `RTCPeerConnectionIceErrorEvent.port`."
+  },
+  "core/lib/deprecations-strings.js | IdentityInCanMakePaymentEvent": {
+    "message": "Източникът на търговеца и произволни данни от събитието `canmakepayment` на service worker са оттеглени и ще бъдат премахнати: `topOrigin`, `paymentRequestOrigin`, `methodData`, `modifiers`."
+  },
+  "core/lib/deprecations-strings.js | InsecurePrivateNetworkSubresourceRequest": {
+    "message": "Уебсайтът заяви подресурс от мрежа, до която успя да осъществи достъп само заради специалните разрешения на потребителите в нея. Тези заявки разкриват в интернет информация за непублични устройства и сървъри. Това повишава риска от атаки чрез фалшифициране на заявки от друг сайт (CSRF) и/или от изтичане на информация. За да намали този риск, Chrome оттегля инициираните от незащитен контекст заявки до непублични подресурси и ще започне да ги блокира."
+  },
+  "core/lib/deprecations-strings.js | InterestGroupDailyUpdateUrl": {
+    "message": "Полето `dailyUpdateUrl` на `InterestGroups`, което се предава на `joinAdInterestGroup()`, бе преименувано на `updateUrl`, за да се отрази по-точно поведението му."
+  },
+  "core/lib/deprecations-strings.js | LocalCSSFileExtensionRejected": {
+    "message": "CSS не може да се зареди от URL адреси със схема `file:`, освен ако не завършват с файловото разширение `.css`."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceAbortRemove": {
+    "message": "Възможността за използване на `SourceBuffer.abort()` за прекратяване на асинхронното премахване на периоди чрез `remove()` е оттеглена поради промяна на спецификацията. Поддръжката ще бъде премахната в бъдеще. Вместо това трябва да използвате приемател за събитието `updateend`. Функцията `abort()` е предназначена за прекратяване само на асинхронно добавяне на мултимедия или нулиране на състоянието на инструмента за синтактичен анализ."
+  },
+  "core/lib/deprecations-strings.js | MediaSourceDurationTruncatingBuffered": {
+    "message": "Възможността за задаване на стойност за `MediaSource.duration`, по-малка от най-голямото клеймо за дата и час за представяне на буферирани кодирани рамки, е оттеглена поради промяна на спецификацията. Поддръжката за неявно премахване на скъсена буферирана мултимедия ще бъде премахната в бъдеще. Вместо това трябва да извършвате изрично премахване чрез `remove(newDuration, oldDuration)` за всички елементи `sourceBuffers`, за които `newDuration < oldDuration`."
+  },
+  "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
+    "message": "Уеб MIDI ще иска разрешение за използване на специални системни съобщения дори ако опцията sysex не е посочена в `MIDIOptions`."
+  },
+  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
+    "message": "По-старият, нестандартизиран атрибут `shadowroot` е оттеглен и *вече няма да функционира* във версия M119. Вместо него използвайте новия, стандартизиран атрибут `shadowrootmode`."
+  },
+  "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
+    "message": "API за известия вече не може да се използва от незащитени източници. Препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
+  },
+  "core/lib/deprecations-strings.js | NotificationPermissionRequestedIframe": {
+    "message": "Разрешението за достъп до API за известия вече не може да се заявява от вложени рамки от външни източници. Препоръчваме да го заявявате от рамка от първо ниво или да отваряте нов прозорец."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteCreateImageBitmapImageOrientationNone": {
+    "message": "Опцията `imageOrientation: 'none'` в createImageBitmap е оттеглена. Вместо това използвайте createImageBitmap с опцията \\{imageOrientation: 'from-image'\\}."
+  },
+  "core/lib/deprecations-strings.js | ObsoleteWebRtcCipherSuite": {
+    "message": "Партньорът ви договаря връзка през остаряла версия на (D)TLS. Помолете го да отстрани проблема."
+  },
+  "core/lib/deprecations-strings.js | OverflowVisibleOnReplacedElement": {
+    "message": "Посочването на `overflow: visible` в маркери img, video и canvas може да доведе до показване на визуално съдържание извън границите на елемента. Вижте https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
+  },
+  "core/lib/deprecations-strings.js | PaymentInstruments": {
+    "message": "Приложният програмен интерфейс `paymentManager.instruments` е оттеглен. Вместо него използвайте функцията за навременно инсталиране на инструменти за обработване на плащания."
+  },
+  "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
+    "message": "Начинът, по който извиквате `PaymentRequest`, заобикаля директивата `connect-src` на правилата за сигурност на съдържанието (CSP). Тази възможност за заобикаляне е оттеглена. От `PaymentRequest` API (в полето `supportedMethods`) добавете идентификатора на начина на плащане към директивата `connect-src` на CSP."
+  },
+  "core/lib/deprecations-strings.js | PersistentQuotaType": {
+    "message": "`StorageType.persistent` е оттеглено. Вместо него използвайте стандартизираното `navigator.storage`."
+  },
+  "core/lib/deprecations-strings.js | PictureSourceSrc": {
+    "message": "Комбинацията от `<source src>` и родителски елемент `<picture>` е невалидна и следователно бе пренебрегната. Вместо това използвайте `<source srcset>`."
+  },
+  "core/lib/deprecations-strings.js | PrefixedCancelAnimationFrame": {
+    "message": "Методът webkitCancelAnimationFrame е ограничен до конкретен доставчик. Вместо него използвайте стандартния cancelAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedRequestAnimationFrame": {
+    "message": "Методът webkitRequestAnimationFrame е ограничен до конкретен доставчик. Вместо него използвайте стандартния requestAnimationFrame."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoDisplayingFullscreen": {
+    "message": "Свойството HTMLVideoElement.webkitDisplayingFullscreen е оттеглено. Вместо него използвайте Document.fullscreenElement."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullScreen": {
+    "message": "Методът HTMLVideoElement.webkitEnterFullScreen() е оттеглен. Вместо него използвайте Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoEnterFullscreen": {
+    "message": "Методът HTMLVideoElement.webkitEnterFullscreen() е оттеглен. Вместо него използвайте Element.requestFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullScreen": {
+    "message": "Методът HTMLVideoElement.webkitExitFullScreen() е оттеглен. Вместо него използвайте Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoExitFullscreen": {
+    "message": "Методът HTMLVideoElement.webkitExitFullscreen() е оттеглен. Вместо него използвайте Document.exitFullscreen()."
+  },
+  "core/lib/deprecations-strings.js | PrefixedVideoSupportsFullscreen": {
+    "message": "Свойството HTMLVideoElement.webkitSupportsFullscreen е оттеглено. Вместо него използвайте Document.fullscreenEnabled."
+  },
+  "core/lib/deprecations-strings.js | PrivacySandboxExtensionsAPI": {
+    "message": "Оттегляме API `chrome.privacy.websites.privacySandboxEnabled`, въпреки че ще остане активен с цел наследена съвместимост до пускането на версия M113. Вместо него използвайте `chrome.privacy.websites.topicsEnabled`, `chrome.privacy.websites.fledgeEnabled` и `chrome.privacy.websites.adMeasurementEnabled`. Вижте https://developer.chrome.com/docs/extensions/reference/privacy/#property-websites-privacySandboxEnabled."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpFalse": {
+    "message": "Ограничението `DtlsSrtpKeyAgreement` е премахнато. Посочихте за него стойност `false`, която се тълкува като опит за използване на оттегления метод `SDES key negotiation`. Тази функционалност е премахната. Вместо нея използвайте услуга, която поддържа `DTLS key negotiation`."
+  },
+  "core/lib/deprecations-strings.js | RTCConstraintEnableDtlsSrtpTrue": {
+    "message": "Ограничението `DtlsSrtpKeyAgreement` е премахнато. Посочихте за него стойност `true`, която няма ефект, но можете да премахнете това ограничение с цел опростяване."
+  },
+  "core/lib/deprecations-strings.js | RTCPeerConnectionGetStatsLegacyNonCompliant": {
+    "message": "Базираният на обратно извикване метод getStats() е оттеглен и ще бъде премахнат. Вместо това използвайте отговарящия на спецификациите getStats()."
+  },
+  "core/lib/deprecations-strings.js | RangeExpand": {
+    "message": "Методът Range.expand() е оттеглен. Вместо него използвайте Selection.modify()."
+  },
+  "core/lib/deprecations-strings.js | RequestedSubresourceWithEmbeddedCredentials": {
+    "message": "Заявките за подресурси, чиито URL адреси съдържат вградени идентификационни данни (напр. `https://user:pass@host/`), са блокирани."
+  },
+  "core/lib/deprecations-strings.js | RtcpMuxPolicyNegotiate": {
+    "message": "Опцията `rtcpMuxPolicy` е оттеглена и ще бъде премахната."
+  },
+  "core/lib/deprecations-strings.js | SharedArrayBufferConstructedWithoutIsolation": {
+    "message": "`SharedArrayBuffer` ще изисква изолиране от външни източници. За повече подробности вижте https://developer.chrome.com/blog/enabling-shared-array-buffer/."
+  },
+  "core/lib/deprecations-strings.js | TextToSpeech_DisallowedByAutoplay": {
+    "message": "Възможността за използване на `speechSynthesis.speak()` без активиране от потребител е оттеглена и ще бъде премахната."
+  },
+  "core/lib/deprecations-strings.js | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
+    "message": "Разширенията трябва да се включат в изолирането от външни източници, за да продължат да използват `SharedArrayBuffer`. Вижте https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "core/lib/deprecations-strings.js | WebSQL": {
+    "message": "Web SQL се оттегля. Моля, използвайте SQLite WebAssembly или индексирана база от данни"
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
+    "message": "Дескрипторът на разрешение `window-placement` е оттеглен. Вместо него използвайте `window-management`. За допълнителна помощ посетете https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
+    "message": "Правилото за разрешения `window-placement` е оттеглено. Вместо него използвайте `window-management`. За допълнителна помощ посетете https://bit.ly/window-placement-rename."
+  },
+  "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
+    "message": "UTF-16 не се поддържа от JSON отговора в `XMLHttpRequest`"
+  },
+  "core/lib/deprecations-strings.js | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
+    "message": "Възможността за използване на синхронни обекти `XMLHttpRequest` в основната нишка е оттеглена, тъй като влошава практическата работа на крайните потребители. За повече помощ посетете https://xhr.spec.whatwg.org/."
+  },
+  "core/lib/deprecations-strings.js | XRSupportsSession": {
+    "message": "Методът `supportsSession()` е оттеглен. Вместо него използвайте `isSessionSupported()` и проверете получената логическа стойност."
   },
   "core/lib/i18n/i18n.js | columnBlockingTime": {
     "message": "Време на блокиране на основната нишка"

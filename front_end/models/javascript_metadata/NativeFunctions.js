@@ -1370,7 +1370,7 @@ export const NativeFunctions = [
   },
   {
     name: 'delete',
-    signatures: [['name','?ignored']],
+    signatures: [['name','?value']],
     receivers: ['URLSearchParams']
   },
   {
@@ -1450,7 +1450,7 @@ export const NativeFunctions = [
   },
   {
     name: 'has',
-    signatures: [['name','?ignored']],
+    signatures: [['name','?value']],
     receivers: ['URLSearchParams']
   },
   {
@@ -2354,7 +2354,13 @@ export const NativeFunctions = [
   },
   {
     name: 'setAttribute',
-    signatures: [['qualifiedName','value'],['name','value']]
+    signatures: [['qualifiedName','value'],['name','value']],
+    receivers: ['Element']
+  },
+  {
+    name: 'setAttribute',
+    signatures: [['tag','value']],
+    receivers: ['SmartCardConnection']
   },
   {
     name: 'setAttributeNS',
@@ -5574,7 +5580,13 @@ export const NativeFunctions = [
   },
   {
     name: 'tanh',
-    signatures: [['x']]
+    signatures: [['x']],
+    receivers: ['Math']
+  },
+  {
+    name: 'tanh',
+    signatures: [['?input']],
+    receivers: ['MLGraphBuilder']
   },
   {
     name: 'acosh',
@@ -6162,7 +6174,7 @@ export const NativeFunctions = [
   },
   {
     name: 'ChildNodePart',
-    signatures: [['previousSibling','nextSibling','?init']]
+    signatures: [['root','previousSibling','nextSibling','?init']]
   },
   {
     name: 'Comment',
@@ -6175,10 +6187,6 @@ export const NativeFunctions = [
   {
     name: 'CSSToggle',
     signatures: [['?options']]
-  },
-  {
-    name: 'DocumentPart',
-    signatures: [['document']]
   },
   {
     name: 'requestStorageAccessFor',
@@ -6222,7 +6230,7 @@ export const NativeFunctions = [
   },
   {
     name: 'NodePart',
-    signatures: [['node','?init']]
+    signatures: [['root','node','?init']]
   },
   {
     name: 'setApplyScroll',
@@ -7374,6 +7382,10 @@ export const NativeFunctions = [
     signatures: [['focusBehavior']]
   },
   {
+    name: 'CapturedMouseEvent',
+    signatures: [['type','?eventInitDict']]
+  },
+  {
     name: 'fromElement',
     signatures: [['element']]
   },
@@ -7486,6 +7498,14 @@ export const NativeFunctions = [
   {
     name: 'prelu',
     signatures: [['x','slope']]
+  },
+  {
+    name: 'reduceSum',
+    signatures: [['input','?options']]
+  },
+  {
+    name: 'reduceMean',
+    signatures: [['input','?options']]
   },
   {
     name: 'relu',
@@ -7622,6 +7642,10 @@ export const NativeFunctions = [
   {
     name: 'RTCDTMFToneChangeEvent',
     signatures: [['type','eventInitDict']]
+  },
+  {
+    name: 'setTimestamp',
+    signatures: [['timestamp']]
   },
   {
     name: 'setMetadata',
@@ -8108,6 +8132,34 @@ export const NativeFunctions = [
     signatures: [['sizedformat','width','height']]
   },
   {
+    name: 'framebufferTexturePixelLocalStorageWEBGL',
+    signatures: [['plane','texture','level','layer']]
+  },
+  {
+    name: 'framebufferPixelLocalClearValuefvWEBGL',
+    signatures: [['plane','value','?srcOffset']]
+  },
+  {
+    name: 'framebufferPixelLocalClearValueivWEBGL',
+    signatures: [['plane','value','?srcOffset']]
+  },
+  {
+    name: 'framebufferPixelLocalClearValueuivWEBGL',
+    signatures: [['plane','value','?srcOffset']]
+  },
+  {
+    name: 'beginPixelLocalStorageWEBGL',
+    signatures: [['loadops']]
+  },
+  {
+    name: 'endPixelLocalStorageWEBGL',
+    signatures: [['storeops']]
+  },
+  {
+    name: 'getFramebufferPixelLocalStorageParameterWEBGL',
+    signatures: [['plane','pname']]
+  },
+  {
     name: 'shareVideoImageWEBGL',
     signatures: [['target','video']]
   },
@@ -8257,7 +8309,7 @@ export const NativeFunctions = [
   },
   {
     name: 'GPUPipelineError',
-    signatures: [['message','options']]
+    signatures: [['?message','options']]
   },
   {
     name: 'setBindGroup',

@@ -184,6 +184,9 @@ export class StorageBucketsModel extends SDKModel<EventTypes> implements Protoco
 
   sharedStorageAccessed(_event: Protocol.Storage.SharedStorageAccessedEvent): void {
   }
+
+  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
+  }
 }
 
 SDKModel.register(StorageBucketsModel, {capabilities: Capability.Storage, autostart: false});

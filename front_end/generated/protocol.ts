@@ -954,6 +954,7 @@ export namespace Audits {
     InvalidRegisterOsTriggerHeader = 'InvalidRegisterOsTriggerHeader',
     WebAndOsHeaders = 'WebAndOsHeaders',
     NoWebOrOsSupport = 'NoWebOrOsSupport',
+    NavigationRegistrationWithoutTransientUserActivation = 'NavigationRegistrationWithoutTransientUserActivation',
   }
 
   /**
@@ -8536,6 +8537,7 @@ export namespace Network {
     Deflate = 'deflate',
     Gzip = 'gzip',
     Br = 'br',
+    Zstd = 'zstd',
   }
 
   export const enum PrivateNetworkRequestPolicy {
@@ -13373,6 +13375,66 @@ export namespace Storage {
     durability: StorageBucketsDurability;
   }
 
+  export const enum AttributionReportingSourceType {
+    Navigation = 'navigation',
+    Event = 'event',
+  }
+
+  export type UnsignedInt64AsBase10 = string;
+
+  export type UnsignedInt128AsBase16 = string;
+
+  export type SignedInt64AsBase10 = string;
+
+  export interface AttributionReportingFilterDataEntry {
+    key: string;
+    values: string[];
+  }
+
+  export interface AttributionReportingAggregationKeysEntry {
+    key: string;
+    value: UnsignedInt128AsBase16;
+  }
+
+  export interface AttributionReportingSourceRegistration {
+    time: Network.TimeSinceEpoch;
+    /**
+     * duration in seconds
+     */
+    expiry?: integer;
+    /**
+     * duration in seconds
+     */
+    eventReportWindow?: integer;
+    /**
+     * duration in seconds
+     */
+    aggregatableReportWindow?: integer;
+    type: AttributionReportingSourceType;
+    sourceOrigin: string;
+    reportingOrigin: string;
+    destinationSites: string[];
+    eventId: UnsignedInt64AsBase10;
+    priority: SignedInt64AsBase10;
+    filterData: AttributionReportingFilterDataEntry[];
+    aggregationKeys: AttributionReportingAggregationKeysEntry[];
+    debugKey?: UnsignedInt64AsBase10;
+  }
+
+  export const enum AttributionReportingSourceRegistrationResult {
+    Success = 'success',
+    InternalError = 'internalError',
+    InsufficientSourceCapacity = 'insufficientSourceCapacity',
+    InsufficientUniqueDestinationCapacity = 'insufficientUniqueDestinationCapacity',
+    ExcessiveReportingOrigins = 'excessiveReportingOrigins',
+    ProhibitedByBrowserPolicy = 'prohibitedByBrowserPolicy',
+    SuccessNoised = 'successNoised',
+    DestinationReportingLimitReached = 'destinationReportingLimitReached',
+    DestinationGlobalLimitReached = 'destinationGlobalLimitReached',
+    DestinationBothLimitsReached = 'destinationBothLimitsReached',
+    ReportingOriginsPerSiteLimitReached = 'reportingOriginsPerSiteLimitReached',
+  }
+
   export interface GetStorageKeyForFrameRequest {
     frameId: Page.FrameId;
   }
@@ -13626,6 +13688,10 @@ export namespace Storage {
     enabled: boolean;
   }
 
+  export interface SetAttributionReportingTrackingRequest {
+    enable: boolean;
+  }
+
   /**
    * A cache's contents have been modified.
    */
@@ -13754,6 +13820,15 @@ export namespace Storage {
 
   export interface StorageBucketDeletedEvent {
     bucketId: string;
+  }
+
+  /**
+   * TODO(crbug.com/1458532): Add other Attribution Reporting events, e.g.
+   * trigger registration.
+   */
+  export interface AttributionReportingSourceRegisteredEvent {
+    registration: AttributionReportingSourceRegistration;
+    result: AttributionReportingSourceRegistrationResult;
   }
 }
 
@@ -17407,6 +17482,12 @@ export namespace Runtime {
      * Deep serialization depth. Default is full depth. Respected only in `deep` serialization mode.
      */
     maxDepth?: integer;
+    /**
+     * Embedder-specific parameters. For example if connected to V8 in Chrome these control DOM
+     * serialization via `maxNodeDepth: integer` and `includeShadowTree: "none" | "open" | "all"`.
+     * Values can be only of type string or integer.
+     */
+    additionalParameters?: any;
   }
 
   export const enum DeepSerializedValueType {

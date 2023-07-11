@@ -1621,6 +1621,11 @@ declare namespace ProtocolProxyApi {
     invoke_dispatchTouchEvent(params: Protocol.Input.DispatchTouchEventRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Cancels any active dragging in the page.
+     */
+    invoke_cancelDragging(): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Emulates touch event from the mouse event parameters.
      */
     invoke_emulateTouchFromMouseEvent(params: Protocol.Input.EmulateTouchFromMouseEventRequest): Promise<Protocol.ProtocolResponseWithError>;
@@ -3082,6 +3087,11 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setAttributionReportingLocalTestingMode(params: Protocol.Storage.SetAttributionReportingLocalTestingModeRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Enables/disables issuing of Attribution Reporting events.
+     */
+    invoke_setAttributionReportingTracking(params: Protocol.Storage.SetAttributionReportingTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface StorageDispatcher {
     /**
@@ -3118,6 +3128,12 @@ declare namespace ProtocolProxyApi {
     storageBucketCreatedOrUpdated(params: Protocol.Storage.StorageBucketCreatedOrUpdatedEvent): void;
 
     storageBucketDeleted(params: Protocol.Storage.StorageBucketDeletedEvent): void;
+
+    /**
+     * TODO(crbug.com/1458532): Add other Attribution Reporting events, e.g.
+     * trigger registration.
+     */
+    attributionReportingSourceRegistered(params: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void;
 
   }
 

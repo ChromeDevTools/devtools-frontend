@@ -287,6 +287,9 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   setThrottlerSchedulesAsSoonAsPossibleForTest(): void {
     this.#scheduleAsSoonAsPossible = true;
   }
+
+  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
+  }
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

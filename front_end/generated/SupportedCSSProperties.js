@@ -136,10 +136,6 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
-  "name": "-webkit-highlight"
- },
- {
-  "inherited": true,
   "keywords": [
    "auto",
    "loose",
@@ -393,12 +389,6 @@ export const generatedProperties = [
    "none"
   ],
   "name": "anchor-name"
- },
- {
-  "keywords": [
-   "none"
-  ],
-  "name": "anchor-scroll"
  },
  {
   "longhands": [
@@ -2773,6 +2763,12 @@ export const generatedProperties = [
   "name": "position-fallback"
  },
  {
+  "keywords": [
+   "normal"
+  ],
+  "name": "position-fallback-bounds"
+ },
+ {
   "name": "prefix"
  },
  {
@@ -3068,13 +3064,9 @@ export const generatedProperties = [
  {
   "longhands": [
    "scroll-timeline-name",
-   "scroll-timeline-axis",
-   "scroll-timeline-attachment"
+   "scroll-timeline-axis"
   ],
   "name": "scroll-timeline"
- },
- {
-  "name": "scroll-timeline-attachment"
  },
  {
   "name": "scroll-timeline-axis"
@@ -3535,6 +3527,9 @@ export const generatedProperties = [
   "name": "transition"
  },
  {
+  "name": "transition-animation-type"
+ },
+ {
   "name": "transition-delay"
  },
  {
@@ -3611,13 +3606,9 @@ export const generatedProperties = [
  {
   "longhands": [
    "view-timeline-name",
-   "view-timeline-axis",
-   "view-timeline-attachment"
+   "view-timeline-axis"
   ],
   "name": "view-timeline"
- },
- {
-  "name": "view-timeline-attachment"
  },
  {
   "name": "view-timeline-axis"
@@ -3847,11 +3838,6 @@ export const generatedPropertyValues = {
   ]
  },
  "anchor-name": {
-  "values": [
-   "none"
-  ]
- },
- "anchor-scroll": {
   "values": [
    "none"
   ]
@@ -5149,6 +5135,11 @@ export const generatedPropertyValues = {
  "position-fallback": {
   "values": [
    "none"
+  ]
+ },
+ "position-fallback-bounds": {
+  "values": [
+   "normal"
   ]
  },
  "quotes": {

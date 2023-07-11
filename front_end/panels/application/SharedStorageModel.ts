@@ -229,6 +229,9 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
 
   storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
   }
+
+  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(SharedStorageModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});

@@ -479,6 +479,11 @@ export namespace ProtocolMapping {
     'Storage.storageBucketCreatedOrUpdated': [Protocol.Storage.StorageBucketCreatedOrUpdatedEvent];
     'Storage.storageBucketDeleted': [Protocol.Storage.StorageBucketDeletedEvent];
     /**
+     * TODO(crbug.com/1458532): Add other Attribution Reporting events, e.g.
+     * trigger registration.
+     */
+    'Storage.attributionReportingSourceRegistered': [Protocol.Storage.AttributionReportingSourceRegisteredEvent];
+    /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
     'Target.attachedToTarget': [Protocol.Target.AttachedToTargetEvent];
@@ -2278,6 +2283,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Cancels any active dragging in the page.
+     */
+    'Input.cancelDragging': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
      * Emulates touch event from the mouse event parameters.
      */
     'Input.emulateTouchFromMouseEvent': {
@@ -3718,6 +3730,13 @@ export namespace ProtocolMapping {
      */
     'Storage.setAttributionReportingLocalTestingMode': {
       paramsType: [Protocol.Storage.SetAttributionReportingLocalTestingModeRequest];
+      returnType: void;
+    };
+    /**
+     * Enables/disables issuing of Attribution Reporting events.
+     */
+    'Storage.setAttributionReportingTracking': {
+      paramsType: [Protocol.Storage.SetAttributionReportingTrackingRequest];
       returnType: void;
     };
     /**

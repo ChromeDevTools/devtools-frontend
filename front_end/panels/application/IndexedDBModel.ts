@@ -461,6 +461,9 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
 
   storageBucketDeleted(_event: Protocol.Storage.StorageBucketDeletedEvent): void {
   }
+
+  attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.Storage, autostart: false});

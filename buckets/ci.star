@@ -127,7 +127,6 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             dims = dimensions.mac,
             consoles = ["ci"],
             execution_timeout = time.hour * 3 / 2,
-            notification_muted = True,
         ),
         builder_descriptor(
             name = "Stand-alone Parallel Mac",

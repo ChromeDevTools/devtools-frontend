@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 async function processTrace(context: Mocha.Suite|Mocha.Context|null, url: string): Promise<void> {
   TraceModel.Handlers.ModelHandlers.Meta.reset();
@@ -13,7 +13,7 @@ async function processTrace(context: Mocha.Suite|Mocha.Context|null, url: string
   TraceModel.Handlers.ModelHandlers.LayoutShifts.initialize();
 
   try {
-    const events = await loadEventsFromTraceFile(context, url);
+    const events = await TraceLoader.rawEvents(context, url);
     for (const event of events) {
       TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
       TraceModel.Handlers.ModelHandlers.Screenshots.handleEvent(event);

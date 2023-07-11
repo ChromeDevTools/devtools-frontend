@@ -6,7 +6,7 @@ import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js'
 import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {allModelsFromFile} from '../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
@@ -23,7 +23,7 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
 
 describeWithEnvironment('TimelineFlameChartView', function() {
   it('Can search for events by name in the timeline', async function() {
-    const {traceParsedData, performanceModel} = await allModelsFromFile(this, 'lcp-images.json.gz');
+    const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'lcp-images.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
@@ -61,7 +61,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
   });
 
   it('Shows the network track correctly', async function() {
-    const {traceParsedData, performanceModel} = await allModelsFromFile(this, 'load-simple.json.gz');
+    const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'load-simple.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
@@ -73,7 +73,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
   });
 
   it('Does not show the network track when there is no network request', async function() {
-    const {traceParsedData, performanceModel} = await allModelsFromFile(this, 'basic.json.gz');
+    const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'basic.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();

@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 describe('UserTimingsHandler', function() {
   let timingsData: TraceModel.Handlers.ModelHandlers.UserTimings.UserTimingsData;
@@ -20,7 +20,7 @@ describe('UserTimingsHandler', function() {
       return TraceModel.Handlers.ModelHandlers.UserTimings.data();
     }
     before(async () => {
-      const events = await loadEventsFromTraceFile(this, 'user-timings.json.gz');
+      const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
       timingsData = await getTimingsDataFromEvents(events);
     });
     describe('performance.measure events parsing', function() {
@@ -47,7 +47,7 @@ describe('UserTimingsHandler', function() {
       });
 
       it('sorts the blocks to ensure they are in time order', async () => {
-        const events = await loadEventsFromTraceFile(this, 'user-timings.json.gz');
+        const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
         TraceModel.Handlers.ModelHandlers.UserTimings.reset();
         // Reverse the array so that the events are in the wrong order.
         // This _shouldn't_ ever happen in a real trace, but it's best for us to
@@ -64,7 +64,7 @@ describe('UserTimingsHandler', function() {
       });
 
       it('calculates the duration correctly from the begin/end event timestamps', async () => {
-        const events = await loadEventsFromTraceFile(this, 'user-timings.json.gz');
+        const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
         TraceModel.Handlers.ModelHandlers.UserTimings.reset();
         for (const event of events) {
           TraceModel.Handlers.ModelHandlers.UserTimings.handleEvent(event);
@@ -77,7 +77,7 @@ describe('UserTimingsHandler', function() {
         }
       });
       it('correctly extracts nested timings in the correct order', async () => {
-        const events = await loadEventsFromTraceFile(this, 'user-timings-complex.json.gz');
+        const events = await TraceLoader.rawEvents(this, 'user-timings-complex.json.gz');
         const complexTimingsData = await getTimingsDataFromEvents(events);
         const userTimingEventNames = [];
         for (const event of complexTimingsData.performanceMeasures) {
@@ -94,7 +94,7 @@ describe('UserTimingsHandler', function() {
         ]);
       });
       it('correctly orders measures when one measure encapsulates the others', async () => {
-        const events = await loadEventsFromTraceFile(this, 'user-timings-complex.json.gz');
+        const events = await TraceLoader.rawEvents(this, 'user-timings-complex.json.gz');
         const complexTimingsData = await getTimingsDataFromEvents(events);
         const userTimingEventNames = [];
         for (const event of complexTimingsData.performanceMeasures) {
@@ -120,7 +120,7 @@ describe('UserTimingsHandler', function() {
   });
   describe('console timings', function() {
     before(async () => {
-      const events = await loadEventsFromTraceFile(this, 'timings-track.json.gz');
+      const events = await TraceLoader.rawEvents(this, 'timings-track.json.gz');
       TraceModel.Handlers.ModelHandlers.UserTimings.reset();
       for (const event of events) {
         TraceModel.Handlers.ModelHandlers.UserTimings.handleEvent(event);
@@ -150,7 +150,7 @@ describe('UserTimingsHandler', function() {
       });
 
       it('sorts the blocks to ensure they are in time order', async () => {
-        const events = await loadEventsFromTraceFile(this, 'timings-track.json.gz');
+        const events = await TraceLoader.rawEvents(this, 'timings-track.json.gz');
         TraceModel.Handlers.ModelHandlers.UserTimings.reset();
         // Reverse the array so that the events are in the wrong order.
         // This _shouldn't_ ever happen in a real trace, but it's best for us to

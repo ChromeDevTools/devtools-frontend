@@ -5,7 +5,7 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 describe('UserInteractionsHandler', function() {
   beforeEach(async () => {
@@ -26,7 +26,7 @@ describe('UserInteractionsHandler', function() {
   });
 
   it('returns all user interactions', async () => {
-    const traceEvents = await loadEventsFromTraceFile(this, 'slow-interaction-button-click.json.gz');
+    const traceEvents = await TraceLoader.rawEvents(this, 'slow-interaction-button-click.json.gz');
     for (const event of traceEvents) {
       TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
     }
@@ -46,7 +46,7 @@ describe('UserInteractionsHandler', function() {
 
   describe('interactions', function() {
     async function processTrace(context: Mocha.Suite|Mocha.Context|null, path: string): Promise<void> {
-      const traceEvents = await loadEventsFromTraceFile(context, path);
+      const traceEvents = await TraceLoader.rawEvents(context, path);
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);
       }

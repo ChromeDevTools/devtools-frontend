@@ -6,14 +6,15 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 
 const {assert} = chai;
 
-import {loadEventsFromTraceFile, defaultTraceEvent} from '../../../helpers/TraceHelpers.js';
+import {defaultTraceEvent} from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 describe('MetaHandler', function() {
   let baseEvents: TraceModel.Types.TraceEvents.TraceEventData[];
   beforeEach(async () => {
     let defaultTraceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
-      defaultTraceEvents = await loadEventsFromTraceFile(this, 'basic.json.gz');
+      defaultTraceEvents = await TraceLoader.rawEvents(this, 'basic.json.gz');
     } catch (error) {
       assert.fail(error);
       return;
@@ -166,7 +167,7 @@ describe('MetaHandler', function() {
     });
 
     it('finds the main frame ID for a trace that started with a page reload', async () => {
-      const events = await loadEventsFromTraceFile(this, 'reload-and-trace-page.json.gz');
+      const events = await TraceLoader.rawEvents(this, 'reload-and-trace-page.json.gz');
       TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
       for (const event of events) {
@@ -181,7 +182,7 @@ describe('MetaHandler', function() {
 
   describe('finding GPU thread and main frame', function() {
     it('finds the GPU process and GPU Thread', async () => {
-      const events = await loadEventsFromTraceFile(this, 'threejs-gpu.json.gz');
+      const events = await TraceLoader.rawEvents(this, 'threejs-gpu.json.gz');
       TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
       for (const event of events) {
@@ -194,7 +195,7 @@ describe('MetaHandler', function() {
     });
 
     it('handles traces that do not have a GPU thread and returns undefined for the thread ID', async () => {
-      const traceEventsWithNoGPUThread = await loadEventsFromTraceFile(this, 'forced-layouts-and-no-gpu.json.gz');
+      const traceEventsWithNoGPUThread = await TraceLoader.rawEvents(this, 'forced-layouts-and-no-gpu.json.gz');
       for (const event of traceEventsWithNoGPUThread) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
       }
@@ -211,7 +212,7 @@ describe('MetaHandler', function() {
   it('obtains renderer process IDs when there are no navigations', async () => {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
-      traceEvents = await loadEventsFromTraceFile(this, 'threejs-gpu.json.gz');
+      traceEvents = await TraceLoader.rawEvents(this, 'threejs-gpu.json.gz');
     } catch (error) {
       assert.fail(error);
       return;
@@ -249,7 +250,7 @@ describe('MetaHandler', function() {
   it('handles multiple renderers from navigations', async () => {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
-      traceEvents = await loadEventsFromTraceFile(this, 'multiple-top-level-renderers.json.gz');
+      traceEvents = await TraceLoader.rawEvents(this, 'multiple-top-level-renderers.json.gz');
     } catch (error) {
       assert.fail(error);
       return;
@@ -307,7 +308,7 @@ describe('MetaHandler', function() {
   it('calculates trace bounds correctly', async () => {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
-      traceEvents = await loadEventsFromTraceFile(this, 'basic.json.gz');
+      traceEvents = await TraceLoader.rawEvents(this, 'basic.json.gz');
     } catch (error) {
       assert.fail(error);
       return;
@@ -337,7 +338,7 @@ describe('MetaHandler', function() {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       // This file contains UMA events which need to be ignored.
-      traceEvents = await loadEventsFromTraceFile(this, 'web-dev.json.gz');
+      traceEvents = await TraceLoader.rawEvents(this, 'web-dev.json.gz');
     } catch (error) {
       assert.fail(error);
       return;

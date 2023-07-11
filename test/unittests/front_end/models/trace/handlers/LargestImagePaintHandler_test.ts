@@ -6,7 +6,7 @@ const {assert} = chai;
 
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 describe('LargestImagePaintHandler', async function() {
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('LargestImagePaintHandler', async function() {
   });
 
   it('creates a map of DOM Node IDs to image candidates', async function() {
-    const events = await loadEventsFromTraceFile(this, 'lcp-images.json.gz');
+    const events = await TraceLoader.rawEvents(this, 'lcp-images.json.gz');
     for (const event of events) {
       TraceModel.Handlers.ModelHandlers.LargestImagePaint.handleEvent(event);
     }

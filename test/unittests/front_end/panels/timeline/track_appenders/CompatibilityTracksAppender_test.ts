@@ -6,18 +6,12 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import {
-  loadModelDataFromTraceFile,
-  traceModelFromTraceFile,
-} from '../../../helpers/TraceHelpers.js';
-
-import type * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
 describeWithEnvironment('TimingTrackAppender', function() {
   let traceParsedData: TraceModel.Handlers.Types.TraceParseData;
-  let timelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   let tracksAppender: Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender;
   let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
@@ -28,10 +22,10 @@ describeWithEnvironment('TimingTrackAppender', function() {
     entryData = [];
     flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     entryTypeByLevel = [];
-    traceParsedData = await loadModelDataFromTraceFile(context, fixture);
-    timelineModel = (await traceModelFromTraceFile(context, fixture)).timelineModel;
+    const data = await TraceLoader.allModels(context, fixture);
+    traceParsedData = data.traceParsedData;
     tracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-        flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
+        flameChartData, traceParsedData, entryData, entryTypeByLevel, data.timelineModel);
     const timingsTrack = tracksAppender.timingsTrackAppender();
     const gpuTrack = tracksAppender.gpuTrackAppender();
     const nextLevel = timingsTrack.appendTrackAtLevel(0);

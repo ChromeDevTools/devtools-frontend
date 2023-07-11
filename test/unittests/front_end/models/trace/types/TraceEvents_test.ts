@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js';
-import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 const {assert} = chai;
 
 describe('TraceEvent types', function() {
@@ -49,7 +49,7 @@ describe('TraceEvent types', function() {
   });
 
   it('is able to determine that an event is a synthetic user timing event', async function() {
-    const traceParsedData = await loadModelDataFromTraceFile(this, 'timings-track.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
     const timingEvent = traceParsedData.UserTimings.performanceMeasures[0];
     assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticUserTimingTraceEvent(timingEvent));
     const consoleEvent = traceParsedData.UserTimings.consoleTimings[0];
@@ -57,7 +57,7 @@ describe('TraceEvent types', function() {
   });
 
   it('is able to determine that an event is a synthetic console event', async function() {
-    const traceParsedData = await loadModelDataFromTraceFile(this, 'timings-track.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
     const consoleEvent = traceParsedData.UserTimings.consoleTimings[0];
     assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticConsoleTimingTraceEvent(consoleEvent));
     const timingEvent = traceParsedData.UserTimings.performanceMeasures[0];
@@ -65,7 +65,7 @@ describe('TraceEvent types', function() {
   });
 
   it('is able to detemrine that an event is a synthetic network request event', async function() {
-    const traceParsedData = await loadModelDataFromTraceFile(this, 'lcp-images.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     const networkEvent = traceParsedData.NetworkRequests.byTime[0];
     assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestDetailsEvent(networkEvent));
     const otherEvent = traceParsedData.Renderer.allRendererEvents[0];
@@ -73,7 +73,7 @@ describe('TraceEvent types', function() {
   });
 
   it('is able to determine that an event is a synthetic layout shift event', async function() {
-    const traceParsedData = await loadModelDataFromTraceFile(this, 'cls-single-frame.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
     const syntheticLayoutShift = traceParsedData.LayoutShifts.clusters[0].events[0];
     assert.isTrue(TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(syntheticLayoutShift));
   });

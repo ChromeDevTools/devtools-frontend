@@ -6,12 +6,12 @@ const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 
-import {loadEventsFromTraceFile, setTraceModelTimeout} from '../../../helpers/TraceHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 async function handleEventsFromTraceFile(context: Mocha.Context|Mocha.Suite|null, name: string):
     Promise<TraceModel.Handlers.ModelHandlers.Samples.SamplesHandlerData> {
-  const traceEvents = await loadEventsFromTraceFile(context, name);
+  const traceEvents = await TraceLoader.rawEvents(context, name);
   TraceModel.Handlers.ModelHandlers.Meta.reset();
   TraceModel.Handlers.ModelHandlers.Samples.reset();
 
@@ -30,8 +30,6 @@ async function handleEventsFromTraceFile(context: Mocha.Context|Mocha.Suite|null
 }
 
 describeWithEnvironment('SamplesHandler', function() {
-  setTraceModelTimeout(this);
-
   it('finds all the profiles in a real world recording', async () => {
     const data = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     // The same process id is shared across profiles in the profiled

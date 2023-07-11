@@ -6,13 +6,13 @@ const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import {
-  loadEventsFromTraceFile,
   getEventsIn,
   getRootAt,
   makeCompleteEvent,
   makeInstantEvent,
   prettyPrint,
 } from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 const MAIN_FRAME_PID = 2154214;
 const SUB_FRAME_PID = 2236065;
@@ -21,7 +21,7 @@ const SUB_FRAME_PID_3 = 2236123;
 
 async function handleEventsFromTraceFile(context: Mocha.Suite|Mocha.Context|null, file: string, handleSamples = false):
     Promise<TraceModel.Handlers.ModelHandlers.Renderer.RendererHandlerData> {
-  const traceEvents = await loadEventsFromTraceFile(context, file);
+  const traceEvents = await TraceLoader.rawEvents(context, file);
   TraceModel.Handlers.ModelHandlers.Renderer.reset();
   TraceModel.Handlers.ModelHandlers.Meta.initialize();
   TraceModel.Handlers.ModelHandlers.Samples.initialize();

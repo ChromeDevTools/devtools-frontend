@@ -3,15 +3,14 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../front_end/models/trace/trace.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
-
-import {loadEventsFromTraceFile} from '../../helpers/TraceHelpers.js';
 
 describe('TraceProcessor', async function() {
   it('can use a trace processor', async function() {
     const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();
-    const file = await loadEventsFromTraceFile(this, 'basic.json.gz');
+    const file = await TraceLoader.rawEvents(this, 'basic.json.gz');
 
     // Check parsing after instantiation.
     assert.isNull(processor.data);
@@ -80,8 +79,8 @@ describe('TraceProcessor', async function() {
     const processor = new TraceModel.Processor.TraceProcessor({
       Animation: TraceModel.Handlers.ModelHandlers.Animation,
     });
-    const file = await loadEventsFromTraceFile(this, 'animation.json.gz');
-    await processor.parse(file);
+    const events = await TraceLoader.rawEvents(this, 'animation.json.gz');
+    await processor.parse(events);
     assert.isNotNull(processor.data);
     assert.deepEqual(Object.keys(processor.data || {}), ['Meta', 'Animation']);
   });
@@ -123,7 +122,7 @@ describe('TraceProcessor', async function() {
       updateEventCount++;
     });
 
-    const rawEvents = await loadEventsFromTraceFile(this, 'web-dev.json.gz');
+    const rawEvents = await TraceLoader.rawEvents(this, 'web-dev.json.gz');
     await processor.parse(rawEvents).then(() => {
       assert.strictEqual(updateEventCount, 8);
     });

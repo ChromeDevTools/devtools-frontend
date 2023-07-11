@@ -26,6 +26,7 @@ ts_library("helpers") {
     "SourceMapEncoder_test.ts",
     "SourceMapHelpers.ts",
     "TraceHelpers.ts",
+    "TraceLoader.ts",
     "TrackAsyncOperations.ts",
     "UISourceCodeHelpers.ts",
     "UserMetricsHelpers.ts",

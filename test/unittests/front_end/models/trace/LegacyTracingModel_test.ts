@@ -7,15 +7,14 @@ const {assert} = chai;
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {
-  loadTraceEventsLegacyEventPayload,
-  allModelsFromFile,
   StubbedThread,
   makeFakeEventPayload,
 } from '../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 describeWithEnvironment('TracingModel', function() {
   it('can create events from an EventPayload[] and finds the correct number of processes', async function() {
-    const events = await loadTraceEventsLegacyEventPayload(this, 'basic.json.gz');
+    const events = await TraceLoader.rawEvents<TraceEngine.TracingManager.EventPayload>(this, 'basic.json.gz');
     const model = new TraceEngine.Legacy.TracingModel();
     model.addEvents(events);
     assert.strictEqual(model.sortedProcesses().length, 4);
@@ -122,7 +121,8 @@ describeWithEnvironment('TracingModel', function() {
 
   describe('fromPayload', function() {
     it('can create an event from a payload for an LCP candidate event', async function() {
-      const rawEvents = await loadTraceEventsLegacyEventPayload(this, 'lcp-images.json.gz');
+      const rawEvents =
+          await TraceLoader.rawEvents<TraceEngine.TracingManager.EventPayload>(this, 'lcp-images.json.gz');
       // Find an event to test with; pick the first LCP event so it is an event
       // we understand and we get the same event each time.
       const firstLCPEventPayload = rawEvents.find(event => {
@@ -139,7 +139,8 @@ describeWithEnvironment('TracingModel', function() {
     });
 
     it('stores the event ID if it has one', async function() {
-      const rawEvents = await loadTraceEventsLegacyEventPayload(this, 'lcp-images.json.gz');
+      const rawEvents =
+          await TraceLoader.rawEvents<TraceEngine.TracingManager.EventPayload>(this, 'lcp-images.json.gz');
       // Find an event to test with; pick the first LCP event so it is an event
       // we understand and we get the same event each time.
       const firstLCPEventPayload = rawEvents.find(event => {
@@ -157,7 +158,8 @@ describeWithEnvironment('TracingModel', function() {
     });
 
     it('stores the raw payload and you can retrieve it', async function() {
-      const rawEvents = await loadTraceEventsLegacyEventPayload(this, 'lcp-images.json.gz');
+      const rawEvents =
+          await TraceLoader.rawEvents<TraceEngine.TracingManager.EventPayload>(this, 'lcp-images.json.gz');
       // Find an event to test with; pick the first LCP event so it is an event
       // we understand and we get the same event each time.
       const firstLCPEventPayload = rawEvents.find(event => {
@@ -172,7 +174,7 @@ describeWithEnvironment('TracingModel', function() {
     });
 
     it('sets the begin and end time correctly for an event with a duration', async function() {
-      const rawEvents = await loadTraceEventsLegacyEventPayload(this, 'animation.json.gz');
+      const rawEvents = await TraceLoader.rawEvents<TraceEngine.TracingManager.EventPayload>(this, 'animation.json.gz');
       // Use a RunTask which will always have a ts (start) and dur.
       const firstRunTask = rawEvents.find(event => {
         return event.name === 'RunTask';
@@ -247,7 +249,7 @@ describeWithEnvironment('TracingModel', function() {
   });
 
   it('finds the browser main thread from the tracing model', async function() {
-    const {tracingModel} = await allModelsFromFile(this, 'web-dev.json.gz');
+    const {tracingModel} = await TraceLoader.allModels(this, 'web-dev.json.gz');
     const mainThread = TraceEngine.Legacy.TracingModel.browserMainThread(tracingModel);
     assert.strictEqual(mainThread?.id(), 775);
     assert.strictEqual(mainThread?.name(), 'CrBrowserMain');

@@ -6,12 +6,8 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import {
-  loadModelDataFromTraceFile,
-  traceModelFromTraceFile,
-} from '../../../helpers/TraceHelpers.js';
-
 import type * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
@@ -37,8 +33,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
     const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-    const traceParsedData = await loadModelDataFromTraceFile(context, trace);
-    const timelineModel = (await traceModelFromTraceFile(context, trace)).timelineModel;
+    const {traceParsedData, timelineModel} = await TraceLoader.allModels(context, trace);
     const layoutShiftsTrackAppender =
         initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
     layoutShiftsTrackAppender.appendTrackAtLevel(0);

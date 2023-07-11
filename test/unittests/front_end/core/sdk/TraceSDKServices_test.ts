@@ -15,7 +15,7 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../helpers/MockConnection.js';
-import {loadModelDataFromTraceFile} from '../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 function nodeId<T extends Protocol.DOM.BackendNodeId|Protocol.DOM.NodeId>(x: number): T {
   return x as T;
@@ -45,7 +45,7 @@ describeWithMockConnection('TraceSDKServices', function() {
       await domModel.requestDocument();
       domModel.registerNode(domNode);
 
-      const modelData = await loadModelDataFromTraceFile(this, 'cls-single-frame.json.gz');
+      const modelData = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
       const result = await TraceEngine.SDKServices.domNodeForBackendNodeID(modelData, nodeId(2));
       assert.strictEqual(result, domNode);
 

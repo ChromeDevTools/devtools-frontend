@@ -14,14 +14,14 @@ import * as Workspace from '../../../../../front_end/models/workspace/workspace.
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {allModelsFromFile, getAllTracingModelPayloadEvents, setTraceModelTimeout} from '../../helpers/TraceHelpers.js';
+import {getAllTracingModelPayloadEvents} from '../../helpers/TraceHelpers.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import {doubleRaf, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
 describeWithMockConnection('TimelineUIUtils', function() {
-  setTraceModelTimeout(this);
   let tracingModel: TraceEngine.Legacy.TracingModel;
   let process: TraceEngine.Legacy.Process;
   let thread: TraceEngine.Legacy.Thread;
@@ -214,7 +214,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
   describe('adjusting timestamps for events and navigations', function() {
     it('adjusts the time for a DCL event after a navigation', async function() {
-      const data = await allModelsFromFile(this, 'web-dev.json.gz');
+      const data = await TraceLoader.allModels(this, 'web-dev.json.gz');
       const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
       const mainFrameID = data.timelineModel.mainFrameID();
       const dclSDKEvent = allSDKEvents.find(event => {
@@ -235,7 +235,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('falls back to the legacy model if the new data is not available', async function() {
-      const data = await allModelsFromFile(this, 'web-dev.json.gz');
+      const data = await TraceLoader.allModels(this, 'web-dev.json.gz');
       const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
       const lcpSDKEvent = allSDKEvents.find(event => {
         // Can use find here as this trace file only has one LCP Candidate
@@ -255,7 +255,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('can adjust the times for events that are not PageLoad markers', async function() {
-      const data = await allModelsFromFile(this, 'user-timings.json.gz');
+      const data = await TraceLoader.allModels(this, 'user-timings.json.gz');
       const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
       // Use a performance.mark event. Exact event is unimportant except that
       // it should not be a Page Load event as those are covered by the tests
@@ -283,7 +283,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   describe('traceEventDetails', function() {
     it('shows the interaction ID for EventTiming events that have an interaction ID', async function() {
-      const data = await allModelsFromFile(this, 'slow-interaction-button-click.json.gz');
+      const data = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
       const interactionEvent = data.traceParsedData.UserInteractions.interactionEventsWithNoNesting[0];
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
           interactionEvent,
@@ -309,7 +309,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         },
       });
 
-      const data = await allModelsFromFile(this, 'cls-single-frame.json.gz');
+      const data = await TraceLoader.allModels(this, 'cls-single-frame.json.gz');
       const layoutShift = data.traceParsedData.LayoutShifts.clusters[0].events[0];
       if (!layoutShift) {
         throw new Error('Could not find LayoutShift event.');
@@ -343,7 +343,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   it('can generate details for a frame', async function() {
-    const data = await allModelsFromFile(this, 'web-dev.json.gz');
+    const data = await TraceLoader.allModels(this, 'web-dev.json.gz');
     const frame = data.performanceModel.frames()[0];
     const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(data.traceParsedData);
     const details =
@@ -368,7 +368,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   describe('buildNetworkRequestDetails', function() {
     it('renders the right details for a network event from TraceEngine', async function() {
-      const data = await allModelsFromFile(this, 'lcp-web-font.json.gz');
+      const data = await TraceLoader.allModels(this, 'lcp-web-font.json.gz');
       const networkRequests = data.traceParsedData.NetworkRequests.byTime;
       const cssRequest = networkRequests.find(request => {
         return request.args.data.url === 'http://localhost:3000/app.css';
@@ -401,7 +401,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   describe('eventTitle', function() {
     it('renders the correct title for an EventTiming interaction event', async function() {
-      const data = await allModelsFromFile(this, 'slow-interaction-button-click.json.gz');
+      const data = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
       const interactionEvent = data.traceParsedData.UserInteractions.interactionEventsWithNoNesting[0];
       const details = Timeline.TimelineUIUtils.TimelineUIUtils.eventTitle(interactionEvent);
       assert.deepEqual(details, 'Pointer');

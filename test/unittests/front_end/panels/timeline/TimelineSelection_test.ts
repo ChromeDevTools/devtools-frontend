@@ -6,7 +6,8 @@ import * as TimelineModel from '../../../../../front_end/models/timeline_model/t
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {allModelsFromFile, getAllTracingModelPayloadEvents} from '../../helpers/TraceHelpers.js';
+import {getAllTracingModelPayloadEvents} from '../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
@@ -21,7 +22,7 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('can be created with a network request', async function() {
-    const data = await allModelsFromFile(this, 'web-dev.json.gz');
+    const data = await TraceLoader.allModels(this, 'web-dev.json.gz');
     const request = data.traceParsedData.NetworkRequests.byTime[0];
     const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(request);
     assert.strictEqual(selection.object, request);
@@ -35,7 +36,7 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('can be created with an SDK trace event', async function() {
-    const data = await allModelsFromFile(this, 'web-dev.json.gz');
+    const data = await TraceLoader.allModels(this, 'web-dev.json.gz');
     const firstLCPEvent = getAllTracingModelPayloadEvents(data.tracingModel).find(event => {
       return event.name === TimelineModel.TimelineModel.RecordType.MarkLCPCandidate;
     });
@@ -51,7 +52,7 @@ describeWithEnvironment('TimelineSelection', function() {
   });
 
   it('can be created with a TraceEngine event', async function() {
-    const data = await allModelsFromFile(this, 'web-dev.json.gz');
+    const data = await TraceLoader.allModels(this, 'web-dev.json.gz');
     const firstLCPEvent = data.traceParsedData.PageLoadMetrics.allMarkerEvents.find(event => {
       return event.name === 'largestContentfulPaint::Candidate';
     });

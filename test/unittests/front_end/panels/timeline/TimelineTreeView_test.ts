@@ -5,8 +5,8 @@
 import type * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
-import {allModelsFromFile} from '../../helpers/TraceHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
@@ -23,7 +23,7 @@ describeWithEnvironment('TimelineTreeView', function() {
   const mockViewDelegate = new MockViewDelegate();
   describe('EventsTimelineTreeView', function() {
     it('Creates a tree from nestable async events', async function() {
-      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
+      const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       eventTreeView.setModelWithEvents(data.performanceModel, consoleTimings, data.traceParsedData);
@@ -39,7 +39,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       assert.strictEqual(bottomNode.event?.name, 'second console time');
     });
     it('shows instant events as nodes', async function() {
-      const data = await allModelsFromFile(this, 'user-timings.json.gz');
+      const data = await TraceLoader.allModels(this, 'user-timings.json.gz');
       const eventTreeView = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(mockViewDelegate);
       const consoleTimings = [...data.traceParsedData.UserTimings.performanceMarks];
       eventTreeView.setModelWithEvents(data.performanceModel, consoleTimings, data.traceParsedData);
@@ -54,7 +54,7 @@ describeWithEnvironment('TimelineTreeView', function() {
   });
   describe('BottomUpTimelineTreeView', function() {
     it('Creates a bottom up tree from nestable events', async function() {
-      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
+      const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
       const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       const startTime =
@@ -80,7 +80,7 @@ describeWithEnvironment('TimelineTreeView', function() {
   });
   describe('CallTreeTimelineTreeView', function() {
     it('Creates a call tree from nestable events', async function() {
-      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
+      const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       const startTime =
@@ -103,7 +103,7 @@ describeWithEnvironment('TimelineTreeView', function() {
   });
   describe('event groupping', function() {
     it('groups events by category in the Call Tree view', async function() {
-      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
+      const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       const startTime =
@@ -122,7 +122,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       assert.strictEqual(children.next().value.event.name, 'third console time');
     });
     it('groups events by category in the Call Tree view', async function() {
-      const data = await allModelsFromFile(this, 'sync-like-timings.json.gz');
+      const data = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...data.traceParsedData.UserTimings.consoleTimings];
       const startTime =

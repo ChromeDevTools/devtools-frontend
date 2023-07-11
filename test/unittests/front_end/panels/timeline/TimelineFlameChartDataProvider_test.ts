@@ -10,13 +10,13 @@ import * as Workspace from '../../../../../front_end/models/workspace/workspace.
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {allModelsFromFile} from '../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   describe('groupTreeEvents', function() {
     it('returns the correct events for tree views given a flame chart group', async function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel} = await allModelsFromFile(this, 'sync-like-timings.json.gz');
+      const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'sync-like-timings.json.gz');
       dataProvider.setModel(performanceModel, traceParsedData);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
       if (!timingsTrackGroup) {
@@ -35,7 +35,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
     it('filters out async events if they cannot be added to the tree', async function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel} = await allModelsFromFile(this, 'timings-track.json.gz');
+      const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'timings-track.json.gz');
       dataProvider.setModel(performanceModel, traceParsedData);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
       if (!timingsTrackGroup) {
@@ -50,7 +50,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
     it('returns data from the old engine if necessary', async function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel} = await allModelsFromFile(this, 'timings-track.json.gz');
+      const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'timings-track.json.gz');
       dataProvider.setModel(performanceModel, traceParsedData);
       const mainTrack = dataProvider.timelineData().groups.find(g => g.name.includes('Main'));
       if (!mainTrack) {
@@ -63,7 +63,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
   it('adds candy stripe decorations to long tasks in the main thread', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-    const {traceParsedData, performanceModel} = await allModelsFromFile(this, 'one-second-interaction.json.gz');
+    const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'one-second-interaction.json.gz');
     dataProvider.setModel(performanceModel, traceParsedData);
 
     const {entryDecorations} = dataProvider.timelineData();
@@ -91,7 +91,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
   it('populates the frames track with frames and screenshots', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-    const {traceParsedData, performanceModel} = await allModelsFromFile(this, 'web-dev.json.gz');
+    const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'web-dev.json.gz');
     dataProvider.setModel(performanceModel, traceParsedData);
     const framesTrack = dataProvider.timelineData().groups.find(g => {
       return g.name.includes('Frames');
@@ -133,7 +133,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       });
 
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel} = await allModelsFromFile(this, 'react-hello-world.json.gz');
+      const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'react-hello-world.json.gz');
       dataProvider.setModel(performanceModel, traceParsedData);
 
       const eventCountBeforeIgnoreList = dataProvider.timelineData().entryStartTimes.length;

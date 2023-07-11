@@ -4,8 +4,8 @@
 
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
-import {allModelsFromFile} from '../../helpers/TraceHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
@@ -29,7 +29,7 @@ function getRowDataForDetailsElement(details: HTMLElement) {
 describeWithEnvironment('TimelineDetailsView', function() {
   const mockViewDelegate = new MockViewDelegate();
   it('displays the details of a network request event correctly', async function() {
-    const data = await allModelsFromFile(this, 'lcp-web-font.json.gz');
+    const data = await TraceLoader.allModels(this, 'lcp-web-font.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
 
     const networkRequests = data.traceParsedData.NetworkRequests.byTime;

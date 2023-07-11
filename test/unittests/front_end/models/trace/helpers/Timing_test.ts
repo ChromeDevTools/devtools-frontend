@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 function milliToMicro(value: number) {
@@ -129,7 +129,7 @@ describe('Timing helpers', () => {
 
   describe('timeStampForEventAdjustedByClosestNavigation', () => {
     it('can use the navigation ID to adjust the time correctly', async function() {
-      const traceParsedData = await loadModelDataFromTraceFile(this, 'web-dev.json.gz');
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const lcpEvent = traceParsedData.PageLoadMetrics.allMarkerEvents.find(event => {
         // Just one LCP Event so we do not need to worry about ordering and finding the right one.
         return event.name === 'largestContentfulPaint::Candidate';
@@ -157,7 +157,7 @@ describe('Timing helpers', () => {
     });
 
     it('can use the frame ID to adjust the time correctly', async function() {
-      const traceParsedData = await loadModelDataFromTraceFile(this, 'web-dev.json.gz');
+      const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const dclEvent = traceParsedData.PageLoadMetrics.allMarkerEvents.find(event => {
         return event.name === 'MarkDOMContent' && event.args.data?.frame === traceParsedData.Meta.mainFrameId;
       });

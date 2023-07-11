@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
-import {loadEventsFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 type DataArgs = TraceModel.Types.TraceEvents.TraceEventSyntheticNetworkRequest['args']['data'];
 type DataArgsProcessedData =
@@ -13,7 +13,7 @@ type DataArgsMap = Map<keyof DataArgs, DataArgs[keyof DataArgs]>;
 type DataArgsProcessedDataMap = Map<keyof DataArgsProcessedData, DataArgsProcessedData[keyof DataArgsProcessedData]>;
 
 async function parseAndFinalizeFile(context: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const traceEvents = await loadEventsFromTraceFile(context, traceFile);
+  const traceEvents = await TraceLoader.rawEvents(context, traceFile);
   TraceModel.Handlers.ModelHandlers.Meta.initialize();
   TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
   for (const event of traceEvents) {
@@ -60,7 +60,7 @@ describe('NetworkRequestsHandler', function() {
     });
 
     it('calculates network requests correctly', async () => {
-      const traceEvents = await loadEventsFromTraceFile(this, 'load-simple.json.gz');
+      const traceEvents = await TraceLoader.rawEvents(this, 'load-simple.json.gz');
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
         TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
@@ -213,7 +213,7 @@ describe('NetworkRequestsHandler', function() {
     });
 
     it('calculates redirects correctly (navigations)', async () => {
-      const traceEvents = await loadEventsFromTraceFile(this, 'redirects.json.gz');
+      const traceEvents = await TraceLoader.rawEvents(this, 'redirects.json.gz');
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
         TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
@@ -246,7 +246,7 @@ describe('NetworkRequestsHandler', function() {
     });
 
     it('calculates redirects correctly (subresources)', async () => {
-      const traceEvents = await loadEventsFromTraceFile(this, 'redirects-subresource-multiple.json.gz');
+      const traceEvents = await TraceLoader.rawEvents(this, 'redirects-subresource-multiple.json.gz');
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
         TraceModel.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);

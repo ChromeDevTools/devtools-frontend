@@ -6,7 +6,7 @@ import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js'
 import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import {loadModelDataFromTraceFile} from '../../../helpers/TraceHelpers.js';
+import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
@@ -16,7 +16,7 @@ describeWithEnvironment('NetworkTrackAppender', function() {
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
 
   beforeEach(async () => {
-    traceParsedData = await loadModelDataFromTraceFile(this, 'cls-cluster-max-timeout.json.gz');
+    traceParsedData = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz');
     networkTrackAppender = new Timeline.NetworkTrackAppender.NetworkTrackAppender(traceParsedData, flameChartData);
     networkTrackAppender.appendTrackAtLevel(0);
   });

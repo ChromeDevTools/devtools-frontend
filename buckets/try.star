@@ -117,14 +117,6 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["linux"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_%s_rel",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout,
-)
-
-builder_coverage(
     covered_oss = ["mac"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_%s_rel",
@@ -134,7 +126,7 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["win64"],
+    covered_oss = ["linux", "win64"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_%s_rel",
     recipe_name = "devtools/devtools-frontend",

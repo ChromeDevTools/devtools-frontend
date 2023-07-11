@@ -8,6 +8,7 @@ import("../../visibility.gni")
 
 devtools_module("extras") {
   sources = [
+    "FetchNodes.ts",
     "FilmStrip.ts",
     "Metadata.ts",
   ]
@@ -15,6 +16,7 @@ devtools_module("extras") {
   deps = [
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated:protocol",
     "../handlers:bundle",
     "../types:bundle",
   ]

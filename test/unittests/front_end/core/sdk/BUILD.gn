@@ -39,7 +39,6 @@ ts_library("sdk") {
     "StorageKeyManager_test.ts",
     "TargetManager_test.ts",
     "Target_test.ts",
-    "TraceSDKServices_test.ts",
   ]
 
   deps = [

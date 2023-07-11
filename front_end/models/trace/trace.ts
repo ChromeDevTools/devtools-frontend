@@ -10,7 +10,6 @@ import * as Helpers from './helpers/helpers.js';
 import * as Legacy from './LegacyTracingModel.js';
 import * as TraceModel from './ModelImpl.js';
 import * as Processor from './Processor.js';
-import * as SDKServices from './SDKServices.js';
 import * as TracingManager from './TracingManager.js';
 import * as Types from './types/types.js';
 
@@ -20,7 +19,6 @@ export {
   Helpers,
   Legacy,
   Processor,
-  SDKServices,
   TraceModel,
   TracingManager,
   Types,

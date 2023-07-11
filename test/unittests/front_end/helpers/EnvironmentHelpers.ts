@@ -122,6 +122,7 @@ const REGISTERED_EXPERIMENTS = [
   'headerOverrides',
   'highlightErrorsElementsPanel',
   'setAllBreakpointsEagerly',
+  'selfXssWarning',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

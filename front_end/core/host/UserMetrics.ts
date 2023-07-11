@@ -876,9 +876,10 @@ export enum DevtoolsExperiments {
   'jsProfilerTemporarilyEnable' = 72,
   'highlightErrorsElementsPanel' = 73,
   'setAllBreakpointsEagerly' = 74,
+  'selfXssWarning' = 75,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 75,
+  'MaxValue' = 76,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

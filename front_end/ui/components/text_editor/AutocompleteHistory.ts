@@ -35,6 +35,10 @@ export class AutocompleteHistory {
     this.#historyOffset = 1;
   }
 
+  length(): number {
+    return this.#data.length;
+  }
+
   /**
    * Pushes a committed text into the history.
    */

@@ -413,6 +413,9 @@ export class MainImpl {
         Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
         'Enable background page selector (e.g. for prerendering debugging)', false);
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.SELF_XSS_WARNING, 'Show warning about Self-XSS when pasting code');
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
       'cssTypeComponentLength',

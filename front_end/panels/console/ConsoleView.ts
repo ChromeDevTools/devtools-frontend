@@ -260,16 +260,13 @@ const UIStrings = {
    *@example {5} PH1
    */
   filteredMessagesInConsole: '{PH1} messages in console',
-  /**
-   *@description An error message showed when console paste is blocked.
-   */
-  consolePasteBlocked:
-      'Pasting code is blocked on this page. Pasting code into devtools can allow attackers to take over your account.',
 
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let consoleViewInstance: ConsoleView;
+
+const MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
 
 export class ConsoleView extends UI.Widget.VBox implements
     UI.SearchableView.Searchable, ConsoleViewportProvider,
@@ -300,6 +297,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   private readonly showCorsErrorsSetting: Common.Settings.Setting<boolean>;
   private readonly timestampsSetting: Common.Settings.Setting<unknown>;
   private readonly consoleHistoryAutocompleteSetting: Common.Settings.Setting<boolean>;
+  private selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
   readonly pinPane: ConsolePinPane;
   private viewport: ConsoleViewport;
   private messagesElement: HTMLElement;
@@ -446,6 +444,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.timestampsSetting = Common.Settings.Settings.instance().moduleSetting('consoleTimestampsEnabled');
     this.consoleHistoryAutocompleteSetting =
         Common.Settings.Settings.instance().moduleSetting('consoleHistoryAutocomplete');
+    this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
+        'disableSelfXssWarning', false, Common.Settings.SettingStorageType.Synced);
 
     const settingsPane = new UI.Widget.HBox();
     settingsPane.show(this.contentsElement);
@@ -1327,10 +1327,10 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   private messagesPasted(event: Event): void {
-    const url = SDK.TargetManager.TargetManager.instance().inspectedURL();
-    if (Root.Runtime.Runtime.queryParam('consolePaste') === 'blockwebui' && url.startsWith('chrome://')) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SELF_XSS_WARNING) &&
+        !this.selfXssWarningDisabledSetting.get()) {
       event.preventDefault();
-      Common.Console.Console.instance().error(i18nString(UIStrings.consolePasteBlocked));
+      this.prompt.showSelfXssWarning();
     }
     if (UI.UIUtils.isEditing()) {
       return;
@@ -1387,6 +1387,10 @@ export class ConsoleView extends UI.Widget.VBox implements
   private commandEvaluated(event: Common.EventTarget.EventTargetEvent<SDK.ConsoleModel.CommandEvaluatedEvent>): void {
     const {data} = event;
     this.prompt.history().pushHistoryItem(data.commandMessage.messageText);
+    if (this.prompt.history().length() >= MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING &&
+        !this.selfXssWarningDisabledSetting.get()) {
+      this.selfXssWarningDisabledSetting.set(true);
+    }
     this.printResult(data.result, data.commandMessage, data.exceptionDetails);
   }
 

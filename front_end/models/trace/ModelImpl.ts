@@ -178,7 +178,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     return this.#recordingsAvailable;
   }
 
-  reset(): void {
+  resetProcessor(): void {
     this.#processor.reset();
   }
 }

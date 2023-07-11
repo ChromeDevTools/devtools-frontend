@@ -1262,7 +1262,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   async loadingComplete(
       tracingModel: TraceEngine.Legacy.TracingModel|null,
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null): Promise<void> {
-    this.#traceEngineModel.reset();
+    this.#traceEngineModel.resetProcessor();
     delete this.loader;
 
     // If the user just recorded this trace via the record UI, the state will

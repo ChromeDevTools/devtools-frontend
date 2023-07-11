@@ -47,9 +47,9 @@ describe('TraceModel', async function() {
     const file2 = await TraceLoader.rawEvents(this, 'slow-interaction-keydown.json.gz');
 
     await model.parse(file1);
-    model.reset();
+    model.resetProcessor();
     await model.parse(file2);
-    model.reset();
+    model.resetProcessor();
 
     assert.strictEqual(model.size(), 2);
     assert.isNotNull(model.traceParsedData(0));
@@ -62,9 +62,9 @@ describe('TraceModel', async function() {
     const file2 = await TraceLoader.rawEvents(this, 'slow-interaction-keydown.json.gz');
 
     await model.parse(file1);
-    model.reset();
+    model.resetProcessor();
     await model.parse(file2);
-    model.reset();
+    model.resetProcessor();
 
     // Test only one trace is deleted.
     assert.strictEqual(model.size(), 2);
@@ -89,7 +89,7 @@ describe('TraceModel', async function() {
     ];
     for (const traceFile of traceFiles) {
       await model.parse(traceFile);
-      model.reset();
+      model.resetProcessor();
     }
     const expectedResults = [
       'threejs.org (1)',

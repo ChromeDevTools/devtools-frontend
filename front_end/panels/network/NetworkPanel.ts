@@ -929,6 +929,11 @@ export class FilmStripRecorder implements TraceEngine.TracingManager.TracingMana
       this.callback(filmStrip);
     }
     this.callback = null;
+    // Now we have created the film strip and stored the data, we need to reset
+    // the trace processor so that it is ready to record again if the user
+    // refreshes the page.
+    this.#traceEngine.resetProcessor();
+
     if (this.resourceTreeModel) {
       this.resourceTreeModel.resumeReload();
     }

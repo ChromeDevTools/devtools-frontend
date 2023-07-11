@@ -5,8 +5,11 @@
 const {assert} = chai;
 
 import * as SplitView from '../../../../../../front_end/ui/components/split_view/split_view.js';
+import * as RenderCoordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 import {renderElementIntoDOM} from '../../../helpers/DOMHelpers.js';
+
+const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describe('SplitView', () => {
   it('should resize split view', async () => {
@@ -49,7 +52,7 @@ describe('SplitView', () => {
     );
   });
 
-  it('should change layout to vertical on resize to narrow view', async () => {
+  it('should change layout to horizontal split on resize to narrow view', async () => {
     const view = new SplitView.SplitView.SplitView();
     renderElementIntoDOM(view);
     view.style.width = '800px';
@@ -63,12 +66,33 @@ describe('SplitView', () => {
     view.style.width = '600px';
     view.style.height = '800px';
 
+    await coordinator.done({waitForWork: true});
+
     const rect = resizer.getBoundingClientRect();
     assert.strictEqual(rect.width, 600);
     assert.strictEqual(rect.height, 3);
   });
 
-  it('should keep horizontal layout on short viewports', () => {
+  it('always uses horizontal split if explicitly set', async () => {
+    const view = new SplitView.SplitView.SplitView();
+    view.horizontal = true;
+    renderElementIntoDOM(view);
+    view.style.width = '800px';
+    view.style.height = '600px';
+
+    const resizer = view.shadowRoot?.querySelector(
+                        '#resizer',
+                        ) as HTMLDivElement;
+    assert.ok(resizer);
+
+    await coordinator.done({waitForWork: true});
+
+    const rect = resizer.getBoundingClientRect();
+    assert.strictEqual(rect.width, 800);
+    assert.strictEqual(rect.height, 3);
+  });
+
+  it('should keep vertical split on short viewports', () => {
     const view = new SplitView.SplitView.SplitView();
     renderElementIntoDOM(view);
     view.style.width = '800px';

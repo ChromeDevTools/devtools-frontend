@@ -73,33 +73,31 @@ const styles = `
     min-width: var(--min-sidebar-size);
   }
 
-  @container sidebar (max-width: 600px) and (min-height: 600px) { /* stylelint-disable-line at-rule-no-unknown */
-    .container {
-      flex-direction: column;
-      min-height: var(--min-container-size);
-      min-width: auto;
-    }
+  .horizontal .container {
+    flex-direction: column;
+    min-height: var(--min-container-size);
+    min-width: auto;
+  }
 
-    #resizer {
-      width: auto;
-      height: var(--resizer-size);
-      cursor: row-resize;
-      top: var(--resizer-position);
-      left: 0;
-      right: 0;
-    }
+  .horizontal #resizer {
+    width: auto;
+    height: var(--resizer-size);
+    cursor: row-resize;
+    top: var(--resizer-position);
+    left: 0;
+    right: 0;
+  }
 
-    slot[name="main"] {
-      width: auto;
-      min-width: auto;
-      height: var(--resizer-position);
-      min-height: var(--min-main-area-size);
-    }
+  .horizontal slot[name="main"] {
+    width: auto;
+    min-width: auto;
+    height: var(--resizer-position);
+    min-height: var(--min-main-area-size);
+  }
 
-    slot[name="sidebar"] {
-      min-width: auto;
-      min-height: var(--min-sidebar-size);
-    }
+  .horizontal slot[name="sidebar"] {
+    min-width: auto;
+    min-height: var(--min-sidebar-size);
   }
 `;
 
@@ -119,6 +117,7 @@ export class SplitView extends HTMLElement {
   #mainAxisIdx = 0;
   #mainDimensions = [0, 0];
   #observer?: ResizeObserver;
+  #horizontal = false;
 
   connectedCallback(): void {
     this.style.setProperty('--current-main-area-size', '60%');
@@ -130,11 +129,24 @@ export class SplitView extends HTMLElement {
     this.#render();
   }
 
+  get horizontal(): boolean {
+    return this.#horizontal;
+  }
+
+  set horizontal(horizontal: boolean) {
+    this.#horizontal = horizontal;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
+  }
+
   #onResize = (rect: DOMRectReadOnly): void => {
-    if (rect.width <= 600 && rect.height >= 600) {
+    const prevMainAxisIdx = this.#mainAxisIdx;
+    if (rect.width <= 600 && rect.height >= 600 || this.#horizontal) {
       this.#mainAxisIdx = 1;
     } else {
       this.#mainAxisIdx = 0;
+    }
+    if (this.#mainAxisIdx !== prevMainAxisIdx) {
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     }
   };
 
@@ -168,7 +180,7 @@ export class SplitView extends HTMLElement {
     // clang-format off
     LitHtml.render(
       LitHtml.html`
-        <div class="wrapper">
+        <div class="wrapper ${this.#mainAxisIdx === 1 ? 'horizontal' : ''}">
           <div class="container">
             <slot name="main"></slot>
             <div id="resizer" @mousedown=${this.#onMouseDown}></div>

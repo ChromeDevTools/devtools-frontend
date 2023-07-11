@@ -178,6 +178,24 @@ describe('MetaHandler', function() {
       const data = TraceModel.Handlers.ModelHandlers.Meta.data();
       assert.strictEqual(data.mainFrameId, '1D148CB660D1F96ED70D78DC6A53267B');
     });
+    it('tracks the frames for found processes', async () => {
+      const events = await TraceLoader.rawEvents(this, 'reload-and-trace-page.json.gz');
+      TraceModel.Handlers.ModelHandlers.Meta.reset();
+      TraceModel.Handlers.ModelHandlers.Meta.initialize();
+      for (const event of events) {
+        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+      }
+
+      await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+      const data = TraceModel.Handlers.ModelHandlers.Meta.data();
+      assert.strictEqual(data.frameByProcessId.size, 1);
+      const [[processId, framesInProcess]] = data.frameByProcessId.entries();
+      assert.strictEqual(processId, 3581385);
+      assert.strictEqual(framesInProcess.size, 1);
+      const [{url}] = framesInProcess.values();
+      assert.strictEqual(url, 'https://example.com/');
+    });
+
   });
 
   describe('finding GPU thread and main frame', function() {

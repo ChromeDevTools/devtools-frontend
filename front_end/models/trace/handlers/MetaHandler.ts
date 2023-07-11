@@ -17,6 +17,8 @@ const rendererProcessesByFrameId = new Map<
 let mainFrameId: string = '';
 let mainFrameURL: string = '';
 
+const framesByProcessId = new Map<Types.TraceEvents.ProcessID, Map<string, Types.TraceEvents.TraceFrame>>();
+
 // We will often want to key data by the browser process, GPU process and top
 // level renderer IDs, so keep a track on those.
 let browserProcessId: Types.TraceEvents.ProcessID = Types.TraceEvents.ProcessID(-1);
@@ -71,6 +73,7 @@ export function reset(): void {
   topLevelRendererIds.clear();
   threadsInProcess.clear();
   rendererProcessesByFrameId.clear();
+  framesByProcessId.clear();
 
   traceBounds.min = Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
   traceBounds.max = Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY);
@@ -90,6 +93,9 @@ export function initialize(): void {
 
 function updateRendererProcessByFrame(
     event: Types.TraceEvents.TraceEventData, frame: Types.TraceEvents.TraceFrame): void {
+  const framesInProcessById = Platform.MapUtilities.getWithDefault(framesByProcessId, frame.processId, () => new Map());
+  framesInProcessById.set(frame.frame, frame);
+
   const rendererProcessInFrame = Platform.MapUtilities.getWithDefault(
       rendererProcessesByFrameId, frame.frame,
       () => new Map<
@@ -313,6 +319,7 @@ type MetaHandlerData = {
                       Map<Types.TraceEvents.ProcessID,
                           {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}>>,
               topLevelRendererIds: Set<Types.TraceEvents.ProcessID>,
+              frameByProcessId: Map<Types.TraceEvents.ProcessID, Map<string, Types.TraceEvents.TraceFrame>>,
 };
 
 export function data(): MetaHandlerData {
@@ -334,5 +341,6 @@ export function data(): MetaHandlerData {
     threadsInProcess: new Map(threadsInProcess),
     rendererProcessesByFrame: new Map(rendererProcessesByFrameId),
     topLevelRendererIds: new Set(topLevelRendererIds),
+    frameByProcessId: new Map(framesByProcessId),
   };
 }
